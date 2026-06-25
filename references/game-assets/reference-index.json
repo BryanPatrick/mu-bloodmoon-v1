@@ -1,10 +1,16 @@
 {
   "generatedAt": "2026-06-12T13:48:06.029Z",
   "sources": [
-    "muonlinefanz/elf"
+    "muonlinefanz/elf",
+    "webzen/bloodangel-mastery",
+    "guiamuonline/items"
   ],
-  "total": 240,
+  "total": 2024,
   "shared": 89,
   "elfExclusive": 151,
-  "duplicateDetection": "Use sha1 from each manifest entry. Future imports should skip exact sha1 matches and merge usableBy/source metadata instead of copying duplicate files."
+  "duplicateDetection": "Use sha1 from each manifest entry. Future imports should skip exact sha1 matches and merge usableBy/source metadata instead of copying duplicate files.",
+  "notes": [
+    "Webzen Bloodangel Mastery images are intentionally duplicated by item name when the source guide reuses the same image across classes.",
+    "Guia MU Online item objects include list stats, usable classes, image metadata and raw/detail tables for future wiki rendering."
+  ]
 }

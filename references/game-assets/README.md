@@ -9,6 +9,10 @@ Este diretorio centraliza imagens e manifestos de assets externos usados como re
 - `muonlinefanz/elf/comparison-report.json`: comparacao entre a lista conhecida da pagina Fairy Elf e os arquivos locais.
 - `muonlinefanz/elf/duplicated-placeholders.json`: itens faltantes que foram preenchidos com uma imagem parecida e marcados como placeholder.
 - `muonlinefanz/elf/elf-exclusive-items.json`: itens exclusivos ou tratados como ligados diretamente a Elfa.
+- `webzen/bloodangel-mastery/original`: imagens originais da pagina oficial Webzen "1st Mastery Armors", salvas com o nome correto de cada item Bloodangel.
+- `webzen/bloodangel-mastery/manifest.json`: catalogo da coleta Webzen com URL fonte, hashes, grupos de equipamentos e sets.
+- `guiamuonline/items/original`: imagens originais de equipamentos, asas, sets e itens coletados do Guia MU Online.
+- `guiamuonline/items/manifest.json`: catalogo completo da coleta Guia MU Online com nome, categoria, classes que usam, status de lista, detalhe tecnico e metadados de imagem.
 - `shared/shared-items-from-elf-pass.json`: itens compartilhados que apareceram na pagina da Elfa, mas tambem podem ser usados por outras classes.
 - `reference-index.json`: resumo da base e regra para evitar duplicados.
 - `optimization-guidelines.md`: regras visuais para interpretar buffs, upgrades, +15 e criacao de versoes otimizadas.

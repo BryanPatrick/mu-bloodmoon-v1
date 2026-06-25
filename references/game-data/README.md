@@ -175,6 +175,27 @@ Conteudo catalogado:
 - Rings e Necklaces.
 - Item Database como ponto de entrada para crawling futuro.
 
+### Guia MU Online - catalogo de equipamentos
+
+Arquivo:
+
+- `guiamuonline-items-reference.md`
+- `guiamuonline-items-data.json`
+- `../game-assets/guiamuonline/items/manifest.json`
+
+Fonte:
+
+- https://www.guiamuonline.com/items-weapons
+
+Conteudo catalogado:
+
+- 40 categorias de equipamentos e itens.
+- 1720 objetos reutilizaveis com nome, categoria, URL fonte e dados de lista.
+- 1468 imagens originais baixadas com nomes normalizados por categoria e item.
+- Detalhes tecnicos para todos os 1720 itens, preservando tabelas brutas e curvas por nivel quando disponiveis.
+- Classes que podem usar cada item, extraidas dos icones da lista.
+- Base para filtros futuros por personagem, classe/evolucao, nome do equipamento e busca textual.
+
 ## Proximas coletas recomendadas
 
 - MU Online Fanz - Dark Knight.
