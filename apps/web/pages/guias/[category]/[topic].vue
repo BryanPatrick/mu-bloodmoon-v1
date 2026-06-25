@@ -233,7 +233,7 @@
 
           <div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 min-[1720px]:grid-cols-5">
             <article
-              v-for="set in filteredSetCards"
+              v-for="set in paginatedSetCards"
               :key="set.key"
               class="overflow-hidden rounded-md border border-white/10 bg-white/[0.04] shadow-soft"
             >
@@ -278,6 +278,31 @@
                 </div>
               </div>
             </article>
+          </div>
+
+          <div
+            v-if="filteredSetCards.length > 0"
+            class="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-md border border-white/10 bg-black/20 px-4 py-3 text-xs font-bold uppercase tracking-[0.14em] text-zinc-400"
+          >
+            <span>Pagina {{ setCurrentPage }} de {{ setTotalPages }} - {{ filteredSetCards.length }} itens</span>
+            <div class="flex items-center gap-2">
+              <button
+                class="rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-white transition disabled:cursor-not-allowed disabled:opacity-40"
+                type="button"
+                :disabled="setCurrentPage <= 1"
+                @click="setCurrentPage--"
+              >
+                Anterior
+              </button>
+              <button
+                class="rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-white transition disabled:cursor-not-allowed disabled:opacity-40"
+                type="button"
+                :disabled="setCurrentPage >= setTotalPages"
+                @click="setCurrentPage++"
+              >
+                Proxima
+              </button>
+            </div>
           </div>
 
           <div v-if="filteredSetCards.length === 0" class="mt-8 rounded-md border border-dashed border-white/15 bg-white/[0.035] p-8 text-center">
@@ -368,6 +393,8 @@ const setSearch = ref('')
 const setClassFilter = ref('Todos')
 const setImageFilter = ref('Todos')
 const setCompatibilityFilter = ref('Todos')
+const setCurrentPage = ref(1)
+const setPageSize = 20
 
 type SetCard = {
   key: string
@@ -490,11 +517,28 @@ const filteredSetCards = computed(() => {
     return matchesSearch && matchesClass && matchesImage && matchesCompatibility
   })
 })
+const setTotalPages = computed(() => Math.max(1, Math.ceil(filteredSetCards.value.length / setPageSize)))
+const paginatedSetCards = computed(() => {
+  const page = Math.min(setCurrentPage.value, setTotalPages.value)
+  const start = (page - 1) * setPageSize
+
+  return filteredSetCards.value.slice(start, start + setPageSize)
+})
 const setGuideStats = computed(() => ({
   total: setCards.value.length,
   withImage: setCards.value.filter((set) => set.image).length,
   missingImage: setCards.value.filter((set) => !set.image).length
 }))
+
+watch([setSearch, setClassFilter, setImageFilter, setCompatibilityFilter], () => {
+  setCurrentPage.value = 1
+})
+
+watch(setTotalPages, (totalPages) => {
+  if (setCurrentPage.value > totalPages) {
+    setCurrentPage.value = totalPages
+  }
+})
 
 onMounted(loadSession)
 

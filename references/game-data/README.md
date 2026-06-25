@@ -177,23 +177,21 @@ Conteudo catalogado:
 
 ### Guia MU Online - catalogo de equipamentos
 
-Arquivo:
-
-- `guiamuonline-items-reference.md`
-- `guiamuonline-items-data.json`
-- `../game-assets/guiamuonline/items/manifest.json`
-
 Fonte:
 
 - https://www.guiamuonline.com/items-weapons
 
+Conteudo promovido para o app:
+
+- `apps/web/data/muEquipmentIndex.generated.json`
+- `apps/web/data/mu-equipment-details/*.json`
+- `apps/web/public/images/game-assets/guiamuonline/items/original`
+
 Conteudo catalogado:
 
 - 40 categorias de equipamentos e itens.
-- 1720 objetos reutilizaveis com nome, categoria, URL fonte e dados de lista.
-- 1468 imagens originais baixadas com nomes normalizados por categoria e item.
-- Detalhes tecnicos para todos os 1720 itens, preservando tabelas brutas e curvas por nivel quando disponiveis.
-- Classes que podem usar cada item, extraidas dos icones da lista.
+- 1719 objetos reutilizaveis, com indice leve para listagens e detalhes completos divididos por categoria para carregamento sob demanda.
+- 2896 imagens copiadas para o public do app com nomes normalizados por categoria e item.
 - Base para filtros futuros por personagem, classe/evolucao, nome do equipamento e busca textual.
 
 ## Proximas coletas recomendadas

@@ -133,7 +133,7 @@
 
               <div class="max-h-[520px] overflow-auto">
                 <article
-                  v-for="set in filteredSetCards"
+                  v-for="set in paginatedSetCards"
                   :key="set.key"
                   class="grid grid-cols-[64px_1fr_96px] gap-3 border-b border-white/10 px-4 py-3 last:border-b-0 md:grid-cols-[64px_1.15fr_0.85fr_1fr_0.9fr_112px]"
                 >
@@ -153,6 +153,31 @@
                     Ver
                   </button>
                 </article>
+              </div>
+            </div>
+
+            <div
+              v-if="filteredSetCards.length > 0"
+              class="flex flex-wrap items-center justify-between gap-3 rounded-md border border-white/10 bg-black/20 px-4 py-3 text-xs font-bold uppercase tracking-[0.14em] text-zinc-400"
+            >
+              <span>Pagina {{ setCurrentPage }} de {{ setTotalPages }} - {{ filteredSetCards.length }} itens</span>
+              <div class="flex items-center gap-2">
+                <button
+                  class="rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-white transition disabled:cursor-not-allowed disabled:opacity-40"
+                  type="button"
+                  :disabled="setCurrentPage <= 1"
+                  @click="setCurrentPage--"
+                >
+                  Anterior
+                </button>
+                <button
+                  class="rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-white transition disabled:cursor-not-allowed disabled:opacity-40"
+                  type="button"
+                  :disabled="setCurrentPage >= setTotalPages"
+                  @click="setCurrentPage++"
+                >
+                  Proxima
+                </button>
               </div>
             </div>
 
@@ -251,6 +276,8 @@
                   v-if="selectedSet.fullSetImage"
                   :alt="`${selectedSet.name} completo`"
                   class="max-h-[390px] max-w-full rounded-sm object-contain"
+                  loading="lazy"
+                  decoding="async"
                   :src="selectedSet.fullSetImage"
                 >
                 <div v-else class="text-center">
@@ -333,7 +360,7 @@
                   class="grid gap-4 rounded-md border border-white/10 bg-[#111215]/95 p-4 shadow-xl sm:grid-cols-[110px_1fr]"
                 >
                   <div class="grid min-h-32 place-items-center rounded-md border border-white/10 bg-white/[0.04] p-3">
-                    <img v-if="piece.image" :src="piece.image" :alt="piece.displayTitle" class="max-h-28 max-w-full object-contain">
+                    <img v-if="piece.image" :src="piece.image" :alt="piece.displayTitle" class="max-h-28 max-w-full object-contain" loading="lazy" decoding="async">
                     <span v-else class="text-center text-xs font-black uppercase tracking-[0.16em] text-zinc-600">{{ piece.label }}</span>
                   </div>
                   <div>
@@ -383,7 +410,7 @@
 <script setup lang="ts">
 import { ChevronDown, X } from 'lucide-vue-next'
 import { devReferenceAssets, type DevReferenceAsset } from '~/data/devReferenceAssets'
-import { findGuideItem } from '~/data/guiamuonlineItems'
+import { loadGuideSetItems, type GuideEquipmentItem } from '~/data/guiamuonlineItems'
 import { permissions } from '~/data/security'
 import ancientItemsData from '../../../references/game-data/muonlinefanz-ancient-items-data.json'
 
@@ -436,7 +463,11 @@ const setCharacterFilter = ref('Default')
 const setEvolutionFilter = ref('Default')
 const setEquipmentFilter = ref('Default')
 const setNameSearch = ref('')
+const setCurrentPage = ref(1)
+const setPageSize = 20
 const selectedSet = ref<SetCard | null>(null)
+const selectedGuideSetItems = ref<GuideEquipmentItem[]>([])
+const selectedGuideLoadId = ref(0)
 const modalMode = ref<ModalMode>('equipment')
 const setQuality = ref<SetQuality>('normal')
 const blessingLevel = ref(0)
@@ -724,6 +755,13 @@ const filteredSetCards = computed(() => {
     return matchesCharacter && matchesEvolution && matchesEquipment && matchesSearch
   })
 })
+const setTotalPages = computed(() => Math.max(1, Math.ceil(filteredSetCards.value.length / setPageSize)))
+const paginatedSetCards = computed(() => {
+  const page = Math.min(setCurrentPage.value, setTotalPages.value)
+  const start = (page - 1) * setPageSize
+
+  return filteredSetCards.value.slice(start, start + setPageSize)
+})
 
 const selectedAncientReference = computed(() => {
   if (!selectedSet.value) {
@@ -746,16 +784,6 @@ const selectedEquipmentOptionRows = computed(() =>
     ? [...normalArmorOptions, ...defensiveExcellentOptions]
     : normalArmorOptions
 )
-
-const selectedGuideSetItems = computed(() => {
-  if (!selectedSet.value) {
-    return []
-  }
-
-  return setModalPieces
-    .map((piece) => findGuideItem(piece.guideCategory, selectedSet.value?.name || ''))
-    .filter(Boolean)
-})
 
 const selectedSetUsableByClasses = computed(() => {
   const classes = selectedGuideSetItems.value.flatMap((item) => item?.usableBy || [])
@@ -784,7 +812,7 @@ const fallbackRequirement = (pieceIndex: number, multiplier: number) => {
 }
 
 const guideDefenseAtLevel = (category: string, name: string, level: number, fallbackIndex: number) => {
-  const guideItem = findGuideItem(category, name)
+  const guideItem = selectedGuideSetItems.value.find((item) => item.category === category && item.name === name)
   const stat = guideItem?.levelStats.find((item) => item.itemLevel === level)
   const defense = setQuality.value === 'excellent'
     ? stat?.excellentDefense ?? stat?.defense
@@ -795,7 +823,9 @@ const guideDefenseAtLevel = (category: string, name: string, level: number, fall
 
 const selectedSetPiecesWithData = computed(() =>
   setModalPieces.map((piece, index) => {
-    const guideItem = selectedSet.value ? findGuideItem(piece.guideCategory, selectedSet.value.name) : null
+    const guideItem = selectedSet.value
+      ? selectedGuideSetItems.value.find((item) => item.category === piece.guideCategory && item.name === selectedSet.value?.name)
+      : null
     const guideLevelStats = guideItem?.levelStats.find((item) => item.itemLevel === blessingLevel.value)
     const assetPiece = selectedSet.value?.pieceCards.find((candidate) =>
       piece.aliases.some((alias) => candidate.label.toLowerCase().includes(alias.toLowerCase()) || candidate.title.toLowerCase().includes(alias.toLowerCase()))
@@ -849,24 +879,46 @@ const selectedSetDefense = computed(() => {
   }
 })
 
-const openSetModal = (set: SetCard) => {
+const openSetModal = async (set: SetCard) => {
+  const loadId = selectedGuideLoadId.value + 1
+  selectedGuideLoadId.value = loadId
   selectedSet.value = set
+  selectedGuideSetItems.value = []
   modalMode.value = 'equipment'
   setQuality.value = 'normal'
   blessingLevel.value = 0
+  const items = await loadGuideSetItems(set.name)
+
+  if (selectedGuideLoadId.value === loadId && selectedSet.value?.key === set.key) {
+    selectedGuideSetItems.value = items
+  }
 }
 
 const closeSetModal = () => {
+  selectedGuideLoadId.value += 1
   selectedSet.value = null
+  selectedGuideSetItems.value = []
 }
 
 watch(setCharacterFilter, () => {
   setEvolutionFilter.value = 'Default'
   setEquipmentFilter.value = 'Default'
+  setCurrentPage.value = 1
 })
 
 watch(setEvolutionFilter, () => {
   setEquipmentFilter.value = 'Default'
+  setCurrentPage.value = 1
+})
+
+watch([setEquipmentFilter, setNameSearch], () => {
+  setCurrentPage.value = 1
+})
+
+watch(setTotalPages, (totalPages) => {
+  if (setCurrentPage.value > totalPages) {
+    setCurrentPage.value = totalPages
+  }
 })
 
 function ensureDefaultSelection () {

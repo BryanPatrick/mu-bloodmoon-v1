@@ -1,9 +1,12 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const DATA_FILE = 'references/game-data/guiamuonline-items-data.json';
-const COMPACT_FILE = 'references/game-data/guiamuonline-items-compact.json';
-const ARMOR_COMPACT_FILE = 'apps/web/data/guiamuonlineArmorItems.generated.json';
+const LEGACY_EQUIPMENT_ITEMS_FILE = 'apps/web/data/muEquipmentItems.generated.json';
+const EQUIPMENT_INDEX_FILE = 'apps/web/data/muEquipmentIndex.generated.json';
+const EQUIPMENT_DETAILS_DIR = 'apps/web/data/mu-equipment-details';
+const PUBLIC_IMAGE_BASE = '/images/game-assets/guiamuonline/items/original';
+const PUBLIC_IMAGE_LOCAL_BASE = 'apps/web/public/images/game-assets/guiamuonline/items/original';
 const ARMOR_CATEGORIES = new Set(['Armor', 'Pants', 'Helm', 'Boots', 'Gloves']);
 
 const normalizeHeader = (value = '') =>
@@ -24,7 +27,7 @@ const toNumber = (value) => {
 };
 
 const toPublicImagePath = (image) =>
-  image?.filename ? `/dev-references/game-assets/guiamuonline/items/original/${image.filename}` : null;
+  image?.filename ? `${PUBLIC_IMAGE_BASE}/${image.filename}` : null;
 
 const valueByHeader = (raw, matcher) => {
   const entry = Object.entries(raw).find(([header]) => matcher(normalizeHeader(header)));
@@ -61,7 +64,7 @@ const compactLevelStats = (tables = []) => {
 const compactImage = (image, sourceUrl = null) => ({
   publicPath: toPublicImagePath(image),
   sourceUrl,
-  localPath: image?.localPath || null,
+  localPath: image?.filename ? `${PUBLIC_IMAGE_LOCAL_BASE}/${image.filename}` : null,
   size: image?.size || null,
   sha1: image?.sha1 || null,
 });
@@ -105,7 +108,15 @@ const slimLevelStat = (stat) => ({
   excellentRequiredAgility: stat.excellentRequiredAgility,
 });
 
-const slimArmorItem = (item) => ({
+const slimPart = (part) => ({
+  name: part.name,
+  slug: part.slug,
+  image: part.image,
+  imageError: part.imageError,
+  levelStats: part.levelStats.map(slimLevelStat),
+});
+
+const appEquipmentItem = (item) => ({
   key: item.key,
   name: item.name,
   title: item.title,
@@ -117,22 +128,100 @@ const slimArmorItem = (item) => ({
   image: item.image,
   sourceUrl: item.sourceUrl,
   imageError: item.imageError,
+  detailError: item.detailError,
   levelStats: item.levelStats.map(slimLevelStat),
+  parts: item.parts.map(slimPart),
+  detailParts: item.detailParts.map(slimPart),
 });
 
-const data = JSON.parse(await readFile(DATA_FILE, 'utf8'));
-const compactItems = data.items.map(compactItem);
-const armorItems = compactItems.filter((item) => ARMOR_CATEGORIES.has(item.category)).map(slimArmorItem);
+const summaryEquipmentItem = (item) => ({
+  key: item.key,
+  name: item.name,
+  title: item.title,
+  category: item.category,
+  categorySlug: item.categorySlug,
+  slug: item.slug,
+  usableBy: item.usableBy,
+  listStats: item.listStats,
+  image: item.image,
+  sourceUrl: item.sourceUrl,
+  imageError: item.imageError,
+  detailError: item.detailError,
+});
 
-await mkdir(path.dirname(COMPACT_FILE), { recursive: true });
-await mkdir(path.dirname(ARMOR_COMPACT_FILE), { recursive: true });
-await writeFile(COMPACT_FILE, `${JSON.stringify(compactItems, null, 2)}\n`);
-await writeFile(ARMOR_COMPACT_FILE, `${JSON.stringify(armorItems, null, 2)}\n`);
+const readJsonIfExists = async (file) => {
+  try {
+    return JSON.parse(await readFile(file, 'utf8'));
+  } catch (error) {
+    if (error?.code === 'ENOENT') {
+      return null;
+    }
+
+    throw error;
+  }
+};
+
+const readExistingDetailItems = async () => {
+  try {
+    const files = await readdir(EQUIPMENT_DETAILS_DIR);
+    const jsonFiles = files.filter((file) => file.endsWith('.json')).sort();
+    const groups = await Promise.all(
+      jsonFiles.map((file) => readJsonIfExists(path.join(EQUIPMENT_DETAILS_DIR, file)))
+    );
+
+    return groups.flat().filter(Boolean);
+  } catch (error) {
+    if (error?.code === 'ENOENT') {
+      return [];
+    }
+
+    throw error;
+  }
+};
+
+const sourceData = await readJsonIfExists(DATA_FILE);
+const existingEquipmentItems = await readJsonIfExists(LEGACY_EQUIPMENT_ITEMS_FILE);
+const existingDetailItems = await readExistingDetailItems();
+const compactItems = sourceData?.items
+  ? sourceData.items.map(compactItem)
+  : existingEquipmentItems?.length
+    ? existingEquipmentItems
+    : existingDetailItems;
+
+if (!compactItems?.length) {
+  throw new Error(`No Guia MU data found. Run scripts/collect-guiamuonline-items.mjs first or keep ${LEGACY_EQUIPMENT_ITEMS_FILE} available.`);
+}
+
+const equipmentItems = compactItems.map(appEquipmentItem);
+const equipmentIndex = equipmentItems.map(summaryEquipmentItem);
+const armorItems = equipmentIndex.filter((item) => ARMOR_CATEGORIES.has(item.category));
+const equipmentDetailsByCategory = equipmentItems.reduce((groups, item) => {
+  const current = groups.get(item.categorySlug) || [];
+  current.push(item);
+  groups.set(item.categorySlug, current);
+  return groups;
+}, new Map());
+
+await mkdir(path.dirname(EQUIPMENT_INDEX_FILE), { recursive: true });
+await rm(EQUIPMENT_DETAILS_DIR, { recursive: true, force: true });
+await mkdir(EQUIPMENT_DETAILS_DIR, { recursive: true });
+await writeFile(EQUIPMENT_INDEX_FILE, `${JSON.stringify(equipmentIndex, null, 2)}\n`);
+
+for (const [categorySlug, items] of equipmentDetailsByCategory) {
+  await writeFile(
+    path.join(EQUIPMENT_DETAILS_DIR, `${categorySlug}.json`),
+    `${JSON.stringify(items, null, 2)}\n`
+  );
+}
 
 console.log(JSON.stringify({
-  sourceItems: data.items.length,
+  sourceItems: sourceData?.items?.length || existingEquipmentItems?.length || existingDetailItems.length || 0,
   compactItems: compactItems.length,
+  equipmentItems: equipmentItems.length,
+  equipmentIndex: equipmentIndex.length,
+  equipmentDetailFiles: equipmentDetailsByCategory.size,
   armorItems: armorItems.length,
-  compactFile: COMPACT_FILE,
-  armorCompactFile: ARMOR_COMPACT_FILE,
+  legacyInputFile: LEGACY_EQUIPMENT_ITEMS_FILE,
+  equipmentIndexFile: EQUIPMENT_INDEX_FILE,
+  equipmentDetailsDir: EQUIPMENT_DETAILS_DIR,
 }, null, 2));
