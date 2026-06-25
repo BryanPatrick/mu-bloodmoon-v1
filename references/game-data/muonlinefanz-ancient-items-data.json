@@ -1,0 +1,273 @@
+{
+  "source": {
+    "name": "MU Online Fanz - Ancient Set Item",
+    "url": "https://muonlinefanz.com/guide/items/ancient/",
+    "capturedAt": "2026-06-12",
+    "status": "curated-reference",
+    "notes": [
+      "Ancient set data was stored as a structured reference for Blood Moon wiki and item tooling.",
+      "Use this as source material, not as final server configuration.",
+      "Version 6 has priority; mastery/enhanced Ancient systems are preserved as high-version-futuro."
+    ]
+  },
+  "concept": {
+    "summary": "Ancient items are stronger-grade equipment pieces that unlock fixed set bonuses when multiple pieces with the same set name are equipped together.",
+    "coreRules": [
+      "Ancient items are stronger than normal/excellent counterparts.",
+      "Every Ancient item has at least one Ancient option.",
+      "Set names and set options are fixed by set family.",
+      "At least two items of the same set name are required to unlock set options.",
+      "Additional set options unlock as more pieces of the same set name are equipped.",
+      "Players can mix different Ancient set names to activate bonuses from more than one set.",
+      "Some classes may be listed as able to use a set but still cannot equip every piece because of class item restrictions, such as Magic Gladiator not using helms or Rage Fighter not using gloves."
+    ]
+  },
+  "ancientItemPossibleOptions": {
+    "regularAncient": [
+      "Ancient Option",
+      "Jewel of Life Option",
+      "Jewel of Harmony Option",
+      "Set Option",
+      "Luck"
+    ],
+    "regularAncientStatOptions": [
+      "Strength +5 or +10",
+      "Agility +5 or +10",
+      "Stamina +5 or +10",
+      "Energy +5 or +10"
+    ],
+    "masteryOrEnhancedAncientStatOptions": [
+      "Strength +15 or +30",
+      "Agility +15 or +30",
+      "Stamina +15 or +30",
+      "Energy +15 or +30",
+      "All stats +15 or +30"
+    ]
+  },
+  "obtaining": {
+    "v6PriorityOrValidate": [
+      {
+        "method": "Land of Trials monsters",
+        "versionScope": "v6-prioridade"
+      },
+      {
+        "method": "Boss monsters",
+        "versionScope": "validar"
+      },
+      {
+        "method": "Chaos Castle winner reward",
+        "versionScope": "validar"
+      },
+      {
+        "method": "Imperial Fortress / Varka monsters",
+        "versionScope": "validar"
+      }
+    ],
+    "highVersionFuture": [
+      {
+        "method": "Acheron monsters when the guild won Arka War",
+        "versionScope": "high-version-futuro"
+      },
+      {
+        "method": "Sealed ancient mastery items from NPC Priest James using Ruud",
+        "versionScope": "high-version-futuro"
+      },
+      {
+        "method": "Unseal sealed ancient items in Chaos Goblin Machine",
+        "versionScope": "high-version-futuro"
+      },
+      {
+        "method": "Transform ancient mastery items into enhanced ancient items via Chaos Goblin Machine",
+        "versionScope": "high-version-futuro"
+      }
+    ]
+  },
+  "setsByClass": {
+    "Dark Knight": [
+      "Anonymous Leather Set",
+      "Warrior Leather Set",
+      "Hyperion Bronze Set",
+      "Mist Bronze Set",
+      "Garuda Brass Set",
+      "Cloud Brass Set",
+      "Eplete Scale Set",
+      "Berserker Scale Set",
+      "Kantata Plate Set",
+      "Rave Plate Set",
+      "Hyon Dragon Set",
+      "Vicious Dragon Set",
+      "Mahes Black Dragon Set",
+      "Bragi Dark Phoenix Set"
+    ],
+    "Fairy Elf": [
+      "Ceto Vine Set",
+      "Drake Vine Set",
+      "Fase Silk Set",
+      "Gaia Silk Set",
+      "Odin Wind Set",
+      "Elvian Wind Set",
+      "Argo Spirit Set",
+      "Karis Spirit Set",
+      "Aruan Guardian Set",
+      "Gywen Guardian Set",
+      "Serket Iris Set",
+      "Frigg Holy Spirit Set"
+    ],
+    "Dark Wizard": [
+      "Apollo Pad Set",
+      "Barnake Pad Set",
+      "Evis Bone Set",
+      "Sylion Bone Set",
+      "Enis Legendary Set",
+      "Anubis Legendary Set",
+      "Minet Sphinx Set",
+      "Heras Sphinx Set",
+      "Bes Eclipse Set",
+      "Alvis Grand Soul Set"
+    ],
+    "Summoner": [
+      "Chrono Red Wing Set",
+      "Semeden Red Wing Set",
+      "Harpy Ancient Set",
+      "Emile Kenaz Set",
+      "Arkajin Kenaz Set",
+      "Moloso's Night Wing Set",
+      "Vesper's Night Wing Set",
+      "Elune Demonic Set"
+    ],
+    "Magic Gladiator": [
+      "Gaion Atlans Set",
+      "Muren Atlans Set",
+      "Apis Valiant Set",
+      "Tyr Thunder Hawk Set"
+    ],
+    "Dark Lord": [
+      "Agnis Adamantine Set",
+      "Broy Adamantine Set",
+      "Khone Dark Steel Set",
+      "Surt Glorious Set"
+    ],
+    "Grow Lancer": [
+      "Dorov Gru Hill Set",
+      "Carthy Sate Set",
+      "Camill Sate Set",
+      "Akhir Hirat Set",
+      "Anas Hirat Set"
+    ],
+    "Rage Fighter": [
+      "Vega Sacred Fire Set",
+      "Chamer Sacred Fire Set",
+      "Horus Holy Storm Set",
+      "Magni Piercing Grove Set"
+    ]
+  },
+  "versionClassification": {
+    "v6PriorityClasses": [
+      "Dark Knight",
+      "Fairy Elf",
+      "Dark Wizard",
+      "Magic Gladiator",
+      "Dark Lord"
+    ],
+    "validateForCurrentServer": [
+      "Summoner",
+      "Rage Fighter"
+    ],
+    "highVersionFuture": [
+      "Grow Lancer",
+      "Ancient mastery items",
+      "Enhanced ancient items",
+      "Ruud/Priest James sealed ancient flow",
+      "Acheron/Arka War acquisition flow"
+    ]
+  },
+  "sampleSetsCapturedFromPage": [
+    {
+      "name": "Anonymous Leather Set",
+      "classes": ["Dark Knight", "Dark Lord", "Rage Fighter", "Magic Gladiator"],
+      "baseSetDefense": 67,
+      "setOptions": [
+        { "pieces": 2, "option": "HP +50" },
+        { "pieces": 3, "option": "Agility Level +50" },
+        { "pieces": 4, "option": "DEF +25%, if Shield item is equipped" },
+        { "pieces": "full-or-additional", "option": "ATK DMG +30" }
+      ],
+      "pieces": [
+        { "name": "Anonymous Leather Helm", "defense": 24, "requirements": { "strength": 94 } },
+        { "name": "Anonymous Leather Pants", "defense": 26, "requirements": { "strength": 99 } },
+        { "name": "Anonymous Leather Boots", "defense": 14, "requirements": { "strength": 92 } },
+        { "name": "Anonymous Small Shield", "defense": 3, "defenseRate": 33, "requirements": { "strength": 78 } }
+      ]
+    },
+    {
+      "name": "Warrior Leather Set",
+      "classes": ["Dark Knight", "Dark Lord", "Rage Fighter", "Magic Gladiator"],
+      "baseSetDefense": 113,
+      "setOptions": [
+        { "pieces": 2, "option": "Strength Level +10" },
+        { "pieces": 3, "option": "ATK Rate +10" },
+        { "pieces": 4, "option": "AG +20" },
+        { "pieces": 5, "option": "Automatic AG Recovery amount +5" },
+        { "pieces": 6, "option": "DEF +20" },
+        { "pieces": "additional", "option": "Agility Level +10" },
+        { "pieces": "additional", "option": "Critical DMG chance +5%" },
+        { "pieces": "additional", "option": "Excellent DMG chance +5%" },
+        { "pieces": "additional", "option": "Strength Level +25" }
+      ]
+    },
+    {
+      "name": "Kantata Plate Set",
+      "classes": ["Dark Knight", "Magic Gladiator", "Rage Fighter", "All classes via rings"],
+      "baseSetDefense": 119,
+      "setOptions": [
+        { "pieces": 2, "option": "Energy Level +15" },
+        { "pieces": 3, "option": "Stamina Level +30" },
+        { "pieces": 4, "option": "WIZ DMG +10%" },
+        { "pieces": 5, "option": "Strength Level +15" },
+        { "pieces": "additional", "option": "Skill DMG +25" },
+        { "pieces": "additional", "option": "Excellent DMG chance +10%" },
+        { "pieces": "additional", "option": "Excellent DMG +20" }
+      ]
+    },
+    {
+      "name": "Drake Vine Set",
+      "classes": ["Fairy Elf"],
+      "baseSetDefense": 86,
+      "setOptions": [
+        { "pieces": 2, "option": "Agility Level +20" },
+        { "pieces": 3, "option": "ATK DMG +25" },
+        { "pieces": 4, "option": "Double DMG chance +20%" },
+        { "pieces": "additional", "option": "DEF +40" },
+        { "pieces": "additional", "option": "Critical DMG chance +10%" }
+      ]
+    },
+    {
+      "name": "Gywen Guardian Set",
+      "classes": ["Fairy Elf"],
+      "baseSetDefense": 131,
+      "setOptions": [
+        { "pieces": 2, "option": "Agility Level +30" },
+        { "pieces": 3, "option": "Minimum DMG +20" },
+        { "pieces": 4, "option": "DEF +20" },
+        { "pieces": 5, "option": "Max DMG +20" },
+        { "pieces": "additional", "option": "Critical DMG chance +15%" },
+        { "pieces": "additional", "option": "Excellent DMG chance +15%" },
+        { "pieces": "additional", "option": "Critical DMG +20" },
+        { "pieces": "additional", "option": "Excellent DMG +20" }
+      ]
+    }
+  ],
+  "modelingNotes": [
+    "Ancient set model should separate set family, pieces, item requirements, class restrictions, unlock count and bonus text.",
+    "Do not model Ancient as simply Excellent; Ancient, Excellent, Harmony, Luck, Life option and upgrade level are separate layers.",
+    "The future item tooltip should show Ancient set equipment information and active/inactive set options.",
+    "For filters, support class, set family, piece type, current server availability and future/high-version content."
+  ],
+  "nextCaptureChecklist": [
+    "Capture exact details for every listed Ancient set in a future pass.",
+    "Map each piece by type: helm, armor, pants, gloves, boots, shield, ring, pendant, weapon.",
+    "Mark piece restrictions for Magic Gladiator, Rage Fighter and mixed-class usage.",
+    "Connect local item images when available.",
+    "Decide which Ancient sets exist in the Blood Moon v6 server and which remain as future content."
+  ]
+}

@@ -1,0 +1,548 @@
+{
+  "sourceUrl": "https://muonlinefanz.com/guide/characters/elf/",
+  "generatedAt": "2026-06-12T13:46:33.937Z",
+  "totalAssets": 240,
+  "expectedCount": 96,
+  "missingAfterPlaceholders": [
+    "bloodangel-elf",
+    "divine",
+    "excellent-blue-eye-elf",
+    "excellent-brilliant-elf",
+    "excellent-darkangel-elf",
+    "excellent-holyangel-elf",
+    "excellent-manticore-elf",
+    "excellent-silver-heart-elf",
+    "excellent-soul-elf",
+    "guardian",
+    "holy-spirit",
+    "iris",
+    "light-lord",
+    "red-spirit",
+    "seraphim",
+    "silk",
+    "spirit",
+    "sticky",
+    "sylphid-ray",
+    "vine",
+    "wind"
+  ],
+  "extrasNotInElfReferenceList": [
+    "albatross-bow",
+    "battle-bow",
+    "bill-of-balrog",
+    "blade",
+    "bloodangel-elf-armor-atk",
+    "bloodangel-elf-armor-ene",
+    "bloodangel-elf-boots-atk",
+    "bloodangel-elf-boots-ene",
+    "bloodangel-elf-gloves-atk",
+    "bloodangel-elf-gloves-ene",
+    "bloodangel-elf-helm-atk",
+    "bloodangel-elf-helm-ene",
+    "bloodangel-elf-pants-atk",
+    "bloodangel-elf-pants-ene",
+    "bloodangel-elf-set-atk",
+    "bloodangel-elf-set-ene",
+    "chaos-nature-bow",
+    "crystal-morning-star",
+    "crystal-sword",
+    "dark-stinger-bow",
+    "divine-armor",
+    "divine-boots",
+    "divine-gloves",
+    "divine-helm",
+    "divine-pants",
+    "divine-set",
+    "double-blade",
+    "elemental-mace",
+    "elemental-shield",
+    "excellent-blue-eye-elf-armor-ene",
+    "excellent-blue-eye-elf-boots-ene",
+    "excellent-blue-eye-elf-gloves-ene",
+    "excellent-blue-eye-elf-helm-ene",
+    "excellent-blue-eye-elf-pants-ene",
+    "excellent-blue-eye-elf-set-atk",
+    "excellent-blue-eye-elf-set-ene",
+    "excellent-brilliant-elf-armor-atk",
+    "excellent-brilliant-elf-boots-atk",
+    "excellent-brilliant-elf-gloves-atk",
+    "excellent-brilliant-elf-helm-atk",
+    "excellent-brilliant-elf-pants-atk",
+    "excellent-brilliant-elf-set-atk",
+    "excellent-brilliant-elf-set-ene",
+    "excellent-darkangel-elf-armor-atk",
+    "excellent-darkangel-elf-boots-atk",
+    "excellent-darkangel-elf-gloves-atk",
+    "excellent-darkangel-elf-helm-atk",
+    "excellent-darkangel-elf-pants-atk",
+    "excellent-darkangel-elf-set-atk",
+    "excellent-darkangel-elf-set-ene",
+    "excellent-holyangel-elf-armor-atk",
+    "excellent-holyangel-elf-armor-ene",
+    "excellent-holyangel-elf-boots-atk",
+    "excellent-holyangel-elf-boots-ene",
+    "excellent-holyangel-elf-gloves-atk",
+    "excellent-holyangel-elf-gloves-ene",
+    "excellent-holyangel-elf-helm-atk",
+    "excellent-holyangel-elf-helm-ene",
+    "excellent-holyangel-elf-pants-atk",
+    "excellent-holyangel-elf-pants-ene",
+    "excellent-holyangel-elf-set-atk",
+    "excellent-holyangel-elf-set-ene",
+    "excellent-manticore-elf-armor-ene",
+    "excellent-manticore-elf-boots-ene",
+    "excellent-manticore-elf-gloves-ene",
+    "excellent-manticore-elf-helm-ene",
+    "excellent-manticore-elf-pants-ene",
+    "excellent-manticore-elf-set-atk",
+    "excellent-manticore-elf-set-ene",
+    "excellent-silver-heart-elf-armor-ene",
+    "excellent-silver-heart-elf-boots-ene",
+    "excellent-silver-heart-elf-gloves-ene",
+    "excellent-silver-heart-elf-helm-ene",
+    "excellent-silver-heart-elf-pants-ene",
+    "excellent-silver-heart-elf-set-atk",
+    "excellent-silver-heart-elf-set-ene",
+    "excellent-soul-elf-armor-atk",
+    "excellent-soul-elf-boots-atk",
+    "excellent-soul-elf-gloves-atk",
+    "excellent-soul-elf-helm-atk",
+    "excellent-soul-elf-pants-atk",
+    "excellent-soul-elf-set-atk",
+    "excellent-soul-elf-set-ene",
+    "frost-mace",
+    "great-scythe",
+    "guardian-armor",
+    "guardian-boots",
+    "guardian-gloves",
+    "guardian-helm",
+    "guardian-pants",
+    "guardian-set",
+    "holy-spirit-armor",
+    "holy-spirit-boots",
+    "holy-spirit-gloves",
+    "holy-spirit-helm",
+    "holy-spirit-pants",
+    "holy-spirit-set",
+    "imagem-orb-elf-e-dk",
+    "imagem-parchment-summoner-rf",
+    "imagem-scroll-dl-gl",
+    "imagem-scroll-livro",
+    "iris-armor",
+    "iris-boots",
+    "iris-gloves",
+    "iris-helm",
+    "iris-pants",
+    "iris-set",
+    "light-lord-armor",
+    "light-lord-boots",
+    "light-lord-gloves",
+    "light-lord-helm",
+    "light-lord-pants",
+    "light-lord-set",
+    "light-saber",
+    "light-spear",
+    "nikea-axe",
+    "red-spirit-armor",
+    "red-spirit-boots",
+    "red-spirit-gloves",
+    "red-spirit-helm",
+    "red-spirit-pants",
+    "red-spirit-set",
+    "seraphim-armor",
+    "seraphim-boots",
+    "seraphim-gloves",
+    "seraphim-helm",
+    "seraphim-pants",
+    "seraphim-set",
+    "serpent-spear",
+    "silk-armor",
+    "silk-boots",
+    "silk-gloves",
+    "silk-helm",
+    "silk-pants",
+    "silk-set",
+    "spirit-armor",
+    "spirit-boots",
+    "spirit-gloves",
+    "spirit-helm",
+    "spirit-pants",
+    "spirit-set",
+    "sticky-armor",
+    "sticky-boots",
+    "sticky-gloves",
+    "sticky-helm",
+    "sticky-pants",
+    "sticky-set",
+    "sylphid-ray-armor",
+    "sylphid-ray-boots",
+    "sylphid-ray-gloves",
+    "sylphid-ray-helm",
+    "sylphid-ray-pants",
+    "sylphid-ray-set",
+    "vine-armor",
+    "vine-boots",
+    "vine-gloves",
+    "vine-helm",
+    "vine-pants",
+    "vine-set",
+    "wind-armor",
+    "wind-boots",
+    "wind-gloves",
+    "wind-helm",
+    "wind-pants",
+    "wind-set"
+  ],
+  "placeholderDuplicates": [
+    {
+      "Category": "weapons",
+      "Created": "divine-crossbow.jpg",
+      "DuplicatedFrom": "divine-crossbow-of-archangel.jpg",
+      "Reason": "Base list had Divine Crossbow; closest available source was Divine Crossbow of Archangel."
+    },
+    {
+      "Category": "shields",
+      "Created": "horn-shield.jpg",
+      "DuplicatedFrom": "small-shield.jpg",
+      "Reason": "Generic low tier shield placeholder until exact art is available."
+    },
+    {
+      "Category": "shields",
+      "Created": "kite-shield.jpg",
+      "DuplicatedFrom": "small-shield.jpg",
+      "Reason": "Generic low tier shield placeholder until exact art is available."
+    },
+    {
+      "Category": "shields",
+      "Created": "spiked-shield.jpg",
+      "DuplicatedFrom": "serpent-shield.jpg",
+      "Reason": "Closest aggressive shield silhouette available in current download."
+    },
+    {
+      "Category": "shields",
+      "Created": "tower-shield.jpg",
+      "DuplicatedFrom": "small-shield.jpg",
+      "Reason": "Generic shield placeholder until exact art is available."
+    },
+    {
+      "Category": "shields",
+      "Created": "plate-shield.jpg",
+      "DuplicatedFrom": "small-shield.jpg",
+      "Reason": "Generic shield placeholder until exact art is available."
+    },
+    {
+      "Category": "shields",
+      "Created": "large-round-shield.jpg",
+      "DuplicatedFrom": "buckler.jpg",
+      "Reason": "Round shield placeholder until exact art is available."
+    }
+  ],
+  "duplicateHashes": [
+    [
+      {
+        "slug": "bloodangel-elf-armor-atk",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/bloodangel-elf-armor-atk.jpg"
+      },
+      {
+        "slug": "bloodangel-elf-armor-ene",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/bloodangel-elf-armor-ene.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "bloodangel-elf-boots-atk",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/bloodangel-elf-boots-atk.jpg"
+      },
+      {
+        "slug": "bloodangel-elf-boots-ene",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/bloodangel-elf-boots-ene.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "bloodangel-elf-gloves-atk",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/bloodangel-elf-gloves-atk.jpg"
+      },
+      {
+        "slug": "bloodangel-elf-gloves-ene",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/bloodangel-elf-gloves-ene.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "bloodangel-elf-helm-atk",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/bloodangel-elf-helm-atk.jpg"
+      },
+      {
+        "slug": "bloodangel-elf-helm-ene",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/bloodangel-elf-helm-ene.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "bloodangel-elf-pants-atk",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/bloodangel-elf-pants-atk.jpg"
+      },
+      {
+        "slug": "bloodangel-elf-pants-ene",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/bloodangel-elf-pants-ene.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "bloodangel-elf-set-atk",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/bloodangel-elf-set-atk.jpg"
+      },
+      {
+        "slug": "bloodangel-elf-set-ene",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/bloodangel-elf-set-ene.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "excellent-blue-eye-elf-set-atk",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-blue-eye-elf-set-atk.jpg"
+      },
+      {
+        "slug": "excellent-blue-eye-elf-set-ene",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-blue-eye-elf-set-ene.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "excellent-brilliant-elf-set-atk",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-brilliant-elf-set-atk.jpg"
+      },
+      {
+        "slug": "excellent-brilliant-elf-set-ene",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-brilliant-elf-set-ene.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "excellent-darkangel-elf-set-atk",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-darkangel-elf-set-atk.jpg"
+      },
+      {
+        "slug": "excellent-darkangel-elf-set-ene",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-darkangel-elf-set-ene.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "excellent-holyangel-elf-armor-atk",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-holyangel-elf-armor-atk.jpg"
+      },
+      {
+        "slug": "excellent-holyangel-elf-armor-ene",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-holyangel-elf-armor-ene.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "excellent-holyangel-elf-boots-atk",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-holyangel-elf-boots-atk.jpg"
+      },
+      {
+        "slug": "excellent-holyangel-elf-boots-ene",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-holyangel-elf-boots-ene.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "excellent-holyangel-elf-gloves-atk",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-holyangel-elf-gloves-atk.jpg"
+      },
+      {
+        "slug": "excellent-holyangel-elf-gloves-ene",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-holyangel-elf-gloves-ene.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "excellent-holyangel-elf-helm-atk",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-holyangel-elf-helm-atk.jpg"
+      },
+      {
+        "slug": "excellent-holyangel-elf-helm-ene",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-holyangel-elf-helm-ene.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "excellent-holyangel-elf-pants-atk",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-holyangel-elf-pants-atk.jpg"
+      },
+      {
+        "slug": "excellent-holyangel-elf-pants-ene",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-holyangel-elf-pants-ene.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "excellent-holyangel-elf-set-atk",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-holyangel-elf-set-atk.jpg"
+      },
+      {
+        "slug": "excellent-holyangel-elf-set-ene",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-holyangel-elf-set-ene.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "excellent-manticore-elf-set-atk",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-manticore-elf-set-atk.jpg"
+      },
+      {
+        "slug": "excellent-manticore-elf-set-ene",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-manticore-elf-set-ene.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "excellent-silver-heart-elf-set-atk",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-silver-heart-elf-set-atk.jpg"
+      },
+      {
+        "slug": "excellent-silver-heart-elf-set-ene",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-silver-heart-elf-set-ene.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "excellent-soul-elf-set-atk",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-soul-elf-set-atk.jpg"
+      },
+      {
+        "slug": "excellent-soul-elf-set-ene",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/excellent-soul-elf-set-ene.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "light-lord-armor",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/light-lord-armor.jpg"
+      },
+      {
+        "slug": "sticky-armor",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/sticky-armor.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "light-lord-boots",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/light-lord-boots.jpg"
+      },
+      {
+        "slug": "sticky-boots",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/sticky-boots.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "light-lord-gloves",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/light-lord-gloves.jpg"
+      },
+      {
+        "slug": "sticky-gloves",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/sticky-gloves.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "light-lord-helm",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/light-lord-helm.jpg"
+      },
+      {
+        "slug": "sticky-helm",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/sticky-helm.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "light-lord-pants",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/light-lord-pants.jpg"
+      },
+      {
+        "slug": "sticky-pants",
+        "path": "references/game-assets/muonlinefanz/elf/original/armor/sticky-pants.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "buckler",
+        "path": "references/game-assets/muonlinefanz/elf/original/shields/buckler.jpg"
+      },
+      {
+        "slug": "large-round-shield",
+        "path": "references/game-assets/muonlinefanz/elf/original/shields/large-round-shield.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "horn-shield",
+        "path": "references/game-assets/muonlinefanz/elf/original/shields/horn-shield.jpg"
+      },
+      {
+        "slug": "kite-shield",
+        "path": "references/game-assets/muonlinefanz/elf/original/shields/kite-shield.jpg"
+      },
+      {
+        "slug": "plate-shield",
+        "path": "references/game-assets/muonlinefanz/elf/original/shields/plate-shield.jpg"
+      },
+      {
+        "slug": "small-shield",
+        "path": "references/game-assets/muonlinefanz/elf/original/shields/small-shield.jpg"
+      },
+      {
+        "slug": "tower-shield",
+        "path": "references/game-assets/muonlinefanz/elf/original/shields/tower-shield.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "serpent-shield",
+        "path": "references/game-assets/muonlinefanz/elf/original/shields/serpent-shield.jpg"
+      },
+      {
+        "slug": "spiked-shield",
+        "path": "references/game-assets/muonlinefanz/elf/original/shields/spiked-shield.jpg"
+      }
+    ],
+    [
+      {
+        "slug": "divine-crossbow-of-archangel",
+        "path": "references/game-assets/muonlinefanz/elf/original/weapons/divine-crossbow-of-archangel.jpg"
+      },
+      {
+        "slug": "divine-crossbow",
+        "path": "references/game-assets/muonlinefanz/elf/original/weapons/divine-crossbow.jpg"
+      }
+    ]
+  ],
+  "resolvedByArmorSetVariation": [
+    "bloodangel-elf",
+    "divine",
+    "excellent-blue-eye-elf",
+    "excellent-brilliant-elf",
+    "excellent-darkangel-elf",
+    "excellent-holyangel-elf",
+    "excellent-manticore-elf",
+    "excellent-silver-heart-elf",
+    "excellent-soul-elf",
+    "guardian",
+    "holy-spirit",
+    "iris",
+    "light-lord",
+    "red-spirit",
+    "seraphim",
+    "silk",
+    "spirit",
+    "sticky",
+    "sylphid-ray",
+    "vine",
+    "wind"
+  ],
+  "missingAfterVariationResolution": []
+}

@@ -1,0 +1,238 @@
+{
+  "source": {
+    "name": "MU Online Fanz - Archangel item database",
+    "entryUrl": "https://muonlinefanz.com/tools/items/data/itemdb/Divine%20Sword%20of%20Archangel.php",
+    "categoryUrl": "https://muonlinefanz.com/guide/items/archangel-items/",
+    "capturedAt": "2026-06-12",
+    "status": "partial-raw-capture",
+    "notes": [
+      "The direct terminal collector could not connect to muonlinefanz.com during this pass.",
+      "Divine Sword of Archangel +0 values were captured from the user-provided screenshot.",
+      "The item level upgrade curve is stored separately and should be applied to both minimum and maximum attack values unless a specific item page proves otherwise.",
+      "Blessed Archangel variants are preserved as upgraded/future references and need exact numeric validation from their own item pages."
+    ]
+  },
+  "visualRules": {
+    "nameColor": "pink-magenta",
+    "family": "Archangel",
+    "harmonyOptionColor": "yellow",
+    "excellentOptionColor": "blue",
+    "restrictionColor": "red",
+    "notes": [
+      "Archangel weapon names use a pink/magenta color in the tooltip.",
+      "Physical weapons show physical attack damage.",
+      "Magic weapons, sticks and staffs should use wizardry/magic power fields instead of only physical damage fields.",
+      "Upgrade/bless glow is not the same thing as excellent options."
+    ]
+  },
+  "itemLevelDamageBonus": {
+    "appliesTo": [
+      "physicalDamageMin",
+      "physicalDamageMax",
+      "magicPowerMin",
+      "magicPowerMax",
+      "wizardryPowerMin",
+      "wizardryPowerMax"
+    ],
+    "sourceObservation": "Screenshot of Divine Sword of Archangel item page level selector.",
+    "formulaStatus": "standard-mu-curve-to-validate-per-server",
+    "levels": [
+      { "level": 0, "bonus": 0 },
+      { "level": 1, "bonus": 3 },
+      { "level": 2, "bonus": 6 },
+      { "level": 3, "bonus": 9 },
+      { "level": 4, "bonus": 13 },
+      { "level": 5, "bonus": 17 },
+      { "level": 6, "bonus": 21 },
+      { "level": 7, "bonus": 26 },
+      { "level": 8, "bonus": 31 },
+      { "level": 9, "bonus": 36 },
+      { "level": 10, "bonus": 42 },
+      { "level": 11, "bonus": 48 },
+      { "level": 12, "bonus": 54 },
+      { "level": 13, "bonus": 61 },
+      { "level": 14, "bonus": 68 },
+      { "level": 15, "bonus": 75 }
+    ]
+  },
+  "items": [
+    {
+      "name": "Divine Sword of Archangel",
+      "variant": "base",
+      "sourceUrl": "https://muonlinefanz.com/tools/items/data/itemdb/Divine%20Sword%20of%20Archangel.php",
+      "dataStatus": "confirmed-from-screenshot",
+      "damageType": "physical",
+      "weaponHand": "one-handed",
+      "attackDamage": {
+        "level0": { "min": 220, "max": 230 },
+        "byItemLevel": [
+          { "level": 0, "min": 220, "max": 230 },
+          { "level": 1, "min": 223, "max": 233 },
+          { "level": 2, "min": 226, "max": 236 },
+          { "level": 3, "min": 229, "max": 239 },
+          { "level": 4, "min": 233, "max": 243 },
+          { "level": 5, "min": 237, "max": 247 },
+          { "level": 6, "min": 241, "max": 251 },
+          { "level": 7, "min": 246, "max": 256 },
+          { "level": 8, "min": 251, "max": 261 },
+          { "level": 9, "min": 256, "max": 266 },
+          { "level": 10, "min": 262, "max": 272 },
+          { "level": 11, "min": 268, "max": 278 },
+          { "level": 12, "min": 274, "max": 284 },
+          { "level": 13, "min": 281, "max": 291 },
+          { "level": 14, "min": 288, "max": 298 },
+          { "level": 15, "min": 295, "max": 305 }
+        ]
+      },
+      "attackSpeed": 45,
+      "requirements": {
+        "strength": 381,
+        "agility": 149
+      },
+      "allowedClasses": ["Dark Knight", "Magic Gladiator", "Dark Lord"],
+      "tooltipNotes": [
+        "Screenshot shows +0 selected.",
+        "Displayed value: 1-H ATK DMG +220 ~ 230.",
+        "Displayed value: ATK Speed +45.",
+        "Displayed requirements: Strength 381, Agility 149."
+      ]
+    },
+    {
+      "name": "Blessed Divine Sword of Archangel",
+      "variant": "blessed",
+      "sourceUrl": "https://muonlinefanz.com/tools/items/data/itemdb/Blessed%20Divine%20Sword%20of%20Archangel.php",
+      "dataStatus": "pending-exact-page-capture",
+      "damageType": "physical",
+      "baseItem": "Divine Sword of Archangel",
+      "allowedClassesExpected": ["Dark Knight", "Magic Gladiator", "Dark Lord"],
+      "notes": "Treat as upgraded Archangel sword reference; exact damage, attack speed and requirements still need page confirmation."
+    },
+    {
+      "name": "Divine Staff of Archangel",
+      "variant": "base",
+      "sourceUrl": "https://muonlinefanz.com/tools/items/data/itemdb/Divine%20Staff%20of%20Archangel.php",
+      "dataStatus": "pending-exact-page-capture",
+      "damageType": "magic",
+      "allowedClassesExpected": ["Dark Wizard", "Magic Gladiator"],
+      "notes": "Use magic/wizardry fields when exact values are collected."
+    },
+    {
+      "name": "Blessed Divine Staff of Archangel",
+      "variant": "blessed",
+      "sourceUrl": "https://muonlinefanz.com/tools/items/data/itemdb/Blessed%20Divine%20Staff%20of%20Archangel.php",
+      "dataStatus": "pending-exact-page-capture",
+      "damageType": "magic",
+      "baseItem": "Divine Staff of Archangel",
+      "allowedClassesExpected": ["Dark Wizard", "Magic Gladiator"],
+      "notes": "Blessed/upgraded staff reference; exact values pending."
+    },
+    {
+      "name": "Divine Crossbow of Archangel",
+      "variant": "base",
+      "sourceUrl": "https://muonlinefanz.com/tools/items/data/itemdb/Divine%20Crossbow%20of%20Archangel.php",
+      "dataStatus": "pending-exact-page-capture",
+      "damageType": "physical-ranged",
+      "allowedClassesExpected": ["Fairy Elf"],
+      "localAssetStatus": "present-in-elf-reference-assets",
+      "notes": "Already appears in the Fairy Elf local asset/reference pass."
+    },
+    {
+      "name": "Blessed Divine Crossbow of Archangel",
+      "variant": "blessed",
+      "sourceUrl": "https://muonlinefanz.com/tools/items/data/itemdb/Blessed%20Divine%20Crossbow%20of%20Archangel.php",
+      "dataStatus": "pending-exact-page-capture",
+      "damageType": "physical-ranged",
+      "baseItem": "Divine Crossbow of Archangel",
+      "allowedClassesExpected": ["Fairy Elf"],
+      "localAssetStatus": "present-in-elf-reference-assets",
+      "notes": "Already appears in the Fairy Elf local asset/reference pass."
+    },
+    {
+      "name": "Divine Scepter of Archangel",
+      "variant": "base",
+      "sourceUrl": "https://muonlinefanz.com/tools/items/data/itemdb/Divine%20Scepter%20of%20Archangel.php",
+      "dataStatus": "pending-exact-page-capture",
+      "damageType": "physical-command",
+      "allowedClassesExpected": ["Dark Lord"],
+      "notes": "Dark Lord Archangel weapon; exact damage, command/wizardry behavior and requirements pending."
+    },
+    {
+      "name": "Blessed Divine Scepter of Archangel",
+      "variant": "blessed",
+      "sourceUrl": "https://muonlinefanz.com/tools/items/data/itemdb/Blessed%20Divine%20Scepter%20of%20Archangel.php",
+      "dataStatus": "pending-exact-page-capture",
+      "damageType": "physical-command",
+      "baseItem": "Divine Scepter of Archangel",
+      "allowedClassesExpected": ["Dark Lord"],
+      "notes": "Blessed/upgraded scepter reference; exact values pending."
+    },
+    {
+      "name": "Divine Stick of Archangel",
+      "variant": "base",
+      "sourceUrl": "https://muonlinefanz.com/tools/items/data/itemdb/Divine%20Stick%20of%20Archangel.php",
+      "dataStatus": "pending-exact-page-capture",
+      "damageType": "magic",
+      "allowedClassesExpected": ["Summoner"],
+      "notes": "User provided tooltip reference for Divine Stick of the Archangel +9; treat as magic damage/wizardry weapon."
+    },
+    {
+      "name": "Blessed Divine Stick of Archangel",
+      "variant": "blessed",
+      "sourceUrl": "https://muonlinefanz.com/tools/items/data/itemdb/Blessed%20Divine%20Stick%20of%20Archangel.php",
+      "dataStatus": "pending-exact-page-capture",
+      "damageType": "magic",
+      "baseItem": "Divine Stick of Archangel",
+      "allowedClassesExpected": ["Summoner"],
+      "notes": "Blessed/upgraded Summoner Archangel weapon; exact values pending."
+    },
+    {
+      "name": "Divine Claws of Archangel",
+      "variant": "base",
+      "sourceUrl": "https://muonlinefanz.com/tools/items/data/itemdb/Divine%20Claws%20of%20Archangel.php",
+      "dataStatus": "pending-exact-page-capture",
+      "damageType": "physical",
+      "allowedClassesExpected": ["Rage Fighter"],
+      "versionScope": "validar",
+      "notes": "Rage Fighter is near the current server boundary; keep for future/validation."
+    },
+    {
+      "name": "Blessed Divine Claws of Archangel",
+      "variant": "blessed",
+      "sourceUrl": "https://muonlinefanz.com/tools/items/data/itemdb/Blessed%20Divine%20Claws%20of%20Archangel.php",
+      "dataStatus": "pending-exact-page-capture",
+      "damageType": "physical",
+      "baseItem": "Divine Claws of Archangel",
+      "allowedClassesExpected": ["Rage Fighter"],
+      "versionScope": "validar",
+      "notes": "Blessed/upgraded Rage Fighter Archangel weapon; exact values pending."
+    },
+    {
+      "name": "Divine Lance of Archangel",
+      "variant": "base",
+      "sourceUrl": "https://muonlinefanz.com/tools/items/data/itemdb/Divine%20Lance%20of%20Archangel.php",
+      "dataStatus": "pending-exact-page-capture",
+      "damageType": "physical",
+      "allowedClassesExpected": ["Grow Lancer"],
+      "versionScope": "high-version-futuro",
+      "notes": "High-version future reference; disabled for players in current guide scope."
+    },
+    {
+      "name": "Blessed Divine Lance of Archangel",
+      "variant": "blessed",
+      "sourceUrl": "https://muonlinefanz.com/tools/items/data/itemdb/Blessed%20Divine%20Lance%20of%20Archangel.php",
+      "dataStatus": "pending-exact-page-capture",
+      "damageType": "physical",
+      "baseItem": "Divine Lance of Archangel",
+      "allowedClassesExpected": ["Grow Lancer"],
+      "versionScope": "high-version-futuro",
+      "notes": "High-version future reference; exact values pending."
+    }
+  ],
+  "nextCaptureChecklist": [
+    "Open each item sourceUrl in a browser session that can reach MU Online Fanz.",
+    "For each item, capture +0 base values, attack speed, requirements, durability and allowed classes.",
+    "Click or simulate item levels +1 through +15 and confirm whether the standard damage bonus curve matches each page.",
+    "Record whether Blessed variants have a different base value or only represent a named upgrade family.",
+    "Add local image reference ids when the item image is available in references/game-assets."
+  ]
+}

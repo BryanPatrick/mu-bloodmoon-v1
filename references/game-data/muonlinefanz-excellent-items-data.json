@@ -1,0 +1,196 @@
+{
+  "source": {
+    "name": "MU Online Fanz - Excellent Items",
+    "url": "https://muonlinefanz.com/guide/items/excellent/",
+    "pageUpdated": "2025-05-08",
+    "capturedAt": "2026-06-12",
+    "usage": "Referencia bruta estruturada para wiki, CRUD/admin de equipamentos, filtros e tooltips. Validar contra a versao/configuracao do Blood Moon antes de publicar."
+  },
+  "summary": {
+    "definition": "Excellent items sao uma versao superior de equipamentos normais e possuem ao menos uma Excellent Option.",
+    "monsterDropMaxExcellentOptions": 2,
+    "lordMixMaxExcellentOptions": 4,
+    "regularMaxExcellentOptionsPerItem": 4,
+    "excellentDamageMultiplier": "110% do dano normal",
+    "fullOptionMeaning": "FO indica item com todas as seis opcoes Excellent possiveis daquele tipo de item.",
+    "rareItemTicket": "Pode adicionar manualmente ate tres opcoes Excellent conforme sistema Rare Item Ticket."
+  },
+  "obtaining": [
+    {
+      "method": "monster_drop",
+      "rule": "Monstros acima do level 26 podem dropar itens Excellent.",
+      "versionScope": "validar"
+    },
+    {
+      "method": "devil_square",
+      "rule": "Itens Excellent podem dropar em Devil Square.",
+      "versionScope": "v6-prioridade"
+    },
+    {
+      "method": "boss_monsters",
+      "rule": "Boss monsters podem dropar itens Excellent.",
+      "versionScope": "v6-prioridade"
+    },
+    {
+      "method": "lord_mix",
+      "rule": "Itens Excellent podem ser obtidos via Lord Mix/Trophies of Battle.",
+      "versionScope": "validar"
+    },
+    {
+      "method": "elemental_monsters",
+      "rule": "Itens Excellent de 3rd class podem dropar de monstros elementais acima do level 115 em Nars.",
+      "versionScope": "high-version-futuro"
+    },
+    {
+      "method": "swamp_of_darkness",
+      "rule": "Itens Excellent de 4th class podem dropar de monstros acima do level 274 em Swamp of Darkness.",
+      "versionScope": "high-version-futuro"
+    },
+    {
+      "method": "gambling_boxes_moss",
+      "rule": "Gambling Boxes do NPC Moss podem conceder itens Excellent, incluindo 3rd e 4th class.",
+      "versionScope": "validar"
+    }
+  ],
+  "specificLowLevelDrops": [
+    {
+      "map": "Lorencia",
+      "drops": [
+        { "monster": "Hound", "items": ["Excellent Sword of Assassin"] },
+        { "monster": "Elite Bull Fighter", "items": ["Excellent Berdysh"] },
+        { "monster": "Lich", "items": ["Excellent Serpent Staff"] },
+        { "monster": "Giant", "items": ["Excellent Double Axe"] },
+        { "monster": "Skeleton", "items": ["Excellent Gladius", "Excellent Buckler"] }
+      ]
+    },
+    {
+      "map": "Noria",
+      "drops": [
+        { "monster": "Goblin", "items": ["Excellent Small Axe"] },
+        { "monster": "Elite Goblin", "items": ["Excellent Morning Star", "Excellent Horn Shield"] },
+        { "monster": "Beetle Monster", "items": ["Excellent Spear"] },
+        { "monster": "Hunter", "items": ["Excellent Arquebus"] },
+        { "monster": "Agon", "items": ["Excellent Serpent Sword"] }
+      ]
+    },
+    {
+      "map": "Devias",
+      "drops": [
+        { "monster": "Hommerd", "items": ["Excellent Larkan Axe", "Excellent Large Round Shield"] }
+      ]
+    },
+    {
+      "map": "Kalima 1",
+      "drops": [
+        { "monster": "Rogue Centurion", "items": ["Excellent Dragon Spear"] }
+      ]
+    }
+  ],
+  "optionGroups": [
+    {
+      "id": "regular_defensive",
+      "label": "Defensive Excellent Options",
+      "appliesTo": ["helm", "armor", "pants", "gloves", "boots", "shield", "ring"],
+      "classTier": "regular",
+      "maxOptionsArmor": 4,
+      "options": [
+        { "key": "hp_percent", "label": "HP +4%", "value": 4, "valueType": "percent" },
+        { "key": "mana_percent", "label": "Mana +4%", "value": 4, "valueType": "percent" },
+        { "key": "def_rate_percent", "label": "DEF Rate +10%", "value": 10, "valueType": "percent" },
+        { "key": "damage_decrease_percent", "label": "Decreases DMG +4%", "value": 4, "valueType": "percent" },
+        { "key": "reflect_damage_percent", "label": "Reflect DMG by +5%", "value": 5, "valueType": "percent" },
+        { "key": "zen_drop_percent", "label": "Amount of Zen dropped from monsters +30%", "value": 30, "valueType": "percent" }
+      ]
+    },
+    {
+      "id": "regular_offensive",
+      "label": "Offensive Excellent Options",
+      "appliesTo": ["weapon", "necklace"],
+      "classTier": "regular",
+      "maxOptionsOffensive": 4,
+      "options": [
+        { "key": "excellent_damage_chance", "label": "Excellent DMG Chance +10%", "value": 10, "valueType": "percent" },
+        { "key": "atk_wiz_per_20_levels", "label": "ATK/WIZ DMG +1 per 20 levels", "value": 1, "valueType": "per_20_levels" },
+        { "key": "atk_wiz_percent", "label": "ATK/WIZ DMG +2%", "value": 2, "valueType": "percent" },
+        { "key": "atk_wiz_speed", "label": "ATK/WIZ Speed +7", "value": 7, "valueType": "flat" },
+        { "key": "hp_restore_on_kill", "label": "Restore (1/8) of HP per monster killed", "value": "1/8", "valueType": "fraction_on_kill" },
+        { "key": "mana_restore_on_kill", "label": "Restore (1/8) of Mana per monster killed", "value": "1/8", "valueType": "fraction_on_kill" }
+      ]
+    },
+    {
+      "id": "third_class_defensive",
+      "label": "3rd Class Defensive Excellent Options",
+      "appliesTo": ["helm", "armor", "pants", "gloves", "boots", "shield", "ring"],
+      "classTier": "third_class",
+      "requiredCharacterLevelReference": 400,
+      "maxOptionsArmor": 2,
+      "versionScope": "high-version-futuro",
+      "options": [
+        { "key": "hp_flat", "label": "HP +165", "value": 165, "valueType": "flat" },
+        { "key": "mana_flat", "label": "Mana +165", "value": 165, "valueType": "flat" },
+        { "key": "def_rate_percent", "label": "DEF Rate +10%", "value": 10, "valueType": "percent" },
+        { "key": "damage_decrease_flat", "label": "Decreases DMG +45", "value": 45, "valueType": "flat" },
+        { "key": "reflect_damage_percent", "label": "Reflect DMG by +5%", "value": 5, "valueType": "percent" },
+        { "key": "zen_drop_percent", "label": "Amount of Zen dropped from monsters +42%", "value": 42, "valueType": "percent" }
+      ]
+    },
+    {
+      "id": "third_class_offensive",
+      "label": "3rd Class Offensive Excellent Options",
+      "appliesTo": ["weapon", "necklace"],
+      "classTier": "third_class",
+      "requiredCharacterLevelReference": 400,
+      "maxOptionsOffensive": 3,
+      "versionScope": "high-version-futuro",
+      "options": [
+        { "key": "excellent_damage_chance", "label": "Excellent DMG Chance +10%", "value": 10, "valueType": "percent" },
+        { "key": "atk_wiz_per_20_levels_range", "label": "ATK/WIZ DMG +1.5 ~ 1.8 per 20 levels", "min": 1.5, "max": 1.8, "valueType": "per_20_levels_range" },
+        { "key": "atk_wiz_flat_range", "label": "ATK/WIZ DMG +42 ~ 51", "min": 42, "max": 51, "valueType": "flat_range" },
+        { "key": "atk_wiz_speed", "label": "ATK/WIZ Speed +7", "value": 7, "valueType": "flat" },
+        { "key": "hp_restore_on_kill", "label": "Restore (1/8) of HP per monster killed", "value": "1/8", "valueType": "fraction_on_kill" },
+        { "key": "mana_restore_on_kill", "label": "Restore (1/8) of Mana per monster killed", "value": "1/8", "valueType": "fraction_on_kill" }
+      ]
+    },
+    {
+      "id": "fourth_class_defensive",
+      "label": "4th Class Defensive Excellent Options",
+      "appliesTo": ["helm", "armor", "pants", "gloves", "boots", "shield", "ring"],
+      "classTier": "fourth_class",
+      "requiredCharacterLevelReference": 900,
+      "maxOptionsArmor": 2,
+      "versionScope": "high-version-futuro",
+      "options": [
+        { "key": "hp_flat", "label": "HP +165", "value": 165, "valueType": "flat" },
+        { "key": "mana_flat", "label": "Mana +165", "value": 165, "valueType": "flat" },
+        { "key": "def_rate_percent", "label": "DEF Rate +10%", "value": 10, "valueType": "percent" },
+        { "key": "damage_decrease_flat", "label": "Decreases DMG +45", "value": 45, "valueType": "flat" },
+        { "key": "reflect_damage_percent", "label": "Reflect DMG by +5%", "value": 5, "valueType": "percent" },
+        { "key": "base_def_per_20_levels", "label": "Base DEF +1.5 every 20 levels", "value": 1.5, "valueType": "per_20_levels" }
+      ]
+    },
+    {
+      "id": "fourth_class_offensive",
+      "label": "4th Class Offensive Excellent Options",
+      "appliesTo": ["weapon", "necklace"],
+      "classTier": "fourth_class",
+      "requiredCharacterLevelReference": 900,
+      "maxOptionsOffensive": 3,
+      "versionScope": "high-version-futuro",
+      "options": [
+        { "key": "excellent_damage_chance", "label": "Excellent DMG Chance +10%", "value": 10, "valueType": "percent" },
+        { "key": "atk_wiz_per_20_levels_range", "label": "ATK/WIZ DMG +2 ~ 2.8 per 20 levels", "min": 2, "max": 2.8, "valueType": "per_20_levels_range" },
+        { "key": "atk_wiz_flat_range", "label": "ATK/WIZ DMG +57 ~ 80", "min": 57, "max": 80, "valueType": "flat_range" },
+        { "key": "atk_wiz_speed", "label": "ATK/WIZ Speed +7", "value": 7, "valueType": "flat" },
+        { "key": "hp_restore_on_kill", "label": "Restore (1/8) of HP per monster killed", "value": "1/8", "valueType": "fraction_on_kill" },
+        { "key": "mana_restore_on_kill", "label": "Restore (1/8) of Mana per monster killed", "value": "1/8", "valueType": "fraction_on_kill" }
+      ]
+    }
+  ],
+  "modelingNotes": [
+    "Excellent Options devem ser modeladas separadamente de Luck, Skill, Additional Option e Harmony Option.",
+    "Excellent DMG e upgrade/bless nao sao a mesma coisa.",
+    "FO nao deve ser tratado como item separado por padrao; e um estado de opcoes.",
+    "3rd e 4th class devem ficar marcados como high-version-futuro para o servidor atual.",
+    "Options ofensivas servem para armas fisicas e magicas; no tooltip, armas magicas devem mostrar Wizardry/WIZ em vez de dano fisico comum."
+  ]
+}

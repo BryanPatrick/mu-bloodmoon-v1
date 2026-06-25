@@ -1,0 +1,83 @@
+{
+  "source": {
+    "name": "MegaMu Forum - skills reference",
+    "url": "https://megamu.net/forum/showthread.php?tid=11675",
+    "capturedAt": "2026-06-11",
+    "usage": "Dados brutos estruturados para guias de skills, NPCs, drops, quests, pets e sistemas futuros. Validar contra Blood Moon v6 antes de publicar."
+  },
+  "compatibility": {
+    "likelyReusableV6": [
+      "aprender skills por livros/orbs",
+      "skills presas a armas/equipamentos",
+      "NPCs classicos em Lorencia/Noria",
+      "Quest Marlon",
+      "Dark Horse e Dark Raven",
+      "Castle Siege se habilitado"
+    ],
+    "validate": ["mapas", "monstros", "coordenadas", "taxas", "requisitos", "nomes traduzidos"],
+    "highVersionFuture": ["Ruud", "interface mobile", "quarta classe", "Rune Mage", "Slayer", "Gun Crusher", "Light Wizard", "Lemuria", "skill cards"]
+  },
+  "systems": {
+    "learning": [
+      "right-click skill book/orb/parchment to learn",
+      "PC uses selected skill with right mouse button",
+      "some skills appear only with required weapon/item equipped",
+      "some skills depend on quests or evolved character"
+    ],
+    "originTypes": ["npc_shop", "drop", "equipped_item", "quest", "event_castle_siege", "pet", "ruud_modern", "talent_tree_modern"]
+  },
+  "npcs": [
+    {
+      "name": "Hanzo",
+      "map": "Lorencia",
+      "coordinates": { "x": 116, "y": 141 },
+      "sells": ["Twisting Slash", "Death Stab", "Rageful Blow", "Greater Fortitude", "Earthshake", "Fire Breath", "Gigantic Storm", "Fire Scream", "Electric Spark", "Chaotic Diseier"],
+      "notes": ["Chaotic Diseier spelling must be reviewed."]
+    },
+    {
+      "name": "Pasi",
+      "map": "Lorencia",
+      "coordinates": { "x": 119, "y": 113 },
+      "sells": ["Meteorite", "Ice", "Poison", "Flame", "Twister", "Evil Spirit", "Hellfire", "Aqua Beam", "Blast", "Inferno", "Teleport Ally"]
+    },
+    {
+      "name": "Elf Lala",
+      "map": "Noria",
+      "coordinates": { "x": 173, "y": 125 },
+      "sells": ["Triple Shot", "Healing", "Defense Increase", "Attack Increase", "Penetration", "Ice Arrow"]
+    },
+    {
+      "name": "Marce",
+      "map": "Elbeland",
+      "coordinates": { "x": 37, "y": 217 },
+      "sells": ["Lightning Shock", "Drain Life", "Chain Lightning", "Damage Reflection", "Sleep", "Weakness", "Innovation"],
+      "notes": ["Summoner availability must be checked for Blood Moon v6."]
+    },
+    {
+      "name": "Wizard Izabel",
+      "map": "Event Square",
+      "coordinates": { "x": 229, "y": 48 },
+      "sells": ["Meteorite", "Ice", "Poison", "Flame", "Twister", "Evil Spirit", "Hellfire", "Aqua Beam", "Blast", "Inferno", "Teleport Ally", "Triple Shot", "Healing", "Defense Increase", "Attack Increase", "Penetration", "Ice Arrow", "Twisting Slash", "Death Stab", "Rageful Blow", "Greater Fortitude", "Earthshake", "Fire Breath", "Gigantic Storm", "Fire Scream", "Electric Spark", "Lightning Shock", "Drain Life", "Chain Lightning", "Damage Reflection", "Sleep", "Weakness", "Innovation", "Mana Rays", "Magic Pin", "Breche", "Sword Blow"],
+      "notes": ["Later skills may belong to modern classes; mark as high-version-futuro until validated."]
+    }
+  ],
+  "equipmentLinkedSkills": ["Power Slash", "Uppercut", "Lunge", "Cutting", "Beheading", "Stab", "Impale", "Raid", "Fire Burst", "Cyclone", "Slash", "Falling Slash", "Force Wave", "Magic Attack"],
+  "questSkills": {
+    "marlon": ["Combo Skill", "Nova", "Infinity Arrow"]
+  },
+  "petSkills": [
+    { "pet": "Dark Horse", "skill": "Earthshake" },
+    { "pet": "Dark Raven", "skill": "Auto Attack" }
+  ],
+  "castleSiegeSkills": ["Stun", "Cancel Stun", "Swell Life", "Mana", "Invisibility", "Cancel Invisibility"],
+  "drops": {
+    "skills": ["Decay", "Ice Storm", "Soul Barrier", "Twisting Slash", "Death Stab", "Rageful Blow", "Greater Fortitude", "Earthshake", "Fire Breath", "Fire Scream", "Electric Spark", "Lightning Shock", "Drain Life", "Chain Lightning", "Damage Reflection", "Sleep", "Weakness", "Innovation", "Magic Pin", "Plasma Storm", "Sword Blow", "Gigantic Storm"],
+    "mapsOrMonsters": ["Dungeon", "Lost Tower", "Tarkan", "Elbeland", "Blood Castle", "Kalima", "Atlans", "Aida", "Icarus", "Crywolf", "Kanturu", "Karutan", "Vulcanus", "Swamp of Calmness", "Raklion", "Ferea", "Nixies Lake", "Kanturu Underground", "Temple of Arnil", "Gray Aida"]
+  },
+  "modernRuudAndFuture": ["Dark Side", "Ice Blood", "Fire Blood", "Havok Spear", "Gigantic Storm Strengthener", "Fire Beast", "Spirit Hook", "Oversting", "Magic Arrow", "Chaotic Diseier Strengthener", "Fire Blow", "Shining Peak", "Magic Pin Strengthener", "Plasma Storm Strengthener", "Sword Blow Strengthener", "Burst", "Haste", "4th class skills", "skill cards"],
+  "portalPagesPlanned": {
+    "highPriority": ["Skills por personagem", "Dark Lord: cetro/corvo/cavalo/capa/skills", "Fairy Elf: buffs/ataque a distancia/Ice Arrow/Infinity Arrow", "Quest Marlon"],
+    "mediumPriority": ["Skills por NPC", "Skills por armas", "Drops de livros/orbs"],
+    "future": ["Ruud", "4th class"]
+  }
+}

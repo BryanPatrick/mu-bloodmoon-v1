@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PLAYER
+  MODERATOR
+  GAME_MASTER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum AccountStatus {
+  ACTIVE
+  PENDING
+  BLOCKED
+}
+
+enum CurrencyCode {
+  WCOIN
+  GOBLIN_POINT
+  HUNT_POINT
+}
+
+model Account {
+  id             String        @id @default(uuid())
+  username       String        @unique
+  name           String
+  email          String        @unique
+  passwordHash   String
+  personalIdHash String?
+  role           Role          @default(PLAYER)
+  status         AccountStatus @default(PENDING)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  currencies     AccountCurrency[]
+  auditEvents    AuditEvent[]  @relation("AuditActor")
+}
+
+model AccountCurrency {
+  id        String       @id @default(uuid())
+  accountId String
+  currency  CurrencyCode
+  balance   Int          @default(0)
+  account   Account      @relation(fields: [accountId], references: [id])
+
+  @@unique([accountId, currency])
+}
+
+model AuditEvent {
+  id            String   @id @default(uuid())
+  actorId       String?
+  actorUsername String?
+  action        String
+  targetType    String
+  targetId      String?
+  severity      String   @default("info")
+  metadata      Json?
+  createdAt     DateTime @default(now())
+  actor         Account? @relation("AuditActor", fields: [actorId], references: [id])
+}

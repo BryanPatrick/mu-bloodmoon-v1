@@ -1,0 +1,494 @@
+{
+  "source": {
+    "name": "MU Online Fanz - item guide batch",
+    "capturedAt": "2026-06-12",
+    "status": "curated-reference-batch",
+    "notes": [
+      "Batch created from user-requested item guide pages.",
+      "Direct local downloads are still blocked, but browser collection can access page text and some image URLs.",
+      "These pages are mostly high-version-futuro, with Siege/380, Wings, Ring and Necklace having stronger v6/validation value."
+    ],
+    "pages": [
+      "https://muonlinefanz.com/guide/items/enhanced-sets/",
+      "https://muonlinefanz.com/guide/items/enhanced-weapons/",
+      "https://muonlinefanz.com/guide/items/mastery-weapons/",
+      "https://muonlinefanz.com/guide/items/mastery-sets/",
+      "https://muonlinefanz.com/guide/items/moss/",
+      "https://muonlinefanz.com/guide/items/siege/",
+      "https://muonlinefanz.com/guide/items/lucky/",
+      "https://muonlinefanz.com/guide/items/wings/",
+      "https://muonlinefanz.com/guide/items/necklace/",
+      "https://muonlinefanz.com/guide/items/ring/",
+      "https://muonlinefanz.com/tools/items/"
+    ]
+  },
+  "slugCorrections": {
+    "mossItems": "https://muonlinefanz.com/guide/items/moss/",
+    "siegeItems": "https://muonlinefanz.com/guide/items/siege/",
+    "luckySets": "https://muonlinefanz.com/guide/items/lucky/",
+    "wingsCapes": "https://muonlinefanz.com/guide/items/wings/",
+    "necklaces": "https://muonlinefanz.com/guide/items/necklace/",
+    "rings": "https://muonlinefanz.com/guide/items/ring/"
+  },
+  "enhancedSets": {
+    "sourceUrl": "https://muonlinefanz.com/guide/items/enhanced-sets/",
+    "versionScope": "high-version-futuro",
+    "requiredClassTier": 4,
+    "itemTypes": [
+      { "name": "Soul", "requiredLevel": 900 },
+      { "name": "Blue Eye", "requiredLevel": 1000 },
+      { "name": "Silver Heart", "requiredLevel": 1100 },
+      { "name": "Manticore", "requiredLevel": 1200 },
+      { "name": "Brilliant", "requiredLevel": null }
+    ],
+    "setFamiliesFromNavigation": [
+      "Soul Sets",
+      "Awakening Soul Sets",
+      "Blue Eye Sets",
+      "Frosty Blue Eye Sets",
+      "Silver Heart Sets",
+      "Forefather's Silver Heart Sets",
+      "Manticore Sets",
+      "Roaring Manticore Sets",
+      "Brilliant Sets",
+      "Heavenly Brilliant Sets"
+    ],
+    "grades": ["Excellent", "Ancient"],
+    "obtaining": [
+      "Soul excellent armor drops from Swamp of Darkness monsters.",
+      "Soul ancient armor transforms from ancient Holyangel armor via Chaos Goblin Machine.",
+      "Blue Eye excellent armor drops from God of Darkness boss.",
+      "Blue Eye ancient armor transforms from ancient Soul armor.",
+      "Silver Heart excellent armor drops from Scorched Canyon monsters.",
+      "Silver Heart ancient armor transforms from ancient Blue Eye armor.",
+      "Manticore excellent armor drops from Gray Aida monsters.",
+      "Manticore ancient armor transforms from ancient Silver Heart armor.",
+      "Brilliant ancient armor transforms from ancient Manticore armor."
+    ],
+    "excellentOptions": [
+      "HP +165",
+      "Mana +165",
+      "DEF Rate +10%",
+      "Decreases DMG +45",
+      "Reflect DMG by +5%",
+      "Base DEF +1.5 every 20 levels"
+    ],
+    "ancientOptions": [
+      "STR +15 or +30",
+      "AGI +15 or +30",
+      "STA +15 or +30",
+      "ENE +15 or +30",
+      "All Stats +7 or +15"
+    ],
+    "transformation": {
+      "baseRequirement": "Ancient item +11 with Jewel of Life Option +16",
+      "npcItem": "Ancient soul from Priest James",
+      "ruudCost": 50000,
+      "chain": [
+        "Holyangel -> Soul requires Awakening Soul",
+        "Soul -> Blue Eye requires Blue Eye Soul",
+        "Blue Eye -> Silver Heart requires Silver Heart Soul",
+        "Silver Heart -> Manticore requires Manticore Soul",
+        "Manticore -> Brilliant requires Brilliant Soul"
+      ],
+      "keptOptions": ["Ancient Option", "Luck"],
+      "rerolledOptions": ["Mastery Bonus Option"]
+    },
+    "masteryBonusOptions": [
+      "Reduce DMG by 25",
+      "Reduce DMG by 50",
+      "Reduce DMG by 75"
+    ],
+    "sampleSetNames": [
+      "Excellent Soul Elf (ATK)",
+      "Excellent Soul Elf (ENE)",
+      "Excellent Soul Fighter",
+      "Excellent Soul Gun Crusher",
+      "Excellent Soul Knight",
+      "Excellent Soul Knight (Belief)",
+      "Excellent Soul Lord",
+      "Excellent Soul Magic (ATK)",
+      "Excellent Soul Magic (WIZ)",
+      "Excellent Soul Rune Mage",
+      "Excellent Soul Slayer",
+      "Excellent Soul Summoner",
+      "Excellent Soul Wizard"
+    ]
+  },
+  "enhancedWeapons": {
+    "sourceUrl": "https://muonlinefanz.com/guide/items/enhanced-weapons/",
+    "versionScope": "high-version-futuro",
+    "requiredClassTier": 4,
+    "itemTypes": [
+      { "name": "Soul", "requiredLevel": 900 },
+      { "name": "Blue Eye", "requiredLevel": 1000 },
+      { "name": "Silver Heart", "requiredLevel": 1100 },
+      { "name": "Manticore", "requiredLevel": 1200 }
+    ],
+    "grades": ["Excellent"],
+    "obtaining": [
+      "Soul excellent weapons transform from Holyangel weapon items.",
+      "Blue Eye excellent weapons transform from Soul weapon items.",
+      "Silver Heart excellent weapons transform from Blue Eye weapon items.",
+      "Manticore excellent weapons transform from Silver Heart weapon items."
+    ],
+    "excellentOptionsByTier": [
+      {
+        "tier": "Soul",
+        "options": ["Excellent DMG chance +10%", "ATK DMG +2 per 20 Character Levels", "ATK DMG +57", "ATK Speed +7", "Restore HP per monster killed", "Restore Mana per monster killed"]
+      },
+      {
+        "tier": "Blue Eye",
+        "options": ["Excellent DMG chance +10%", "ATK DMG +2.2 per 20 Character Levels", "ATK DMG +62", "ATK Speed +7", "Restore HP per monster killed", "Restore Mana per monster killed"]
+      },
+      {
+        "tier": "Silver Heart",
+        "options": ["Excellent DMG chance +10%", "ATK DMG +2.4 per 20 Character Levels", "ATK DMG +68", "ATK Speed +7", "Restore HP per monster killed", "Restore Mana per monster killed"]
+      }
+    ],
+    "transformation": {
+      "baseRequirement": "Weapon +11 with Jewel of Life Option +16",
+      "ruudCost": 100000,
+      "anvilChain": [
+        "Holyangel -> Soul requires Soul Anvil",
+        "Soul -> Blue Eye requires Blue Eye Anvil",
+        "Blue Eye -> Silver Heart requires Silver Heart Anvil",
+        "Silver Heart -> Manticore requires Manticore Anvil"
+      ],
+      "keptOptions": ["Ancient Option", "Luck"],
+      "rerolledOptions": ["Mastery Bonus Option"]
+    },
+    "masteryBonusOptions": ["All Stats +10", "All Stats +20", "All Stats +40"],
+    "sampleWeaponNames": [
+      "Excellent Book of Soul",
+      "Excellent Soul Bow",
+      "Excellent Soul Claw",
+      "Excellent Soul Lance",
+      "Excellent Soul Magic Gun",
+      "Excellent Soul Magic Sword"
+    ]
+  },
+  "masteryWeapons": {
+    "sourceUrl": "https://muonlinefanz.com/guide/items/mastery-weapons/",
+    "versionScope": "high-version-futuro",
+    "requiredClassTier": 3,
+    "itemTypes": [
+      { "name": "Bloodangel", "requiredLevel": 400 },
+      { "name": "Darkangel", "requiredLevel": 600 },
+      { "name": "Holyangel", "requiredLevel": 800 }
+    ],
+    "grades": ["Excellent"],
+    "obtaining": [
+      "Bloodangel excellent weapons can be purchased from Priest James for 50,000 Ruud.",
+      "Darkangel excellent weapons transform from Bloodangel weapons.",
+      "Holyangel excellent weapons transform from Darkangel weapons."
+    ],
+    "excellentOptionsByTier": [
+      {
+        "tier": "Bloodangel",
+        "options": ["Excellent DMG chance +10%", "ATK DMG +1.5 per 20 Character Levels", "ATK DMG +42", "ATK Speed +7", "Restore HP per monster killed", "Restore Mana per monster killed"]
+      },
+      {
+        "tier": "Darkangel",
+        "options": ["Excellent DMG chance +10%", "ATK DMG +1.6 per 20 Character Levels", "ATK DMG +45", "ATK Speed +7", "Restore HP per monster killed", "Restore Mana per monster killed"]
+      },
+      {
+        "tier": "Holyangel",
+        "options": ["Excellent DMG chance +10%", "ATK DMG +1.8 per 20 Character Levels", "ATK DMG +51", "ATK Speed +7", "Restore HP per monster killed", "Restore Mana per monster killed"]
+      }
+    ],
+    "transformation": {
+      "baseRequirement": "Weapon +11 with Jewel of Life Option +16",
+      "ruudCost": 100000,
+      "anvilChain": [
+        "Bloodangel -> Darkangel requires Darkangel Anvil",
+        "Darkangel -> Holyangel requires Holyangel Anvil",
+        "Holyangel -> Soul requires Soul Anvil"
+      ],
+      "keptOptions": ["Ancient Option", "Luck"],
+      "rerolledOptions": ["Mastery Bonus Option"]
+    },
+    "masteryBonusOptions": ["All Stats +10", "All Stats +20", "All Stats +40"],
+    "sampleWeaponNames": [
+      "Excellent Bloodangel Bow",
+      "Excellent Bloodangel Claw",
+      "Excellent Bloodangel Lance",
+      "Excellent Bloodangel Magic Gun",
+      "Excellent Bloodangel Magic Sword"
+    ]
+  },
+  "masterySets": {
+    "sourceUrl": "https://muonlinefanz.com/guide/items/mastery-sets/",
+    "versionScope": "high-version-futuro",
+    "requiredClassTier": 3,
+    "itemTypes": [
+      { "name": "Bloodangel", "requiredLevel": 400 },
+      { "name": "Darkangel", "requiredLevel": 600 },
+      { "name": "Holyangel", "requiredLevel": 800 }
+    ],
+    "setFamiliesFromNavigation": [
+      "Bloodangel Sets",
+      "Ancient Bloodangel Sets",
+      "Darkangel Sets",
+      "Ancient Darkangel Sets",
+      "Holyangel Sets",
+      "Ancient Holyangel Sets"
+    ],
+    "grades": ["Excellent", "Ancient"],
+    "obtaining": [
+      "Bloodangel normal armor drops from Debenter and Uruk Mountain monsters.",
+      "Bloodangel excellent armor drops from Nars monsters.",
+      "Bloodangel ancient armor is bought from Priest James and must be unsealed.",
+      "Darkangel excellent armor drops from Ferea monsters.",
+      "Darkangel ancient armor transforms from ancient Bloodangel armor.",
+      "Holyangel excellent armor drops from Nixies Lake monsters.",
+      "Holyangel ancient armor transforms from ancient Darkangel armor."
+    ],
+    "excellentOptions": [
+      "HP +165",
+      "Mana +165",
+      "DEF Rate +10%",
+      "Decreases DMG +45",
+      "Reflect DMG by +5%",
+      "Zen dropped from monsters +42%"
+    ],
+    "ancientOptions": [
+      "STR +15 or +30",
+      "AGI +15 or +30",
+      "STA +15 or +30",
+      "ENE +15 or +30",
+      "All Stats +7 or +15"
+    ],
+    "unseal": {
+      "items": ["Bloodangel Soul", "Hero Bloodangel Soul"],
+      "machine": "Chaos Goblin Machine"
+    }
+  },
+  "mossItems": {
+    "sourceUrl": "https://muonlinefanz.com/guide/items/moss/",
+    "versionScope": "validar",
+    "concept": "Exclusive Excellent weapons obtained from Gambling Boxes via NPC Moss.",
+    "rules": [
+      "Always at least two Excellent Options.",
+      "Up to three Excellent Options from Gambling Box.",
+      "Up to six Excellent Options from promotional events.",
+      "May also have Harmony, Life, Luck."
+    ],
+    "obtaining": ["NPC Moss Gambling Boxes", "Promotional events"],
+    "items": [
+      { "name": "Excellent Aileen Bow", "damage": "203 ~ 227", "hand": "2-H", "attackSpeed": 45, "requirements": { "strength": 272, "agility": 1186 }, "class": "ME" },
+      { "name": "Excellent Beuroba", "damage": "227 ~ 263", "hand": "2-H", "attackSpeed": 40, "requirements": { "strength": 804, "agility": 149 }, "class": "BK, MG" },
+      { "name": "Excellent Chromatic Staff", "damage": "69 ~ 71", "hand": "1-H", "wizardryRaise": "75%", "attackSpeed": 30, "requirements": { "strength": 278, "agility": 81 }, "class": "DW" },
+      { "name": "Excellent Rave Stick", "damage": "86 ~ 94", "hand": "1-H", "wizardryRaise": "78%", "attackSpeed": 30, "requirements": { "strength": 278, "agility": 92 }, "class": "BS" },
+      { "name": "Excellent Striker Scepter", "damage": "112 ~ 124", "hand": "1-H", "wizardryRaise": "35%", "attackSpeed": 40, "requirements": { "strength": 403, "agility": 108 }, "class": "DL" }
+    ],
+    "imageUrlsFound": [
+      "https://muonlinefanz.com/guide/items/moss/data/graphics/moss-item.png"
+    ]
+  },
+  "siegeItems": {
+    "sourceUrl": "https://muonlinefanz.com/guide/items/siege/",
+    "versionScope": "validar",
+    "aliases": ["380 items"],
+    "requiredLevel": 380,
+    "concept": "Items that can receive Jewel of Guardian / Siege Options, mostly useful in PvP.",
+    "obtaining": {
+      "weapons": ["Kanturu Ruins 3 monsters", "Kundun", "Nightmare"],
+      "armorSets": ["Kanturu Relics monsters", "Kundun", "Nightmare"],
+      "jewelOfGuardian": ["Land of Trials monsters", "NPC Moss Gambling Boxes"]
+    },
+    "siegeOptionsByPiece": {
+      "weapon": ["WIZ/ATK DMG +200 (PVP Only)", "PVP ATK Rate +10"],
+      "helm": ["SD Auto-recovery Rate +20", "PVP DEF Rate +10"],
+      "armor": ["SD Auto-recovery Rate +20", "PVP DEF Rate +10"],
+      "pants": ["DEF +200 (PVP Only)", "PVP DEF Rate +10"],
+      "gloves": ["HP +200", "PVP DEF Rate +10"],
+      "boots": ["SD +200", "PVP DEF Rate +10"]
+    },
+    "guardianRecipe": {
+      "ingredients": ["Siege Item +4 or higher", "Jewel of Guardian", "Jewel of Chaos", "Zen x10,000,000"],
+      "successRates": [
+        { "itemLevel": "+4 ~ +6", "rate": "50%" },
+        { "itemLevel": "+7 ~ +9", "rate": "60%" },
+        { "itemLevel": "+10 ~ +13", "rate": "70%" },
+        { "itemLevel": "+14 ~ +15", "rate": "80%" }
+      ],
+      "onSuccess": "Jewel of Guardian Option is added; other materials consumed.",
+      "onFailure": "Siege item unchanged; other materials destroyed."
+    },
+    "weapons": [
+      { "name": "Bone Blade", "damage": "122 ~ 135", "hand": "2-H", "attackSpeed": 40, "requirements": { "strength": 461, "agility": 174 }, "class": "BK" },
+      { "name": "Explosion Blade", "damage": "127 ~ 155", "hand": "2-H", "wizardryRaise": "67%", "attackSpeed": 40, "requirements": { "strength": 452, "agility": 231, "energy": 61 }, "class": "MG" },
+      { "name": "Grand Viper Staff", "damage": "66 ~ 74", "hand": "1-H WIZ", "wizardryRaise": "65%", "attackSpeed": 35, "requirements": { "strength": 191, "agility": 77 }, "class": "SM" },
+      { "name": "Phoenix Soul Star", "damage": "122 ~ 128", "hand": "1-H", "attackSpeed": 40, "requirements": { "strength": 465, "agility": 244 }, "class": "RF" },
+      { "name": "Soleil Scepter", "damage": "130 ~ 153", "hand": "1-H", "wizardryRaise": "42%", "attackSpeed": 40, "requirements": { "strength": 370, "agility": 85 }, "class": "DL" },
+      { "name": "Storm Blitz Stick", "damage": "51 ~ 53", "hand": "1-H WIZ", "wizardryRaise": "55%", "attackSpeed": 30, "requirements": { "strength": 231, "agility": 69 }, "class": "BS" },
+      { "name": "Sylph Wind Bow", "damage": "177 ~ 200", "hand": "2-H", "attackSpeed": 45, "requirements": { "strength": 222, "agility": 946 }, "class": "ME" }
+    ],
+    "armorSets": [
+      { "name": "Dragon Knight Set", "class": "Blade Knight", "baseDefense": 355 },
+      { "name": "Phoenix Soul Set", "class": "Rage Fighter" },
+      { "name": "Storm Blitz Set", "class": "Bloody Summoner" },
+      { "name": "Sunlight Set", "class": "Dark Lord" },
+      { "name": "Sylphid Ray Set", "class": "Muse Elf", "baseDefense": 289 },
+      { "name": "Venom Mist Set", "class": "Soul Master", "baseDefense": 251 },
+      { "name": "Volcano Set", "class": "Magic Gladiator" }
+    ]
+  },
+  "luckyTicketSets": {
+    "sourceUrl": "https://muonlinefanz.com/guide/items/lucky/",
+    "versionScope": "validar",
+    "concept": "Premium ancient set items generated from Lucky Tickets.",
+    "rules": [
+      "Lucky tickets exchange into class-fitting lucky set items via right-click.",
+      "Generated item has random item level and additional options.",
+      "Lucky ticket items cannot be upgraded.",
+      "Durability decreases every 40 minutes while equipped.",
+      "Jewel of Extension restores durability; zero durability cannot be repaired anymore.",
+      "Always has one Ancient Option."
+    ],
+    "possibleOptions": ["Ancient Option", "Jewel of Life Option", "Set Option", "Luck"],
+    "ticketTiers": [
+      { "name": "1st Lucky Ticket", "requirement": "No requirements" },
+      { "name": "2nd Lucky Ticket", "requirement": "Level 150" }
+    ],
+    "refining": [
+      { "condition": "Full durability", "successRate": "60%" },
+      { "condition": "Not full durability", "successRate": "10%" }
+    ],
+    "firstLuckySetNames": [
+      "Moros's Scale Set",
+      "Hades's Sphinx Set",
+      "Dione's Silk Set",
+      "Ophion's Violent Wind Set",
+      "Dria's Robust Set"
+    ],
+    "sampleSet": {
+      "name": "Moros's Scale Set",
+      "baseDefense": 176,
+      "classes": ["Dark Knight", "Dark Lord", "Rage Fighter"],
+      "setOptions": ["x2 HP +30", "x3 Skill DMG +25", "x4 DEF +20", "x5 Double DMG chance +10%", "Critical DMG chance +10%", "Excellent DMG chance +10%", "Critical DMG +10", "Excellent DMG +10"],
+      "pieces": [
+        { "name": "Moros's Scale Helm", "defense": 36, "requiredLevel": 1 },
+        { "name": "Moros's Scale Armor", "defense": 44, "requiredLevel": 1 },
+        { "name": "Moros's Scale Pants", "defense": 39, "requiredLevel": 1 },
+        { "name": "Moros's Scale Gloves", "defense": 27, "requiredLevel": 1 },
+        { "name": "Moros's Scale Boots", "defense": 30, "requiredLevel": 1 }
+      ]
+    }
+  },
+  "wingsAndCapes": {
+    "sourceUrl": "https://muonlinefanz.com/guide/items/wings/",
+    "versionScope": "v6-prioridade-validar-high-version",
+    "concept": "Wings and capes increase damage, defense, damage absorption and movement speed.",
+    "obtaining": ["Chaos Goblin Machine", "Premium permanent wings/capes", "Premium time-limited wings/capes"],
+    "optionLayers": ["Wing Option", "Jewel of Life Option", "Luck", "Elemental Wing Option for 4th class"],
+    "wingOptionsClassic": ["Restore 100% HP chance +5%", "Restore 100% Mana chance +5%", "Double DMG chance +5%", "Ignore DEF chance +5%"],
+    "premiumPermanent": "Up to two Wing Options.",
+    "premiumTimeLimited": ["Restore 100% HP chance +5%", "Double DMG chance +5%", "Ignore DEF chance +5%"],
+    "fourthClassOptions": ["Restore 100% HP chance +3% ~ +10%", "Restore 100% Mana chance +3% ~ +10%", "Reflect DMG chance +3% ~ +10%", "Ignore DEF chance +3% ~ +10%", "Excellent DMG chance +3% ~ +10%", "Double DMG chance +3% ~ +10%", "ATK/WIZ Speed +5 ~ +12", "STR +10 ~ +65", "AGI +10 ~ +65", "STA +10 ~ +65", "ENE +10 ~ +65"],
+    "elementalWingOptions": ["ELE DEF +25 ~ +193", "ELE DEF II +4 ~ +64", "ELE DEF Rate +5 ~ +125", "ELE DEF Rate II +10 ~ +200", "ELE DMG +20 ~ +170", "ELE DMG II +30 ~ +195", "ELE ATK Rate +5 ~ +125", "ELE ATK Rate II +10 ~ +200"],
+    "firstClassWings": [
+      { "name": "Wings of Satan", "defense": 20, "damage": "12%", "absorbDamage": "12%", "requiredLevel": 150, "classes": ["Dark Knight", "Magic Gladiator"] },
+      { "name": "Wings of Elf", "defense": 10, "damage": "12%", "absorbDamage": "12%", "requiredLevel": 150, "classes": ["Fairy Elf"] }
+    ],
+    "imageUrlsFound": [
+      "https://muonlinefanz.com/guide/items/wings/data/graphics/wing-example.png"
+    ]
+  },
+  "necklaces": {
+    "sourceUrl": "https://muonlinefanz.com/guide/items/necklace/",
+    "versionScope": "v6-prioridade-validar-high-version",
+    "concept": "Offensive accessories usable by all classes with character level requirements.",
+    "itemLevelRules": [
+      "Normal necklaces drop up to +4.",
+      "Solid Symbol and Necklace of Agony can only reach +3.",
+      "Excellent and socket necklaces cannot exceed +0."
+    ],
+    "obtaining": ["Normal necklaces from monster level 13 ~ 60", "PVP-related necklaces from Kalima 5 ~ 7", "Excellent necklaces from Mastery Accessory Box via Moss", "Ancient necklaces from bosses and Land of Trials", "Socket necklaces from Deep Dungeon, Atlans Abyss and Crimson Flame's Icarus"],
+    "options": {
+      "normal": ["Automatic HP Recovery +1% ~ +3%"],
+      "excellent": ["Automatic HP Recovery +1% ~ +3%", "Excellent DMG chance +10%", "ATK DMG +1 per 20 levels", "ATK/WIZ DMG +2%", "ATK Speed +7", "Restore HP per monster killed", "Restore Mana per monster killed"],
+      "ancient": ["Automatic HP Recovery +1% ~ +3%", "Strength +5 or +10", "Agility +5 or +10", "Stamina +5 or +10", "Energy +5 or +10"],
+      "socket": ["Automatic HP Recovery +1% ~ +3%", "Up to two Excellent Options", "Up to three sockets"]
+    },
+    "resistanceFormula": "(Element Resistance * 10) = percent chance of resisting skill effect; only the highest equipped resistance applies.",
+    "items": [
+      { "name": "Pendant of Fire", "resistance": "Fire +1", "requiredLevel": 21, "excellentRequiredLevel": 33 },
+      { "name": "Pendant of Lightning", "resistance": "Lightning +1", "requiredLevel": 21, "excellentRequiredLevel": 41 },
+      { "name": "Pendant of Ice", "resistance": "Ice +1", "requiredLevel": 34, "excellentRequiredLevel": 54 },
+      { "name": "Pendant of Wind", "resistance": "Wind +1", "requiredLevel": 42, "excellentRequiredLevel": 62 },
+      { "name": "Pendant of Water", "resistance": "Water +1", "requiredLevel": 46, "excellentRequiredLevel": 66 },
+      { "name": "Pendant of Ability", "uniqueOption": "AG +1% ~ +3%", "requiredLevel": 50, "excellentRequiredLevel": 70 },
+      { "name": "Solid Symbol", "option": "Ignore SD Resistance Chance +1%", "requiredLevel": 110 },
+      { "name": "Necklace of Agony", "option": "Ignore DEF Resistance Chance +1%", "requiredLevel": 122 },
+      { "name": "Jasper Necklace", "requiredLevel": 850, "excellentOptions": "x1 ~ x2", "sockets": "x1 ~ x3" },
+      { "name": "Lapis Lazuli Necklace", "requiredLevel": 850, "excellentOptions": "x1 ~ x2", "sockets": "x1 ~ x3" },
+      { "name": "Battle Jasper Necklace", "requiredLevel": 850, "option": "Ignore DEF Resist Rate +3%", "excellentOptions": "x1 ~ x2", "sockets": "x1 ~ x3" },
+      { "name": "Battle Lapis Lazuli Necklace", "requiredLevel": 850, "option": "Ignore SD Resist Rate +3%", "excellentOptions": "x1 ~ x2", "sockets": "x1 ~ x3" }
+    ]
+  },
+  "rings": {
+    "sourceUrl": "https://muonlinefanz.com/guide/items/ring/",
+    "versionScope": "v6-prioridade-validar",
+    "concept": "Defensive accessories usable by all classes with character level requirements.",
+    "itemLevelRules": [
+      "Normal rings drop up to +4.",
+      "Protection Ring, Ring of Ultimatum and Protector Protection Ring can only reach +3.",
+      "Excellent rings cannot exceed +0."
+    ],
+    "obtaining": ["Normal rings from monsters level 28 ~ 57", "PVP-related rings from Kalima", "Excellent rings from Mastery Accessory Box via Moss and Kalima", "Ancient rings from Erohim, Kundun and Land of Trials"],
+    "options": {
+      "normal": ["Automatic HP Recovery +1% ~ +3%"],
+      "excellent": ["Automatic HP Recovery +1% ~ +3%", "HP +4%", "Mana +4%", "DEF Rate +10%", "Decreases DMG +4%", "Reflect DMG by +5%", "Zen dropped from monsters +30%"],
+      "ancient": ["Automatic HP Recovery +1% ~ +3%", "Strength +5 or +10", "Agility +5 or +10", "Stamina +5 or +10", "Energy +5 or +10"]
+    },
+    "specialRules": [
+      "Ring of Magic has Max Mana +1% ~ +3% instead of Automatic HP Recovery.",
+      "Resistance formula is shared with necklaces: Element Resistance * 10 = chance to resist skill effect."
+    ],
+    "items": [
+      { "name": "Ring of Poison", "resistance": "Poison +1", "requiredLevel": 17, "excellentRequiredLevel": 37 },
+      { "name": "Ring of Ice", "resistance": "Ice +1", "requiredLevel": 20, "excellentRequiredLevel": 40 },
+      { "name": "Ring of Fire", "resistance": "Fire +1", "requiredLevel": 30, "excellentRequiredLevel": 50 },
+      { "name": "Ring of Earth", "resistance": "Earth +1", "requiredLevel": 38, "excellentRequiredLevel": 58 },
+      { "name": "Ring of Wind", "resistance": "Wind +1", "requiredLevel": 44, "excellentRequiredLevel": 64 },
+      { "name": "Ring of Magic", "uniqueOption": "Max Mana +1% ~ +3%", "requiredLevel": 47, "excellentRequiredLevel": 67 },
+      { "name": "Protection Ring", "option": "Ignore Critical DMG Chance +1%", "requiredLevel": 62 },
+      { "name": "Protector Protection Ring", "option": "Ignore Excellent DMG Chance +1%", "requiredLevel": 74 },
+      { "name": "Ring of Ultimatum", "option": "Ignore Double DMG Chance +1%", "requiredLevel": 98 }
+    ]
+  },
+  "itemDatabase": {
+    "sourceUrl": "https://muonlinefanz.com/tools/items/",
+    "totalListed": 3090,
+    "status": "catalog-entry-point",
+    "notes": [
+      "The database contains item stats, requirements, monster drops and item detail pages.",
+      "Use it as the source queue for future per-item crawling.",
+      "Local direct download/crawl is blocked in this environment, but the source is registered."
+    ],
+    "sampleItems": [
+      "AGI Fruit",
+      "Absolute Scepter",
+      "Abyssal Eye",
+      "Adamantine Armor",
+      "Agnis Adamantine Armor",
+      "Aileen Bow",
+      "Alacran Lance",
+      "Ancient Armor",
+      "Angelic Bow",
+      "Anonymous Leather Boots",
+      "Anubis Legendary Armor"
+    ]
+  },
+  "imageNotes": {
+    "downloadStatus": "blocked-local-network",
+    "confirmedImageUrls": [
+      "https://muonlinefanz.com/guide/items/moss/data/graphics/moss-item.png",
+      "https://image.webzen.net/Mu/guideImage/season10/img-06-01.png",
+      "https://muonlinefanz.com/guide/items/wings/data/graphics/wing-example.png"
+    ],
+    "policy": "Keep third-party images as original references only; create Blood Moon optimized versions separately."
+  }
+}

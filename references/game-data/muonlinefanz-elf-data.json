@@ -1,0 +1,188 @@
+{
+  "source": {
+    "name": "MU Online Fanz - Fairy Elf",
+    "url": "https://muonlinefanz.com/guide/characters/elf/",
+    "capturedAt": "2026-06-11",
+    "usage": "Dados brutos estruturados para pagina da Fairy Elf, wiki de personagens, equipamentos, formulas, skills e servidor high-version futuro. Validar contra Blood Moon v6 antes de publicar."
+  },
+  "character": {
+    "name": "Fairy Elf",
+    "origin": "Noria",
+    "roles": ["ranged_physical_damage", "support", "buffs", "healing"],
+    "builds": [
+      {
+        "id": "agility_elf",
+        "label": "Agility Fairy Elf",
+        "focus": ["bows", "crossbows", "attack_speed", "physical_damage", "defense_rate"]
+      },
+      {
+        "id": "energy_elf",
+        "label": "Energy Fairy Elf",
+        "focus": ["heal", "greater_defense", "greater_damage", "party_support"]
+      }
+    ],
+    "classEvolution": [
+      { "tier": 1, "name": "Fairy Elf", "levelRequirement": 1, "versionScope": "v6-prioridade" },
+      { "tier": 2, "name": "Muse Elf", "levelRequirement": 150, "quest": "Second class quest", "versionScope": "v6-prioridade" },
+      { "tier": 3, "name": "High Elf", "levelRequirement": 400, "quest": "Third class quest", "versionScope": "validar" },
+      { "tier": 4, "name": "Noble Elf", "levelRequirement": 800, "quest": "Fourth class quest", "versionScope": "high-version-futuro" }
+    ],
+    "baseStats": {
+      "strength": 22,
+      "agility": 25,
+      "stamina": 20,
+      "energy": 15,
+      "hp": 80,
+      "mana": 30,
+      "ag": 30,
+      "sd": 99,
+      "pointsPerLevel": 5,
+      "pointsPerLevelAfterHeroStatus": 6
+    }
+  },
+  "formulas": {
+    "resources": {
+      "hp": ["+1 per character level", "+2 per stamina point"],
+      "mana": ["+1.5 per character level", "+1.5 per energy point"],
+      "ag": ["+1 per 3 strength", "+1 per 5 agility", "+1 per 3 stamina", "+1 per 5 energy"],
+      "sd": ["+1.2 per character level", "+1.2 per allocated stat point", "+1 per 2 DEF"]
+    },
+    "physicalAttack": {
+      "maxAttackPower": ["+1 per 4 agility", "+1 per 4 strength"],
+      "minAttackPower": ["+1 per 7 agility", "+1 per 7 strength"],
+      "attackRate": ["+5 per level until level 400", "+1.5 per agility", "+1 per 4 strength"],
+      "pvpAttackRate": ["+3 per level until level 400", "+0.6 per agility"],
+      "attackSpeed": ["+1 per 50 agility"]
+    },
+    "physicalDefense": {
+      "defense": ["+1 per 10 agility"],
+      "defenseRate": ["+1 per 4 agility"],
+      "pvpDefenseRate": ["+2 per character level", "+1 per 10 agility"]
+    },
+    "elementalModern": {
+      "versionScope": "high-version-futuro",
+      "maxElementalAttack": ["+1 per 4 agility", "+1 per 8 strength"],
+      "minElementalAttack": ["+1 per 8 agility", "+1 per 14 strength"],
+      "elementalAttackRate": ["+5 per level", "+1.5 per agility", "+1 per 4 strength"],
+      "pvpElementalAttackRate": ["+5 per level", "+1.5 per agility", "+1 per 4 strength"],
+      "elementalDefense": ["+1 per 10 agility"],
+      "elementalDefenseRate": ["+1 per 4 agility"],
+      "pvpElementalDefenseRate": ["+1 per 4 agility"]
+    }
+  },
+  "skills": [
+    { "name": "Triple Shot", "type": "offensive", "range": 6, "elementReference": "wind", "scalesWith": "agility", "sourceType": "weapon_skill_option", "versionScope": "v6-prioridade" },
+    { "name": "Heal", "type": "support", "requiredEnergy": 52, "range": 6, "scalesWith": "energy", "sourceItem": "Healing Orb", "versionScope": "v6-prioridade" },
+    { "name": "Greater Defense", "aliases": ["Defense Increase", "Orb of Greater Defense"], "type": "buff", "requiredEnergy": 72, "scalesWith": "energy", "sourceItem": "Orb of Greater Fortitude", "versionScope": "v6-prioridade" },
+    { "name": "Greater Damage", "aliases": ["Attack Increase"], "type": "buff", "requiredEnergy": 92, "scalesWith": "energy", "sourceItem": "Orb of Greater Damage", "versionScope": "v6-prioridade" },
+    { "name": "Summon Goblin", "type": "summon", "requiredEnergy": 30, "sourceItem": "Goblin Summoning Orb", "versionScope": "validar" },
+    { "name": "Summon Stone Golem", "type": "summon", "versionScope": "validar" },
+    { "name": "Summon Assassin", "type": "summon", "versionScope": "validar" },
+    { "name": "Summon Elite Yeti", "type": "summon", "versionScope": "validar" },
+    { "name": "Summon Dark Knight", "type": "summon", "versionScope": "validar" },
+    { "name": "Summon Bali", "type": "summon", "versionScope": "validar" },
+    { "name": "Summon Soldier", "type": "summon", "versionScope": "validar" },
+    { "name": "Penetration", "type": "offensive", "weaponFamily": ["bow", "crossbow"], "versionScope": "v6-prioridade" },
+    { "name": "Ice Arrow", "type": "control", "pvpUse": true, "versionScope": "v6-prioridade" },
+    { "name": "Infinity Arrow", "type": "utility", "sourceType": "quest_or_hero_status", "versionScope": "validar" },
+    { "name": "Multi-Shot", "type": "modern_offensive", "versionScope": "high-version-futuro" },
+    { "name": "Focus Shot", "type": "modern_offensive", "versionScope": "high-version-futuro" },
+    { "name": "Plasma Storm", "type": "situational", "sourceItem": "Fenrir/Horn of Destruction", "versionScope": "high-version-futuro" },
+    { "name": "Archangel's Will", "type": "situational", "sourceItem": "Blessed Divine Archangel weapon", "versionScope": "high-version-futuro" },
+    { "name": "Starfall", "type": "castle_siege_special", "versionScope": "high-version-futuro" }
+  ],
+  "equipment": {
+    "weapons": {
+      "classicOrRelevant": [
+        "Short Bow",
+        "Crossbow",
+        "Bow",
+        "Golden Crossbow",
+        "Elven Bow",
+        "Arquebus",
+        "Tiger Bow",
+        "Silver Bow",
+        "Light Crossbow",
+        "Serpent Crossbow",
+        "Bluewing Crossbow",
+        "Aquagold Crossbow",
+        "Saint Crossbow",
+        "Celestial Bow",
+        "Divine Crossbow",
+        "Great Reign Crossbow",
+        "Arrow Viper Bow",
+        "Sylph Wind Bow",
+        "Aileen Bow"
+      ],
+      "shared": ["Small Axe", "Short Sword", "Kris", "Rapier", "Gladius", "Elven Axe"],
+      "highVersionFuture": [
+        "Devil Crossbow",
+        "Angelic Bow",
+        "Divine Crossbow of Archangel",
+        "Bloodangel Bow",
+        "Blessed Divine Crossbow of Archangel",
+        "Darkangel Bow",
+        "Holyangel Bow",
+        "Soul Bow",
+        "Blue Eye Bow"
+      ],
+      "examples": [
+        { "name": "Short Bow", "attackSpeed": 30, "notes": "low initial bow" },
+        { "name": "Crossbow", "attackSpeed": 40, "notes": "initial crossbow" },
+        { "name": "Bow", "attackSpeed": 30, "notes": "initial bow" },
+        { "name": "Excellent Aileen Bow", "attackSpeed": 45, "versionScope": "validar" }
+      ]
+    },
+    "ammunition": {
+      "rules": ["bows use arrows", "crossbows use bolts", "stack reference up to 255"],
+      "items": ["Arrow", "Bolt", "Arrow +1", "Bolt +1", "Arrow +2", "Bolt +2"]
+    },
+    "shields": [
+      "Buckler",
+      "Small Shield",
+      "Horn Shield",
+      "Kite Shield",
+      "Elven Shield",
+      "Skull Shield",
+      "Spiked Shield",
+      "Tower Shield",
+      "Plate Shield",
+      "Large Round Shield",
+      "Serpent Shield",
+      "Frost Barrier",
+      "Light Lord Shield"
+    ],
+    "armorSets": {
+      "classicOrRelevant": ["Vine", "Silk", "Wind", "Spirit", "Guardian", "Iris", "Holy Spirit", "Divine", "Red Spirit"],
+      "highVersionFuture": ["Bloodangel Elf", "Darkangel Elf", "Holyangel Elf", "Manticore Elf", "Silver Heart Elf", "Brilliant Elf", "Sylphid Ray", "Sticky", "Seraphim", "Light Lord", "Soul", "Blue Eye"],
+      "sourceNotes": ["set data may include total DEF", "excellent DEF", "+15 normal requirements", "+15 excellent requirements"]
+    },
+    "wings": [
+      { "name": "Wings of Elf", "def": 10, "damageBonus": 12, "absorbPercent": 12, "levelRequirement": 150, "versionScope": "v6-prioridade" },
+      { "name": "Wings of Spirit", "def": 30, "damageBonus": 32, "absorbPercent": 32, "levelRequirement": 215, "versionScope": "v6-prioridade" },
+      { "name": "Wings of Life", "def": 37, "damageBonus": 35, "absorbPercent": 35, "levelRequirement": 290, "versionScope": "v6-prioridade" },
+      { "name": "Wing of Illusion", "def": 45, "damageBonus": 39, "absorbPercent": 39, "levelRequirement": 400, "versionScope": "high-version-futuro" },
+      { "name": "Wing of Celestial Body", "def": 140, "damageBonus": 55, "absorbPercent": 55, "levelRequirement": 800, "versionScope": "high-version-futuro" }
+    ]
+  },
+  "systems": {
+    "masterSkillTree": {
+      "unlockReference": "after third class / level 400",
+      "points": "levels after 400 grant Master Skill points",
+      "versionScope": "validar"
+    },
+    "skillEnhancementTree": {
+      "unlockReference": "fourth class / modern progression",
+      "versionScope": "high-version-futuro"
+    }
+  },
+  "validationChecklist": [
+    "Confirmar formula exata usada pelo Blood Moon.",
+    "Confirmar quais itens existem no cliente v6.",
+    "Confirmar nomes traduzidos de skills.",
+    "Confirmar se summons da Fairy Elf estarao ativos.",
+    "Confirmar se Master Skill Tree existe no servidor atual.",
+    "Confirmar nomes e status das asas level 1, 2 e 3.",
+    "Confirmar requisitos de level/status por item."
+  ]
+}

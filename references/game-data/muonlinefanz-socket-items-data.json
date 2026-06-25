@@ -1,0 +1,338 @@
+{
+  "source": {
+    "name": "MU Online Fanz - Socket Items",
+    "url": "https://muonlinefanz.com/guide/items/socket/",
+    "capturedAt": "2026-06-12",
+    "status": "curated-reference-with-image-url-manifest",
+    "importance": "high",
+    "notes": [
+      "Socket data is important for future item tooling, wiki pages and equipment calculators.",
+      "Direct local download from muonlinefanz.com failed in this environment, so image URLs were cataloged in a manifest for later mirroring.",
+      "Current Blood Moon server is v6-focused; level 380 socket items may be relevant depending on exact server configuration, while mastery socket content is high-version-futuro."
+    ]
+  },
+  "quickFacts": {
+    "requiredCharacterLevel": 380,
+    "masteryRequiredCharacterLevel": 400,
+    "socketCountRules": [
+      { "itemType": "armor", "maxSockets": 3 },
+      { "itemType": "shield", "maxSockets": 3 },
+      { "itemType": "one-handed weapon", "maxSockets": 3 },
+      { "itemType": "bow/crossbow", "maxSockets": 3 },
+      { "itemType": "two-handed weapon", "maxSockets": 5 }
+    ],
+    "possibleAdditionalLayers": [
+      "Sockets",
+      "Bonus Socket Option",
+      "Jewel of Life Option",
+      "Jewel of Harmony Option",
+      "Luck",
+      "Skill"
+    ],
+    "mainNpc": "Seed Master",
+    "mainSystems": [
+      "Seed creation",
+      "Seed Sphere creation",
+      "Seed Sphere mounting",
+      "Seed Sphere removal",
+      "Seed Sphere upgrade",
+      "Socket bonus reroll",
+      "Mastery socket transformation"
+    ]
+  },
+  "obtaining": {
+    "socketItems": [
+      { "method": "Raklion monster drop", "versionScope": "validar" },
+      { "method": "Selupan boss drop", "versionScope": "validar" },
+      { "method": "Medusa boss drop", "versionScope": "validar" }
+    ],
+    "masterySocketItems": [
+      { "method": "Selupan boss drop", "versionScope": "high-version-futuro" },
+      { "method": "Transform non-mastery socket item through Seed Master", "versionScope": "high-version-futuro" }
+    ]
+  },
+  "seedSphereSystem": {
+    "craftingFlow": [
+      "Refine excellent and ancient items into Seed material.",
+      "Craft Seed through Chaos Goblin Machine.",
+      "Combine Seed with Sphere through Seed Master to create Seed Sphere Lv 1.",
+      "Upgrade Seed Sphere up to Lv 10 through Seed Master.",
+      "Mount Seed Sphere into a Socket item through Seed Master.",
+      "Remove Seed Sphere from Socket item when needed; removed Seed Spheres can be reused."
+    ],
+    "elementUsageRules": [
+      {
+        "elements": ["Fire", "Lightning", "Ice"],
+        "allowedItemTypes": ["weapon"],
+        "role": "offensive"
+      },
+      {
+        "elements": ["Wind", "Water", "Earth"],
+        "allowedItemTypes": ["armor", "shield"],
+        "role": "defensive"
+      }
+    ],
+    "upgradeLimit": {
+      "seedSphereMaxLevel": 10
+    }
+  },
+  "seedOptions": {
+    "Fire": {
+      "role": "offensive",
+      "itemType": "weapon",
+      "options": [
+        { "name": "ATK Speed", "range": "+7 ~ +16" },
+        { "name": "ATK/WIZ DMG per 20 levels", "range": "+1.1 ~ +2" },
+        { "name": "ATK/WIZ DMG", "range": "+20 ~ +63" },
+        { "name": "Minimum ATK/WIZ DMG", "range": "+20 ~ +63" },
+        { "name": "Maximum ATK/WIZ DMG", "range": "+30 ~ +73" },
+        { "name": "Reduced AG Consumption", "range": "+40% ~ +49%" }
+      ]
+    },
+    "Ice": {
+      "role": "offensive",
+      "itemType": "weapon",
+      "options": [
+        { "name": "Restore HP per monster kill", "range": "+250 ~ +541" },
+        { "name": "Restore Mana per monster kill", "range": "+400 ~ +859" },
+        { "name": "Skill DMG", "range": "+37 ~ +100" },
+        { "name": "ATK Rate", "range": "+25 ~ +83" },
+        { "name": "Item Durability", "range": "+30% ~ +66%" }
+      ]
+    },
+    "Lightning": {
+      "role": "offensive",
+      "itemType": "weapon",
+      "options": [
+        { "name": "Excellent DMG", "range": "+15 ~ +81" },
+        { "name": "Excellent DMG Chance", "range": "+10% ~ +19%" },
+        { "name": "Critical DMG", "range": "+30 ~ +102" },
+        { "name": "Critical DMG Chance", "range": "+8% ~ +17%" }
+      ]
+    },
+    "Wind": {
+      "role": "defensive",
+      "itemType": "armor",
+      "options": [
+        { "name": "HP", "range": "+100 ~ +295" },
+        { "name": "Mana", "range": "+150 ~ +345" },
+        { "name": "AG", "range": "+70 ~ +226" },
+        { "name": "HP Auto-recovery Rate", "range": "+8% ~ +52%" },
+        { "name": "Mana Auto-recovery Rate", "range": "+7% ~ +88%" },
+        { "name": "AG Value", "range": "+5 ~ +23" }
+      ]
+    },
+    "Water": {
+      "role": "defensive",
+      "itemType": "armor",
+      "options": [
+        { "name": "DEF", "range": "+30 ~ +60" },
+        { "name": "DEF Rate", "range": "+10% ~ +19%" },
+        { "name": "Shield item DEF", "range": "+100% ~ +600%" },
+        { "name": "Decreases DMG", "range": "+4% ~ +13%" },
+        { "name": "Reflects DMG", "range": "+5% ~ +14%" }
+      ]
+    },
+    "Earth": {
+      "role": "defensive",
+      "itemType": "armor",
+      "options": [
+        { "name": "Strength", "range": "+6 ~ +24" },
+        { "name": "Agility", "range": "+1 ~ +18" },
+        { "name": "Stamina", "range": "+30 ~ +57" },
+        { "name": "Energy", "range": "+10 ~ +36" }
+      ]
+    }
+  },
+  "seedOptionLimits": [
+    { "option": "Excellent DMG Chance", "max": "70%" },
+    { "option": "Critical DMG Chance", "max": "80%" },
+    { "option": "Decreases DMG", "max": "60%" },
+    { "option": "Reflect DMG", "max": "70%" },
+    { "option": "Increase Shield item DEF", "max": "1800%" }
+  ],
+  "bonusSocketOptions": {
+    "rules": [
+      "Bonus Socket Option is rolled by chance when a required Seed Sphere combination is inserted.",
+      "Tier 1 can roll with any Seed Sphere item level.",
+      "Tier 2 requires Seed Spheres Lv 4 to Lv 7.",
+      "Tier 3 requires Seed Spheres Lv 8 or higher.",
+      "Existing bonus option can reroll or disappear when a Seed Sphere is inserted or removed."
+    ],
+    "weapon": [
+      {
+        "tier": 1,
+        "chance": "30%",
+        "requiredSeedLevel": "any",
+        "options": [
+          { "bonus": "ATK DMG +11 or WIZ DMG +5", "sockets": ["Fire", "Lightning", "Ice"] },
+          { "bonus": "Skill DMG +11", "sockets": ["Lightning", "Ice", "Fire"] }
+        ]
+      },
+      {
+        "tier": 2,
+        "chance": "10%",
+        "requiredSeedLevel": "Lv 4 ~ Lv 7",
+        "options": [
+          { "bonus": "ATK DMG +22 or WIZ DMG +10", "sockets": ["Fire", "Lightning", "Ice"] },
+          { "bonus": "Skill DMG +22", "sockets": ["Lightning", "Ice", "Fire"] }
+        ]
+      },
+      {
+        "tier": 3,
+        "chance": "10%",
+        "requiredSeedLevel": "Lv 8+",
+        "options": [
+          { "bonus": "ATK DMG +33 or WIZ DMG +15", "sockets": ["Fire", "Lightning", "Ice"] },
+          { "bonus": "Skill DMG +33", "sockets": ["Lightning", "Ice", "Fire"] }
+        ]
+      }
+    ],
+    "armor": [
+      {
+        "tier": 1,
+        "chance": "30%",
+        "requiredSeedLevel": "any",
+        "options": [
+          { "bonus": "DEF +24", "sockets": ["Water", "Earth", "Wind"] },
+          { "bonus": "HP +29", "sockets": ["Earth", "Wind", "Water"] }
+        ]
+      },
+      {
+        "tier": 2,
+        "chance": "10%",
+        "requiredSeedLevel": "Lv 4 ~ Lv 7",
+        "options": [
+          { "bonus": "DEF +27", "sockets": ["Water", "Earth", "Wind"] },
+          { "bonus": "HP +31", "sockets": ["Earth", "Wind", "Water"] }
+        ]
+      },
+      {
+        "tier": 3,
+        "chance": "10%",
+        "requiredSeedLevel": "Lv 8+",
+        "options": [
+          { "bonus": "DEF +30", "sockets": ["Water", "Earth", "Wind"] },
+          { "bonus": "HP +33", "sockets": ["Earth", "Wind", "Water"] }
+        ]
+      }
+    ]
+  },
+  "socketSetBonus": [
+    {
+      "bonus": "Double DMG Chance +3%",
+      "requirements": [
+        { "element": "Fire", "count": 1 },
+        { "element": "Ice", "count": 1 },
+        { "element": "Wind", "count": 1 },
+        { "element": "Water", "count": 1 },
+        { "element": "Earth", "count": 1 }
+      ]
+    },
+    {
+      "bonus": "Ignore DEF Chance +1%",
+      "requirements": [
+        { "element": "Fire", "count": 1 },
+        { "element": "Ice", "count": 1 },
+        { "element": "Earth", "count": 2 },
+        { "element": "Wind", "count": 3 },
+        { "element": "Water", "count": 3 }
+      ]
+    }
+  ],
+  "socketWeapons": [
+    { "name": "Absolute Scepter", "damage": "114 ~ 132", "wizardryRaise": "36%", "attackSpeed": 40, "requirements": { "strength": 501, "agility": 117 }, "class": "DL" },
+    { "name": "Dark Stinger Bow", "damage": "162 ~ 184", "attackSpeed": 55, "requirements": { "strength": 148, "agility": 860 }, "class": "ME" },
+    { "name": "Deadly Staff", "damage": "57 ~ 59", "wizardryRaise": "63%", "attackSpeed": 30, "requirements": { "strength": 214, "agility": 94 }, "class": "MG" },
+    { "name": "Eternal Wing Stick", "damage": "66 ~ 74", "wizardryRaise": "53%", "attackSpeed": 30, "requirements": { "strength": 271, "agility": 77 }, "class": "BS" },
+    { "name": "Flamberge", "damage": "115 ~ 126", "attackSpeed": 40, "requirements": { "strength": 813, "agility": 237 }, "class": "BK" },
+    { "name": "Frost Mace", "damage": "106 ~ 146", "attackSpeed": 50, "requirements": { "strength": 118, "agility": 88 }, "class": "ME" },
+    { "name": "Frost Rune Mace", "damage": "62 ~ 66", "wizardryRaise": "50%", "attackSpeed": 50, "requirements": { "strength": 137, "agility": 63, "energy": 459 }, "class": "Rune Spell Master" },
+    { "name": "Inberial Staff", "damage": "57 ~ 61", "wizardryRaise": "62%", "attackSpeed": 30, "requirements": { "strength": 217, "agility": 77 }, "class": "DW, MG" },
+    { "name": "Pantera Claws", "damage": "26 ~ 34", "attackSpeed": 40, "requirements": { "strength": 345, "agility": 124 }, "class": "Rage Fighter" },
+    { "name": "Paring Short Sword", "damage": "130 ~ 140", "attackSpeed": 45, "requirements": { "strength": 242, "agility": 789 }, "class": "Royal Slayer" },
+    { "name": "Rectuus Lance", "damage": "78 ~ 89", "attackSpeed": 40, "requirements": { "strength": 311, "agility": 232 }, "class": "Grow Lancer" },
+    { "name": "Rune Bastard Sword", "damage": "98 ~ 122", "wizardryRaise": "54%", "attackSpeed": 45, "requirements": { "strength": 399, "agility": 324, "energy": 114 }, "class": "MG" },
+    { "name": "Sword Breaker", "damage": "91 ~ 99", "attackSpeed": 35, "requirements": { "strength": 231, "agility": 722 }, "class": "BK" }
+  ],
+  "masterySocketWeapons": [
+    "Angelic Bow",
+    "Asura",
+    "Blast Break",
+    "Cyclone Sword",
+    "Devast Claws",
+    "Devil Crossbow",
+    "Horn of Steal",
+    "Soulbringer",
+    "Spite Staff",
+    "Thunderbolt"
+  ],
+  "socketShields": [
+    { "name": "Crimson Glory", "defense": 19, "defenseRate": 90, "requirements": { "strength": 316, "agility": 169 } },
+    { "name": "Frost Barrier", "defense": 14, "defenseRate": 58, "requirements": { "strength": 97, "agility": 177, "energy": 122 } },
+    { "name": "Grace Shield", "defense": 14, "defenseRate": 75, "requirements": { "strength": 120, "agility": 101 } },
+    { "name": "Guardian Shield", "defense": 12, "defenseRate": 30, "requirements": { "strength": 191, "agility": 77 } },
+    { "name": "Salamander Shield", "defense": 20, "defenseRate": 96, "requirements": { "strength": 264, "agility": 206 } }
+  ],
+  "masterySocketShields": [
+    { "name": "Ambition Shield", "defense": 25, "defenseRate": 75, "requirements": { "strength": 428, "agility": 114 } },
+    { "name": "Constant Shield", "defense": 23, "defenseRate": 78, "requirements": { "strength": 259, "agility": 188 } },
+    { "name": "Dark Devil Shield", "defense": 21, "defenseRate": 61, "requirements": { "strength": 210, "agility": 74 } },
+    { "name": "Lazy Wind Shield", "defense": 36, "defenseRate": 108, "requirements": { "strength": 279, "agility": 236 } },
+    { "name": "Light Lord Shield", "defense": 23, "defenseRate": 69, "requirements": { "strength": 79, "agility": 150 } },
+    { "name": "Magic Knight Shield", "defense": 29, "defenseRate": 87, "requirements": { "strength": 223, "agility": 89 } }
+  ],
+  "socketArmorSets": [
+    { "name": "Bravery", "baseSetDefense": 258 },
+    { "name": "Destruction", "baseSetDefense": 201 },
+    { "name": "Divine Rune", "baseSetDefense": 260 },
+    { "name": "Divine", "baseSetDefense": 213 },
+    { "name": "Eternal Wing", "baseSetDefense": 186 },
+    { "name": "Fidelity", "baseSetDefense": 318 },
+    { "name": "Grace", "baseSetDefense": 188 },
+    { "name": "Hades", "baseSetDefense": 200 },
+    { "name": "Phantom", "baseSetDefense": 249 },
+    { "name": "Royal", "baseSetDefense": 220 },
+    { "name": "Seraphim", "baseSetDefense": 248 },
+    { "name": "Tigris", "baseSetDefense": 197 },
+    { "name": "Titan", "baseSetDefense": 331 }
+  ],
+  "masterySocketArmorSets": [
+    { "name": "Ambition", "baseSetDefense": 265 },
+    { "name": "Constant", "baseSetDefense": 231 },
+    { "name": "Crimson Skull", "baseSetDefense": 232 },
+    { "name": "Dark Devil", "baseSetDefense": 242 },
+    { "name": "Hell Night", "baseSetDefense": 285 },
+    { "name": "Lazy Wind", "baseSetDefense": 343 },
+    { "name": "Light Lord Rune", "baseSetDefense": 320 },
+    { "name": "Light Lord", "baseSetDefense": 258 },
+    { "name": "Magic Knight", "baseSetDefense": 237 },
+    { "name": "Sticky", "baseSetDefense": 293 },
+    { "name": "Stormwing", "baseSetDefense": 376 },
+    { "name": "Succubus", "baseSetDefense": 231 },
+    { "name": "Trace", "baseSetDefense": 363 }
+  ],
+  "versionClassification": {
+    "v6PriorityOrValidate": [
+      "Socket item level 380 system",
+      "Seed Master",
+      "Seed Spheres Lv 1 to Lv 10",
+      "Raklion",
+      "Selupan",
+      "Medusa",
+      "Socket weapons, shields and sets"
+    ],
+    "highVersionFuture": [
+      "Mastery socket items",
+      "Character level 400 mastery socket sets",
+      "High-version classes such as Grow Lancer, Rune Mage, Slayer, Lemuria and others"
+    ]
+  },
+  "modelingNotes": [
+    "Socket items need a calculator-style UI because socket order can matter for bonus options.",
+    "Store item sockets as an ordered array, each socket containing element, seed option, seed sphere level and whether it is mounted.",
+    "Do not merge Seed Option, Bonus Socket Option, Socket Set Bonus, Harmony, Life, Luck and Skill into one generic option list.",
+    "The future item tooltip should show socket rows, seed element icons, mounted option value and active bonus state.",
+    "For admin CRUD, allow attaching images to seed, sphere, seed sphere, item, set and socket process diagrams separately."
+  ]
+}

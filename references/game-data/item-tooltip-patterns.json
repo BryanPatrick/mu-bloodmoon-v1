@@ -1,0 +1,84 @@
+{
+  "source": {
+    "name": "Blood Moon item tooltip visual patterns",
+    "updatedAt": "2026-06-16",
+    "notes": [
+      "Base visual para o futuro componente de tooltip de itens.",
+      "As cores devem respeitar o padrao in-game sempre que possivel.",
+      "As imagens de referencia ficam em public/dev-references/visual/tooltips."
+    ]
+  },
+  "patterns": {
+    "ancient": {
+      "referenceTitle": "Rave's Plate Armor +11",
+      "referenceImages": [
+        "/dev-references/visual/tooltips/tooltip-ancient-raves-plate-armor-top.png",
+        "/dev-references/visual/tooltips/tooltip-ancient-raves-plate-armor-bottom.png"
+      ],
+      "nameColor": "green",
+      "lineOrder": [
+        "item name and upgrade level",
+        "base defensive stat",
+        "durability",
+        "requirements",
+        "class restrictions",
+        "regular item options",
+        "Set Item Equipment Information title",
+        "set family name",
+        "equipped or required set pieces",
+        "active set bonuses"
+      ],
+      "colors": {
+        "itemName": "green",
+        "normalStats": "white",
+        "blockedClassRestriction": "red",
+        "regularOptions": "blue",
+        "setInformationTitle": "yellow",
+        "setNameAndPieces": "green",
+        "activeSetBonuses": "blue"
+      },
+      "observedLines": [
+        "Rave's Plate Armor +11",
+        "Armor: 91",
+        "Durability: [85/91]",
+        "Strength available: 448",
+        "Can be equipped by Dark Knight",
+        "Can be equipped by Magic Gladiator",
+        "Can be equipped by Rage Fighter",
+        "Increase stamina +5",
+        "Additional defense +12",
+        "Set Item Equipment Information",
+        "Rave's Set",
+        "Rave's Plate Helm",
+        "Rave's Plate Armor",
+        "Rave's Plate Pants",
+        "Increase Skill Damage +20",
+        "Double Damage Chance +10%",
+        "Damage when using two handed weapon",
+        "Ignore Enemy's Defense +5%"
+      ],
+      "implementationNotes": [
+        "A segunda imagem enviada continua verticalmente a primeira; renderizar como um unico tooltip longo.",
+        "Linhas de classe bloqueada aparecem em vermelho, mesmo quando estao no meio do bloco de requisitos.",
+        "Separar bonus de Ancient Set das opcoes regulares do item.",
+        "O nome verde identifica Ancient e nao deve ser confundido com Excellent, Socket, Harmony ou Archangel."
+      ]
+    },
+    "socket": {
+      "referenceTitle": "Titan Boots socket tooltip",
+      "nameColor": "purple",
+      "colors": {
+        "itemName": "purple",
+        "normalStats": "white",
+        "regularOptions": "blue",
+        "socketInformationTitle": "magenta",
+        "emptySockets": "gray"
+      },
+      "implementationNotes": [
+        "Socket item option info aparece em magenta/rosa.",
+        "Sockets sem aplicacao aparecem em cinza.",
+        "Nome roxo diferencia Socket de Ancient e Archangel."
+      ]
+    }
+  }
+}
