@@ -194,6 +194,50 @@ Conteudo catalogado:
 - 2896 imagens copiadas para o public do app com nomes normalizados por categoria e item.
 - Base para filtros futuros por personagem, classe/evolucao, nome do equipamento e busca textual.
 
+### Guia MU Online - Wiki PvM, mapas, skills e sistemas
+
+Arquivo promovido para o app:
+
+- `apps/web/data/guiamuReferences.ts`
+
+Fontes iniciais:
+
+- https://www.guiamuonline.com/lorencia-drop-normal
+- https://www.guiamuonline.com/dark-knight-skill
+- https://www.guiamuonline.com/lorencia-mapa
+- https://www.guiamuonline.com/spot/spot.html
+- https://www.guiamuonline.com/eventos-mu-online
+- https://www.guiamuonline.com/quest-mu-online
+- https://www.guiamuonline.com/npc
+- https://www.guiamuonline.com/como-jugar
+
+Conteudo a coletar:
+
+- Drops por mapa, mob, boss e categoria de item.
+- Skills por personagem, arma, orb, livro, pet e evento.
+- Mapas, cidades, conexoes, spots de up e coordenadas.
+- Eventos, quests, NPCs e primeiros passos.
+- Relacionamentos entre mapa, mob, drop, spot, quest e NPC.
+
+Regra visual:
+
+- Imagens externas com marca dagua entram apenas como referencia interna com fonte.
+- Para publicacao, gerar/remasterizar assets proprios limpos mantendo fidelidade ao jogo.
+
+### Blood Moon - regras de equipamento e joias
+
+Arquivos promovidos para o app:
+
+- `apps/web/data/equipmentOptionRules.ts`
+- `apps/web/data/jewelReferenceRules.ts`
+
+Conteudo catalogado:
+
+- Qualidades de equipamento: Normal, Excellent, Ancient, Socket, Mastery Ancient e Lucky Set.
+- Regras de Luck, Additional Option, Excellent Option e Set Item Equipment Information.
+- Registro inicial de Jewel of Harmony, Jewel of Guardian e Seed Sphere.
+- Diretriz visual: brilho de upgrade/bless nao representa o item base; linhas amarelas indicam Harmony; linhas de Siege/Guardian e Socket dependem da versao e do item elegivel.
+
 ## Proximas coletas recomendadas
 
 - MU Online Fanz - Dark Knight.

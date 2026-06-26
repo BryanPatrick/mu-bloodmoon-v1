@@ -13,10 +13,10 @@
         <h2 class="bm-heading mt-[6px] font-display text-2xl font-bold">Conteudos</h2>
 
         <nav class="mt-5 grid gap-2">
-          <div v-for="section in navigationSections" :key="section.key" class="border-l border-white/12 pl-3">
+          <div v-for="section in navigationSections" :key="section.key">
             <button
               class="bm-nav-link flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm font-bold"
-              :class="{ 'bm-nav-link-active': activeSectionKey === section.key && !activeTopicKey }"
+              :class="{ 'bm-nav-link-active': openSections.includes(section.key) || activeSectionKey === section.key }"
               type="button"
               @click="selectSection(section.key)"
             >
@@ -28,7 +28,7 @@
               />
             </button>
 
-            <div v-if="section.topics.length && openSections.includes(section.key)" class="ml-3 mt-1 grid gap-1 border-l border-white/10 pl-3">
+            <div v-if="section.topics.length && openSections.includes(section.key)" class="mt-1 grid gap-1 pl-4">
               <button
                 v-for="topic in section.topics"
                 :key="topic.key"
@@ -46,10 +46,21 @@
         </nav>
       </aside>
 
-      <section class="bm-panel min-h-[420px] rounded-md p-[24px]">
+      <section class="bm-panel rounded-md p-[24px]">
+        <div v-if="!activeTopic" class="rounded-md border border-dashed border-white/15 bg-black/15 p-[24px] text-center">
+          <div>
+            <p class="bm-kicker">Wiki Blood Moon</p>
+            <h2 class="bm-heading mt-[6px] font-display text-3xl font-bold">Selecione um conteudo</h2>
+            <p class="bm-muted mt-[6px] max-w-xl text-sm leading-6">
+              Escolha uma categoria no menu lateral e depois selecione um item para renderizar o conteudo aqui.
+            </p>
+          </div>
+        </div>
+
+        <template v-else>
         <div class="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p class="bm-kicker">{{ activeTopic ? 'Topico da wiki' : 'Biblioteca' }}</p>
+            <p class="bm-kicker">Topico da wiki</p>
             <h2 class="bm-heading mt-[6px] font-display text-3xl font-bold">{{ contentTitle }}</h2>
             <p class="bm-muted mt-[6px] max-w-3xl text-sm leading-6">{{ contentDescription }}</p>
           </div>
@@ -58,7 +69,7 @@
           </span>
         </div>
 
-        <div v-if="activeTopic" class="mt-6 grid gap-4">
+        <div class="mt-6 grid gap-4">
           <div v-if="isSetsTopic" class="grid gap-5">
             <div class="grid gap-3 rounded-md border border-white/10 bg-black/20 p-[24px]">
               <div class="flex flex-wrap items-end justify-between gap-4">
@@ -67,20 +78,6 @@
                   <p class="bm-muted mt-[6px] text-sm leading-6">
                     Default mostra todos os itens, sempre do mais fraco ao mais forte.
                   </p>
-                </div>
-                <div class="grid grid-cols-3 gap-2 text-center text-xs font-black uppercase tracking-[0.14em] text-zinc-300">
-                  <div class="rounded-md border border-white/10 bg-white/[0.04] px-3 py-2">
-                    <span class="block font-display text-xl text-white">{{ filteredSetCards.length }}</span>
-                    Listados
-                  </div>
-                  <div class="rounded-md border border-white/10 bg-white/[0.04] px-3 py-2">
-                    <span class="block font-display text-xl text-white">{{ setCharacterOptions.length }}</span>
-                    Personagens
-                  </div>
-                  <div class="rounded-md border border-white/10 bg-white/[0.04] px-3 py-2">
-                    <span class="block font-display text-xl text-white">{{ setCards.length }}</span>
-                    Total
-                  </div>
                 </div>
               </div>
 
@@ -122,7 +119,8 @@
             </div>
 
             <div class="overflow-hidden rounded-md border border-white/10 bg-black/20">
-              <div class="grid grid-cols-[64px_1fr_96px] gap-3 border-b border-white/10 bg-white/[0.035] px-4 py-3 text-xs font-black uppercase tracking-[0.16em] text-zinc-400 md:grid-cols-[64px_1.15fr_0.85fr_1fr_0.9fr_112px]">
+              <div class="grid grid-cols-[52px_64px_1fr_96px] gap-3 border-b border-white/10 bg-white/[0.035] px-4 py-3 text-xs font-black uppercase tracking-[0.16em] text-zinc-400 md:grid-cols-[52px_64px_1.15fr_0.85fr_1fr_0.9fr_112px]">
+                <span>Visual</span>
                 <span>Tier</span>
                 <span>Equipamento</span>
                 <span class="hidden md:block">Personagem</span>
@@ -135,8 +133,23 @@
                 <article
                   v-for="set in paginatedSetCards"
                   :key="set.key"
-                  class="grid grid-cols-[64px_1fr_96px] gap-3 border-b border-white/10 px-4 py-3 last:border-b-0 md:grid-cols-[64px_1.15fr_0.85fr_1fr_0.9fr_112px]"
+                  class="grid grid-cols-[52px_64px_1fr_96px] gap-3 border-b border-white/10 px-4 py-3 last:border-b-0 md:grid-cols-[52px_64px_1.15fr_0.85fr_1fr_0.9fr_112px]"
                 >
+                  <button
+                    class="grid size-11 place-items-center overflow-hidden rounded-md border border-white/10 bg-white/[0.04] transition hover:border-ember/50 hover:bg-ember/10"
+                    type="button"
+                    @click="openSetModal(set)"
+                  >
+                    <img
+                      v-if="setPreviewImage(set)"
+                      :src="setPreviewImage(set)"
+                      :alt="`${set.name} preview`"
+                      class="max-h-10 max-w-10 object-contain"
+                      loading="lazy"
+                      decoding="async"
+                    >
+                    <span v-else class="font-display text-sm font-black text-white/30">{{ set.name.slice(0, 1) }}</span>
+                  </button>
                   <span class="font-display text-lg font-black text-ember">{{ set.tierLabel }}</span>
                   <div>
                     <h4 class="font-display text-lg font-bold text-white">{{ set.name }}</h4>
@@ -187,6 +200,44 @@
             </div>
           </div>
 
+          <div v-else-if="guiamuSourcesForTopic.length" class="grid gap-4">
+            <div class="rounded-md border border-white/10 bg-black/20 p-[24px]">
+              <p class="bm-kicker">Base externa estruturada</p>
+              <h3 class="bm-heading mt-[6px] font-display text-2xl font-bold">{{ activeTopic.label }}</h3>
+              <p class="bm-muted mt-[6px] text-sm leading-6">
+                Fontes cadastradas para coleta, normalizacao e revisao antes de publicar no Blood Moon.
+                As imagens externas ficam apenas como referencia ate gerarmos ou remasterizarmos assets proprios.
+              </p>
+            </div>
+
+            <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              <article
+                v-for="source in guiamuSourcesForTopic"
+                :key="source.key"
+                class="rounded-md border border-white/10 bg-black/20 p-4"
+              >
+                <div class="flex items-start justify-between gap-3">
+                  <div>
+                    <p class="bm-kicker">{{ guiamuTopicLabels[source.type] }}</p>
+                    <h4 class="mt-2 font-display text-xl font-black text-white">{{ source.title }}</h4>
+                  </div>
+                  <span class="rounded bg-white/10 px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-zinc-300">
+                    {{ guiamuStatusLabels[source.status] }}
+                  </span>
+                </div>
+                <p class="mt-3 text-xs leading-5 text-zinc-400">{{ source.scope }}</p>
+                <p class="mt-3 text-xs leading-5 text-zinc-500">{{ source.notes }}</p>
+                <NuxtLink
+                  :to="source.sourceUrl"
+                  class="mt-4 inline-flex rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-white transition hover:border-ember/50 hover:bg-ember/15"
+                  target="_blank"
+                >
+                  Abrir fonte
+                </NuxtLink>
+              </article>
+            </div>
+          </div>
+
           <div v-else class="rounded-md border border-white/10 bg-black/20 p-[24px]">
             <h3 class="bm-heading font-display text-2xl font-bold">{{ activeTopic.label }}</h3>
             <p class="bm-muted mt-[6px] text-sm leading-6">
@@ -202,28 +253,7 @@
             </NuxtLink>
           </div>
         </div>
-
-        <div v-else class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          <template v-for="topic in activeTopics" :key="topic.key">
-            <button
-              v-if="!topic.disabled"
-              class="bm-nav-link rounded-md border border-white/10 p-[24px] text-left"
-              type="button"
-              @click="selectTopic(activeSectionKey, topic.key)"
-            >
-              <strong class="bm-heading block">{{ topic.label }}</strong>
-              <span class="bm-muted mt-[6px] block text-xs leading-5">Renderizar este conteudo no painel da Wiki.</span>
-            </button>
-            <span
-              v-else
-              class="cursor-not-allowed rounded-md border border-white/10 bg-white/[0.035] p-[24px]"
-              title="Disponivel em uma versao futura"
-            >
-              <strong class="block text-zinc-500">{{ topic.label }}</strong>
-              <span class="mt-[6px] block text-xs font-bold uppercase tracking-[0.18em] text-ember">Futuro</span>
-            </span>
-          </template>
-        </div>
+        </template>
       </section>
     </section>
 
@@ -235,26 +265,7 @@
         aria-modal="true"
       >
         <div class="relative max-h-[92vh] w-full max-w-[1760px] overflow-auto rounded-md border border-white/15 bg-[#101114] p-4 shadow-2xl sm:p-5">
-          <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <div class="flex flex-wrap gap-2">
-              <button
-                class="rounded-md border px-4 py-2 text-xs font-black uppercase tracking-[0.16em] transition"
-                :class="modalMode === 'equipment' ? 'border-ember/60 bg-ember/20 text-white' : 'border-white/10 bg-white/[0.04] text-zinc-400'"
-                type="button"
-                @click="modalMode = 'equipment'"
-              >
-                Visual
-              </button>
-              <button
-                class="rounded-md border px-4 py-2 text-xs font-black uppercase tracking-[0.16em] transition"
-                :class="modalMode === 'comparison' ? 'border-ember/60 bg-ember/20 text-white' : 'border-white/10 bg-white/[0.04] text-zinc-400'"
-                type="button"
-                @click="modalMode = 'comparison'"
-              >
-                Comparar
-              </button>
-            </div>
-
+          <div class="mb-4 flex justify-end">
             <button
               class="rounded-md border border-white/15 bg-white/[0.06] p-3 text-white transition hover:border-blood-400/60 hover:bg-blood-500/15"
               type="button"
@@ -265,7 +276,7 @@
             </button>
           </div>
 
-          <div v-if="modalMode === 'equipment'" class="grid gap-4 xl:grid-cols-[300px_390px_1fr] 2xl:grid-cols-[340px_430px_1fr]">
+          <div class="grid gap-4 xl:grid-cols-[300px_390px_1fr] 2xl:grid-cols-[340px_430px_1fr]">
             <section class="rounded-md border border-white/10 bg-black/28 p-4">
               <p class="bm-kicker">Set completo</p>
               <h3 class="bm-heading mt-2 font-display text-3xl font-black">{{ selectedSet.name }}</h3>
@@ -290,20 +301,14 @@
             <section class="rounded-md border border-white/10 bg-black/28 p-4">
               <div class="flex flex-wrap gap-2">
                 <button
+                  v-for="quality in selectedAvailableQualities"
+                  :key="quality"
                   class="rounded-md border px-4 py-2 text-xs font-black uppercase tracking-[0.16em]"
-                  :class="setQuality === 'normal' ? 'border-ember/60 bg-ember/20 text-white' : 'border-white/10 bg-white/[0.04] text-zinc-400'"
+                  :class="qualityButtonClass(quality)"
                   type="button"
-                  @click="setQuality = 'normal'"
+                  @click="setQuality = quality"
                 >
-                  Normal
-                </button>
-                <button
-                  class="rounded-md border px-4 py-2 text-xs font-black uppercase tracking-[0.16em]"
-                  :class="setQuality === 'excellent' ? 'border-emerald-400/60 bg-emerald-400/15 text-white' : 'border-white/10 bg-white/[0.04] text-zinc-400'"
-                  type="button"
-                  @click="setQuality = 'excellent'"
-                >
-                  Excelente
+                  {{ equipmentQualityLabels[quality] }}
                 </button>
               </div>
 
@@ -335,7 +340,7 @@
                   v-for="option in selectedEquipmentOptionRows"
                   :key="option.key"
                   class="rounded-md border px-3 py-2 text-xs font-bold leading-5"
-                  :class="option.scope === 'excellent' ? 'border-emerald-400/20 bg-emerald-400/[0.06] text-emerald-300' : 'border-sky-400/20 bg-sky-400/[0.05] text-sky-300'"
+                  :class="optionClass(option)"
                 >
                   {{ option.label }}
                 </p>
@@ -349,7 +354,7 @@
                   <h3 class="mt-2 font-display text-2xl font-black text-white">Pecas equipadas</h3>
                 </div>
                 <span class="rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-xs font-black uppercase tracking-[0.14em] text-zinc-300">
-                  {{ setQuality === 'excellent' ? 'Excelente' : 'Normal' }}
+                  {{ equipmentQualityLabels[setQuality] }}
                 </span>
               </div>
 
@@ -365,7 +370,7 @@
                   </div>
                   <div>
                     <p class="bm-kicker">{{ piece.label }}</p>
-                    <h4 class="mt-2 font-display text-xl font-black" :class="setQuality === 'excellent' ? 'text-emerald-400' : 'text-white'">
+                    <h4 class="mt-2 font-display text-xl font-black" :class="selectedQualityTitleClass">
                       {{ piece.displayTitle }}
                     </h4>
                     <dl class="mt-3 grid gap-1 text-xs leading-5 text-zinc-300">
@@ -391,16 +396,6 @@
               </div>
             </section>
           </div>
-
-          <div v-else class="grid min-h-[560px] place-items-center rounded-md border border-dashed border-white/15 bg-black/25 p-8 text-center">
-            <div>
-              <p class="bm-kicker">Comparacao</p>
-              <h3 class="mt-2 font-display text-3xl font-black text-white">Proximo modal</h3>
-              <p class="mt-3 max-w-xl text-sm leading-6 text-zinc-400">
-                Espaco reservado para compararmos sets, refinamentos e qualidade Normal/Excelente na proxima etapa.
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </Teleport>
@@ -410,6 +405,19 @@
 <script setup lang="ts">
 import { ChevronDown, X } from 'lucide-vue-next'
 import { devReferenceAssets, type DevReferenceAsset } from '~/data/devReferenceAssets'
+import {
+  ancientSetOptions,
+  baseLuckAndAdditionalOptions,
+  equipmentQualityLabels,
+  excellentDefenseOptions,
+  harmonyAndGuardianOptions,
+  luckySetOptions,
+  masteryAncientOptions,
+  socketSeedSphereOptions,
+  type EquipmentOptionRule,
+  type EquipmentQualityKey
+} from '~/data/equipmentOptionRules'
+import { getGuiamuSourcesForTopic, guiamuStatusLabels, guiamuTopicLabels } from '~/data/guiamuReferences'
 import { loadGuideSetItems, type GuideEquipmentItem } from '~/data/guiamuonlineItems'
 import { permissions } from '~/data/security'
 import ancientItemsData from '../../../references/game-data/muonlinefanz-ancient-items-data.json'
@@ -447,15 +455,6 @@ type AncientSetReference = {
   setOptions?: { pieces: number | string, option: string }[]
   pieces?: { name: string, defense?: number, requirements?: Record<string, number> }[]
 }
-type ModalMode = 'equipment' | 'comparison'
-type SetQuality = 'normal' | 'excellent'
-type EquipmentOption = {
-  key: string
-  label: string
-  scope: 'normal' | 'excellent'
-  appliesTo: 'all' | 'defense' | 'offense'
-}
-
 const { dictionary } = useLocale()
 const { hasPermission, loadSession } = useAuth()
 const futureCharacters = ['Grow Lancer', 'Rune Mage', 'Slayer', 'Gun Crusher', 'White Wizard', 'Mage']
@@ -468,8 +467,7 @@ const setPageSize = 20
 const selectedSet = ref<SetCard | null>(null)
 const selectedGuideSetItems = ref<GuideEquipmentItem[]>([])
 const selectedGuideLoadId = ref(0)
-const modalMode = ref<ModalMode>('equipment')
-const setQuality = ref<SetQuality>('normal')
+const setQuality = ref<EquipmentQualityKey>('normal')
 const blessingLevel = ref(0)
 
 const setPieceNames = ['Armor', 'Boots', 'Gloves', 'Helm', 'Pants', 'Set']
@@ -505,19 +503,6 @@ const setModalPieces = [
     guideCategory: 'Boots',
     aliases: ['Boots']
   }
-]
-const normalArmorOptions: EquipmentOption[] = [
-  { key: 'luck-soul', label: 'Luck: Jewel of Soul success rate +25%', scope: 'normal', appliesTo: 'all' },
-  { key: 'luck-critical', label: 'Luck: Critical Damage Rate +5%', scope: 'normal', appliesTo: 'all' },
-  { key: 'additional-defense', label: 'Additional defense +12', scope: 'normal', appliesTo: 'defense' }
-]
-const defensiveExcellentOptions: EquipmentOption[] = [
-  { key: 'excellent-hp', label: 'HP +4%', scope: 'excellent', appliesTo: 'defense' },
-  { key: 'excellent-mana', label: 'Mana +4%', scope: 'excellent', appliesTo: 'defense' },
-  { key: 'excellent-def-rate', label: 'DEF Rate +10%', scope: 'excellent', appliesTo: 'defense' },
-  { key: 'excellent-decrease-damage', label: 'Decreases DMG +4%', scope: 'excellent', appliesTo: 'defense' },
-  { key: 'excellent-reflect', label: 'Reflect DMG by +5%', scope: 'excellent', appliesTo: 'defense' },
-  { key: 'excellent-zen', label: 'Amount of Zen dropped from monsters +30%', scope: 'excellent', appliesTo: 'defense' }
 ]
 const ancientSetReferences = ((ancientItemsData as { sampleSetsCapturedFromPage?: AncientSetReference[] }).sampleSetsCapturedFromPage || [])
 const characterEvolutionMap: Record<string, string[]> = {
@@ -593,19 +578,22 @@ const navigationSections = computed<WikiSection[]>(() =>
 )
 
 const activeSection = computed(() =>
-  navigationSections.value.find((section) => section.key === activeSectionKey.value) || navigationSections.value[0]
+  navigationSections.value.find((section) => section.key === activeSectionKey.value)
 )
 
 const activeTopics = computed(() => activeSection.value?.topics || [])
 const activeTopic = computed(() => activeTopics.value.find((topic) => topic.key === activeTopicKey.value))
 const isSetsTopic = computed(() => activeSectionKey.value === 'equipamentos' && activeTopicKey.value === 'sets')
+const guiamuSourcesForTopic = computed(() =>
+  activeTopicKey.value ? getGuiamuSourcesForTopic(activeTopicKey.value) : []
+)
 const contentTitle = computed(() => activeTopic.value?.label || activeSection.value?.title || 'Wiki')
 const contentDescription = computed(() =>
   activeTopic.value
     ? `Conteudo de ${activeTopic.value.label} dentro da area ${activeSection.value?.title}.`
     : activeSection.value?.description || 'Selecione uma categoria no menu lateral.'
 )
-const contentBadge = computed(() => activeTopic.value ? activeSection.value?.title : `${activeTopics.value.length} topicos`)
+const contentBadge = computed(() => activeTopic.value ? activeSection.value?.title : 'Selecione')
 
 const normalizeSetName = (title: string) => {
   let name = title.replace(/\s+Set$/i, '').trim()
@@ -763,6 +751,9 @@ const paginatedSetCards = computed(() => {
   return filteredSetCards.value.slice(start, start + setPageSize)
 })
 
+const setPreviewImage = (set: SetCard) =>
+  set.fullSetImage || set.pieceCards.find((piece) => piece.image)?.image
+
 const selectedAncientReference = computed(() => {
   if (!selectedSet.value) {
     return null
@@ -779,11 +770,94 @@ const selectedAncientReference = computed(() => {
   }) || null
 })
 
-const selectedEquipmentOptionRows = computed(() =>
-  setQuality.value === 'excellent'
-    ? [...normalArmorOptions, ...defensiveExcellentOptions]
-    : normalArmorOptions
-)
+const socketSetNames = ['Titan', 'Brave', 'Hades', 'Seraphim', 'Phantom', 'Destroy', 'Crimson', 'Eternal', 'Queen']
+const masteryAncientSetNames = ['Bloodangel', 'Darkangel', 'Holyangel', 'Soul', 'Blue Eye', 'Manticore', 'Silver Heart', 'Brilliant']
+const luckySetNames = ['Lucky']
+
+const selectedSetName = computed(() => selectedSet.value?.name || '')
+const isSocketSet = computed(() => socketSetNames.some((name) => selectedSetName.value.toLowerCase().includes(name.toLowerCase())))
+const isMasteryAncientSet = computed(() => masteryAncientSetNames.some((name) => selectedSetName.value.toLowerCase().includes(name.toLowerCase())))
+const isLuckySet = computed(() => luckySetNames.some((name) => selectedSetName.value.toLowerCase().includes(name.toLowerCase())))
+
+const selectedAvailableQualities = computed<EquipmentQualityKey[]>(() => {
+  if (isLuckySet.value) {
+    return ['lucky']
+  }
+
+  if (isMasteryAncientSet.value) {
+    return ['masteryAncient']
+  }
+
+  if (selectedAncientReference.value) {
+    return ['ancient']
+  }
+
+  if (isSocketSet.value) {
+    return ['normal', 'excellent', 'socket']
+  }
+
+  return ['normal', 'excellent']
+})
+
+const selectedEquipmentOptionRows = computed<EquipmentOptionRule[]>(() => {
+  if (setQuality.value === 'lucky') {
+    return luckySetOptions
+  }
+
+  if (setQuality.value === 'masteryAncient') {
+    return [...masteryAncientOptions, ...harmonyAndGuardianOptions]
+  }
+
+  if (setQuality.value === 'ancient') {
+    const setEffects = selectedAncientReference.value?.setOptions?.map((option, index) => ({
+      key: `ancient-set-effect-${index}`,
+      label: `${option.pieces} pecas: ${option.option}`,
+      scope: 'ancient' as const,
+      appliesTo: 'armor' as const
+    })) || ancientSetOptions
+
+    return [...setEffects, ...baseLuckAndAdditionalOptions, ...harmonyAndGuardianOptions]
+  }
+
+  if (setQuality.value === 'socket') {
+    return [...baseLuckAndAdditionalOptions, ...socketSeedSphereOptions, ...harmonyAndGuardianOptions]
+  }
+
+  if (setQuality.value === 'excellent') {
+    return [...baseLuckAndAdditionalOptions, ...excellentDefenseOptions, ...harmonyAndGuardianOptions]
+  }
+
+  return [...baseLuckAndAdditionalOptions, ...harmonyAndGuardianOptions]
+})
+
+const selectedQualityTitleClass = computed(() => ({
+  'text-emerald-400': setQuality.value === 'excellent',
+  'text-lime-400': setQuality.value === 'ancient',
+  'text-violet-300': setQuality.value === 'socket',
+  'text-amber-300': setQuality.value === 'masteryAncient' || setQuality.value === 'lucky',
+  'text-white': setQuality.value === 'normal'
+}))
+
+const qualityButtonClass = (quality: EquipmentQualityKey) => quality === setQuality.value
+  ? {
+      normal: 'border-ember/60 bg-ember/20 text-white',
+      excellent: 'border-emerald-400/60 bg-emerald-400/15 text-white',
+      ancient: 'border-lime-400/60 bg-lime-400/15 text-white',
+      socket: 'border-violet-400/60 bg-violet-400/15 text-white',
+      masteryAncient: 'border-amber-300/60 bg-amber-300/15 text-white',
+      lucky: 'border-amber-300/60 bg-amber-300/15 text-white'
+    }[quality]
+  : 'border-white/10 bg-white/[0.04] text-zinc-400'
+
+const optionClass = (option: EquipmentOptionRule) => ({
+  'border-sky-400/20 bg-sky-400/[0.05] text-sky-300': option.scope === 'normal',
+  'border-emerald-400/20 bg-emerald-400/[0.06] text-emerald-300': option.scope === 'excellent',
+  'border-lime-400/20 bg-lime-400/[0.06] text-lime-300': option.scope === 'ancient',
+  'border-violet-400/20 bg-violet-400/[0.06] text-violet-300': option.scope === 'socket',
+  'border-amber-300/20 bg-amber-300/[0.06] text-amber-200': option.scope === 'mastery' || option.scope === 'lucky',
+  'border-yellow-300/20 bg-yellow-300/[0.06] text-yellow-200': option.scope === 'harmony',
+  'border-fuchsia-300/20 bg-fuchsia-300/[0.06] text-fuchsia-200': option.scope === 'guardian'
+})
 
 const selectedSetUsableByClasses = computed(() => {
   const classes = selectedGuideSetItems.value.flatMap((item) => item?.usableBy || [])
@@ -884,8 +958,7 @@ const openSetModal = async (set: SetCard) => {
   selectedGuideLoadId.value = loadId
   selectedSet.value = set
   selectedGuideSetItems.value = []
-  modalMode.value = 'equipment'
-  setQuality.value = 'normal'
+  setQuality.value = selectedAvailableQualities.value[0] || 'normal'
   blessingLevel.value = 0
   const items = await loadGuideSetItems(set.name)
 
@@ -921,27 +994,25 @@ watch(setTotalPages, (totalPages) => {
   }
 })
 
-function ensureDefaultSelection () {
-  const firstSection = navigationSections.value[0]
-  if (!firstSection) {
-    return
+watch(selectedAvailableQualities, (qualities) => {
+  if (qualities.length && !qualities.includes(setQuality.value)) {
+    setQuality.value = qualities[0]
   }
-
-  if (!activeSectionKey.value || !navigationSections.value.some((section) => section.key === activeSectionKey.value)) {
-    activeSectionKey.value = firstSection.key
-  }
-
-  if (!openSections.value.includes(activeSectionKey.value)) {
-    openSections.value = [activeSectionKey.value]
-  }
-}
+})
 
 onMounted(() => {
   loadSession()
-  ensureDefaultSelection()
 })
 
-watch(navigationSections, ensureDefaultSelection, { immediate: true })
+watch(navigationSections, (sections) => {
+  const validKeys = sections.map((section) => section.key)
+  openSections.value = openSections.value.filter((key) => validKeys.includes(key))
+
+  if (activeSectionKey.value && !validKeys.includes(activeSectionKey.value)) {
+    activeSectionKey.value = ''
+    activeTopicKey.value = ''
+  }
+}, { immediate: true })
 
 const selectSection = (sectionKey: string) => {
   activeSectionKey.value = sectionKey

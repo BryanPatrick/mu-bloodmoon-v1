@@ -10,7 +10,7 @@
             <p class="mt-2 truncate font-display text-2xl font-black">{{ user?.name || 'Conta' }}</p>
           </div>
 
-          <nav class="mt-4 grid gap-2" aria-label="Menu de gerenciamento">
+          <nav v-if="isShellReady" class="mt-4 grid gap-2" aria-label="Menu de gerenciamento">
             <div v-if="referenceItem" class="grid gap-1">
               <button
                 class="bm-nav-link flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left text-sm font-bold"
@@ -47,8 +47,11 @@
               <span>{{ item.label }}</span>
             </NuxtLink>
           </nav>
+          <div v-else class="mt-4 grid gap-2">
+            <div v-for="item in 4" :key="item" class="h-10 rounded-2xl bg-white/8" />
+          </div>
 
-          <div class="mt-5 border-t border-white/10 pt-4">
+          <div v-if="isShellReady" class="mt-5 border-t border-white/10 pt-4">
             <p class="text-[11px] font-black uppercase tracking-[0.24em] text-white/45">Moedas</p>
             <NuxtLink
               v-for="currency in accountCurrencies"
@@ -78,10 +81,12 @@ const route = useRoute()
 const { hasPermission, loadSession, user } = useAuth()
 const { getAccountByUsername, loadManagement } = useManagement()
 const isReferenceOpen = ref(route.path.startsWith('/painel/admin/referencias'))
+const isShellReady = ref(false)
 
 onMounted(() => {
   loadSession()
   loadManagement()
+  isShellReady.value = true
 })
 
 const accountCurrencies = computed(() => {

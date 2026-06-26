@@ -26,6 +26,7 @@ Coletar dados, ideias, nomes, formulas, listas de itens, skills, classes, sistem
 - Evitar apagar informacoes modernas; elas devem ficar catalogadas para uso futuro.
 - Para imagens externas, preferir salvar referencias visuais enviadas pelo usuario ou imagens geradas/aprovadas no projeto.
 - Para imagens de sites externos, guardar descricao, finalidade e URL/fonte quando disponivel, em vez de copiar o acervo inteiro sem curadoria.
+- Imagens com marca dagua devem ficar apenas como referencia interna. Nao publicar essas imagens diretamente; criar/remasterizar asset proprio antes de usar no site publico.
 
 ## Como usar
 

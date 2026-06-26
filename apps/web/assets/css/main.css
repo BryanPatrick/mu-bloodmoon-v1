@@ -79,31 +79,17 @@
   }
 
   .bm-container {
-    width: min(90vw, calc(100% - 2rem));
+    width: 100%;
     max-width: none;
     margin-inline: auto;
-    padding-inline: 1rem;
+    padding-inline: 24px;
   }
 
   .bm-guide-container {
-    width: min(90vw, calc(100% - 2rem));
+    width: 100%;
     max-width: none;
     margin-inline: auto;
-    padding-inline: 1rem;
-  }
-
-  @media (min-width: 640px) {
-    .bm-container,
-    .bm-guide-container {
-      padding-inline: 1.5rem;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .bm-container,
-    .bm-guide-container {
-      padding-inline: 2rem;
-    }
+    padding-inline: 24px;
   }
 
   .bm-panel {
@@ -467,4 +453,76 @@
     box-shadow:
       0 16px 36px rgba(139, 92, 246, 0.22),
       inset 0 1px 0 rgba(255, 255, 255, 0.52);
+  }
+
+  .bm-dashboard-shell {
+    overflow: hidden;
+    border: 1px solid var(--bm-border);
+    border-radius: 28px;
+    background:
+      radial-gradient(circle at 36% 10%, rgba(251, 113, 133, 0.18), transparent 22rem),
+      radial-gradient(circle at 82% 26%, rgba(103, 232, 249, 0.16), transparent 20rem),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.055)),
+      rgba(26, 27, 31, 0.86);
+    box-shadow:
+      0 30px 90px var(--bm-glass-shadow),
+      inset 0 1px 0 rgba(255, 255, 255, 0.32);
+    backdrop-filter: blur(28px) saturate(1.35);
+  }
+
+  .bm-dashboard-card,
+  .bm-dashboard-hero {
+    border: 1px solid var(--bm-border);
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.17), rgba(255, 255, 255, 0.055)),
+      rgba(34, 35, 40, 0.68);
+    box-shadow:
+      0 18px 48px rgba(0, 0, 0, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(22px) saturate(1.28);
+  }
+
+  .bm-dashboard-hero {
+    position: relative;
+    background:
+      linear-gradient(90deg, rgba(8, 9, 13, 0.22), rgba(8, 9, 13, 0.12)),
+      radial-gradient(circle at 84% 18%, rgba(103, 232, 249, 0.28), transparent 17rem),
+      radial-gradient(circle at 72% 82%, rgba(245, 158, 11, 0.22), transparent 18rem),
+      radial-gradient(circle at 28% 34%, rgba(251, 113, 133, 0.25), transparent 19rem),
+      rgba(64, 58, 58, 0.64);
+  }
+
+  .bm-dashboard-hero::after {
+    content: "";
+    position: absolute;
+    inset: auto -8% -42% 40%;
+    height: 86%;
+    border-radius: 999px;
+    background:
+      radial-gradient(circle at 54% 46%, rgba(255, 255, 255, 0.28), transparent 9rem),
+      linear-gradient(135deg, rgba(185, 28, 28, 0.64), rgba(245, 158, 11, 0.28) 42%, rgba(103, 232, 249, 0.22));
+    filter: blur(3px);
+    opacity: 0.72;
+    transform: rotate(-10deg);
+  }
+
+  .bm-dashboard-icon {
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.72);
+    background: rgba(255, 255, 255, 0.07);
+    transition:
+      color 180ms ease,
+      background 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .bm-dashboard-icon:hover {
+    color: #ffffff;
+    border-color: rgba(245, 158, 11, 0.45);
+    background: rgba(245, 158, 11, 0.13);
   }

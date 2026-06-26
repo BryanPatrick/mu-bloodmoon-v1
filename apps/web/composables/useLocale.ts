@@ -184,11 +184,13 @@ const dictionaries: Record<LocaleCode, LocaleDictionary> = {
     ],
     guideCategories: [
       { title: 'Personagens', description: 'Classes, histórias, pontos fortes e builds.', links: characterLinksByRelease },
-      { title: 'Equipamentos', description: 'Sets, armas, asas e acessórios.', links: ['Sets', 'Armas', 'Asas', 'Acessórios'] },
+      { title: 'Equipamentos', description: 'Sets, armas, escudos, asas, acessorios e itens especiais.', links: ['Sets', 'Armas e Escudos', 'Asas e Capas', 'Acessorios', 'Pets e Mounts', 'Consumiveis', 'Jewels', 'Itens Excellent', 'Itens Ancient', 'Itens Socket'] },
       { title: 'Fórmulas', description: 'Status, experiência e taxas do servidor.', links: ['Status de Personagens', 'Experiência', 'Taxas do Servidor'] },
       { title: 'Builds', description: 'Rotas de progressão para PvP, PvM e eventos.', links: ['PvP', 'PvM', 'Boss', 'Eventos'] },
       { title: 'Chaos Machine', description: 'Combinações, materiais, taxas e dicas.', links: ['Chaos Weapon Mix', 'Wing Mix', 'Socket Mix', 'Jewel Mix', 'Eventos de Mix'] },
-      { title: 'Monstros', description: 'Spots, bosses, drops e melhores rotas.', links: ['Spots de Up', 'Bosses', 'Drops'] }
+      { title: 'Mapas e PvM', description: 'Mapas, spots de up, monstros, bosses e drops.', links: ['Mapas', 'Spots de Up', 'Monstros', 'Bosses', 'Drops'] },
+      { title: 'Eventos', description: 'Eventos, recompensas, regras e horarios.', links: ['Blood Castle', 'Devil Square', 'Chaos Castle', 'Castle Siege', 'Crywolf', 'Outros Eventos'] },
+      { title: 'Quests e NPCs', description: 'Quests, NPCs, tutoriais e primeiros passos.', links: ['Quests', 'NPCs', 'Como jogar', 'Primeiros passos'] }
     ]
   },
   'pt-PT': {
@@ -225,11 +227,13 @@ const dictionaries: Record<LocaleCode, LocaleDictionary> = {
     ],
     guideCategories: [
       { title: 'Personagens', description: 'Classes, histórias, pontos fortes e builds.', links: characterLinksByRelease },
-      { title: 'Equipamentos', description: 'Sets, armas, asas e acessórios.', links: ['Sets', 'Armas', 'Asas', 'Acessórios'] },
+      { title: 'Equipamentos', description: 'Sets, armas, escudos, asas, acessorios e itens especiais.', links: ['Sets', 'Armas e Escudos', 'Asas e Capas', 'Acessorios', 'Pets e Mounts', 'Consumiveis', 'Jewels', 'Itens Excellent', 'Itens Ancient', 'Itens Socket'] },
       { title: 'Fórmulas', description: 'Status, experiência e taxas do servidor.', links: ['Status de Personagens', 'Experiência', 'Taxas do Servidor'] },
       { title: 'Builds', description: 'Rotas de progressão para PvP, PvM e eventos.', links: ['PvP', 'PvM', 'Boss', 'Eventos'] },
       { title: 'Chaos Machine', description: 'Combinações, materiais, taxas e dicas.', links: ['Chaos Weapon Mix', 'Wing Mix', 'Socket Mix', 'Jewel Mix', 'Eventos de Mix'] },
-      { title: 'Monstros', description: 'Spots, bosses, drops e melhores rotas.', links: ['Spots de Up', 'Bosses', 'Drops'] }
+      { title: 'Mapas e PvM', description: 'Mapas, spots de up, monstros, bosses e drops.', links: ['Mapas', 'Spots de Up', 'Monstros', 'Bosses', 'Drops'] },
+      { title: 'Eventos', description: 'Eventos, recompensas, regras e horarios.', links: ['Blood Castle', 'Devil Square', 'Chaos Castle', 'Castle Siege', 'Crywolf', 'Outros Eventos'] },
+      { title: 'Quests e NPCs', description: 'Quests, NPCs, tutoriais e primeiros passos.', links: ['Quests', 'NPCs', 'Como jogar', 'Primeiros passos'] }
     ]
   },
   'es-ES': {
@@ -286,11 +290,13 @@ const dictionaries: Record<LocaleCode, LocaleDictionary> = {
     ],
     guideCategories: [
       { title: 'Personajes', description: 'Clases, historias, fortalezas y builds.', links: characterLinksByRelease },
-      { title: 'Equipamiento', description: 'Sets, armas, alas y accesorios.', links: ['Sets', 'Armas', 'Alas', 'Accesorios'] },
+      { title: 'Equipamiento', description: 'Sets, armas, escudos, alas, accesorios e items especiales.', links: ['Sets', 'Armas y Escudos', 'Alas y Capas', 'Accesorios', 'Pets y Mounts', 'Consumibles', 'Jewels', 'Items Excellent', 'Items Ancient', 'Items Socket'] },
       { title: 'Fórmulas', description: 'Status, experiencia y tasas del servidor.', links: ['Status de Personajes', 'Experiencia', 'Tasas del Servidor'] },
       { title: 'Builds', description: 'Rutas de progresión para PvP, PvM y eventos.', links: ['PvP', 'PvM', 'Boss', 'Eventos'] },
       { title: 'Chaos Machine', description: 'Combinaciones, materiales, tasas y consejos.', links: ['Chaos Weapon Mix', 'Wing Mix', 'Socket Mix', 'Jewel Mix', 'Eventos de Mix'] },
-      { title: 'Monstruos', description: 'Spots, bosses, drops y mejores rutas.', links: ['Spots de Level', 'Bosses', 'Drops'] }
+      { title: 'Mapas y PvM', description: 'Mapas, spots, monstruos, bosses y drops.', links: ['Mapas', 'Spots de Level', 'Monstruos', 'Bosses', 'Drops'] },
+      { title: 'Eventos', description: 'Eventos, recompensas, reglas y horarios.', links: ['Blood Castle', 'Devil Square', 'Chaos Castle', 'Castle Siege', 'Crywolf', 'Otros Eventos'] },
+      { title: 'Quests y NPCs', description: 'Quests, NPCs, tutoriales y primeros pasos.', links: ['Quests', 'NPCs', 'Como jugar', 'Primeros pasos'] }
     ]
   },
   'en-US': makeEnglish('US'),
@@ -379,11 +385,13 @@ function makeEnglish(region: 'US' | 'UK'): LocaleDictionary {
     ],
     guideCategories: [
       { title: 'Characters', description: 'Classes, lore, strengths, and builds.', links: characterLinksByRelease },
-      { title: 'Equipment', description: 'Sets, weapons, wings, and accessories.', links: ['Sets', 'Weapons', 'Wings', 'Accessories'] },
+      { title: 'Equipment', description: 'Sets, weapons, shields, wings, accessories, and special items.', links: ['Sets', 'Weapons and Shields', 'Wings and Capes', 'Accessories', 'Pets and Mounts', 'Consumables', 'Jewels', 'Excellent Items', 'Ancient Items', 'Socket Items'] },
       { title: 'Formulas', description: 'Character stats, experience, and server rates.', links: ['Character Stats', 'Experience', 'Server Rates'] },
       { title: 'Builds', description: 'Progression routes for PvP, PvM, and events.', links: ['PvP', 'PvM', 'Boss', 'Events'] },
       { title: 'Chaos Machine', description: 'Mixes, materials, rates, and tips.', links: ['Chaos Weapon Mix', 'Wing Mix', 'Socket Mix', 'Jewel Mix', 'Mix Events'] },
-      { title: 'Monsters', description: 'Spots, bosses, drops, and best routes.', links: ['Leveling Spots', 'Bosses', 'Drops'] }
+      { title: 'Maps and PvM', description: 'Maps, leveling spots, monsters, bosses, and drops.', links: ['Maps', 'Leveling Spots', 'Monsters', 'Bosses', 'Drops'] },
+      { title: 'Events', description: 'Events, rewards, rules, and schedules.', links: ['Blood Castle', 'Devil Square', 'Chaos Castle', 'Castle Siege', 'Crywolf', 'Other Events'] },
+      { title: 'Quests and NPCs', description: 'Quests, NPCs, tutorials, and first steps.', links: ['Quests', 'NPCs', 'How to Play', 'First Steps'] }
     ]
   }
 }
