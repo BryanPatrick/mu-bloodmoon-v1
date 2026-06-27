@@ -32,7 +32,7 @@ export const guideCategories = [
   {
     title: 'Equipamentos',
     description: 'Sets, armas, asas e acessórios.',
-    links: ['Sets', 'Armas e Escudos', 'Asas e Capas', 'Acessórios', 'Pets e Mounts', 'Consumíveis', 'Jewels', 'Itens Excellent', 'Itens Ancient', 'Itens Socket', 'Itens Mastery']
+    links: ['Sets', 'Armas e Escudos', 'Asas e Capas', 'Acessórios', 'Pets e Mounts', 'Consumíveis', 'Jewels']
   },
   {
     title: 'Fórmulas',
