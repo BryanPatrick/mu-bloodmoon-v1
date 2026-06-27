@@ -157,7 +157,7 @@
                   </div>
                   <span class="hidden text-sm font-bold text-zinc-300 md:block">{{ set.characterName }}</span>
                   <span class="hidden text-xs leading-5 text-zinc-400 md:block">{{ set.evolutions.join(', ') }}</span>
-                  <span class="hidden text-xs leading-5 text-zinc-400 md:block">{{ set.status }} · {{ set.compatibility }}</span>
+                  <span class="hidden text-xs leading-5 text-zinc-400 md:block">{{ set.status }} - {{ set.compatibility }}</span>
                   <button
                     class="rounded-md border border-white/10 bg-white/[0.06] px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-white transition hover:border-ember/50 hover:bg-ember/15"
                     type="button"
@@ -195,6 +195,126 @@
             </div>
 
             <div v-if="filteredSetCards.length === 0" class="rounded-md border border-dashed border-white/15 bg-white/[0.035] p-8 text-center">
+              <p class="bm-kicker">Nada encontrado</p>
+              <h3 class="mt-2 font-display text-2xl font-black uppercase text-white">Ajuste os filtros</h3>
+            </div>
+          </div>
+
+          <div v-else-if="isEquipmentCatalogTopic" class="grid gap-5">
+            <div class="grid gap-3 rounded-md border border-white/10 bg-black/20 p-[24px]">
+              <div class="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <h3 class="bm-heading font-display text-2xl font-bold">{{ equipmentCatalogConfig?.title }}</h3>
+                  <p class="bm-muted mt-[6px] text-sm leading-6">
+                    Dados locais do catalogo Guia MU, com imagens servidas pelo proprio projeto.
+                  </p>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-center">
+                  <span class="rounded-md border border-white/10 bg-white/[0.04] px-4 py-2">
+                    <strong class="block font-display text-xl text-white">{{ filteredEquipmentCatalogItems.length }}</strong>
+                    <small class="text-[10px] font-black uppercase tracking-[0.14em] text-zinc-400">Itens</small>
+                  </span>
+                  <span class="rounded-md border border-white/10 bg-white/[0.04] px-4 py-2">
+                    <strong class="block font-display text-xl text-white">{{ equipmentCatalogCategories.length }}</strong>
+                    <small class="text-[10px] font-black uppercase tracking-[0.14em] text-zinc-400">Categorias</small>
+                  </span>
+                </div>
+              </div>
+
+              <div class="grid gap-3 lg:grid-cols-[260px_1fr]">
+                <label class="grid gap-1 text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
+                  Categoria
+                  <select v-model="equipmentCatalogCategoryFilter" class="h-11 rounded-md border border-white/10 bg-white/10 px-3 text-sm font-bold normal-case tracking-normal text-white outline-none focus:border-blood-400/70">
+                    <option class="bg-zinc-950 text-white" value="Default">Default</option>
+                    <option v-for="category in equipmentCatalogCategories" :key="category" class="bg-zinc-950 text-white" :value="category">{{ category }}</option>
+                  </select>
+                </label>
+
+                <label class="grid gap-1 text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
+                  Buscar por nome, classe ou atributo
+                  <input
+                    v-model="equipmentCatalogSearch"
+                    class="h-11 rounded-md border border-white/10 bg-white/10 px-4 text-sm font-bold normal-case tracking-normal text-white outline-none transition placeholder:text-white/45 focus:border-blood-400/70"
+                    placeholder="Digite o nome do equipamento"
+                    type="search"
+                  >
+                </label>
+              </div>
+            </div>
+
+            <div class="overflow-hidden rounded-md border border-white/10 bg-black/20">
+              <div class="grid grid-cols-[52px_1fr_96px] gap-3 border-b border-white/10 bg-white/[0.035] px-4 py-3 text-xs font-black uppercase tracking-[0.16em] text-zinc-400 md:grid-cols-[52px_1fr_0.75fr_1fr_0.8fr_100px]">
+                <span>Visual</span>
+                <span>Equipamento</span>
+                <span class="hidden md:block">Categoria</span>
+                <span class="hidden md:block">Quem usa</span>
+                <span class="hidden md:block">Status</span>
+                <span class="text-right md:text-left">Detalhes</span>
+              </div>
+
+              <article
+                v-for="item in paginatedEquipmentCatalogItems"
+                :key="item.key"
+                class="grid grid-cols-[52px_1fr_96px] gap-3 border-b border-white/10 px-4 py-3 last:border-b-0 md:grid-cols-[52px_1fr_0.75fr_1fr_0.8fr_100px]"
+              >
+                <button
+                  class="grid size-11 place-items-center overflow-hidden rounded-md border border-white/10 bg-white/[0.04] transition hover:border-ember/50 hover:bg-ember/10"
+                  type="button"
+                  @click="openEquipmentItemModal(item)"
+                >
+                  <img
+                    v-if="equipmentCatalogPreviewImage(item)"
+                    :src="equipmentCatalogPreviewImage(item)"
+                    :alt="`${item.name} preview`"
+                    class="max-h-10 max-w-10 object-contain"
+                    loading="lazy"
+                    decoding="async"
+                  >
+                  <span v-else class="font-display text-sm font-black text-white/30">{{ item.name.slice(0, 1) }}</span>
+                </button>
+                <div>
+                  <h4 class="font-display text-lg font-bold text-white">{{ item.name }}</h4>
+                  <p class="mt-1 text-xs leading-5 text-zinc-400">{{ compactListStats(item) }}</p>
+                </div>
+                <span class="hidden text-sm font-bold text-zinc-300 md:block">{{ item.category }}</span>
+                <span class="hidden text-xs leading-5 text-zinc-400 md:block">{{ usableByText(item) }}</span>
+                <span class="hidden text-xs leading-5 text-zinc-400 md:block">{{ equipmentCatalogImageStatus(item) }}</span>
+                <button
+                  class="rounded-md border border-white/10 bg-white/[0.06] px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-white transition hover:border-ember/50 hover:bg-ember/15"
+                  type="button"
+                  @click="openEquipmentItemModal(item)"
+                >
+                  Ver
+                </button>
+              </article>
+            </div>
+
+            <div
+              v-if="filteredEquipmentCatalogItems.length > 0"
+              class="flex flex-wrap items-center justify-between gap-3 rounded-md border border-white/10 bg-black/20 px-4 py-3 text-xs font-bold uppercase tracking-[0.14em] text-zinc-400"
+            >
+              <span>Pagina {{ equipmentCatalogCurrentPage }} de {{ equipmentCatalogTotalPages }} - {{ filteredEquipmentCatalogItems.length }} itens</span>
+              <div class="flex items-center gap-2">
+                <button
+                  class="rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-white transition disabled:cursor-not-allowed disabled:opacity-40"
+                  type="button"
+                  :disabled="equipmentCatalogCurrentPage <= 1"
+                  @click="equipmentCatalogCurrentPage--"
+                >
+                  Anterior
+                </button>
+                <button
+                  class="rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-white transition disabled:cursor-not-allowed disabled:opacity-40"
+                  type="button"
+                  :disabled="equipmentCatalogCurrentPage >= equipmentCatalogTotalPages"
+                  @click="equipmentCatalogCurrentPage++"
+                >
+                  Proxima
+                </button>
+              </div>
+            </div>
+
+            <div v-if="filteredEquipmentCatalogItems.length === 0" class="rounded-md border border-dashed border-white/15 bg-white/[0.035] p-8 text-center">
               <p class="bm-kicker">Nada encontrado</p>
               <h3 class="mt-2 font-display text-2xl font-black uppercase text-white">Ajuste os filtros</h3>
             </div>
@@ -280,16 +400,16 @@
             <section class="rounded-md border border-white/10 bg-black/28 p-4">
               <p class="bm-kicker">Set completo</p>
               <h3 class="bm-heading mt-2 font-display text-3xl font-black">{{ selectedSet.name }}</h3>
-              <p class="mt-2 text-sm font-bold text-zinc-400">{{ selectedSet.characterName }} · Tier {{ selectedSet.tierLabel }}</p>
+              <p class="mt-2 text-sm font-bold text-zinc-400">{{ selectedSet.characterName }} - Tier {{ selectedSet.tierLabel }}</p>
 
               <div class="mt-5 grid min-h-[430px] place-items-center rounded-md border border-white/10 bg-gradient-to-b from-white/[0.06] to-black/30 p-4">
                 <img
-                  v-if="selectedSet.fullSetImage"
+                  v-if="selectedSetFullImage"
                   :alt="`${selectedSet.name} completo`"
                   class="max-h-[390px] max-w-full rounded-sm object-contain"
                   loading="lazy"
                   decoding="async"
-                  :src="selectedSet.fullSetImage"
+                  :src="selectedSetFullImage"
                 >
                 <div v-else class="text-center">
                   <p class="font-display text-4xl font-black text-white/18">{{ selectedSet.name }}</p>
@@ -398,6 +518,80 @@
           </div>
         </div>
       </div>
+
+      <div
+        v-if="selectedEquipmentDisplayItem"
+        class="fixed inset-0 z-50 grid place-items-center bg-black/80 p-3 backdrop-blur-sm"
+        role="dialog"
+        aria-modal="true"
+      >
+        <div class="relative max-h-[92vh] w-full max-w-[1180px] overflow-auto rounded-md border border-white/15 bg-[#101114] p-4 shadow-2xl sm:p-5">
+          <div class="mb-4 flex justify-end">
+            <button
+              class="rounded-md border border-white/15 bg-white/[0.06] p-3 text-white transition hover:border-blood-400/60 hover:bg-blood-500/15"
+              type="button"
+              aria-label="Fechar modal"
+              @click="closeEquipmentItemModal"
+            >
+              <X class="size-5" />
+            </button>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-[320px_1fr]">
+            <section class="rounded-md border border-white/10 bg-black/28 p-4">
+              <p class="bm-kicker">{{ selectedEquipmentDisplayItem.category }}</p>
+              <h3 class="bm-heading mt-2 font-display text-3xl font-black">{{ selectedEquipmentDisplayItem.name }}</h3>
+              <p class="mt-2 text-sm font-bold text-zinc-400">{{ usableByText(selectedEquipmentDisplayItem) }}</p>
+
+              <div class="mt-5 grid min-h-[300px] place-items-center rounded-md border border-white/10 bg-gradient-to-b from-white/[0.06] to-black/30 p-4">
+                <img
+                  v-if="equipmentCatalogPreviewImage(selectedEquipmentDisplayItem)"
+                  :alt="selectedEquipmentDisplayItem.name"
+                  class="max-h-[260px] max-w-full rounded-sm object-contain"
+                  loading="lazy"
+                  decoding="async"
+                  :src="equipmentCatalogPreviewImage(selectedEquipmentDisplayItem)"
+                >
+                <div v-else class="text-center">
+                  <p class="font-display text-4xl font-black text-white/18">{{ selectedEquipmentDisplayItem.name }}</p>
+                  <p class="mt-3 text-xs font-black uppercase tracking-[0.18em] text-zinc-500">Miniatura pendente</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="grid gap-4">
+              <div class="rounded-md border border-white/10 bg-black/28 p-4">
+                <p class="bm-kicker">Caracteristicas</p>
+                <h4 class="mt-2 font-display text-2xl font-black text-white">Dados do equipamento</h4>
+                <dl class="mt-4 grid gap-2 md:grid-cols-2">
+                  <div
+                    v-for="row in selectedEquipmentStatRows"
+                    :key="row.label"
+                    class="flex justify-between gap-3 rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-xs leading-5"
+                  >
+                    <dt class="text-zinc-500">{{ row.label }}</dt>
+                    <dd class="text-right font-bold text-zinc-100">{{ row.value }}</dd>
+                  </div>
+                </dl>
+              </div>
+
+              <div class="rounded-md border border-white/10 bg-black/28 p-4">
+                <p class="bm-kicker">Possiveis opcoes do equipamento</p>
+                <div class="mt-4 grid gap-2 md:grid-cols-2">
+                  <p
+                    v-for="option in selectedCatalogEquipmentOptionRows"
+                    :key="option.key"
+                    class="rounded-md border px-3 py-2 text-xs font-bold leading-5"
+                    :class="optionClass(option)"
+                  >
+                    {{ option.label }}
+                  </p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
     </Teleport>
   </div>
 </template>
@@ -418,7 +612,9 @@ import {
   type EquipmentQualityKey
 } from '~/data/equipmentOptionRules'
 import { getGuiamuSourcesForTopic, guiamuStatusLabels, guiamuTopicLabels } from '~/data/guiamuReferences'
-import { loadGuideSetItems, type GuideEquipmentItem } from '~/data/guiamuonlineItems'
+import { guiamuonlineArmorItems, loadGuideSetItems, type GuideEquipmentItem, type GuideEquipmentSummary } from '~/data/guiamuonlineItems'
+import { findMuEquipmentItem, muEquipmentIndex } from '~/data/muEquipmentCatalog'
+import fullSetImages from '~/data/muFullSetImages.generated.json'
 import { permissions } from '~/data/security'
 import ancientItemsData from '../../../references/game-data/muonlinefanz-ancient-items-data.json'
 
@@ -455,6 +651,12 @@ type AncientSetReference = {
   setOptions?: { pieces: number | string, option: string }[]
   pieces?: { name: string, defense?: number, requirements?: Record<string, number> }[]
 }
+type FullSetImage = {
+  key: string
+  title: string
+  fileName: string
+  publicPath: string
+}
 const { dictionary } = useLocale()
 const { hasPermission, loadSession } = useAuth()
 const futureCharacters = ['Grow Lancer', 'Rune Mage', 'Slayer', 'Gun Crusher', 'White Wizard', 'Mage']
@@ -464,6 +666,13 @@ const setEquipmentFilter = ref('Default')
 const setNameSearch = ref('')
 const setCurrentPage = ref(1)
 const setPageSize = 20
+const equipmentCatalogCategoryFilter = ref('Default')
+const equipmentCatalogSearch = ref('')
+const equipmentCatalogCurrentPage = ref(1)
+const equipmentCatalogPageSize = 24
+const selectedEquipmentItem = ref<GuideEquipmentItem | null>(null)
+const selectedEquipmentSummary = ref<GuideEquipmentSummary | null>(null)
+const selectedEquipmentLoadId = ref(0)
 const selectedSet = ref<SetCard | null>(null)
 const selectedGuideSetItems = ref<GuideEquipmentItem[]>([])
 const selectedGuideLoadId = ref(0)
@@ -584,6 +793,58 @@ const activeSection = computed(() =>
 const activeTopics = computed(() => activeSection.value?.topics || [])
 const activeTopic = computed(() => activeTopics.value.find((topic) => topic.key === activeTopicKey.value))
 const isSetsTopic = computed(() => activeSectionKey.value === 'equipamentos' && activeTopicKey.value === 'sets')
+const weaponAndShieldCategories = ['Axe', 'Mace', 'Bow', 'Spear', 'Sword', 'Staff', 'Stick', 'Scepter', 'Lance', 'Rune Mace', 'Short Sword', 'Quiver', 'Claw', 'Magic Gun', 'Shield']
+const armorPieceCategories = ['Armor', 'Pants', 'Helm', 'Boots', 'Gloves']
+const ancientEquipmentCategories = ['Ancient Normal', 'Set Lucky']
+const masteryAncientCategories = ['Bloodangel Ancient', 'Darkangel Ancient', 'Holyangel Ancient', 'Soul Ancient', 'Blue Eye Ancient', 'Manticore Ancient', 'Silver Heart Ancient', 'Brilliant Ancient', 'Apocalypse Ancient', 'Primordial Ancient']
+const socketSetNames = ['Titan', 'Brave', 'Hades', 'Seraphim', 'Phantom', 'Destroy', 'Crimson', 'Eternal', 'Queen']
+const masteryAncientSetNames = ['Bloodangel', 'Darkangel', 'Holyangel', 'Soul', 'Blue Eye', 'Manticore', 'Silver Heart', 'Brilliant']
+const equipmentCatalogTopicConfigs: Record<string, { title: string, categories: string[], filter?: (item: GuideEquipmentSummary) => boolean }> = {
+  armas: {
+    title: 'Catalogo de armas e escudos',
+    categories: weaponAndShieldCategories
+  },
+  'armas-e-escudos': {
+    title: 'Catalogo de armas e escudos',
+    categories: weaponAndShieldCategories
+  },
+  asas: {
+    title: 'Catalogo de asas e capas',
+    categories: ['Wings']
+  },
+  'asas-e-capas': {
+    title: 'Catalogo de asas e capas',
+    categories: ['Wings']
+  },
+  acessorios: {
+    title: 'Catalogo de acessorios',
+    categories: ['Earring', 'Pentagram']
+  },
+  'pets-e-mounts': {
+    title: 'Catalogo de pets e mounts',
+    categories: ['Muun']
+  },
+  'itens-excellent': {
+    title: 'Catalogo de itens excellent',
+    categories: [...weaponAndShieldCategories, ...armorPieceCategories, 'Wings'],
+    filter: (item) => Boolean(item.listStats.excellentDrop && item.listStats.excellentDrop !== '~')
+  },
+  'itens-ancient': {
+    title: 'Catalogo de itens ancient',
+    categories: ancientEquipmentCategories
+  },
+  'itens-socket': {
+    title: 'Catalogo de itens socket',
+    categories: armorPieceCategories,
+    filter: (item) => socketSetNames.some((name) => item.name.toLowerCase().includes(name.toLowerCase()))
+  },
+  'itens-mastery': {
+    title: 'Catalogo de itens mastery',
+    categories: masteryAncientCategories
+  }
+}
+const equipmentCatalogConfig = computed(() => equipmentCatalogTopicConfigs[activeTopicKey.value])
+const isEquipmentCatalogTopic = computed(() => activeSectionKey.value === 'equipamentos' && Boolean(equipmentCatalogConfig.value))
 const guiamuSourcesForTopic = computed(() =>
   activeTopicKey.value ? getGuiamuSourcesForTopic(activeTopicKey.value) : []
 )
@@ -751,8 +1012,98 @@ const paginatedSetCards = computed(() => {
   return filteredSetCards.value.slice(start, start + setPageSize)
 })
 
+const equipmentCatalogItems = computed(() => {
+  const config = equipmentCatalogConfig.value
+  const categories = config?.categories || []
+  const categorySet = new Set(categories)
+
+  return muEquipmentIndex.filter((item) =>
+    categorySet.has(item.category) &&
+    (!config?.filter || config.filter(item))
+  )
+})
+const equipmentCatalogCategories = computed(() =>
+  Array.from(new Set(equipmentCatalogItems.value.map((item) => item.category)))
+)
+const filteredEquipmentCatalogItems = computed(() => {
+  const search = normalizeCatalogSearch(equipmentCatalogSearch.value)
+
+  return equipmentCatalogItems.value.filter((item) => {
+    const matchesCategory = equipmentCatalogCategoryFilter.value === 'Default' || item.category === equipmentCatalogCategoryFilter.value
+    const matchesSearch = !search || normalizeCatalogSearch([
+      item.name,
+      item.title,
+      item.category,
+      usableByText(item),
+      compactListStats(item)
+    ].join(' ')).includes(search)
+
+    return matchesCategory && matchesSearch
+  })
+})
+const equipmentCatalogTotalPages = computed(() => Math.max(1, Math.ceil(filteredEquipmentCatalogItems.value.length / equipmentCatalogPageSize)))
+const paginatedEquipmentCatalogItems = computed(() => {
+  const page = Math.min(equipmentCatalogCurrentPage.value, equipmentCatalogTotalPages.value)
+  const start = (page - 1) * equipmentCatalogPageSize
+
+  return filteredEquipmentCatalogItems.value.slice(start, start + equipmentCatalogPageSize)
+})
+
+const guideSetSummaryItems = (set: SetCard | null) => {
+  if (!set) {
+    return [] as GuideEquipmentSummary[]
+  }
+
+  return setModalPieces
+    .map((piece) => guiamuonlineArmorItems.find((item) => item.category === piece.guideCategory && item.name === set.name))
+    .filter(Boolean) as GuideEquipmentSummary[]
+}
+
+const fullSetImageLibrary = fullSetImages as FullSetImage[]
+const staticFullSetImage = (set: SetCard | null) => {
+  if (!set) {
+    return undefined
+  }
+
+  const setSlug = slugify(set.name)
+  const characterAlias = set.characterName === 'Fairy Elf' ? 'elf' : slugify(set.characterName)
+  const candidates = [
+    `${setSlug}-set`,
+    `${setSlug}-${characterAlias}-set`,
+    `excellent-${setSlug}-set`,
+    `excellent-${setSlug}-${characterAlias}-set`
+  ]
+  const exact = fullSetImageLibrary.find((image) => candidates.includes(image.key))
+  if (exact) {
+    return exact.publicPath
+  }
+
+  const prefix = fullSetImageLibrary.find((image) =>
+    candidates.some((candidate) => image.key.startsWith(`${candidate}-`))
+  )
+  if (prefix) {
+    return prefix.publicPath
+  }
+
+  const loose = fullSetImageLibrary.find((image) =>
+    image.key.includes(setSlug) &&
+    image.key.includes('set') &&
+    (!set.characterName.includes('Elf') || image.key.includes('elf'))
+  )
+
+  return loose?.publicPath
+}
+
 const setPreviewImage = (set: SetCard) =>
-  set.fullSetImage || set.pieceCards.find((piece) => piece.image)?.image
+  staticFullSetImage(set) ||
+  set.fullSetImage ||
+  set.pieceCards.find((piece) => piece.image)?.image ||
+  guideSetSummaryItems(set).find((item) => item.image.publicPath)?.image.publicPath ||
+  undefined
+
+const selectedSetFullImage = computed(() =>
+  staticFullSetImage(selectedSet.value) || selectedSet.value?.fullSetImage
+)
 
 const selectedAncientReference = computed(() => {
   if (!selectedSet.value) {
@@ -770,8 +1121,6 @@ const selectedAncientReference = computed(() => {
   }) || null
 })
 
-const socketSetNames = ['Titan', 'Brave', 'Hades', 'Seraphim', 'Phantom', 'Destroy', 'Crimson', 'Eternal', 'Queen']
-const masteryAncientSetNames = ['Bloodangel', 'Darkangel', 'Holyangel', 'Soul', 'Blue Eye', 'Manticore', 'Silver Heart', 'Brilliant']
 const luckySetNames = ['Lucky']
 
 const selectedSetName = computed(() => selectedSet.value?.name || '')
@@ -799,13 +1148,28 @@ const selectedAvailableQualities = computed<EquipmentQualityKey[]>(() => {
   return ['normal', 'excellent']
 })
 
+const itemRequiredLevel = (item: GuideEquipmentItem | GuideEquipmentSummary) =>
+  Number(String(item.listStats?.requiredLevel || '').replace(/[^\d.-]/g, ''))
+
+const selectedIsLevel380 = computed(() => {
+  const loadedItems = selectedGuideSetItems.value
+  const summaryItems = guideSetSummaryItems(selectedSet.value)
+  const allItems = loadedItems.length ? loadedItems : summaryItems
+
+  return allItems.some((item) => itemRequiredLevel(item) === 380)
+})
+
 const selectedEquipmentOptionRows = computed<EquipmentOptionRule[]>(() => {
+  const miscOptions = selectedIsLevel380.value
+    ? harmonyAndGuardianOptions
+    : harmonyAndGuardianOptions.filter((option) => option.scope !== 'guardian')
+
   if (setQuality.value === 'lucky') {
     return luckySetOptions
   }
 
   if (setQuality.value === 'masteryAncient') {
-    return [...masteryAncientOptions, ...harmonyAndGuardianOptions]
+    return [...masteryAncientOptions, ...miscOptions]
   }
 
   if (setQuality.value === 'ancient') {
@@ -816,18 +1180,18 @@ const selectedEquipmentOptionRows = computed<EquipmentOptionRule[]>(() => {
       appliesTo: 'armor' as const
     })) || ancientSetOptions
 
-    return [...setEffects, ...baseLuckAndAdditionalOptions, ...harmonyAndGuardianOptions]
+    return [...setEffects, ...baseLuckAndAdditionalOptions, ...miscOptions]
   }
 
   if (setQuality.value === 'socket') {
-    return [...baseLuckAndAdditionalOptions, ...socketSeedSphereOptions, ...harmonyAndGuardianOptions]
+    return [...baseLuckAndAdditionalOptions, ...socketSeedSphereOptions, ...miscOptions]
   }
 
   if (setQuality.value === 'excellent') {
-    return [...baseLuckAndAdditionalOptions, ...excellentDefenseOptions, ...harmonyAndGuardianOptions]
+    return [...baseLuckAndAdditionalOptions, ...excellentDefenseOptions, ...miscOptions]
   }
 
-  return [...baseLuckAndAdditionalOptions, ...harmonyAndGuardianOptions]
+  return [...baseLuckAndAdditionalOptions, ...miscOptions]
 })
 
 const selectedQualityTitleClass = computed(() => ({
@@ -857,6 +1221,122 @@ const optionClass = (option: EquipmentOptionRule) => ({
   'border-amber-300/20 bg-amber-300/[0.06] text-amber-200': option.scope === 'mastery' || option.scope === 'lucky',
   'border-yellow-300/20 bg-yellow-300/[0.06] text-yellow-200': option.scope === 'harmony',
   'border-fuchsia-300/20 bg-fuchsia-300/[0.06] text-fuchsia-200': option.scope === 'guardian'
+})
+
+const normalizeCatalogSearch = (value: string) =>
+  value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase()
+
+const compactListStats = (item: GuideEquipmentItem | GuideEquipmentSummary) =>
+  Object.entries(item.listStats || {})
+    .filter(([, value]) => value && value !== '~')
+    .slice(0, 3)
+    .map(([key, value]) => `${key}: ${value}`)
+    .join(' - ') || 'Dados detalhados disponiveis no item'
+
+const usableByText = (item: GuideEquipmentItem | GuideEquipmentSummary) =>
+  item.usableBy.length ? item.usableBy.join(', ') : 'Classe indicada na descricao'
+
+const inheritedVisualBaseName = (item: GuideEquipmentItem | GuideEquipmentSummary) => {
+  if (item.image.publicPath) {
+    return ''
+  }
+
+  if (item.category === 'Ancient Normal' || item.category === 'Set Lucky') {
+    const parts = item.name.replace(/\s*\(.+?\)\s*/g, ' ').trim().split(/\s+/)
+    return parts.length > 1 ? parts.slice(1).join(' ') : ''
+  }
+
+  const masteryCategory = masteryAncientCategories.find((category) => category === item.category)
+  if (masteryCategory) {
+    return masteryCategory.replace(/\s+Ancient$/i, '')
+  }
+
+  return ''
+}
+
+const inheritedVisualItem = (item: GuideEquipmentItem | GuideEquipmentSummary) => {
+  const baseName = inheritedVisualBaseName(item)
+
+  if (!baseName) {
+    return null
+  }
+
+  const normalizedBase = normalizeCatalogSearch(baseName)
+  const candidates = muEquipmentIndex.filter((candidate) =>
+    armorPieceCategories.includes(candidate.category) &&
+    Boolean(candidate.image.publicPath) &&
+    normalizeCatalogSearch(candidate.name) === normalizedBase
+  )
+
+  return candidates.find((candidate) => candidate.category === 'Armor') || candidates[0] || null
+}
+
+const equipmentCatalogPreviewImage = (item: GuideEquipmentItem | GuideEquipmentSummary | null) => {
+  if (!item) {
+    return null
+  }
+
+  return item.image.publicPath || inheritedVisualItem(item)?.image.publicPath || null
+}
+
+const equipmentCatalogImageStatus = (item: GuideEquipmentItem | GuideEquipmentSummary) => {
+  if (item.image.publicPath) {
+    return 'Imagem local'
+  }
+
+  return inheritedVisualItem(item) ? 'Imagem herdada do visual normal' : 'Imagem pendente'
+}
+
+const selectedEquipmentDisplayItem = computed(() => selectedEquipmentItem.value || selectedEquipmentSummary.value)
+const selectedEquipmentLevelZeroStats = computed(() =>
+  selectedEquipmentItem.value?.levelStats.find((stat) => stat.itemLevel === 0) ||
+  selectedEquipmentItem.value?.levelStats[0] ||
+  null
+)
+const selectedCatalogEquipmentOptionRows = computed(() => {
+  const item = selectedEquipmentDisplayItem.value
+  if (!item) {
+    return [] as EquipmentOptionRule[]
+  }
+
+  const baseOptions = [...baseLuckAndAdditionalOptions]
+  const isDefensive = ['Shield', 'Wings'].includes(item.category)
+  const excellentOptions = isDefensive ? excellentDefenseOptions : excellentDefenseOptions
+  const miscOptions = itemRequiredLevel(item) === 380
+    ? harmonyAndGuardianOptions
+    : harmonyAndGuardianOptions.filter((option) => option.scope !== 'guardian')
+
+  return [...baseOptions, ...excellentOptions, ...miscOptions]
+})
+const selectedEquipmentStatRows = computed(() => {
+  const item = selectedEquipmentDisplayItem.value
+  const stat = selectedEquipmentLevelZeroStats.value
+
+  if (!item) {
+    return [] as { label: string, value: string | number }[]
+  }
+
+  const rows = [
+    { label: 'Categoria', value: item.category },
+    { label: 'Normal drop', value: item.listStats.normalDrop },
+    { label: 'Excellent drop', value: item.listStats.excellentDrop },
+    { label: 'Attack speed', value: item.listStats.attackSpeed },
+    { label: 'Defense', value: stat?.defense },
+    { label: 'Damage min', value: stat?.damageMin },
+    { label: 'Damage max', value: stat?.damageMax },
+    { label: 'Durability', value: stat?.durability },
+    { label: 'Required strength', value: stat?.requiredStrength },
+    { label: 'Required agility', value: stat?.requiredAgility },
+    { label: 'Excellent required strength', value: stat?.excellentRequiredStrength },
+    { label: 'Excellent required agility', value: stat?.excellentRequiredAgility }
+  ]
+
+  return rows.filter((row) => row.value !== null && row.value !== undefined && row.value !== '~' && row.value !== '')
 })
 
 const selectedSetUsableByClasses = computed(() => {
@@ -973,6 +1453,24 @@ const closeSetModal = () => {
   selectedGuideSetItems.value = []
 }
 
+const openEquipmentItemModal = async (item: GuideEquipmentSummary) => {
+  const loadId = selectedEquipmentLoadId.value + 1
+  selectedEquipmentLoadId.value = loadId
+  selectedEquipmentSummary.value = item
+  selectedEquipmentItem.value = null
+  const detail = await findMuEquipmentItem(item.category, item.name)
+
+  if (selectedEquipmentLoadId.value === loadId && selectedEquipmentSummary.value?.key === item.key) {
+    selectedEquipmentItem.value = detail
+  }
+}
+
+const closeEquipmentItemModal = () => {
+  selectedEquipmentLoadId.value += 1
+  selectedEquipmentSummary.value = null
+  selectedEquipmentItem.value = null
+}
+
 watch(setCharacterFilter, () => {
   setEvolutionFilter.value = 'Default'
   setEquipmentFilter.value = 'Default'
@@ -988,9 +1486,26 @@ watch([setEquipmentFilter, setNameSearch], () => {
   setCurrentPage.value = 1
 })
 
+watch(activeTopicKey, () => {
+  equipmentCatalogCategoryFilter.value = 'Default'
+  equipmentCatalogSearch.value = ''
+  equipmentCatalogCurrentPage.value = 1
+  closeEquipmentItemModal()
+})
+
+watch([equipmentCatalogCategoryFilter, equipmentCatalogSearch], () => {
+  equipmentCatalogCurrentPage.value = 1
+})
+
 watch(setTotalPages, (totalPages) => {
   if (setCurrentPage.value > totalPages) {
     setCurrentPage.value = totalPages
+  }
+})
+
+watch(equipmentCatalogTotalPages, (totalPages) => {
+  if (equipmentCatalogCurrentPage.value > totalPages) {
+    equipmentCatalogCurrentPage.value = totalPages
   }
 })
 

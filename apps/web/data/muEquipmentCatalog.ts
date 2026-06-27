@@ -1,7 +1,5 @@
 import equipmentIndex from './muEquipmentIndex.generated.json'
-import type { GuideEquipmentItem } from './guiamuonlineItems'
-
-export type GuideEquipmentSummary = Omit<GuideEquipmentItem, 'levelStats' | 'parts' | 'detailParts'>
+import type { GuideEquipmentItem, GuideEquipmentSummary } from './guiamuonlineItems'
 
 type DetailModule = { default: GuideEquipmentItem[] }
 

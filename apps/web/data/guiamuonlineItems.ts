@@ -47,6 +47,8 @@ export type GuideEquipmentItem = {
   detailParts?: GuideEquipmentPart[]
 }
 
+export type GuideEquipmentSummary = Omit<GuideEquipmentItem, 'levelStats' | 'parts' | 'detailParts'>
+
 type GuideEquipmentModule = { default: GuideEquipmentItem[] }
 
 const armorCategories = new Set(['Armor', 'Pants', 'Helm', 'Boots', 'Gloves'])
@@ -61,7 +63,7 @@ const normalizeLabel = (value: string) =>
     .trim()
     .toLowerCase()
 
-export const guiamuonlineArmorItems = (equipmentIndex as GuideEquipmentItem[]).filter((item) =>
+export const guiamuonlineArmorItems = (equipmentIndex as GuideEquipmentSummary[]).filter((item) =>
   armorCategories.has(item.category)
 )
 
