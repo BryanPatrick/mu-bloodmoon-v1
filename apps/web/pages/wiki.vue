@@ -47,7 +47,39 @@
       </aside>
 
       <section class="bm-panel rounded-md p-[24px]">
-        <div v-if="!activeTopic" class="rounded-md border border-dashed border-white/15 bg-black/15 p-[24px] text-center">
+        <div v-if="isEquipmentLanding" class="grid gap-5">
+          <div class="rounded-md border border-white/10 bg-black/20 p-[24px]">
+            <p class="bm-kicker">Guia de equipamentos</p>
+            <h2 class="bm-heading mt-[6px] font-display text-3xl font-bold">Como ler os equipamentos do Blood Moon</h2>
+            <p class="bm-muted mt-[10px] max-w-4xl text-sm leading-6">
+              Esta area centraliza sets, armas, escudos, asas, capas, acessorios, pets, mounts, consumiveis e jewels.
+              Os tipos como Normal, Excellent, Ancient, Socket, Lucky e Mastery sao propriedades do equipamento,
+              nao categorias separadas da wiki.
+            </p>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <article
+              v-for="entry in equipmentTutorialCards"
+              :key="entry.title"
+              class="rounded-md border border-white/10 bg-black/20 p-4"
+            >
+              <p class="bm-kicker">{{ entry.kicker }}</p>
+              <h3 class="mt-2 font-display text-xl font-black text-white">{{ entry.title }}</h3>
+              <p class="mt-3 text-sm leading-6 text-zinc-400">{{ entry.description }}</p>
+            </article>
+          </div>
+
+          <div class="rounded-md border border-amber-300/20 bg-amber-300/[0.06] p-4">
+            <p class="bm-kicker text-amber-200">Observacao importante</p>
+            <p class="mt-2 text-sm leading-6 text-amber-100/90">
+              A regra do Jewel of Guardian e separada: itens 380 comuns podem receber a opcao 380/Siege quando elegiveis,
+              mas sets 380 Socket sao outra familia de item e nao devem receber esse aviso como se fossem itens 380 comuns.
+            </p>
+          </div>
+        </div>
+
+        <div v-else-if="!activeTopic" class="rounded-md border border-dashed border-white/15 bg-black/15 p-[24px] text-center">
           <div>
             <p class="bm-kicker">Wiki Blood Moon</p>
             <h2 class="bm-heading mt-[6px] font-display text-3xl font-bold">Selecione um conteudo</h2>
@@ -805,6 +837,39 @@ const activeSection = computed(() =>
 const activeTopics = computed(() => activeSection.value?.topics || [])
 const activeTopic = computed(() => activeTopics.value.find((topic) => topic.key === activeTopicKey.value))
 const isSetsTopic = computed(() => activeSectionKey.value === 'equipamentos' && activeTopicKey.value === 'sets')
+const isEquipmentLanding = computed(() => activeSectionKey.value === 'equipamentos' && !activeTopicKey.value)
+const equipmentTutorialCards = [
+  {
+    kicker: 'Sets e armaduras',
+    title: 'Normal, Excellent, Ancient, Socket, Lucky e Mastery ficam juntos em Sets',
+    description: 'O tipo muda as opcoes, origem e progressao, mas o item continua sendo uma armadura ou set. Por isso a wiki mostra essas variacoes no mesmo catalogo de Sets, com filtro por tipo.'
+  },
+  {
+    kicker: 'Normal e excellent',
+    title: 'A maioria dos itens normais tambem pode existir como Excellent',
+    description: 'Leather, Bloodangel e muitas outras familias podem aparecer em versao normal e excellent. A versao Excellent adiciona linhas verdes possiveis, alem de Luck e Additional quando aplicavel.'
+  },
+  {
+    kicker: 'Ancient',
+    title: 'Ancient e uma versao especial do set',
+    description: 'Itens Ancient usam pecas especificas e bonus por quantidade equipada. Alguns vêm de bosses como Kundun em Kalima ou eventos especificos, variando conforme a versao do servidor.'
+  },
+  {
+    kicker: 'Socket',
+    title: 'Socket nao e apenas um item 380 com adicional',
+    description: 'Sets Socket usam Seed Sphere e combinacoes proprias. Mesmo quando estao na faixa 380, eles nao seguem a mesma regra do Jewel of Guardian usada por itens 380 comuns.'
+  },
+  {
+    kicker: 'Mastery e Ruud',
+    title: 'Bloodangel e familias modernas possuem progressao propria',
+    description: 'Familias como Bloodangel, Darkangel, Holyangel, Soul, Blue Eye e superiores podem ter obtencao e upgrades ligados a Ruud, NPCs e sistemas modernos, alem de circularem via trade entre jogadores.'
+  },
+  {
+    kicker: 'Outros equipamentos',
+    title: 'Armas, escudos, asas, capas, acessorios, pets e jewels ficam separados',
+    description: 'Esses itens têm regras, slots e usos diferentes das armaduras. Por isso ficam em topicos proprios dentro de Equipamentos, mantendo Sets como a casa das armaduras.'
+  }
+]
 const weaponAndShieldCategories = ['Axe', 'Mace', 'Bow', 'Spear', 'Sword', 'Staff', 'Stick', 'Scepter', 'Lance', 'Rune Mace', 'Short Sword', 'Quiver', 'Claw', 'Magic Gun', 'Shield']
 const armorPieceCategories = ['Armor', 'Pants', 'Helm', 'Boots', 'Gloves']
 const ancientEquipmentCategories = ['Ancient Normal', 'Set Lucky']
@@ -1305,6 +1370,10 @@ const itemRequiredLevel = (item: GuideEquipmentItem | GuideEquipmentSummary) =>
   Number(String(item.listStats?.requiredLevel || '').replace(/[^\d.-]/g, ''))
 
 const selectedIsLevel380 = computed(() => {
+  if (isSocketSet.value || setQuality.value === 'socket') {
+    return false
+  }
+
   const loadedItems = selectedGuideSetItems.value
   const summaryItems = guideSetSummaryItems(selectedSet.value)
   const allItems = loadedItems.length ? loadedItems : summaryItems
@@ -1459,8 +1528,10 @@ const selectedCatalogEquipmentOptionRows = computed(() => {
 
   const baseOptions = [...baseLuckAndAdditionalOptions]
   const isDefensive = ['Shield', 'Wings'].includes(item.category)
+  const isSocketFamily = armorPieceCategories.includes(item.category) &&
+    socketSetNames.some((socketName) => item.name.toLowerCase().includes(socketName.toLowerCase()))
   const excellentOptions = isDefensive ? excellentDefenseOptions : excellentDefenseOptions
-  const miscOptions = itemRequiredLevel(item) === 380
+  const miscOptions = itemRequiredLevel(item) === 380 && !isSocketFamily
     ? harmonyAndGuardianOptions
     : harmonyAndGuardianOptions.filter((option) => option.scope !== 'guardian')
 
