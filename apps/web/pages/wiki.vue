@@ -113,8 +113,8 @@
                 </div>
               </div>
 
-              <div class="grid gap-3 xl:grid-cols-[180px_220px_180px_220px_1fr]">
-                <label class="grid gap-1 text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
+              <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-[minmax(150px,180px)_minmax(170px,220px)_minmax(140px,180px)_minmax(170px,220px)_minmax(260px,1fr)]">
+                <label class="grid min-w-0 gap-1 text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
                   Personagem
                   <select v-model="setCharacterFilter" class="h-11 rounded-md border border-white/10 bg-white/10 px-3 text-sm font-bold normal-case tracking-normal text-white outline-none focus:border-blood-400/70">
                     <option class="bg-zinc-950 text-white" value="Default">Default</option>
@@ -122,7 +122,7 @@
                   </select>
                 </label>
 
-                <label class="grid gap-1 text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
+                <label class="grid min-w-0 gap-1 text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
                   Classe
                   <select v-model="setEvolutionFilter" class="h-11 rounded-md border border-white/10 bg-white/10 px-3 text-sm font-bold normal-case tracking-normal text-white outline-none focus:border-blood-400/70">
                     <option class="bg-zinc-950 text-white" value="Default">Default</option>
@@ -130,7 +130,7 @@
                   </select>
                 </label>
 
-                <label class="grid gap-1 text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
+                <label class="grid min-w-0 gap-1 text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
                   Tipo
                   <select v-model="setTypeFilter" class="h-11 rounded-md border border-white/10 bg-white/10 px-3 text-sm font-bold normal-case tracking-normal text-white outline-none focus:border-blood-400/70">
                     <option class="bg-zinc-950 text-white" value="Default">Default</option>
@@ -138,7 +138,7 @@
                   </select>
                 </label>
 
-                <label class="grid gap-1 text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
+                <label class="grid min-w-0 gap-1 text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
                   Equipamento
                   <select v-model="setEquipmentFilter" class="h-11 rounded-md border border-white/10 bg-white/10 px-3 text-sm font-bold normal-case tracking-normal text-white outline-none focus:border-blood-400/70">
                     <option class="bg-zinc-950 text-white" value="Default">Default</option>
@@ -146,7 +146,7 @@
                   </select>
                 </label>
 
-                <label class="grid gap-1 text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
+                <label class="grid min-w-0 gap-1 text-xs font-black uppercase tracking-[0.14em] text-zinc-400 xl:col-span-2 2xl:col-span-1">
                   Buscar por nome
                   <input
                     v-model="setNameSearch"
@@ -173,7 +173,7 @@
                 <article
                   v-for="set in paginatedSetCards"
                   :key="set.key"
-                  class="grid grid-cols-[52px_64px_1fr_96px] gap-3 border-b border-white/10 px-4 py-3 last:border-b-0 md:grid-cols-[52px_64px_1.15fr_0.85fr_1fr_0.9fr_112px]"
+                  class="grid grid-cols-[52px_64px_1fr_96px] gap-3 border-b border-white/10 px-4 py-3 transition duration-200 last:border-b-0 hover:-translate-y-0.5 hover:border-ember/35 hover:bg-white/[0.04] hover:shadow-lg hover:shadow-ember/5 md:grid-cols-[52px_64px_1.15fr_0.85fr_1fr_0.9fr_112px]"
                 >
                   <button
                     class="grid size-11 place-items-center overflow-hidden rounded-md border border-white/10 bg-white/[0.04] transition hover:border-ember/50 hover:bg-ember/10"
@@ -197,7 +197,7 @@
                   </div>
                   <span class="hidden text-sm font-bold text-zinc-300 md:block">{{ set.characterName }}</span>
                   <span class="hidden text-xs leading-5 text-zinc-400 md:block">{{ set.evolutions.join(', ') }}</span>
-                  <span class="hidden text-xs leading-5 text-zinc-400 md:block">{{ set.setType }}</span>
+                  <span class="hidden text-xs leading-5 text-zinc-400 md:block">{{ set.setTypes.join(', ') }}</span>
                   <button
                     class="rounded-md border border-white/10 bg-white/[0.06] px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-white transition hover:border-ember/50 hover:bg-ember/15"
                     type="button"
@@ -674,8 +674,8 @@ type SetCard = {
   key: string
   name: string
   guideName: string
-  setType: string
-  preferredQuality?: EquipmentQualityKey
+  setTypes: string[]
+  availableQualities: EquipmentQualityKey[]
   characterName: string
   evolutions: string[]
   tier: number
@@ -955,6 +955,7 @@ const isSetReferenceAsset = (asset: DevReferenceAsset) =>
   asset.group === 'Equipamentos' && /^Sets\s*-/i.test(asset.category)
 
 const setTypeOrder = ['Normal', 'Excellent', 'Socket', 'Ancient', 'Lucky', 'Mastery']
+const qualityOrder: EquipmentQualityKey[] = ['normal', 'excellent', 'ancient', 'socket', 'masteryAncient', 'lucky']
 const setTypeFromName = (name: string) => {
   if (socketSetNames.some((socketName) => name.toLowerCase().includes(socketName.toLowerCase()))) {
     return 'Socket'
@@ -967,12 +968,24 @@ const setTypeFromName = (name: string) => {
   return 'Normal'
 }
 const setQualityFromType = (type: string): EquipmentQualityKey | undefined => ({
+  Normal: 'normal',
   Excellent: 'excellent',
   Socket: 'socket',
   Ancient: 'ancient',
   Lucky: 'lucky',
   Mastery: 'masteryAncient'
 })[type] as EquipmentQualityKey | undefined
+const sortSetTypes = (types: string[]) =>
+  types.sort((a, b) => {
+    const aIndex = setTypeOrder.indexOf(a)
+    const bIndex = setTypeOrder.indexOf(b)
+
+    return (aIndex === -1 ? 1000 : aIndex) - (bIndex === -1 ? 1000 : bIndex) || a.localeCompare(b, 'pt-BR')
+  })
+const sortQualities = (qualities: EquipmentQualityKey[]) =>
+  qualities.sort((a, b) => qualityOrder.indexOf(a) - qualityOrder.indexOf(b))
+const setTypesToQualities = (types: string[]) =>
+  sortQualities(Array.from(new Set(types.map((type) => setQualityFromType(type)).filter(Boolean) as EquipmentQualityKey[])))
 const guideSetLookupName = (set: SetCard | null) => set?.guideName || set?.name || ''
 const guideArmorItemsByName = (name: string) =>
   guiamuonlineArmorItems.filter((item) => item.name.toLowerCase() === name.toLowerCase())
@@ -1000,11 +1013,16 @@ const setCards = computed<SetCard[]>(() => {
       return card
     }
 
+    existing.setTypes = sortSetTypes(Array.from(new Set([...existing.setTypes, ...card.setTypes])))
+    existing.availableQualities = sortQualities(Array.from(new Set([...existing.availableQualities, ...card.availableQualities])))
+    existing.evolutions = Array.from(new Set([...existing.evolutions, ...card.evolutions]))
     existing.pieces = Array.from(new Set([...existing.pieces, ...card.pieces]))
     existing.pieceCards = [
       ...existing.pieceCards,
       ...card.pieceCards.filter((piece) => !existing.pieceCards.some((item) => item.title === piece.title))
     ]
+    existing.status = existing.status === 'Imagem local' || card.status !== 'Imagem local' ? existing.status : card.status
+    existing.compatibility = existing.compatibility === 'v6-prioridade' || card.compatibility !== 'v6-prioridade' ? existing.compatibility : card.compatibility
     existing.fullSetImage ||= card.fullSetImage
     existing.searchText = `${existing.searchText} ${card.searchText}`.trim()
 
@@ -1014,9 +1032,12 @@ const setCards = computed<SetCard[]>(() => {
   for (const asset of devReferenceAssets.filter(isSetReferenceAsset)) {
     const characterName = setCharacterName(asset)
     const name = normalizeSetName(asset.title)
-    const key = `${characterName}-${name}`.toLowerCase()
+    const key = `set-${normalizeSetReferenceName(name)}`
     const piece = setPieceName(asset.title)
     const evolutions = characterEvolutionMap[characterName] || [characterName]
+    const baseType = setTypeFromName(name)
+    const setTypes = sortSetTypes(Array.from(new Set([baseType])))
+    const availableQualities = setTypesToQualities(setTypes)
 
     if (!grouped.has(key)) {
       const tier = setTier(name)
@@ -1024,8 +1045,8 @@ const setCards = computed<SetCard[]>(() => {
         key,
         name,
         guideName: name,
-        setType: setTypeFromName(name),
-        preferredQuality: setQualityFromType(setTypeFromName(name)),
+        setTypes,
+        availableQualities,
         characterName,
         evolutions,
         tier,
@@ -1087,6 +1108,13 @@ const setCards = computed<SetCard[]>(() => {
     const evolutions = classes.length ? classes : characterEvolutionMap[characterName] || [characterName]
     const tier = setTier(name)
     const baseType = setTypeFromName(name)
+    const hasExcellent = items.some((item) => item.listStats.excellentDrop && item.listStats.excellentDrop !== '~')
+    const setTypes = sortSetTypes(Array.from(new Set([
+      baseType === 'Normal' ? 'Normal' : baseType,
+      hasExcellent ? 'Excellent' : '',
+      baseType === 'Socket' ? 'Normal' : '',
+      baseType === 'Mastery' ? 'Normal' : ''
+    ].filter(Boolean))))
     const pieces = Array.from(new Set(items.map((item) => item.category)))
       .sort((a, b) => setPieceNames.indexOf(a) - setPieceNames.indexOf(b))
     const pieceCards = items.map((item) => ({
@@ -1096,30 +1124,23 @@ const setCards = computed<SetCard[]>(() => {
       image: item.image.publicPath || undefined
     }))
 
-    for (const type of Array.from(new Set([baseType, 'Excellent']))) {
-      if (type === 'Excellent' && !items.some((item) => item.listStats.excellentDrop && item.listStats.excellentDrop !== '~')) {
-        continue
-      }
-
-      const displayName = type === 'Excellent' ? `Excellent ${name}` : name
-      upsertCard({
-        key: `${characterName}-${type}-${name}`.toLowerCase(),
-        name: displayName,
-        guideName: name,
-        setType: type,
-        preferredQuality: setQualityFromType(type),
-        characterName,
-        evolutions,
-        tier,
-        tierLabel: tier === 1000 ? '-' : String(tier).padStart(2, '0'),
-        status: 'Imagem local',
-        compatibility: 'v6-prioridade',
-        pieces,
-        pieceCards,
-        fullSetImage: undefined,
-        searchText: `${displayName} ${name} ${type} ${characterName} ${evolutions.join(' ')} ${pieces.join(' ')}`.toLowerCase()
-      })
-    }
+    upsertCard({
+      key: `set-${normalizeSetReferenceName(name)}`,
+      name,
+      guideName: name,
+      setTypes,
+      availableQualities: setTypesToQualities(setTypes),
+      characterName,
+      evolutions,
+      tier,
+      tierLabel: tier === 1000 ? '-' : String(tier).padStart(2, '0'),
+      status: 'Imagem local',
+      compatibility: 'v6-prioridade',
+      pieces,
+      pieceCards,
+      fullSetImage: undefined,
+      searchText: `${name} ${setTypes.join(' ')} ${characterName} ${evolutions.join(' ')} ${pieces.join(' ')}`.toLowerCase()
+    })
   }
 
   const ancientSetItems = muEquipmentIndex.filter((item) =>
@@ -1144,8 +1165,8 @@ const setCards = computed<SetCard[]>(() => {
       key: `${type}-${item.key}`.toLowerCase(),
       name: item.name,
       guideName,
-      setType: type,
-      preferredQuality: setQualityFromType(type),
+      setTypes: [type],
+      availableQualities: setTypesToQualities([type]),
       characterName,
       evolutions,
       tier,
@@ -1192,14 +1213,13 @@ const setEvolutionOptions = computed(() => {
   return availableCharacters.flatMap((character) => characterEvolutionMap[character] || [character])
 })
 const setTypeOptions = computed(() =>
-  Array.from(new Set(setCards.value.map((set) => set.setType)))
-    .sort((a, b) => setTypeOrder.indexOf(a) - setTypeOrder.indexOf(b))
+  sortSetTypes(Array.from(new Set(setCards.value.flatMap((set) => set.setTypes))))
 )
 const setEquipmentOptions = computed(() => {
   const availableNames = Array.from(new Set(setCards.value
     .filter((set) => setCharacterFilter.value === 'Default' || set.characterName === setCharacterFilter.value)
     .filter((set) => setEvolutionFilter.value === 'Default' || set.evolutions.includes(setEvolutionFilter.value))
-    .filter((set) => setTypeFilter.value === 'Default' || set.setType === setTypeFilter.value)
+    .filter((set) => setTypeFilter.value === 'Default' || set.setTypes.includes(setTypeFilter.value))
     .map((set) => set.name)))
 
   return availableNames.sort((a, b) => setTier(a) - setTier(b) || a.localeCompare(b, 'pt-BR'))
@@ -1210,7 +1230,7 @@ const filteredSetCards = computed(() => {
   return setCards.value.filter((set) => {
     const matchesCharacter = setCharacterFilter.value === 'Default' || set.characterName === setCharacterFilter.value
     const matchesEvolution = setEvolutionFilter.value === 'Default' || set.evolutions.includes(setEvolutionFilter.value)
-    const matchesType = setTypeFilter.value === 'Default' || set.setType === setTypeFilter.value
+    const matchesType = setTypeFilter.value === 'Default' || set.setTypes.includes(setTypeFilter.value)
     const matchesEquipment = setEquipmentFilter.value === 'Default' || set.name === setEquipmentFilter.value
     const matchesSearch = !search || set.searchText.includes(search)
 
@@ -1338,13 +1358,13 @@ const luckySetNames = ['Lucky']
 
 const selectedSetName = computed(() => selectedSet.value?.name || '')
 const selectedSetGuideName = computed(() => guideSetLookupName(selectedSet.value))
-const isSocketSet = computed(() => selectedSet.value?.setType === 'Socket' || socketSetNames.some((name) => selectedSetGuideName.value.toLowerCase().includes(name.toLowerCase())))
-const isMasteryAncientSet = computed(() => selectedSet.value?.setType === 'Mastery' || masteryAncientSetNames.some((name) => selectedSetGuideName.value.toLowerCase().includes(name.toLowerCase())))
+const isSocketSet = computed(() => selectedSet.value?.setTypes.includes('Socket') || socketSetNames.some((name) => selectedSetGuideName.value.toLowerCase().includes(name.toLowerCase())))
+const isMasteryAncientSet = computed(() => selectedSet.value?.setTypes.includes('Mastery') || masteryAncientSetNames.some((name) => selectedSetGuideName.value.toLowerCase().includes(name.toLowerCase())))
 const isLuckySet = computed(() => luckySetNames.some((name) => selectedSetName.value.toLowerCase().includes(name.toLowerCase())))
 
 const selectedAvailableQualities = computed<EquipmentQualityKey[]>(() => {
-  if (selectedSet.value?.preferredQuality) {
-    return [selectedSet.value.preferredQuality]
+  if (selectedSet.value?.availableQualities.length) {
+    return selectedSet.value.availableQualities
   }
 
   if (isLuckySet.value) {
@@ -1664,7 +1684,12 @@ const openSetModal = async (set: SetCard) => {
   selectedGuideLoadId.value = loadId
   selectedSet.value = set
   selectedGuideSetItems.value = []
-  setQuality.value = selectedAvailableQualities.value[0] || 'normal'
+  const filteredQuality = setTypeFilter.value === 'Default'
+    ? undefined
+    : setQualityFromType(setTypeFilter.value)
+  setQuality.value = filteredQuality && selectedAvailableQualities.value.includes(filteredQuality)
+    ? filteredQuality
+    : selectedAvailableQualities.value[0] || 'normal'
   blessingLevel.value = 0
   const items = await loadGuideSetItems(set.guideName || set.name)
 

@@ -184,7 +184,7 @@ const dictionaries: Record<LocaleCode, LocaleDictionary> = {
     ],
     guideCategories: [
       { title: 'Personagens', description: 'Classes, histórias, pontos fortes e builds.', links: characterLinksByRelease },
-      { title: 'Equipamentos', description: 'Sets, armas, escudos, asas, acessorios e itens especiais.', links: ['Sets', 'Armas e Escudos', 'Asas e Capas', 'Acessorios', 'Pets e Mounts', 'Consumiveis', 'Jewels', 'Itens Excellent', 'Itens Ancient', 'Itens Socket'] },
+      { title: 'Equipamentos', description: 'Sets, armas, escudos, asas, acessorios e itens especiais.', links: ['Sets', 'Armas e Escudos', 'Asas e Capas', 'Acessorios', 'Pets e Mounts', 'Consumiveis', 'Jewels'] },
       { title: 'Fórmulas', description: 'Status, experiência e taxas do servidor.', links: ['Status de Personagens', 'Experiência', 'Taxas do Servidor'] },
       { title: 'Builds', description: 'Rotas de progressão para PvP, PvM e eventos.', links: ['PvP', 'PvM', 'Boss', 'Eventos'] },
       { title: 'Chaos Machine', description: 'Combinações, materiais, taxas e dicas.', links: ['Chaos Weapon Mix', 'Wing Mix', 'Socket Mix', 'Jewel Mix', 'Eventos de Mix'] },
@@ -227,7 +227,7 @@ const dictionaries: Record<LocaleCode, LocaleDictionary> = {
     ],
     guideCategories: [
       { title: 'Personagens', description: 'Classes, histórias, pontos fortes e builds.', links: characterLinksByRelease },
-      { title: 'Equipamentos', description: 'Sets, armas, escudos, asas, acessorios e itens especiais.', links: ['Sets', 'Armas e Escudos', 'Asas e Capas', 'Acessorios', 'Pets e Mounts', 'Consumiveis', 'Jewels', 'Itens Excellent', 'Itens Ancient', 'Itens Socket'] },
+      { title: 'Equipamentos', description: 'Sets, armas, escudos, asas, acessorios e itens especiais.', links: ['Sets', 'Armas e Escudos', 'Asas e Capas', 'Acessorios', 'Pets e Mounts', 'Consumiveis', 'Jewels'] },
       { title: 'Fórmulas', description: 'Status, experiência e taxas do servidor.', links: ['Status de Personagens', 'Experiência', 'Taxas do Servidor'] },
       { title: 'Builds', description: 'Rotas de progressão para PvP, PvM e eventos.', links: ['PvP', 'PvM', 'Boss', 'Eventos'] },
       { title: 'Chaos Machine', description: 'Combinações, materiais, taxas e dicas.', links: ['Chaos Weapon Mix', 'Wing Mix', 'Socket Mix', 'Jewel Mix', 'Eventos de Mix'] },
@@ -290,7 +290,7 @@ const dictionaries: Record<LocaleCode, LocaleDictionary> = {
     ],
     guideCategories: [
       { title: 'Personajes', description: 'Clases, historias, fortalezas y builds.', links: characterLinksByRelease },
-      { title: 'Equipamiento', description: 'Sets, armas, escudos, alas, accesorios e items especiales.', links: ['Sets', 'Armas y Escudos', 'Alas y Capas', 'Accesorios', 'Pets y Mounts', 'Consumibles', 'Jewels', 'Items Excellent', 'Items Ancient', 'Items Socket'] },
+      { title: 'Equipamiento', description: 'Sets, armas, escudos, alas, accesorios e items especiales.', links: ['Sets', 'Armas y Escudos', 'Alas y Capas', 'Accesorios', 'Pets y Mounts', 'Consumibles', 'Jewels'] },
       { title: 'Fórmulas', description: 'Status, experiencia y tasas del servidor.', links: ['Status de Personajes', 'Experiencia', 'Tasas del Servidor'] },
       { title: 'Builds', description: 'Rutas de progresión para PvP, PvM y eventos.', links: ['PvP', 'PvM', 'Boss', 'Eventos'] },
       { title: 'Chaos Machine', description: 'Combinaciones, materiales, tasas y consejos.', links: ['Chaos Weapon Mix', 'Wing Mix', 'Socket Mix', 'Jewel Mix', 'Eventos de Mix'] },
