@@ -1,0 +1,111 @@
+/spot/css/stylesmenu.css
+https://www.guiamuonline.com/spot/css/stylesmenu.css
+
+menu {
+font-family: 'Lucida Grande', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+padding: 20px 50px 150px;
+font-size: 13px;
+text-align: center;
+text-decoration:none;
+background: #f4778e;
+position: relative;
+z-index: 1;
+}
+.menu ul {
+text-align: center;
+display: inline;
+margin: 0;
+padding: 15px 4px 17px 0;
+list-style: none;
+}
+.menu a {
+text-align: left;
+display: inline;
+margin: 0;
+padding: 0px 0px 0px 0;
+list-style: none;
+text-decoration:none;
+color: #000;
+}
+.menu a:link {
+text-decoration:none;
+color: #000;
+}
+.menu ul li {
+font: normal 12px/18px sans-serif;
+display: inline-block;
+margin-right: -4px;
+position: relative;
+padding: 5px 7px;
+background: #898a8a; /* color de fondo de menu*/
+cursor: pointer;
+-webkit-transition: all 0.2s; /* efecto de transicion*/
+-moz-transition: all 0.2s;
+-ms-transition: all 0.2s;
+-o-transition: all 0.2s;
+transition: all 0.2s;
+}
+.menu ul li:hover {
+background: #818282; /* color de fondo mouse encima */
+color: #fff; /* color de texto mouse encima */
+position: relative;
+z-index: 1;
+}
+.menu li:hover a {
+ border-bottom-color: orange;
+}
+.menu li:hover a {
+ color:#fff;
+}
+.menu ul li ul {
+padding: 0;
+position: absolute;
+top: 27px;
+left:0;
+width: 120px;
+display: inline;
+opacity: 0;
+visibility: hidden;
+-webkit-transiton: opacity 0.2s; /* efecto de transicion*/
+-moz-transition: opacity 0.2s;
+-ms-transition: opacity 0.2s;
+-o-transition: opacity 0.2s;
+-transition: opacity 0.2s;
+}
+.menu ul li ul li {
+background: #818282; /* color de fondo submenu */
+display:block;
+color: #fff;
+}
+.menu ul li ul li:hover ul{
+top:0;
+left:100%
+}
+.menu ul li ul li:hover { background: #606469; } /* color de fondo submenu mouse encima */
+ul li:hover ul {
+display: inline;
+opacity: 1;
+visibility: visible;
+}
+.menu ul {
+left: 153px;
+top: 0px;
+}
+.submenu-contenido {
+display: none;
+position: absolute;
+background-color: #233c63;
+min-width: 160px;
+box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+z-index: 1;
+}
+.submenu-contenido a {
+color: black;
+text-decoration: none;
+display: block;
+text-align: left;
+}
+.submenu-contenido a:hover {}
+.submenu:hover .submenu-contenido {
+ display: block;
+}/* CSS Document */

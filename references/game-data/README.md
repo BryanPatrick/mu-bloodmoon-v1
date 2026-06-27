@@ -199,6 +199,14 @@ Conteudo catalogado:
 Arquivo promovido para o app:
 
 - `apps/web/data/guiamuReferences.ts`
+- `references/game-data/guiamuonline-wiki-sections-data.json`
+- `references/game-data/guiamuonline-wiki-sections-reference.md`
+- `references/game-data/guiamuonline-wiki-sections-collection.log`
+
+Arquivos fisicos:
+
+- `references/game-assets/guiamuonline/wiki-sections`
+- `apps/web/public/images/game-assets/guiamuonline/wiki-sections/original`
 
 Fontes iniciais:
 
@@ -218,6 +226,15 @@ Conteudo a coletar:
 - Mapas, cidades, conexoes, spots de up e coordenadas.
 - Eventos, quests, NPCs e primeiros passos.
 - Relacionamentos entre mapa, mob, drop, spot, quest e NPC.
+
+Coleta fisica executada:
+
+- 524 paginas HTML salvas.
+- 524 arquivos TXT extraidos.
+- 1.818 imagens fisicas deduplicadas por hash.
+- 7.422 referencias de imagem preservadas no JSON, mantendo relacao imagem/pagina.
+- 4.332 tabelas extraidas em estrutura de linhas.
+- Secoes: drops, skills, maps, spots, events, quests, npcs e tutorials.
 
 Regra visual:
 
