@@ -1,0 +1,53 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-manticore-elf-support",
+  "slug": "manticore-elf-support",
+  "name": "Manticore Elf Support",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-manticore-elf-support",
+      "name": "Manticore Elf Support Armor",
+      "category": "Armor",
+      "slug": "manticore-elf-support",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-manticore-elf-support.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/mantielf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-manticore-elf-support.jpg",
+        "size": 1281,
+        "sha1": "8d8db3a179ee1fededfb02911bbd12a0b710d03b"
+      }
+    },
+    {
+      "itemId": "helm-manticore-elf-support",
+      "name": "Manticore Elf Support Helm",
+      "category": "Helm",
+      "slug": "manticore-elf-support",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-manticore-elf-support.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/mantielf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-manticore-elf-support.jpg",
+        "size": 1062,
+        "sha1": "b337296f8da1d4e314e0f5c1d3d914ca0448a717"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/helm.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-royal",
+  "slug": "royal",
+  "name": "Royal",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Dark Lord"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-royal",
+      "name": "Royal Armor",
+      "category": "Armor",
+      "slug": "royal",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-royal.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar052_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-royal.jpg",
+        "size": 12630,
+        "sha1": "c1cc612994119a08741c1165676dca32c2a3e226"
+      }
+    },
+    {
+      "itemId": "boots-royal",
+      "name": "Royal Boots",
+      "category": "Boots",
+      "slug": "royal",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-royal.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo051_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-royal.jpg",
+        "size": 11928,
+        "sha1": "7e542ef0f886bc10b2e32d87640190dd619dbaae"
+      }
+    },
+    {
+      "itemId": "gloves-royal",
+      "name": "Royal Gloves",
+      "category": "Gloves",
+      "slug": "royal",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-royal.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl112_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-royal.jpg",
+        "size": 12116,
+        "sha1": "afccd3561535e81ff364be88651039634b2e3f8d"
+      }
+    },
+    {
+      "itemId": "helm-royal",
+      "name": "Royal Helm",
+      "category": "Helm",
+      "slug": "royal",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-royal.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe046_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-royal.jpg",
+        "size": 12316,
+        "sha1": "df83aadf6f48050e1b14fcf534b03f17d8c81641"
+      }
+    },
+    {
+      "itemId": "pants-royal",
+      "name": "Royal Pants",
+      "category": "Pants",
+      "slug": "royal",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-royal.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa051_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-royal.jpg",
+        "size": 12386,
+        "sha1": "a2fefc6056718fe675e2bc947c7c31328ae4a185"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

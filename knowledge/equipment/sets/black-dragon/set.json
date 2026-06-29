@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-black-dragon",
+  "slug": "black-dragon",
+  "name": "Black Dragon",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Dark Knight"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-black-dragon",
+      "name": "Black Dragon Armor",
+      "category": "Armor",
+      "slug": "black-dragon",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-black-dragon.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar007_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-black-dragon.jpg",
+        "size": 3942,
+        "sha1": "d37714bfc3abf356e50669a4156370f17c47f4e0"
+      }
+    },
+    {
+      "itemId": "boots-black-dragon",
+      "name": "Black Dragon Boots",
+      "category": "Boots",
+      "slug": "black-dragon",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-black-dragon.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo007_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-black-dragon.jpg",
+        "size": 3728,
+        "sha1": "cd4547ea3fb545c0e991259d8ae4567fa55747a0"
+      }
+    },
+    {
+      "itemId": "gloves-black-dragon",
+      "name": "Black Dragon Gloves",
+      "category": "Gloves",
+      "slug": "black-dragon",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-black-dragon.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl007_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-black-dragon.jpg",
+        "size": 3472,
+        "sha1": "bc31d5fa52b25e56345661834b9ca5615fc953e0"
+      }
+    },
+    {
+      "itemId": "helm-black-dragon",
+      "name": "Black Dragon Helm",
+      "category": "Helm",
+      "slug": "black-dragon",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-black-dragon.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe007_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-black-dragon.jpg",
+        "size": 3333,
+        "sha1": "b981ab63e725d4d3a74be7cb3cc7f1fc63fbc17c"
+      }
+    },
+    {
+      "itemId": "pants-black-dragon",
+      "name": "Black Dragon Pants",
+      "category": "Pants",
+      "slug": "black-dragon",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-black-dragon.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa007_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-black-dragon.jpg",
+        "size": 3602,
+        "sha1": "7bb77caff04baf6f49f847f84b01e32df9982b49"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

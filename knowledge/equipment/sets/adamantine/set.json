@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-adamantine",
+  "slug": "adamantine",
+  "name": "Adamantine",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Dark Lord"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-adamantine",
+      "name": "Adamantine Armor",
+      "category": "Armor",
+      "slug": "adamantine",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-adamantine.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar024_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-adamantine.jpg",
+        "size": 3913,
+        "sha1": "886947b7a1dd17409f86c2b8d99febfb5db0f070"
+      }
+    },
+    {
+      "itemId": "boots-adamantine",
+      "name": "Adamantine Boots",
+      "category": "Boots",
+      "slug": "adamantine",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-adamantine.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo024_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-adamantine.jpg",
+        "size": 3738,
+        "sha1": "4ec88aa3ca576dc128aa31f7322c3aedc8c32468"
+      }
+    },
+    {
+      "itemId": "gloves-adamantine",
+      "name": "Adamantine Gloves",
+      "category": "Gloves",
+      "slug": "adamantine",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-adamantine.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl024_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-adamantine.jpg",
+        "size": 3512,
+        "sha1": "47bb6594782093d603230954a81bfd1cd33b2c96"
+      }
+    },
+    {
+      "itemId": "helm-adamantine",
+      "name": "Adamantine Helm",
+      "category": "Helm",
+      "slug": "adamantine",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-adamantine.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe024_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-adamantine.jpg",
+        "size": 2867,
+        "sha1": "46b0a864b0016bda48136a6dfac522c08fe00134"
+      }
+    },
+    {
+      "itemId": "pants-adamantine",
+      "name": "Adamantine Pants",
+      "category": "Pants",
+      "slug": "adamantine",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-adamantine.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa024_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-adamantine.jpg",
+        "size": 2898,
+        "sha1": "3e7cd1bae9ce771e0b20a2c556445ea72d43f6b1"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

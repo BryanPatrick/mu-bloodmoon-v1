@@ -1,0 +1,55 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-serket-iris",
+  "slug": "serket-iris",
+  "name": "Serket Iris",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Serket Pants",
+      "slug": "serket-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-serket-iris-serket-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa037_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-serket-iris-serket-pants.jpg",
+        "size": 3229,
+        "sha1": "3f6027c265261f1f63cdda07aad1ad920e78a376"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Serket Helm",
+      "slug": "serket-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-serket-iris-serket-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe034_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-serket-iris-serket-helm.jpg",
+        "size": 3761,
+        "sha1": "872ae993cfaa826443cddee465b985d5c316effb"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Increase Agility +40 Increase Defense +90 Increase Damage +40",
+      "source": "listStats"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/serket.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

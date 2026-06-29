@@ -1,0 +1,34 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "wings-bloody-wings",
+  "slug": "bloody-wings",
+  "name": "Bloody Wings",
+  "title": "Bloody Wings",
+  "category": "Wings",
+  "categorySlug": "wings",
+  "usableBy": [],
+  "listStats": {
+    "normalDrop": "800"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/wings-bloody-wings.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/w4gunner.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/wings-bloody-wings.jpg",
+    "size": 1355,
+    "sha1": "9aa0b22d7ad83eb24bcb1492a9e618a3eea06942"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/wings.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/wing/bloodywings.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/w4gunner.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

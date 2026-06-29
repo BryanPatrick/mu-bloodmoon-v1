@@ -1,0 +1,82 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-storm-jahad",
+  "slug": "storm-jahad",
+  "name": "Storm Jahad",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Rage Fighter"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-storm-jahad",
+      "name": "Storm Jahad Armor",
+      "category": "Armor",
+      "slug": "storm-jahad",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-storm-jahad.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar062_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-storm-jahad.jpg",
+        "size": 2985,
+        "sha1": "72c66243806d14ad0adeb1529a8b69fddc2414a9"
+      }
+    },
+    {
+      "itemId": "boots-storm-jahad",
+      "name": "Piercing Groove Armor",
+      "category": "Boots",
+      "slug": "storm-jahad",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-storm-jahad.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo066_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-storm-jahad.jpg",
+        "size": 2658,
+        "sha1": "7ddc659a5b612b7302b8b45be9e5fa8ae3a4b714"
+      }
+    },
+    {
+      "itemId": "helm-storm-jahad",
+      "name": "Storm Jahad Helm",
+      "category": "Helm",
+      "slug": "storm-jahad",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-storm-jahad.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe059_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-storm-jahad.jpg",
+        "size": 1973,
+        "sha1": "9e08cdfc9cab677eee6396b6c3a18f9d5da29d3b"
+      }
+    },
+    {
+      "itemId": "pants-storm-jahad",
+      "name": "Storm Jahad Pants",
+      "category": "Pants",
+      "slug": "storm-jahad",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-storm-jahad.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa067_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-storm-jahad.jpg",
+        "size": 2731,
+        "sha1": "eed228eecfd52bcf9e406fae5a11a11cbf29c30b"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

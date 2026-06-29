@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "primordial-ancient-primordial-kundun",
+  "slug": "primordial-kundun",
+  "name": "Primordial Kundun",
+  "family": "Primordial Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Primordial Kundun Helm",
+      "slug": "primordial-kundun-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-kundun-primordial-kundun-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/helmdw.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-kundun-primordial-kundun-helm.jpg",
+        "size": 1198,
+        "sha1": "0d271206e382627f869ce0ac99e9d3b9cb473041"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Kundun Armor",
+      "slug": "primordial-kundun-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-kundun-primordial-kundun-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/armordw.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-kundun-primordial-kundun-armor.jpg",
+        "size": 1624,
+        "sha1": "84315d82b7e345cca872d9861a0e2f3295105021"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Kundun Pants",
+      "slug": "primordial-kundun-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-kundun-primordial-kundun-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/pantsdw.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-kundun-primordial-kundun-pants.jpg",
+        "size": 1310,
+        "sha1": "e4ee7f0a09688a862b82eaeb91e9911ed0d159a8"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Kundun Gloves",
+      "slug": "primordial-kundun-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-kundun-primordial-kundun-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/glovesdw.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-kundun-primordial-kundun-gloves.jpg",
+        "size": 1113,
+        "sha1": "6487b016d9b9b4bffb8d39cba13e0cd59ddb1712"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/primordial-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/prikundun.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-awakening-magic-energy",
+  "slug": "awakening-magic-energy",
+  "name": "Awakening Magic Energy",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-awakening-magic-energy",
+      "name": "Awakening Magic Energy Armor",
+      "category": "Armor",
+      "slug": "awakening-magic-energy",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-awakening-magic-energy.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/bkarmorawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-awakening-magic-energy.jpg",
+        "size": 1284,
+        "sha1": "f4688837b81d320390732c67a2f971d83061aeaa"
+      }
+    },
+    {
+      "itemId": "boots-awakening-magic-energy",
+      "name": "Awakening Magic Energy Boots",
+      "category": "Boots",
+      "slug": "awakening-magic-energy",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-awakening-magic-energy.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/bkbootsawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-awakening-magic-energy.jpg",
+        "size": 1011,
+        "sha1": "f922533b2e1e80e5deec6aa219064cb1fcc92b63"
+      }
+    },
+    {
+      "itemId": "gloves-awakening-magic-energy",
+      "name": "Awakening Magic Energy Gloves",
+      "category": "Gloves",
+      "slug": "awakening-magic-energy",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-awakening-magic-energy.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/bkglovesawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-awakening-magic-energy.jpg",
+        "size": 1090,
+        "sha1": "b445f3ad56411862faf684b02c18888485e5acc1"
+      }
+    },
+    {
+      "itemId": "pants-awakening-magic-energy",
+      "name": "Awakening Magic Energy Pants",
+      "category": "Pants",
+      "slug": "awakening-magic-energy",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-awakening-magic-energy.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/bkpantsawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-awakening-magic-energy.jpg",
+        "size": 1180,
+        "sha1": "00e2701e2d3df3353a03cc34e8e84e4cb3af061b"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

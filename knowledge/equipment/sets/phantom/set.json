@@ -1,0 +1,81 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-phantom",
+  "slug": "phantom",
+  "name": "Phantom",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-phantom",
+      "name": "Phantom Armor",
+      "category": "Armor",
+      "slug": "phantom",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-phantom.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar053_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-phantom.jpg",
+        "size": 11872,
+        "sha1": "8092652cdcf9bfdc73f6985b757fe965f05bf703"
+      }
+    },
+    {
+      "itemId": "boots-phantom",
+      "name": "Phantom Boots",
+      "category": "Boots",
+      "slug": "phantom",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-phantom.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo052_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-phantom.jpg",
+        "size": 11916,
+        "sha1": "42b51f6f3dc87b7df405b57ea063b98130fafe56"
+      }
+    },
+    {
+      "itemId": "gloves-phantom",
+      "name": "Phantom Gloves",
+      "category": "Gloves",
+      "slug": "phantom",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-phantom.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl113_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-phantom.jpg",
+        "size": 11286,
+        "sha1": "5e7ccfe17a565536f945b6a701faf7e5cbf028c0"
+      }
+    },
+    {
+      "itemId": "pants-phantom",
+      "name": "Phantom Pants",
+      "category": "Pants",
+      "slug": "phantom",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-phantom.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa052_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-phantom.jpg",
+        "size": 11619,
+        "sha1": "c3f381806d231cd5da7d50da8e5f8f89a4a3a7d2"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

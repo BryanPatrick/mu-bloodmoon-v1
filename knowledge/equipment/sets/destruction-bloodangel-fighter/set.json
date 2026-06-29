@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "bloodangel-ancient-destruction-bloodangel-fighter",
+  "slug": "destruction-bloodangel-fighter",
+  "name": "Destruction Bloodangel Fighter",
+  "family": "Bloodangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Destruction Helm",
+      "slug": "destruction-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-destruction-bloodangel-fighter-destruction-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodhelmrf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-destruction-bloodangel-fighter-destruction-helm.jpg",
+        "size": 1290,
+        "sha1": "38ca466f7275328604c67feeb8db065a1c6ecbdd"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Destruction Armor",
+      "slug": "destruction-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-destruction-bloodangel-fighter-destruction-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodarmorrf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-destruction-bloodangel-fighter-destruction-armor.jpg",
+        "size": 1474,
+        "sha1": "f245eb06653d3baf5c9bdbb965288cf0470e07ca"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Destruction Pants",
+      "slug": "destruction-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-destruction-bloodangel-fighter-destruction-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodpantsrf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-destruction-bloodangel-fighter-destruction-pants.jpg",
+        "size": 1342,
+        "sha1": "aabc55feb750ca9631f39f8cf5878abfc0b30cbd"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Destruction Boots",
+      "slug": "destruction-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-destruction-bloodangel-fighter-destruction-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodbootsrf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-destruction-bloodangel-fighter-destruction-boots.jpg",
+        "size": 1393,
+        "sha1": "6838731211e1f36b4856239e26a8b2cc98623191"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/bloodangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/destruction.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

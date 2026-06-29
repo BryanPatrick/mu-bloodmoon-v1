@@ -1,0 +1,271 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "ancient-normal-fase-silk",
+  "slug": "fase-silk",
+  "name": "Fase Silk",
+  "title": "Fase Silk",
+  "category": "Ancient Normal",
+  "categorySlug": "ancient-normal",
+  "usableBy": [],
+  "listStats": {
+    "value1": "Fase Gloves",
+    "value2": "Fase Pants",
+    "value3": "Fase Boots",
+    "value4": "Opción por cada Item",
+    "value5": "2 Set option : Increase Max. Life +100 3 Set option : Increase Max. Mana +100"
+  },
+  "image": {
+    "publicPath": null,
+    "sourceUrl": null,
+    "localPath": null,
+    "size": null,
+    "sha1": null
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/phase.html",
+    "imageSourceUrl": null
+  },
+  "statsByLevel": [
+    {
+      "itemLevel": 0,
+      "defense": 17,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 56,
+      "requiredAgility": 104,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 1,
+      "defense": 20,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 58,
+      "requiredAgility": 110,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 2,
+      "defense": 23,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 61,
+      "requiredAgility": 116,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 3,
+      "defense": 26,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 64,
+      "requiredAgility": 122,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 4,
+      "defense": 29,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 66,
+      "requiredAgility": 129,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 5,
+      "defense": 32,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 69,
+      "requiredAgility": 135,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 6,
+      "defense": 35,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 72,
+      "requiredAgility": 141,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 7,
+      "defense": 38,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 74,
+      "requiredAgility": 148,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 8,
+      "defense": 41,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 77,
+      "requiredAgility": 154,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 9,
+      "defense": 44,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 80,
+      "requiredAgility": 160,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 10,
+      "defense": 48,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 83,
+      "requiredAgility": 167,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 11,
+      "defense": 53,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 85,
+      "requiredAgility": 173,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 12,
+      "defense": 59,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 88,
+      "requiredAgility": 179,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 13,
+      "defense": 66,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 91,
+      "requiredAgility": 185,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 14,
+      "defense": 74,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 93,
+      "requiredAgility": 192,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 15,
+      "defense": 83,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 96,
+      "requiredAgility": 198,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    }
+  ],
+  "parts": [
+    {
+      "name": "Fase Gloves",
+      "slug": "fase-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-fase-silk-fase-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl015_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-fase-silk-fase-gloves.jpg",
+        "size": 3525,
+        "sha1": "3eb62e25906a1df41992211c1e4697c71d87b0ff"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Fase Pants",
+      "slug": "fase-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-fase-silk-fase-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa015_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-fase-silk-fase-pants.jpg",
+        "size": 3253,
+        "sha1": "48ba60c2b817790a31486488e503c0a9481146c8"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Fase Boots",
+      "slug": "fase-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-fase-silk-fase-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo062_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-fase-silk-fase-boots.jpg",
+        "size": 3411,
+        "sha1": "9e1e2bd93bdfec53289c6b35bce0afb1d0c57e80"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

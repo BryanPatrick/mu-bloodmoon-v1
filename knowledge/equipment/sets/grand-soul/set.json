@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-grand-soul",
+  "slug": "grand-soul",
+  "name": "Grand Soul",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Dark Wizard"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-grand-soul",
+      "name": "Grand Soul Armor",
+      "category": "Armor",
+      "slug": "grand-soul",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-grand-soul.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar013_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-grand-soul.jpg",
+        "size": 4091,
+        "sha1": "62ed2d58104d54da8a0252b83d302025eae071cc"
+      }
+    },
+    {
+      "itemId": "boots-grand-soul",
+      "name": "Grand Soul Boots",
+      "category": "Boots",
+      "slug": "grand-soul",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-grand-soul.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo013_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-grand-soul.jpg",
+        "size": 3717,
+        "sha1": "cf732efdcb8fbd2e66e13208f32a1840cc989714"
+      }
+    },
+    {
+      "itemId": "gloves-grand-soul",
+      "name": "Grand Soul Gloves",
+      "category": "Gloves",
+      "slug": "grand-soul",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-grand-soul.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl013_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-grand-soul.jpg",
+        "size": 3709,
+        "sha1": "0a9b34be300d5a5354bef20aea454329478b5704"
+      }
+    },
+    {
+      "itemId": "helm-grand-soul",
+      "name": "Grand Soul Helm",
+      "category": "Helm",
+      "slug": "grand-soul",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-grand-soul.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe013_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-grand-soul.jpg",
+        "size": 3210,
+        "sha1": "9b59990188d29a4929cdcbb1f388f645ec2cb1ad"
+      }
+    },
+    {
+      "itemId": "pants-grand-soul",
+      "name": "Grand Soul Pants",
+      "category": "Pants",
+      "slug": "grand-soul",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-grand-soul.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa013_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-grand-soul.jpg",
+        "size": 9175,
+        "sha1": "2d0f5df9676639e2a7e4a1b10fe4963d8c794bfc"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

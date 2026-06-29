@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "soul-ancient-soul-lord",
+  "slug": "soul-lord",
+  "name": "Soul Lord",
+  "family": "Soul Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Awakening Lord Helm",
+      "slug": "awakening-lord-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lord-awakening-lord-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awadwhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lord-awakening-lord-helm-detail.jpg",
+        "size": 1516,
+        "sha1": "91a3641a90719cbd6d6e3590b85cf8d2eea54017"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Awakening Lord Armor",
+      "slug": "awakening-lord-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lord-awakening-lord-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awadwarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lord-awakening-lord-armor-detail.jpg",
+        "size": 3235,
+        "sha1": "f5b54c2de27d1c38f2a9b4c7cb1e5c86a7c1370b"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Awakening Lord Pants",
+      "slug": "awakening-lord-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lord-awakening-lord-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awadwpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lord-awakening-lord-pants-detail.jpg",
+        "size": 2419,
+        "sha1": "0501caf1563c2a00cef6a7edfdda2beb7df64bfa"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Awakening Lord Gloves",
+      "slug": "awakening-lord-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lord-awakening-lord-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awadwgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lord-awakening-lord-gloves-detail.jpg",
+        "size": 1902,
+        "sha1": "160dcbc6d8af31b634e0355681a15159986701a8"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Lord Helm",
+      "slug": "soul-lord-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lord-soul-lord-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/dwhelmawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lord-soul-lord-helm.jpg",
+        "size": 1056,
+        "sha1": "03346789475e5006ab5c9cb2420799191a88e3b8"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Lord Armor",
+      "slug": "soul-lord-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lord-soul-lord-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/dwarmorawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lord-soul-lord-armor.jpg",
+        "size": 1365,
+        "sha1": "c5ddc0384c95cada8cb4e0655ef27bb02f4310a2"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Lord Pants",
+      "slug": "soul-lord-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lord-soul-lord-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/dwpantsawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lord-soul-lord-pants.jpg",
+        "size": 1236,
+        "sha1": "828eeeeee185c14056c523e4939b54e0412f1bae"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Lord Gloves",
+      "slug": "soul-lord-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lord-soul-lord-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/dwglovesawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lord-soul-lord-gloves.jpg",
+        "size": 1044,
+        "sha1": "b0a10eefddcc1577949be9492dddb1658cbe1e6d"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/soul-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/awadl.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

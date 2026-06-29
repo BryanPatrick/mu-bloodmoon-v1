@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-awakening-rune",
+  "slug": "awakening-rune",
+  "name": "Awakening Rune",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "B"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-awakening-rune",
+      "name": "Awakening Rune Armor",
+      "category": "Armor",
+      "slug": "awakening-rune",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-awakening-rune.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/elfarmorawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-awakening-rune.jpg",
+        "size": 1496,
+        "sha1": "388e05469561fec2711a89e5539b45d7e338404b"
+      }
+    },
+    {
+      "itemId": "boots-awakening-rune",
+      "name": "Awakening Rune Boots",
+      "category": "Boots",
+      "slug": "awakening-rune",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-awakening-rune.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/elfbootssawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-awakening-rune.jpg",
+        "size": 1355,
+        "sha1": "c4922ed05f87fe20361c7a82c8751e7f2d200fb4"
+      }
+    },
+    {
+      "itemId": "gloves-awakening-rune",
+      "name": "Awakening Rune Gloves",
+      "category": "Gloves",
+      "slug": "awakening-rune",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-awakening-rune.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/elfglovesawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-awakening-rune.jpg",
+        "size": 1275,
+        "sha1": "d98c03f99a7f82fb7cbc6caf9a8adb3d938d466a"
+      }
+    },
+    {
+      "itemId": "helm-awakening-rune",
+      "name": "Awakening Rune Helm",
+      "category": "Helm",
+      "slug": "awakening-rune",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-awakening-rune.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/elfhelmawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-awakening-rune.jpg",
+        "size": 1243,
+        "sha1": "8e53ac357d1b067f0f24c0c86e220e374c881c09"
+      }
+    },
+    {
+      "itemId": "pants-awakening-rune",
+      "name": "Awakening Rune Pants",
+      "category": "Pants",
+      "slug": "awakening-rune",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-awakening-rune.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/elfpantsawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-awakening-rune.jpg",
+        "size": 1283,
+        "sha1": "6149b415f04047682eece1badde290988e8521d5"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-nightwing",
+  "slug": "nightwing",
+  "name": "Nightwing",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "itemId": "armor-nightwing",
+      "name": "Slayer Nightwing Armor",
+      "category": "Armor",
+      "slug": "nightwing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-nightwing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/nightwing.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-nightwing.jpg",
+        "size": 1276,
+        "sha1": "85ee49fc8aa663b117e6fd8343e6e8758b979391"
+      }
+    },
+    {
+      "itemId": "boots-nightwing",
+      "name": "Slayer Nightwing Boots",
+      "category": "Boots",
+      "slug": "nightwing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-nightwing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/slayernightwing.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-nightwing.jpg",
+        "size": 1039,
+        "sha1": "213acbc5cbc021fa94bd598b26a2b621a452e477"
+      }
+    },
+    {
+      "itemId": "gloves-nightwing",
+      "name": "Slayer Nightwing Gloves",
+      "category": "Gloves",
+      "slug": "nightwing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-nightwing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/slayernightwing.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-nightwing.jpg",
+        "size": 1098,
+        "sha1": "fcb8c1f54091ba8e5718dd4b04a22acadd34ab0f"
+      }
+    },
+    {
+      "itemId": "helm-nightwing",
+      "name": "Nightwing",
+      "category": "Helm",
+      "slug": "nightwing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-nightwing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/nightwing.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-nightwing.jpg",
+        "size": 1098,
+        "sha1": "66b4483afae1597eedb02e1fb01fbf883f06c617"
+      }
+    },
+    {
+      "itemId": "pants-nightwing",
+      "name": "Slayer Nightwing Pants",
+      "category": "Pants",
+      "slug": "nightwing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-nightwing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/slayernightwing.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-nightwing.jpg",
+        "size": 1191,
+        "sha1": "a1b0e1e66eca0a830bb55e492b6b7f3d285d64ee"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

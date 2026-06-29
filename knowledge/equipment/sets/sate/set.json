@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-sate",
+  "slug": "sate",
+  "name": "Sate",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Grow Lancer"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-sate",
+      "name": "Sate Armor",
+      "category": "Armor",
+      "slug": "sate",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-sate.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/three.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-sate.jpg",
+        "size": 1594,
+        "sha1": "daad0195ddae2e994ebd2eb8501f2cb4442771bc"
+      }
+    },
+    {
+      "itemId": "boots-sate",
+      "name": "Sate Boots",
+      "category": "Boots",
+      "slug": "sate",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-sate.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/three.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-sate.jpg",
+        "size": 1160,
+        "sha1": "ec7812f4329084e39814b2bde4fafa99b2690615"
+      }
+    },
+    {
+      "itemId": "gloves-sate",
+      "name": "Sate Gloves",
+      "category": "Gloves",
+      "slug": "sate",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-sate.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/three.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-sate.jpg",
+        "size": 1090,
+        "sha1": "809761fdeab8bb72ab2418a8976f01aa4c5d339c"
+      }
+    },
+    {
+      "itemId": "helm-sate",
+      "name": "Sate Helm",
+      "category": "Helm",
+      "slug": "sate",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-sate.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/three.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-sate.jpg",
+        "size": 1159,
+        "sha1": "0a056a3b7bd8666677c0f6d390554a5a92ba89a8"
+      }
+    },
+    {
+      "itemId": "pants-sate",
+      "name": "Sate Pants",
+      "category": "Pants",
+      "slug": "sate",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-sate.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/three.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-sate.jpg",
+        "size": 1385,
+        "sha1": "697a3ed503405910dc8568d6ada1f23cb7365b78"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

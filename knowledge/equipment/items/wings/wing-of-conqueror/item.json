@@ -1,0 +1,35 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "wings-wing-of-conqueror",
+  "slug": "wing-of-conqueror",
+  "name": "Wing of Conqueror",
+  "title": "Wings of Conqueror",
+  "category": "Wings",
+  "categorySlug": "wings",
+  "usableBy": [],
+  "listStats": {
+    "normalDrop": "400",
+    "excellentDrop": "Usado por todos los personajes Attack Power: 100 Defensa: 60 Incremento de Daño: 39% + (Wing Level * 2). Absorcion de Daño: 39% + (Wing Level * 2). Opciones: 25% Luck en Rate de Soul + 5% Critical Damage Rate. 5% de Posibilidad de ignorar la Defensa del Enemigo. 5% de posibilidad de Recuperar el 100% del HP. 5% de posibilidad de retornar el ataque completo del enemigo. Incremento Daño Wizardry / Curse +4,+8,+12,+16. Incremento de Daño +4,+8,+12,+16. Recuperacion de HP 1%,2%,3%,4%. Reduce 3 Vida despues del ataque con exito (Incluido el Miss)."
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/wings-wing-of-conqueror.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/cc.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/wings-wing-of-conqueror.jpg",
+    "size": 1523,
+    "sha1": "b46798fb4079b4d7ac4398acec4539c9dc4696a5"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/wings.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/wing/wingsconqueror.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/cc.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

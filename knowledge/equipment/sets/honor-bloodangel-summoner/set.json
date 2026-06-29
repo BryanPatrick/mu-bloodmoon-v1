@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "bloodangel-ancient-honor-bloodangel-summoner",
+  "slug": "honor-bloodangel-summoner",
+  "name": "Honor Bloodangel Summoner",
+  "family": "Bloodangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Honor Helm",
+      "slug": "honor-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-honor-bloodangel-summoner-honor-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodhelmelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-honor-bloodangel-summoner-honor-helm.jpg",
+        "size": 1073,
+        "sha1": "66349eaa436ba36fab6f055ffc3c2770216fb6f4"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Honor Armor",
+      "slug": "honor-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-honor-bloodangel-summoner-honor-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodarmorefl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-honor-bloodangel-summoner-honor-armor.jpg",
+        "size": 1388,
+        "sha1": "f1a0a54bc3695d297c1a39d5947022d43bb689e2"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Honor Pants",
+      "slug": "honor-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-honor-bloodangel-summoner-honor-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodpantself.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-honor-bloodangel-summoner-honor-pants.jpg",
+        "size": 1397,
+        "sha1": "d42e707599b3bb209f5758f4381aabb32147101f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Honor Gloves",
+      "slug": "honor-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-honor-bloodangel-summoner-honor-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodgloveself.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-honor-bloodangel-summoner-honor-gloves.jpg",
+        "size": 1082,
+        "sha1": "40749a2af6cd9aee3286ba50d0c07b040d6a6eb4"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/bloodangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/honor.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

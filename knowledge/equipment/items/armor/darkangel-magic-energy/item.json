@@ -1,0 +1,38 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "armor-darkangel-magic-energy",
+  "slug": "darkangel-magic-energy",
+  "name": "Darkangel Magic Energy",
+  "title": "Darkangel Magic Energy Armor",
+  "category": "Armor",
+  "categorySlug": "armor",
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "listStats": {
+    "normalDrop": "~",
+    "excellentDrop": "~",
+    "requiredLevel": "600"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/armor-darkangel-magic-energy.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkabk.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-darkangel-magic-energy.jpg",
+    "size": 1212,
+    "sha1": "4423578872c22e9cebad7ba95f5f50835d8805ea"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/armor.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/armor/darkangelmagicenergy.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkabk.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

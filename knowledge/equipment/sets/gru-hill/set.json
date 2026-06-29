@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-gru-hill",
+  "slug": "gru-hill",
+  "name": "Gru Hill",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Grow Lancer"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-gru-hill",
+      "name": "Armor Gru Hill",
+      "category": "Armor",
+      "slug": "gru-hill",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-gru-hill.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/armor02.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-gru-hill.jpg",
+        "size": 1110,
+        "sha1": "8e0a66d270f04874b97dcf86afc8d261d52bee73"
+      }
+    },
+    {
+      "itemId": "boots-gru-hill",
+      "name": "Boots Gru Hill",
+      "category": "Boots",
+      "slug": "gru-hill",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-gru-hill.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/boots02.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-gru-hill.jpg",
+        "size": 1000,
+        "sha1": "6e88c7187c291370b36d9f1a3e702a100d958a76"
+      }
+    },
+    {
+      "itemId": "gloves-gru-hill",
+      "name": "Gloves Gru Hill",
+      "category": "Gloves",
+      "slug": "gru-hill",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-gru-hill.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/gloves02.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-gru-hill.jpg",
+        "size": 1012,
+        "sha1": "eb97ee9367408ddb19b8635096d5eafe1750c035"
+      }
+    },
+    {
+      "itemId": "helm-gru-hill",
+      "name": "Helm Gru Hill",
+      "category": "Helm",
+      "slug": "gru-hill",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-gru-hill.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/helm02.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-gru-hill.jpg",
+        "size": 972,
+        "sha1": "cb048ec890416615ce84052b56ddab62429e6cfe"
+      }
+    },
+    {
+      "itemId": "pants-gru-hill",
+      "name": "Pants Gru Hill",
+      "category": "Pants",
+      "slug": "gru-hill",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-gru-hill.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/pants02.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-gru-hill.jpg",
+        "size": 1139,
+        "sha1": "f2b42a6274e80793248cc13c230ce2259f08bc7b"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

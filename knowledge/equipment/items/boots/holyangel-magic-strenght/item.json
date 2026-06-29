@@ -1,0 +1,231 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "boots-holyangel-magic-strenght",
+  "slug": "holyangel-magic-strenght",
+  "name": "Holyangel Magic Strenght",
+  "title": "Holyangel Magic Boots",
+  "category": "Boots",
+  "categorySlug": "boots",
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "listStats": {
+    "normalDrop": "~",
+    "excellentDrop": "~",
+    "requiredLevel": "800"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/boots-holyangel-magic-strenght.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/holybmboots.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-holyangel-magic-strenght.jpg",
+    "size": 1231,
+    "sha1": "323b66d8b483d0eb8a1acd64b2743efa6d0531d2"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/boots.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/boots/holymg.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/holybmboots.jpg"
+  },
+  "statsByLevel": [
+    {
+      "itemLevel": 0,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": 179,
+      "excellentRequiredStrength": 671,
+      "excellentRequiredAgility": 282
+    },
+    {
+      "itemLevel": 1,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": 182,
+      "excellentRequiredStrength": 682,
+      "excellentRequiredAgility": 287
+    },
+    {
+      "itemLevel": 2,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": 185,
+      "excellentRequiredStrength": 693,
+      "excellentRequiredAgility": 291
+    },
+    {
+      "itemLevel": 3,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": 188,
+      "excellentRequiredStrength": 704,
+      "excellentRequiredAgility": 296
+    },
+    {
+      "itemLevel": 4,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": 191,
+      "excellentRequiredStrength": 715,
+      "excellentRequiredAgility": 300
+    },
+    {
+      "itemLevel": 5,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": 194,
+      "excellentRequiredStrength": 726,
+      "excellentRequiredAgility": 305
+    },
+    {
+      "itemLevel": 6,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": 197,
+      "excellentRequiredStrength": 738,
+      "excellentRequiredAgility": 309
+    },
+    {
+      "itemLevel": 7,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": 200,
+      "excellentRequiredStrength": 749,
+      "excellentRequiredAgility": 314
+    },
+    {
+      "itemLevel": 8,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": 203,
+      "excellentRequiredStrength": 760,
+      "excellentRequiredAgility": 318
+    },
+    {
+      "itemLevel": 9,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": 206,
+      "excellentRequiredStrength": 771,
+      "excellentRequiredAgility": 323
+    },
+    {
+      "itemLevel": 10,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": 210,
+      "excellentRequiredStrength": 782,
+      "excellentRequiredAgility": 327
+    },
+    {
+      "itemLevel": 11,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": 215,
+      "excellentRequiredStrength": 793,
+      "excellentRequiredAgility": 332
+    },
+    {
+      "itemLevel": 12,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": 221,
+      "excellentRequiredStrength": 804,
+      "excellentRequiredAgility": 336
+    },
+    {
+      "itemLevel": 13,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": 228,
+      "excellentRequiredStrength": 816,
+      "excellentRequiredAgility": 341
+    },
+    {
+      "itemLevel": 14,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": 236,
+      "excellentRequiredStrength": 827,
+      "excellentRequiredAgility": 345
+    },
+    {
+      "itemLevel": 15,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": 245,
+      "excellentRequiredStrength": 838,
+      "excellentRequiredAgility": 350
+    }
+  ],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

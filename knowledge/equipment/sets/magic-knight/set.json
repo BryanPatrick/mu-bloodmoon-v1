@@ -1,0 +1,81 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-magic-knight",
+  "slug": "magic-knight",
+  "name": "Magic Knight",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-magic-knight",
+      "name": "Armor Magic Knight",
+      "category": "Armor",
+      "slug": "magic-knight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-magic-knight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/armor_mg_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-magic-knight.jpg",
+        "size": 1614,
+        "sha1": "06a2dfc6bdb8bab8946ac829d96e0aecffe3084d"
+      }
+    },
+    {
+      "itemId": "boots-magic-knight",
+      "name": "Boots Magic Knight",
+      "category": "Boots",
+      "slug": "magic-knight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-magic-knight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/boots_mg_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-magic-knight.jpg",
+        "size": 1275,
+        "sha1": "f4c232ee5ad80d9c14229773f540618e89a62d29"
+      }
+    },
+    {
+      "itemId": "gloves-magic-knight",
+      "name": "Gloves Magic Knight",
+      "category": "Gloves",
+      "slug": "magic-knight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-magic-knight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/gloves_mg_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-magic-knight.jpg",
+        "size": 1237,
+        "sha1": "b52ee5b99e82dd231c9ad0d90898a677b154bc6a"
+      }
+    },
+    {
+      "itemId": "pants-magic-knight",
+      "name": "Pants Magic Knight",
+      "category": "Pants",
+      "slug": "magic-knight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-magic-knight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/pants_mg_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-magic-knight.jpg",
+        "size": 1444,
+        "sha1": "dbc61f86bcee4369f213afd0bb210007255695c9"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

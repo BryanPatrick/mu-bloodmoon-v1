@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "darkangel-ancient-darkangel-illusion",
+  "slug": "darkangel-illusion",
+  "name": "Darkangel Illusion",
+  "family": "Darkangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Darkangel Illusion Helm",
+      "slug": "darkangel-illusion-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-darkangel-illusion-darkangel-illusion-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkhelmdk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-darkangel-illusion-darkangel-illusion-helm.jpg",
+        "size": 1247,
+        "sha1": "8983f29c4cbb7b20bd50e74c47561e30cd6005a4"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Darkangel Illusion Armor",
+      "slug": "darkangel-illusion-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-darkangel-illusion-darkangel-illusion-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkarmordk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-darkangel-illusion-darkangel-illusion-armor.jpg",
+        "size": 1212,
+        "sha1": "4423578872c22e9cebad7ba95f5f50835d8805ea"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Darkangel Illusion Pants",
+      "slug": "darkangel-illusion-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-darkangel-illusion-darkangel-illusion-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkpantsdk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-darkangel-illusion-darkangel-illusion-pants.jpg",
+        "size": 1141,
+        "sha1": "870930c4a04028c7e466c2bced347dd56e698e07"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Darkangel Illusion Gloves",
+      "slug": "darkangel-illusion-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-darkangel-illusion-darkangel-illusion-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkglovesdk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-darkangel-illusion-darkangel-illusion-gloves.jpg",
+        "size": 1176,
+        "sha1": "938124f15d1522dc961ad6fed7b8a4089248f8d9"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/darkangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/darkangelillusion.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

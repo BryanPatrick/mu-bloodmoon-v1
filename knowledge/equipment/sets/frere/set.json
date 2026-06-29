@@ -1,0 +1,94 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-frere",
+  "slug": "frere",
+  "name": "Frere",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "itemId": "armor-frere",
+      "name": "Frere Armor",
+      "category": "Armor",
+      "slug": "frere",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-frere.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/frere.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-frere.jpg",
+        "size": 1566,
+        "sha1": "9fc1af9df2bf94d1259ca77536715ca0f18690ab"
+      }
+    },
+    {
+      "itemId": "boots-frere",
+      "name": "Frere Gunner Boots",
+      "category": "Boots",
+      "slug": "frere",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-frere.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/frere.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-frere.jpg",
+        "size": 1240,
+        "sha1": "111add2bc27f89b2c460081a4307f07d00010b3d"
+      }
+    },
+    {
+      "itemId": "gloves-frere",
+      "name": "Frere Gloves",
+      "category": "Gloves",
+      "slug": "frere",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-frere.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl107_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-frere.jpg",
+        "size": 11832,
+        "sha1": "5520aa54908964e65742114f047d73be7c6d4bcc"
+      }
+    },
+    {
+      "itemId": "helm-frere",
+      "name": "Frere Helm",
+      "category": "Helm",
+      "slug": "frere",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-frere.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/frere.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-frere.jpg",
+        "size": 1167,
+        "sha1": "ec984da45d468ff49292044e341055b8b1801db9"
+      }
+    },
+    {
+      "itemId": "pants-frere",
+      "name": "Frere Gunner Pants",
+      "category": "Pants",
+      "slug": "frere",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-frere.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/frere.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-frere.jpg",
+        "size": 1071,
+        "sha1": "2117642bd31ba57699a7cb05ef214eb5b2cd5cae"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

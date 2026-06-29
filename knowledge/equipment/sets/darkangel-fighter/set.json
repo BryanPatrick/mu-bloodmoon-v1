@@ -1,0 +1,67 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-darkangel-fighter",
+  "slug": "darkangel-fighter",
+  "name": "Darkangel Fighter",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Rage Fighter"
+  ],
+  "parts": [
+    {
+      "itemId": "boots-darkangel-fighter",
+      "name": "Darkangel Fighter Boots",
+      "category": "Boots",
+      "slug": "darkangel-fighter",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-darkangel-fighter.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkbbk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-darkangel-fighter.jpg",
+        "size": 1319,
+        "sha1": "7d7d8037372bdc8f68875aa5ca7fcb3b8501053b"
+      }
+    },
+    {
+      "itemId": "helm-darkangel-fighter",
+      "name": "Darkangel Fighter Helm",
+      "category": "Helm",
+      "slug": "darkangel-fighter",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-darkangel-fighter.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkhdk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-darkangel-fighter.jpg",
+        "size": 1247,
+        "sha1": "8983f29c4cbb7b20bd50e74c47561e30cd6005a4"
+      }
+    },
+    {
+      "itemId": "pants-darkangel-fighter",
+      "name": "Darkangel Fighter Pants",
+      "category": "Pants",
+      "slug": "darkangel-fighter",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-darkangel-fighter.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkpbk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-darkangel-fighter.jpg",
+        "size": 1141,
+        "sha1": "870930c4a04028c7e466c2bced347dd56e698e07"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

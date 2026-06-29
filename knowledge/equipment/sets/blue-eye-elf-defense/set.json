@@ -1,0 +1,67 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-blue-eye-elf-defense",
+  "slug": "blue-eye-elf-defense",
+  "name": "Blue Eye Elf Defense",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "parts": [
+    {
+      "itemId": "boots-blue-eye-elf-defense",
+      "name": "Blue Eye Elf Defense Boots",
+      "category": "Boots",
+      "slug": "blue-eye-elf-defense",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-blue-eye-elf-defense.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo1010_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-blue-eye-elf-defense.jpg",
+        "size": 2160,
+        "sha1": "339c6a0126e374a185180e6b707eb2d998991d6d"
+      }
+    },
+    {
+      "itemId": "gloves-blue-eye-elf-defense",
+      "name": "Blue Eye Elf Defense Gloves",
+      "category": "Gloves",
+      "slug": "blue-eye-elf-defense",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-blue-eye-elf-defense.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl1010_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-blue-eye-elf-defense.jpg",
+        "size": 2252,
+        "sha1": "844bdac08d5141dea0dbf86291f080f44fa7cb7e"
+      }
+    },
+    {
+      "itemId": "pants-blue-eye-elf-defense",
+      "name": "Blue Eye Elf Defense Pants",
+      "category": "Pants",
+      "slug": "blue-eye-elf-defense",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-blue-eye-elf-defense.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa1010_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-blue-eye-elf-defense.jpg",
+        "size": 2573,
+        "sha1": "5543c0311d4796f56eeb674c548918db0472bca1"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "ancient-normal-hapy-ancient",
+  "slug": "hapy-ancient",
+  "name": "Hapy Ancient",
+  "title": "Hapy Ancient",
+  "category": "Ancient Normal",
+  "categorySlug": "ancient-normal",
+  "usableBy": [],
+  "listStats": {
+    "value1": "Hapy Armor",
+    "value2": "Hapy Boots",
+    "value3": "Opciones por Set Completo",
+    "value4": "Increase Agility +10 Ignore Enemy's Defense +1% Increase Defense +40"
+  },
+  "image": {
+    "publicPath": null,
+    "sourceUrl": null,
+    "localPath": null,
+    "size": null,
+    "sha1": null
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/hapy.html",
+    "imageSourceUrl": null
+  },
+  "statsByLevel": [],
+  "parts": [
+    {
+      "name": "Hapy Armor",
+      "slug": "hapy-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-hapy-ancient-hapy-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar042_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-hapy-ancient-hapy-armor.jpg",
+        "size": 14337,
+        "sha1": "1add60cdff3c2e2fa7c269eee476c1de8e1cde9f"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Hapy Boots",
+      "slug": "hapy-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-hapy-ancient-hapy-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo042_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-hapy-ancient-hapy-boots.jpg",
+        "size": 14206,
+        "sha1": "6abc737933a735a959dceb2e9b822a8c2fabe2ec"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

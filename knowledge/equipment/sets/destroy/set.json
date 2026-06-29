@@ -1,0 +1,81 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-destroy",
+  "slug": "destroy",
+  "name": "Destroy",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-destroy",
+      "name": "Destroy Armor",
+      "category": "Armor",
+      "slug": "destroy",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-destroy.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar054_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-destroy.jpg",
+        "size": 12404,
+        "sha1": "45aa8c65dc35a1765c468b02a78898228865d55c"
+      }
+    },
+    {
+      "itemId": "boots-destroy",
+      "name": "Destroy Boots",
+      "category": "Boots",
+      "slug": "destroy",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-destroy.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo053_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-destroy.jpg",
+        "size": 11359,
+        "sha1": "14f7f45453255e795d50dc4909785e3fc0309fec"
+      }
+    },
+    {
+      "itemId": "gloves-destroy",
+      "name": "Destroy Gloves",
+      "category": "Gloves",
+      "slug": "destroy",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-destroy.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl114_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-destroy.jpg",
+        "size": 11842,
+        "sha1": "d9d07148962005355e684afaeef9afab3a21bc2f"
+      }
+    },
+    {
+      "itemId": "pants-destroy",
+      "name": "Destroy Pants",
+      "category": "Pants",
+      "slug": "destroy",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-destroy.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa053_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-destroy.jpg",
+        "size": 11610,
+        "sha1": "ae2572f884a0bf6c8e61d38465b350b48836f59c"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

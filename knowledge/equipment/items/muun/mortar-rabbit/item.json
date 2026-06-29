@@ -1,0 +1,72 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "muun-mortar-rabbit",
+  "slug": "mortar-rabbit",
+  "name": "Mortar Rabbit",
+  "title": "Rabbit Mortar",
+  "category": "Muun",
+  "categorySlug": "muun",
+  "usableBy": [],
+  "listStats": {
+    "value1": "☆☆",
+    "value2": "Increase Attack Speed Skill Muun (NO PVP) Poder Especial: Solo Lunes, Martes, Miercoles y Jueves"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/muun-mortar-rabbit.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/muun/muun41.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/muun-mortar-rabbit.jpg",
+    "size": 1208,
+    "sha1": "01129145890112fe9684e389e9569ce0dbde173e"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/muun.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/muun/rabbitmortar.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/muun/muun41.jpg"
+  },
+  "statsByLevel": [
+    {
+      "itemLevel": 1,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 2,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 3,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    }
+  ],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

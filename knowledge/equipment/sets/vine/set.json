@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-vine",
+  "slug": "vine",
+  "name": "Vine",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-vine",
+      "name": "Vine Armor",
+      "category": "Armor",
+      "slug": "vine",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-vine.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar014_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-vine.jpg",
+        "size": 3409,
+        "sha1": "1ded9391196d331a6710a699157b2be6148ba044"
+      }
+    },
+    {
+      "itemId": "boots-vine",
+      "name": "Vine Boots",
+      "category": "Boots",
+      "slug": "vine",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-vine.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo014_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-vine.jpg",
+        "size": 3460,
+        "sha1": "4a66684df855a03669d77667e3c06289496feed5"
+      }
+    },
+    {
+      "itemId": "gloves-vine",
+      "name": "Vine Gloves",
+      "category": "Gloves",
+      "slug": "vine",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-vine.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl014_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-vine.jpg",
+        "size": 3293,
+        "sha1": "00307eddc47c91a66fd24d91a4982bb6589451a3"
+      }
+    },
+    {
+      "itemId": "helm-vine",
+      "name": "Vine Helm",
+      "category": "Helm",
+      "slug": "vine",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-vine.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe014_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-vine.jpg",
+        "size": 2912,
+        "sha1": "e3d3f4872454de4cedc0555b9d592a31b1985dba"
+      }
+    },
+    {
+      "itemId": "pants-vine",
+      "name": "Vine Pants",
+      "category": "Pants",
+      "slug": "vine",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-vine.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa014_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-vine.jpg",
+        "size": 2917,
+        "sha1": "879f1015108c6b314046d3bca13afaae2d50af5d"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

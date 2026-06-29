@@ -1,0 +1,68 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-hyperion-bronze",
+  "slug": "hyperion-bronze",
+  "name": "Hyperion Bronze",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Hyperion Boots",
+      "slug": "hyperion-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-hyperion-bronze-hyperion-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo002.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-hyperion-bronze-hyperion-boots.jpg",
+        "size": 3885,
+        "sha1": "f81ea11bcd2070e6277298cffac72a3445774f50"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hyperion Pants",
+      "slug": "hyperion-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-hyperion-bronze-hyperion-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa002.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-hyperion-bronze-hyperion-pants.jpg",
+        "size": 4014,
+        "sha1": "918382133e7fa1e0653529a1ff77addec48d793f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hyperion Armor",
+      "slug": "hyperion-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-hyperion-bronze-hyperion-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar002.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-hyperion-bronze-hyperion-armor.jpg",
+        "size": 3750,
+        "sha1": "30d93a24d0d58d7190edca25dbaad5ac93e978ce"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "2 Set option : Increase Energy +l5 3 Set option : Increase Agility +l5",
+      "source": "listStats"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/hyperion.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

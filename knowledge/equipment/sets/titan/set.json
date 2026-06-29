@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-titan",
+  "slug": "titan",
+  "name": "Titan",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Dark Knight"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-titan",
+      "name": "Titan Armor",
+      "category": "Armor",
+      "slug": "titan",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-titan.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar047_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-titan.jpg",
+        "size": 13125,
+        "sha1": "0769a28b592cfe0608a067d3b0034a8c715590ad"
+      }
+    },
+    {
+      "itemId": "boots-titan",
+      "name": "Titan Boots",
+      "category": "Boots",
+      "slug": "titan",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-titan.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo046_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-titan.jpg",
+        "size": 11861,
+        "sha1": "eef48f27d5a90fb71ffab6079e04f297dde2d25a"
+      }
+    },
+    {
+      "itemId": "gloves-titan",
+      "name": "Titan Gloves",
+      "category": "Gloves",
+      "slug": "titan",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-titan.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl107_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-titan.jpg",
+        "size": 11832,
+        "sha1": "5520aa54908964e65742114f047d73be7c6d4bcc"
+      }
+    },
+    {
+      "itemId": "helm-titan",
+      "name": "Titan Helm",
+      "category": "Helm",
+      "slug": "titan",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-titan.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe041_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-titan.jpg",
+        "size": 11626,
+        "sha1": "c68f1f3ea47006ce9479b19bd30085c8866a4410"
+      }
+    },
+    {
+      "itemId": "pants-titan",
+      "name": "Titan Pants",
+      "category": "Pants",
+      "slug": "titan",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-titan.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa046_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-titan.jpg",
+        "size": 11920,
+        "sha1": "1767977f1efe6992606199d225f8408a9fe45e2e"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

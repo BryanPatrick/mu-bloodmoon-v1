@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-grace",
+  "slug": "grace",
+  "name": "Grace",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Grow Lancer"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-grace",
+      "name": "Grace Armor",
+      "category": "Armor",
+      "slug": "grace",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-grace.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/gl380sarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-grace.jpg",
+        "size": 1499,
+        "sha1": "f197d9c684812e12785a69aab313868e9e827454"
+      }
+    },
+    {
+      "itemId": "boots-grace",
+      "name": "Grace Boots",
+      "category": "Boots",
+      "slug": "grace",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-grace.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/gl380sboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-grace.jpg",
+        "size": 1146,
+        "sha1": "92ff70284671744cfce616028745fd2d7bc3a53f"
+      }
+    },
+    {
+      "itemId": "gloves-grace",
+      "name": "Grace Gloves",
+      "category": "Gloves",
+      "slug": "grace",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-grace.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/gl380sgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-grace.jpg",
+        "size": 1153,
+        "sha1": "950eee5d19501b48cc27f7054d80adc68ef5f003"
+      }
+    },
+    {
+      "itemId": "helm-grace",
+      "name": "Grace Helm",
+      "category": "Helm",
+      "slug": "grace",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-grace.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/gl380shelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-grace.jpg",
+        "size": 1244,
+        "sha1": "0fcf20e3c2b159586260c1e5bf755fccd5872a27"
+      }
+    },
+    {
+      "itemId": "pants-grace",
+      "name": "Grace Pants",
+      "category": "Pants",
+      "slug": "grace",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-grace.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/gl380spants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-grace.jpg",
+        "size": 1259,
+        "sha1": "30bcc036ea0b024e144d18de4bd5169326e512bf"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

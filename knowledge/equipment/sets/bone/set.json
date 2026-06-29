@@ -1,0 +1,97 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-bone",
+  "slug": "bone",
+  "name": "Bone",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Dark Wizard",
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-bone",
+      "name": "Bone Armor",
+      "category": "Armor",
+      "slug": "bone",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-bone.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar010_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-bone.jpg",
+        "size": 2739,
+        "sha1": "547a4f301e90126f78e6d7240ca25d0170f621d9"
+      }
+    },
+    {
+      "itemId": "boots-bone",
+      "name": "Bone Boots",
+      "category": "Boots",
+      "slug": "bone",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-bone.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo010_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-bone.jpg",
+        "size": 2758,
+        "sha1": "7e9646e8819977544ab377c04bf3436ee43280e2"
+      }
+    },
+    {
+      "itemId": "gloves-bone",
+      "name": "Bone Gloves",
+      "category": "Gloves",
+      "slug": "bone",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-bone.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl101_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-bone.jpg",
+        "size": 2863,
+        "sha1": "33b7989a4acfca9605805dc63daa34c87d177a3a"
+      }
+    },
+    {
+      "itemId": "helm-bone",
+      "name": "Bone Helm",
+      "category": "Helm",
+      "slug": "bone",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-bone.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe010_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-bone.jpg",
+        "size": 2557,
+        "sha1": "2afa2e9ebe59b376a0447d1f6a758769241e8fcf"
+      }
+    },
+    {
+      "itemId": "pants-bone",
+      "name": "Bone Pants",
+      "category": "Pants",
+      "slug": "bone",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-bone.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa010_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-bone.jpg",
+        "size": 2919,
+        "sha1": "131397b34ae590874003d6352c797dfa4a8f2d21"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

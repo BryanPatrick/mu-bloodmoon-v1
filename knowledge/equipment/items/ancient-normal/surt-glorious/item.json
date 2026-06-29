@@ -1,0 +1,104 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "ancient-normal-surt-glorious",
+  "slug": "surt-glorious",
+  "name": "Surt Glorious",
+  "title": "Surt Glorious",
+  "category": "Ancient Normal",
+  "categorySlug": "ancient-normal",
+  "usableBy": [],
+  "listStats": {
+    "value1": "Surt Armor",
+    "value2": "Surt Helm",
+    "value3": "Surt Boots",
+    "value4": "Surt Gloves",
+    "value5": "Surt Lord Scepter"
+  },
+  "image": {
+    "publicPath": null,
+    "sourceUrl": null,
+    "localPath": null,
+    "size": null,
+    "sha1": null
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/surt.html",
+    "imageSourceUrl": null
+  },
+  "statsByLevel": [],
+  "parts": [
+    {
+      "name": "Surt Armor",
+      "slug": "surt-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-surt-glorious-surt-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar035_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-surt-glorious-surt-armor.jpg",
+        "size": 3944,
+        "sha1": "fcd7ae2a67ef933bde937886c07b425923f2aafd"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Surt Helm",
+      "slug": "surt-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-surt-glorious-surt-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe032_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-surt-glorious-surt-helm.jpg",
+        "size": 3226,
+        "sha1": "3c1c20e92085137f77fd55ce2598a54cdc730b7c"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Surt Boots",
+      "slug": "surt-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-surt-glorious-surt-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo035_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-surt-glorious-surt-boots.jpg",
+        "size": 3597,
+        "sha1": "1cdf5119e1cb352907c19369a67e8bf806508946"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Surt Gloves",
+      "slug": "surt-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-surt-glorious-surt-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl035_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-surt-glorious-surt-gloves.jpg",
+        "size": 3568,
+        "sha1": "082ba3813d9b0aa66588b93de3d9489755a10b12"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Surt Lord Scepter",
+      "slug": "surt-lord-scepter",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-surt-glorious-surt-lord-scepter.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/scepter/ise012_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-surt-glorious-surt-lord-scepter.jpg",
+        "size": 2857,
+        "sha1": "e1fb642f4016327018b7cddfd94982781bc54275"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

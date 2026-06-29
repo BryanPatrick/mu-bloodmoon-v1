@@ -1,0 +1,68 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-minet-sphinx",
+  "slug": "minet-sphinx",
+  "name": "Minet Sphinx",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Minet Boots",
+      "slug": "minet-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-minet-sphinx-minet-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo011_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-minet-sphinx-minet-boots.jpg",
+        "size": 3950,
+        "sha1": "9195dff98bf669615614cbce8d89e17dba7b9e71"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Minet Pants",
+      "slug": "minet-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-minet-sphinx-minet-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa011_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-minet-sphinx-minet-pants.jpg",
+        "size": 3996,
+        "sha1": "5ec9feecbfe9b95410b84af70cf38827932677d1"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Minet Armor",
+      "slug": "minet-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-minet-sphinx-minet-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar011_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-minet-sphinx-minet-armor.jpg",
+        "size": 4135,
+        "sha1": "c3ad58e6f0e506d3e61419eb8e6ce554d80c6c51"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "2 Set option : Increase Energy +30 3 Set option : Increase Defense +30",
+      "source": "listStats"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/mine.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

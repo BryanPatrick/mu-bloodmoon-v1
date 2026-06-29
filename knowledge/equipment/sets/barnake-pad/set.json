@@ -1,0 +1,68 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-barnake-pad",
+  "slug": "barnake-pad",
+  "name": "Barnake Pad",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Barnake Boots",
+      "slug": "barnake-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-barnake-pad-barnake-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo058_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-barnake-pad-barnake-boots.jpg",
+        "size": 3753,
+        "sha1": "640591a8f08faa4fb5aec5686188b6395ee32f8e"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Barnake Pants",
+      "slug": "barnake-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-barnake-pad-barnake-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa009_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-barnake-pad-barnake-pants.jpg",
+        "size": 3581,
+        "sha1": "d9116c9ca5a9ba9f6f3ae28ef9e8e0a9887f251c"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Barnake Helm",
+      "slug": "barnake-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-barnake-pad-barnake-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe009_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-barnake-pad-barnake-helm.jpg",
+        "size": 2941,
+        "sha1": "2c7dbe0b50b0a9efca8d024134d6a2b6e62ed486"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "2 Set option : Increase Wizardry Dmg +10% 3 Set option : Increase Energy +20",
+      "source": "listStats"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/baneku.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "holyangel-ancient-holyangel-gunner",
+  "slug": "holyangel-gunner",
+  "name": "Holyangel Gunner",
+  "family": "Holyangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Holyangel Gunner Helm",
+      "slug": "holyangel-gunner-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-gunner-holyangel-gunner-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holygmhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-gunner-holyangel-gunner-helm.jpg",
+        "size": 1116,
+        "sha1": "78a4fe7d621d4371830e99735327ff47378e31d8"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Holyangel Gunner Armor",
+      "slug": "holyangel-gunner-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-gunner-holyangel-gunner-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holygmarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-gunner-holyangel-gunner-armor.jpg",
+        "size": 1495,
+        "sha1": "5e70aa1b21a3a415f92d8b24706befaf3ab1e59f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Holyangel Gunner Pants",
+      "slug": "holyangel-gunner-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-gunner-holyangel-gunner-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holygmpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-gunner-holyangel-gunner-pants.jpg",
+        "size": 1227,
+        "sha1": "1de46eb842fb499a9c38cee3f49b89aca32672ff"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Holyangel Gunner Boots",
+      "slug": "holyangel-gunner-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-gunner-holyangel-gunner-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holygmboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-gunner-holyangel-gunner-boots.jpg",
+        "size": 1231,
+        "sha1": "323b66d8b483d0eb8a1acd64b2743efa6d0531d2"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/holyangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/holygunner.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

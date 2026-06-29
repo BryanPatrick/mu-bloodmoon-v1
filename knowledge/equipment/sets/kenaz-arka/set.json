@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-kenaz-arka",
+  "slug": "kenaz-arka",
+  "name": "Kenaz Arka",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Kenaz Arka Armor",
+      "slug": "kenaz-arka-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kenaz-arka-kenaz-arka-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/iar1007.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kenaz-arka-kenaz-arka-armor.jpg",
+        "size": 2880,
+        "sha1": "c3b7def5551947503281bf177a415b84c4322a25"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Kenaz Arka Pants",
+      "slug": "kenaz-arka-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kenaz-arka-kenaz-arka-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/ipa1007.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kenaz-arka-kenaz-arka-pants.jpg",
+        "size": 2604,
+        "sha1": "2779c155e83929c003060f58cd417f85739e45a9"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Kenaz Arka Gloves",
+      "slug": "kenaz-arka-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kenaz-arka-kenaz-arka-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/igl1007.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kenaz-arka-kenaz-arka-gloves.jpg",
+        "size": 2550,
+        "sha1": "1ee13bd32ed5a1175e6c97647a2759d9ee5b1a55"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Kenaz Arka Boots",
+      "slug": "kenaz-arka-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kenaz-arka-kenaz-arka-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/ibo1007.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kenaz-arka-kenaz-arka-boots.jpg",
+        "size": 2512,
+        "sha1": "1e0d0d75533bc023099f01eab02db9db37b4a529"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/kenazarka.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

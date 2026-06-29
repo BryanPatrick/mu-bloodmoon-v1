@@ -1,0 +1,81 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-sylphid-ray",
+  "slug": "sylphid-ray",
+  "name": "Sylphid Ray",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-sylphid-ray",
+      "name": "Sylphid Ray Armor",
+      "category": "Armor",
+      "slug": "sylphid-ray",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-sylphid-ray.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar034_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-sylphid-ray.jpg",
+        "size": 3265,
+        "sha1": "c2cfaae4f3b647bcc1ca591b58d553163f28d73f"
+      }
+    },
+    {
+      "itemId": "boots-sylphid-ray",
+      "name": "Sylphid Ray Boots",
+      "category": "Boots",
+      "slug": "sylphid-ray",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-sylphid-ray.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo034_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-sylphid-ray.jpg",
+        "size": 3407,
+        "sha1": "10130f5900c6cb3f919f951de496d3727fc8129d"
+      }
+    },
+    {
+      "itemId": "gloves-sylphid-ray",
+      "name": "Sylphid Ray Gloves",
+      "category": "Gloves",
+      "slug": "sylphid-ray",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-sylphid-ray.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl034_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-sylphid-ray.jpg",
+        "size": 3246,
+        "sha1": "df7bad3b8d7d87aee9c81535d41d1b006d950f96"
+      }
+    },
+    {
+      "itemId": "helm-sylphid-ray",
+      "name": "Sylphid Ray Helm",
+      "category": "Helm",
+      "slug": "sylphid-ray",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-sylphid-ray.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe031_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-sylphid-ray.jpg",
+        "size": 3287,
+        "sha1": "f8c6966dc86ba9d761e493702d2267f2ec8ff90d"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

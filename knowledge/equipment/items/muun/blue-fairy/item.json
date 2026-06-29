@@ -1,0 +1,72 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "muun-blue-fairy",
+  "slug": "blue-fairy",
+  "name": "Blue Fairy",
+  "title": "Blue Fairy",
+  "category": "Muun",
+  "categorySlug": "muun",
+  "usableBy": [],
+  "listStats": {
+    "value1": "☆☆",
+    "value2": "Increase Attack Speed Skill Muun (NO PVP) Poder Especial: Solo personajes de Level 201~Level Master"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/muun-blue-fairy.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/muun/bluefairy.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/muun-blue-fairy.jpg",
+    "size": 1365,
+    "sha1": "3e332837a6f3eef0cfd92242029b7b72b54dd9bc"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/muun.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/muun/bluefairy.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/muun/bluefairy.jpg"
+  },
+  "statsByLevel": [
+    {
+      "itemLevel": 1,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 2,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 3,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    }
+  ],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

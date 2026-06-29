@@ -1,0 +1,64 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "ancient-normal-horus-holy-storm",
+  "slug": "horus-holy-storm",
+  "name": "Horus Holy Storm",
+  "title": "Horus Holy Storm",
+  "category": "Ancient Normal",
+  "categorySlug": "ancient-normal",
+  "usableBy": [],
+  "listStats": {
+    "value1": "Horus Holy Storm Claw",
+    "value2": "Horus Pendant of Agility",
+    "value3": "Opciones por Set Completo",
+    "value4": "Min. Damage +80 Increase Skill Damage +60 Double Damage Rate +4%"
+  },
+  "image": {
+    "publicPath": null,
+    "sourceUrl": null,
+    "localPath": null,
+    "size": null,
+    "sha1": null
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/horus.html",
+    "imageSourceUrl": null
+  },
+  "statsByLevel": [],
+  "parts": [
+    {
+      "name": "Horus Holy Storm Claw",
+      "slug": "horus-holy-storm-claw",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-horus-holy-storm-horus-holy-storm-claw.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/sword/isw032_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-horus-holy-storm-horus-holy-storm-claw.jpg",
+        "size": 2698,
+        "sha1": "0e7e9bbd259e42d9e7bdcdfa76615a260c9f1dae"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Horus Pendant of Agility",
+      "slug": "horus-pendant-of-agility",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-horus-holy-storm-horus-pendant-of-agility.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ring/iri22_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-horus-holy-storm-horus-pendant-of-agility.jpg",
+        "size": 2526,
+        "sha1": "464bfb51f9411fea035f21c8f9a49d932a5c23b6"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

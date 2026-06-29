@@ -1,0 +1,68 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-argo-spirit",
+  "slug": "argo-spirit",
+  "name": "Argo Spirit",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Argo Gloves",
+      "slug": "argo-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-argo-spirit-argo-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl017.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-argo-spirit-argo-gloves.jpg",
+        "size": 3460,
+        "sha1": "18f5ce91c4357af177565e4ec93ae43b1666441a"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Argo Pants",
+      "slug": "argo-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-argo-spirit-argo-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa017.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-argo-spirit-argo-pants.jpg",
+        "size": 3545,
+        "sha1": "33569b9175b56636ffadeef08218bf3bf624398e"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Argo Armor",
+      "slug": "argo-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-argo-spirit-argo-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar017.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-argo-spirit-argo-armor.jpg",
+        "size": 3621,
+        "sha1": "2b680f64fb85fd008eca95de507bb584c73492bb"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "2 Set option : Increase Max. Damage +20 3 Set option : Increase Attack Rate +25",
+      "source": "listStats"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/argo.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

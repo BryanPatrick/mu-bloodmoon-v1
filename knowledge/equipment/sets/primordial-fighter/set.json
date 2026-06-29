@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "primordial-ancient-primordial-fighter",
+  "slug": "primordial-fighter",
+  "name": "Primordial Fighter",
+  "family": "Primordial Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Primordial Fighter Helm",
+      "slug": "primordial-fighter-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-fighter-primordial-fighter-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/helmbk.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-fighter-primordial-fighter-helm.jpg",
+        "size": 1259,
+        "sha1": "9e7310d082433721a39a3e93e33371f8465e7786"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Fighter Armor",
+      "slug": "primordial-fighter-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-fighter-primordial-fighter-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/armordk.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-fighter-primordial-fighter-armor.jpg",
+        "size": 1286,
+        "sha1": "358266fa19ce17500fab02ca8752d98822f8bfed"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Fighter Pants",
+      "slug": "primordial-fighter-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-fighter-primordial-fighter-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/pantsdk.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-fighter-primordial-fighter-pants.jpg",
+        "size": 1272,
+        "sha1": "92937b4b05b09af9bffa9b1aef4f267f0b347f69"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Fighter Boots",
+      "slug": "primordial-fighter-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-fighter-primordial-fighter-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/bootdk.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-fighter-primordial-fighter-boots.jpg",
+        "size": 1323,
+        "sha1": "a925af1dc23bf6365f808aa1ce3381b4379fdb94"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/primordial-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/prifighter.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

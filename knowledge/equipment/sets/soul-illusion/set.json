@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "soul-ancient-soul-illusion",
+  "slug": "soul-illusion",
+  "name": "Soul Illusion",
+  "family": "Soul Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Soul Illusion Helm",
+      "slug": "soul-illusion-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-illusion-soul-illusion-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awabkhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-illusion-soul-illusion-helm.jpg",
+        "size": 1016,
+        "sha1": "04d557b79eed8f22377947b781fd9c853b1873fe"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Illusion Armor",
+      "slug": "soul-illusion-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-illusion-soul-illusion-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awabkarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-illusion-soul-illusion-armor.jpg",
+        "size": 1284,
+        "sha1": "f4688837b81d320390732c67a2f971d83061aeaa"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Illusion Pants",
+      "slug": "soul-illusion-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-illusion-soul-illusion-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awabkpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-illusion-soul-illusion-pants.jpg",
+        "size": 1180,
+        "sha1": "00e2701e2d3df3353a03cc34e8e84e4cb3af061b"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Illusion Gloves",
+      "slug": "soul-illusion-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-illusion-soul-illusion-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awabkgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-illusion-soul-illusion-gloves.jpg",
+        "size": 1090,
+        "sha1": "b445f3ad56411862faf684b02c18888485e5acc1"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/soul-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/soulillusion.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

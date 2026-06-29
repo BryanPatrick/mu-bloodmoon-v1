@@ -1,0 +1,84 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "muun-luki",
+  "slug": "luki",
+  "name": "Luki",
+  "title": "Luki",
+  "category": "Muun",
+  "categorySlug": "muun",
+  "usableBy": [],
+  "listStats": {
+    "value1": "☆☆☆",
+    "value2": "Increase Defense Poder Especial: (10:00am ~ 4:00pm) (GST)"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/muun-luki.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/muun/muun3.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/muun-luki.jpg",
+    "size": 1224,
+    "sha1": "cbbcf4b8d04aef4a10f13230dcf06bc610e40a84"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/muun.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/muun/luki.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/muun/muun3.jpg"
+  },
+  "statsByLevel": [
+    {
+      "itemLevel": 1,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 2,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 3,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 4,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    }
+  ],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

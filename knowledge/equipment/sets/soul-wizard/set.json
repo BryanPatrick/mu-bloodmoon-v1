@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "soul-ancient-soul-wizard",
+  "slug": "soul-wizard",
+  "name": "Soul Wizard",
+  "family": "Soul Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Awakening Wizard Helm",
+      "slug": "awakening-wizard-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-wizard-awakening-wizard-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awadwhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-wizard-awakening-wizard-helm-detail.jpg",
+        "size": 1516,
+        "sha1": "91a3641a90719cbd6d6e3590b85cf8d2eea54017"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Awakening Wizard Armor",
+      "slug": "awakening-wizard-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-wizard-awakening-wizard-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awadwarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-wizard-awakening-wizard-armor-detail.jpg",
+        "size": 3235,
+        "sha1": "f5b54c2de27d1c38f2a9b4c7cb1e5c86a7c1370b"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Awakening Wizard Pants",
+      "slug": "awakening-wizard-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-wizard-awakening-wizard-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awadwpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-wizard-awakening-wizard-pants-detail.jpg",
+        "size": 2419,
+        "sha1": "0501caf1563c2a00cef6a7edfdda2beb7df64bfa"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Awakening Wizard Gloves",
+      "slug": "awakening-wizard-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-wizard-awakening-wizard-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awadwgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-wizard-awakening-wizard-gloves-detail.jpg",
+        "size": 1902,
+        "sha1": "160dcbc6d8af31b634e0355681a15159986701a8"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Wizard Helm",
+      "slug": "soul-wizard-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-wizard-soul-wizard-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/dwhelmawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-wizard-soul-wizard-helm.jpg",
+        "size": 1056,
+        "sha1": "03346789475e5006ab5c9cb2420799191a88e3b8"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Wizard Armor",
+      "slug": "soul-wizard-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-wizard-soul-wizard-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/dwarmorawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-wizard-soul-wizard-armor.jpg",
+        "size": 1365,
+        "sha1": "c5ddc0384c95cada8cb4e0655ef27bb02f4310a2"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Wizard Pants",
+      "slug": "soul-wizard-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-wizard-soul-wizard-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/dwpantsawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-wizard-soul-wizard-pants.jpg",
+        "size": 1236,
+        "sha1": "828eeeeee185c14056c523e4939b54e0412f1bae"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Wizard Gloves",
+      "slug": "soul-wizard-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-wizard-soul-wizard-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/dwglovesawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-wizard-soul-wizard-gloves.jpg",
+        "size": 1044,
+        "sha1": "b0a10eefddcc1577949be9492dddb1658cbe1e6d"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/soul-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/awadw.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

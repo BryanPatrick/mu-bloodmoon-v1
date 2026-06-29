@@ -1,0 +1,71 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "muun-mino",
+  "slug": "mino",
+  "name": "Mino",
+  "title": "Minotaur",
+  "category": "Muun",
+  "categorySlug": "muun",
+  "usableBy": [],
+  "listStats": {
+    "value1": "☆☆"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/muun-mino.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/muun/muun25.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/muun-mino.jpg",
+    "size": 1144,
+    "sha1": "ab85fe2b89ae3def9c722074d149d8fb3c9bf5d4"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/muun.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/muun/minotaur.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/muun/muun25.jpg"
+  },
+  "statsByLevel": [
+    {
+      "itemLevel": 1,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 2,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 3,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    }
+  ],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

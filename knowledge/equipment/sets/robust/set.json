@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-robust",
+  "slug": "robust",
+  "name": "Robust",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Grow Lancer"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-robust",
+      "name": "Armor Robust",
+      "category": "Armor",
+      "slug": "robust",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-robust.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/armor01.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-robust.jpg",
+        "size": 1129,
+        "sha1": "147130ab2dc5aecf4d4e07679af82299396d9995"
+      }
+    },
+    {
+      "itemId": "boots-robust",
+      "name": "Boots Robust",
+      "category": "Boots",
+      "slug": "robust",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-robust.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/boots01.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-robust.jpg",
+        "size": 1037,
+        "sha1": "85e0124a77b007b551ca5ca21340b8f944423f6a"
+      }
+    },
+    {
+      "itemId": "gloves-robust",
+      "name": "Gloves Robust",
+      "category": "Gloves",
+      "slug": "robust",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-robust.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/gloves01.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-robust.jpg",
+        "size": 962,
+        "sha1": "d04810d38d36a5dc63342835845198efdf945f7a"
+      }
+    },
+    {
+      "itemId": "helm-robust",
+      "name": "Helm Robust",
+      "category": "Helm",
+      "slug": "robust",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-robust.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/helm01.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-robust.jpg",
+        "size": 935,
+        "sha1": "8322a11ee97b837755f220018870e1d3e96c5c36"
+      }
+    },
+    {
+      "itemId": "pants-robust",
+      "name": "Pants Robust",
+      "category": "Pants",
+      "slug": "robust",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-robust.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/pants01.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-robust.jpg",
+        "size": 1190,
+        "sha1": "121bbc19ed5ff78b5561980c345d03ed672a0600"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

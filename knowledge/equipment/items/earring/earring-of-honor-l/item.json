@@ -1,0 +1,46 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "earring-earring-of-honor-l",
+  "slug": "earring-of-honor-l",
+  "name": "Earring of Honor (L)",
+  "title": "Earring of Honor (Left)",
+  "category": "Earring",
+  "categorySlug": "earring",
+  "usableBy": [
+    "Dark Wizard",
+    "Dark Knight",
+    "Fairy Elf",
+    "Magic Gladiator",
+    "Dark Lord",
+    "Summoner",
+    "Rage Fighter",
+    "Grow Lancer",
+    "B"
+  ],
+  "listStats": {
+    "normalDrop": "~",
+    "excellentDrop": "~",
+    "requiredLevel": "750"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/earring-earring-of-honor-l.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/earring/honorleft.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/earring-earring-of-honor-l.jpg",
+    "size": 1136,
+    "sha1": "84146056e6013ee660f3f09e30469d03af63c310"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/earring.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/earring/honorleft.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/earring/honorleft.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

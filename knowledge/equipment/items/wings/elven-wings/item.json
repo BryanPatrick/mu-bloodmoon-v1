@@ -1,0 +1,35 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "wings-elven-wings",
+  "slug": "elven-wings",
+  "name": "Elven Wings",
+  "title": "Wings of Elven",
+  "category": "Wings",
+  "categorySlug": "wings",
+  "usableBy": [],
+  "listStats": {
+    "normalDrop": "180+(Wing Level*4)",
+    "excellentDrop": "Usado por la Fairy Elf. Defensa: 10 + (Wing Level * 3) [Level +10~+15 Incremento de defensa +4,+5,+6,+7,+8,+9]. Incremento de Daño: 12% + (Wing Level * 2). Absorcion de Daño: 12% + (Wing Level * 2). Incremento de velocidad de movimiento. Opciones: 25% Luck en Rate de Soul + 5% Critical Damage Rate. Incremento de Daño +4,+8,+12,+16. Recuperacion de HP 1%,2%,3%,4%. Reduce 1 Vida despues del ataque con exito (Incluido el Miss)."
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/wings-elven-wings.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/iwi001_s.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/wings-elven-wings.jpg",
+    "size": 3094,
+    "sha1": "374275386042e8e80e5be8d642ca6abb91390c05"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/wings.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/wing/elven.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/iwi001_s.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

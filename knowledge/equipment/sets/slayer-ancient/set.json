@@ -1,0 +1,94 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-slayer-ancient",
+  "slug": "slayer-ancient",
+  "name": "Slayer Ancient",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "itemId": "armor-slayer-ancient",
+      "name": "Slayer Ancient Armor",
+      "category": "Armor",
+      "slug": "slayer-ancient",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-slayer-ancient.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/slayerancient.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-slayer-ancient.jpg",
+        "size": 1201,
+        "sha1": "610166af25db74b69a7baaa4949327c923f81d07"
+      }
+    },
+    {
+      "itemId": "boots-slayer-ancient",
+      "name": "Slayer Ancient Boots",
+      "category": "Boots",
+      "slug": "slayer-ancient",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-slayer-ancient.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/slayerancient.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-slayer-ancient.jpg",
+        "size": 1171,
+        "sha1": "4022abc7f1063560ff2c0471688ac129260878c1"
+      }
+    },
+    {
+      "itemId": "gloves-slayer-ancient",
+      "name": "Slayer Ancient Gloves",
+      "category": "Gloves",
+      "slug": "slayer-ancient",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-slayer-ancient.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/slayerancient.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-slayer-ancient.jpg",
+        "size": 1006,
+        "sha1": "ae429be63cc3de7bbcd902d8a68c12473067dbb9"
+      }
+    },
+    {
+      "itemId": "helm-slayer-ancient",
+      "name": "Slayer Ancient",
+      "category": "Helm",
+      "slug": "slayer-ancient",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-slayer-ancient.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/slayerancient.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-slayer-ancient.jpg",
+        "size": 954,
+        "sha1": "414d06c031ba961b5dc0849f788ed0a3953b8c07"
+      }
+    },
+    {
+      "itemId": "pants-slayer-ancient",
+      "name": "Slayer Ancient Pants",
+      "category": "Pants",
+      "slug": "slayer-ancient",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-slayer-ancient.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/slayerancient.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-slayer-ancient.jpg",
+        "size": 1347,
+        "sha1": "2a7c9855af6d358e25f5f8bbe6055777123f8e42"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

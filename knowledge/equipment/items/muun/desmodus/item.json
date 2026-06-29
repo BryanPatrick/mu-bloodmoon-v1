@@ -1,0 +1,84 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "muun-desmodus",
+  "slug": "desmodus",
+  "name": "Desmodus",
+  "title": "Desmodus",
+  "category": "Muun",
+  "categorySlug": "muun",
+  "usableBy": [],
+  "listStats": {
+    "value1": "☆☆☆",
+    "value2": "Increase Attack Speed Skill Muun (NO PVP) Poder Especial: Solo Equipar el Muun"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/muun-desmodus.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/muun/demodus.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/muun-desmodus.jpg",
+    "size": 1139,
+    "sha1": "bf725a6e077035626e3043ad5997190cea32a6b8"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/muun.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/muun/desmudos.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/muun/demodus.jpg"
+  },
+  "statsByLevel": [
+    {
+      "itemLevel": 1,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 2,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 3,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 4,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    }
+  ],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

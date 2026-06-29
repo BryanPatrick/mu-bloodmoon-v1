@@ -1,0 +1,97 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-dark-soul",
+  "slug": "dark-soul",
+  "name": "Dark Soul",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Dark Wizard",
+    "Dark Knight"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-dark-soul",
+      "name": "Dark Soul Armor",
+      "category": "Armor",
+      "slug": "dark-soul",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-dark-soul.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar021_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-dark-soul.jpg",
+        "size": 3536,
+        "sha1": "f487857cfa8f5c3eb95f7f3285e6c28ffdd6ce87"
+      }
+    },
+    {
+      "itemId": "boots-dark-soul",
+      "name": "Dark Soul Boots",
+      "category": "Boots",
+      "slug": "dark-soul",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-dark-soul.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo021_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-dark-soul.jpg",
+        "size": 3562,
+        "sha1": "0e7986951ffb607ee679795390ef03aad64dd792"
+      }
+    },
+    {
+      "itemId": "gloves-dark-soul",
+      "name": "Dark Soul Gloves",
+      "category": "Gloves",
+      "slug": "dark-soul",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-dark-soul.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl021_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-dark-soul.jpg",
+        "size": 3280,
+        "sha1": "8a94c5e3dc6161d84b1f9cc85c79d12f45f7adf6"
+      }
+    },
+    {
+      "itemId": "helm-dark-soul",
+      "name": "Dark Soul Helm",
+      "category": "Helm",
+      "slug": "dark-soul",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-dark-soul.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe021_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-dark-soul.jpg",
+        "size": 2728,
+        "sha1": "63c68daf5228f0ff9424a8bb3b52b660203f08f7"
+      }
+    },
+    {
+      "itemId": "pants-dark-soul",
+      "name": "Dark Soul Pants",
+      "category": "Pants",
+      "slug": "dark-soul",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-dark-soul.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa021_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-dark-soul.jpg",
+        "size": 3443,
+        "sha1": "894a004d277267b56a8e53fca73cf5cc2fdbfc06"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "darkangel-ancient-retribution-s-darkangel-lancer",
+  "slug": "retribution-s-darkangel-lancer",
+  "name": "Retribution's Darkangel Lancer",
+  "family": "Darkangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Retribution Helm",
+      "slug": "retribution-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-retribution-s-darkangel-lancer-retribution-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkhelmgl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-retribution-s-darkangel-lancer-retribution-helm-detail.jpg",
+        "size": 985,
+        "sha1": "69eb3575159c81cd45ee1a3c5b24d2589b1b7554"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Retribution Armor",
+      "slug": "retribution-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-retribution-s-darkangel-lancer-retribution-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkarmorgl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-retribution-s-darkangel-lancer-retribution-armor-detail.jpg",
+        "size": 2371,
+        "sha1": "031fa3b4ecbdb89ecfb55492dc185dd5bba62ac7"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Retribution Pants",
+      "slug": "retribution-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-retribution-s-darkangel-lancer-retribution-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkpantsgl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-retribution-s-darkangel-lancer-retribution-pants-detail.jpg",
+        "size": 2686,
+        "sha1": "800ef7a2bd7097f022342764c05d61616cb5d1ce"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Retribution Gloves",
+      "slug": "retribution-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-retribution-s-darkangel-lancer-retribution-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkglovesgl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-retribution-s-darkangel-lancer-retribution-gloves-detail.jpg",
+        "size": 1388,
+        "sha1": "6102d9af4f120e650408becbca8260d8d6afde3b"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Retribution's Helm",
+      "slug": "retribution-s-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-retribution-s-darkangel-lancer-retribution-s-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkhlancer.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-retribution-s-darkangel-lancer-retribution-s-helm.jpg",
+        "size": 971,
+        "sha1": "b1dad17de32cef061a5c20ed5b97315d864caec5"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Retribution's Armor",
+      "slug": "retribution-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-retribution-s-darkangel-lancer-retribution-s-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkalancer.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-retribution-s-darkangel-lancer-retribution-s-armor.jpg",
+        "size": 1104,
+        "sha1": "8bb4a4865ec8527b8c23da522053c35c85711534"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Retribution's Pants",
+      "slug": "retribution-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-retribution-s-darkangel-lancer-retribution-s-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkplancer.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-retribution-s-darkangel-lancer-retribution-s-pants.jpg",
+        "size": 1078,
+        "sha1": "33f9f03d9342d0179dc2c611b7a372569fdf2377"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Retribution's Gloves",
+      "slug": "retribution-s-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-retribution-s-darkangel-lancer-retribution-s-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkg101.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-retribution-s-darkangel-lancer-retribution-s-gloves.jpg",
+        "size": 909,
+        "sha1": "c7584f274734ec5413b8ee14b8a2c8b1032d047d"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/darkangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/retribution.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

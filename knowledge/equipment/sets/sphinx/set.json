@@ -1,0 +1,97 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-sphinx",
+  "slug": "sphinx",
+  "name": "Sphinx",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Dark Wizard",
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-sphinx",
+      "name": "Sphinx Armor",
+      "category": "Armor",
+      "slug": "sphinx",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-sphinx.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar011_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-sphinx.jpg",
+        "size": 4135,
+        "sha1": "c3ad58e6f0e506d3e61419eb8e6ce554d80c6c51"
+      }
+    },
+    {
+      "itemId": "boots-sphinx",
+      "name": "Sphinx Boots",
+      "category": "Boots",
+      "slug": "sphinx",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-sphinx.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo011_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-sphinx.jpg",
+        "size": 3950,
+        "sha1": "9195dff98bf669615614cbce8d89e17dba7b9e71"
+      }
+    },
+    {
+      "itemId": "gloves-sphinx",
+      "name": "Sphinx Gloves",
+      "category": "Gloves",
+      "slug": "sphinx",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-sphinx.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl011_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-sphinx.jpg",
+        "size": 3538,
+        "sha1": "81c6018d1c3f8afe1f45db0c8da0bcbedf6cf51c"
+      }
+    },
+    {
+      "itemId": "helm-sphinx",
+      "name": "Sphinx Helm",
+      "category": "Helm",
+      "slug": "sphinx",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-sphinx.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe011_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-sphinx.jpg",
+        "size": 3579,
+        "sha1": "66a487794e26e7ce2a21240bd2871ec4f60ac605"
+      }
+    },
+    {
+      "itemId": "pants-sphinx",
+      "name": "Sphinx Pants",
+      "category": "Pants",
+      "slug": "sphinx",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-sphinx.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa011_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-sphinx.jpg",
+        "size": 3996,
+        "sha1": "5ec9feecbfe9b95410b84af70cf38827932677d1"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

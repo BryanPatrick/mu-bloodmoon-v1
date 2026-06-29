@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-bloodangel-lancer",
+  "slug": "bloodangel-lancer",
+  "name": "Bloodangel Lancer",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Grow Lancer"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-bloodangel-lancer",
+      "name": "Bloodangel Lancer Armor",
+      "category": "Armor",
+      "slug": "bloodangel-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-bloodangel-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/bloodgl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-bloodangel-lancer.jpg",
+        "size": 1519,
+        "sha1": "74d6868bf3e11f3c75cfb9eac3a9d8120a4e2207"
+      }
+    },
+    {
+      "itemId": "boots-bloodangel-lancer",
+      "name": "Bloodangel Lancer Boots",
+      "category": "Boots",
+      "slug": "bloodangel-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-bloodangel-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/bloodgl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-bloodangel-lancer.jpg",
+        "size": 1280,
+        "sha1": "89552bc5262ef0d1513dc23c45060f7dfeb32c9e"
+      }
+    },
+    {
+      "itemId": "gloves-bloodangel-lancer",
+      "name": "Bloodangel Lancer Gloves",
+      "category": "Gloves",
+      "slug": "bloodangel-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-bloodangel-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/bloodgl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-bloodangel-lancer.jpg",
+        "size": 1199,
+        "sha1": "b996c27ee2551883421445027695946a0a732b1e"
+      }
+    },
+    {
+      "itemId": "helm-bloodangel-lancer",
+      "name": "Bloodangel Lancer Helm",
+      "category": "Helm",
+      "slug": "bloodangel-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-bloodangel-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/bloodgl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-bloodangel-lancer.jpg",
+        "size": 1026,
+        "sha1": "a0aaf8d193c2f32c44d1560bd7500d08be332b31"
+      }
+    },
+    {
+      "itemId": "pants-bloodangel-lancer",
+      "name": "Bloodangel Lancer Pants",
+      "category": "Pants",
+      "slug": "bloodangel-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-bloodangel-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/bloodgl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-bloodangel-lancer.jpg",
+        "size": 1413,
+        "sha1": "281f0c9010f8b3bf6828e41598bd2a39319f481a"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,155 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-lucky-deruff-s-gru-hill",
+  "slug": "deruff-s-gru-hill",
+  "name": "Deruff's Gru Hill",
+  "family": "Set Lucky",
+  "qualities": [
+    "Lucky"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Deruff's Boots",
+      "slug": "deruff-s-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-s-boots-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Deruff2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-s-boots-detail.jpg",
+        "size": 1465,
+        "sha1": "7776198d6a89336fb4e78dcd7f5e43372f4efb5b"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Deruff's Gloves",
+      "slug": "deruff-s-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-s-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Deruff3.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-s-gloves-detail.jpg",
+        "size": 1475,
+        "sha1": "af4e3c7fcf7cdefbfaef37f8b84ee068c9a328c3"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Deruff's Helm",
+      "slug": "deruff-s-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-s-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Deruff5.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-s-helm-detail.jpg",
+        "size": 1270,
+        "sha1": "9b49664935d8ea2f746793dacf39ce735f28ba85"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Deruff's Pants",
+      "slug": "deruff-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-s-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Deruff4.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-s-pants-detail.jpg",
+        "size": 2276,
+        "sha1": "27a2c6e0b222b1b6a2cdfea442efb511f1257be8"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Deruff's Armor",
+      "slug": "deruff-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-s-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Deruff1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-s-armor-detail.jpg",
+        "size": 2148,
+        "sha1": "80f8e45318083c46c810ae1ead239da231c65b93"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Deruff Boots",
+      "slug": "deruff-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Deruff2p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-boots.jpg",
+        "size": 931,
+        "sha1": "4279b20753c6c8cea146331e695048f896614b8e"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Deruff Gloves",
+      "slug": "deruff-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Deruff3p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-gloves.jpg",
+        "size": 983,
+        "sha1": "2d386d9761205495ba7791b471d9868499de15f3"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Deruff Helm",
+      "slug": "deruff-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Deruff5p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-helm.jpg",
+        "size": 845,
+        "sha1": "4516d74365be38661f147ffcea52ae33cc819e6e"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Deruff Pants",
+      "slug": "deruff-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Deruff4p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-pants.jpg",
+        "size": 1211,
+        "sha1": "930349bf6b30f2992dc40bcec7edc392088f060c"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Deruff Armor",
+      "slug": "deruff-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Deruff1p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-deruff-s-gru-hill-deruff-armor.jpg",
+        "size": 1179,
+        "sha1": "bcb3ce6132b671861bc0b27a4e324c0234b86928"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/set-lucky.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/lucky/deruff.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

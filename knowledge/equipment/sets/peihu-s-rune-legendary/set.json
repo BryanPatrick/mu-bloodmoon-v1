@@ -1,0 +1,155 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-lucky-peihu-s-rune-legendary",
+  "slug": "peihu-s-rune-legendary",
+  "name": "Peihu's Rune Legendary",
+  "family": "Set Lucky",
+  "qualities": [
+    "Lucky"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Peihu's Boots",
+      "slug": "peihu-s-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-s-boots-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Taros2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-s-boots-detail.jpg",
+        "size": 2275,
+        "sha1": "a8bfa41e601c682d601ba0c626b48b3ae24507f4"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Peihu's Gloves",
+      "slug": "peihu-s-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-s-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Taros3.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-s-gloves-detail.jpg",
+        "size": 1815,
+        "sha1": "39f32a823097a359c303f92a750a8548c4a531c7"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Peihu's Helm",
+      "slug": "peihu-s-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-s-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Taros5.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-s-helm-detail.jpg",
+        "size": 2100,
+        "sha1": "0a338b0211bccd9c593236b097499a093f224c7a"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Peihu's Pants",
+      "slug": "peihu-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-s-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Taros4.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-s-pants-detail.jpg",
+        "size": 2520,
+        "sha1": "63268f1b30366dca05a00f023f9b8705bf6c34ef"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Peihu's Armor",
+      "slug": "peihu-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-s-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Taros1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-s-armor-detail.jpg",
+        "size": 3932,
+        "sha1": "073f6dfc75ed3acd32a540075fb69ef73e2aefbb"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Peihu Boots",
+      "slug": "peihu-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Tarosp2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-boots.jpg",
+        "size": 1179,
+        "sha1": "32472aa28783620b74a740a8a1cc1dbda42d2d53"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Peihu Gloves",
+      "slug": "peihu-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Taros3p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-gloves.jpg",
+        "size": 1111,
+        "sha1": "3a568936e85ef7dd21be829780139dfd4fe4e7ef"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Peihu Helm",
+      "slug": "peihu-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Taros5p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-helm.jpg",
+        "size": 1073,
+        "sha1": "524f7176be43c8da600772067b9451834ba05ce9"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Peihu Pants",
+      "slug": "peihu-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Taros4p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-pants.jpg",
+        "size": 1162,
+        "sha1": "2ea576fcd981246b32c6c8d72c17370d89b354cc"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Peihu Armor",
+      "slug": "peihu-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Tarosp1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-peihu-s-rune-legendary-peihu-armor.jpg",
+        "size": 1296,
+        "sha1": "831f8bbf879adf14c44219a67a5de5cc47c28f3c"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/set-lucky.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/lucky/peihu.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

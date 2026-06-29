@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "holyangel-ancient-guardian-s-holyangel-summoner",
+  "slug": "guardian-s-holyangel-summoner",
+  "name": "Guardian's Holyangel Summoner",
+  "family": "Holyangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Guardian Helm",
+      "slug": "guardian-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-guardian-s-holyangel-summoner-guardian-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holyelfhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-guardian-s-holyangel-summoner-guardian-helm-detail.jpg",
+        "size": 2444,
+        "sha1": "33c5382184048f1928fb30b15dde12bb82cffd1d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Guardian Armor",
+      "slug": "guardian-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-guardian-s-holyangel-summoner-guardian-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holyelfarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-guardian-s-holyangel-summoner-guardian-armor-detail.jpg",
+        "size": 3192,
+        "sha1": "1fb8c752021507c89cf2242b89280bd611e8cd28"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Guardian Pants",
+      "slug": "guardian-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-guardian-s-holyangel-summoner-guardian-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holyelfpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-guardian-s-holyangel-summoner-guardian-pants-detail.jpg",
+        "size": 2853,
+        "sha1": "e432718daf07c9c54a4dc2023360dd5cc15d9a01"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Guardian Gloves",
+      "slug": "guardian-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-guardian-s-holyangel-summoner-guardian-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holyelfgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-guardian-s-holyangel-summoner-guardian-gloves-detail.jpg",
+        "size": 2580,
+        "sha1": "6e2205d1210bd491f971e933edcc4d24eb00c7f4"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Guardian's Helm",
+      "slug": "guardian-s-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-guardian-s-holyangel-summoner-guardian-s-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/holyhihelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-guardian-s-holyangel-summoner-guardian-s-helm.jpg",
+        "size": 1235,
+        "sha1": "0326bc815dbbc00486a79fec11bf11fe6724d455"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Guardian's Armor",
+      "slug": "guardian-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-guardian-s-holyangel-summoner-guardian-s-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/holyhiarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-guardian-s-holyangel-summoner-guardian-s-armor.jpg",
+        "size": 1390,
+        "sha1": "244bac438bf4742d6b0eb04668678f313edba3a1"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Guardian's Pants",
+      "slug": "guardian-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-guardian-s-holyangel-summoner-guardian-s-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/holyhipants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-guardian-s-holyangel-summoner-guardian-s-pants.jpg",
+        "size": 1251,
+        "sha1": "168f8562de41258edfd7ece38cc07a3e18bb8744"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Guardian's Gloves",
+      "slug": "guardian-s-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-guardian-s-holyangel-summoner-guardian-s-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/holyhigloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-guardian-s-holyangel-summoner-guardian-s-gloves.jpg",
+        "size": 1242,
+        "sha1": "34bb77b0756ad843cfc671ebbb7ec86e3de3b8ed"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/holyangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/guardian.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

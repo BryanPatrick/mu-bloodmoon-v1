@@ -1,0 +1,90 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-gaia-silk",
+  "slug": "gaia-silk",
+  "name": "Gaia Silk",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Gaia Gloves",
+      "slug": "gaia-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-gaia-silk-gaia-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl015.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-gaia-silk-gaia-gloves.jpg",
+        "size": 3525,
+        "sha1": "3eb62e25906a1df41992211c1e4697c71d87b0ff"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Gaia Pants",
+      "slug": "gaia-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-gaia-silk-gaia-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa015.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-gaia-silk-gaia-pants.jpg",
+        "size": 3253,
+        "sha1": "48ba60c2b817790a31486488e503c0a9481146c8"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Gaia Armor",
+      "slug": "gaia-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-gaia-silk-gaia-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar015.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-gaia-silk-gaia-armor.jpg",
+        "size": 3554,
+        "sha1": "06b98cfa5faf05968e715255d3bf33cf368f6890"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Gaia Helm",
+      "slug": "gaia-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-gaia-silk-gaia-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe015.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-gaia-silk-gaia-helm.jpg",
+        "size": 2708,
+        "sha1": "ad569aa5def50a1f2105d34a89a87b3a3e23cbc0"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Gaia Golden Crossbow",
+      "slug": "gaia-golden-crossbow",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-gaia-silk-gaia-golden-crossbow.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bowgaia.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-gaia-silk-gaia-golden-crossbow.jpg",
+        "size": 3176,
+        "sha1": "0d01b2473cc7dd91034a4b73e603a8b93ae8e12f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/gaia.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

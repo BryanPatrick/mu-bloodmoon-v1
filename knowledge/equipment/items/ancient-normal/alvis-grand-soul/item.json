@@ -1,0 +1,104 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "ancient-normal-alvis-grand-soul",
+  "slug": "alvis-grand-soul",
+  "name": "Alvis Grand Soul",
+  "title": "Alvis Grand Soul",
+  "category": "Ancient Normal",
+  "categorySlug": "ancient-normal",
+  "usableBy": [],
+  "listStats": {
+    "value1": "Alvis Armor",
+    "value2": "Alvis Gloves",
+    "value3": "Alvis Boots",
+    "value4": "Alvis Staff Dragon Soul",
+    "value5": "Alvis Pendant of Water"
+  },
+  "image": {
+    "publicPath": null,
+    "sourceUrl": null,
+    "localPath": null,
+    "size": null,
+    "sha1": null
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/alvis.html",
+    "imageSourceUrl": null
+  },
+  "statsByLevel": [],
+  "parts": [
+    {
+      "name": "Alvis Armor",
+      "slug": "alvis-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-alvis-grand-soul-alvis-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar013_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-alvis-grand-soul-alvis-armor.jpg",
+        "size": 4091,
+        "sha1": "62ed2d58104d54da8a0252b83d302025eae071cc"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Alvis Gloves",
+      "slug": "alvis-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-alvis-grand-soul-alvis-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl013_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-alvis-grand-soul-alvis-gloves.jpg",
+        "size": 3709,
+        "sha1": "0a9b34be300d5a5354bef20aea454329478b5704"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Alvis Boots",
+      "slug": "alvis-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-alvis-grand-soul-alvis-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo013_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-alvis-grand-soul-alvis-boots.jpg",
+        "size": 3717,
+        "sha1": "cf732efdcb8fbd2e66e13208f32a1840cc989714"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Alvis Staff Dragon Soul",
+      "slug": "alvis-staff-dragon-soul",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-alvis-grand-soul-alvis-staff-dragon-soul.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/staff/ist004_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-alvis-grand-soul-alvis-staff-dragon-soul.jpg",
+        "size": 2557,
+        "sha1": "a38f22c467565f9afd49c217d55fabd5f1720aa9"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Alvis Pendant of Water",
+      "slug": "alvis-pendant-of-water",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-alvis-grand-soul-alvis-pendant-of-water.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ring/iri19_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-alvis-grand-soul-alvis-pendant-of-water.jpg",
+        "size": 2655,
+        "sha1": "fea71fbf1b3ac797332f2ed6357e9c23e1bd9858"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

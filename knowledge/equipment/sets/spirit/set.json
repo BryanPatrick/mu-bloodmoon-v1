@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-spirit",
+  "slug": "spirit",
+  "name": "Spirit",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-spirit",
+      "name": "Spirit Armor",
+      "category": "Armor",
+      "slug": "spirit",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-spirit.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar017_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-spirit.jpg",
+        "size": 3621,
+        "sha1": "2b680f64fb85fd008eca95de507bb584c73492bb"
+      }
+    },
+    {
+      "itemId": "boots-spirit",
+      "name": "Spirit Boots",
+      "category": "Boots",
+      "slug": "spirit",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-spirit.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo017_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-spirit.jpg",
+        "size": 3589,
+        "sha1": "06457a07abcdba9d456788be629df45bce5a5e85"
+      }
+    },
+    {
+      "itemId": "gloves-spirit",
+      "name": "Spirit Gloves",
+      "category": "Gloves",
+      "slug": "spirit",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-spirit.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl017_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-spirit.jpg",
+        "size": 3460,
+        "sha1": "18f5ce91c4357af177565e4ec93ae43b1666441a"
+      }
+    },
+    {
+      "itemId": "helm-spirit",
+      "name": "Spirit Helm",
+      "category": "Helm",
+      "slug": "spirit",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-spirit.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe017_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-spirit.jpg",
+        "size": 3212,
+        "sha1": "d9da9308a2bdc51045aef1e6262c2c27e0d26b4f"
+      }
+    },
+    {
+      "itemId": "pants-spirit",
+      "name": "Spirit Pants",
+      "category": "Pants",
+      "slug": "spirit",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-spirit.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa017_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-spirit.jpg",
+        "size": 3545,
+        "sha1": "33569b9175b56636ffadeef08218bf3bf624398e"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

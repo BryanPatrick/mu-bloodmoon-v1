@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-storm-blitz",
+  "slug": "storm-blitz",
+  "name": "Storm Blitz",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Summoner"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-storm-blitz",
+      "name": "Storm Blitz Armor",
+      "category": "Armor",
+      "slug": "storm-blitz",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-storm-blitz.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar056_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-storm-blitz.jpg",
+        "size": 12032,
+        "sha1": "9c360272435b2a470913496e59c455098ebb2722"
+      }
+    },
+    {
+      "itemId": "boots-storm-blitz",
+      "name": "Storm Blitz Boots",
+      "category": "Boots",
+      "slug": "storm-blitz",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-storm-blitz.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo055_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-storm-blitz.jpg",
+        "size": 11826,
+        "sha1": "10a6dc7ab82816d4ece86e79a7c48444236db6af"
+      }
+    },
+    {
+      "itemId": "gloves-storm-blitz",
+      "name": "Storm Blitz Gloves",
+      "category": "Gloves",
+      "slug": "storm-blitz",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-storm-blitz.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl116_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-storm-blitz.jpg",
+        "size": 11140,
+        "sha1": "792bc93c0cfb0fd0e721a513f3df185ca5a3a497"
+      }
+    },
+    {
+      "itemId": "helm-storm-blitz",
+      "name": "Storm Blitz Helm",
+      "category": "Helm",
+      "slug": "storm-blitz",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-storm-blitz.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe048_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-storm-blitz.jpg",
+        "size": 11306,
+        "sha1": "3e6de9110d8f0dfbe06294f558e6b30b6258ce43"
+      }
+    },
+    {
+      "itemId": "pants-storm-blitz",
+      "name": "Storm Blitz Pants",
+      "category": "Pants",
+      "slug": "storm-blitz",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-storm-blitz.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa055_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-storm-blitz.jpg",
+        "size": 11627,
+        "sha1": "82672d90e1d8cbeb73378bc8eb336223110e17b3"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

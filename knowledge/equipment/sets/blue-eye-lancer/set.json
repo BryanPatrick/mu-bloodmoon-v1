@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "blue-eye-ancient-blue-eye-lancer",
+  "slug": "blue-eye-lancer",
+  "name": "Blue Eye Lancer",
+  "family": "Blue Eye Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Blue Eye Lancer Helm",
+      "slug": "blue-eye-lancer-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-lancer-blue-eye-lancer-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/ihe1011.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-lancer-blue-eye-lancer-helm.jpg",
+        "size": 2083,
+        "sha1": "bee2a34bca1d39a98a8eacc8d1866779ef9d6e75"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Blue Eye Lancer Armor",
+      "slug": "blue-eye-lancer-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-lancer-blue-eye-lancer-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/iar1011.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-lancer-blue-eye-lancer-armor.jpg",
+        "size": 2741,
+        "sha1": "9b53384d34aa32db1b150f5b0ed849fcfcb00e20"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Blue Eye Lancer Pants",
+      "slug": "blue-eye-lancer-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-lancer-blue-eye-lancer-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/ipa1011.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-lancer-blue-eye-lancer-pants.jpg",
+        "size": 2596,
+        "sha1": "f9ea11f71747daeed1d41a0a739c58cd7235b916"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Blue Eye Lancer Gloves",
+      "slug": "blue-eye-lancer-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-lancer-blue-eye-lancer-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/igl1011.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-lancer-blue-eye-lancer-gloves.jpg",
+        "size": 2178,
+        "sha1": "ce7b2e0e277b73d2b6c0bb95e7ce2bf232a2090f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/blue-eye-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/blueeyelancer.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

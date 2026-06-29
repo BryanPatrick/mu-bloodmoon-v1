@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-burning-frere",
+  "slug": "burning-frere",
+  "name": "Burning Frere",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Burning Frere Armor",
+      "slug": "burning-frere-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-burning-frere-burning-frere-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/frerearmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-burning-frere-burning-frere-armor.jpg",
+        "size": 1566,
+        "sha1": "9fc1af9df2bf94d1259ca77536715ca0f18690ab"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Burning Frere Pants",
+      "slug": "burning-frere-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-burning-frere-burning-frere-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/frerepants.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-burning-frere-burning-frere-pants.jpg",
+        "size": 1071,
+        "sha1": "2117642bd31ba57699a7cb05ef214eb5b2cd5cae"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Burning Frere Helm",
+      "slug": "burning-frere-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-burning-frere-burning-frere-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/frerehelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-burning-frere-burning-frere-helm.jpg",
+        "size": 1167,
+        "sha1": "ec984da45d468ff49292044e341055b8b1801db9"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Burning Frere Boots",
+      "slug": "burning-frere-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-burning-frere-burning-frere-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/frereboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-burning-frere-burning-frere-boots.jpg",
+        "size": 1240,
+        "sha1": "111add2bc27f89b2c460081a4307f07d00010b3d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/burningfrere.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

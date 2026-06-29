@@ -1,0 +1,35 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "wings-wing-of-satan",
+  "slug": "wing-of-satan",
+  "name": "Wing of Satan",
+  "title": "Wings of Satan",
+  "category": "Wings",
+  "categorySlug": "wings",
+  "usableBy": [],
+  "listStats": {
+    "normalDrop": "180+(Wing Level*4)",
+    "excellentDrop": "Usado por el Dark Knight, Magic Gladiator. Defensa: 20 + (Wing Level * 3) [Level +10~+15 Incremento de defensa +4,+5,+6,+7,+8,+9]. Incremento de Daño: 12% + (Wing Level * 2). Absorcion de Daño: 12% + (Wing Level * 2). Incremento de velocidad de movimiento. Opciones: 25% Luck en Rate de Soul + 5% Critical Damage Rate. Incremento de Daño +4,+8,+12,+16. Recuperacion de HP 1%,2%,3%,4%. Reduce 3 Vida despues del ataque con exito (Incluido el Miss)."
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/wings-wing-of-satan.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/iwi003_s.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/wings-wing-of-satan.jpg",
+    "size": 2759,
+    "sha1": "66ad19161ca6614b7743b37ace2678e7561474b9"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/wings.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/wing/satan.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/iwi003_s.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

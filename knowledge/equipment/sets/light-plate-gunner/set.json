@@ -1,0 +1,94 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-light-plate-gunner",
+  "slug": "light-plate-gunner",
+  "name": "Light Plate Gunner",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "itemId": "armor-light-plate-gunner",
+      "name": "Light Plate Gunner Armor",
+      "category": "Armor",
+      "slug": "light-plate-gunner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-light-plate-gunner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar023_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-light-plate-gunner.jpg",
+        "size": 3567,
+        "sha1": "335d7836bc3df54500412dda9d2e6e9faf82913a"
+      }
+    },
+    {
+      "itemId": "boots-light-plate-gunner",
+      "name": "Light Plate Gunner Boots",
+      "category": "Boots",
+      "slug": "light-plate-gunner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-light-plate-gunner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo023_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-light-plate-gunner.jpg",
+        "size": 3239,
+        "sha1": "332ca3d5d96001a298f5dc880f18958f214f8036"
+      }
+    },
+    {
+      "itemId": "gloves-light-plate-gunner",
+      "name": "Light Plate Gunner Gloves",
+      "category": "Gloves",
+      "slug": "light-plate-gunner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-light-plate-gunner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl023_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-light-plate-gunner.jpg",
+        "size": 3035,
+        "sha1": "16c8fd1c1fe9f2385ab035daf058245f33bb06c6"
+      }
+    },
+    {
+      "itemId": "helm-light-plate-gunner",
+      "name": "Light Plate Gunner",
+      "category": "Helm",
+      "slug": "light-plate-gunner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-light-plate-gunner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe023_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-light-plate-gunner.jpg",
+        "size": 2786,
+        "sha1": "d51fae845516d3a5d86bdcd535818e29cf3bd6c9"
+      }
+    },
+    {
+      "itemId": "pants-light-plate-gunner",
+      "name": "Light Plate Gunner Pants",
+      "category": "Pants",
+      "slug": "light-plate-gunner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-light-plate-gunner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa023_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-light-plate-gunner.jpg",
+        "size": 2800,
+        "sha1": "58fa06c46f692a300e17ccfb2ec3ee331e049f57"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

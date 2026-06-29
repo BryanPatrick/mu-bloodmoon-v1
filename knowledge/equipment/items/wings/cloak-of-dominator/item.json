@@ -1,0 +1,34 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "wings-cloak-of-dominator",
+  "slug": "cloak-of-dominator",
+  "name": "Cloak of Dominator",
+  "title": "Cloak of Dominator",
+  "category": "Wings",
+  "categorySlug": "wings",
+  "usableBy": [],
+  "listStats": {
+    "normalDrop": "800"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/wings-cloak-of-dominator.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/dlw4.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/wings-cloak-of-dominator.jpg",
+    "size": 1405,
+    "sha1": "9b10aaf675441636e58ebb54ee6e568cf009ab56"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/wings.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/wing/dlw4.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/dlw4.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

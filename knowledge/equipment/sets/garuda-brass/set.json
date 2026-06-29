@@ -1,0 +1,90 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-garuda-brass",
+  "slug": "garuda-brass",
+  "name": "Garuda Brass",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Garuda Boots",
+      "slug": "garuda-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-garuda-brass-garuda-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo004.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-garuda-brass-garuda-boots.jpg",
+        "size": 3854,
+        "sha1": "7e7eb388fb3b531623ecdd7c6410e84df9856a33"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Garuda Gloves",
+      "slug": "garuda-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-garuda-brass-garuda-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl004.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-garuda-brass-garuda-gloves.jpg",
+        "size": 3672,
+        "sha1": "6178fbde31eb93de7c752f6611bcdfb4aa88768e"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Garuda Pants",
+      "slug": "garuda-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-garuda-brass-garuda-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa004.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-garuda-brass-garuda-pants.jpg",
+        "size": 3745,
+        "sha1": "bd9689e83fbc16b436b91f3e4d1e86a44eb3bf55"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Garuda Armor",
+      "slug": "garuda-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-garuda-brass-garuda-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar004.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-garuda-brass-garuda-armor.jpg",
+        "size": 4135,
+        "sha1": "7519d1ac0f4fb4ce1e4f487fc7b20050c2b92199"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Garuda Pendant of Fire",
+      "slug": "garuda-pendant-of-fire",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-garuda-brass-garuda-pendant-of-fire.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri009_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-garuda-brass-garuda-pendant-of-fire.jpg",
+        "size": 2738,
+        "sha1": "1457118e1626917dcb50ae8519f595ea29731537"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/garuda.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

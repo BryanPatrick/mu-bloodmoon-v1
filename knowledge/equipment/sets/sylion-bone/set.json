@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-sylion-bone",
+  "slug": "sylion-bone",
+  "name": "Sylion Bone",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Sylion Boots",
+      "slug": "sylion-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-sylion-bone-sylion-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo010_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-sylion-bone-sylion-boots.jpg",
+        "size": 2758,
+        "sha1": "7e9646e8819977544ab377c04bf3436ee43280e2"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Sylion Gloves",
+      "slug": "sylion-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-sylion-bone-sylion-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl042_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-sylion-bone-sylion-gloves.jpg",
+        "size": 2863,
+        "sha1": "33b7989a4acfca9605805dc63daa34c87d177a3a"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Sylion Armor",
+      "slug": "sylion-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-sylion-bone-sylion-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar010_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-sylion-bone-sylion-armor.jpg",
+        "size": 2739,
+        "sha1": "547a4f301e90126f78e6d7240ca25d0170f621d9"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Sylion Helm",
+      "slug": "sylion-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-sylion-bone-sylion-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe055_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-sylion-bone-sylion-helm.jpg",
+        "size": 2557,
+        "sha1": "2afa2e9ebe59b376a0447d1f6a758769241e8fcf"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/silrion.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

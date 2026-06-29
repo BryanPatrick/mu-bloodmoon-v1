@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-agnis-adamantine",
+  "slug": "agnis-adamantine",
+  "name": "Agnis Adamantine",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Agnis Pants",
+      "slug": "agnis-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa024.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-pants.jpg",
+        "size": 2898,
+        "sha1": "3e7cd1bae9ce771e0b20a2c556445ea72d43f6b1"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Agnis Armor",
+      "slug": "agnis-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar046.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-armor.jpg",
+        "size": 11849,
+        "sha1": "7b6087553d3204fdf16419f731268ab4aca88862"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Agnis Helm",
+      "slug": "agnis-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe024.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-helm.jpg",
+        "size": 2867,
+        "sha1": "46b0a864b0016bda48136a6dfac522c08fe00134"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Agnis Ring of Poison",
+      "slug": "agnis-ring-of-poison",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-ring-of-poison.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri17_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-ring-of-poison.jpg",
+        "size": 1972,
+        "sha1": "24b02183e3a0c5633e21e5e434cb9ef872c1c3bb"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/agnis.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

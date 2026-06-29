@@ -1,0 +1,34 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "wings-wings-of-fate",
+  "slug": "wings-of-fate",
+  "name": "Wings of Fate",
+  "title": "Wings of Fate",
+  "category": "Wings",
+  "categorySlug": "wings",
+  "usableBy": [],
+  "listStats": {
+    "normalDrop": "800"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/wings-wings-of-fate.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/wingfate.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/wings-wings-of-fate.jpg",
+    "size": 1281,
+    "sha1": "a179ea7b24b4fc271930c949bcd693dc097120d3"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/wings.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/wing/fate.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/wingfate.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

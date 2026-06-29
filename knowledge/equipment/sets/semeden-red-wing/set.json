@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-semeden-red-wing",
+  "slug": "semeden-red-wing",
+  "name": "Semeden Red Wing",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Semeden Boots",
+      "slug": "semeden-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-semeden-red-wing-semeden-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo041.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-semeden-red-wing-semeden-boots.jpg",
+        "size": 13800,
+        "sha1": "e628f784d7dbf3c2d89dd9656b658361f9e1362d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Semeden Gloves",
+      "slug": "semeden-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-semeden-red-wing-semeden-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl103.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-semeden-red-wing-semeden-gloves.jpg",
+        "size": 13892,
+        "sha1": "73176a9b7176dd87974f4211c7dc80da5dd11b53"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Semeden Armor",
+      "slug": "semeden-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-semeden-red-wing-semeden-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar041.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-semeden-red-wing-semeden-armor.jpg",
+        "size": 14292,
+        "sha1": "b97c0d45c3b0fc00e6af77a26f29d487361f837e"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Semeden Helm",
+      "slug": "semeden-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-semeden-red-wing-semeden-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe038.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-semeden-red-wing-semeden-helm.jpg",
+        "size": 14131,
+        "sha1": "7751cc9ee6257ac9b99de82b1889ceca64ec80f5"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/sedemen.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

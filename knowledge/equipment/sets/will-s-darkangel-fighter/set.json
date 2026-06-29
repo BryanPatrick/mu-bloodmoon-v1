@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "darkangel-ancient-will-s-darkangel-fighter",
+  "slug": "will-s-darkangel-fighter",
+  "name": "Will's Darkangel Fighter",
+  "family": "Darkangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Will Helm",
+      "slug": "will-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-will-s-darkangel-fighter-will-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkhelmdk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-will-s-darkangel-fighter-will-helm-detail.jpg",
+        "size": 41716,
+        "sha1": "9f511677345f9e1ca97f834f123dc0a2f620ce5a"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Will Armor",
+      "slug": "will-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-will-s-darkangel-fighter-will-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkarmordk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-will-s-darkangel-fighter-will-armor-detail.jpg",
+        "size": 65434,
+        "sha1": "faff81d4b27448c4cb2bb90ede808009f710fe00"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Will Pants",
+      "slug": "will-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-will-s-darkangel-fighter-will-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkpantsdk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-will-s-darkangel-fighter-will-pants-detail.jpg",
+        "size": 56338,
+        "sha1": "d7568a084f126a7fdbf0529c045667f5bff0b87c"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Will Boots",
+      "slug": "will-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-will-s-darkangel-fighter-will-boots-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkbootdk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-will-s-darkangel-fighter-will-boots-detail.jpg",
+        "size": 2585,
+        "sha1": "cc06b6ad68c163a9b8a7878f0652d7d38f81b66f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Will's Helm",
+      "slug": "will-s-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-will-s-darkangel-fighter-will-s-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkhdk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-will-s-darkangel-fighter-will-s-helm.jpg",
+        "size": 1247,
+        "sha1": "8983f29c4cbb7b20bd50e74c47561e30cd6005a4"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Will's Armor",
+      "slug": "will-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-will-s-darkangel-fighter-will-s-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkabk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-will-s-darkangel-fighter-will-s-armor.jpg",
+        "size": 1212,
+        "sha1": "4423578872c22e9cebad7ba95f5f50835d8805ea"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Will's Pants",
+      "slug": "will-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-will-s-darkangel-fighter-will-s-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkpbk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-will-s-darkangel-fighter-will-s-pants.jpg",
+        "size": 1141,
+        "sha1": "870930c4a04028c7e466c2bced347dd56e698e07"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Will's Boots",
+      "slug": "will-s-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-will-s-darkangel-fighter-will-s-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkbbk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-will-s-darkangel-fighter-will-s-boots.jpg",
+        "size": 1319,
+        "sha1": "7d7d8037372bdc8f68875aa5ca7fcb3b8501053b"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/darkangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/will.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "darkangel-ancient-darkangel-gunner",
+  "slug": "darkangel-gunner",
+  "name": "Darkangel Gunner",
+  "family": "Darkangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Darkangel Gunner Helm",
+      "slug": "darkangel-gunner-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-darkangel-gunner-darkangel-gunner-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkhelmdw.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-darkangel-gunner-darkangel-gunner-helm.jpg",
+        "size": 1209,
+        "sha1": "3118ce99680ea19d67cc1e344a31fc4549ef179d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Darkangel Gunner Armor",
+      "slug": "darkangel-gunner-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-darkangel-gunner-darkangel-gunner-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkarmordw.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-darkangel-gunner-darkangel-gunner-armor.jpg",
+        "size": 1266,
+        "sha1": "c29d59c693d8bf81c28ceaa5603f7e9d16828f3a"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Darkangel Gunner Pants",
+      "slug": "darkangel-gunner-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-darkangel-gunner-darkangel-gunner-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkpantsdw.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-darkangel-gunner-darkangel-gunner-pants.jpg",
+        "size": 1151,
+        "sha1": "8b03c2723f3420074a22300662b71005b3f55e14"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Darkangel Gunner Boots",
+      "slug": "darkangel-gunner-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-darkangel-gunner-darkangel-gunner-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkbootsdw.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-darkangel-gunner-darkangel-gunner-boots.jpg",
+        "size": 1195,
+        "sha1": "ee567f42592cf6eb516b386abaf480b2b1c07196"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/darkangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/darkangelgunner.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,231 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "pants-red-wing",
+  "slug": "red-wing",
+  "name": "Red Wing",
+  "title": "Red Wing Pants",
+  "category": "Pants",
+  "categorySlug": "pants",
+  "usableBy": [
+    "Summoner"
+  ],
+  "listStats": {
+    "normalDrop": "53",
+    "excellentDrop": "78",
+    "requiredLevel": "~"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/pants-red-wing.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa041_s.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-red-wing.jpg",
+    "size": 13923,
+    "sha1": "28171f00128a4e2303ec314b3b85a9ba594c62c7"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/pants.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/pants/redwing.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa041_s.jpg"
+  },
+  "statsByLevel": [
+    {
+      "itemLevel": 0,
+      "defense": 22,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 75,
+      "requiredAgility": 31,
+      "excellentDefense": 40,
+      "excellentRequiredStrength": 101,
+      "excellentRequiredAgility": 36
+    },
+    {
+      "itemLevel": 1,
+      "defense": 25,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 78,
+      "requiredAgility": 31,
+      "excellentDefense": 43,
+      "excellentRequiredStrength": 105,
+      "excellentRequiredAgility": 37
+    },
+    {
+      "itemLevel": 2,
+      "defense": 28,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 81,
+      "requiredAgility": 32,
+      "excellentDefense": 46,
+      "excellentRequiredStrength": 108,
+      "excellentRequiredAgility": 37
+    },
+    {
+      "itemLevel": 3,
+      "defense": 31,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 85,
+      "requiredAgility": 33,
+      "excellentDefense": 49,
+      "excellentRequiredStrength": 111,
+      "excellentRequiredAgility": 38
+    },
+    {
+      "itemLevel": 4,
+      "defense": 34,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 88,
+      "requiredAgility": 33,
+      "excellentDefense": 52,
+      "excellentRequiredStrength": 114,
+      "excellentRequiredAgility": 38
+    },
+    {
+      "itemLevel": 5,
+      "defense": 37,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 91,
+      "requiredAgility": 34,
+      "excellentDefense": 55,
+      "excellentRequiredStrength": 117,
+      "excellentRequiredAgility": 39
+    },
+    {
+      "itemLevel": 6,
+      "defense": 40,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 94,
+      "requiredAgility": 34,
+      "excellentDefense": 58,
+      "excellentRequiredStrength": 120,
+      "excellentRequiredAgility": 40
+    },
+    {
+      "itemLevel": 7,
+      "defense": 43,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 97,
+      "requiredAgility": 35,
+      "excellentDefense": 61,
+      "excellentRequiredStrength": 123,
+      "excellentRequiredAgility": 40
+    },
+    {
+      "itemLevel": 8,
+      "defense": 46,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 100,
+      "requiredAgility": 36,
+      "excellentDefense": 64,
+      "excellentRequiredStrength": 127,
+      "excellentRequiredAgility": 41
+    },
+    {
+      "itemLevel": 9,
+      "defense": 49,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 104,
+      "requiredAgility": 36,
+      "excellentDefense": 67,
+      "excellentRequiredStrength": 130,
+      "excellentRequiredAgility": 42
+    },
+    {
+      "itemLevel": 10,
+      "defense": 53,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 107,
+      "requiredAgility": 37,
+      "excellentDefense": 71,
+      "excellentRequiredStrength": 133,
+      "excellentRequiredAgility": 42
+    },
+    {
+      "itemLevel": 11,
+      "defense": 58,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 110,
+      "requiredAgility": 38,
+      "excellentDefense": 76,
+      "excellentRequiredStrength": 136,
+      "excellentRequiredAgility": 43
+    },
+    {
+      "itemLevel": 12,
+      "defense": 64,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 113,
+      "requiredAgility": 38,
+      "excellentDefense": 82,
+      "excellentRequiredStrength": 139,
+      "excellentRequiredAgility": 43
+    },
+    {
+      "itemLevel": 13,
+      "defense": 71,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 116,
+      "requiredAgility": 39,
+      "excellentDefense": 89,
+      "excellentRequiredStrength": 142,
+      "excellentRequiredAgility": 44
+    },
+    {
+      "itemLevel": 14,
+      "defense": 79,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 119,
+      "requiredAgility": 39,
+      "excellentDefense": 97,
+      "excellentRequiredStrength": 146,
+      "excellentRequiredAgility": 45
+    },
+    {
+      "itemLevel": 15,
+      "defense": 88,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 122,
+      "requiredAgility": 40,
+      "excellentDefense": 106,
+      "excellentRequiredStrength": 149,
+      "excellentRequiredAgility": 45
+    }
+  ],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

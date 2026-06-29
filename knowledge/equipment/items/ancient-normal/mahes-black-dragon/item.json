@@ -1,0 +1,64 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "ancient-normal-mahes-black-dragon",
+  "slug": "mahes-black-dragon",
+  "name": "Mahes Black Dragon",
+  "title": "Mahes Black Dragon",
+  "category": "Ancient Normal",
+  "categorySlug": "ancient-normal",
+  "usableBy": [],
+  "listStats": {
+    "value1": "Mahes Pants",
+    "value2": "Mahes Shield",
+    "value3": "Opciones por Set Completo",
+    "value4": "Increase Max. HP +100 Ignore Enemy's Defense +6% Increase Defense when using Shield weapons +17%"
+  },
+  "image": {
+    "publicPath": null,
+    "sourceUrl": null,
+    "localPath": null,
+    "size": null,
+    "sha1": null
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/mahes.html",
+    "imageSourceUrl": null
+  },
+  "statsByLevel": [],
+  "parts": [
+    {
+      "name": "Mahes Pants",
+      "slug": "mahes-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-mahes-black-dragon-mahes-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa007_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-mahes-black-dragon-mahes-pants.jpg",
+        "size": 3602,
+        "sha1": "7bb77caff04baf6f49f847f84b01e32df9982b49"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Mahes Shield",
+      "slug": "mahes-shield",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-mahes-black-dragon-mahes-shield.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/shield/ish014_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-mahes-black-dragon-mahes-shield.jpg",
+        "size": 3709,
+        "sha1": "11390bc429044ac1c9c54f2536731f1206eb4e24"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

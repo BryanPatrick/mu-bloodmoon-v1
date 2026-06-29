@@ -1,0 +1,104 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "ancient-normal-tyr-thunder-hawk",
+  "slug": "tyr-thunder-hawk",
+  "name": "Tyr Thunder Hawk",
+  "title": "Tyr Thunder Hawk",
+  "category": "Ancient Normal",
+  "categorySlug": "ancient-normal",
+  "usableBy": [],
+  "listStats": {
+    "value1": "Tyr Gloves",
+    "value2": "Tyr Pants",
+    "value3": "Tyr Boots",
+    "value4": "Try Rune Blade",
+    "value5": "Try Pendant of Lightning"
+  },
+  "image": {
+    "publicPath": null,
+    "sourceUrl": null,
+    "localPath": null,
+    "size": null,
+    "sha1": null
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/tyr.html",
+    "imageSourceUrl": null
+  },
+  "statsByLevel": [],
+  "parts": [
+    {
+      "name": "Tyr Gloves",
+      "slug": "tyr-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-tyr-thunder-hawk-tyr-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl028_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-tyr-thunder-hawk-tyr-gloves.jpg",
+        "size": 3429,
+        "sha1": "985b105381d21f55d9b7a0ca870db54445fc21f7"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Tyr Pants",
+      "slug": "tyr-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-tyr-thunder-hawk-tyr-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa028_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-tyr-thunder-hawk-tyr-pants.jpg",
+        "size": 3895,
+        "sha1": "c74856a57eaa7438eaaf655b70a8271de367bd51"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Tyr Boots",
+      "slug": "tyr-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-tyr-thunder-hawk-tyr-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo028_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-tyr-thunder-hawk-tyr-boots.jpg",
+        "size": 3755,
+        "sha1": "0a61b5475cf90286a60c1deffa7ca51a15f72629"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Try Rune Blade",
+      "slug": "try-rune-blade",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-tyr-thunder-hawk-try-rune-blade.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/sword/isw016_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-tyr-thunder-hawk-try-rune-blade.jpg",
+        "size": 2802,
+        "sha1": "9fa246f3f83df7f9c05c11a0c67a22912f15bc1b"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Try Pendant of Lightning",
+      "slug": "try-pendant-of-lightning",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-tyr-thunder-hawk-try-pendant-of-lightning.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ring/iri008_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-tyr-thunder-hawk-try-pendant-of-lightning.jpg",
+        "size": 2344,
+        "sha1": "996df61f8ce12ff1d5a896788d42a9f2faacd911"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

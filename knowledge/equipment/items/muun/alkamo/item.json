@@ -1,0 +1,72 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "muun-alkamo",
+  "slug": "alkamo",
+  "name": "Alkamo",
+  "title": "Alkamo",
+  "category": "Muun",
+  "categorySlug": "muun",
+  "usableBy": [],
+  "listStats": {
+    "value1": "☆☆",
+    "value2": "Increase Attack Speed Skill Muun (NO PVP) Poder Especial: Al Jugar 5 Horas Seguidas"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/muun-alkamo.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/muun/muun44.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/muun-alkamo.jpg",
+    "size": 1152,
+    "sha1": "201ad2a6a8a66353f10c57a9cd453f9e4ece27a3"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/muun.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/muun/alkamo.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/muun/muun44.jpg"
+  },
+  "statsByLevel": [
+    {
+      "itemLevel": 1,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 2,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 3,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    }
+  ],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "primordial-ancient-primordial-gunner",
+  "slug": "primordial-gunner",
+  "name": "Primordial Gunner",
+  "family": "Primordial Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Primordial Gunner Helm",
+      "slug": "primordial-gunner-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-gunner-primordial-gunner-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/helmdw.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-gunner-primordial-gunner-helm.jpg",
+        "size": 1198,
+        "sha1": "0d271206e382627f869ce0ac99e9d3b9cb473041"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Gunner Armor",
+      "slug": "primordial-gunner-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-gunner-primordial-gunner-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/armordw.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-gunner-primordial-gunner-armor.jpg",
+        "size": 1488,
+        "sha1": "d55f19d1ad8c8037539984445a46b736ecc11599"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Gunner Pants",
+      "slug": "primordial-gunner-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-gunner-primordial-gunner-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/pantsdw.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-gunner-primordial-gunner-pants.jpg",
+        "size": 1310,
+        "sha1": "e4ee7f0a09688a862b82eaeb91e9911ed0d159a8"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Gunner Boots",
+      "slug": "primordial-gunner-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-gunner-primordial-gunner-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/bootdw.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-gunner-primordial-gunner-boots.jpg",
+        "size": 1316,
+        "sha1": "149ada39de7ebb5651263f1e97749ef828ac2bfe"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/primordial-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/prigunner.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

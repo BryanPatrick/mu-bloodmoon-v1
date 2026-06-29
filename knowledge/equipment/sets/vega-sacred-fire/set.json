@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-vega-sacred-fire",
+  "slug": "vega-sacred-fire",
+  "name": "Vega Sacred Fire",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Vega Helm",
+      "slug": "vega-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-vega-sacred-fire-vega-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ifhe053_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-vega-sacred-fire-vega-helm.jpg",
+        "size": 2637,
+        "sha1": "844a3e85237e948736cc0de8067f18d5032e47ed"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Vega Armor",
+      "slug": "vega-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-vega-sacred-fire-vega-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar053_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-vega-sacred-fire-vega-armor.jpg",
+        "size": 3409,
+        "sha1": "0e0c03f0aebdff6420b2b7ef0f117a22203df92c"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Vega Pants",
+      "slug": "vega-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-vega-sacred-fire-vega-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa053_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-vega-sacred-fire-vega-pants.jpg",
+        "size": 3529,
+        "sha1": "49c3a2a109d8e6b890518f0e2d6baf5dd8c39e8c"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Vega Glove",
+      "slug": "vega-glove",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-vega-sacred-fire-vega-glove.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/icr001_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-vega-sacred-fire-vega-glove.jpg",
+        "size": 2352,
+        "sha1": "2affcebac5ac92eeb7fe1c265439503b6adc82f9"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/vega.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

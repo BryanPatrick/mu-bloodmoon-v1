@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-darkangel-lancer",
+  "slug": "darkangel-lancer",
+  "name": "Darkangel Lancer",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Grow Lancer"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-darkangel-lancer",
+      "name": "Darkangel Lancer Armor",
+      "category": "Armor",
+      "slug": "darkangel-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-darkangel-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkalancer.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-darkangel-lancer.jpg",
+        "size": 1104,
+        "sha1": "8bb4a4865ec8527b8c23da522053c35c85711534"
+      }
+    },
+    {
+      "itemId": "boots-darkangel-lancer",
+      "name": "Darkangel Lancer Boots",
+      "category": "Boots",
+      "slug": "darkangel-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-darkangel-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkblancer.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-darkangel-lancer.jpg",
+        "size": 988,
+        "sha1": "5806180e973d367a9fc52507241bed1d4b81850e"
+      }
+    },
+    {
+      "itemId": "gloves-darkangel-lancer",
+      "name": "Darkangel Lancer Gloves",
+      "category": "Gloves",
+      "slug": "darkangel-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-darkangel-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkg101.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-darkangel-lancer.jpg",
+        "size": 909,
+        "sha1": "c7584f274734ec5413b8ee14b8a2c8b1032d047d"
+      }
+    },
+    {
+      "itemId": "helm-darkangel-lancer",
+      "name": "Darkangel Lancer Helm",
+      "category": "Helm",
+      "slug": "darkangel-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-darkangel-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkhlancer.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-darkangel-lancer.jpg",
+        "size": 971,
+        "sha1": "b1dad17de32cef061a5c20ed5b97315d864caec5"
+      }
+    },
+    {
+      "itemId": "pants-darkangel-lancer",
+      "name": "Darkangel Lancer Pants",
+      "category": "Pants",
+      "slug": "darkangel-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-darkangel-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkplancer.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-darkangel-lancer.jpg",
+        "size": 1078,
+        "sha1": "33f9f03d9342d0179dc2c611b7a372569fdf2377"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

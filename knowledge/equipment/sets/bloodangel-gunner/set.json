@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "bloodangel-ancient-bloodangel-gunner",
+  "slug": "bloodangel-gunner",
+  "name": "Bloodangel Gunner",
+  "family": "Bloodangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Bloodangel Gunner Helm",
+      "slug": "bloodangel-gunner-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-bloodangel-gunner-bloodangel-gunner-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodhelmdl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-bloodangel-gunner-bloodangel-gunner-helm.jpg",
+        "size": 1163,
+        "sha1": "961959b652290922313a773d72165f41d6cfcd19"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Bloodangel Gunner Armor",
+      "slug": "bloodangel-gunner-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-bloodangel-gunner-bloodangel-gunner-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodarmordl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-bloodangel-gunner-bloodangel-gunner-armor.jpg",
+        "size": 1601,
+        "sha1": "502ba853a40134cd0570dce91c22e2ebf79426c5"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Bloodangel Gunner Pants",
+      "slug": "bloodangel-gunner-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-bloodangel-gunner-bloodangel-gunner-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodpantssm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-bloodangel-gunner-bloodangel-gunner-pants.jpg",
+        "size": 1393,
+        "sha1": "b546b0cced2d6f4f34ae954b7696db1899f79409"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Bloodangel Gunner Boots",
+      "slug": "bloodangel-gunner-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-bloodangel-gunner-bloodangel-gunner-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodbootssm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-bloodangel-gunner-bloodangel-gunner-boots.jpg",
+        "size": 1136,
+        "sha1": "1ac911c14d6df8342954469e26b6d1032c5d6c6c"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/bloodangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/bloodangelgunner.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "muun-rockinghorse",
+  "slug": "rockinghorse",
+  "name": "Rockinghorse",
+  "title": "Lakinhose",
+  "category": "Muun",
+  "categorySlug": "muun",
+  "usableBy": [],
+  "listStats": {
+    "value1": "☆☆",
+    "value2": "Increase Attack Speed Skill Muun (NO PVP) Poder Especial: Solo personajes de Level 201~Level Master"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/muun-rockinghorse.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/muun/muun53.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/muun-rockinghorse.jpg",
+    "size": 1264,
+    "sha1": "b0b9dc1fc35b5b00627918935ae567d86d077f6d"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/muun.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/muun/lakinhose.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/muun/muun53.jpg"
+  },
+  "statsByLevel": [
+    {
+      "itemLevel": 1,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 2,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 3,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    }
+  ],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

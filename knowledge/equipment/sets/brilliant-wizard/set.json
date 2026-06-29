@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "brilliant-ancient-brilliant-wizard",
+  "slug": "brilliant-wizard",
+  "name": "Brilliant Wizard",
+  "family": "Brilliant Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Brilliant Wizard Helm",
+      "slug": "brilliant-wizard-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-wizard-brilliant-wizard-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/brilliant/helmdw.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-wizard-brilliant-wizard-helm.jpg",
+        "size": 1128,
+        "sha1": "0c5a27079a9c0f80816ca7a4130999a04de4d60d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Brilliant Wizard Armor",
+      "slug": "brilliant-wizard-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-wizard-brilliant-wizard-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/brilliant/armordw.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-wizard-brilliant-wizard-armor.jpg",
+        "size": 1289,
+        "sha1": "f2db198a11ff60affc6dce155e75397e0f704e4a"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Brilliant Wizard Pants",
+      "slug": "brilliant-wizard-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-wizard-brilliant-wizard-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/brilliant/pantsdw.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-wizard-brilliant-wizard-pants.jpg",
+        "size": 1333,
+        "sha1": "3f8c3bae617b8eb9b08d253cabeb12460b81fc58"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Brilliant Wizard Gloves",
+      "slug": "brilliant-wizard-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-wizard-brilliant-wizard-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/brilliant/glovesdw.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-wizard-brilliant-wizard-gloves.jpg",
+        "size": 1175,
+        "sha1": "465bdeea87a548fcecbd26ba473520c8ab5de68f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/brilliant-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/brilliantwizard.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

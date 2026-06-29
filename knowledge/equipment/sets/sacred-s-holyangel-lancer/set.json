@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "holyangel-ancient-sacred-s-holyangel-lancer",
+  "slug": "sacred-s-holyangel-lancer",
+  "name": "Sacred's Holyangel Lancer",
+  "family": "Holyangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Sacred Helm",
+      "slug": "sacred-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-sacred-s-holyangel-lancer-sacred-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holyglhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-sacred-s-holyangel-lancer-sacred-helm-detail.jpg",
+        "size": 3015,
+        "sha1": "041b0f48a220d4e7e75c43aa77f852e5d8e1b5c4"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Sacred Armor",
+      "slug": "sacred-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-sacred-s-holyangel-lancer-sacred-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holyglarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-sacred-s-holyangel-lancer-sacred-armor-detail.jpg",
+        "size": 3449,
+        "sha1": "ec370049299d9b196032e12e231e492f1e56c5a9"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Sacred Pants",
+      "slug": "sacred-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-sacred-s-holyangel-lancer-sacred-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holyglpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-sacred-s-holyangel-lancer-sacred-pants-detail.jpg",
+        "size": 3139,
+        "sha1": "787182dfa2ae4db064673624218562c43c58d7eb"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Sacred Gloves",
+      "slug": "sacred-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-sacred-s-holyangel-lancer-sacred-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holyglgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-sacred-s-holyangel-lancer-sacred-gloves-detail.jpg",
+        "size": 2751,
+        "sha1": "a812b984631a975643e7bc1f2aeb183893ec3ed1"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Sacred's Helm",
+      "slug": "sacred-s-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-sacred-s-holyangel-lancer-sacred-s-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/holylancerhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-sacred-s-holyangel-lancer-sacred-s-helm.jpg",
+        "size": 1432,
+        "sha1": "7d28c310eb07dae050673c16ba27904b0b07d74d"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Sacred's Armor",
+      "slug": "sacred-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-sacred-s-holyangel-lancer-sacred-s-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/holylancerarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-sacred-s-holyangel-lancer-sacred-s-armor.jpg",
+        "size": 1442,
+        "sha1": "fd025560fb78014f0f2230a0811c8aec1fd5b7ec"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Sacred's Pants",
+      "slug": "sacred-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-sacred-s-holyangel-lancer-sacred-s-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/holylancerpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-sacred-s-holyangel-lancer-sacred-s-pants.jpg",
+        "size": 1285,
+        "sha1": "9495da21c47b8f9f8b97eac59cf79b70f167dfa3"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Sacred's Gloves",
+      "slug": "sacred-s-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-sacred-s-holyangel-lancer-sacred-s-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/holylancergloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-sacred-s-holyangel-lancer-sacred-s-gloves.jpg",
+        "size": 1215,
+        "sha1": "f65c9d36ea838ac4320f6b9e2fff0f715a721c9b"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/holyangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/sacred.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-broy-adamantine",
+  "slug": "broy-adamantine",
+  "name": "Broy Adamantine",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Broy Gloves",
+      "slug": "broy-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl106.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-gloves.jpg",
+        "size": 11727,
+        "sha1": "15839cea0f2874d3c2ea49dd05e665aca19e074a"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Broy Boots",
+      "slug": "broy-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo045.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-boots.jpg",
+        "size": 11969,
+        "sha1": "15e827a5cec5d6c8238858223497bcf830279511"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Broy Pants",
+      "slug": "broy-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa024.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-pants.jpg",
+        "size": 2898,
+        "sha1": "3e7cd1bae9ce771e0b20a2c556445ea72d43f6b1"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Broy Pendant of Ice",
+      "slug": "broy-pendant-of-ice",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-pendant-of-ice.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri21_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-pendant-of-ice.jpg",
+        "size": 2705,
+        "sha1": "9a705160d154a4f255cb9fdf88aae60644ef1f7a"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/browii.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

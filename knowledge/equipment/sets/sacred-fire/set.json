@@ -1,0 +1,82 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-sacred-fire",
+  "slug": "sacred-fire",
+  "name": "Sacred Fire",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Rage Fighter"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-sacred-fire",
+      "name": "Sacred Fire Armor",
+      "category": "Armor",
+      "slug": "sacred-fire",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-sacred-fire.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar061_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-sacred-fire.jpg",
+        "size": 2495,
+        "sha1": "c72835fd4bfe582937b5bc52245e3b8fc55bbfe4"
+      }
+    },
+    {
+      "itemId": "boots-sacred-fire",
+      "name": "Sacred Fire Boots",
+      "category": "Boots",
+      "slug": "sacred-fire",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-sacred-fire.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo065_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-sacred-fire.jpg",
+        "size": 2485,
+        "sha1": "192e7b574b847e09ed396ba6e52cde7b4d3229ea"
+      }
+    },
+    {
+      "itemId": "helm-sacred-fire",
+      "name": "Sacred Fire Helm",
+      "category": "Helm",
+      "slug": "sacred-fire",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-sacred-fire.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe058_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-sacred-fire.jpg",
+        "size": 2102,
+        "sha1": "3cc42734fdf800aeb7e32512df3bae8a9da3cc7d"
+      }
+    },
+    {
+      "itemId": "pants-sacred-fire",
+      "name": "Sacred Fire Pants",
+      "category": "Pants",
+      "slug": "sacred-fire",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-sacred-fire.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa066_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-sacred-fire.jpg",
+        "size": 2763,
+        "sha1": "d5fed8cbc1656dfc4a0f5191f5165ef6b50273c5"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

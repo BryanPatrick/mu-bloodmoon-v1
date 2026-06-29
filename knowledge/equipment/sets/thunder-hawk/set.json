@@ -1,0 +1,82 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-thunder-hawk",
+  "slug": "thunder-hawk",
+  "name": "Thunder Hawk",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-thunder-hawk",
+      "name": "Thunder Hawk Armor",
+      "category": "Armor",
+      "slug": "thunder-hawk",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-thunder-hawk.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar028_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-thunder-hawk.jpg",
+        "size": 4548,
+        "sha1": "fb6aa07e02f418a9617fc39664ab379ecc9d14c8"
+      }
+    },
+    {
+      "itemId": "boots-thunder-hawk",
+      "name": "Thunder Hawk Boots",
+      "category": "Boots",
+      "slug": "thunder-hawk",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-thunder-hawk.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo028_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-thunder-hawk.jpg",
+        "size": 3755,
+        "sha1": "0a61b5475cf90286a60c1deffa7ca51a15f72629"
+      }
+    },
+    {
+      "itemId": "gloves-thunder-hawk",
+      "name": "Thunder Hawk Gloves",
+      "category": "Gloves",
+      "slug": "thunder-hawk",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-thunder-hawk.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl028_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-thunder-hawk.jpg",
+        "size": 3429,
+        "sha1": "985b105381d21f55d9b7a0ca870db54445fc21f7"
+      }
+    },
+    {
+      "itemId": "pants-thunder-hawk",
+      "name": "Thunder Hawk Pants",
+      "category": "Pants",
+      "slug": "thunder-hawk",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-thunder-hawk.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa028_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-thunder-hawk.jpg",
+        "size": 3895,
+        "sha1": "c74856a57eaa7438eaaf655b70a8271de367bd51"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

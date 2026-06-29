@@ -1,0 +1,82 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-hurricane",
+  "slug": "hurricane",
+  "name": "Hurricane",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-hurricane",
+      "name": "Hurricane Armor",
+      "category": "Armor",
+      "slug": "hurricane",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-hurricane.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar029_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-hurricane.jpg",
+        "size": 4551,
+        "sha1": "5ce6a88ea4a4ac43e58e4d380e21779e648b20bd"
+      }
+    },
+    {
+      "itemId": "boots-hurricane",
+      "name": "Hurricane Boots",
+      "category": "Boots",
+      "slug": "hurricane",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-hurricane.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo029_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-hurricane.jpg",
+        "size": 3658,
+        "sha1": "3f1309404687630473a978906de0c33888719adf"
+      }
+    },
+    {
+      "itemId": "gloves-hurricane",
+      "name": "Hurricane Gloves",
+      "category": "Gloves",
+      "slug": "hurricane",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-hurricane.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl029_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-hurricane.jpg",
+        "size": 3728,
+        "sha1": "6c69d246c2c88c9bc6bd4198d97724f22c1221e5"
+      }
+    },
+    {
+      "itemId": "pants-hurricane",
+      "name": "Hurricane Pants",
+      "category": "Pants",
+      "slug": "hurricane",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-hurricane.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa029_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-hurricane.jpg",
+        "size": 3853,
+        "sha1": "4a288102d6fc7f23b8f2a5f112d75aa4897292c0"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

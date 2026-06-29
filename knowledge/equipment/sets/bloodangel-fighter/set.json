@@ -1,0 +1,81 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-bloodangel-fighter",
+  "slug": "bloodangel-fighter",
+  "name": "Bloodangel Fighter",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Rage Fighter"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-bloodangel-fighter",
+      "name": "Bloodangel Fighter Armor",
+      "category": "Armor",
+      "slug": "bloodangel-fighter",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-bloodangel-fighter.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/bloodrf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-bloodangel-fighter.jpg",
+        "size": 1474,
+        "sha1": "f245eb06653d3baf5c9bdbb965288cf0470e07ca"
+      }
+    },
+    {
+      "itemId": "boots-bloodangel-fighter",
+      "name": "Bloodangel Fighter Boots",
+      "category": "Boots",
+      "slug": "bloodangel-fighter",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-bloodangel-fighter.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/bloodrf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-bloodangel-fighter.jpg",
+        "size": 1393,
+        "sha1": "6838731211e1f36b4856239e26a8b2cc98623191"
+      }
+    },
+    {
+      "itemId": "helm-bloodangel-fighter",
+      "name": "Bloodangel Fighter Helm",
+      "category": "Helm",
+      "slug": "bloodangel-fighter",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-bloodangel-fighter.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/bloodrf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-bloodangel-fighter.jpg",
+        "size": 1290,
+        "sha1": "38ca466f7275328604c67feeb8db065a1c6ecbdd"
+      }
+    },
+    {
+      "itemId": "pants-bloodangel-fighter",
+      "name": "Bloodangel Fighter Pants",
+      "category": "Pants",
+      "slug": "bloodangel-fighter",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-bloodangel-fighter.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/bloodrf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-bloodangel-fighter.jpg",
+        "size": 1342,
+        "sha1": "aabc55feb750ca9631f39f8cf5878abfc0b30cbd"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

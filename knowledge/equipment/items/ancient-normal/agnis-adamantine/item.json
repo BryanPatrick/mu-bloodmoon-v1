@@ -1,0 +1,903 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "ancient-normal-agnis-adamantine",
+  "slug": "agnis-adamantine",
+  "name": "Agnis Adamantine",
+  "title": "Agnis Adamantine",
+  "category": "Ancient Normal",
+  "categorySlug": "ancient-normal",
+  "usableBy": [],
+  "listStats": {
+    "value1": "Agnis Ring of Poison",
+    "value2": "Agnis Pants",
+    "value3": "Agnis Armor",
+    "value4": "Agnis Helm",
+    "value5": "Opción por cada Item"
+  },
+  "image": {
+    "publicPath": null,
+    "sourceUrl": null,
+    "localPath": null,
+    "size": null,
+    "sha1": null
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/agnis.html",
+    "imageSourceUrl": null
+  },
+  "statsByLevel": [
+    {
+      "itemLevel": 0,
+      "defense": 54,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 239,
+      "requiredAgility": 54,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 1,
+      "defense": 57,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 246,
+      "requiredAgility": 57,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 2,
+      "defense": 60,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 253,
+      "requiredAgility": 60,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 3,
+      "defense": 63,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 260,
+      "requiredAgility": 63,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 4,
+      "defense": 66,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 267,
+      "requiredAgility": 66,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 5,
+      "defense": 69,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 274,
+      "requiredAgility": 69,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 6,
+      "defense": 72,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 281,
+      "requiredAgility": 72,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 7,
+      "defense": 75,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 287,
+      "requiredAgility": 76,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 8,
+      "defense": 78,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 294,
+      "requiredAgility": 79,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 9,
+      "defense": 81,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 301,
+      "requiredAgility": 82,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 10,
+      "defense": 85,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 308,
+      "requiredAgility": 86,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 11,
+      "defense": 90,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 315,
+      "requiredAgility": 91,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 12,
+      "defense": 96,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 322,
+      "requiredAgility": 97,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 13,
+      "defense": 103,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 329,
+      "requiredAgility": 104,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 14,
+      "defense": 111,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 336,
+      "requiredAgility": 106,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 15,
+      "defense": 120,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 343,
+      "requiredAgility": 108,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    }
+  ],
+  "parts": [
+    {
+      "name": "Agnis Ring of Poison",
+      "slug": "agnis-ring-of-poison",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-ring-of-poison.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri17_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-ring-of-poison.jpg",
+        "size": 1972,
+        "sha1": "24b02183e3a0c5633e21e5e434cb9ef872c1c3bb"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Agnis Pants",
+      "slug": "agnis-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa024_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-pants.jpg",
+        "size": 2898,
+        "sha1": "3e7cd1bae9ce771e0b20a2c556445ea72d43f6b1"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Agnis Armor",
+      "slug": "agnis-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar046_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-armor.jpg",
+        "size": 11849,
+        "sha1": "7b6087553d3204fdf16419f731268ab4aca88862"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Agnis Helm",
+      "slug": "agnis-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe024_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-helm.jpg",
+        "size": 2867,
+        "sha1": "46b0a864b0016bda48136a6dfac522c08fe00134"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "detailParts": [
+    {
+      "name": "Agnis Pants",
+      "slug": "agnis-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa024.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-pants.jpg",
+        "size": 2898,
+        "sha1": "3e7cd1bae9ce771e0b20a2c556445ea72d43f6b1"
+      },
+      "imageError": null,
+      "statsByLevel": [
+        {
+          "itemLevel": 0,
+          "defense": 54,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 239,
+          "requiredAgility": 54,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 1,
+          "defense": 57,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 246,
+          "requiredAgility": 57,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 2,
+          "defense": 60,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 253,
+          "requiredAgility": 60,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 3,
+          "defense": 63,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 260,
+          "requiredAgility": 63,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 4,
+          "defense": 66,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 267,
+          "requiredAgility": 66,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 5,
+          "defense": 69,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 274,
+          "requiredAgility": 69,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 6,
+          "defense": 72,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 281,
+          "requiredAgility": 72,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 7,
+          "defense": 75,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 287,
+          "requiredAgility": 76,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 8,
+          "defense": 78,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 294,
+          "requiredAgility": 79,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 9,
+          "defense": 81,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 301,
+          "requiredAgility": 82,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 10,
+          "defense": 85,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 308,
+          "requiredAgility": 86,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 11,
+          "defense": 90,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 315,
+          "requiredAgility": 91,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 12,
+          "defense": 96,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 322,
+          "requiredAgility": 97,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 13,
+          "defense": 103,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 329,
+          "requiredAgility": 104,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 14,
+          "defense": 111,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 336,
+          "requiredAgility": 106,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 15,
+          "defense": 120,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 343,
+          "requiredAgility": 108,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        }
+      ]
+    },
+    {
+      "name": "Agnis Armor",
+      "slug": "agnis-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar046.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-armor.jpg",
+        "size": 11849,
+        "sha1": "7b6087553d3204fdf16419f731268ab4aca88862"
+      },
+      "imageError": null,
+      "statsByLevel": [
+        {
+          "itemLevel": 0,
+          "defense": 66,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 257,
+          "requiredAgility": 84,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 1,
+          "defense": 69,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 264,
+          "requiredAgility": 86,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 2,
+          "defense": 72,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 271,
+          "requiredAgility": 88,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 3,
+          "defense": 75,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 278,
+          "requiredAgility": 90,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 4,
+          "defense": 78,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 285,
+          "requiredAgility": 92,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 5,
+          "defense": 81,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 292,
+          "requiredAgility": 94,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 6,
+          "defense": 84,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 299,
+          "requiredAgility": 96,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 7,
+          "defense": 87,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 306,
+          "requiredAgility": 98,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 8,
+          "defense": 90,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 313,
+          "requiredAgility": 100,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 9,
+          "defense": 93,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 320,
+          "requiredAgility": 101,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 10,
+          "defense": 97,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 327,
+          "requiredAgility": 103,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 11,
+          "defense": 102,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 334,
+          "requiredAgility": 105,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 12,
+          "defense": 108,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 341,
+          "requiredAgility": 107,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 13,
+          "defense": 115,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 348,
+          "requiredAgility": 109,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 14,
+          "defense": 123,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 354,
+          "requiredAgility": 111,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 15,
+          "defense": 132,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 361,
+          "requiredAgility": 113,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        }
+      ]
+    },
+    {
+      "name": "Agnis Helm",
+      "slug": "agnis-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe024.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-agnis-adamantine-agnis-helm.jpg",
+        "size": 2867,
+        "sha1": "46b0a864b0016bda48136a6dfac522c08fe00134"
+      },
+      "imageError": null,
+      "statsByLevel": [
+        {
+          "itemLevel": 0,
+          "defense": 51,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 230,
+          "requiredAgility": 77,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 1,
+          "defense": 54,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 237,
+          "requiredAgility": 79,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 2,
+          "defense": 57,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 244,
+          "requiredAgility": 81,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 3,
+          "defense": 60,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 251,
+          "requiredAgility": 83,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 4,
+          "defense": 63,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 257,
+          "requiredAgility": 84,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 5,
+          "defense": 66,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 264,
+          "requiredAgility": 86,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 6,
+          "defense": 69,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 271,
+          "requiredAgility": 88,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 7,
+          "defense": 72,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 278,
+          "requiredAgility": 90,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 8,
+          "defense": 75,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 285,
+          "requiredAgility": 92,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 9,
+          "defense": 78,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 292,
+          "requiredAgility": 94,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 10,
+          "defense": 82,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 299,
+          "requiredAgility": 96,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 11,
+          "defense": 87,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 306,
+          "requiredAgility": 98,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 12,
+          "defense": 93,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 313,
+          "requiredAgility": 100,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 13,
+          "defense": 100,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 320,
+          "requiredAgility": 101,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 14,
+          "defense": 108,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 327,
+          "requiredAgility": 103,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 15,
+          "defense": 117,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 334,
+          "requiredAgility": 105,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        }
+      ]
+    }
+  ],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

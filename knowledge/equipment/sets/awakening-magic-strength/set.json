@@ -1,0 +1,67 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-awakening-magic-strength",
+  "slug": "awakening-magic-strength",
+  "name": "Awakening Magic Strength",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-awakening-magic-strength",
+      "name": "Awakening Soul Magic Armor",
+      "category": "Armor",
+      "slug": "awakening-magic-strength",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-awakening-magic-strength.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/bkarmorawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-awakening-magic-strength.jpg",
+        "size": 1284,
+        "sha1": "f4688837b81d320390732c67a2f971d83061aeaa"
+      }
+    },
+    {
+      "itemId": "gloves-awakening-magic-strength",
+      "name": "Awakening Soul Magic Gloves",
+      "category": "Gloves",
+      "slug": "awakening-magic-strength",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-awakening-magic-strength.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/bkglovesawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-awakening-magic-strength.jpg",
+        "size": 1090,
+        "sha1": "b445f3ad56411862faf684b02c18888485e5acc1"
+      }
+    },
+    {
+      "itemId": "pants-awakening-magic-strength",
+      "name": "Awakening Soul Magic Pants",
+      "category": "Pants",
+      "slug": "awakening-magic-strength",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-awakening-magic-strength.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/bkpantsawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-awakening-magic-strength.jpg",
+        "size": 1180,
+        "sha1": "00e2701e2d3df3353a03cc34e8e84e4cb3af061b"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

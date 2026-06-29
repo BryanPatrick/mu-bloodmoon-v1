@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-holy-spirit",
+  "slug": "holy-spirit",
+  "name": "Holy Spirit",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-holy-spirit",
+      "name": "Holy Spirit Armor",
+      "category": "Armor",
+      "slug": "holy-spirit",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-holy-spirit.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar019_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-holy-spirit.jpg",
+        "size": 3889,
+        "sha1": "927334c9b240acf8f2108b24d91761fe12403c1f"
+      }
+    },
+    {
+      "itemId": "boots-holy-spirit",
+      "name": "Holy Spirit Boots",
+      "category": "Boots",
+      "slug": "holy-spirit",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-holy-spirit.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo019_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-holy-spirit.jpg",
+        "size": 4062,
+        "sha1": "2c1c339c6b8e0ccdaf06feeb96547171dcc5bd3f"
+      }
+    },
+    {
+      "itemId": "gloves-holy-spirit",
+      "name": "Holy Spirit Gloves",
+      "category": "Gloves",
+      "slug": "holy-spirit",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-holy-spirit.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl019_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-holy-spirit.jpg",
+        "size": 3818,
+        "sha1": "5bb4d35af18ccfcb93636853615f4e98f03850e9"
+      }
+    },
+    {
+      "itemId": "helm-holy-spirit",
+      "name": "Holy Spirit Helm",
+      "category": "Helm",
+      "slug": "holy-spirit",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-holy-spirit.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe019_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-holy-spirit.jpg",
+        "size": 3295,
+        "sha1": "e697a2da9d5f68a23e1441d9818c32b25e614b99"
+      }
+    },
+    {
+      "itemId": "pants-holy-spirit",
+      "name": "Holy Spirit Pants",
+      "category": "Pants",
+      "slug": "holy-spirit",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-holy-spirit.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa019_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-holy-spirit.jpg",
+        "size": 3549,
+        "sha1": "9590a995273adfabdd6b4cb01e28280b802f1267"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

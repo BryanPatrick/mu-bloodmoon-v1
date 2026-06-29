@@ -1,0 +1,93 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-trace",
+  "slug": "trace",
+  "name": "Trace",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "itemId": "armor-trace",
+      "name": "Slayer Trace Armor",
+      "category": "Armor",
+      "slug": "trace",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-trace.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/trace.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-trace.jpg",
+        "size": 1232,
+        "sha1": "f0f0d0a6fc5881c4ca4cc2961a467603b24c877d"
+      }
+    },
+    {
+      "itemId": "boots-trace",
+      "name": "Slayer Trace Boots",
+      "category": "Boots",
+      "slug": "trace",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-trace.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/slayertrace.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-trace.jpg",
+        "size": 1080,
+        "sha1": "c3a5026596cd384810f8c9cde964bf3bd3dae053"
+      }
+    },
+    {
+      "itemId": "gloves-trace",
+      "name": "Slayer Trace Gloves",
+      "category": "Gloves",
+      "slug": "trace",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-trace.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/slayertrace.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-trace.jpg",
+        "size": 1128,
+        "sha1": "97ed3e062177837f83668d038ff761e88d2e7e7b"
+      }
+    },
+    {
+      "itemId": "helm-trace",
+      "name": "Trace Helm",
+      "category": "Helm",
+      "slug": "trace",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-trace.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/trace.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-trace.jpg",
+        "size": 1036,
+        "sha1": "059148d4387f8747c1d1fed0d8591d56c8ba7e8b"
+      }
+    },
+    {
+      "itemId": "pants-trace",
+      "name": "Slayer Trace Pants",
+      "category": "Pants",
+      "slug": "trace",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-trace.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/slayertrace.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-trace.jpg",
+        "size": 1184,
+        "sha1": "7ffdba84531391d03a9f9e685fac2d54692bd136"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

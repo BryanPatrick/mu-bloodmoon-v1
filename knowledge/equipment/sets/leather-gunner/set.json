@@ -1,0 +1,94 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-leather-gunner",
+  "slug": "leather-gunner",
+  "name": "Leather Gunner",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "itemId": "armor-leather-gunner",
+      "name": "Leather Gunner Armor",
+      "category": "Armor",
+      "slug": "leather-gunner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-leather-gunner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar001_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-leather-gunner.jpg",
+        "size": 3078,
+        "sha1": "65fd6d4ebff7d87de4ab2d049d3f32fd34c5e337"
+      }
+    },
+    {
+      "itemId": "boots-leather-gunner",
+      "name": "Leather Gunner Boots",
+      "category": "Boots",
+      "slug": "leather-gunner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-leather-gunner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo001_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-leather-gunner.jpg",
+        "size": 3439,
+        "sha1": "b1745281f57ea23d0aa401a6a10a6abf4c7cdfbb"
+      }
+    },
+    {
+      "itemId": "gloves-leather-gunner",
+      "name": "Leather Gunner Gloves",
+      "category": "Gloves",
+      "slug": "leather-gunner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-leather-gunner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl001_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-leather-gunner.jpg",
+        "size": 3309,
+        "sha1": "9ca659538364dba7194c8f2ec7dbd3397349df45"
+      }
+    },
+    {
+      "itemId": "helm-leather-gunner",
+      "name": "Leather Gunner Helm",
+      "category": "Helm",
+      "slug": "leather-gunner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-leather-gunner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe001_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-leather-gunner.jpg",
+        "size": 2896,
+        "sha1": "0c03903739a0de2c0ec5f526a850bf64b63f4fb9"
+      }
+    },
+    {
+      "itemId": "pants-leather-gunner",
+      "name": "Leather Gunner Pants",
+      "category": "Pants",
+      "slug": "leather-gunner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-leather-gunner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa001_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-leather-gunner.jpg",
+        "size": 3024,
+        "sha1": "111432bd32c03e22b49be776e303f636d74f10eb"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

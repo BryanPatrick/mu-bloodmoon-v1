@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-lazy-wind",
+  "slug": "lazy-wind",
+  "name": "Lazy Wind",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Dark Knight"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-lazy-wind",
+      "name": "Armor Lazy Wind",
+      "category": "Armor",
+      "slug": "lazy-wind",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-lazy-wind.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/armor_dk_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-lazy-wind.jpg",
+        "size": 1268,
+        "sha1": "98e9ad8ba888faf63937e512d6d962bb801928fe"
+      }
+    },
+    {
+      "itemId": "boots-lazy-wind",
+      "name": "Boots Lazy Wind",
+      "category": "Boots",
+      "slug": "lazy-wind",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-lazy-wind.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/boots_dk_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-lazy-wind.jpg",
+        "size": 1267,
+        "sha1": "7cfb25b73d6720a5abc32ab6b95dc43cc54f4328"
+      }
+    },
+    {
+      "itemId": "gloves-lazy-wind",
+      "name": "Gloves Lazy Wind",
+      "category": "Gloves",
+      "slug": "lazy-wind",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-lazy-wind.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/glove_dk_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-lazy-wind.jpg",
+        "size": 1178,
+        "sha1": "be47012f1b3ffd4f5e83b58c33d8a1fbcd2fbe6e"
+      }
+    },
+    {
+      "itemId": "helm-lazy-wind",
+      "name": "Helm Lazy Wind",
+      "category": "Helm",
+      "slug": "lazy-wind",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-lazy-wind.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/helm_dk_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-lazy-wind.jpg",
+        "size": 1171,
+        "sha1": "e547831a699e17b098f745f3015519943e56c98a"
+      }
+    },
+    {
+      "itemId": "pants-lazy-wind",
+      "name": "Pants Lazy Wind",
+      "category": "Pants",
+      "slug": "lazy-wind",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-lazy-wind.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/pants_dk_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-lazy-wind.jpg",
+        "size": 1281,
+        "sha1": "70881dcba53367ed5e5f1b415f5ad8ce9856e68e"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

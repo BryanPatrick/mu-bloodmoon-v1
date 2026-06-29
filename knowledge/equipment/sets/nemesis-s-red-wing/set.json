@@ -1,0 +1,155 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-lucky-nemesis-s-red-wing",
+  "slug": "nemesis-s-red-wing",
+  "name": "Nemesis's Red Wing",
+  "family": "Set Lucky",
+  "qualities": [
+    "Lucky"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Nemesis's Boots",
+      "slug": "nemesis-s-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-s-boots-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Nemesis2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-s-boots-detail.jpg",
+        "size": 2280,
+        "sha1": "eb81f8fb67ada62f1f490d66ef466fc4059ed1bb"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Nemesis's Gloves",
+      "slug": "nemesis-s-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-s-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Nemesis3.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-s-gloves-detail.jpg",
+        "size": 1747,
+        "sha1": "4dd8815088ad8a4a6e0270fbc80e51036c150564"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Nemesis's Helm",
+      "slug": "nemesis-s-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-s-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Nemesis5.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-s-helm-detail.jpg",
+        "size": 1588,
+        "sha1": "28eedb31ada9b9ce589867150e4994fe2dba04e2"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Nemesis's Pants",
+      "slug": "nemesis-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-s-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Nemesis4.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-s-pants-detail.jpg",
+        "size": 2965,
+        "sha1": "94a14a0ab6a63f8bce26665b0b74e8d6631d2d38"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Nemesis's Armor",
+      "slug": "nemesis-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-s-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Nemesis1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-s-armor-detail.jpg",
+        "size": 3317,
+        "sha1": "16221f78a6f3957de64d458992815740b6a00733"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Nemesis Boots",
+      "slug": "nemesis-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Nemesisp2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-boots.jpg",
+        "size": 1223,
+        "sha1": "aead343a1626664ee8412bb32c59db963bf54c92"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Nemesis Gloves",
+      "slug": "nemesis-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Nemesis3p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-gloves.jpg",
+        "size": 1064,
+        "sha1": "d884ca9ca7e4ed214dda037455ada3b1c1b701de"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Nemesis Helm",
+      "slug": "nemesis-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Nemesis5p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-helm.jpg",
+        "size": 1065,
+        "sha1": "f8a92ede8f26fc9fc0e8ccc08b7c1286587f4a55"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Nemesis Pants",
+      "slug": "nemesis-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Nemesis4p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-pants.jpg",
+        "size": 1209,
+        "sha1": "f37231ec8cc547435d4d3bbf9c8f40bb12570611"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Nemesis Armor",
+      "slug": "nemesis-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Nemesisp1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-nemesis-s-red-wing-nemesis-armor.jpg",
+        "size": 1364,
+        "sha1": "6bb5fe8500bf7d64e579a5cd153dc67f7675549c"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/set-lucky.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/lucky/nemesis.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

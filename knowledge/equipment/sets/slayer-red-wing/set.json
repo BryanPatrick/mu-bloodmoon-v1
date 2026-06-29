@@ -1,0 +1,94 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-slayer-red-wing",
+  "slug": "slayer-red-wing",
+  "name": "Slayer Red Wing",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "itemId": "armor-slayer-red-wing",
+      "name": "Slayer Red Wing Armor",
+      "category": "Armor",
+      "slug": "slayer-red-wing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-slayer-red-wing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/slayerredwing.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-slayer-red-wing.jpg",
+        "size": 1413,
+        "sha1": "7fa1375244caa0acfdcaf8a8f5993c401adc044d"
+      }
+    },
+    {
+      "itemId": "boots-slayer-red-wing",
+      "name": "Slayer Red Wing Boots",
+      "category": "Boots",
+      "slug": "slayer-red-wing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-slayer-red-wing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/slayerredwing.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-slayer-red-wing.jpg",
+        "size": 1149,
+        "sha1": "d8ea2af730163cc2460bd99559288cbd43562392"
+      }
+    },
+    {
+      "itemId": "gloves-slayer-red-wing",
+      "name": "Slayer Red Wing Gloves",
+      "category": "Gloves",
+      "slug": "slayer-red-wing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-slayer-red-wing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/slayerredwing.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-slayer-red-wing.jpg",
+        "size": 1052,
+        "sha1": "37b0c35645b1940616806f107cdddb543f6dc243"
+      }
+    },
+    {
+      "itemId": "helm-slayer-red-wing",
+      "name": "Slayer Red Wing",
+      "category": "Helm",
+      "slug": "slayer-red-wing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-slayer-red-wing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/slayerredwing.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-slayer-red-wing.jpg",
+        "size": 1044,
+        "sha1": "be0ebbf1fc02807591c252633849f5ebd446b677"
+      }
+    },
+    {
+      "itemId": "pants-slayer-red-wing",
+      "name": "Slayer Red Wing Pants",
+      "category": "Pants",
+      "slug": "slayer-red-wing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-slayer-red-wing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/slayerredwing.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-slayer-red-wing.jpg",
+        "size": 1444,
+        "sha1": "249ad67091acc18238c9746b9b7fd42db0f0b02f"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

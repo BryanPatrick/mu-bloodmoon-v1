@@ -1,0 +1,38 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "armor-awakening-magic-energy",
+  "slug": "awakening-magic-energy",
+  "name": "Awakening Magic Energy",
+  "title": "Awakening Magic Energy Armor",
+  "category": "Armor",
+  "categorySlug": "armor",
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "listStats": {
+    "normalDrop": "~",
+    "excellentDrop": "~",
+    "requiredLevel": "900"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/armor-awakening-magic-energy.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/bkarmorawa.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-awakening-magic-energy.jpg",
+    "size": 1284,
+    "sha1": "f4688837b81d320390732c67a2f971d83061aeaa"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/armor.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/armor/awamagicenergy.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/bkarmorawa.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

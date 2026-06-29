@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "primordial-ancient-primordial-wizard",
+  "slug": "primordial-wizard",
+  "name": "Primordial Wizard",
+  "family": "Primordial Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Primordial Wizard Helm",
+      "slug": "primordial-wizard-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-wizard-primordial-wizard-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/helmdw.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-wizard-primordial-wizard-helm.jpg",
+        "size": 1198,
+        "sha1": "0d271206e382627f869ce0ac99e9d3b9cb473041"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Wizard Armor",
+      "slug": "primordial-wizard-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-wizard-primordial-wizard-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/armordw.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-wizard-primordial-wizard-armor.jpg",
+        "size": 1488,
+        "sha1": "d55f19d1ad8c8037539984445a46b736ecc11599"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Wizard Pants",
+      "slug": "primordial-wizard-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-wizard-primordial-wizard-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/pantsdw.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-wizard-primordial-wizard-pants.jpg",
+        "size": 1310,
+        "sha1": "e4ee7f0a09688a862b82eaeb91e9911ed0d159a8"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Wizard Gloves",
+      "slug": "primordial-wizard-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-wizard-primordial-wizard-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/glovesdw.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-wizard-primordial-wizard-gloves.jpg",
+        "size": 1113,
+        "sha1": "6487b016d9b9b4bffb8d39cba13e0cd59ddb1712"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/primordial-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/pridw.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

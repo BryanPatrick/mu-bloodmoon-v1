@@ -1,0 +1,72 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "muun-axer",
+  "slug": "axer",
+  "name": "Axer",
+  "title": "Xer",
+  "category": "Muun",
+  "categorySlug": "muun",
+  "usableBy": [],
+  "listStats": {
+    "value1": "☆☆",
+    "value2": "Increase Attack Speed Skill Muun (NO PVP) Poder Especial: Level 201~Level Master"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/muun-axer.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/muun/muun80.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/muun-axer.jpg",
+    "size": 1375,
+    "sha1": "1aeb1b0d13ec08bd638d75fc5cbf88eaef67f5d4"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/muun.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/muun/xer.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/muun/muun80.jpg"
+  },
+  "statsByLevel": [
+    {
+      "itemLevel": 1,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 2,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 3,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    }
+  ],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

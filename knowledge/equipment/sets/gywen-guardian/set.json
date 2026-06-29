@@ -1,0 +1,125 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-gywen-guardian",
+  "slug": "gywen-guardian",
+  "name": "Gywen Guardian",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "parts": [
+    {
+      "name": "Gywen Boots",
+      "slug": "gywen-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-gywen-guardian-gywen-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo018.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-gywen-guardian-gywen-boots.jpg",
+        "size": 3605,
+        "sha1": "23b60ea6cdcdcceeb290901bcc86e71a06d581f5"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Gywen Gloves",
+      "slug": "gywen-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-gywen-guardian-gywen-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl018.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-gywen-guardian-gywen-gloves.jpg",
+        "size": 3435,
+        "sha1": "0a771cb48206041c3b0fe7ab159e727dd762fe2c"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Gywen Armor",
+      "slug": "gywen-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-gywen-guardian-gywen-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar018.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-gywen-guardian-gywen-armor.jpg",
+        "size": 3654,
+        "sha1": "389b1bd7318b1aab8c2bdf69013162385a21d2af"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Gywen Silver Bow",
+      "slug": "gywen-silver-bow",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-gywen-guardian-gywen-silver-bow.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bowgwen.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-gywen-guardian-gywen-silver-bow.jpg",
+        "size": 3436,
+        "sha1": "4beef15cd28a8c477a179a337c2dd7b20f30e649"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Gywen Pendant of Ability",
+      "slug": "gywen-pendant-of-ability",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-gywen-guardian-gywen-pendant-of-ability.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri22_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-gywen-guardian-gywen-pendant-of-ability.jpg",
+        "size": 2526,
+        "sha1": "464bfb51f9411fea035f21c8f9a49d932a5c23b6"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [
+    {
+      "pieces": 2,
+      "option": "Agility Level +30"
+    },
+    {
+      "pieces": 3,
+      "option": "Minimum DMG +20"
+    },
+    {
+      "pieces": 4,
+      "option": "DEF +20"
+    },
+    {
+      "pieces": 5,
+      "option": "Max DMG +20"
+    },
+    {
+      "pieces": "additional",
+      "option": "Critical DMG chance +15%"
+    },
+    {
+      "pieces": "additional",
+      "option": "Excellent DMG chance +15%"
+    },
+    {
+      "pieces": "additional",
+      "option": "Critical DMG +20"
+    },
+    {
+      "pieces": "additional",
+      "option": "Excellent DMG +20"
+    }
+  ],
+  "baseSetDefense": 131,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": "references/game-data/muonlinefanz-ancient-items-data.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/gywen.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

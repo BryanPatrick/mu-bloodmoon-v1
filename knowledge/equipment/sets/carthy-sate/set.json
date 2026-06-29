@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-carthy-sate",
+  "slug": "carthy-sate",
+  "name": "Carthy Sate",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Carthy Gloves",
+      "slug": "carthy-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-carthy-sate-carthy-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/sategloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-carthy-sate-carthy-gloves.jpg",
+        "size": 1090,
+        "sha1": "809761fdeab8bb72ab2418a8976f01aa4c5d339c"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Carthy Pants",
+      "slug": "carthy-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-carthy-sate-carthy-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/satepants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-carthy-sate-carthy-pants.jpg",
+        "size": 1385,
+        "sha1": "697a3ed503405910dc8568d6ada1f23cb7365b78"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Carthy Boots",
+      "slug": "carthy-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-carthy-sate-carthy-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/sateboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-carthy-sate-carthy-boots.jpg",
+        "size": 1160,
+        "sha1": "ec7812f4329084e39814b2bde4fafa99b2690615"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Carthy Ring of Poison",
+      "slug": "carthy-ring-of-poison",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-carthy-sate-carthy-ring-of-poison.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ring/iri18_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-carthy-sate-carthy-ring-of-poison.jpg",
+        "size": 2076,
+        "sha1": "365a30cb0ae3c3233b9a3c70b8080c5636100c54"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/carthy.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

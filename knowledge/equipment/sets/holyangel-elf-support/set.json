@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-holyangel-elf-support",
+  "slug": "holyangel-elf-support",
+  "name": "Holyangel Elf Support",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-holyangel-elf-support",
+      "name": "Holyangel Elf Defense Armor",
+      "category": "Armor",
+      "slug": "holyangel-elf-support",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-holyangel-elf-support.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/holyhiarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-holyangel-elf-support.jpg",
+        "size": 1390,
+        "sha1": "244bac438bf4742d6b0eb04668678f313edba3a1"
+      }
+    },
+    {
+      "itemId": "boots-holyangel-elf-support",
+      "name": "Holyangel Elf Defense Boots",
+      "category": "Boots",
+      "slug": "holyangel-elf-support",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-holyangel-elf-support.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/holyhiboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-holyangel-elf-support.jpg",
+        "size": 1295,
+        "sha1": "13f755b7c627801713bbb9dd6300e19903b3a590"
+      }
+    },
+    {
+      "itemId": "gloves-holyangel-elf-support",
+      "name": "Holyangel Elf Defense Gloves",
+      "category": "Gloves",
+      "slug": "holyangel-elf-support",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-holyangel-elf-support.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/holyhigloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-holyangel-elf-support.jpg",
+        "size": 1242,
+        "sha1": "34bb77b0756ad843cfc671ebbb7ec86e3de3b8ed"
+      }
+    },
+    {
+      "itemId": "helm-holyangel-elf-support",
+      "name": "Holyangel Elf Support Armor",
+      "category": "Helm",
+      "slug": "holyangel-elf-support",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-holyangel-elf-support.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/holyhihelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-holyangel-elf-support.jpg",
+        "size": 1235,
+        "sha1": "0326bc815dbbc00486a79fec11bf11fe6724d455"
+      }
+    },
+    {
+      "itemId": "pants-holyangel-elf-support",
+      "name": "Holyangel Elf Defense Pants",
+      "category": "Pants",
+      "slug": "holyangel-elf-support",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-holyangel-elf-support.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/holyhipants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-holyangel-elf-support.jpg",
+        "size": 1251,
+        "sha1": "168f8562de41258edfd7ece38cc07a3e18bb8744"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

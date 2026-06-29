@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-awakening-lancer",
+  "slug": "awakening-lancer",
+  "name": "Awakening Lancer",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Grow Lancer"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-awakening-lancer",
+      "name": "Awakening Soul Lancer Armor",
+      "category": "Armor",
+      "slug": "awakening-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-awakening-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/glarmorawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-awakening-lancer.jpg",
+        "size": 1266,
+        "sha1": "27b8c1a58033ba1870000e12cb4beead88b79620"
+      }
+    },
+    {
+      "itemId": "boots-awakening-lancer",
+      "name": "Awakening Soul Lancer Boots",
+      "category": "Boots",
+      "slug": "awakening-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-awakening-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/glbootsawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-awakening-lancer.jpg",
+        "size": 1232,
+        "sha1": "1233388b3c80501e4b16f2e6678f973d5fe9e127"
+      }
+    },
+    {
+      "itemId": "gloves-awakening-lancer",
+      "name": "Awakening Soul Lancer Gloves",
+      "category": "Gloves",
+      "slug": "awakening-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-awakening-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/glglovesawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-awakening-lancer.jpg",
+        "size": 1130,
+        "sha1": "96019c00c923cc90e14683f196fe100c4bbe807a"
+      }
+    },
+    {
+      "itemId": "helm-awakening-lancer",
+      "name": "Awakening Soul Lancer Helm",
+      "category": "Helm",
+      "slug": "awakening-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-awakening-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/glhelmawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-awakening-lancer.jpg",
+        "size": 1140,
+        "sha1": "7fc3c67245b340ff8877c06d28a92e0bd5432afe"
+      }
+    },
+    {
+      "itemId": "pants-awakening-lancer",
+      "name": "Awakening Soul Lancer Pants",
+      "category": "Pants",
+      "slug": "awakening-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-awakening-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/glpantsawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-awakening-lancer.jpg",
+        "size": 1285,
+        "sha1": "afb2bc23f689a15c35be160e3002ef6754adb065"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

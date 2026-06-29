@@ -1,0 +1,72 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "muun-figure-skating-queen",
+  "slug": "figure-skating-queen",
+  "name": "Figure Skating Queen",
+  "title": "Figure Skating Queen",
+  "category": "Muun",
+  "categorySlug": "muun",
+  "usableBy": [],
+  "listStats": {
+    "value1": "☆☆",
+    "value2": "Increases Skill Damage (NO PVP) Poder Especial: Lunes, Martes, Miercoles y Jueves"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/muun-figure-skating-queen.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/muun/skating.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/muun-figure-skating-queen.jpg",
+    "size": 1250,
+    "sha1": "102c310c8d3f996c1a44b35cd245e4709561863c"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/muun.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/muun/figureskatingqueen.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/muun/skating.jpg"
+  },
+  "statsByLevel": [
+    {
+      "itemLevel": 1,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 2,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 3,
+      "defense": null,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": null,
+      "requiredAgility": null,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    }
+  ],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

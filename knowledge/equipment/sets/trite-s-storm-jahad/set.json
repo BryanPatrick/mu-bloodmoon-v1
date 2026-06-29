@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-lucky-trite-s-storm-jahad",
+  "slug": "trite-s-storm-jahad",
+  "name": "Trite's Storm Jahad",
+  "family": "Set Lucky",
+  "qualities": [
+    "Lucky"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Trite's Boots",
+      "slug": "trite-s-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-trite-s-storm-jahad-trite-s-boots-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Trite2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-trite-s-storm-jahad-trite-s-boots-detail.jpg",
+        "size": 2694,
+        "sha1": "391ffd0a53b71851ee159c8e0d577fbdc5e59706"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Trite's Helm",
+      "slug": "trite-s-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-trite-s-storm-jahad-trite-s-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Trite5.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-trite-s-storm-jahad-trite-s-helm-detail.jpg",
+        "size": 2003,
+        "sha1": "068df0f88ecba2fc7e3938517b912848795a84cc"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Trite's Pants",
+      "slug": "trite-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-trite-s-storm-jahad-trite-s-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Trite4.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-trite-s-storm-jahad-trite-s-pants-detail.jpg",
+        "size": 2713,
+        "sha1": "afff97c31d35dbba3724849ac7c51ed12c94bbe6"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Trite's Armor",
+      "slug": "trite-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-trite-s-storm-jahad-trite-s-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Trite1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-trite-s-storm-jahad-trite-s-armor-detail.jpg",
+        "size": 3202,
+        "sha1": "b16ae766475ac469f45caf44e63db90027b00727"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Trite Boots",
+      "slug": "trite-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-trite-s-storm-jahad-trite-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Tritep2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-trite-s-storm-jahad-trite-boots.jpg",
+        "size": 1227,
+        "sha1": "050c1c3155cdfc11fc179bdd4abcd51c83ce6066"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Titre Helm",
+      "slug": "titre-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-trite-s-storm-jahad-titre-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Trite5p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-trite-s-storm-jahad-titre-helm.jpg",
+        "size": 1170,
+        "sha1": "3b41d2d72d965e8e39c83acb9b31d465b6ecb0fd"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Trite Pants",
+      "slug": "trite-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-trite-s-storm-jahad-trite-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Trite4p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-trite-s-storm-jahad-trite-pants.jpg",
+        "size": 1205,
+        "sha1": "e02140268e85fa37710b7247a41b5be8f48e8f58"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Titre Armor",
+      "slug": "titre-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-trite-s-storm-jahad-titre-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Tritep1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-trite-s-storm-jahad-titre-armor.jpg",
+        "size": 1382,
+        "sha1": "24a861be06679d37d8cc67ebaf75f090dd7f8d19"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/set-lucky.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/lucky/trite.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

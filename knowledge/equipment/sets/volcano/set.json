@@ -1,0 +1,81 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-volcano",
+  "slug": "volcano",
+  "name": "Volcano",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-volcano",
+      "name": "Volcano Armor",
+      "category": "Armor",
+      "slug": "volcano",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-volcano.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar033_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-volcano.jpg",
+        "size": 3813,
+        "sha1": "810583e999b85f2abe3ea0cdee31f7db27e256af"
+      }
+    },
+    {
+      "itemId": "boots-volcano",
+      "name": "Volcano Boots",
+      "category": "Boots",
+      "slug": "volcano",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-volcano.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo033_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-volcano.jpg",
+        "size": 3280,
+        "sha1": "0d7c58cbf1b553d52afb660caadfebc0e2820f92"
+      }
+    },
+    {
+      "itemId": "gloves-volcano",
+      "name": "Volcano Gloves",
+      "category": "Gloves",
+      "slug": "volcano",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-volcano.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl033_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-volcano.jpg",
+        "size": 3127,
+        "sha1": "9f42457953fadef45dfe2947e024de8aa9345748"
+      }
+    },
+    {
+      "itemId": "pants-volcano",
+      "name": "Volcano Pants",
+      "category": "Pants",
+      "slug": "volcano",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-volcano.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa033_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-volcano.jpg",
+        "size": 2937,
+        "sha1": "96f8bf7a0ad5129982c8618606106728177542e0"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

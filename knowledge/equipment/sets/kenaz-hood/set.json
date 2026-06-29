@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-kenaz-hood",
+  "slug": "kenaz-hood",
+  "name": "Kenaz Hood",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "B"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-kenaz-hood",
+      "name": "Armor Kenaz Hood",
+      "category": "Armor",
+      "slug": "kenaz-hood",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-kenaz-hood.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar1007_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-kenaz-hood.jpg",
+        "size": 2880,
+        "sha1": "c3b7def5551947503281bf177a415b84c4322a25"
+      }
+    },
+    {
+      "itemId": "boots-kenaz-hood",
+      "name": "Kenaz Hood Boots",
+      "category": "Boots",
+      "slug": "kenaz-hood",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-kenaz-hood.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo1007_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-kenaz-hood.jpg",
+        "size": 2512,
+        "sha1": "1e0d0d75533bc023099f01eab02db9db37b4a529"
+      }
+    },
+    {
+      "itemId": "gloves-kenaz-hood",
+      "name": "Kenaz Hood Gloves",
+      "category": "Gloves",
+      "slug": "kenaz-hood",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-kenaz-hood.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl1007_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-kenaz-hood.jpg",
+        "size": 2550,
+        "sha1": "1ee13bd32ed5a1175e6c97647a2759d9ee5b1a55"
+      }
+    },
+    {
+      "itemId": "helm-kenaz-hood",
+      "name": "Kenaz Hood",
+      "category": "Helm",
+      "slug": "kenaz-hood",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-kenaz-hood.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe1007_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-kenaz-hood.jpg",
+        "size": 2540,
+        "sha1": "ef58873874deca12a54844d4c9818a06aacf1046"
+      }
+    },
+    {
+      "itemId": "pants-kenaz-hood",
+      "name": "Kenaz Hood Pants",
+      "category": "Pants",
+      "slug": "kenaz-hood",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-kenaz-hood.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa1007_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-kenaz-hood.jpg",
+        "size": 2604,
+        "sha1": "2779c155e83929c003060f58cd417f85739e45a9"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

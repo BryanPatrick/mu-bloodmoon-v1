@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "apocalypse-ancient-apocalypse-elf-attack",
+  "slug": "apocalypse-elf-attack",
+  "name": "Apocalypse Elf Attack",
+  "family": "Apocalypse Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Apocalypse Elf (Agilidad) Helm",
+      "slug": "apocalypse-elf-agilidad-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-elf-attack-apocalypse-elf-agilidad-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/helmelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-elf-attack-apocalypse-elf-agilidad-helm-detail.jpg",
+        "size": 106287,
+        "sha1": "61c72e5f05bbb4a6862937e6edbbd0b6ab38220d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apocalypse Elf (Agilidad) Armor",
+      "slug": "apocalypse-elf-agilidad-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-elf-attack-apocalypse-elf-agilidad-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/armorelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-elf-attack-apocalypse-elf-agilidad-armor-detail.jpg",
+        "size": 127562,
+        "sha1": "c2ea578bda47d54df37ba5c52c300fd8bd9bb25e"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apocalypse Elf (Agilidad) Pants",
+      "slug": "apocalypse-elf-agilidad-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-elf-attack-apocalypse-elf-agilidad-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/pantself.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-elf-attack-apocalypse-elf-agilidad-pants-detail.jpg",
+        "size": 132149,
+        "sha1": "c433eaf5d51b217e057a06a66d1f07f21bed056c"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apocalypse Elf (Agilidad) Gloves",
+      "slug": "apocalypse-elf-agilidad-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-elf-attack-apocalypse-elf-agilidad-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/gloveself.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-elf-attack-apocalypse-elf-agilidad-gloves-detail.jpg",
+        "size": 100637,
+        "sha1": "860d1ad2fdf81865ec4392f29bd09de16cb0508e"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apocalypse Elf Attack Helm",
+      "slug": "apocalypse-elf-attack-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-elf-attack-apocalypse-elf-attack-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/apoelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-elf-attack-apocalypse-elf-attack-helm.jpg",
+        "size": 1459,
+        "sha1": "19434046f41db0d8f7b0e36eb0bca10f4e4a4f96"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apocalypse Elf Attack Armor",
+      "slug": "apocalypse-elf-attack-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-elf-attack-apocalypse-elf-attack-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/apoelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-elf-attack-apocalypse-elf-attack-armor.jpg",
+        "size": 1479,
+        "sha1": "a8dba0ab201741a3b84e08754e6f853207962459"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apocalypse Elf Attack Pants",
+      "slug": "apocalypse-elf-attack-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-elf-attack-apocalypse-elf-attack-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/apoelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-elf-attack-apocalypse-elf-attack-pants.jpg",
+        "size": 1464,
+        "sha1": "bd96fe7140c88f67aa653988ace07150e3772ab3"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apocalypse Elf Attack Gloves",
+      "slug": "apocalypse-elf-attack-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-elf-attack-apocalypse-elf-attack-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/apoelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-elf-attack-apocalypse-elf-attack-gloves.jpg",
+        "size": 1386,
+        "sha1": "f051a8b25aadbca49072ff814986d43a4efa977e"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/apocalypse-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/apoelfattack.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "bloodangel-ancient-flurry-bloodangel-elf-attack",
+  "slug": "flurry-bloodangel-elf-attack",
+  "name": "Flurry Bloodangel Elf Attack",
+  "family": "Bloodangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Flurry Helm",
+      "slug": "flurry-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-flurry-bloodangel-elf-attack-flurry-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodhelmelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-flurry-bloodangel-elf-attack-flurry-helm.jpg",
+        "size": 902,
+        "sha1": "94cdd7ad9172f2bab64406ac1ac0405feb615519"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Flurry Armor",
+      "slug": "flurry-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-flurry-bloodangel-elf-attack-flurry-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodarmorefl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-flurry-bloodangel-elf-attack-flurry-armor.jpg",
+        "size": 1398,
+        "sha1": "bde7b38934c881d2ccc22adb3f754f4d69ef1ebc"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Flurry Pants",
+      "slug": "flurry-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-flurry-bloodangel-elf-attack-flurry-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodpantself.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-flurry-bloodangel-elf-attack-flurry-pants.jpg",
+        "size": 1397,
+        "sha1": "d42e707599b3bb209f5758f4381aabb32147101f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Flurry Gloves",
+      "slug": "flurry-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-flurry-bloodangel-elf-attack-flurry-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodgloveself.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-flurry-bloodangel-elf-attack-flurry-gloves.jpg",
+        "size": 1082,
+        "sha1": "40749a2af6cd9aee3286ba50d0c07b040d6a6eb4"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/bloodangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/flurry.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

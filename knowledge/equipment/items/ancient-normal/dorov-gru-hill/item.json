@@ -1,0 +1,131 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "ancient-normal-dorov-gru-hill",
+  "slug": "dorov-gru-hill",
+  "name": "Dorov Gru Hill",
+  "title": "Dorov Tree Hill",
+  "category": "Ancient Normal",
+  "categorySlug": "ancient-normal",
+  "usableBy": [],
+  "listStats": {
+    "value1": "Dorov Armor",
+    "value2": "Dorov Helm",
+    "value3": "Dorov Pants",
+    "value4": "Dorov Ring of Wind",
+    "value5": "Opción por cada Item"
+  },
+  "image": {
+    "publicPath": null,
+    "sourceUrl": null,
+    "localPath": null,
+    "size": null,
+    "sha1": null
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/dorov.html",
+    "imageSourceUrl": null
+  },
+  "statsByLevel": [],
+  "parts": [
+    {
+      "name": "Dorov Armor",
+      "slug": "dorov-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-dorov-gru-hill-dorov-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/armor02.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-dorov-gru-hill-dorov-armor.jpg",
+        "size": 1110,
+        "sha1": "8e0a66d270f04874b97dcf86afc8d261d52bee73"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Dorov Helm",
+      "slug": "dorov-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-dorov-gru-hill-dorov-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/helm02.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-dorov-gru-hill-dorov-helm.jpg",
+        "size": 972,
+        "sha1": "cb048ec890416615ce84052b56ddab62429e6cfe"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Dorov Pants",
+      "slug": "dorov-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-dorov-gru-hill-dorov-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/pants02.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-dorov-gru-hill-dorov-pants.jpg",
+        "size": 1139,
+        "sha1": "f2b42a6274e80793248cc13c230ce2259f08bc7b"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Dorov Ring of Wind",
+      "slug": "dorov-ring-of-wind",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-dorov-gru-hill-dorov-ring-of-wind.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ring/iri18_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-dorov-gru-hill-dorov-ring-of-wind.jpg",
+        "size": 2076,
+        "sha1": "365a30cb0ae3c3233b9a3c70b8080c5636100c54"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "detailParts": [
+    {
+      "name": "Dorov Helm",
+      "slug": "dorov-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-dorov-gru-hill-dorov-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/gruhillhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-dorov-gru-hill-dorov-helm.jpg",
+        "size": 972,
+        "sha1": "cb048ec890416615ce84052b56ddab62429e6cfe"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Dorov Armor",
+      "slug": "dorov-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-dorov-gru-hill-dorov-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/gruhillarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-dorov-gru-hill-dorov-armor.jpg",
+        "size": 1110,
+        "sha1": "8e0a66d270f04874b97dcf86afc8d261d52bee73"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Dorov Pants",
+      "slug": "dorov-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-dorov-gru-hill-dorov-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/gruhillpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-dorov-gru-hill-dorov-pants.jpg",
+        "size": 1139,
+        "sha1": "f2b42a6274e80793248cc13c230ce2259f08bc7b"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

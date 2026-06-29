@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "blue-eye-ancient-blue-eye-kundun",
+  "slug": "blue-eye-kundun",
+  "name": "Blue Eye Kundun",
+  "family": "Blue Eye Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Blue Eye Kundun Helm",
+      "slug": "blue-eye-kundun-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-kundun-blue-eye-kundun-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/ihe1008.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-kundun-blue-eye-kundun-helm.jpg",
+        "size": 2486,
+        "sha1": "61f80a945a6415a61121b950ad117f7c34da2ff1"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Blue Eye Kundun Armor",
+      "slug": "blue-eye-kundun-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-kundun-blue-eye-kundun-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/iar1008.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-kundun-blue-eye-kundun-armor.jpg",
+        "size": 2719,
+        "sha1": "80f48a39567a00fd0fb6cb988d931e600d105c85"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Blue Eye Kundun Pants",
+      "slug": "blue-eye-kundun-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-kundun-blue-eye-kundun-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/ipa1008.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-kundun-blue-eye-kundun-pants.jpg",
+        "size": 2665,
+        "sha1": "79283268fe6a128fc1e2e13649c7ce1246ee795d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Blue Eye Kundun Gloves",
+      "slug": "blue-eye-kundun-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-kundun-blue-eye-kundun-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/igl1008.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-kundun-blue-eye-kundun-gloves.jpg",
+        "size": 2629,
+        "sha1": "8017295b690a8fb9c101848d3e7bc41200f4588f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/blue-eye-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/blueeyekundun.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

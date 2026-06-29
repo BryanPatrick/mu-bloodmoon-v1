@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-ashcrow",
+  "slug": "ashcrow",
+  "name": "Ashcrow",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Dark Knight"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-ashcrow",
+      "name": "Ashcrow Armor",
+      "category": "Armor",
+      "slug": "ashcrow",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-ashcrow.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar038_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-ashcrow.jpg",
+        "size": 2656,
+        "sha1": "1f3e5c13bf77838a391d911c7d00660b14636d30"
+      }
+    },
+    {
+      "itemId": "boots-ashcrow",
+      "name": "Ashcrow Boots",
+      "category": "Boots",
+      "slug": "ashcrow",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-ashcrow.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo038_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-ashcrow.jpg",
+        "size": 2607,
+        "sha1": "7426aeb20ae0ec226b13c376da8ab256f6d8261d"
+      }
+    },
+    {
+      "itemId": "gloves-ashcrow",
+      "name": "Ashcrow Gloves",
+      "category": "Gloves",
+      "slug": "ashcrow",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-ashcrow.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl038_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-ashcrow.jpg",
+        "size": 2622,
+        "sha1": "ec1c8722ce90c4ee44e4cacbc33c1ebda2c929a9"
+      }
+    },
+    {
+      "itemId": "helm-ashcrow",
+      "name": "Ashcrow Helm",
+      "category": "Helm",
+      "slug": "ashcrow",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-ashcrow.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe035_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-ashcrow.jpg",
+        "size": 2535,
+        "sha1": "4359057f42d1c13ebf76f58b76a23855e8d2edc5"
+      }
+    },
+    {
+      "itemId": "pants-ashcrow",
+      "name": "Ashcrow Pants",
+      "category": "Pants",
+      "slug": "ashcrow",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-ashcrow.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa038_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-ashcrow.jpg",
+        "size": 2519,
+        "sha1": "af86e578f553acbc19749f96bae4a1d5e7f616f3"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-apollo-pad",
+  "slug": "apollo-pad",
+  "name": "Apollo Pad",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Apollo Gloves",
+      "slug": "apollo-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-apollo-pad-apollo-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl009.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-apollo-pad-apollo-gloves.jpg",
+        "size": 3715,
+        "sha1": "7b5a50716566c7d0076910a4b6f0cc7398ff4cd3"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apollo Pants",
+      "slug": "apollo-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-apollo-pad-apollo-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa009.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-apollo-pad-apollo-pants.jpg",
+        "size": 3581,
+        "sha1": "d9116c9ca5a9ba9f6f3ae28ef9e8e0a9887f251c"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apollo Armor",
+      "slug": "apollo-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-apollo-pad-apollo-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar009.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-apollo-pad-apollo-armor.jpg",
+        "size": 3642,
+        "sha1": "38508103e4e57c71440ab59a8820107ceaa8639b"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apollo Helm",
+      "slug": "apollo-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-apollo-pad-apollo-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe009.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-apollo-pad-apollo-helm.jpg",
+        "size": 2941,
+        "sha1": "2c7dbe0b50b0a9efca8d024134d6a2b6e62ed486"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apollo Skull Staff",
+      "slug": "apollo-skull-staff",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-apollo-pad-apollo-skull-staff.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ist001.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-apollo-pad-apollo-skull-staff.jpg",
+        "size": 2508,
+        "sha1": "4a40277e85a1c46633938d88b1f60cadd5b8d1a7"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apollo Pendant of Ice",
+      "slug": "apollo-pendant-of-ice",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-apollo-pad-apollo-pendant-of-ice.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri21_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-apollo-pad-apollo-pendant-of-ice.jpg",
+        "size": 2705,
+        "sha1": "9a705160d154a4f255cb9fdf88aae60644ef1f7a"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apollo Ring of Magic",
+      "slug": "apollo-ring-of-magic",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-apollo-pad-apollo-ring-of-magic.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri13_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-apollo-pad-apollo-ring-of-magic.jpg",
+        "size": 1966,
+        "sha1": "389fbc76d40682cd1d4de318f6722fbd0aff9963"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/apollo.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

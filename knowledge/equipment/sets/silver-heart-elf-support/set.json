@@ -1,0 +1,53 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-silver-heart-elf-support",
+  "slug": "silver-heart-elf-support",
+  "name": "Silver Heart Elf Support",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-silver-heart-elf-support",
+      "name": "Silver Heart Elf Defense Armor",
+      "category": "Armor",
+      "slug": "silver-heart-elf-support",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-silver-heart-elf-support.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/c2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-silver-heart-elf-support.jpg",
+        "size": 1472,
+        "sha1": "f4d514a8ed5f8684fe481f537f7c152da1a75487"
+      }
+    },
+    {
+      "itemId": "helm-silver-heart-elf-support",
+      "name": "Silver Heart Elf Support Helm",
+      "category": "Helm",
+      "slug": "silver-heart-elf-support",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-silver-heart-elf-support.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/c1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-silver-heart-elf-support.jpg",
+        "size": 1256,
+        "sha1": "22958fd439766cbc217b24dc2f22dbb841b02288"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/helm.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

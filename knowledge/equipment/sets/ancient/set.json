@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-ancient",
+  "slug": "ancient",
+  "name": "Ancient",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Summoner"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-ancient",
+      "name": "Ancient Armor",
+      "category": "Armor",
+      "slug": "ancient",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-ancient.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar042_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-ancient.jpg",
+        "size": 14337,
+        "sha1": "1add60cdff3c2e2fa7c269eee476c1de8e1cde9f"
+      }
+    },
+    {
+      "itemId": "boots-ancient",
+      "name": "Ancient Boots",
+      "category": "Boots",
+      "slug": "ancient",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-ancient.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo042_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-ancient.jpg",
+        "size": 14206,
+        "sha1": "6abc737933a735a959dceb2e9b822a8c2fabe2ec"
+      }
+    },
+    {
+      "itemId": "gloves-ancient",
+      "name": "Ancient Gloves",
+      "category": "Gloves",
+      "slug": "ancient",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-ancient.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl104_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-ancient.jpg",
+        "size": 13930,
+        "sha1": "1d4926fb7f56396de9374fb825c1a3a90f5b2b29"
+      }
+    },
+    {
+      "itemId": "helm-ancient",
+      "name": "Ancient Helm",
+      "category": "Helm",
+      "slug": "ancient",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-ancient.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe039_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-ancient.jpg",
+        "size": 13341,
+        "sha1": "456bd05dd6e40d45da0db68b5eda99c5318d95b5"
+      }
+    },
+    {
+      "itemId": "pants-ancient",
+      "name": "Ancient Pants",
+      "category": "Pants",
+      "slug": "ancient",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-ancient.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa042_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-ancient.jpg",
+        "size": 14218,
+        "sha1": "d48d82cebbe15db0c848ecaf9aa4a519bea0893e"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

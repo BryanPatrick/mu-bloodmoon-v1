@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "holyangel-ancient-healing-s-holyangel-elf-support",
+  "slug": "healing-s-holyangel-elf-support",
+  "name": "Healing's Holyangel Elf Support",
+  "family": "Holyangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Healing Helm",
+      "slug": "healing-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-healing-s-holyangel-elf-support-healing-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holyelfhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-healing-s-holyangel-elf-support-healing-helm-detail.jpg",
+        "size": 2444,
+        "sha1": "33c5382184048f1928fb30b15dde12bb82cffd1d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Healing Armor",
+      "slug": "healing-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-healing-s-holyangel-elf-support-healing-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holyelfarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-healing-s-holyangel-elf-support-healing-armor-detail.jpg",
+        "size": 3192,
+        "sha1": "1fb8c752021507c89cf2242b89280bd611e8cd28"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Healing Pants",
+      "slug": "healing-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-healing-s-holyangel-elf-support-healing-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holyelfpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-healing-s-holyangel-elf-support-healing-pants-detail.jpg",
+        "size": 2853,
+        "sha1": "e432718daf07c9c54a4dc2023360dd5cc15d9a01"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Healing Gloves",
+      "slug": "healing-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-healing-s-holyangel-elf-support-healing-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holyelfgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-healing-s-holyangel-elf-support-healing-gloves-detail.jpg",
+        "size": 2580,
+        "sha1": "6e2205d1210bd491f971e933edcc4d24eb00c7f4"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Healing's Helm",
+      "slug": "healing-s-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-healing-s-holyangel-elf-support-healing-s-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/holyhihelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-healing-s-holyangel-elf-support-healing-s-helm.jpg",
+        "size": 1235,
+        "sha1": "0326bc815dbbc00486a79fec11bf11fe6724d455"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Healing's Armor",
+      "slug": "healing-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-healing-s-holyangel-elf-support-healing-s-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/holyhiarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-healing-s-holyangel-elf-support-healing-s-armor.jpg",
+        "size": 1390,
+        "sha1": "244bac438bf4742d6b0eb04668678f313edba3a1"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Healing's Pants",
+      "slug": "healing-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-healing-s-holyangel-elf-support-healing-s-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/holyhipants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-healing-s-holyangel-elf-support-healing-s-pants.jpg",
+        "size": 1251,
+        "sha1": "168f8562de41258edfd7ece38cc07a3e18bb8744"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Healing's Gloves",
+      "slug": "healing-s-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-healing-s-holyangel-elf-support-healing-s-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/holyhigloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-healing-s-holyangel-elf-support-healing-s-gloves.jpg",
+        "size": 1242,
+        "sha1": "34bb77b0756ad843cfc671ebbb7ec86e3de3b8ed"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/holyangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/healing.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

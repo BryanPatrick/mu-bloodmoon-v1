@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-vicious-dragon",
+  "slug": "vicious-dragon",
+  "name": "Vicious Dragon",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Vicious Pants",
+      "slug": "vicious-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-vicious-dragon-vicious-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa043.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-vicious-dragon-vicious-pants.jpg",
+        "size": 11903,
+        "sha1": "92fd0d9aa6084dab519856b67295af0083d46efd"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Vicious Armor",
+      "slug": "vicious-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-vicious-dragon-vicious-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar043.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-vicious-dragon-vicious-armor.jpg",
+        "size": 12450,
+        "sha1": "c2b3b82ad8895ef2de8979a1195aae2d931610ad"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Vicious Helm",
+      "slug": "vicious-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-vicious-dragon-vicious-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe006.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-vicious-dragon-vicious-helm.jpg",
+        "size": 3659,
+        "sha1": "13b8159bb2a7e3bc6fd1ae023407eb9aadecd6f2"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Vicious Ring of Earth",
+      "slug": "vicious-ring-of-earth",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-vicious-dragon-vicious-ring-of-earth.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri17_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-vicious-dragon-vicious-ring-of-earth.jpg",
+        "size": 1972,
+        "sha1": "24b02183e3a0c5633e21e5e434cb9ef872c1c3bb"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/vicious.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

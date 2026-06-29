@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "bloodangel-ancient-extremity-bloodangel-magic-strength",
+  "slug": "extremity-bloodangel-magic-strength",
+  "name": "Extremity Bloodangel Magic Strength",
+  "family": "Bloodangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Extremity Armor",
+      "slug": "extremity-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-extremity-bloodangel-magic-strength-extremity-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodarmormg.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-extremity-bloodangel-magic-strength-extremity-armor.jpg",
+        "size": 1474,
+        "sha1": "ba5d2fe7d48253bed27852d1aad0bdc095c7f43d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Extremity Pants",
+      "slug": "extremity-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-extremity-bloodangel-magic-strength-extremity-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodpantsmg.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-extremity-bloodangel-magic-strength-extremity-pants.jpg",
+        "size": 1327,
+        "sha1": "a6ee24cb7abb69e3ab81483e7befe43f3e17d43f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Extremity Gloves",
+      "slug": "extremity-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-extremity-bloodangel-magic-strength-extremity-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodglovesmg.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-extremity-bloodangel-magic-strength-extremity-gloves.jpg",
+        "size": 1142,
+        "sha1": "240628fcffcc7beefef08155dbe2652fcc432f34"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Extremity Boots",
+      "slug": "extremity-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-extremity-bloodangel-magic-strength-extremity-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodbootsrf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-extremity-bloodangel-magic-strength-extremity-boots.jpg",
+        "size": 1393,
+        "sha1": "6838731211e1f36b4856239e26a8b2cc98623191"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/bloodangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/extremity.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

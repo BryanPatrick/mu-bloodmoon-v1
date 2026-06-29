@@ -1,0 +1,55 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-elvian-wind",
+  "slug": "elvian-wind",
+  "name": "Elvian Wind",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Elvian Boots",
+      "slug": "elvian-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-elvian-wind-elvian-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo016_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-elvian-wind-elvian-boots.jpg",
+        "size": 3799,
+        "sha1": "739c729ac9d04592376f14757b68a3c18a8cff88"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Elvian Pants",
+      "slug": "elvian-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-elvian-wind-elvian-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa016_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-elvian-wind-elvian-pants.jpg",
+        "size": 3498,
+        "sha1": "616208f8746ca93b38ef0f948a9740665b0833c6"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Increase Agility +30 Ignore Enemy's Defense +5%",
+      "source": "listStats"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/aelbian.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

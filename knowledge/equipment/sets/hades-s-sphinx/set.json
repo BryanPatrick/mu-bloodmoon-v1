@@ -1,0 +1,155 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-lucky-hades-s-sphinx",
+  "slug": "hades-s-sphinx",
+  "name": "Hades's Sphinx",
+  "family": "Set Lucky",
+  "qualities": [
+    "Lucky"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Hades's Boots",
+      "slug": "hades-s-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-s-boots-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hades2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-s-boots-detail.jpg",
+        "size": 2917,
+        "sha1": "0176d90788d380c9e0d1d7bb7781c22f81fe3c87"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hades's Gloves",
+      "slug": "hades-s-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-s-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hades3.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-s-gloves-detail.jpg",
+        "size": 2152,
+        "sha1": "12bf8f1086cac7cf08ef93a25e43df83c1d7851d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hades's Helm",
+      "slug": "hades-s-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-s-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hades5.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-s-helm-detail.jpg",
+        "size": 2396,
+        "sha1": "2b17936137eeec397a8fa4363fa3e200a3853f28"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hades's Pants",
+      "slug": "hades-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-s-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hades4.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-s-pants-detail.jpg",
+        "size": 3178,
+        "sha1": "eac1cec45ddbf40d8339bcae5f9dc7fedf9d11d0"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hades's Armor",
+      "slug": "hades-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-s-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hades1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-s-armor-detail.jpg",
+        "size": 3150,
+        "sha1": "871819e68c2d4fbb5bb454b80714295f9f35db18"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hades Boots",
+      "slug": "hades-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hadesp2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-boots.jpg",
+        "size": 1305,
+        "sha1": "498d7d180d743481ec69ae622580a8ff938d4fb7"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hades Gloves",
+      "slug": "hades-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hades3p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-gloves.jpg",
+        "size": 1265,
+        "sha1": "51082269491b6ee8c8a05b706a787e4c95aca428"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hades Helm",
+      "slug": "hades-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hades5p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-helm.jpg",
+        "size": 1117,
+        "sha1": "5287161472b766910d2acf599802a35ae30d2d05"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hades Pants",
+      "slug": "hades-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hades4p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-pants.jpg",
+        "size": 1266,
+        "sha1": "1546aa9f5677f566d15b0f8df309d0637494c24c"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hades Armor",
+      "slug": "hades-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hadesp1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hades-s-sphinx-hades-armor.jpg",
+        "size": 1441,
+        "sha1": "4624e49609edbb6143bc78abdeb1e726f6670fce"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/set-lucky.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/lucky/hades.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-venom-mist",
+  "slug": "venom-mist",
+  "name": "Venom Mist",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Dark Wizard"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-venom-mist",
+      "name": "Venom Mist Armor",
+      "category": "Armor",
+      "slug": "venom-mist",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-venom-mist.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar032_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-venom-mist.jpg",
+        "size": 3613,
+        "sha1": "d9d71a88d99fb6d0ec98ec2102446436b16ac1eb"
+      }
+    },
+    {
+      "itemId": "boots-venom-mist",
+      "name": "Venom Mist Boots",
+      "category": "Boots",
+      "slug": "venom-mist",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-venom-mist.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo032_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-venom-mist.jpg",
+        "size": 3845,
+        "sha1": "44553873aae008c027afc5ee60ede9199960188f"
+      }
+    },
+    {
+      "itemId": "gloves-venom-mist",
+      "name": "Venom Mist Gloves",
+      "category": "Gloves",
+      "slug": "venom-mist",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-venom-mist.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl032_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-venom-mist.jpg",
+        "size": 3618,
+        "sha1": "21a388a56ff8e196e8757ea2dd5e776a92a2fcd3"
+      }
+    },
+    {
+      "itemId": "helm-venom-mist",
+      "name": "Venom Mist Helm",
+      "category": "Helm",
+      "slug": "venom-mist",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-venom-mist.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe029_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-venom-mist.jpg",
+        "size": 3530,
+        "sha1": "b1138bc799fbfc766906770bd36f9de4bc191b95"
+      }
+    },
+    {
+      "itemId": "pants-venom-mist",
+      "name": "Venom Mist Pants",
+      "category": "Pants",
+      "slug": "venom-mist",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-venom-mist.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa032_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-venom-mist.jpg",
+        "size": 2494,
+        "sha1": "8b2e85c3067e89ff010eb88badb21fc07cac9183"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

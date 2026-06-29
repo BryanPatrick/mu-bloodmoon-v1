@@ -1,0 +1,53 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-bloodangel-magic-strenght",
+  "slug": "bloodangel-magic-strenght",
+  "name": "Bloodangel Magic Strenght",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "boots-bloodangel-magic-strenght",
+      "name": "Bloodangel Magic Boots",
+      "category": "Boots",
+      "slug": "bloodangel-magic-strenght",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-bloodangel-magic-strenght.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/bloodmg.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-bloodangel-magic-strenght.jpg",
+        "size": 1393,
+        "sha1": "6838731211e1f36b4856239e26a8b2cc98623191"
+      }
+    },
+    {
+      "itemId": "gloves-bloodangel-magic-strenght",
+      "name": "Bloodangel Magic Gloves",
+      "category": "Gloves",
+      "slug": "bloodangel-magic-strenght",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-bloodangel-magic-strenght.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/bloodmg.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-bloodangel-magic-strenght.jpg",
+        "size": 1142,
+        "sha1": "240628fcffcc7beefef08155dbe2652fcc432f34"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-kenaz-iria",
+  "slug": "kenaz-iria",
+  "name": "Kenaz Iria",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Kenaz Iria Helm",
+      "slug": "kenaz-iria-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kenaz-iria-kenaz-iria-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/ihe1007.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kenaz-iria-kenaz-iria-helm.jpg",
+        "size": 2540,
+        "sha1": "ef58873874deca12a54844d4c9818a06aacf1046"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Kenaz Iria Armor",
+      "slug": "kenaz-iria-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kenaz-iria-kenaz-iria-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/iar1007.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kenaz-iria-kenaz-iria-armor.jpg",
+        "size": 2880,
+        "sha1": "c3b7def5551947503281bf177a415b84c4322a25"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Kenaz Iria Pants",
+      "slug": "kenaz-iria-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kenaz-iria-kenaz-iria-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/ipa1007.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kenaz-iria-kenaz-iria-pants.jpg",
+        "size": 2604,
+        "sha1": "2779c155e83929c003060f58cd417f85739e45a9"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Kenaz Iria Shield",
+      "slug": "kenaz-iria-shield",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kenaz-iria-kenaz-iria-shield.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/ish1000.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kenaz-iria-kenaz-iria-shield.jpg",
+        "size": 2632,
+        "sha1": "77fc64d34a7190d1a58f4af66f0eec6592e95a0c"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/kenaziria.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-dark-steel",
+  "slug": "dark-steel",
+  "name": "Dark Steel",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Dark Lord"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-dark-steel",
+      "name": "Dark Steel Armor",
+      "category": "Armor",
+      "slug": "dark-steel",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-dark-steel.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar025_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-dark-steel.jpg",
+        "size": 3543,
+        "sha1": "a78e6e5accbaeba56808585dce76d4fb1701b4c5"
+      }
+    },
+    {
+      "itemId": "boots-dark-steel",
+      "name": "Dark Steel Boots",
+      "category": "Boots",
+      "slug": "dark-steel",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-dark-steel.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo025_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-dark-steel.jpg",
+        "size": 3377,
+        "sha1": "aec52efa1518b76ecaa8f056cc1f622db046c089"
+      }
+    },
+    {
+      "itemId": "gloves-dark-steel",
+      "name": "Dark Steel Gloves",
+      "category": "Gloves",
+      "slug": "dark-steel",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-dark-steel.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl025_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-dark-steel.jpg",
+        "size": 3269,
+        "sha1": "33971849e3d6ae417612f3ad02178aae18b2ae94"
+      }
+    },
+    {
+      "itemId": "helm-dark-steel",
+      "name": "Dark Steel Helm",
+      "category": "Helm",
+      "slug": "dark-steel",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-dark-steel.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe025_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-dark-steel.jpg",
+        "size": 2625,
+        "sha1": "dd613729e566cf7a267677ad835ea0ecf66064e6"
+      }
+    },
+    {
+      "itemId": "pants-dark-steel",
+      "name": "Dark Steel Pants",
+      "category": "Pants",
+      "slug": "dark-steel",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-dark-steel.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa025_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-dark-steel.jpg",
+        "size": 3239,
+        "sha1": "2500f544df1ef905f2a7411fa06139e93ba32713"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

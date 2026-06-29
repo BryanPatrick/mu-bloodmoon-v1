@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-guardian",
+  "slug": "guardian",
+  "name": "Guardian",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-guardian",
+      "name": "Guardian Armor",
+      "category": "Armor",
+      "slug": "guardian",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-guardian.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar018_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-guardian.jpg",
+        "size": 3654,
+        "sha1": "389b1bd7318b1aab8c2bdf69013162385a21d2af"
+      }
+    },
+    {
+      "itemId": "boots-guardian",
+      "name": "Guardian Boots",
+      "category": "Boots",
+      "slug": "guardian",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-guardian.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo018_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-guardian.jpg",
+        "size": 3605,
+        "sha1": "23b60ea6cdcdcceeb290901bcc86e71a06d581f5"
+      }
+    },
+    {
+      "itemId": "gloves-guardian",
+      "name": "Guardian Gloves",
+      "category": "Gloves",
+      "slug": "guardian",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-guardian.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl018_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-guardian.jpg",
+        "size": 3435,
+        "sha1": "0a771cb48206041c3b0fe7ab159e727dd762fe2c"
+      }
+    },
+    {
+      "itemId": "helm-guardian",
+      "name": "Guardian Helm",
+      "category": "Helm",
+      "slug": "guardian",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-guardian.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe018_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-guardian.jpg",
+        "size": 3124,
+        "sha1": "af03f7001105948ba85e2bc8980ff310f0f8a69e"
+      }
+    },
+    {
+      "itemId": "pants-guardian",
+      "name": "Guardian Pants",
+      "category": "Pants",
+      "slug": "guardian",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-guardian.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa018_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-guardian.jpg",
+        "size": 3642,
+        "sha1": "2bbbaa972e6dfcf0efe10e846fc2e8aaecde3a09"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

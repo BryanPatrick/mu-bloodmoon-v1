@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "bloodangel-ancient-transcendence-bloodangel-wizard",
+  "slug": "transcendence-bloodangel-wizard",
+  "name": "Transcendence Bloodangel Wizard",
+  "family": "Bloodangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Transcendence Helm",
+      "slug": "transcendence-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-transcendence-bloodangel-wizard-transcendence-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodhelmsm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-transcendence-bloodangel-wizard-transcendence-helm.jpg",
+        "size": 1170,
+        "sha1": "531f90ad3df850c621d3f0e5bb7e394905ab6fd8"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Transcendence Armor",
+      "slug": "transcendence-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-transcendence-bloodangel-wizard-transcendence-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodarmorsm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-transcendence-bloodangel-wizard-transcendence-armor.jpg",
+        "size": 1601,
+        "sha1": "502ba853a40134cd0570dce91c22e2ebf79426c5"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Transcendence Pants",
+      "slug": "transcendence-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-transcendence-bloodangel-wizard-transcendence-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodpantssm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-transcendence-bloodangel-wizard-transcendence-pants.jpg",
+        "size": 1448,
+        "sha1": "0006f3a3847006ca40212e32eac2f7b9b07a8fb6"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Transcendence Gloves",
+      "slug": "transcendence-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-transcendence-bloodangel-wizard-transcendence-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodglovessm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-transcendence-bloodangel-wizard-transcendence-gloves.jpg",
+        "size": 1137,
+        "sha1": "ed7ec2082cedca37bbf02a2a75a420b8f6079c86"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/bloodangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/transcendence.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

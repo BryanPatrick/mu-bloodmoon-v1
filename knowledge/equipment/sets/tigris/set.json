@@ -1,0 +1,81 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-tigris",
+  "slug": "tigris",
+  "name": "Tigris",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Rage Fighter"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-tigris",
+      "name": "Tigris Armor",
+      "category": "Armor",
+      "slug": "tigris",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-tigris.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/rf380sarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-tigris.jpg",
+        "size": 1405,
+        "sha1": "efe2aeb874ca827e2a08e85eef9b1fbafd50b698"
+      }
+    },
+    {
+      "itemId": "boots-tigris",
+      "name": "Tigris Boots",
+      "category": "Boots",
+      "slug": "tigris",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-tigris.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/rf380sboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-tigris.jpg",
+        "size": 1324,
+        "sha1": "0d172aac1e1ba8c4df27bb819f3c752d9ebcb456"
+      }
+    },
+    {
+      "itemId": "helm-tigris",
+      "name": "Tigris Helm",
+      "category": "Helm",
+      "slug": "tigris",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-tigris.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/rf380shelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-tigris.jpg",
+        "size": 1385,
+        "sha1": "550b2e63d1f2c8152516588c1de2f4636e7c28cb"
+      }
+    },
+    {
+      "itemId": "pants-tigris",
+      "name": "Tigris Pants",
+      "category": "Pants",
+      "slug": "tigris",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-tigris.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/rf380spants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-tigris.jpg",
+        "size": 1286,
+        "sha1": "d9537c92b5415490b82798863536ecadb476b0e9"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-dragon-knight",
+  "slug": "dragon-knight",
+  "name": "Dragon Knight",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Dark Knight"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-dragon-knight",
+      "name": "Dragon Knight Armor",
+      "category": "Armor",
+      "slug": "dragon-knight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-dragon-knight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar031_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-dragon-knight.jpg",
+        "size": 3799,
+        "sha1": "1f63a0b546f470ed2c8fb6859d149d4c76b7b136"
+      }
+    },
+    {
+      "itemId": "boots-dragon-knight",
+      "name": "Dragon Knight Boots",
+      "category": "Boots",
+      "slug": "dragon-knight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-dragon-knight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo031_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-dragon-knight.jpg",
+        "size": 3307,
+        "sha1": "7063625d4825599c6459e7b2a1d3657f8ea82987"
+      }
+    },
+    {
+      "itemId": "gloves-dragon-knight",
+      "name": "Dragon Knight Gloves",
+      "category": "Gloves",
+      "slug": "dragon-knight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-dragon-knight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl031_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-dragon-knight.jpg",
+        "size": 3265,
+        "sha1": "fab5c6700983a7a7893ec7c80b0034ca7f4eb57a"
+      }
+    },
+    {
+      "itemId": "helm-dragon-knight",
+      "name": "Dragon Knight Helm",
+      "category": "Helm",
+      "slug": "dragon-knight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-dragon-knight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe028_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-dragon-knight.jpg",
+        "size": 3480,
+        "sha1": "5dd7c2aa94b44df1b86bd49ca9311e40e24d2d71"
+      }
+    },
+    {
+      "itemId": "pants-dragon-knight",
+      "name": "Dragon Knight Pants",
+      "category": "Pants",
+      "slug": "dragon-knight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-dragon-knight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa031_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-dragon-knight.jpg",
+        "size": 2694,
+        "sha1": "2e5edd33aa79a990aca62f1fc774ad27aef1ac09"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

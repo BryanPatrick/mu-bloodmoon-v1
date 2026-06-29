@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-lucky-titan-s-piercing-groove",
+  "slug": "titan-s-piercing-groove",
+  "name": "Titan's Piercing Groove",
+  "family": "Set Lucky",
+  "qualities": [
+    "Lucky"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Titan's Boots",
+      "slug": "titan-s-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-titan-s-piercing-groove-titan-s-boots-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Titan2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-titan-s-piercing-groove-titan-s-boots-detail.jpg",
+        "size": 2272,
+        "sha1": "f7647a228bfab97fdc6fb8889a5b4114514d7801"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Titan's Helm",
+      "slug": "titan-s-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-titan-s-piercing-groove-titan-s-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Titan5.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-titan-s-piercing-groove-titan-s-helm-detail.jpg",
+        "size": 1914,
+        "sha1": "2dd404cdd1d49c19bb953ee1124cc0b80350c4b4"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Titan's Pants",
+      "slug": "titan-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-titan-s-piercing-groove-titan-s-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Titan4.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-titan-s-piercing-groove-titan-s-pants-detail.jpg",
+        "size": 2403,
+        "sha1": "d063c329966a8ae489bb9243da6bde4770703eef"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Titan's Armor",
+      "slug": "titan-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-titan-s-piercing-groove-titan-s-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Titan1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-titan-s-piercing-groove-titan-s-armor-detail.jpg",
+        "size": 2778,
+        "sha1": "6b22031ac9a796682144c10e38c22dcd135b0e97"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Titan Boots",
+      "slug": "titan-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-titan-s-piercing-groove-titan-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Titan2p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-titan-s-piercing-groove-titan-boots.jpg",
+        "size": 1137,
+        "sha1": "aa2b864eef6caa036d897e8a8077dbcecdd62b82"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Titan Helm",
+      "slug": "titan-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-titan-s-piercing-groove-titan-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Titan5p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-titan-s-piercing-groove-titan-helm.jpg",
+        "size": 1142,
+        "sha1": "88212de3b175fc101d84b266b1c44fe9b86de91d"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Titan Pants",
+      "slug": "titan-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-titan-s-piercing-groove-titan-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Titan4p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-titan-s-piercing-groove-titan-pants.jpg",
+        "size": 1106,
+        "sha1": "9557bd0a07a7a7b1a48c4e280220916f117ce1fc"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Titan Armor",
+      "slug": "titan-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-titan-s-piercing-groove-titan-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Titanp1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-titan-s-piercing-groove-titan-armor.jpg",
+        "size": 1265,
+        "sha1": "33619f35491dd80628b2865addaa7bf80992fca3"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/set-lucky.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/lucky/titan.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

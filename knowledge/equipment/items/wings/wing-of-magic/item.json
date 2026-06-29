@@ -1,0 +1,36 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "wings-wing-of-magic",
+  "slug": "wing-of-magic",
+  "name": "Wing of Magic",
+  "title": "Wing of Power",
+  "category": "Wings",
+  "categorySlug": "wings",
+  "usableBy": [],
+  "listStats": {
+    "normalDrop": "290+(Wing Level*4)",
+    "excellentDrop": "Usado por el Soul Master, Bloody Summoner, Magic Gladiator. Defensa: 37 + (Wing Level * 3) [Level +10~+15 Incremento de defensa +4,+5,+6,+7,+8,+9]. Incremento de Daño: 35% + (Wing Level * 1). Absorcion de Daño: 29% + (Wing Level * 2). Opciones: 25% Luck en Rate de Soul + 5% Critical Damage Rate. 3% de Posibilidad de ignorar la Defensa del Enemigo. 5% de posibilidad de Recuperar el 100% del HP. Incremento de Wizard Damage +4,+8,+12,+16. Incremento de Curse Spell +4,+8,+12,+16. Reduce 3 Vida despues del ataque con exito (Incluido el Miss).",
+    "attackSpeed": "Wings Devil & Angel"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/wings-wing-of-magic.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/power.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/wings-wing-of-magic.jpg",
+    "size": 1525,
+    "sha1": "842320d3c1fb8c6e988028a60dc7b8c7bcd11569"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/wings.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/wing/power.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/power.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

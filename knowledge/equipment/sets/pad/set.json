@@ -1,0 +1,97 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-pad",
+  "slug": "pad",
+  "name": "Pad",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Dark Wizard",
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-pad",
+      "name": "Pad Armor",
+      "category": "Armor",
+      "slug": "pad",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-pad.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar009_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-pad.jpg",
+        "size": 3642,
+        "sha1": "38508103e4e57c71440ab59a8820107ceaa8639b"
+      }
+    },
+    {
+      "itemId": "boots-pad",
+      "name": "Pad Boots",
+      "category": "Boots",
+      "slug": "pad",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-pad.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo009_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-pad.jpg",
+        "size": 3753,
+        "sha1": "640591a8f08faa4fb5aec5686188b6395ee32f8e"
+      }
+    },
+    {
+      "itemId": "gloves-pad",
+      "name": "Pad Gloves",
+      "category": "Gloves",
+      "slug": "pad",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-pad.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl009_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-pad.jpg",
+        "size": 3715,
+        "sha1": "7b5a50716566c7d0076910a4b6f0cc7398ff4cd3"
+      }
+    },
+    {
+      "itemId": "helm-pad",
+      "name": "Pad Helm",
+      "category": "Helm",
+      "slug": "pad",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-pad.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe009_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-pad.jpg",
+        "size": 2941,
+        "sha1": "2c7dbe0b50b0a9efca8d024134d6a2b6e62ed486"
+      }
+    },
+    {
+      "itemId": "pants-pad",
+      "name": "Pad Pants",
+      "category": "Pants",
+      "slug": "pad",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-pad.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa009_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-pad.jpg",
+        "size": 3581,
+        "sha1": "d9116c9ca5a9ba9f6f3ae28ef9e8e0a9887f251c"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

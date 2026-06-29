@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-evis-bone",
+  "slug": "evis-bone",
+  "name": "Evis Bone",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Evis Boots",
+      "slug": "evis-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-evis-bone-evis-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo010.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-evis-bone-evis-boots.jpg",
+        "size": 2758,
+        "sha1": "7e9646e8819977544ab377c04bf3436ee43280e2"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Evis Pants",
+      "slug": "evis-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-evis-bone-evis-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa010.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-evis-bone-evis-pants.jpg",
+        "size": 2919,
+        "sha1": "131397b34ae590874003d6352c797dfa4a8f2d21"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Evis Armor",
+      "slug": "evis-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-evis-bone-evis-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar010.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-evis-bone-evis-armor.jpg",
+        "size": 2739,
+        "sha1": "547a4f301e90126f78e6d7240ca25d0170f621d9"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Evis Pendant of Wind",
+      "slug": "evis-pendant-of-wind",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-evis-bone-evis-pendant-of-wind.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri20_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-evis-bone-evis-pendant-of-wind.jpg",
+        "size": 2531,
+        "sha1": "defa91767f34bcba6c4119d786b82a1728ea71c0"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/evis.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

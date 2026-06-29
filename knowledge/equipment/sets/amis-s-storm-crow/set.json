@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-lucky-amis-s-storm-crow",
+  "slug": "amis-s-storm-crow",
+  "name": "Amis's Storm Crow",
+  "family": "Set Lucky",
+  "qualities": [
+    "Lucky"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Amis's Boots",
+      "slug": "amis-s-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-amis-s-storm-crow-amis-s-boots-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Amis2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-amis-s-storm-crow-amis-s-boots-detail.jpg",
+        "size": 2439,
+        "sha1": "235d5ee45b09a5f2ea6e09bb17f152de547041fe"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Amis's Gloves",
+      "slug": "amis-s-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-amis-s-storm-crow-amis-s-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Amis3.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-amis-s-storm-crow-amis-s-gloves-detail.jpg",
+        "size": 1459,
+        "sha1": "50fa8001f06f5fea7f4b1fd2434aacca7db32aef"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Amis's Pants",
+      "slug": "amis-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-amis-s-storm-crow-amis-s-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Amis4.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-amis-s-storm-crow-amis-s-pants-detail.jpg",
+        "size": 2155,
+        "sha1": "e653b1fa34b187a229d852c927b91ed554556f9c"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Amis's Armor",
+      "slug": "amis-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-amis-s-storm-crow-amis-s-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Amis1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-amis-s-storm-crow-amis-s-armor-detail.jpg",
+        "size": 4192,
+        "sha1": "7d083d463312373198d11866b20020cc2616d5f0"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Amis Boots",
+      "slug": "amis-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-amis-s-storm-crow-amis-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Amisp2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-amis-s-storm-crow-amis-boots.jpg",
+        "size": 1204,
+        "sha1": "eed49529ea0e430af51b332e7c29a2a35609fd63"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Amis Gloves",
+      "slug": "amis-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-amis-s-storm-crow-amis-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Amis3p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-amis-s-storm-crow-amis-gloves.jpg",
+        "size": 1028,
+        "sha1": "ba7f77bccf02affd8a6c79e57dd539b232b86afd"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Amis Pants",
+      "slug": "amis-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-amis-s-storm-crow-amis-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Amis4p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-amis-s-storm-crow-amis-pants.jpg",
+        "size": 1089,
+        "sha1": "1d8d8385991394a66f01456e94fb7ef5e9b437da"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Amis Armor",
+      "slug": "amis-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-amis-s-storm-crow-amis-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Amisp1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-amis-s-storm-crow-amis-armor.jpg",
+        "size": 1415,
+        "sha1": "2bc0080f6e2f5eb9bdf1c94e74e8d087889dffb0"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/set-lucky.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/lucky/amis.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "blue-eye-ancient-blue-eye-illusion",
+  "slug": "blue-eye-illusion",
+  "name": "Blue Eye Illusion",
+  "family": "Blue Eye Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Blue Eye Illusion Helm",
+      "slug": "blue-eye-illusion-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-illusion-blue-eye-illusion-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/ihe1009.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-illusion-blue-eye-illusion-helm.jpg",
+        "size": 2520,
+        "sha1": "8de41bb885b71241a4726b4ca3d5341dc6fde6e9"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Blue Eye Illusion Armor",
+      "slug": "blue-eye-illusion-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-illusion-blue-eye-illusion-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/iar1009.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-illusion-blue-eye-illusion-armor.jpg",
+        "size": 2884,
+        "sha1": "89605c72fda0e56daf1ad1e03737a29347e5b6d8"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Blue Eye Illusion Pants",
+      "slug": "blue-eye-illusion-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-illusion-blue-eye-illusion-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/ipa1009.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-illusion-blue-eye-illusion-pants.jpg",
+        "size": 3048,
+        "sha1": "7cf958f78220614461047b9dc395b6fcd96983a2"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Blue Eye Illusion Gloves",
+      "slug": "blue-eye-illusion-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-illusion-blue-eye-illusion-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/igl1009.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-illusion-blue-eye-illusion-gloves.jpg",
+        "size": 2789,
+        "sha1": "7374794ddcecd76ccbbac2878970f3a46f0a62c1"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/blue-eye-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/blueeyeillusion.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

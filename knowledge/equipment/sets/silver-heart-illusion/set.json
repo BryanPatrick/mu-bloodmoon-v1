@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "silver-heart-ancient-silver-heart-illusion",
+  "slug": "silver-heart-illusion",
+  "name": "Silver Heart Illusion",
+  "family": "Silver Heart Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Silver Heart Illusion Helm",
+      "slug": "silver-heart-illusion-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-illusion-silver-heart-illusion-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/knigthhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-illusion-silver-heart-illusion-helm.jpg",
+        "size": 1056,
+        "sha1": "4cedf0a686172b3dce4a563cb126606dd7783008"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Illusion Armor",
+      "slug": "silver-heart-illusion-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-illusion-silver-heart-illusion-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/knightarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-illusion-silver-heart-illusion-armor.jpg",
+        "size": 1428,
+        "sha1": "905e08d94524549fd62e07e26a4789815a2064f9"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Illusion Pants",
+      "slug": "silver-heart-illusion-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-illusion-silver-heart-illusion-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/kngithpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-illusion-silver-heart-illusion-pants.jpg",
+        "size": 1458,
+        "sha1": "61c3fd312acf756ec0c4c3544a9e8c853992e0bf"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Illusion Gloves",
+      "slug": "silver-heart-illusion-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-illusion-silver-heart-illusion-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/knightgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-illusion-silver-heart-illusion-gloves.jpg",
+        "size": 1256,
+        "sha1": "e77ffb78e854d4b9b7a9ac38b04b4bef8ab9dc27"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/silver-heart-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/silverheartillusion.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

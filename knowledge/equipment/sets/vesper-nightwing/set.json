@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-vesper-nightwing",
+  "slug": "vesper-nightwing",
+  "name": "Vesper Nightwing",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Vesper Nightwing Armor",
+      "slug": "vesper-nightwing-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-vesper-nightwing-vesper-nightwing-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/s15/armor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-vesper-nightwing-vesper-nightwing-armor.jpg",
+        "size": 1276,
+        "sha1": "85ee49fc8aa663b117e6fd8343e6e8758b979391"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Vesper Nightwing Pants",
+      "slug": "vesper-nightwing-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-vesper-nightwing-vesper-nightwing-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/s15/pants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-vesper-nightwing-vesper-nightwing-pants.jpg",
+        "size": 1191,
+        "sha1": "a1b0e1e66eca0a830bb55e492b6b7f3d285d64ee"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Vesper Nightwing Gloves",
+      "slug": "vesper-nightwing-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-vesper-nightwing-vesper-nightwing-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/s15/gloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-vesper-nightwing-vesper-nightwing-gloves.jpg",
+        "size": 1098,
+        "sha1": "fcb8c1f54091ba8e5718dd4b04a22acadd34ab0f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Vesper Nightwing Boots",
+      "slug": "vesper-nightwing-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-vesper-nightwing-vesper-nightwing-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/s15/boots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-vesper-nightwing-vesper-nightwing-boots.jpg",
+        "size": 1039,
+        "sha1": "213acbc5cbc021fa94bd598b26a2b621a452e477"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/vesper.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

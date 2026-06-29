@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "manticore-ancient-manticore-slayer",
+  "slug": "manticore-slayer",
+  "name": "Manticore Slayer",
+  "family": "Manticore Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Manticore Slayer Helm",
+      "slug": "manticore-slayer-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-slayer-manticore-slayer-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/msq1zn1l.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-slayer-manticore-slayer-helm.jpg",
+        "size": 1062,
+        "sha1": "b337296f8da1d4e314e0f5c1d3d914ca0448a717"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Slayer Armor",
+      "slug": "manticore-slayer-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-slayer-manticore-slayer-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/ncfh5inb.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-slayer-manticore-slayer-armor.jpg",
+        "size": 1281,
+        "sha1": "8d8db3a179ee1fededfb02911bbd12a0b710d03b"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Slayer Pants",
+      "slug": "manticore-slayer-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-slayer-manticore-slayer-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/g3xoof04.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-slayer-manticore-slayer-pants.jpg",
+        "size": 1241,
+        "sha1": "bf1133330c2011689d6330e7f5cdae872e21898f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Slayer Gloves",
+      "slug": "manticore-slayer-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-slayer-manticore-slayer-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/x2pax22j.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-slayer-manticore-slayer-gloves.jpg",
+        "size": 1180,
+        "sha1": "50975b669e0c5b036d15c7e6c9664fc2f0f968a9"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/manticore-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/mantislayer.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

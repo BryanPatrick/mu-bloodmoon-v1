@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "silver-heart-ancient-silver-heart-lancer",
+  "slug": "silver-heart-lancer",
+  "name": "Silver Heart Lancer",
+  "family": "Silver Heart Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Silver Heart Lancer Helm",
+      "slug": "silver-heart-lancer-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-lancer-silver-heart-lancer-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/lancerhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-lancer-silver-heart-lancer-helm.jpg",
+        "size": 1095,
+        "sha1": "31f19a2a4fe5eab95bf6866661d5d9863d98b6d3"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Lancer Armor",
+      "slug": "silver-heart-lancer-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-lancer-silver-heart-lancer-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/lancerarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-lancer-silver-heart-lancer-armor.jpg",
+        "size": 1452,
+        "sha1": "49625a74d2ac21c2e8fd2efac7afa3ddf5816478"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Lancer Pants",
+      "slug": "silver-heart-lancer-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-lancer-silver-heart-lancer-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/lancerpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-lancer-silver-heart-lancer-pants.jpg",
+        "size": 1433,
+        "sha1": "77cc1267d67393d144049ee6a11fbe97f9625918"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Lancer Gloves",
+      "slug": "silver-heart-lancer-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-lancer-silver-heart-lancer-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/lancergloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-lancer-silver-heart-lancer-gloves.jpg",
+        "size": 1069,
+        "sha1": "448779ac17b5a8ff38aaa1c7d5c432c9069b58cf"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/silver-heart-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/silverheartlancer.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-odin-wind",
+  "slug": "odin-wind",
+  "name": "Odin Wind",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Odin Boots",
+      "slug": "odin-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-odin-wind-odin-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo016.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-odin-wind-odin-boots.jpg",
+        "size": 3799,
+        "sha1": "739c729ac9d04592376f14757b68a3c18a8cff88"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Odin Gloves",
+      "slug": "odin-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-odin-wind-odin-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl016.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-odin-wind-odin-gloves.jpg",
+        "size": 3498,
+        "sha1": "1f8a5ef27ceed062cc32a1f878e4cd5d1ed651ba"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Odin Pants",
+      "slug": "odin-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-odin-wind-odin-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa016.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-odin-wind-odin-pants.jpg",
+        "size": 3498,
+        "sha1": "616208f8746ca93b38ef0f948a9740665b0833c6"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Odin Armor",
+      "slug": "odin-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-odin-wind-odin-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar016.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-odin-wind-odin-armor.jpg",
+        "size": 4063,
+        "sha1": "39912e690a8b19aa81682fd80962680aba469ced"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Odin Helm",
+      "slug": "odin-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-odin-wind-odin-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe016.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-odin-wind-odin-helm.jpg",
+        "size": 3144,
+        "sha1": "ae1856e5109fe44ab29116d1a280d038f73ec1fc"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/odin.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

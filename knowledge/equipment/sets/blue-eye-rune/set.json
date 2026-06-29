@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "blue-eye-ancient-blue-eye-rune",
+  "slug": "blue-eye-rune",
+  "name": "Blue Eye Rune",
+  "family": "Blue Eye Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Blue Eye Rune Helm",
+      "slug": "blue-eye-rune-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-rune-blue-eye-rune-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/ihe1010.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-rune-blue-eye-rune-helm.jpg",
+        "size": 2252,
+        "sha1": "e2d668b56480b9eaf2d32dcc745572426e2a4558"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Blue Eye Rune Armor",
+      "slug": "blue-eye-rune-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-rune-blue-eye-rune-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/iar1010.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-rune-blue-eye-rune-armor.jpg",
+        "size": 2968,
+        "sha1": "939c447aba4b482b5ff3691b2692449df4951831"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Blue Eye Rune Pants",
+      "slug": "blue-eye-rune-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-rune-blue-eye-rune-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/ipa1010.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-rune-blue-eye-rune-pants.jpg",
+        "size": 2573,
+        "sha1": "5543c0311d4796f56eeb674c548918db0472bca1"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Blue Eye Rune Gloves",
+      "slug": "blue-eye-rune-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-rune-blue-eye-rune-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/igl1010.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-rune-blue-eye-rune-gloves.jpg",
+        "size": 2252,
+        "sha1": "844bdac08d5141dea0dbf86291f080f44fa7cb7e"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/blue-eye-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/blueeyerune.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

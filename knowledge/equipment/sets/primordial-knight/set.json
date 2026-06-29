@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "primordial-ancient-primordial-knight",
+  "slug": "primordial-knight",
+  "name": "Primordial Knight",
+  "family": "Primordial Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Primordial Knight Helm",
+      "slug": "primordial-knight-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-knight-primordial-knight-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/helmbk.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-knight-primordial-knight-helm.jpg",
+        "size": 1259,
+        "sha1": "9e7310d082433721a39a3e93e33371f8465e7786"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Knight Armor",
+      "slug": "primordial-knight-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-knight-primordial-knight-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/armordk.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-knight-primordial-knight-armor.jpg",
+        "size": 1286,
+        "sha1": "358266fa19ce17500fab02ca8752d98822f8bfed"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Knight Pants",
+      "slug": "primordial-knight-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-knight-primordial-knight-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/pantsdk.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-knight-primordial-knight-pants.jpg",
+        "size": 1272,
+        "sha1": "92937b4b05b09af9bffa9b1aef4f267f0b347f69"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Knight Boots",
+      "slug": "primordial-knight-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-knight-primordial-knight-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/bootdk.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-knight-primordial-knight-boots.jpg",
+        "size": 1323,
+        "sha1": "a925af1dc23bf6365f808aa1ce3381b4379fdb94"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/primordial-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/pridk.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

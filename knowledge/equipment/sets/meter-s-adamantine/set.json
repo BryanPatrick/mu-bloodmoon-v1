@@ -1,0 +1,155 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-lucky-meter-s-adamantine",
+  "slug": "meter-s-adamantine",
+  "name": "Meter's Adamantine",
+  "family": "Set Lucky",
+  "qualities": [
+    "Lucky"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Meter's Boots",
+      "slug": "meter-s-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-s-boots-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Meter2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-s-boots-detail.jpg",
+        "size": 2625,
+        "sha1": "ff87d84631f4ef2952f969ce3bf16750123f073c"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Meter's Gloves",
+      "slug": "meter-s-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-s-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Meter3.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-s-gloves-detail.jpg",
+        "size": 2017,
+        "sha1": "23b01c10a2a518e6f2a1d9903fdf42f85d5f020b"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Meter's Helm",
+      "slug": "meter-s-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-s-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Meter5.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-s-helm-detail.jpg",
+        "size": 2055,
+        "sha1": "350908e9af4659475e0f338f385beba08545d704"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Meter's Pants",
+      "slug": "meter-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-s-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Meter4.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-s-pants-detail.jpg",
+        "size": 1893,
+        "sha1": "3c0f631c02ac75e26cdd8e9f1da6fde2a6c2f110"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Meter's Armor",
+      "slug": "meter-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-s-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Meter1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-s-armor-detail.jpg",
+        "size": 3282,
+        "sha1": "5fe09f0d332bd8d701ccc8114f9d0a7136f1a335"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Meter Boots",
+      "slug": "meter-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Meterp2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-boots.jpg",
+        "size": 1233,
+        "sha1": "31d20b8d1c75c4986538bec35b105d02e83c3955"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Meter Gloves",
+      "slug": "meter-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Meter3p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-gloves.jpg",
+        "size": 1204,
+        "sha1": "ddcd5ad558e4a52481fa849ca53c5ba731b539a3"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Meter Helm",
+      "slug": "meter-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Meter5p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-helm.jpg",
+        "size": 1059,
+        "sha1": "366cb6aefe78d33b6ac0ace82fcb1d9fc41b515a"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Meter Pants",
+      "slug": "meter-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Meter4p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-pants.jpg",
+        "size": 1034,
+        "sha1": "7618370d8b256aa771974c37da4ef2898466551a"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Meter Armor",
+      "slug": "meter-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Meterp1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-meter-s-adamantine-meter-armor.jpg",
+        "size": 1256,
+        "sha1": "798bec618f4630c6e969c0aa7b8ad5c8895353d5"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/set-lucky.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/lucky/meter.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

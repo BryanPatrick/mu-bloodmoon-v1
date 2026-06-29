@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-bloodangel-elf-attack",
+  "slug": "bloodangel-elf-attack",
+  "name": "Bloodangel Elf Attack",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-bloodangel-elf-attack",
+      "name": "Bloodangel Elf Armor",
+      "category": "Armor",
+      "slug": "bloodangel-elf-attack",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-bloodangel-elf-attack.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/bloodelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-bloodangel-elf-attack.jpg",
+        "size": 1398,
+        "sha1": "bde7b38934c881d2ccc22adb3f754f4d69ef1ebc"
+      }
+    },
+    {
+      "itemId": "boots-bloodangel-elf-attack",
+      "name": "Bloodangel Elf Boots",
+      "category": "Boots",
+      "slug": "bloodangel-elf-attack",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-bloodangel-elf-attack.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/bloodelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-bloodangel-elf-attack.jpg",
+        "size": 1124,
+        "sha1": "ac251b621d209017daaa0dd1a20646d2e3acd9b2"
+      }
+    },
+    {
+      "itemId": "gloves-bloodangel-elf-attack",
+      "name": "Bloodangel Elf Gloves",
+      "category": "Gloves",
+      "slug": "bloodangel-elf-attack",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-bloodangel-elf-attack.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/bloodelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-bloodangel-elf-attack.jpg",
+        "size": 1082,
+        "sha1": "40749a2af6cd9aee3286ba50d0c07b040d6a6eb4"
+      }
+    },
+    {
+      "itemId": "helm-bloodangel-elf-attack",
+      "name": "Bloodangel Elf Helm",
+      "category": "Helm",
+      "slug": "bloodangel-elf-attack",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-bloodangel-elf-attack.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/bloodsu.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-bloodangel-elf-attack.jpg",
+        "size": 1073,
+        "sha1": "66349eaa436ba36fab6f055ffc3c2770216fb6f4"
+      }
+    },
+    {
+      "itemId": "pants-bloodangel-elf-attack",
+      "name": "Bloodangel Elf Pants",
+      "category": "Pants",
+      "slug": "bloodangel-elf-attack",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-bloodangel-elf-attack.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/bloodefl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-bloodangel-elf-attack.jpg",
+        "size": 1397,
+        "sha1": "d42e707599b3bb209f5758f4381aabb32147101f"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

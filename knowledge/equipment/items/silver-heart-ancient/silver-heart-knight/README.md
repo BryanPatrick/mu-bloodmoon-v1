@@ -1,0 +1,39 @@
+# Silver Heart Knight
+
+## Identidade
+
+- ID: `silver-heart-ancient-silver-heart-knight`
+- Nome canonico: Silver Heart Knight
+- Categoria: Silver Heart Ancient
+- Quem usa: nao informado na fonte normalizada
+- Status editorial: cataloged-from-normalized-source
+
+## Atributos de lista
+
+- value1: Silver Heart Knight Helm
+- value2: Silver Heart Knight Armor
+- value3: Silver Heart Knight Pants
+- value4: Silver Heart Knight Boots
+- value5: Opción por cada Item
+
+## Partes relacionadas
+
+- Silver Heart Knight Helm (/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-knight-silver-heart-knight-helm.jpg)
+- Silver Heart Knight Armor (/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-knight-silver-heart-knight-armor.jpg)
+- Silver Heart Knight Pants (/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-knight-silver-heart-knight-pants.jpg)
+- Silver Heart Knight Boots (/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-knight-silver-heart-knight-boots.jpg)
+- Silver Heart Knight Helm (/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-knight-silver-heart-knight-helm.jpg)
+- Silver Heart Knight Armor (/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-knight-silver-heart-knight-armor.jpg)
+- Silver Heart Knight Pants (/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-knight-silver-heart-knight-pants.jpg)
+- Silver Heart Knight Boots (/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-knight-silver-heart-knight-boots.jpg)
+
+## Fontes
+
+- Indice normalizado: `apps/web/data/muEquipmentIndex.generated.json`
+- Detalhe normalizado: `apps/web/data/mu-equipment-details/silver-heart-ancient.json`
+- URL fonte: https://www.guiamuonline.com/spanish/items/ancient/silverheartknigth.html
+
+## Notas editoriais
+
+- Validar em jogo antes de publicar textos finais.
+- Este arquivo foi gerado mecanicamente a partir da base local; edicoes humanas devem preferir campos estruturados no `item.json`.

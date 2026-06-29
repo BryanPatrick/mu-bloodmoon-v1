@@ -1,0 +1,38 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "armor-blue-eye-magic-energy",
+  "slug": "blue-eye-magic-energy",
+  "name": "Blue Eye Magic Energy",
+  "title": "Blue Eye Magic Energy Armor",
+  "category": "Armor",
+  "categorySlug": "armor",
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "listStats": {
+    "normalDrop": "~",
+    "excellentDrop": "~",
+    "requiredLevel": "1000"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/armor-blue-eye-magic-energy.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar1009_s.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-blue-eye-magic-energy.jpg",
+    "size": 2884,
+    "sha1": "89605c72fda0e56daf1ad1e03737a29347e5b6d8"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/armor.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/armor/blueeyemagicenergy.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar1009_s.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

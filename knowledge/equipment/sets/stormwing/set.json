@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-stormwing",
+  "slug": "stormwing",
+  "name": "Stormwing",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Dark Knight"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-stormwing",
+      "name": "Armor Storm Wing",
+      "category": "Armor",
+      "slug": "stormwing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-stormwing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/armor_dk_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-stormwing.jpg",
+        "size": 1268,
+        "sha1": "98e9ad8ba888faf63937e512d6d962bb801928fe"
+      }
+    },
+    {
+      "itemId": "boots-stormwing",
+      "name": "Boots Storm Wing",
+      "category": "Boots",
+      "slug": "stormwing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-stormwing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/boots_dk_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-stormwing.jpg",
+        "size": 1267,
+        "sha1": "7cfb25b73d6720a5abc32ab6b95dc43cc54f4328"
+      }
+    },
+    {
+      "itemId": "gloves-stormwing",
+      "name": "Gloves Storm Wing",
+      "category": "Gloves",
+      "slug": "stormwing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-stormwing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/glove_dk_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-stormwing.jpg",
+        "size": 1178,
+        "sha1": "be47012f1b3ffd4f5e83b58c33d8a1fbcd2fbe6e"
+      }
+    },
+    {
+      "itemId": "helm-stormwing",
+      "name": "Helm Storm Wing",
+      "category": "Helm",
+      "slug": "stormwing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-stormwing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/helm_dk_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-stormwing.jpg",
+        "size": 1171,
+        "sha1": "e547831a699e17b098f745f3015519943e56c98a"
+      }
+    },
+    {
+      "itemId": "pants-stormwing",
+      "name": "Pants Storm Wing",
+      "category": "Pants",
+      "slug": "stormwing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-stormwing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/pants_dk_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-stormwing.jpg",
+        "size": 1281,
+        "sha1": "70881dcba53367ed5e5f1b415f5ad8ce9856e68e"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

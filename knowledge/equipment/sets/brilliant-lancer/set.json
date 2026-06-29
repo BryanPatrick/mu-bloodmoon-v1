@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "brilliant-ancient-brilliant-lancer",
+  "slug": "brilliant-lancer",
+  "name": "Brilliant Lancer",
+  "family": "Brilliant Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Brilliant Lancer Helm",
+      "slug": "brilliant-lancer-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-lancer-brilliant-lancer-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/brilliant/helmlancer.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-lancer-brilliant-lancer-helm.jpg",
+        "size": 1155,
+        "sha1": "d2ab68a971481bedb448d95d0dc1789753274cb1"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Brilliant Lancer Armor",
+      "slug": "brilliant-lancer-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-lancer-brilliant-lancer-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/brilliant/armorlancer.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-lancer-brilliant-lancer-armor.jpg",
+        "size": 1337,
+        "sha1": "5d2b7055eb431871fed3ff498f01b0e462b80b16"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Brilliant Lancer Pants",
+      "slug": "brilliant-lancer-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-lancer-brilliant-lancer-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/brilliant/pantslancer.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-lancer-brilliant-lancer-pants.jpg",
+        "size": 1395,
+        "sha1": "1f67e20e6d4ff6e306dce69162e5d008de52de5c"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Brilliant Lancer Gloves",
+      "slug": "brilliant-lancer-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-lancer-brilliant-lancer-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/brilliant/gloveslancer.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-lancer-brilliant-lancer-gloves.jpg",
+        "size": 1076,
+        "sha1": "2ec73151be37c061e799b3984869ed2fb5c20e88"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/brilliant-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/brilliantlancer.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

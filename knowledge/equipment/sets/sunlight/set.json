@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-sunlight",
+  "slug": "sunlight",
+  "name": "Sunlight",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Dark Lord"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-sunlight",
+      "name": "Sunlight Armor",
+      "category": "Armor",
+      "slug": "sunlight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-sunlight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar030_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-sunlight.jpg",
+        "size": 4823,
+        "sha1": "c1116e8f0c1218bf4609f5762b7a0e88aeb834f2"
+      }
+    },
+    {
+      "itemId": "boots-sunlight",
+      "name": "Sunlight Boots",
+      "category": "Boots",
+      "slug": "sunlight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-sunlight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo030_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-sunlight.jpg",
+        "size": 4159,
+        "sha1": "abfd1aeded27665e9e7faaeb694b6f606d4b7607"
+      }
+    },
+    {
+      "itemId": "gloves-sunlight",
+      "name": "Sunlight Gloves",
+      "category": "Gloves",
+      "slug": "sunlight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-sunlight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl030_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-sunlight.jpg",
+        "size": 4200,
+        "sha1": "62add9da22271e5440235c4c931d219b0a11260d"
+      }
+    },
+    {
+      "itemId": "helm-sunlight",
+      "name": "Sunlight Helm",
+      "category": "Helm",
+      "slug": "sunlight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-sunlight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe027_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-sunlight.jpg",
+        "size": 3543,
+        "sha1": "7439c1c592ee57714491da9768b3e29866d45d5a"
+      }
+    },
+    {
+      "itemId": "pants-sunlight",
+      "name": "Sunlight Pants",
+      "category": "Pants",
+      "slug": "sunlight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-sunlight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa030_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-sunlight.jpg",
+        "size": 4038,
+        "sha1": "02bb995a1d276f426c5faeeb9c3c4a16815a9534"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

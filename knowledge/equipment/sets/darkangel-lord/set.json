@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-darkangel-lord",
+  "slug": "darkangel-lord",
+  "name": "Darkangel Lord",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Dark Lord"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-darkangel-lord",
+      "name": "Darkangel Lord Armor",
+      "category": "Armor",
+      "slug": "darkangel-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-darkangel-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkadw.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-darkangel-lord.jpg",
+        "size": 1266,
+        "sha1": "c29d59c693d8bf81c28ceaa5603f7e9d16828f3a"
+      }
+    },
+    {
+      "itemId": "boots-darkangel-lord",
+      "name": "Darkangel Lord Boots",
+      "category": "Boots",
+      "slug": "darkangel-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-darkangel-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkbdw.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-darkangel-lord.jpg",
+        "size": 1195,
+        "sha1": "ee567f42592cf6eb516b386abaf480b2b1c07196"
+      }
+    },
+    {
+      "itemId": "gloves-darkangel-lord",
+      "name": "Darkangel Lord Gloves",
+      "category": "Gloves",
+      "slug": "darkangel-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-darkangel-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkg103.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-darkangel-lord.jpg",
+        "size": 988,
+        "sha1": "daeb1f80a7402074e9f13f6f676495688c12924c"
+      }
+    },
+    {
+      "itemId": "helm-darkangel-lord",
+      "name": "Darkangel Lord Helm",
+      "category": "Helm",
+      "slug": "darkangel-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-darkangel-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkhdw.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-darkangel-lord.jpg",
+        "size": 1209,
+        "sha1": "3118ce99680ea19d67cc1e344a31fc4549ef179d"
+      }
+    },
+    {
+      "itemId": "pants-darkangel-lord",
+      "name": "Darkangel Lord Pants",
+      "category": "Pants",
+      "slug": "darkangel-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-darkangel-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkpdw.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-darkangel-lord.jpg",
+        "size": 1151,
+        "sha1": "8b03c2723f3420074a22300662b71005b3f55e14"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

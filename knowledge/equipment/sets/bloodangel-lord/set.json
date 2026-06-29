@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-bloodangel-lord",
+  "slug": "bloodangel-lord",
+  "name": "Bloodangel Lord",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Dark Lord"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-bloodangel-lord",
+      "name": "Bloodangel Lord Armor",
+      "category": "Armor",
+      "slug": "bloodangel-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-bloodangel-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/blooddl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-bloodangel-lord.jpg",
+        "size": 1594,
+        "sha1": "e4257c3ed8679e380f594b3f9b05a3aafeeeb454"
+      }
+    },
+    {
+      "itemId": "boots-bloodangel-lord",
+      "name": "Bloodangel Lord Boots",
+      "category": "Boots",
+      "slug": "bloodangel-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-bloodangel-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/blooddl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-bloodangel-lord.jpg",
+        "size": 1143,
+        "sha1": "d69ddb5f6a955c9ff50972d172f45f13b2411759"
+      }
+    },
+    {
+      "itemId": "gloves-bloodangel-lord",
+      "name": "Bloodangel Lord Gloves",
+      "category": "Gloves",
+      "slug": "bloodangel-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-bloodangel-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/blooddl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-bloodangel-lord.jpg",
+        "size": 1132,
+        "sha1": "98e394a5476a7a08f8bc3f2a146e84612262f38d"
+      }
+    },
+    {
+      "itemId": "helm-bloodangel-lord",
+      "name": "Bloodangel Lord Helm",
+      "category": "Helm",
+      "slug": "bloodangel-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-bloodangel-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/blooddl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-bloodangel-lord.jpg",
+        "size": 1163,
+        "sha1": "961959b652290922313a773d72165f41d6cfcd19"
+      }
+    },
+    {
+      "itemId": "pants-bloodangel-lord",
+      "name": "Bloodangel Lord Pants",
+      "category": "Pants",
+      "slug": "bloodangel-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-bloodangel-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/blooddl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-bloodangel-lord.jpg",
+        "size": 1393,
+        "sha1": "b546b0cced2d6f4f34ae954b7696db1899f79409"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

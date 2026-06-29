@@ -1,0 +1,38 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "armor-holyangel-magic-energy",
+  "slug": "holyangel-magic-energy",
+  "name": "Holyangel Magic Energy",
+  "title": "Holyangel Magic Energy Armor",
+  "category": "Armor",
+  "categorySlug": "armor",
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "listStats": {
+    "normalDrop": "~",
+    "excellentDrop": "~",
+    "requiredLevel": "800"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/armor-holyangel-magic-energy.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/holybmarmor.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-holyangel-magic-energy.jpg",
+    "size": 1413,
+    "sha1": "705bfbd1bdbe6ffcd3a67df3eb374b3f9e7197bc"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/armor.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/armor/holyangelmagicenergy.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/holybmarmor.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

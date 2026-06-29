@@ -1,0 +1,94 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-scale-gunner",
+  "slug": "scale-gunner",
+  "name": "Scale Gunner",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "itemId": "armor-scale-gunner",
+      "name": "Scale Gunner Armor",
+      "category": "Armor",
+      "slug": "scale-gunner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-scale-gunner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar003_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-scale-gunner.jpg",
+        "size": 3517,
+        "sha1": "4164f2d58fa437727021e4ea2ad337d8d675b24d"
+      }
+    },
+    {
+      "itemId": "boots-scale-gunner",
+      "name": "Scale Gunner Boots",
+      "category": "Boots",
+      "slug": "scale-gunner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-scale-gunner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo003_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-scale-gunner.jpg",
+        "size": 3428,
+        "sha1": "c0be0b904089cf9edd64b1b9491584b86094a3ae"
+      }
+    },
+    {
+      "itemId": "gloves-scale-gunner",
+      "name": "Scale Gunner Gloves",
+      "category": "Gloves",
+      "slug": "scale-gunner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-scale-gunner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl003_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-scale-gunner.jpg",
+        "size": 3112,
+        "sha1": "5be017949f93ca08b470bfbda07005faf398748c"
+      }
+    },
+    {
+      "itemId": "helm-scale-gunner",
+      "name": "Scale Gunner Helm",
+      "category": "Helm",
+      "slug": "scale-gunner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-scale-gunner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe003_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-scale-gunner.jpg",
+        "size": 2829,
+        "sha1": "8edce4caa79579c28f4970c292753cea4830c07e"
+      }
+    },
+    {
+      "itemId": "pants-scale-gunner",
+      "name": "Scale Gunner Pants",
+      "category": "Pants",
+      "slug": "scale-gunner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-scale-gunner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa003_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-scale-gunner.jpg",
+        "size": 3048,
+        "sha1": "53a276d65a6b853f25e9b50c35acfb8787b44849"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

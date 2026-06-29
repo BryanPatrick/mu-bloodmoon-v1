@@ -1,0 +1,64 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "ancient-normal-bes-eclipse",
+  "slug": "bes-eclipse",
+  "name": "Bes Eclipse",
+  "title": "Bes Eclipse",
+  "category": "Ancient Normal",
+  "categorySlug": "ancient-normal",
+  "usableBy": [],
+  "listStats": {
+    "value1": "Bes Pants",
+    "value2": "Bes Staff of Destruction",
+    "value3": "Opciones por Set Completo",
+    "value4": "Increase Energy +200 Increase Wizardry Damage +9% Increase Skill Damage +80"
+  },
+  "image": {
+    "publicPath": null,
+    "sourceUrl": null,
+    "localPath": null,
+    "size": null,
+    "sha1": null
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/bes.html",
+    "imageSourceUrl": null
+  },
+  "statsByLevel": [],
+  "parts": [
+    {
+      "name": "Bes Pants",
+      "slug": "bes-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-bes-eclipse-bes-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa039_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-bes-eclipse-bes-pants.jpg",
+        "size": 2511,
+        "sha1": "2596fbafc335cce4bc69c74358ef6e8ea99cc94c"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Bes Staff of Destruction",
+      "slug": "bes-staff-of-destruction",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-bes-eclipse-bes-staff-of-destruction.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/staff/ist012_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-bes-eclipse-bes-staff-of-destruction.jpg",
+        "size": 2879,
+        "sha1": "7e47647ada0a0ad2934a2e128d6c7d99d9f6ad6b"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

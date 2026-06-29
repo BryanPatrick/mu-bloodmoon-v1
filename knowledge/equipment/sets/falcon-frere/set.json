@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-falcon-frere",
+  "slug": "falcon-frere",
+  "name": "Falcon Frere",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Falcon Frere Armor",
+      "slug": "falcon-frere-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-falcon-frere-falcon-frere-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/frerearmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-falcon-frere-falcon-frere-armor.jpg",
+        "size": 1566,
+        "sha1": "9fc1af9df2bf94d1259ca77536715ca0f18690ab"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Falcon Frere Pants",
+      "slug": "falcon-frere-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-falcon-frere-falcon-frere-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/frerepants.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-falcon-frere-falcon-frere-pants.jpg",
+        "size": 1071,
+        "sha1": "2117642bd31ba57699a7cb05ef214eb5b2cd5cae"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Falcon Frere Helm",
+      "slug": "falcon-frere-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-falcon-frere-falcon-frere-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/frerehelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-falcon-frere-falcon-frere-helm.jpg",
+        "size": 1167,
+        "sha1": "ec984da45d468ff49292044e341055b8b1801db9"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Falcon Frere Gloves",
+      "slug": "falcon-frere-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-falcon-frere-falcon-frere-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/freregloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-falcon-frere-falcon-frere-gloves.jpg",
+        "size": 1157,
+        "sha1": "3dc4d8c9bb8dcaea26960f197c20ba3ec1ab1714"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/falconfrere.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "blue-eye-ancient-blue-eye-fighter",
+  "slug": "blue-eye-fighter",
+  "name": "Blue Eye Fighter",
+  "family": "Blue Eye Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Blue Eye Fighter Helm",
+      "slug": "blue-eye-fighter-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-fighter-blue-eye-fighter-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/ihe1009.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-fighter-blue-eye-fighter-helm.jpg",
+        "size": 2520,
+        "sha1": "8de41bb885b71241a4726b4ca3d5341dc6fde6e9"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Blue Eye Fighter Armor",
+      "slug": "blue-eye-fighter-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-fighter-blue-eye-fighter-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/iar1009.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-fighter-blue-eye-fighter-armor.jpg",
+        "size": 2884,
+        "sha1": "89605c72fda0e56daf1ad1e03737a29347e5b6d8"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Blue Eye Fighter Pants",
+      "slug": "blue-eye-fighter-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-fighter-blue-eye-fighter-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/ipa1009.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-fighter-blue-eye-fighter-pants.jpg",
+        "size": 3048,
+        "sha1": "7cf958f78220614461047b9dc395b6fcd96983a2"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Blue Eye Fighter Boots",
+      "slug": "blue-eye-fighter-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-fighter-blue-eye-fighter-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/ibo1009.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-fighter-blue-eye-fighter-boots.jpg",
+        "size": 2875,
+        "sha1": "856d7ea725ba519a0f81ad36f5b8f0d6b8ece0f3"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/blue-eye-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/blueeyefighter.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

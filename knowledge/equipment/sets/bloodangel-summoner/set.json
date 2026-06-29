@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-bloodangel-summoner",
+  "slug": "bloodangel-summoner",
+  "name": "Bloodangel Summoner",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Summoner"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-bloodangel-summoner",
+      "name": "Bloodangel Summoner Armor",
+      "category": "Armor",
+      "slug": "bloodangel-summoner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-bloodangel-summoner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/bloodsu.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-bloodangel-summoner.jpg",
+        "size": 1388,
+        "sha1": "f1a0a54bc3695d297c1a39d5947022d43bb689e2"
+      }
+    },
+    {
+      "itemId": "boots-bloodangel-summoner",
+      "name": "Bloodangel Summoner Boots",
+      "category": "Boots",
+      "slug": "bloodangel-summoner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-bloodangel-summoner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/bloodsu.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-bloodangel-summoner.jpg",
+        "size": 1123,
+        "sha1": "4e20a226e01914a9d194025f64b8d8f42002eea7"
+      }
+    },
+    {
+      "itemId": "gloves-bloodangel-summoner",
+      "name": "Bloodangel Summoner Gloves",
+      "category": "Gloves",
+      "slug": "bloodangel-summoner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-bloodangel-summoner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/bloodsu.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-bloodangel-summoner.jpg",
+        "size": 1082,
+        "sha1": "40749a2af6cd9aee3286ba50d0c07b040d6a6eb4"
+      }
+    },
+    {
+      "itemId": "helm-bloodangel-summoner",
+      "name": "Bloodangel Summoner Helm",
+      "category": "Helm",
+      "slug": "bloodangel-summoner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-bloodangel-summoner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/bloodsu.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-bloodangel-summoner.jpg",
+        "size": 1073,
+        "sha1": "66349eaa436ba36fab6f055ffc3c2770216fb6f4"
+      }
+    },
+    {
+      "itemId": "pants-bloodangel-summoner",
+      "name": "Bloodangel Summoner Pants",
+      "category": "Pants",
+      "slug": "bloodangel-summoner",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-bloodangel-summoner.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/bloodsu.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-bloodangel-summoner.jpg",
+        "size": 1397,
+        "sha1": "d42e707599b3bb209f5758f4381aabb32147101f"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

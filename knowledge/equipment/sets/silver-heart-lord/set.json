@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "silver-heart-ancient-silver-heart-lord",
+  "slug": "silver-heart-lord",
+  "name": "Silver Heart Lord",
+  "family": "Silver Heart Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Silver Heart Lord Helm",
+      "slug": "silver-heart-lord-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-lord-silver-heart-lord-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/wizardhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-lord-silver-heart-lord-helm.jpg",
+        "size": 1002,
+        "sha1": "ae594f12316bc306734ff61ded6d8f62788c4b74"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Lord Armor",
+      "slug": "silver-heart-lord-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-lord-silver-heart-lord-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/wizardarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-lord-silver-heart-lord-armor.jpg",
+        "size": 1322,
+        "sha1": "715a9ff0d0b764ef3cab48e42399dd677019a155"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Lord Pants",
+      "slug": "silver-heart-lord-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-lord-silver-heart-lord-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/wizardpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-lord-silver-heart-lord-pants.jpg",
+        "size": 1267,
+        "sha1": "5baca28675e5bdef75dba9699799a2aeeb9c7abc"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Lord Gloves",
+      "slug": "silver-heart-lord-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-lord-silver-heart-lord-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/wizardgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-lord-silver-heart-lord-gloves.jpg",
+        "size": 1159,
+        "sha1": "2fc14a67c73ab9878832c99039714c3f8a664867"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/silver-heart-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/silverheartlord.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

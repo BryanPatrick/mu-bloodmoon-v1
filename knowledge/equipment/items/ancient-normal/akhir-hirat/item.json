@@ -1,0 +1,903 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "ancient-normal-akhir-hirat",
+  "slug": "akhir-hirat",
+  "name": "Akhir Hirat",
+  "title": "Hirat Akhir",
+  "category": "Ancient Normal",
+  "categorySlug": "ancient-normal",
+  "usableBy": [],
+  "listStats": {
+    "value1": "Akhir Gloves",
+    "value2": "Akhir Pants",
+    "value3": "Akhir Boots",
+    "value4": "Akhir Ring of Ice",
+    "value5": "Opción por cada Item"
+  },
+  "image": {
+    "publicPath": null,
+    "sourceUrl": null,
+    "localPath": null,
+    "size": null,
+    "sha1": null
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/akhir.html",
+    "imageSourceUrl": null
+  },
+  "statsByLevel": [
+    {
+      "itemLevel": 0,
+      "defense": 63,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 1222,
+      "requiredAgility": 358,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 1,
+      "defense": 66,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 1252,
+      "requiredAgility": 366,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 2,
+      "defense": 69,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 1282,
+      "requiredAgility": 375,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 3,
+      "defense": 72,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 1312,
+      "requiredAgility": 383,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 4,
+      "defense": 75,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 1342,
+      "requiredAgility": 392,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 5,
+      "defense": 78,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 1372,
+      "requiredAgility": 400,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 6,
+      "defense": 81,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 1402,
+      "requiredAgility": 409,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 7,
+      "defense": 84,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 1432,
+      "requiredAgility": 417,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 8,
+      "defense": 87,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 1462,
+      "requiredAgility": 426,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 9,
+      "defense": 90,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 1492,
+      "requiredAgility": 434,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 10,
+      "defense": 94,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 1523,
+      "requiredAgility": 443,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 11,
+      "defense": 99,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 1553,
+      "requiredAgility": 451,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 12,
+      "defense": 105,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 1583,
+      "requiredAgility": 459,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 13,
+      "defense": 112,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 1613,
+      "requiredAgility": 468,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 14,
+      "defense": 120,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 1643,
+      "requiredAgility": 476,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 15,
+      "defense": 129,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 1673,
+      "requiredAgility": 485,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    }
+  ],
+  "parts": [
+    {
+      "name": "Akhir Gloves",
+      "slug": "akhir-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-akhir-hirat-akhir-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/hira.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-akhir-hirat-akhir-gloves.jpg",
+        "size": 1242,
+        "sha1": "330d3e637d4ceb828237d69cce5f36dc34c404f5"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Akhir Pants",
+      "slug": "akhir-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-akhir-hirat-akhir-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/hira.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-akhir-hirat-akhir-pants.jpg",
+        "size": 1402,
+        "sha1": "c16e2cc39a1de635730b1b411f7191e5dda9b9d1"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Akhir Boots",
+      "slug": "akhir-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-akhir-hirat-akhir-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/hira.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-akhir-hirat-akhir-boots.jpg",
+        "size": 1221,
+        "sha1": "1840282d2a9a07343b7082fe73395eaea8e6e13d"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Akhir Ring of Ice",
+      "slug": "akhir-ring-of-ice",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-akhir-hirat-akhir-ring-of-ice.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri002_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-akhir-hirat-akhir-ring-of-ice.jpg",
+        "size": 2377,
+        "sha1": "a4e84a054374dac6bcdb3fdb8c0d31bbc459047a"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "detailParts": [
+    {
+      "name": "Akhir Pants",
+      "slug": "akhir-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-akhir-hirat-akhir-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/hirapants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-akhir-hirat-akhir-pants.jpg",
+        "size": 1402,
+        "sha1": "c16e2cc39a1de635730b1b411f7191e5dda9b9d1"
+      },
+      "imageError": null,
+      "statsByLevel": [
+        {
+          "itemLevel": 0,
+          "defense": 63,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1222,
+          "requiredAgility": 358,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 1,
+          "defense": 66,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1252,
+          "requiredAgility": 366,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 2,
+          "defense": 69,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1282,
+          "requiredAgility": 375,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 3,
+          "defense": 72,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1312,
+          "requiredAgility": 383,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 4,
+          "defense": 75,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1342,
+          "requiredAgility": 392,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 5,
+          "defense": 78,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1372,
+          "requiredAgility": 400,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 6,
+          "defense": 81,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1402,
+          "requiredAgility": 409,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 7,
+          "defense": 84,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1432,
+          "requiredAgility": 417,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 8,
+          "defense": 87,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1462,
+          "requiredAgility": 426,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 9,
+          "defense": 90,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1492,
+          "requiredAgility": 434,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 10,
+          "defense": 94,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1523,
+          "requiredAgility": 443,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 11,
+          "defense": 99,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1553,
+          "requiredAgility": 451,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 12,
+          "defense": 105,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1583,
+          "requiredAgility": 459,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 13,
+          "defense": 112,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1613,
+          "requiredAgility": 468,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 14,
+          "defense": 120,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1643,
+          "requiredAgility": 476,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 15,
+          "defense": 129,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1673,
+          "requiredAgility": 485,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        }
+      ]
+    },
+    {
+      "name": "Akhir Gloves",
+      "slug": "akhir-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-akhir-hirat-akhir-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/hiragloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-akhir-hirat-akhir-gloves.jpg",
+        "size": 1242,
+        "sha1": "330d3e637d4ceb828237d69cce5f36dc34c404f5"
+      },
+      "imageError": null,
+      "statsByLevel": [
+        {
+          "itemLevel": 0,
+          "defense": 49,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1209,
+          "requiredAgility": 315,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 1,
+          "defense": 52,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1243,
+          "requiredAgility": 324,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 2,
+          "defense": 55,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1276,
+          "requiredAgility": 332,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 3,
+          "defense": 58,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1310,
+          "requiredAgility": 340,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 4,
+          "defense": 61,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1344,
+          "requiredAgility": 349,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 5,
+          "defense": 64,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1377,
+          "requiredAgility": 357,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 6,
+          "defense": 67,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1411,
+          "requiredAgility": 366,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 7,
+          "defense": 70,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1444,
+          "requiredAgility": 374,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 8,
+          "defense": 73,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1478,
+          "requiredAgility": 382,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 9,
+          "defense": 76,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1512,
+          "requiredAgility": 391,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 10,
+          "defense": 80,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1545,
+          "requiredAgility": 399,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 11,
+          "defense": 85,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1579,
+          "requiredAgility": 407,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 12,
+          "defense": 91,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1613,
+          "requiredAgility": 416,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 13,
+          "defense": 98,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1646,
+          "requiredAgility": 424,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 14,
+          "defense": 106,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1680,
+          "requiredAgility": 432,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 15,
+          "defense": 115,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1714,
+          "requiredAgility": 441,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        }
+      ]
+    },
+    {
+      "name": "Akhir Boots",
+      "slug": "akhir-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-akhir-hirat-akhir-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/hiraboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-akhir-hirat-akhir-boots.jpg",
+        "size": 1221,
+        "sha1": "1840282d2a9a07343b7082fe73395eaea8e6e13d"
+      },
+      "imageError": null,
+      "statsByLevel": [
+        {
+          "itemLevel": 0,
+          "defense": 56,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1211,
+          "requiredAgility": 333,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 1,
+          "defense": 59,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1243,
+          "requiredAgility": 342,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 2,
+          "defense": 62,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1276,
+          "requiredAgility": 350,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 3,
+          "defense": 65,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1308,
+          "requiredAgility": 359,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 4,
+          "defense": 68,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1341,
+          "requiredAgility": 367,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 5,
+          "defense": 71,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1373,
+          "requiredAgility": 376,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 6,
+          "defense": 74,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1406,
+          "requiredAgility": 384,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 7,
+          "defense": 77,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1438,
+          "requiredAgility": 393,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 8,
+          "defense": 80,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1471,
+          "requiredAgility": 401,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 9,
+          "defense": 83,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1503,
+          "requiredAgility": 410,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 10,
+          "defense": 87,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1536,
+          "requiredAgility": 419,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 11,
+          "defense": 92,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1568,
+          "requiredAgility": 427,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 12,
+          "defense": 98,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1601,
+          "requiredAgility": 436,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 13,
+          "defense": 105,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1633,
+          "requiredAgility": 444,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 14,
+          "defense": 113,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1666,
+          "requiredAgility": 453,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 15,
+          "defense": 122,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 1698,
+          "requiredAgility": 461,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        }
+      ]
+    }
+  ],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

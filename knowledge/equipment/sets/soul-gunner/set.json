@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "soul-ancient-soul-gunner",
+  "slug": "soul-gunner",
+  "name": "Soul Gunner",
+  "family": "Soul Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Awakening Gunner Helm",
+      "slug": "awakening-gunner-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-gunner-awakening-gunner-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awabkhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-gunner-awakening-gunner-helm-detail.jpg",
+        "size": 1603,
+        "sha1": "c8ae4a11e39873abdfe567301adb6b6bf566e140"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Awakening Gunner Armor",
+      "slug": "awakening-gunner-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-gunner-awakening-gunner-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awadwarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-gunner-awakening-gunner-armor-detail.jpg",
+        "size": 3235,
+        "sha1": "f5b54c2de27d1c38f2a9b4c7cb1e5c86a7c1370b"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Awakening Gunner Pants",
+      "slug": "awakening-gunner-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-gunner-awakening-gunner-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awadwpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-gunner-awakening-gunner-pants-detail.jpg",
+        "size": 2419,
+        "sha1": "0501caf1563c2a00cef6a7edfdda2beb7df64bfa"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Awakening Gunner Boots",
+      "slug": "awakening-gunner-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-gunner-awakening-gunner-boots-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awadwboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-gunner-awakening-gunner-boots-detail.jpg",
+        "size": 2332,
+        "sha1": "b0fa763eb296126398fc31dd816560409f5d95d7"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Gunner Helm",
+      "slug": "soul-gunner-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-gunner-soul-gunner-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/dwhelmawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-gunner-soul-gunner-helm.jpg",
+        "size": 1056,
+        "sha1": "03346789475e5006ab5c9cb2420799191a88e3b8"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Gunner Armor",
+      "slug": "soul-gunner-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-gunner-soul-gunner-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/dwarmorawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-gunner-soul-gunner-armor.jpg",
+        "size": 1365,
+        "sha1": "c5ddc0384c95cada8cb4e0655ef27bb02f4310a2"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Gunner Pants",
+      "slug": "soul-gunner-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-gunner-soul-gunner-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/dwpantsawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-gunner-soul-gunner-pants.jpg",
+        "size": 1236,
+        "sha1": "828eeeeee185c14056c523e4939b54e0412f1bae"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Gunner Boots",
+      "slug": "soul-gunner-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-gunner-soul-gunner-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/dwbootsawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-gunner-soul-gunner-boots.jpg",
+        "size": 1128,
+        "sha1": "d60d68dc3ebe1bfcd5326ae2ba0d0989a6cd3d6a"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/soul-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/awagunner.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

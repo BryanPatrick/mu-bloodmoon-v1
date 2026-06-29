@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-light-lord",
+  "slug": "light-lord",
+  "name": "Light Lord",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-light-lord",
+      "name": "Armor Light Load",
+      "category": "Armor",
+      "slug": "light-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-light-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/armor_elf_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-light-lord.jpg",
+        "size": 1534,
+        "sha1": "00f9c3595d0f35c667255f7ef29829c6cc425919"
+      }
+    },
+    {
+      "itemId": "boots-light-lord",
+      "name": "Boots Light Load",
+      "category": "Boots",
+      "slug": "light-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-light-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/boots_elf_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-light-lord.jpg",
+        "size": 1360,
+        "sha1": "cdcd2981c3f3b3203bf690b495d5157c3b1f59d3"
+      }
+    },
+    {
+      "itemId": "gloves-light-lord",
+      "name": "Gloves Light Load",
+      "category": "Gloves",
+      "slug": "light-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-light-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/gloves_elf_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-light-lord.jpg",
+        "size": 1279,
+        "sha1": "f905575e201efd5ac83926d25407dad92eb4df01"
+      }
+    },
+    {
+      "itemId": "helm-light-lord",
+      "name": "Helm Light Load",
+      "category": "Helm",
+      "slug": "light-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-light-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/helm_elf_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-light-lord.jpg",
+        "size": 1151,
+        "sha1": "0e4004c1cda64dbb0477c5fab901a19542610a82"
+      }
+    },
+    {
+      "itemId": "pants-light-lord",
+      "name": "Pants Light Load",
+      "category": "Pants",
+      "slug": "light-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-light-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/pants_elf_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-light-lord.jpg",
+        "size": 1432,
+        "sha1": "4ba2b976219a2c11d5c187ae7bfb76c223bc81eb"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

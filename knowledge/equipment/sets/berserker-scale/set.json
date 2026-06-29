@@ -1,0 +1,90 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-berserker-scale",
+  "slug": "berserker-scale",
+  "name": "Berserker Scale",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Berserker Gloves",
+      "slug": "berserker-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-berserker-scale-berserker-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl041_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-berserker-scale-berserker-gloves.jpg",
+        "size": 3112,
+        "sha1": "5be017949f93ca08b470bfbda07005faf398748c"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Berserker Pants",
+      "slug": "berserker-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-berserker-scale-berserker-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa003_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-berserker-scale-berserker-pants.jpg",
+        "size": 3048,
+        "sha1": "53a276d65a6b853f25e9b50c35acfb8787b44849"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Berserker Helm",
+      "slug": "berserker-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-berserker-scale-berserker-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe003_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-berserker-scale-berserker-helm.jpg",
+        "size": 2829,
+        "sha1": "8edce4caa79579c28f4970c292753cea4830c07e"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Berserker Armor",
+      "slug": "berserker-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-berserker-scale-berserker-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar003_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-berserker-scale-berserker-armor.jpg",
+        "size": 3517,
+        "sha1": "4164f2d58fa437727021e4ea2ad337d8d675b24d"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Berserker Boots",
+      "slug": "berserker-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-berserker-scale-berserker-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo057_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-berserker-scale-berserker-boots.jpg",
+        "size": 3428,
+        "sha1": "c0be0b904089cf9edd64b1b9491584b86094a3ae"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/berserker.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

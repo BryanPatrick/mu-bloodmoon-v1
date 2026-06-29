@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-seraphim",
+  "slug": "seraphim",
+  "name": "Seraphim",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-seraphim",
+      "name": "Seraphim Armor",
+      "category": "Armor",
+      "slug": "seraphim",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-seraphim.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar050_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-seraphim.jpg",
+        "size": 12155,
+        "sha1": "48aa9cc8b3740f30fa80d94692de6f3d6c357deb"
+      }
+    },
+    {
+      "itemId": "boots-seraphim",
+      "name": "Seraphim Boots",
+      "category": "Boots",
+      "slug": "seraphim",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-seraphim.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo049_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-seraphim.jpg",
+        "size": 11432,
+        "sha1": "57b12657d02190e7b23b7a6ad17d1b0db94cd39a"
+      }
+    },
+    {
+      "itemId": "gloves-seraphim",
+      "name": "Seraphim Gloves",
+      "category": "Gloves",
+      "slug": "seraphim",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-seraphim.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl110_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-seraphim.jpg",
+        "size": 11398,
+        "sha1": "5854a370df4e6de2e8530f23f94af93797c561e8"
+      }
+    },
+    {
+      "itemId": "helm-seraphim",
+      "name": "Seraphim Helm",
+      "category": "Helm",
+      "slug": "seraphim",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-seraphim.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe044_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-seraphim.jpg",
+        "size": 11776,
+        "sha1": "60512c53ebcef59055095d07331bc6da2c46f433"
+      }
+    },
+    {
+      "itemId": "pants-seraphim",
+      "name": "Seraphim Pants",
+      "category": "Pants",
+      "slug": "seraphim",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-seraphim.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa049_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-seraphim.jpg",
+        "size": 11763,
+        "sha1": "078571be1ed709658f4c05fe0b5eab3aaffc0ab6"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

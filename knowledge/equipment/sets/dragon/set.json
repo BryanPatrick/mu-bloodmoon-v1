@@ -1,0 +1,97 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-dragon",
+  "slug": "dragon",
+  "name": "Dragon",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Dark Knight",
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-dragon",
+      "name": "Dragon Armor",
+      "category": "Armor",
+      "slug": "dragon",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-dragon.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar006_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-dragon.jpg",
+        "size": 4185,
+        "sha1": "1af2356f6e4262d1c96ed36978b8a2275f9f92a5"
+      }
+    },
+    {
+      "itemId": "boots-dragon",
+      "name": "Dragon Boots",
+      "category": "Boots",
+      "slug": "dragon",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-dragon.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo006_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-dragon.jpg",
+        "size": 3897,
+        "sha1": "26a06326cd8eb9aa13f8d117518cff7ddbc72271"
+      }
+    },
+    {
+      "itemId": "gloves-dragon",
+      "name": "Dragon Gloves",
+      "category": "Gloves",
+      "slug": "dragon",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-dragon.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl006_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-dragon.jpg",
+        "size": 3740,
+        "sha1": "9ba0910b08b215eb910cc81d79420d86bd54310c"
+      }
+    },
+    {
+      "itemId": "helm-dragon",
+      "name": "Dragon Helm",
+      "category": "Helm",
+      "slug": "dragon",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-dragon.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe006_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-dragon.jpg",
+        "size": 3659,
+        "sha1": "13b8159bb2a7e3bc6fd1ae023407eb9aadecd6f2"
+      }
+    },
+    {
+      "itemId": "pants-dragon",
+      "name": "Dragon Pants",
+      "category": "Pants",
+      "slug": "dragon",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-dragon.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa006_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-dragon.jpg",
+        "size": 3999,
+        "sha1": "9c07a3c6192be250cc502ca5cd1c98aeea876273"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

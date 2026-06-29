@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-gaion-atlans",
+  "slug": "gaion-atlans",
+  "name": "Gaion Atlans",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Gaion Boots",
+      "slug": "gaion-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-gaion-atlans-gaion-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo027.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-gaion-atlans-gaion-boots.jpg",
+        "size": 3429,
+        "sha1": "c4f640860c521a1dd76450578d445ced434f67fb"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Gaion Pants",
+      "slug": "gaion-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-gaion-atlans-gaion-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa027.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-gaion-atlans-gaion-pants.jpg",
+        "size": 3178,
+        "sha1": "16ff14f9f35925cb6c73c23017ee25a08c316dda"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Gaion Armor",
+      "slug": "gaion-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-gaion-atlans-gaion-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar027.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-gaion-atlans-gaion-armor.jpg",
+        "size": 3749,
+        "sha1": "e0e45b05842e64fc7980509b1027f1281fd6c0d4"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Gaion Pendant of Water",
+      "slug": "gaion-pendant-of-water",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-gaion-atlans-gaion-pendant-of-water.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri19_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-gaion-atlans-gaion-pendant-of-water.jpg",
+        "size": 2655,
+        "sha1": "fea71fbf1b3ac797332f2ed6357e9c23e1bd9858"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/gaion.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

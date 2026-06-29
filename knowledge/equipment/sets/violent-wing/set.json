@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-violent-wing",
+  "slug": "violent-wing",
+  "name": "Violent Wing",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Summoner"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-violent-wing",
+      "name": "Violent Wind Armor",
+      "category": "Armor",
+      "slug": "violent-wing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-violent-wing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar040_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-violent-wing.jpg",
+        "size": 14646,
+        "sha1": "475e7bc98fc162a7ce92bea60319134a1a0debc2"
+      }
+    },
+    {
+      "itemId": "boots-violent-wing",
+      "name": "Violent Wind Boots",
+      "category": "Boots",
+      "slug": "violent-wing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-violent-wing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo040_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-violent-wing.jpg",
+        "size": 13920,
+        "sha1": "61c766405c0671ced8de73f25bce21e7dde31011"
+      }
+    },
+    {
+      "itemId": "gloves-violent-wing",
+      "name": "Violent Wind Gloves",
+      "category": "Gloves",
+      "slug": "violent-wing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-violent-wing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl102_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-violent-wing.jpg",
+        "size": 14001,
+        "sha1": "47757a3d82679f2c9f87379c2a0a61c4002e123b"
+      }
+    },
+    {
+      "itemId": "helm-violent-wing",
+      "name": "Violent Wind Helm",
+      "category": "Helm",
+      "slug": "violent-wing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-violent-wing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe037_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-violent-wing.jpg",
+        "size": 13083,
+        "sha1": "7f5c3824de2015e6aa242b220eaeadd883fda7b3"
+      }
+    },
+    {
+      "itemId": "pants-violent-wing",
+      "name": "Violent Wind Pants",
+      "category": "Pants",
+      "slug": "violent-wing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-violent-wing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa040_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-violent-wing.jpg",
+        "size": 14433,
+        "sha1": "8db721288ff0d99b4285a089bc9d21581627510d"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "wings-cloak-of-judgment",
+  "slug": "cloak-of-judgment",
+  "name": "Cloak of Judgment",
+  "title": "Cloak of Dominator",
+  "category": "Wings",
+  "categorySlug": "wings",
+  "usableBy": [],
+  "listStats": {
+    "normalDrop": "800"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/wings-cloak-of-judgment.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/rfw4.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/wings-cloak-of-judgment.jpg",
+    "size": 1493,
+    "sha1": "e1dee20d83022fd9ad9b117cbfaa4dd149cd214e"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/wings.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/wing/dlw4.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/rfw4.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

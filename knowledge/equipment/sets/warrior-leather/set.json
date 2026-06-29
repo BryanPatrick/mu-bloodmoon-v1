@@ -1,0 +1,158 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-warrior-leather",
+  "slug": "warrior-leather",
+  "name": "Warrior Leather",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [
+    "Dark Knight",
+    "Dark Lord",
+    "Rage Fighter",
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "name": "Warrior Boots",
+      "slug": "warrior-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-warrior-leather-warrior-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo001.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-warrior-leather-warrior-boots.jpg",
+        "size": 3439,
+        "sha1": "b1745281f57ea23d0aa401a6a10a6abf4c7cdfbb"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Warrior Gloves",
+      "slug": "warrior-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-warrior-leather-warrior-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl001.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-warrior-leather-warrior-gloves.jpg",
+        "size": 3309,
+        "sha1": "9ca659538364dba7194c8f2ec7dbd3397349df45"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Warrior Helm",
+      "slug": "warrior-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-warrior-leather-warrior-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe001.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-warrior-leather-warrior-helm.jpg",
+        "size": 2896,
+        "sha1": "0c03903739a0de2c0ec5f526a850bf64b63f4fb9"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Warrior Pants",
+      "slug": "warrior-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-warrior-leather-warrior-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa001.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-warrior-leather-warrior-pants.jpg",
+        "size": 3024,
+        "sha1": "111432bd32c03e22b49be776e303f636d74f10eb"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Warrior Armor",
+      "slug": "warrior-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-warrior-leather-warrior-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar001.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-warrior-leather-warrior-armor.jpg",
+        "size": 3078,
+        "sha1": "65fd6d4ebff7d87de4ab2d049d3f32fd34c5e337"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Warrior Morning Star",
+      "slug": "warrior-morning-star",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-warrior-leather-warrior-morning-star.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ise002.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-warrior-leather-warrior-morning-star.jpg",
+        "size": 2497,
+        "sha1": "1d6ffbe83e2ae524e0d989eebffe1e8f89c55d2b"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Warrior Ring of Ice",
+      "slug": "warrior-ring-of-ice",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-warrior-leather-warrior-ring-of-ice.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri002_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-warrior-leather-warrior-ring-of-ice.jpg",
+        "size": 2377,
+        "sha1": "a4e84a054374dac6bcdb3fdb8c0d31bbc459047a"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [
+    {
+      "pieces": 2,
+      "option": "Strength Level +10"
+    },
+    {
+      "pieces": 3,
+      "option": "ATK Rate +10"
+    },
+    {
+      "pieces": 4,
+      "option": "AG +20"
+    },
+    {
+      "pieces": 5,
+      "option": "Automatic AG Recovery amount +5"
+    },
+    {
+      "pieces": 6,
+      "option": "DEF +20"
+    },
+    {
+      "pieces": "additional",
+      "option": "Agility Level +10"
+    },
+    {
+      "pieces": "additional",
+      "option": "Critical DMG chance +5%"
+    },
+    {
+      "pieces": "additional",
+      "option": "Excellent DMG chance +5%"
+    },
+    {
+      "pieces": "additional",
+      "option": "Strength Level +25"
+    }
+  ],
+  "baseSetDefense": 113,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": "references/game-data/muonlinefanz-ancient-items-data.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/warrior.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

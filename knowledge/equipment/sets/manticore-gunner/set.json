@@ -1,0 +1,90 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "manticore-ancient-manticore-gunner",
+  "slug": "manticore-gunner",
+  "name": "Manticore Gunner",
+  "family": "Manticore Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Manticore Gunner Helm",
+      "slug": "manticore-gunner-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-gunner-manticore-gunner-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/vdxzdyrw.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-gunner-manticore-gunner-helm.jpg",
+        "size": 1101,
+        "sha1": "277fa543569d925adae33457701a3be83e7852af"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "ManticoreGunner Armor",
+      "slug": "manticoregunner-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-gunner-manticoregunner-armor-detail.png",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/fvqw1bbc.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-gunner-manticoregunner-armor-detail.png",
+        "size": 16203,
+        "sha1": "777ae937f85f96adcb3be04f9d470321dbbfd48d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Gunner Pants",
+      "slug": "manticore-gunner-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-gunner-manticore-gunner-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/lljmdok2.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-gunner-manticore-gunner-pants.jpg",
+        "size": 1361,
+        "sha1": "c74daa72c2bebe09c733f85630dec86d8387b6a5"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Gunner Boots",
+      "slug": "manticore-gunner-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-gunner-manticore-gunner-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/mantiboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-gunner-manticore-gunner-boots.jpg",
+        "size": 1328,
+        "sha1": "5854366c4a7fe81fc563b244d95af9cca76d205b"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Gunner Armor",
+      "slug": "manticore-gunner-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-gunner-manticore-gunner-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/mantidw.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-gunner-manticore-gunner-armor.jpg",
+        "size": 1509,
+        "sha1": "dfe42b094611f62cc1042d54d1b3bb5640b523eb"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/manticore-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/mantigunner.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

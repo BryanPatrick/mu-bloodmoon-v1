@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "brilliant-ancient-brilliant-lemuria",
+  "slug": "brilliant-lemuria",
+  "name": "Brilliant Lemuria",
+  "family": "Brilliant Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Brilliant Lemuria Helm",
+      "slug": "brilliant-lemuria-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-lemuria-brilliant-lemuria-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/brilliant/helmelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-lemuria-brilliant-lemuria-helm.jpg",
+        "size": 1002,
+        "sha1": "3da080873012eae0406396262c81dc1b5729ca3f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Brilliant Lemuria Armor",
+      "slug": "brilliant-lemuria-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-lemuria-brilliant-lemuria-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/brilliant/armorelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-lemuria-brilliant-lemuria-armor.jpg",
+        "size": 1289,
+        "sha1": "f2db198a11ff60affc6dce155e75397e0f704e4a"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Brilliant Lemuria Pants",
+      "slug": "brilliant-lemuria-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-lemuria-brilliant-lemuria-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/brilliant/pantself.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-lemuria-brilliant-lemuria-pants.jpg",
+        "size": 1298,
+        "sha1": "965222bf624210b6391b89676074a671fa0246dd"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Brilliant Lemuria Gloves",
+      "slug": "brilliant-lemuria-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-lemuria-brilliant-lemuria-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/brilliant/gloveself.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-lemuria-brilliant-lemuria-gloves.jpg",
+        "size": 1048,
+        "sha1": "72b24fcdd3e00d766002efaec154c6120c32c01e"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/brilliant-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/brilliantlemuria.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

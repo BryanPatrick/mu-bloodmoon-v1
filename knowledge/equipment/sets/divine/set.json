@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-divine",
+  "slug": "divine",
+  "name": "Divine",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-divine",
+      "name": "Divine Armor",
+      "category": "Armor",
+      "slug": "divine",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-divine.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar049_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-divine.jpg",
+        "size": 12187,
+        "sha1": "0dd34d660cf9ce1ccca23006a286141c11a39f01"
+      }
+    },
+    {
+      "itemId": "boots-divine",
+      "name": "Divine Boots",
+      "category": "Boots",
+      "slug": "divine",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-divine.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo048_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-divine.jpg",
+        "size": 11781,
+        "sha1": "77302b8488a350a99b66f2237ed2eec21e1985c9"
+      }
+    },
+    {
+      "itemId": "gloves-divine",
+      "name": "Divine Gloves",
+      "category": "Gloves",
+      "slug": "divine",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-divine.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl109_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-divine.jpg",
+        "size": 11487,
+        "sha1": "51abaea9ba9815553993d12ca7d72c17b25dc3f4"
+      }
+    },
+    {
+      "itemId": "helm-divine",
+      "name": "Divine Helm",
+      "category": "Helm",
+      "slug": "divine",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-divine.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe043_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-divine.jpg",
+        "size": 11985,
+        "sha1": "18649d7974d137dd944684c0a7ddc8f47b51ef61"
+      }
+    },
+    {
+      "itemId": "pants-divine",
+      "name": "Divine Pants",
+      "category": "Pants",
+      "slug": "divine",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-divine.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa048_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-divine.jpg",
+        "size": 12160,
+        "sha1": "cf9b541e241db662585ad14daefcc5314ebe5569"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

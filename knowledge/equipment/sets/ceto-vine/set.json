@@ -1,0 +1,103 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-ceto-vine",
+  "slug": "ceto-vine",
+  "name": "Ceto Vine",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Ceto Boots",
+      "slug": "ceto-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-ceto-vine-ceto-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo014.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-ceto-vine-ceto-boots.jpg",
+        "size": 3460,
+        "sha1": "4a66684df855a03669d77667e3c06289496feed5"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Ceto Gloves",
+      "slug": "ceto-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-ceto-vine-ceto-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl014.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-ceto-vine-ceto-gloves.jpg",
+        "size": 3293,
+        "sha1": "00307eddc47c91a66fd24d91a4982bb6589451a3"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Ceto Pants",
+      "slug": "ceto-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-ceto-vine-ceto-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa014.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-ceto-vine-ceto-pants.jpg",
+        "size": 2917,
+        "sha1": "879f1015108c6b314046d3bca13afaae2d50af5d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Ceto Helm",
+      "slug": "ceto-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-ceto-vine-ceto-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe014.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-ceto-vine-ceto-helm.jpg",
+        "size": 2912,
+        "sha1": "e3d3f4872454de4cedc0555b9d592a31b1985dba"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Ceto Rapier",
+      "slug": "ceto-rapier",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-ceto-vine-ceto-rapier.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/isw003.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-ceto-vine-ceto-rapier.jpg",
+        "size": 1892,
+        "sha1": "5bc0819cc194a9f8cfc08c2f596a6639be1472f0"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Ceto Ring of Earth",
+      "slug": "ceto-ring-of-earth",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-ceto-vine-ceto-ring-of-earth.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri17_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-ceto-vine-ceto-ring-of-earth.jpg",
+        "size": 1972,
+        "sha1": "24b02183e3a0c5633e21e5e434cb9ef872c1c3bb"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/ceto.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

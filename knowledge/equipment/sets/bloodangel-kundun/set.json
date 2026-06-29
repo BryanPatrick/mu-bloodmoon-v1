@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "bloodangel-ancient-bloodangel-kundun",
+  "slug": "bloodangel-kundun",
+  "name": "Bloodangel Kundun",
+  "family": "Bloodangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Bloodangel Kundun Helm",
+      "slug": "bloodangel-kundun-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-bloodangel-kundun-bloodangel-kundun-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodhelmdl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-bloodangel-kundun-bloodangel-kundun-helm.jpg",
+        "size": 1163,
+        "sha1": "961959b652290922313a773d72165f41d6cfcd19"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Bloodangel Kundun Armor",
+      "slug": "bloodangel-kundun-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-bloodangel-kundun-bloodangel-kundun-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodarmordl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-bloodangel-kundun-bloodangel-kundun-armor.jpg",
+        "size": 1601,
+        "sha1": "502ba853a40134cd0570dce91c22e2ebf79426c5"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Bloodangel Kundun Pants",
+      "slug": "bloodangel-kundun-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-bloodangel-kundun-bloodangel-kundun-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodpantsdl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-bloodangel-kundun-bloodangel-kundun-pants.jpg",
+        "size": 1393,
+        "sha1": "b546b0cced2d6f4f34ae954b7696db1899f79409"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Bloodangel Kundun Gloves",
+      "slug": "bloodangel-kundun-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-bloodangel-kundun-bloodangel-kundun-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodglovesdl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-bloodangel-kundun-bloodangel-kundun-gloves.jpg",
+        "size": 1132,
+        "sha1": "98e394a5476a7a08f8bc3f2a146e84612262f38d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/bloodangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/bloodangelkundunm.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

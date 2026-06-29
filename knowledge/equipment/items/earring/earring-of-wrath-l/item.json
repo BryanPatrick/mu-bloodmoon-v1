@@ -1,0 +1,46 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "earring-earring-of-wrath-l",
+  "slug": "earring-of-wrath-l",
+  "name": "Earring of Wrath (L)",
+  "title": "Earring of Wrath (Left)",
+  "category": "Earring",
+  "categorySlug": "earring",
+  "usableBy": [
+    "Dark Wizard",
+    "Dark Knight",
+    "Fairy Elf",
+    "Magic Gladiator",
+    "Dark Lord",
+    "Summoner",
+    "Rage Fighter",
+    "Grow Lancer",
+    "B"
+  ],
+  "listStats": {
+    "normalDrop": "~",
+    "excellentDrop": "~",
+    "requiredLevel": "300"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/earring-earring-of-wrath-l.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/earring/wrathleft.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/earring-earring-of-wrath-l.jpg",
+    "size": 1151,
+    "sha1": "49780be69677adaf2b1eb5910ddde70184992e97"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/earring.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/earring/wrathleft.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/earring/wrathleft.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

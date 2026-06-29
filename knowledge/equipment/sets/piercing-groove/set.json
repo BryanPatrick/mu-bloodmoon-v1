@@ -1,0 +1,82 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-piercing-groove",
+  "slug": "piercing-groove",
+  "name": "Piercing Groove",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Rage Fighter"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-piercing-groove",
+      "name": "Piercing Groove Armor",
+      "category": "Armor",
+      "slug": "piercing-groove",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-piercing-groove.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar063_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-piercing-groove.jpg",
+        "size": 3012,
+        "sha1": "820db697df29978888f88b141e729537cb51ec49"
+      }
+    },
+    {
+      "itemId": "boots-piercing-groove",
+      "name": "Piercing Groove Boots",
+      "category": "Boots",
+      "slug": "piercing-groove",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-piercing-groove.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo067_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-piercing-groove.jpg",
+        "size": 2560,
+        "sha1": "bb391bf8e80e776cf3611300cf9591b2ca2588fc"
+      }
+    },
+    {
+      "itemId": "helm-piercing-groove",
+      "name": "Piercing Groove Helm",
+      "category": "Helm",
+      "slug": "piercing-groove",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-piercing-groove.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe060_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-piercing-groove.jpg",
+        "size": 2278,
+        "sha1": "7c32a3f47c65f3d99851dc1f8239ea89a2e2fcf2"
+      }
+    },
+    {
+      "itemId": "pants-piercing-groove",
+      "name": "Piercing Groove Pants",
+      "category": "Pants",
+      "slug": "piercing-groove",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-piercing-groove.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa068_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-piercing-groove.jpg",
+        "size": 2537,
+        "sha1": "97c8d1eacf68e1c56cc3a70644c9f0247bf9bd7b"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

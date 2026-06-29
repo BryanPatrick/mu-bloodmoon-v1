@@ -1,0 +1,82 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-storm-crow",
+  "slug": "storm-crow",
+  "name": "Storm Crow",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-storm-crow",
+      "name": "Storm Crow Armor",
+      "category": "Armor",
+      "slug": "storm-crow",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-storm-crow.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar027_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-storm-crow.jpg",
+        "size": 3749,
+        "sha1": "e0e45b05842e64fc7980509b1027f1281fd6c0d4"
+      }
+    },
+    {
+      "itemId": "boots-storm-crow",
+      "name": "Storm Crow Boots",
+      "category": "Boots",
+      "slug": "storm-crow",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-storm-crow.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo027_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-storm-crow.jpg",
+        "size": 3429,
+        "sha1": "c4f640860c521a1dd76450578d445ced434f67fb"
+      }
+    },
+    {
+      "itemId": "gloves-storm-crow",
+      "name": "Storm Crow Gloves",
+      "category": "Gloves",
+      "slug": "storm-crow",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-storm-crow.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl027_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-storm-crow.jpg",
+        "size": 3249,
+        "sha1": "8004d8ad582118abceacf5443931fe517da9f22d"
+      }
+    },
+    {
+      "itemId": "pants-storm-crow",
+      "name": "Storm Crow Pants",
+      "category": "Pants",
+      "slug": "storm-crow",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-storm-crow.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa027_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-storm-crow.jpg",
+        "size": 3178,
+        "sha1": "16ff14f9f35925cb6c73c23017ee25a08c316dda"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

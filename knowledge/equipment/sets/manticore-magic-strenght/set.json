@@ -1,0 +1,67 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-manticore-magic-strenght",
+  "slug": "manticore-magic-strenght",
+  "name": "Manticore Magic Strenght",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-manticore-magic-strenght",
+      "name": "Manticore Magic Strength Armor",
+      "category": "Armor",
+      "slug": "manticore-magic-strenght",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-manticore-magic-strenght.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/mantidk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-manticore-magic-strenght.jpg",
+        "size": 1459,
+        "sha1": "9a9bebaf79d7ca98c8dc3b4d73f1743b2dc77a5e"
+      }
+    },
+    {
+      "itemId": "gloves-manticore-magic-strenght",
+      "name": "Manticore Magic Strenght Gloves",
+      "category": "Gloves",
+      "slug": "manticore-magic-strenght",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-manticore-magic-strenght.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/mantidk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-manticore-magic-strenght.jpg",
+        "size": 1264,
+        "sha1": "94e48aa7bae0d4599355b384580a5c4280158f9c"
+      }
+    },
+    {
+      "itemId": "pants-manticore-magic-strenght",
+      "name": "Manticore Magic Strenght Pants",
+      "category": "Pants",
+      "slug": "manticore-magic-strenght",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-manticore-magic-strenght.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/mantidk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-manticore-magic-strenght.jpg",
+        "size": 1421,
+        "sha1": "5dd22ed05ebb20751fc521ae782d403692d85808"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

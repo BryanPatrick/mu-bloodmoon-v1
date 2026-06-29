@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-red-spirit",
+  "slug": "red-spirit",
+  "name": "Red Spirit",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-red-spirit",
+      "name": "Red Spirit Armor",
+      "category": "Armor",
+      "slug": "red-spirit",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-red-spirit.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar022_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-red-spirit.jpg",
+        "size": 3923,
+        "sha1": "c96e65e33d4d595ad4e1c3985832e07db1270498"
+      }
+    },
+    {
+      "itemId": "boots-red-spirit",
+      "name": "Red Spirit Boots",
+      "category": "Boots",
+      "slug": "red-spirit",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-red-spirit.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo022_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-red-spirit.jpg",
+        "size": 3999,
+        "sha1": "4b16ff622942dabbcbe0312a3b6daecc3da32451"
+      }
+    },
+    {
+      "itemId": "gloves-red-spirit",
+      "name": "Red Spirit Gloves",
+      "category": "Gloves",
+      "slug": "red-spirit",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-red-spirit.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl022_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-red-spirit.jpg",
+        "size": 3785,
+        "sha1": "63809e678fead7a82b8b4cd314ac18fc79c268e5"
+      }
+    },
+    {
+      "itemId": "helm-red-spirit",
+      "name": "Red Spirit Helm",
+      "category": "Helm",
+      "slug": "red-spirit",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-red-spirit.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe022_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-red-spirit.jpg",
+        "size": 2951,
+        "sha1": "2a7e4d74a485dbefa18be4031a9f9d4e03359d81"
+      }
+    },
+    {
+      "itemId": "pants-red-spirit",
+      "name": "Red Spirit Pants",
+      "category": "Pants",
+      "slug": "red-spirit",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-red-spirit.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa022_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-red-spirit.jpg",
+        "size": 3370,
+        "sha1": "0d60e595a5300cdd131d6d92d26a4baa8ab8ac94"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

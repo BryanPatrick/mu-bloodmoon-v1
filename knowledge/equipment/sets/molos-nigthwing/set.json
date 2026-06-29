@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-molos-nigthwing",
+  "slug": "molos-nigthwing",
+  "name": "Molos Nigthwing",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Molos Nightwing Helm",
+      "slug": "molos-nightwing-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-molos-nigthwing-molos-nightwing-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/s15/helm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-molos-nigthwing-molos-nightwing-helm.jpg",
+        "size": 1098,
+        "sha1": "66b4483afae1597eedb02e1fb01fbf883f06c617"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Molos Nightwing Armor",
+      "slug": "molos-nightwing-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-molos-nigthwing-molos-nightwing-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/s15/armor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-molos-nigthwing-molos-nightwing-armor.jpg",
+        "size": 1276,
+        "sha1": "85ee49fc8aa663b117e6fd8343e6e8758b979391"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Molos Nightwing Pants",
+      "slug": "molos-nightwing-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-molos-nigthwing-molos-nightwing-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/s15/pants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-molos-nigthwing-molos-nightwing-pants.jpg",
+        "size": 1191,
+        "sha1": "a1b0e1e66eca0a830bb55e492b6b7f3d285d64ee"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Molos Nightwing Gloves",
+      "slug": "molos-nightwing-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-molos-nigthwing-molos-nightwing-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/s15/gloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-molos-nigthwing-molos-nightwing-gloves.jpg",
+        "size": 1098,
+        "sha1": "fcb8c1f54091ba8e5718dd4b04a22acadd34ab0f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/molos.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

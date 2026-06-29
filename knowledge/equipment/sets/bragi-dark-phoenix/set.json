@@ -1,0 +1,90 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-bragi-dark-phoenix",
+  "slug": "bragi-dark-phoenix",
+  "name": "Bragi Dark Phoenix",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Bragi Armor",
+      "slug": "bragi-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-bragi-dark-phoenix-bragi-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar008_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-bragi-dark-phoenix-bragi-armor.jpg",
+        "size": 4229,
+        "sha1": "9ce91915b916966cb81b77770aece2dd8f365b2e"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Bragi Pants",
+      "slug": "bragi-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-bragi-dark-phoenix-bragi-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa008_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-bragi-dark-phoenix-bragi-pants.jpg",
+        "size": 3810,
+        "sha1": "6e236d3517f523a75c28e0de0760f5d7b13d7f75"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Bragi Boots",
+      "slug": "bragi-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-bragi-dark-phoenix-bragi-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo008_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-bragi-dark-phoenix-bragi-boots.jpg",
+        "size": 4117,
+        "sha1": "50473626776f9800c3559d0f6e1cbb99cfa1ed61"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Bragi Helm",
+      "slug": "bragi-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-bragi-dark-phoenix-bragi-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe008_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-bragi-dark-phoenix-bragi-helm.jpg",
+        "size": 3483,
+        "sha1": "eb3b436351514455c0cfb06b2a01f6541926f00e"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Bragi Dark Breaker",
+      "slug": "bragi-dark-breaker",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-bragi-dark-phoenix-bragi-dark-breaker.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/sword/isw013_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-bragi-dark-phoenix-bragi-dark-breaker.jpg",
+        "size": 3084,
+        "sha1": "46501f23a70c28eb7f69a81d8d1552fddcacb8c7"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/bragi.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

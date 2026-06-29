@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "silver-heart-ancient-silver-heart-knight-conviction",
+  "slug": "silver-heart-knight-conviction",
+  "name": "Silver Heart Knight (Conviction)",
+  "family": "Silver Heart Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Silver Heart Knight (Conviction) Helm",
+      "slug": "silver-heart-knight-conviction-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-knight-conviction-silver-heart-knight-conviction-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/knigthhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-knight-conviction-silver-heart-knight-conviction-helm.jpg",
+        "size": 1056,
+        "sha1": "4cedf0a686172b3dce4a563cb126606dd7783008"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Knight (Conviction) Armor",
+      "slug": "silver-heart-knight-conviction-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-knight-conviction-silver-heart-knight-conviction-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/knightarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-knight-conviction-silver-heart-knight-conviction-armor.jpg",
+        "size": 1428,
+        "sha1": "905e08d94524549fd62e07e26a4789815a2064f9"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Knight (Conviction) Pants",
+      "slug": "silver-heart-knight-conviction-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-knight-conviction-silver-heart-knight-conviction-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/kngithpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-knight-conviction-silver-heart-knight-conviction-pants.jpg",
+        "size": 1458,
+        "sha1": "61c3fd312acf756ec0c4c3544a9e8c853992e0bf"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Knight (Conviction) Boots",
+      "slug": "silver-heart-knight-conviction-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-knight-conviction-silver-heart-knight-conviction-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/knightboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-knight-conviction-silver-heart-knight-conviction-boots.jpg",
+        "size": 1239,
+        "sha1": "e19b3be33b45df360d5c6c2a8119be2ccc0fe40e"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/silver-heart-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/silverheartconviction.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

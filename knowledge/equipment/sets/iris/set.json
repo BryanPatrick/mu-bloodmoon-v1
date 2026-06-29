@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-iris",
+  "slug": "iris",
+  "name": "Iris",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-iris",
+      "name": "Iris Armor",
+      "category": "Armor",
+      "slug": "iris",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-iris.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar037_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-iris.jpg",
+        "size": 3507,
+        "sha1": "f55679d83f00bb1d6003415b16b1b646419c9216"
+      }
+    },
+    {
+      "itemId": "boots-iris",
+      "name": "Iris Boots",
+      "category": "Boots",
+      "slug": "iris",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-iris.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo037_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-iris.jpg",
+        "size": 2977,
+        "sha1": "6aff1b77a68792ee05be9cdd1fc7c2bc9f3a0474"
+      }
+    },
+    {
+      "itemId": "gloves-iris",
+      "name": "Iris Gloves",
+      "category": "Gloves",
+      "slug": "iris",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-iris.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl037_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-iris.jpg",
+        "size": 3428,
+        "sha1": "0448c266d22def4f1684901081ee49f46dd5269c"
+      }
+    },
+    {
+      "itemId": "helm-iris",
+      "name": "Iris Helm",
+      "category": "Helm",
+      "slug": "iris",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-iris.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe034_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-iris.jpg",
+        "size": 3761,
+        "sha1": "872ae993cfaa826443cddee465b985d5c316effb"
+      }
+    },
+    {
+      "itemId": "pants-iris",
+      "name": "Iris Pants",
+      "category": "Pants",
+      "slug": "iris",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-iris.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa037_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-iris.jpg",
+        "size": 3229,
+        "sha1": "3f6027c265261f1f63cdda07aad1ad920e78a376"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

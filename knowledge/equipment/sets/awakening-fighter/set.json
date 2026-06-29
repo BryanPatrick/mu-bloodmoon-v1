@@ -1,0 +1,81 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-awakening-fighter",
+  "slug": "awakening-fighter",
+  "name": "Awakening Fighter",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Rage Fighter"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-awakening-fighter",
+      "name": "Awakening Soul Fighter Armor",
+      "category": "Armor",
+      "slug": "awakening-fighter",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-awakening-fighter.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/bkarmorawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-awakening-fighter.jpg",
+        "size": 1284,
+        "sha1": "f4688837b81d320390732c67a2f971d83061aeaa"
+      }
+    },
+    {
+      "itemId": "boots-awakening-fighter",
+      "name": "Awakening Soul Fighter Boots",
+      "category": "Boots",
+      "slug": "awakening-fighter",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-awakening-fighter.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/bkbootsawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-awakening-fighter.jpg",
+        "size": 1011,
+        "sha1": "f922533b2e1e80e5deec6aa219064cb1fcc92b63"
+      }
+    },
+    {
+      "itemId": "helm-awakening-fighter",
+      "name": "Awakening Soul Fighter Helm",
+      "category": "Helm",
+      "slug": "awakening-fighter",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-awakening-fighter.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/bkhelmawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-awakening-fighter.jpg",
+        "size": 1016,
+        "sha1": "04d557b79eed8f22377947b781fd9c853b1873fe"
+      }
+    },
+    {
+      "itemId": "pants-awakening-fighter",
+      "name": "Awakening Soul Fighter Pants",
+      "category": "Pants",
+      "slug": "awakening-fighter",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-awakening-fighter.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/bkpantsawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-awakening-fighter.jpg",
+        "size": 1180,
+        "sha1": "00e2701e2d3df3353a03cc34e8e84e4cb3af061b"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

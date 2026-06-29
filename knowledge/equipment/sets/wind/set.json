@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-wind",
+  "slug": "wind",
+  "name": "Wind",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-wind",
+      "name": "Wind Armor",
+      "category": "Armor",
+      "slug": "wind",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-wind.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar016_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-wind.jpg",
+        "size": 4063,
+        "sha1": "39912e690a8b19aa81682fd80962680aba469ced"
+      }
+    },
+    {
+      "itemId": "boots-wind",
+      "name": "Wind Boots",
+      "category": "Boots",
+      "slug": "wind",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-wind.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo016_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-wind.jpg",
+        "size": 3799,
+        "sha1": "739c729ac9d04592376f14757b68a3c18a8cff88"
+      }
+    },
+    {
+      "itemId": "gloves-wind",
+      "name": "Wind Gloves",
+      "category": "Gloves",
+      "slug": "wind",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-wind.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl016_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-wind.jpg",
+        "size": 3498,
+        "sha1": "1f8a5ef27ceed062cc32a1f878e4cd5d1ed651ba"
+      }
+    },
+    {
+      "itemId": "helm-wind",
+      "name": "Wind Helm",
+      "category": "Helm",
+      "slug": "wind",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-wind.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe016_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-wind.jpg",
+        "size": 3144,
+        "sha1": "ae1856e5109fe44ab29116d1a280d038f73ec1fc"
+      }
+    },
+    {
+      "itemId": "pants-wind",
+      "name": "Wind Pants",
+      "category": "Pants",
+      "slug": "wind",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-wind.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa016_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-wind.jpg",
+        "size": 3498,
+        "sha1": "616208f8746ca93b38ef0f948a9740665b0833c6"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

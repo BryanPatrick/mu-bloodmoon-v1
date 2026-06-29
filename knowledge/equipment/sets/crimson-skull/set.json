@@ -1,0 +1,81 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-crimson-skull",
+  "slug": "crimson-skull",
+  "name": "Crimson Skull",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Rage Fighter"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-crimson-skull",
+      "name": "Crimson Skull Armor",
+      "category": "Armor",
+      "slug": "crimson-skull",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-crimson-skull.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/rf400sarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-crimson-skull.jpg",
+        "size": 1328,
+        "sha1": "ae51e94cbabfd3b77683c8a152aef9aa7a08bc63"
+      }
+    },
+    {
+      "itemId": "boots-crimson-skull",
+      "name": "Crimson Skull Boots",
+      "category": "Boots",
+      "slug": "crimson-skull",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-crimson-skull.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/rf400sboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-crimson-skull.jpg",
+        "size": 1194,
+        "sha1": "bfbe7934e0d8eb327f66d545ee29a982d440aff0"
+      }
+    },
+    {
+      "itemId": "helm-crimson-skull",
+      "name": "Crimson Skull Helm",
+      "category": "Helm",
+      "slug": "crimson-skull",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-crimson-skull.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/rf400shelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-crimson-skull.jpg",
+        "size": 1078,
+        "sha1": "78ec14a75502c6045983eb202c29a6b550778c43"
+      }
+    },
+    {
+      "itemId": "pants-crimson-skull",
+      "name": "Crimson Skull Pants",
+      "category": "Pants",
+      "slug": "crimson-skull",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-crimson-skull.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/rf400spants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-crimson-skull.jpg",
+        "size": 1189,
+        "sha1": "567eda662eda8c65538451a498eeb9fd1518559e"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

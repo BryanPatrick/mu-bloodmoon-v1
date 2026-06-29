@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "manticore-ancient-manticore-lord",
+  "slug": "manticore-lord",
+  "name": "Manticore Lord",
+  "family": "Manticore Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Manticore Lord Helm",
+      "slug": "manticore-lord-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-lord-manticore-lord-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/vdxzdyrw.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-lord-manticore-lord-helm.jpg",
+        "size": 1101,
+        "sha1": "277fa543569d925adae33457701a3be83e7852af"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Lord Armor",
+      "slug": "manticore-lord-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-lord-manticore-lord-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/fvqw1bbc.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-lord-manticore-lord-armor.jpg",
+        "size": 1509,
+        "sha1": "dfe42b094611f62cc1042d54d1b3bb5640b523eb"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Lord Pants",
+      "slug": "manticore-lord-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-lord-manticore-lord-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/lljmdok2.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-lord-manticore-lord-pants.jpg",
+        "size": 1361,
+        "sha1": "c74daa72c2bebe09c733f85630dec86d8387b6a5"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Lord Gloves",
+      "slug": "manticore-lord-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-lord-manticore-lord-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/1ahsgfax.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-lord-manticore-lord-gloves.jpg",
+        "size": 1293,
+        "sha1": "dd5364a30638a9cb92d1835d1f5a53d7c239c42e"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/manticore-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/mantilord.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

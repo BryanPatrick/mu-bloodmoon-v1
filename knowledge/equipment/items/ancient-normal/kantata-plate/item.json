@@ -1,0 +1,916 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "ancient-normal-kantata-plate",
+  "slug": "kantata-plate",
+  "name": "Kantata Plate",
+  "title": "Kantata Plate",
+  "category": "Ancient Normal",
+  "categorySlug": "ancient-normal",
+  "usableBy": [],
+  "listStats": {
+    "value1": "Kantata Boots",
+    "value2": "Kantata Gloves",
+    "value3": "Kantata Armor",
+    "value4": "Kantata Ring of Wind",
+    "value5": "Kantata Ring of Poison"
+  },
+  "image": {
+    "publicPath": null,
+    "sourceUrl": null,
+    "localPath": null,
+    "size": null,
+    "sha1": null
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/kantata.html",
+    "imageSourceUrl": null
+  },
+  "statsByLevel": [
+    {
+      "itemLevel": 0,
+      "defense": 32,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 281,
+      "requiredAgility": 0,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 1,
+      "defense": 35,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 293,
+      "requiredAgility": 0,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 2,
+      "defense": 38,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 304,
+      "requiredAgility": 0,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 3,
+      "defense": 41,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 316,
+      "requiredAgility": 0,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 4,
+      "defense": 45,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 328,
+      "requiredAgility": 0,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 5,
+      "defense": 48,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 339,
+      "requiredAgility": 0,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 6,
+      "defense": 51,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 351,
+      "requiredAgility": 0,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 7,
+      "defense": 54,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 363,
+      "requiredAgility": 0,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 8,
+      "defense": 57,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 374,
+      "requiredAgility": 0,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 9,
+      "defense": 60,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 386,
+      "requiredAgility": 0,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 10,
+      "defense": 64,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 398,
+      "requiredAgility": 0,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 11,
+      "defense": 70,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 410,
+      "requiredAgility": 0,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 12,
+      "defense": 76,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 421,
+      "requiredAgility": 0,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 13,
+      "defense": 83,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 433,
+      "requiredAgility": 0,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 14,
+      "defense": 89,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 445,
+      "requiredAgility": 0,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 15,
+      "defense": 98,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 456,
+      "requiredAgility": 0,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    }
+  ],
+  "parts": [
+    {
+      "name": "Kantata Boots",
+      "slug": "kantata-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo005_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-boots.jpg",
+        "size": 3536,
+        "sha1": "1782eaf6fbc4abb3a972b8df24d500fb12ed55d3"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Kantata Gloves",
+      "slug": "kantata-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl005_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-gloves.jpg",
+        "size": 3368,
+        "sha1": "9e05684de8c2c34553010500624f44faa25cc9b3"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Kantata Armor",
+      "slug": "kantata-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar005_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-armor.jpg",
+        "size": 4183,
+        "sha1": "46511b326f6d648e41c816b2e6d4924a487da1b5"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Kantata Ring of Wind",
+      "slug": "kantata-ring-of-wind",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-ring-of-wind.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri18_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-ring-of-wind.jpg",
+        "size": 2076,
+        "sha1": "365a30cb0ae3c3233b9a3c70b8080c5636100c54"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Kantata Ring of Poison",
+      "slug": "kantata-ring-of-poison",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-ring-of-poison.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri003_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-ring-of-poison.jpg",
+        "size": 2479,
+        "sha1": "9a22b185c4a7f4f53b822d9e164434fe935ecd39"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "detailParts": [
+    {
+      "name": "Kantata Boots",
+      "slug": "kantata-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo005.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-boots.jpg",
+        "size": 3536,
+        "sha1": "1782eaf6fbc4abb3a972b8df24d500fb12ed55d3"
+      },
+      "imageError": null,
+      "statsByLevel": [
+        {
+          "itemLevel": 0,
+          "defense": 32,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 281,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 1,
+          "defense": 35,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 293,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 2,
+          "defense": 38,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 304,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 3,
+          "defense": 41,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 316,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 4,
+          "defense": 45,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 328,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 5,
+          "defense": 48,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 339,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 6,
+          "defense": 51,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 351,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 7,
+          "defense": 54,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 363,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 8,
+          "defense": 57,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 374,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 9,
+          "defense": 60,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 386,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 10,
+          "defense": 64,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 398,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 11,
+          "defense": 70,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 410,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 12,
+          "defense": 76,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 421,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 13,
+          "defense": 83,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 433,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 14,
+          "defense": 89,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 445,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 15,
+          "defense": 98,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 456,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        }
+      ]
+    },
+    {
+      "name": "Kantata Gloves",
+      "slug": "kantata-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl005.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-gloves.jpg",
+        "size": 3368,
+        "sha1": "9e05684de8c2c34553010500624f44faa25cc9b3"
+      },
+      "imageError": null,
+      "statsByLevel": [
+        {
+          "itemLevel": 0,
+          "defense": 32,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 281,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 1,
+          "defense": 35,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 293,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 2,
+          "defense": 38,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 304,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 3,
+          "defense": 41,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 316,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 4,
+          "defense": 45,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 328,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 5,
+          "defense": 48,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 339,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 6,
+          "defense": 51,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 351,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 7,
+          "defense": 54,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 363,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 8,
+          "defense": 57,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 374,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 9,
+          "defense": 60,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 386,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 10,
+          "defense": 64,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 398,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 11,
+          "defense": 70,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 410,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 12,
+          "defense": 76,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 421,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 13,
+          "defense": 81,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 433,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 14,
+          "defense": 89,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 445,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 15,
+          "defense": 98,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 456,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        }
+      ]
+    },
+    {
+      "name": "Kantata Armor",
+      "slug": "kantata-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar005.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-armor.jpg",
+        "size": 4183,
+        "sha1": "46511b326f6d648e41c816b2e6d4924a487da1b5"
+      },
+      "imageError": null,
+      "statsByLevel": [
+        {
+          "itemLevel": 0,
+          "defense": 55,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 304,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 1,
+          "defense": 58,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 316,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 2,
+          "defense": 61,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 328,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 3,
+          "defense": 64,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 339,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 4,
+          "defense": 67,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 351,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 5,
+          "defense": 70,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 363,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 6,
+          "defense": 73,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 374,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 7,
+          "defense": 76,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 386,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 8,
+          "defense": 79,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 398,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 9,
+          "defense": 82,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 410,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 10,
+          "defense": 86,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 421,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 11,
+          "defense": 91,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 433,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 12,
+          "defense": 97,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 445,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 13,
+          "defense": 104,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 456,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 14,
+          "defense": 112,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 468,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 15,
+          "defense": 121,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 480,
+          "requiredAgility": 0,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        }
+      ]
+    }
+  ],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

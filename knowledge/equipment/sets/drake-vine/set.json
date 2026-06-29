@@ -1,0 +1,100 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-drake-vine",
+  "slug": "drake-vine",
+  "name": "Drake Vine",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "parts": [
+    {
+      "name": "Drake Boots",
+      "slug": "drake-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-drake-vine-drake-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo014_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-drake-vine-drake-boots.jpg",
+        "size": 3460,
+        "sha1": "4a66684df855a03669d77667e3c06289496feed5"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Drake Armor",
+      "slug": "drake-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-drake-vine-drake-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar014_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-drake-vine-drake-armor.jpg",
+        "size": 3409,
+        "sha1": "1ded9391196d331a6710a699157b2be6148ba044"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Drake Pants",
+      "slug": "drake-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-drake-vine-drake-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa063_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-drake-vine-drake-pants.jpg",
+        "size": 2917,
+        "sha1": "879f1015108c6b314046d3bca13afaae2d50af5d"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Drake Helm",
+      "slug": "drake-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-drake-vine-drake-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe014_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-drake-vine-drake-helm.jpg",
+        "size": 2912,
+        "sha1": "e3d3f4872454de4cedc0555b9d592a31b1985dba"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [
+    {
+      "pieces": 2,
+      "option": "Agility Level +20"
+    },
+    {
+      "pieces": 3,
+      "option": "ATK DMG +25"
+    },
+    {
+      "pieces": 4,
+      "option": "Double DMG chance +20%"
+    },
+    {
+      "pieces": "additional",
+      "option": "DEF +40"
+    },
+    {
+      "pieces": "additional",
+      "option": "Critical DMG chance +10%"
+    }
+  ],
+  "baseSetDefense": 86,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": "references/game-data/muonlinefanz-ancient-items-data.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/deurakeu.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

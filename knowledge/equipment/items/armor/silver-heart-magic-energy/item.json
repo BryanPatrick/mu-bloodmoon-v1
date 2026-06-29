@@ -1,0 +1,38 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "armor-silver-heart-magic-energy",
+  "slug": "silver-heart-magic-energy",
+  "name": "Silver Heart Magic Energy",
+  "title": "Silver Heart Magic Energy Armor",
+  "category": "Armor",
+  "categorySlug": "armor",
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "listStats": {
+    "normalDrop": "~",
+    "excellentDrop": "~",
+    "requiredLevel": "1100"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/armor-silver-heart-magic-energy.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/a2.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-silver-heart-magic-energy.jpg",
+    "size": 1428,
+    "sha1": "905e08d94524549fd62e07e26a4789815a2064f9"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/armor.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/armor/silverheartmagicenergy.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/a2.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

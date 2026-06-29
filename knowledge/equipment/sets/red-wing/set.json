@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-red-wing",
+  "slug": "red-wing",
+  "name": "Red Wing",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Summoner"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-red-wing",
+      "name": "Red Wing Armor",
+      "category": "Armor",
+      "slug": "red-wing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-red-wing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar041_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-red-wing.jpg",
+        "size": 14292,
+        "sha1": "b97c0d45c3b0fc00e6af77a26f29d487361f837e"
+      }
+    },
+    {
+      "itemId": "boots-red-wing",
+      "name": "Red Wing Boots",
+      "category": "Boots",
+      "slug": "red-wing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-red-wing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo041_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-red-wing.jpg",
+        "size": 13800,
+        "sha1": "e628f784d7dbf3c2d89dd9656b658361f9e1362d"
+      }
+    },
+    {
+      "itemId": "gloves-red-wing",
+      "name": "Red Wing Gloves",
+      "category": "Gloves",
+      "slug": "red-wing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-red-wing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl103_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-red-wing.jpg",
+        "size": 13892,
+        "sha1": "73176a9b7176dd87974f4211c7dc80da5dd11b53"
+      }
+    },
+    {
+      "itemId": "helm-red-wing",
+      "name": "Red Wing Helm",
+      "category": "Helm",
+      "slug": "red-wing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-red-wing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe038_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-red-wing.jpg",
+        "size": 14131,
+        "sha1": "7751cc9ee6257ac9b99de82b1889ceca64ec80f5"
+      }
+    },
+    {
+      "itemId": "pants-red-wing",
+      "name": "Red Wing Pants",
+      "category": "Pants",
+      "slug": "red-wing",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-red-wing.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa041_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-red-wing.jpg",
+        "size": 13923,
+        "sha1": "28171f00128a4e2303ec314b3b85a9ba594c62c7"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

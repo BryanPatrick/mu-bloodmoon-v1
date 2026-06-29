@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "apocalypse-ancient-apocalypse-knight-conviction",
+  "slug": "apocalypse-knight-conviction",
+  "name": "Apocalypse Knight (Conviction)",
+  "family": "Apocalypse Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Apocalypse Knight (Conviction) Helm",
+      "slug": "apocalypse-knight-conviction-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-knight-conviction-apocalypse-knight-conviction-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/helmdk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-knight-conviction-apocalypse-knight-conviction-helm.jpg",
+        "size": 1703,
+        "sha1": "6aec747fcc6584fcd9fde2a10bd17d3343d74b4f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apocalypse Knight (Conviction) Armor",
+      "slug": "apocalypse-knight-conviction-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-knight-conviction-apocalypse-knight-conviction-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/armordk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-knight-conviction-apocalypse-knight-conviction-armor.jpg",
+        "size": 1594,
+        "sha1": "5ea7477849a0449ec67ef104bf964adb24f227ef"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apocalypse Knight (Conviction) Pants",
+      "slug": "apocalypse-knight-conviction-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-knight-conviction-apocalypse-knight-conviction-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/pantsdk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-knight-conviction-apocalypse-knight-conviction-pants.jpg",
+        "size": 1365,
+        "sha1": "bbfc65974cc17efe4f28fabd738a6d1dfa9d6f1d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apocalypse Knight (Conviction) Boots",
+      "slug": "apocalypse-knight-conviction-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-knight-conviction-apocalypse-knight-conviction-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/bootsdk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-knight-conviction-apocalypse-knight-conviction-boots.jpg",
+        "size": 1584,
+        "sha1": "85bdad7b0db368387dce82548c663a2a8673b2c2"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/apocalypse-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/apoknightcon.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

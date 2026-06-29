@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "apocalypse-ancient-apocalypse-summoner",
+  "slug": "apocalypse-summoner",
+  "name": "Apocalypse Summoner",
+  "family": "Apocalypse Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Apocalypse Summoner Helm",
+      "slug": "apocalypse-summoner-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-summoner-apocalypse-summoner-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/helmelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-summoner-apocalypse-summoner-helm.jpg",
+        "size": 1459,
+        "sha1": "19434046f41db0d8f7b0e36eb0bca10f4e4a4f96"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apocalypse Summoner Armor",
+      "slug": "apocalypse-summoner-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-summoner-apocalypse-summoner-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/armorelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-summoner-apocalypse-summoner-armor.jpg",
+        "size": 1479,
+        "sha1": "a8dba0ab201741a3b84e08754e6f853207962459"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apocalypse Summoner Pants",
+      "slug": "apocalypse-summoner-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-summoner-apocalypse-summoner-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/pantself.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-summoner-apocalypse-summoner-pants.jpg",
+        "size": 1464,
+        "sha1": "bd96fe7140c88f67aa653988ace07150e3772ab3"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apocalypse Summoner Gloves",
+      "slug": "apocalypse-summoner-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-summoner-apocalypse-summoner-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/gloveself.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-summoner-apocalypse-summoner-gloves.jpg",
+        "size": 1386,
+        "sha1": "f051a8b25aadbca49072ff814986d43a4efa977e"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/apocalypse-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/aposummoner.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

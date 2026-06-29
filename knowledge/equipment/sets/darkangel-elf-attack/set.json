@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-darkangel-elf-attack",
+  "slug": "darkangel-elf-attack",
+  "name": "Darkangel Elf Attack",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-darkangel-elf-attack",
+      "name": "Darkangel Elf Armor",
+      "category": "Armor",
+      "slug": "darkangel-elf-attack",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-darkangel-elf-attack.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkaelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-darkangel-elf-attack.jpg",
+        "size": 1107,
+        "sha1": "b2abb4d0b6cb1939d2a57a8ccf13009b84aa77ad"
+      }
+    },
+    {
+      "itemId": "boots-darkangel-elf-attack",
+      "name": "Darkangel Elf Boots",
+      "category": "Boots",
+      "slug": "darkangel-elf-attack",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-darkangel-elf-attack.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkbelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-darkangel-elf-attack.jpg",
+        "size": 1200,
+        "sha1": "725a18cf9dbdec46866b950e139681676d23dec3"
+      }
+    },
+    {
+      "itemId": "gloves-darkangel-elf-attack",
+      "name": "Darkangel Elf Gloves",
+      "category": "Gloves",
+      "slug": "darkangel-elf-attack",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-darkangel-elf-attack.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkg102.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-darkangel-elf-attack.jpg",
+        "size": 983,
+        "sha1": "8fa40a0dcad0f3b8801180b155c3bed3fdb58883"
+      }
+    },
+    {
+      "itemId": "helm-darkangel-elf-attack",
+      "name": "Darkangel Elf Helm",
+      "category": "Helm",
+      "slug": "darkangel-elf-attack",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-darkangel-elf-attack.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkhelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-darkangel-elf-attack.jpg",
+        "size": 1077,
+        "sha1": "7a70511ec6a923ecba5df3001c9f50a57e7c0e22"
+      }
+    },
+    {
+      "itemId": "pants-darkangel-elf-attack",
+      "name": "Darkangel Elf Pants",
+      "category": "Pants",
+      "slug": "darkangel-elf-attack",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-darkangel-elf-attack.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkpelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-darkangel-elf-attack.jpg",
+        "size": 1027,
+        "sha1": "851088557c5efeba7d1f4d3ee28b7a8090e3cf73"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

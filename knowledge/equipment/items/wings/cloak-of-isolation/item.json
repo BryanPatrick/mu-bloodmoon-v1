@@ -1,0 +1,34 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "wings-cloak-of-isolation",
+  "slug": "cloak-of-isolation",
+  "name": "Cloak of Isolation",
+  "title": "Cloak of Isolation",
+  "category": "Wings",
+  "categorySlug": "wings",
+  "usableBy": [],
+  "listStats": {
+    "normalDrop": "800"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/wings-cloak-of-isolation.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/glw4.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/wings-cloak-of-isolation.jpg",
+    "size": 1425,
+    "sha1": "ba76a5d0f6ce3a82cd335b3096ef7295e1c611dd"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/wings.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/wing/glw4.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/glw4.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

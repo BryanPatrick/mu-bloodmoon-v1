@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-glorious",
+  "slug": "glorious",
+  "name": "Glorious",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Dark Lord"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-glorious",
+      "name": "Glorious Armor",
+      "category": "Armor",
+      "slug": "glorious",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-glorious.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar035_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-glorious.jpg",
+        "size": 3944,
+        "sha1": "fcd7ae2a67ef933bde937886c07b425923f2aafd"
+      }
+    },
+    {
+      "itemId": "boots-glorious",
+      "name": "Glorious Boots",
+      "category": "Boots",
+      "slug": "glorious",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-glorious.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo035_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-glorious.jpg",
+        "size": 3597,
+        "sha1": "1cdf5119e1cb352907c19369a67e8bf806508946"
+      }
+    },
+    {
+      "itemId": "gloves-glorious",
+      "name": "Glorious Gloves",
+      "category": "Gloves",
+      "slug": "glorious",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-glorious.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl035_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-glorious.jpg",
+        "size": 3568,
+        "sha1": "082ba3813d9b0aa66588b93de3d9489755a10b12"
+      }
+    },
+    {
+      "itemId": "helm-glorious",
+      "name": "Glorious Helm",
+      "category": "Helm",
+      "slug": "glorious",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-glorious.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe032_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-glorious.jpg",
+        "size": 3226,
+        "sha1": "3c1c20e92085137f77fd55ce2598a54cdc730b7c"
+      }
+    },
+    {
+      "itemId": "pants-glorious",
+      "name": "Glorious Pants",
+      "category": "Pants",
+      "slug": "glorious",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-glorious.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa035_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-glorious.jpg",
+        "size": 3550,
+        "sha1": "a5e625d101e223dfb548eaf2f993f482036f576a"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

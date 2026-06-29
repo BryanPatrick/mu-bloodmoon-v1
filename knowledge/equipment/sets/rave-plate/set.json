@@ -1,0 +1,68 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-rave-plate",
+  "slug": "rave-plate",
+  "name": "Rave Plate",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Rave Helm",
+      "slug": "rave-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-rave-plate-rave-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe053_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-rave-plate-rave-helm.jpg",
+        "size": 3200,
+        "sha1": "d2d6084ccb517848e51989d2cfecefca7e0c46eb"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Rave Pants",
+      "slug": "rave-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-rave-plate-rave-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa060_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-rave-plate-rave-pants.jpg",
+        "size": 3410,
+        "sha1": "03ea356d7395ab7ab3e9a4d9506b6825cae220b6"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Rave Armor",
+      "slug": "rave-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-rave-plate-rave-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar005_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-rave-plate-rave-armor.jpg",
+        "size": 4183,
+        "sha1": "46511b326f6d648e41c816b2e6d4924a487da1b5"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "2 Set option : Increase Damage +20 3 Set option : Double Damage Rate +10%",
+      "source": "listStats"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/rave.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

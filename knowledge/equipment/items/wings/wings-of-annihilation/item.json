@@ -1,0 +1,34 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "wings-wings-of-annihilation",
+  "slug": "wings-of-annihilation",
+  "name": "Wings of Annihilation",
+  "title": "Wings of Annihilation",
+  "category": "Wings",
+  "categorySlug": "wings",
+  "usableBy": [],
+  "listStats": {
+    "normalDrop": "800"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/wings-wings-of-annihilation.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/mgw4.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/wings-wings-of-annihilation.jpg",
+    "size": 1120,
+    "sha1": "c8f9c2758bf221391b46c4abcd4d5afff5d89122"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/wings.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/wing/mgw4.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/mgw4.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "bloodangel-ancient-tenacity-bloodangel-lancer",
+  "slug": "tenacity-bloodangel-lancer",
+  "name": "Tenacity Bloodangel Lancer",
+  "family": "Bloodangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Tenacity Helm",
+      "slug": "tenacity-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-tenacity-bloodangel-lancer-tenacity-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodhelmgl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-tenacity-bloodangel-lancer-tenacity-helm.jpg",
+        "size": 1026,
+        "sha1": "a0aaf8d193c2f32c44d1560bd7500d08be332b31"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Tenacity Armor",
+      "slug": "tenacity-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-tenacity-bloodangel-lancer-tenacity-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodarmorgl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-tenacity-bloodangel-lancer-tenacity-armor.jpg",
+        "size": 1519,
+        "sha1": "74d6868bf3e11f3c75cfb9eac3a9d8120a4e2207"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Tenacity Pants",
+      "slug": "tenacity-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-tenacity-bloodangel-lancer-tenacity-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodpantsgl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-tenacity-bloodangel-lancer-tenacity-pants.jpg",
+        "size": 1413,
+        "sha1": "281f0c9010f8b3bf6828e41598bd2a39319f481a"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Tenacity Gloves",
+      "slug": "tenacity-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-tenacity-bloodangel-lancer-tenacity-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodglovesgl.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-tenacity-bloodangel-lancer-tenacity-gloves.jpg",
+        "size": 1199,
+        "sha1": "b996c27ee2551883421445027695946a0a732b1e"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/bloodangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/tenacity.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

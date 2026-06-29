@@ -1,0 +1,35 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "wings-wing-of-life",
+  "slug": "wing-of-life",
+  "name": "Wing of Life",
+  "title": "Wing of Life",
+  "category": "Wings",
+  "categorySlug": "wings",
+  "usableBy": [],
+  "listStats": {
+    "normalDrop": "290+(Wing Level*4)",
+    "excellentDrop": "Usado por el Muse Elf. Defensa: 37 + (Wing Level * 3) [Level +10~+15 Incremento de defensa +4,+5,+6,+7,+8,+9]. Incremento de Daño: 35% + (Wing Level * 1). Absorcion de Daño: 29% + (Wing Level * 2). Opciones: 25% Luck en Rate de Soul + 5% Critical Damage Rate. 3% de Posibilidad de ignorar la Defensa del Enemigo. 5% de posibilidad de Recuperar el 100% del HP. Incremento de Daño +4,+8,+12,+16. Recuperacion de HP 1%,2%,3%,4%. Reduce 3 Vida despues del ataque con exito (Incluido el Miss)."
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/wings-wing-of-life.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/life.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/wings-wing-of-life.jpg",
+    "size": 1502,
+    "sha1": "e657eaf835cdb2bbc50ec2fa9dd0a77e61a0ff93"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/wings.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/wing/life.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/life.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

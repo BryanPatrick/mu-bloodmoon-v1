@@ -1,0 +1,90 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-elune-demonic",
+  "slug": "elune-demonic",
+  "name": "Elune Demonic",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Elune Armor",
+      "slug": "elune-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-elune-demonic-elune-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar055_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-elune-demonic-elune-armor.jpg",
+        "size": 12097,
+        "sha1": "c091b714bdd68c769aad3c348bd035afb4f65f3f"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Elune Pants",
+      "slug": "elune-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-elune-demonic-elune-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa054_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-elune-demonic-elune-pants.jpg",
+        "size": 11753,
+        "sha1": "01c9ba8e0b90fc8ac467cec9738ebc3d8991f21b"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Elune Gloves",
+      "slug": "elune-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-elune-demonic-elune-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl115_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-elune-demonic-elune-gloves.jpg",
+        "size": 11496,
+        "sha1": "a3df552458fdb272a179f841c9580cec2e86a3ce"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Elune Demonic Stick",
+      "slug": "elune-demonic-stick",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-elune-demonic-elune-demonic-stick.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/stick/istick005_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-elune-demonic-elune-demonic-stick.jpg",
+        "size": 11758,
+        "sha1": "f26bd27905f0effa8fa59c29578dcc497e6ef001"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Elune Ring of Ice",
+      "slug": "elune-ring-of-ice",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-elune-demonic-elune-ring-of-ice.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ring/iri002_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-elune-demonic-elune-ring-of-ice.jpg",
+        "size": 2377,
+        "sha1": "a4e84a054374dac6bcdb3fdb8c0d31bbc459047a"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/elune.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

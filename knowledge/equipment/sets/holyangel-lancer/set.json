@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-holyangel-lancer",
+  "slug": "holyangel-lancer",
+  "name": "Holyangel Lancer",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Grow Lancer"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-holyangel-lancer",
+      "name": "Holyangel Lancer Armor",
+      "category": "Armor",
+      "slug": "holyangel-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-holyangel-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/holylancerarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-holyangel-lancer.jpg",
+        "size": 1442,
+        "sha1": "fd025560fb78014f0f2230a0811c8aec1fd5b7ec"
+      }
+    },
+    {
+      "itemId": "boots-holyangel-lancer",
+      "name": "Holyangel Lancer Boots",
+      "category": "Boots",
+      "slug": "holyangel-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-holyangel-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/holylancerboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-holyangel-lancer.jpg",
+        "size": 1382,
+        "sha1": "a6f28f698b2f3bcd4c2f48d206a51215e2fbeb88"
+      }
+    },
+    {
+      "itemId": "gloves-holyangel-lancer",
+      "name": "Holyangel Lancer Gloves",
+      "category": "Gloves",
+      "slug": "holyangel-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-holyangel-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/holylancergloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-holyangel-lancer.jpg",
+        "size": 1215,
+        "sha1": "f65c9d36ea838ac4320f6b9e2fff0f715a721c9b"
+      }
+    },
+    {
+      "itemId": "helm-holyangel-lancer",
+      "name": "Holyangel  Lancer Helm",
+      "category": "Helm",
+      "slug": "holyangel-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-holyangel-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/holylancerhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-holyangel-lancer.jpg",
+        "size": 1432,
+        "sha1": "7d28c310eb07dae050673c16ba27904b0b07d74d"
+      }
+    },
+    {
+      "itemId": "pants-holyangel-lancer",
+      "name": "Holyangel Lancer Pants",
+      "category": "Pants",
+      "slug": "holyangel-lancer",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-holyangel-lancer.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/holylancerpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-holyangel-lancer.jpg",
+        "size": 1285,
+        "sha1": "9495da21c47b8f9f8b97eac59cf79b70f167dfa3"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

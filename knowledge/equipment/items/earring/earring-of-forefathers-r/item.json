@@ -1,0 +1,46 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "earring-earring-of-forefathers-r",
+  "slug": "earring-of-forefathers-r",
+  "name": "Earring of Forefathers (R)",
+  "title": "Earring of Forefathers (Right)",
+  "category": "Earring",
+  "categorySlug": "earring",
+  "usableBy": [
+    "Dark Wizard",
+    "Dark Knight",
+    "Fairy Elf",
+    "Magic Gladiator",
+    "Dark Lord",
+    "Summoner",
+    "Rage Fighter",
+    "Grow Lancer",
+    "B"
+  ],
+  "listStats": {
+    "normalDrop": "~",
+    "excellentDrop": "~",
+    "requiredLevel": "750"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/earring-earring-of-forefathers-r.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/earring/forephaterright.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/earring-earring-of-forefathers-r.jpg",
+    "size": 1171,
+    "sha1": "15271285b12aec8420aa93f590f3680bc6865193"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/earring.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/earring/forefathersright.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/earring/forephaterright.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

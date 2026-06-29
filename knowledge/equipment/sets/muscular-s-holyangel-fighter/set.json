@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "holyangel-ancient-muscular-s-holyangel-fighter",
+  "slug": "muscular-s-holyangel-fighter",
+  "name": "Muscular's Holyangel Fighter",
+  "family": "Holyangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Muscular Helm",
+      "slug": "muscular-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-muscular-s-holyangel-fighter-muscular-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holybmhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-muscular-s-holyangel-fighter-muscular-helm-detail.jpg",
+        "size": 2541,
+        "sha1": "76cd66fd1fe69fd423ed2eef6395e419355431ae"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Muscular Armor",
+      "slug": "muscular-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-muscular-s-holyangel-fighter-muscular-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holybmarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-muscular-s-holyangel-fighter-muscular-armor-detail.jpg",
+        "size": 3242,
+        "sha1": "ada15ac5c8b9826155e7382675ef655e5fe57529"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Muscular Pants",
+      "slug": "muscular-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-muscular-s-holyangel-fighter-muscular-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holybmpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-muscular-s-holyangel-fighter-muscular-pants-detail.jpg",
+        "size": 3816,
+        "sha1": "24b1e55e6918ef4686d2352f4864047bdc51b7ab"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Muscular Boots",
+      "slug": "muscular-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-muscular-s-holyangel-fighter-muscular-boots-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holybmboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-muscular-s-holyangel-fighter-muscular-boots-detail.jpg",
+        "size": 3038,
+        "sha1": "407913a56453255694c3418c32267ab429f3552d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Muscular's Helm",
+      "slug": "muscular-s-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-muscular-s-holyangel-fighter-muscular-s-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/holybmhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-muscular-s-holyangel-fighter-muscular-s-helm.jpg",
+        "size": 1248,
+        "sha1": "e35226505fceed999531ee9f013d935a504c65be"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Muscular's Armor",
+      "slug": "muscular-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-muscular-s-holyangel-fighter-muscular-s-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/holybmarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-muscular-s-holyangel-fighter-muscular-s-armor.jpg",
+        "size": 1413,
+        "sha1": "705bfbd1bdbe6ffcd3a67df3eb374b3f9e7197bc"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Muscular's Pants",
+      "slug": "muscular-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-muscular-s-holyangel-fighter-muscular-s-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/holybmpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-muscular-s-holyangel-fighter-muscular-s-pants.jpg",
+        "size": 1366,
+        "sha1": "7673cd95f2ef74c441be9ccd929701c9500104f4"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Muscular's Boots",
+      "slug": "muscular-s-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-muscular-s-holyangel-fighter-muscular-s-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/holygmboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-muscular-s-holyangel-fighter-muscular-s-boots.jpg",
+        "size": 1231,
+        "sha1": "323b66d8b483d0eb8a1acd64b2743efa6d0531d2"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/holyangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/muscular.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

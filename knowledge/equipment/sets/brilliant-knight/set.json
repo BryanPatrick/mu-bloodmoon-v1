@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "brilliant-ancient-brilliant-knight",
+  "slug": "brilliant-knight",
+  "name": "Brilliant Knight",
+  "family": "Brilliant Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Brilliant Knight Helm",
+      "slug": "brilliant-knight-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-knight-brilliant-knight-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/brilliant/helmbk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-knight-brilliant-knight-helm.jpg",
+        "size": 1200,
+        "sha1": "82d487700ff4c8d519ddb371360a76e95bb95890"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Brilliant Knight Armor",
+      "slug": "brilliant-knight-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-knight-brilliant-knight-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/brilliant/armorbk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-knight-brilliant-knight-armor.jpg",
+        "size": 1311,
+        "sha1": "3dd1d46215b0008d6f2bd2a5bc5f8a1458a62acb"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Brilliant Knight Pants",
+      "slug": "brilliant-knight-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-knight-brilliant-knight-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/brilliant/pantsbk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-knight-brilliant-knight-pants.jpg",
+        "size": 1323,
+        "sha1": "f1c8444a32924b8505f48b6bbc4f18ea91c48347"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Brilliant Knight Boots",
+      "slug": "brilliant-knight-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-knight-brilliant-knight-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/brilliant/bootsbk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/brilliant-ancient-brilliant-knight-brilliant-knight-boots.jpg",
+        "size": 1222,
+        "sha1": "e12fae4f0a8053caa511c05edbec09a0ef1a69a3"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/brilliant-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/brilliantknight.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-hyon-dragon",
+  "slug": "hyon-dragon",
+  "name": "Hyon Dragon",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Hyon Boots",
+      "slug": "hyon-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-hyon-dragon-hyon-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo006.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-hyon-dragon-hyon-boots.jpg",
+        "size": 3897,
+        "sha1": "26a06326cd8eb9aa13f8d117518cff7ddbc72271"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hyon Gloves",
+      "slug": "hyon-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-hyon-dragon-hyon-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl006.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-hyon-dragon-hyon-gloves.jpg",
+        "size": 3740,
+        "sha1": "9ba0910b08b215eb910cc81d79420d86bd54310c"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hyon Helm",
+      "slug": "hyon-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-hyon-dragon-hyon-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe006.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-hyon-dragon-hyon-helm.jpg",
+        "size": 3659,
+        "sha1": "13b8159bb2a7e3bc6fd1ae023407eb9aadecd6f2"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hyon Lightning Sword",
+      "slug": "hyon-lightning-sword",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-hyon-dragon-hyon-lightning-sword.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/isw011.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-hyon-dragon-hyon-lightning-sword.jpg",
+        "size": 2814,
+        "sha1": "68f311d28ccd4e3500fe3e8463e26796ff888daa"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/hyon.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

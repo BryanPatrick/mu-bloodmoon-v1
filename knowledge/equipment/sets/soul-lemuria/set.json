@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "soul-ancient-soul-lemuria",
+  "slug": "soul-lemuria",
+  "name": "Soul Lemuria",
+  "family": "Soul Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Soul Lemuria Helm",
+      "slug": "soul-lemuria-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lemuria-soul-lemuria-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awaelfhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lemuria-soul-lemuria-helm.jpg",
+        "size": 1243,
+        "sha1": "8e53ac357d1b067f0f24c0c86e220e374c881c09"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Lemuria Armor",
+      "slug": "soul-lemuria-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lemuria-soul-lemuria-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awaelfarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lemuria-soul-lemuria-armor.jpg",
+        "size": 1496,
+        "sha1": "388e05469561fec2711a89e5539b45d7e338404b"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Lemuria Pants",
+      "slug": "soul-lemuria-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lemuria-soul-lemuria-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awaelfpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lemuria-soul-lemuria-pants.jpg",
+        "size": 1283,
+        "sha1": "6149b415f04047682eece1badde290988e8521d5"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Lemuria Gloves",
+      "slug": "soul-lemuria-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lemuria-soul-lemuria-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awaelfgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lemuria-soul-lemuria-gloves.jpg",
+        "size": 1275,
+        "sha1": "d98c03f99a7f82fb7cbc6caf9a8adb3d938d466a"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/soul-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/soullemuria.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

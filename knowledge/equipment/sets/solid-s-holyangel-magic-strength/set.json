@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "holyangel-ancient-solid-s-holyangel-magic-strength",
+  "slug": "solid-s-holyangel-magic-strength",
+  "name": "Solid's Holyangel Magic Strength",
+  "family": "Holyangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Solid Armor",
+      "slug": "solid-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-solid-s-holyangel-magic-strength-solid-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holybmarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-solid-s-holyangel-magic-strength-solid-armor-detail.jpg",
+        "size": 3242,
+        "sha1": "ada15ac5c8b9826155e7382675ef655e5fe57529"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Solid Pants",
+      "slug": "solid-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-solid-s-holyangel-magic-strength-solid-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holybmpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-solid-s-holyangel-magic-strength-solid-pants-detail.jpg",
+        "size": 3816,
+        "sha1": "24b1e55e6918ef4686d2352f4864047bdc51b7ab"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Solid Gloves",
+      "slug": "solid-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-solid-s-holyangel-magic-strength-solid-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holybmgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-solid-s-holyangel-magic-strength-solid-gloves-detail.jpg",
+        "size": 2486,
+        "sha1": "a57c9c849a7c2ab7f3a2f18115df1a806340245d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Solid Boots",
+      "slug": "solid-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-solid-s-holyangel-magic-strength-solid-boots-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holybmboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-solid-s-holyangel-magic-strength-solid-boots-detail.jpg",
+        "size": 3038,
+        "sha1": "407913a56453255694c3418c32267ab429f3552d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Solid's Armor",
+      "slug": "solid-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-solid-s-holyangel-magic-strength-solid-s-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/holybmarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-solid-s-holyangel-magic-strength-solid-s-armor.jpg",
+        "size": 1413,
+        "sha1": "705bfbd1bdbe6ffcd3a67df3eb374b3f9e7197bc"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Solid's Pants",
+      "slug": "solid-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-solid-s-holyangel-magic-strength-solid-s-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/holybmpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-solid-s-holyangel-magic-strength-solid-s-pants.jpg",
+        "size": 1366,
+        "sha1": "7673cd95f2ef74c441be9ccd929701c9500104f4"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Solid's Gloves",
+      "slug": "solid-s-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-solid-s-holyangel-magic-strength-solid-s-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/holybmgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-solid-s-holyangel-magic-strength-solid-s-gloves.jpg",
+        "size": 1206,
+        "sha1": "6e2d408440344bd659f1346b63f5cdc5515898ce"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Solid's Boots",
+      "slug": "solid-s-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-solid-s-holyangel-magic-strength-solid-s-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/holygmboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-solid-s-holyangel-magic-strength-solid-s-boots.jpg",
+        "size": 1231,
+        "sha1": "323b66d8b483d0eb8a1acd64b2743efa6d0531d2"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/holyangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/solid.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

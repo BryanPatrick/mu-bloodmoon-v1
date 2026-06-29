@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "holyangel-ancient-holyangel-rune",
+  "slug": "holyangel-rune",
+  "name": "Holyangel Rune",
+  "family": "Holyangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Holyangel Rune Helm",
+      "slug": "holyangel-rune-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-rune-holyangel-rune-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holyelfhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-rune-holyangel-rune-helm.jpg",
+        "size": 1235,
+        "sha1": "0326bc815dbbc00486a79fec11bf11fe6724d455"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Holyangel Rune Armor",
+      "slug": "holyangel-rune-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-rune-holyangel-rune-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holyelfarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-rune-holyangel-rune-armor.jpg",
+        "size": 1390,
+        "sha1": "244bac438bf4742d6b0eb04668678f313edba3a1"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Holyangel Rune Pants",
+      "slug": "holyangel-rune-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-rune-holyangel-rune-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holyelfpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-rune-holyangel-rune-pants.jpg",
+        "size": 1251,
+        "sha1": "168f8562de41258edfd7ece38cc07a3e18bb8744"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Holyangel Rune Gloves",
+      "slug": "holyangel-rune-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-rune-holyangel-rune-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holyelfgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-rune-holyangel-rune-gloves.jpg",
+        "size": 1242,
+        "sha1": "34bb77b0756ad843cfc671ebbb7ec86e3de3b8ed"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/holyangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/holyangelrune.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

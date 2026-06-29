@@ -1,0 +1,131 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "ancient-normal-anubis-legendary",
+  "slug": "anubis-legendary",
+  "name": "Anubis Legendary",
+  "title": "Anubis Legendary",
+  "category": "Ancient Normal",
+  "categorySlug": "ancient-normal",
+  "usableBy": [],
+  "listStats": {
+    "value1": "Anubis Gloves",
+    "value2": "Anubis Armor",
+    "value3": "Anubis Helm",
+    "value4": "Anubis Ring of Fire",
+    "value5": "Opción por cada Item"
+  },
+  "image": {
+    "publicPath": null,
+    "sourceUrl": null,
+    "localPath": null,
+    "size": null,
+    "sha1": null
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/anubis.html",
+    "imageSourceUrl": null
+  },
+  "statsByLevel": [],
+  "parts": [
+    {
+      "name": "Anubis Gloves",
+      "slug": "anubis-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-anubis-legendary-anubis-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl012_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-anubis-legendary-anubis-gloves.jpg",
+        "size": 3840,
+        "sha1": "743e0a1c683526dd44aafa4c811992bb8b42f5e3"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Anubis Armor",
+      "slug": "anubis-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-anubis-legendary-anubis-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar012_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-anubis-legendary-anubis-armor.jpg",
+        "size": 3965,
+        "sha1": "890fc14647ef95b8146474a3f934c69d6362b6a2"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Anubis Helm",
+      "slug": "anubis-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-anubis-legendary-anubis-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe012_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-anubis-legendary-anubis-helm.jpg",
+        "size": 3252,
+        "sha1": "0101c3ef93c013c32a31e1f08ce89c199143d34b"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Anubis Ring of Fire",
+      "slug": "anubis-ring-of-fire",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-anubis-legendary-anubis-ring-of-fire.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri15_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-anubis-legendary-anubis-ring-of-fire.jpg",
+        "size": 2337,
+        "sha1": "16d10aa4213911ad8cf7101240d95d23785086aa"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "detailParts": [
+    {
+      "name": "Anubis Gloves",
+      "slug": "anubis-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-anubis-legendary-anubis-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl012.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-anubis-legendary-anubis-gloves.jpg",
+        "size": 3840,
+        "sha1": "743e0a1c683526dd44aafa4c811992bb8b42f5e3"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Anubis Armor",
+      "slug": "anubis-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-anubis-legendary-anubis-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar012.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-anubis-legendary-anubis-armor.jpg",
+        "size": 3965,
+        "sha1": "890fc14647ef95b8146474a3f934c69d6362b6a2"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Anubis Helm",
+      "slug": "anubis-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-anubis-legendary-anubis-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe012.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-anubis-legendary-anubis-helm.jpg",
+        "size": 3252,
+        "sha1": "0101c3ef93c013c32a31e1f08ce89c199143d34b"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "soul-ancient-soul-magic-energy",
+  "slug": "soul-magic-energy",
+  "name": "Soul Magic Energy",
+  "family": "Soul Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Awakening Magic (Energia) Armor",
+      "slug": "awakening-magic-energia-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-magic-energy-awakening-magic-energia-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awabkarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-magic-energy-awakening-magic-energia-armor-detail.jpg",
+        "size": 3524,
+        "sha1": "157d32b287fd15ee25187b71229b255081ef042d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Awakening Magic (Energia) Pants",
+      "slug": "awakening-magic-energia-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-magic-energy-awakening-magic-energia-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awabkpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-magic-energy-awakening-magic-energia-pants-detail.jpg",
+        "size": 2484,
+        "sha1": "4729b45b97065d83c024d0b354179bd0f1fa7f20"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Awakening Magic (Energia) Gloves",
+      "slug": "awakening-magic-energia-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-magic-energy-awakening-magic-energia-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awabkgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-magic-energy-awakening-magic-energia-gloves-detail.jpg",
+        "size": 1719,
+        "sha1": "be33426f2f467909ddc0f8f2aa1682e92d420fe6"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Awakening Magic (Energia) Boots",
+      "slug": "awakening-magic-energia-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-magic-energy-awakening-magic-energia-boots-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awabkboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-magic-energy-awakening-magic-energia-boots-detail.jpg",
+        "size": 2231,
+        "sha1": "941a9b1fefd54836d9c9d04e36f992a57300a0ac"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Magic Armor",
+      "slug": "soul-magic-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-magic-energy-soul-magic-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/bkarmorawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-magic-energy-soul-magic-armor.jpg",
+        "size": 1284,
+        "sha1": "f4688837b81d320390732c67a2f971d83061aeaa"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Magic Pants",
+      "slug": "soul-magic-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-magic-energy-soul-magic-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/bkpantsawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-magic-energy-soul-magic-pants.jpg",
+        "size": 1180,
+        "sha1": "00e2701e2d3df3353a03cc34e8e84e4cb3af061b"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Magic Gloves",
+      "slug": "soul-magic-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-magic-energy-soul-magic-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/bkglovesawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-magic-energy-soul-magic-gloves.jpg",
+        "size": 1090,
+        "sha1": "b445f3ad56411862faf684b02c18888485e5acc1"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Magic Boots",
+      "slug": "soul-magic-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-magic-energy-soul-magic-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/bkbootsawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-magic-energy-soul-magic-boots.jpg",
+        "size": 1011,
+        "sha1": "f922533b2e1e80e5deec6aa219064cb1fcc92b63"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/soul-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/awamgenergia.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

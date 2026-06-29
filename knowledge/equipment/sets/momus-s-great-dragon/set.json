@@ -1,0 +1,155 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-lucky-momus-s-great-dragon",
+  "slug": "momus-s-great-dragon",
+  "name": "Momus's Great Dragon",
+  "family": "Set Lucky",
+  "qualities": [
+    "Lucky"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Momus's Boots",
+      "slug": "momus-s-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-s-boots-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Momus2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-s-boots-detail.jpg",
+        "size": 3229,
+        "sha1": "dc4915cd9367e747ed58fcd40d477ba8d21bbf08"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Momus's Gloves",
+      "slug": "momus-s-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-s-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Momus3.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-s-gloves-detail.jpg",
+        "size": 2248,
+        "sha1": "4e89e9d1daf49823f5bcb747a2c4872f010bc073"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Momus's Helm",
+      "slug": "momus-s-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-s-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Momus5.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-s-helm-detail.jpg",
+        "size": 2575,
+        "sha1": "0c6b49b9856e6641cef355636283e1a2e11ec684"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Momus's Pants",
+      "slug": "momus-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-s-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Momus4.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-s-pants-detail.jpg",
+        "size": 2470,
+        "sha1": "57fe0ecd06deed420523001eb1c80a5c7563429c"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Momus's Armor",
+      "slug": "momus-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-s-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Momus1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-s-armor-detail.jpg",
+        "size": 4211,
+        "sha1": "b5445cd3f667d19e4b686231cdf65f24414262f6"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Momus Boots",
+      "slug": "momus-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Momusp2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-boots.jpg",
+        "size": 1426,
+        "sha1": "976011de9e64b05799a3407f0ef36779cde12c61"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Momus Gloves",
+      "slug": "momus-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Momus3p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-gloves.jpg",
+        "size": 1294,
+        "sha1": "d9ff77395eab5ee1c26313759fdcd2f20a0e3f0b"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Momus Helm",
+      "slug": "momus-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Momus5p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-helm.jpg",
+        "size": 1229,
+        "sha1": "23f04157af7dc1d9c542f11a26e1de00d4cfbdc9"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Momus Pants",
+      "slug": "momus-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Momus4p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-pants.jpg",
+        "size": 1183,
+        "sha1": "df10adc2b080f6d9444c1aff3dc6e81ecd0c8fe2"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Momus Armor",
+      "slug": "momus-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Momusp1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-momus-s-great-dragon-momus-armor.jpg",
+        "size": 1379,
+        "sha1": "25580b5254fd88759d3b7d7bfd4652ed8163f64e"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/set-lucky.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/lucky/momus.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

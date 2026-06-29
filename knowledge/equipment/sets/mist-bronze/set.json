@@ -1,0 +1,68 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-mist-bronze",
+  "slug": "mist-bronze",
+  "name": "Mist Bronze",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Mist Gloves",
+      "slug": "mist-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-mist-bronze-mist-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl040_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-mist-bronze-mist-gloves.jpg",
+        "size": 3906,
+        "sha1": "ec1efe1cf77526ad727bc9936424ba99cc72aca5"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Mist Pants",
+      "slug": "mist-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-mist-bronze-mist-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa002_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-mist-bronze-mist-pants.jpg",
+        "size": 4014,
+        "sha1": "918382133e7fa1e0653529a1ff77addec48d793f"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Mist Helm",
+      "slug": "mist-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-mist-bronze-mist-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe050_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-mist-bronze-mist-helm.jpg",
+        "size": 3071,
+        "sha1": "97f01b6e76bab9a5d45713026bf982bac9821403"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "2 Set option : Increase Stamina +20 3 Set option : Increase Skill Damage +30",
+      "source": "listStats"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/mist.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

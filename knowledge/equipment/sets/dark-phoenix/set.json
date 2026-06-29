@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-dark-phoenix",
+  "slug": "dark-phoenix",
+  "name": "Dark Phoenix",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Dark Knight"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-dark-phoenix",
+      "name": "Dark Phoenix Armor",
+      "category": "Armor",
+      "slug": "dark-phoenix",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-dark-phoenix.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar008_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-dark-phoenix.jpg",
+        "size": 4229,
+        "sha1": "9ce91915b916966cb81b77770aece2dd8f365b2e"
+      }
+    },
+    {
+      "itemId": "boots-dark-phoenix",
+      "name": "Dark Phoenix Boots",
+      "category": "Boots",
+      "slug": "dark-phoenix",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-dark-phoenix.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo008_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-dark-phoenix.jpg",
+        "size": 4117,
+        "sha1": "50473626776f9800c3559d0f6e1cbb99cfa1ed61"
+      }
+    },
+    {
+      "itemId": "gloves-dark-phoenix",
+      "name": "Dark Phoenix Gloves",
+      "category": "Gloves",
+      "slug": "dark-phoenix",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-dark-phoenix.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl008_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-dark-phoenix.jpg",
+        "size": 3393,
+        "sha1": "10c16523df6890b14a84dba887c01c3e0df8b257"
+      }
+    },
+    {
+      "itemId": "helm-dark-phoenix",
+      "name": "Dark Phoenix Helm",
+      "category": "Helm",
+      "slug": "dark-phoenix",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-dark-phoenix.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe008_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-dark-phoenix.jpg",
+        "size": 3483,
+        "sha1": "eb3b436351514455c0cfb06b2a01f6541926f00e"
+      }
+    },
+    {
+      "itemId": "pants-dark-phoenix",
+      "name": "Dark Phoenix Pants",
+      "category": "Pants",
+      "slug": "dark-phoenix",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-dark-phoenix.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa008_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-dark-phoenix.jpg",
+        "size": 3810,
+        "sha1": "6e236d3517f523a75c28e0de0760f5d7b13d7f75"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

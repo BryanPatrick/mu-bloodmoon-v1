@@ -1,0 +1,63 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "ancient-normal-apis-valiant",
+  "slug": "apis-valiant",
+  "name": "Apis Valiant",
+  "title": "Apis Valiant",
+  "category": "Ancient Normal",
+  "categorySlug": "ancient-normal",
+  "usableBy": [],
+  "listStats": {
+    "value1": "Apis Pendant of Fire",
+    "value2": "Apis Boots",
+    "value3": "Opciones por Set Completo"
+  },
+  "image": {
+    "publicPath": null,
+    "sourceUrl": null,
+    "localPath": null,
+    "size": null,
+    "sha1": null
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/apis.html",
+    "imageSourceUrl": null
+  },
+  "statsByLevel": [],
+  "parts": [
+    {
+      "name": "Apis Pendant of Fire",
+      "slug": "apis-pendant-of-fire",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-apis-valiant-apis-pendant-of-fire.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ring/iri009_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-apis-valiant-apis-pendant-of-fire.jpg",
+        "size": 2738,
+        "sha1": "1457118e1626917dcb50ae8519f595ea29731537"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Apis Boots",
+      "slug": "apis-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-apis-valiant-apis-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo036_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-apis-valiant-apis-boots.jpg",
+        "size": 3394,
+        "sha1": "3f623c89b98c7d1161d6520b59d1d5ff8b9991ee"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

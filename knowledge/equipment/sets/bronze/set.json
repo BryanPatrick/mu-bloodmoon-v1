@@ -1,0 +1,98 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-bronze",
+  "slug": "bronze",
+  "name": "Bronze",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Dark Knight",
+    "Magic Gladiator",
+    "Dark Lord"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-bronze",
+      "name": "Bronze Armor",
+      "category": "Armor",
+      "slug": "bronze",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-bronze.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar002_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-bronze.jpg",
+        "size": 3750,
+        "sha1": "30d93a24d0d58d7190edca25dbaad5ac93e978ce"
+      }
+    },
+    {
+      "itemId": "boots-bronze",
+      "name": "Bronze Boots",
+      "category": "Boots",
+      "slug": "bronze",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-bronze.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo002_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-bronze.jpg",
+        "size": 3885,
+        "sha1": "f81ea11bcd2070e6277298cffac72a3445774f50"
+      }
+    },
+    {
+      "itemId": "gloves-bronze",
+      "name": "Bronze Gloves",
+      "category": "Gloves",
+      "slug": "bronze",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-bronze.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl002_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-bronze.jpg",
+        "size": 3906,
+        "sha1": "ec1efe1cf77526ad727bc9936424ba99cc72aca5"
+      }
+    },
+    {
+      "itemId": "helm-bronze",
+      "name": "Bronze Helm",
+      "category": "Helm",
+      "slug": "bronze",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-bronze.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe002_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-bronze.jpg",
+        "size": 3071,
+        "sha1": "97f01b6e76bab9a5d45713026bf982bac9821403"
+      }
+    },
+    {
+      "itemId": "pants-bronze",
+      "name": "Bronze Pants",
+      "category": "Pants",
+      "slug": "bronze",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-bronze.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa002_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-bronze.jpg",
+        "size": 4014,
+        "sha1": "918382133e7fa1e0653529a1ff77addec48d793f"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "soul-ancient-soul-lancer",
+  "slug": "soul-lancer",
+  "name": "Soul Lancer",
+  "family": "Soul Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Awakening Lancer Helm",
+      "slug": "awakening-lancer-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lancer-awakening-lancer-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awalancerhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lancer-awakening-lancer-helm-detail.jpg",
+        "size": 2467,
+        "sha1": "6639e19aa5cc88b854720dfd974b14f4fd92b01a"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Awakening Lancer Armor",
+      "slug": "awakening-lancer-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lancer-awakening-lancer-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awalancerarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lancer-awakening-lancer-armor-detail.jpg",
+        "size": 3229,
+        "sha1": "aed9be304412e1b10cd6370c362ad1af187e905a"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Awakening Lancer Pants",
+      "slug": "awakening-lancer-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lancer-awakening-lancer-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awalancerpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lancer-awakening-lancer-pants-detail.jpg",
+        "size": 3093,
+        "sha1": "6b903ecba8f07935efde46f7522184102f7118cd"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Awakening Lancer Gloves",
+      "slug": "awakening-lancer-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lancer-awakening-lancer-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awalancergloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lancer-awakening-lancer-gloves-detail.jpg",
+        "size": 2439,
+        "sha1": "24dccc7be462a69af69c518c4819fbd0b5710edb"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Lancer Helm",
+      "slug": "soul-lancer-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lancer-soul-lancer-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/glhelmawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lancer-soul-lancer-helm.jpg",
+        "size": 1140,
+        "sha1": "7fc3c67245b340ff8877c06d28a92e0bd5432afe"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Lancer Armor",
+      "slug": "soul-lancer-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lancer-soul-lancer-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/glarmorawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lancer-soul-lancer-armor.jpg",
+        "size": 1266,
+        "sha1": "27b8c1a58033ba1870000e12cb4beead88b79620"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Lancer Pants",
+      "slug": "soul-lancer-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lancer-soul-lancer-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/glpantsawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lancer-soul-lancer-pants.jpg",
+        "size": 1285,
+        "sha1": "afb2bc23f689a15c35be160e3002ef6754adb065"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Lancer Gloves",
+      "slug": "soul-lancer-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lancer-soul-lancer-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/glglovesawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-lancer-soul-lancer-gloves.jpg",
+        "size": 1130,
+        "sha1": "96019c00c923cc90e14683f196fe100c4bbe807a"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/soul-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/awagl.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

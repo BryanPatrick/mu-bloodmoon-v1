@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "manticore-ancient-manticore-lancer",
+  "slug": "manticore-lancer",
+  "name": "Manticore Lancer",
+  "family": "Manticore Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Manticore Lancer Helm",
+      "slug": "manticore-lancer-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-lancer-manticore-lancer-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/benujvbq.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-lancer-manticore-lancer-helm.jpg",
+        "size": 1205,
+        "sha1": "e415e2869d1baa33b9aa5038331b38950364620d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Lancer Armor",
+      "slug": "manticore-lancer-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-lancer-manticore-lancer-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/s03jc5ad.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-lancer-manticore-lancer-armor.jpg",
+        "size": 1516,
+        "sha1": "fb641cff8b42c19edb0d7ac7a9c41e4ecdb1d173"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Lancer Pants",
+      "slug": "manticore-lancer-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-lancer-manticore-lancer-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/12rnvzdj.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-lancer-manticore-lancer-pants.jpg",
+        "size": 1265,
+        "sha1": "965b2eef9c087f1c32d2780ee7415246e58a3aaf"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Lancer Gloves",
+      "slug": "manticore-lancer-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-lancer-manticore-lancer-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/xld0qfb5.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-lancer-manticore-lancer-gloves.jpg",
+        "size": 1148,
+        "sha1": "259d8ac4aa7bd41bcd1033b477245843c06cd569"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/manticore-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/mantilancer.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

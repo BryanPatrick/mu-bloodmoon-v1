@@ -1,0 +1,90 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "silver-heart-ancient-silver-heart-gunner",
+  "slug": "silver-heart-gunner",
+  "name": "Silver Heart Gunner",
+  "family": "Silver Heart Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Silver Heart Gunner Helm",
+      "slug": "silver-heart-gunner-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-gunner-silver-heart-gunner-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/wizardhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-gunner-silver-heart-gunner-helm.jpg",
+        "size": 1002,
+        "sha1": "ae594f12316bc306734ff61ded6d8f62788c4b74"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Gunner Armor",
+      "slug": "silver-heart-gunner-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-gunner-silver-heart-gunner-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/wizardarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-gunner-silver-heart-gunner-armor.jpg",
+        "size": 1322,
+        "sha1": "715a9ff0d0b764ef3cab48e42399dd677019a155"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Gunner Pants",
+      "slug": "silver-heart-gunner-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-gunner-silver-heart-gunner-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/wizardpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-gunner-silver-heart-gunner-pants.jpg",
+        "size": 1267,
+        "sha1": "5baca28675e5bdef75dba9699799a2aeeb9c7abc"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Gunner Gloves",
+      "slug": "silver-heart-gunner-gloves",
+      "image": {
+        "publicPath": null,
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/bootsilver.jpg",
+        "localPath": null,
+        "size": null,
+        "sha1": null
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Gunner Boots",
+      "slug": "silver-heart-gunner-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-gunner-silver-heart-gunner-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/b4.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-gunner-silver-heart-gunner-boots.jpg",
+        "size": 1145,
+        "sha1": "a407d08280d466186d2d8b9d42c8c42922e54c84"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/silver-heart-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/silverheartgunner.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

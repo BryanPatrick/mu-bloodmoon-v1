@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-holyangel-lord",
+  "slug": "holyangel-lord",
+  "name": "Holyangel Lord",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Dark Lord"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-holyangel-lord",
+      "name": "Holyangel Lord Armor",
+      "category": "Armor",
+      "slug": "holyangel-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-holyangel-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/holygmarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-holyangel-lord.jpg",
+        "size": 1495,
+        "sha1": "5e70aa1b21a3a415f92d8b24706befaf3ab1e59f"
+      }
+    },
+    {
+      "itemId": "boots-holyangel-lord",
+      "name": "Holyangel Lord Boots",
+      "category": "Boots",
+      "slug": "holyangel-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-holyangel-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/holybmboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-holyangel-lord.jpg",
+        "size": 1231,
+        "sha1": "323b66d8b483d0eb8a1acd64b2743efa6d0531d2"
+      }
+    },
+    {
+      "itemId": "gloves-holyangel-lord",
+      "name": "Holyangel Lord Gloves",
+      "category": "Gloves",
+      "slug": "holyangel-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-holyangel-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/holygmgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-holyangel-lord.jpg",
+        "size": 1177,
+        "sha1": "3e9b2bb719c41349d727dfc00662cbb366b2815c"
+      }
+    },
+    {
+      "itemId": "helm-holyangel-lord",
+      "name": "Holyangel Lord Helm",
+      "category": "Helm",
+      "slug": "holyangel-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-holyangel-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/holybmhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-holyangel-lord.jpg",
+        "size": 1248,
+        "sha1": "e35226505fceed999531ee9f013d935a504c65be"
+      }
+    },
+    {
+      "itemId": "pants-holyangel-lord",
+      "name": "Holyangel Lord Pants",
+      "category": "Pants",
+      "slug": "holyangel-lord",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-holyangel-lord.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/holygmpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-holyangel-lord.jpg",
+        "size": 1227,
+        "sha1": "1de46eb842fb499a9c38cee3f49b89aca32672ff"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

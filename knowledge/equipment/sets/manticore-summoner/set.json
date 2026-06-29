@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "manticore-ancient-manticore-summoner",
+  "slug": "manticore-summoner",
+  "name": "Manticore Summoner",
+  "family": "Manticore Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Manticore Summoner Helm",
+      "slug": "manticore-summoner-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-summoner-manticore-summoner-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/msq1zn1l.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-summoner-manticore-summoner-helm.jpg",
+        "size": 1062,
+        "sha1": "b337296f8da1d4e314e0f5c1d3d914ca0448a717"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Summoner Armor",
+      "slug": "manticore-summoner-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-summoner-manticore-summoner-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/ncfh5inb.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-summoner-manticore-summoner-armor.jpg",
+        "size": 1281,
+        "sha1": "8d8db3a179ee1fededfb02911bbd12a0b710d03b"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Summoner Pants",
+      "slug": "manticore-summoner-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-summoner-manticore-summoner-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/g3xoof04.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-summoner-manticore-summoner-pants.jpg",
+        "size": 1241,
+        "sha1": "bf1133330c2011689d6330e7f5cdae872e21898f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Summoner Gloves",
+      "slug": "manticore-summoner-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-summoner-manticore-summoner-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/x2pax22j.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-summoner-manticore-summoner-gloves.jpg",
+        "size": 1180,
+        "sha1": "50975b669e0c5b036d15c7e6c9664fc2f0f968a9"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/manticore-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/mantisummoner.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

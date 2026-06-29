@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-dark-master",
+  "slug": "dark-master",
+  "name": "Dark Master",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Dark Lord"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-dark-master",
+      "name": "Dark Master Armor",
+      "category": "Armor",
+      "slug": "dark-master",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-dark-master.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar026_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-dark-master.jpg",
+        "size": 4162,
+        "sha1": "3538538dd2b32adf9e0df6a27f3845a73041aba5"
+      }
+    },
+    {
+      "itemId": "boots-dark-master",
+      "name": "Dark Master Boots",
+      "category": "Boots",
+      "slug": "dark-master",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-dark-master.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo026_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-dark-master.jpg",
+        "size": 3715,
+        "sha1": "3a2d1de9a0d85e96be2f5dd49e2f2e4e61bdfde8"
+      }
+    },
+    {
+      "itemId": "gloves-dark-master",
+      "name": "Dark Master Gloves",
+      "category": "Gloves",
+      "slug": "dark-master",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-dark-master.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl026_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-dark-master.jpg",
+        "size": 3516,
+        "sha1": "1066c05cdfa51fc1d1ea2efbf22e32d220702586"
+      }
+    },
+    {
+      "itemId": "helm-dark-master",
+      "name": "Dark Master Helm",
+      "category": "Helm",
+      "slug": "dark-master",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-dark-master.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe026_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-dark-master.jpg",
+        "size": 3041,
+        "sha1": "62a301c1621af048aa7a2a0955a627a32f3930c1"
+      }
+    },
+    {
+      "itemId": "pants-dark-master",
+      "name": "Dark Master Pants",
+      "category": "Pants",
+      "slug": "dark-master",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-dark-master.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa026_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-dark-master.jpg",
+        "size": 3440,
+        "sha1": "5e95c9f26dc884652330531c5b396a256977e711"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

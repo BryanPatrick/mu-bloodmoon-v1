@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "holyangel-ancient-holyangel-illusion",
+  "slug": "holyangel-illusion",
+  "name": "Holyangel Illusion",
+  "family": "Holyangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Holyangel Illusion Helm",
+      "slug": "holyangel-illusion-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-illusion-holyangel-illusion-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holybmhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-illusion-holyangel-illusion-helm.jpg",
+        "size": 1248,
+        "sha1": "e35226505fceed999531ee9f013d935a504c65be"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Holyangel Illusion Armor",
+      "slug": "holyangel-illusion-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-illusion-holyangel-illusion-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holybmarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-illusion-holyangel-illusion-armor.jpg",
+        "size": 1413,
+        "sha1": "705bfbd1bdbe6ffcd3a67df3eb374b3f9e7197bc"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Holyangel Illusion Pants",
+      "slug": "holyangel-illusion-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-illusion-holyangel-illusion-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holybmpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-illusion-holyangel-illusion-pants.jpg",
+        "size": 1366,
+        "sha1": "7673cd95f2ef74c441be9ccd929701c9500104f4"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Holyangel Illusion Gloves",
+      "slug": "holyangel-illusion-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-illusion-holyangel-illusion-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holybmgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-illusion-holyangel-illusion-gloves.jpg",
+        "size": 1206,
+        "sha1": "6e2d408440344bd659f1346b63f5cdc5515898ce"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/holyangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/holyangelillusion.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

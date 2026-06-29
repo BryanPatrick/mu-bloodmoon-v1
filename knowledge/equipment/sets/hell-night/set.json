@@ -1,0 +1,81 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-hell-night",
+  "slug": "hell-night",
+  "name": "Hell Night",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-hell-night",
+      "name": "Armor Hell Night",
+      "category": "Armor",
+      "slug": "hell-night",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-hell-night.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/armor_mg_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-hell-night.jpg",
+        "size": 1614,
+        "sha1": "06a2dfc6bdb8bab8946ac829d96e0aecffe3084d"
+      }
+    },
+    {
+      "itemId": "boots-hell-night",
+      "name": "Boots Hell Night",
+      "category": "Boots",
+      "slug": "hell-night",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-hell-night.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/boots_mg_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-hell-night.jpg",
+        "size": 1275,
+        "sha1": "f4c232ee5ad80d9c14229773f540618e89a62d29"
+      }
+    },
+    {
+      "itemId": "gloves-hell-night",
+      "name": "Gloves Hell Night",
+      "category": "Gloves",
+      "slug": "hell-night",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-hell-night.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/gloves_mg_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-hell-night.jpg",
+        "size": 1237,
+        "sha1": "b52ee5b99e82dd231c9ad0d90898a677b154bc6a"
+      }
+    },
+    {
+      "itemId": "pants-hell-night",
+      "name": "Pants Hell Night",
+      "category": "Pants",
+      "slug": "hell-night",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-hell-night.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/pants_mg_1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-hell-night.jpg",
+        "size": 1444,
+        "sha1": "dbc61f86bcee4369f213afd0bb210007255695c9"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

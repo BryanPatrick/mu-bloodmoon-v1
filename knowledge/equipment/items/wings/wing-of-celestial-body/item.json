@@ -1,0 +1,34 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "wings-wing-of-celestial-body",
+  "slug": "wing-of-celestial-body",
+  "name": "Wing of Celestial Body",
+  "title": "Wing of Celestial Body",
+  "category": "Wings",
+  "categorySlug": "wings",
+  "usableBy": [],
+  "listStats": {
+    "normalDrop": "800"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/wings-wing-of-celestial-body.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/elfw4.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/wings-wing-of-celestial-body.jpg",
+    "size": 1330,
+    "sha1": "bbecf3c5236ac7936b837860db62c7ed101e812c"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/wings.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/wing/elfw4.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/elfw4.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-karis-spirit",
+  "slug": "karis-spirit",
+  "name": "Karis Spirit",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Karis Helm",
+      "slug": "karis-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-karis-spirit-karis-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe057_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-karis-spirit-karis-helm.jpg",
+        "size": 3212,
+        "sha1": "d9da9308a2bdc51045aef1e6262c2c27e0d26b4f"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Karis Pants",
+      "slug": "karis-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-karis-spirit-karis-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa017_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-karis-spirit-karis-pants.jpg",
+        "size": 3545,
+        "sha1": "33569b9175b56636ffadeef08218bf3bf624398e"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Karis Boots",
+      "slug": "karis-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-karis-spirit-karis-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo064_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-karis-spirit-karis-boots.jpg",
+        "size": 3589,
+        "sha1": "06457a07abcdba9d456788be629df45bce5a5e85"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "2 Set option : Increase Skill Damage +15 3 Set option : Double Damage Rate +10%",
+      "source": "listStats"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/charisteas.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

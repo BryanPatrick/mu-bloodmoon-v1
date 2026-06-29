@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "apocalypse-ancient-apocalypse-slayer",
+  "slug": "apocalypse-slayer",
+  "name": "Apocalypse Slayer",
+  "family": "Apocalypse Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Apocalypse Slayer Helm",
+      "slug": "apocalypse-slayer-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-slayer-apocalypse-slayer-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/helmelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-slayer-apocalypse-slayer-helm.jpg",
+        "size": 1459,
+        "sha1": "19434046f41db0d8f7b0e36eb0bca10f4e4a4f96"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apocalypse Slayer Armor",
+      "slug": "apocalypse-slayer-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-slayer-apocalypse-slayer-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/armorelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-slayer-apocalypse-slayer-armor.jpg",
+        "size": 1479,
+        "sha1": "a8dba0ab201741a3b84e08754e6f853207962459"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apocalypse Slayer Pants",
+      "slug": "apocalypse-slayer-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-slayer-apocalypse-slayer-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/pantself.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-slayer-apocalypse-slayer-pants.jpg",
+        "size": 1464,
+        "sha1": "bd96fe7140c88f67aa653988ace07150e3772ab3"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apocalypse Slayer Gloves",
+      "slug": "apocalypse-slayer-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-slayer-apocalypse-slayer-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/gloveself.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-slayer-apocalypse-slayer-gloves.jpg",
+        "size": 1386,
+        "sha1": "f051a8b25aadbca49072ff814986d43a4efa977e"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/apocalypse-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/aposlayer.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

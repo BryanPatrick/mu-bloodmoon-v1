@@ -1,0 +1,53 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-bloodangel-magic-strength",
+  "slug": "bloodangel-magic-strength",
+  "name": "Bloodangel Magic Strength",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-bloodangel-magic-strength",
+      "name": "Bloodangel Magic Armor",
+      "category": "Armor",
+      "slug": "bloodangel-magic-strength",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-bloodangel-magic-strength.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/bloodmg.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-bloodangel-magic-strength.jpg",
+        "size": 1474,
+        "sha1": "ba5d2fe7d48253bed27852d1aad0bdc095c7f43d"
+      }
+    },
+    {
+      "itemId": "pants-bloodangel-magic-strength",
+      "name": "Bloodangel Magic Pants",
+      "category": "Pants",
+      "slug": "bloodangel-magic-strength",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-bloodangel-magic-strength.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/bloodmg.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-bloodangel-magic-strength.jpg",
+        "size": 1327,
+        "sha1": "a6ee24cb7abb69e3ab81483e7befe43f3e17d43f"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

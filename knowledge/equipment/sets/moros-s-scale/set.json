@@ -1,0 +1,155 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-lucky-moros-s-scale",
+  "slug": "moros-s-scale",
+  "name": "Moros's Scale",
+  "family": "Set Lucky",
+  "qualities": [
+    "Lucky"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Moros's Boots",
+      "slug": "moros-s-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-s-boots-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Moros2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-s-boots-detail.jpg",
+        "size": 2372,
+        "sha1": "cd7f3db026dd325cf1be4f0342a2134ce3a65133"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Moros's Gloves",
+      "slug": "moros-s-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-s-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Moros3.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-s-gloves-detail.jpg",
+        "size": 1758,
+        "sha1": "2ce80237ad03e766761b024b28e24deb6745899e"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Moros's Helm",
+      "slug": "moros-s-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-s-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Moros5.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-s-helm-detail.jpg",
+        "size": 1905,
+        "sha1": "b7b98e7dcc3ed023b9591ec9e67d7e867e00034f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Moros's Pants",
+      "slug": "moros-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-s-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Moros4.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-s-pants-detail.jpg",
+        "size": 2403,
+        "sha1": "aa6b3604c8ce1cabb73c3a42a96a0ce6c08d9f80"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Moros's Armor",
+      "slug": "moros-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-s-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Moros1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-s-armor-detail.jpg",
+        "size": 2776,
+        "sha1": "ed6213974da2831edc59b806d259644173362cd9"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Moros Boots",
+      "slug": "moros-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Morosp2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-boots.jpg",
+        "size": 1170,
+        "sha1": "82789d0965ed6a494a8cb6ca883e7b20296b1f20"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Moros Gloves",
+      "slug": "moros-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Moros3p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-gloves.jpg",
+        "size": 1066,
+        "sha1": "0c6a5c174c947df017d579e4022576adf129a7de"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Moros Helm",
+      "slug": "moros-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Moros5p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-helm.jpg",
+        "size": 1151,
+        "sha1": "4ba3871a92f39b0db20e689bfc88e5f36a46268a"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Moros Pants",
+      "slug": "moros-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Moros4p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-pants.jpg",
+        "size": 1110,
+        "sha1": "6fea43edbe318e86a760b2afc1dedb43441eab91"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Moros Armor",
+      "slug": "moros-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Morosp1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-moros-s-scale-moros-armor.jpg",
+        "size": 1277,
+        "sha1": "e7a2060a8e30dc901bd7b6a998d9a9d470de67e1"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/set-lucky.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/lucky/moros.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

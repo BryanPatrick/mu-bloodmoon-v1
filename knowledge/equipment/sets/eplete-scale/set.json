@@ -1,0 +1,90 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-eplete-scale",
+  "slug": "eplete-scale",
+  "name": "Eplete Scale",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Eplete Shield Plate",
+      "slug": "eplete-shield-plate",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-eplete-scale-eplete-shield-plate.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ish008.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-eplete-scale-eplete-shield-plate.jpg",
+        "size": 2541,
+        "sha1": "2915fa61d55cafa43565e096beb78000d23d6b99"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Eplete Pants",
+      "slug": "eplete-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-eplete-scale-eplete-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa003.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-eplete-scale-eplete-pants.jpg",
+        "size": 3048,
+        "sha1": "53a276d65a6b853f25e9b50c35acfb8787b44849"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Eplete Helm",
+      "slug": "eplete-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-eplete-scale-eplete-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe003.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-eplete-scale-eplete-helm.jpg",
+        "size": 2829,
+        "sha1": "8edce4caa79579c28f4970c292753cea4830c07e"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Eplete Armor",
+      "slug": "eplete-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-eplete-scale-eplete-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar003.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-eplete-scale-eplete-armor.jpg",
+        "size": 3517,
+        "sha1": "4164f2d58fa437727021e4ea2ad337d8d675b24d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Eplete Pendant of Lightning",
+      "slug": "eplete-pendant-of-lightning",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-eplete-scale-eplete-pendant-of-lightning.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri008_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-eplete-scale-eplete-pendant-of-lightning.jpg",
+        "size": 2344,
+        "sha1": "996df61f8ce12ff1d5a896788d42a9f2faacd911"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/eplete.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

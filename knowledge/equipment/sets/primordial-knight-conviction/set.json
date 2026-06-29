@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "primordial-ancient-primordial-knight-conviction",
+  "slug": "primordial-knight-conviction",
+  "name": "Primordial Knight (Conviction)",
+  "family": "Primordial Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Primordial Knight (Conviction) Helm",
+      "slug": "primordial-knight-conviction-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-knight-conviction-primordial-knight-conviction-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/helmbk.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-knight-conviction-primordial-knight-conviction-helm.jpg",
+        "size": 1259,
+        "sha1": "9e7310d082433721a39a3e93e33371f8465e7786"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Knight (Conviction) Armor",
+      "slug": "primordial-knight-conviction-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-knight-conviction-primordial-knight-conviction-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/armordk.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-knight-conviction-primordial-knight-conviction-armor.jpg",
+        "size": 1286,
+        "sha1": "358266fa19ce17500fab02ca8752d98822f8bfed"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Knight (Conviction) Pants",
+      "slug": "primordial-knight-conviction-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-knight-conviction-primordial-knight-conviction-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/pantsdk.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-knight-conviction-primordial-knight-conviction-pants.jpg",
+        "size": 1272,
+        "sha1": "92937b4b05b09af9bffa9b1aef4f267f0b347f69"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Knight (Conviction) Boots",
+      "slug": "primordial-knight-conviction-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-knight-conviction-primordial-knight-conviction-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/bootdk.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-knight-conviction-primordial-knight-conviction-boots.jpg",
+        "size": 1323,
+        "sha1": "a925af1dc23bf6365f808aa1ce3381b4379fdb94"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/primordial-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/pridkco.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

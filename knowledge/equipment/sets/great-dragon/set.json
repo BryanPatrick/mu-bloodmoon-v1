@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-great-dragon",
+  "slug": "great-dragon",
+  "name": "Great Dragon",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Dark Knight"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-great-dragon",
+      "name": "Great Dragon Armor",
+      "category": "Armor",
+      "slug": "great-dragon",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-great-dragon.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar020_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-great-dragon.jpg",
+        "size": 4031,
+        "sha1": "9cbb09b830d9b05586daefda9b83cf6f088f645d"
+      }
+    },
+    {
+      "itemId": "boots-great-dragon",
+      "name": "Great Dragon Boots",
+      "category": "Boots",
+      "slug": "great-dragon",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-great-dragon.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo020_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-great-dragon.jpg",
+        "size": 4071,
+        "sha1": "d9f3fc2cb208e78919701d4dfe6e81f6ac4df229"
+      }
+    },
+    {
+      "itemId": "gloves-great-dragon",
+      "name": "Great Dragon Gloves",
+      "category": "Gloves",
+      "slug": "great-dragon",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-great-dragon.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl020_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-great-dragon.jpg",
+        "size": 3693,
+        "sha1": "f4bb51eb62c36a67999997c814458a962d3de14d"
+      }
+    },
+    {
+      "itemId": "helm-great-dragon",
+      "name": "Great Dragon Helm",
+      "category": "Helm",
+      "slug": "great-dragon",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-great-dragon.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe020_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-great-dragon.jpg",
+        "size": 3639,
+        "sha1": "3f8609bd5a968d60e70c2022ed1435dee56d6e75"
+      }
+    },
+    {
+      "itemId": "pants-great-dragon",
+      "name": "Great Dragon Pants",
+      "category": "Pants",
+      "slug": "great-dragon",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-great-dragon.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa020_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-great-dragon.jpg",
+        "size": 3477,
+        "sha1": "370f89ff177195c9881230b11662c6a84ed22f96"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

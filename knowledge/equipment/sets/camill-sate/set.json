@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-camill-sate",
+  "slug": "camill-sate",
+  "name": "Camill Sate",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Camill Pluma Shield",
+      "slug": "camill-pluma-shield",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-camill-sate-camill-pluma-shield.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/plumashield.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-camill-sate-camill-pluma-shield.jpg",
+        "size": 1316,
+        "sha1": "3c07064986f98b31a2a43d1033ef98ea8e0458f9"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Camill Helm",
+      "slug": "camill-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-camill-sate-camill-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/satehelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-camill-sate-camill-helm.jpg",
+        "size": 1159,
+        "sha1": "0a056a3b7bd8666677c0f6d390554a5a92ba89a8"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Camill Armor",
+      "slug": "camill-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-camill-sate-camill-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/satearmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-camill-sate-camill-armor.jpg",
+        "size": 1594,
+        "sha1": "daad0195ddae2e994ebd2eb8501f2cb4442771bc"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Camill Pants",
+      "slug": "camill-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-camill-sate-camill-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/satepants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-camill-sate-camill-pants.jpg",
+        "size": 1385,
+        "sha1": "697a3ed503405910dc8568d6ada1f23cb7365b78"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/camill.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

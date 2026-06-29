@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "apocalypse-ancient-apocalypse-lancer",
+  "slug": "apocalypse-lancer",
+  "name": "Apocalypse Lancer",
+  "family": "Apocalypse Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Apocalypse Lancer Helm",
+      "slug": "apocalypse-lancer-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-lancer-apocalypse-lancer-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/helmlancer.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-lancer-apocalypse-lancer-helm.jpg",
+        "size": 1545,
+        "sha1": "26719e2d0f8cf69f473df2c0bd47eb30ec449f55"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apocalypse Lancer Armor",
+      "slug": "apocalypse-lancer-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-lancer-apocalypse-lancer-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/armorlancer.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-lancer-apocalypse-lancer-armor.jpg",
+        "size": 1708,
+        "sha1": "9bebde07a2e3422bcfb42f08a6558c098661524d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apocalypse Lancer Pants",
+      "slug": "apocalypse-lancer-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-lancer-apocalypse-lancer-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/pantslancer.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-lancer-apocalypse-lancer-pants.jpg",
+        "size": 1344,
+        "sha1": "6591457a7903c99951f64c5050e8cf91eb8cf75e"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Apocalypse Lancer Gloves",
+      "slug": "apocalypse-lancer-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-lancer-apocalypse-lancer-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/apocalypse/gloveslancer.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/apocalypse-ancient-apocalypse-lancer-apocalypse-lancer-gloves.jpg",
+        "size": 1480,
+        "sha1": "46ca11c3bee1bd67da59779ef070af5b511a6949"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/apocalypse-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/apolancer.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

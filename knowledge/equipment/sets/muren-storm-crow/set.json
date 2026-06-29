@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-muren-storm-crow",
+  "slug": "muren-storm-crow",
+  "name": "Muren Storm Crow",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Muren Gloves",
+      "slug": "muren-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-muren-storm-crow-muren-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl105.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-muren-storm-crow-muren-gloves.jpg",
+        "size": 11181,
+        "sha1": "ee91390fafc9f7010d27dfb4cb49dc53e427da21"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Muren Pants",
+      "slug": "muren-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-muren-storm-crow-muren-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa027.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-muren-storm-crow-muren-pants.jpg",
+        "size": 3178,
+        "sha1": "16ff14f9f35925cb6c73c23017ee25a08c316dda"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Muren Armor",
+      "slug": "muren-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-muren-storm-crow-muren-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar045.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-muren-storm-crow-muren-armor.jpg",
+        "size": 11665,
+        "sha1": "bf5910a14d45027508ced911f8958c9a3b2cfa13"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Muren Ring of Fire",
+      "slug": "muren-ring-of-fire",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-muren-storm-crow-muren-ring-of-fire.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri15_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-muren-storm-crow-muren-ring-of-fire.jpg",
+        "size": 2337,
+        "sha1": "16d10aa4213911ad8cf7101240d95d23785086aa"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/muren.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

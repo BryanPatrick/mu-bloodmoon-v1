@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-hades",
+  "slug": "hades",
+  "name": "Hades",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Dark Wizard"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-hades",
+      "name": "Hades Armor",
+      "category": "Armor",
+      "slug": "hades",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-hades.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar051_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-hades.jpg",
+        "size": 11677,
+        "sha1": "5592d579276c3e9abe6bdd938d1edcca0575e499"
+      }
+    },
+    {
+      "itemId": "boots-hades",
+      "name": "Hades Boots",
+      "category": "Boots",
+      "slug": "hades",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-hades.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo050_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-hades.jpg",
+        "size": 11376,
+        "sha1": "ec490fcb6e38d7a5b95284cb580da17d8fed7892"
+      }
+    },
+    {
+      "itemId": "gloves-hades",
+      "name": "Hades Gloves",
+      "category": "Gloves",
+      "slug": "hades",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-hades.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl111_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-hades.jpg",
+        "size": 11332,
+        "sha1": "488bd5f1710c2a710572b704424bee6e2901a057"
+      }
+    },
+    {
+      "itemId": "helm-hades",
+      "name": "Hades Helm",
+      "category": "Helm",
+      "slug": "hades",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-hades.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe045_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-hades.jpg",
+        "size": 11159,
+        "sha1": "37b316f66459d4aa36dafa00dd9970f3e1b812f6"
+      }
+    },
+    {
+      "itemId": "pants-hades",
+      "name": "Hades Pants",
+      "category": "Pants",
+      "slug": "hades",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-hades.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa050_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-hades.jpg",
+        "size": 11421,
+        "sha1": "5a97ceb747bfdaf406c1413acb9078aaaed8833d"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

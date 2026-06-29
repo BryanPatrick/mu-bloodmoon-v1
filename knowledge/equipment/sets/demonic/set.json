@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-demonic",
+  "slug": "demonic",
+  "name": "Demonic",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Summoner"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-demonic",
+      "name": "Demonic Armor",
+      "category": "Armor",
+      "slug": "demonic",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-demonic.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar055_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-demonic.jpg",
+        "size": 12097,
+        "sha1": "c091b714bdd68c769aad3c348bd035afb4f65f3f"
+      }
+    },
+    {
+      "itemId": "boots-demonic",
+      "name": "Demonic Boots",
+      "category": "Boots",
+      "slug": "demonic",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-demonic.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo054_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-demonic.jpg",
+        "size": 11572,
+        "sha1": "5d206963b7cd696c9447a043e6f6f8198429ba51"
+      }
+    },
+    {
+      "itemId": "gloves-demonic",
+      "name": "Demonic Gloves",
+      "category": "Gloves",
+      "slug": "demonic",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-demonic.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl115_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-demonic.jpg",
+        "size": 11496,
+        "sha1": "a3df552458fdb272a179f841c9580cec2e86a3ce"
+      }
+    },
+    {
+      "itemId": "helm-demonic",
+      "name": "Demonic Helm",
+      "category": "Helm",
+      "slug": "demonic",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-demonic.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe047_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-demonic.jpg",
+        "size": 11188,
+        "sha1": "b4acd8297951564e58bf376fba642766cada1322"
+      }
+    },
+    {
+      "itemId": "pants-demonic",
+      "name": "Demonic Pants",
+      "category": "Pants",
+      "slug": "demonic",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-demonic.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa054_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-demonic.jpg",
+        "size": 11753,
+        "sha1": "01c9ba8e0b90fc8ac467cec9738ebc3d8991f21b"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

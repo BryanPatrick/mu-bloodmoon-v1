@@ -1,0 +1,90 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-anas-hirat",
+  "slug": "anas-hirat",
+  "name": "Anas Hirat",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Anas Shield",
+      "slug": "anas-shield",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-anas-hirat-anas-shield-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/vishield.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-anas-hirat-anas-shield-detail.jpg",
+        "size": 4693,
+        "sha1": "048d38210a316bb0ba1ddaa6eb561e4b5381d630"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Anas Pants",
+      "slug": "anas-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-anas-hirat-anas-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/hirapants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-anas-hirat-anas-pants.jpg",
+        "size": 1402,
+        "sha1": "c16e2cc39a1de635730b1b411f7191e5dda9b9d1"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Anas Helm",
+      "slug": "anas-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-anas-hirat-anas-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/hirahelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-anas-hirat-anas-helm.jpg",
+        "size": 1409,
+        "sha1": "6086b51bd3e581823373f2645eb88d8e793b956d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Anas Armor",
+      "slug": "anas-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-anas-hirat-anas-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/hiraarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-anas-hirat-anas-armor.jpg",
+        "size": 1643,
+        "sha1": "388f1abe6267b3122a1b566051cd49643c9441d8"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Anas Vis Shield",
+      "slug": "anas-vis-shield",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-anas-hirat-anas-vis-shield.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/shield/vis.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-anas-hirat-anas-vis-shield.jpg",
+        "size": 1396,
+        "sha1": "6b5700069860f71330aff045ee84ae400ac1b0c4"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/anas.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

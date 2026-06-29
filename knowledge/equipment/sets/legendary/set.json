@@ -1,0 +1,97 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-legendary",
+  "slug": "legendary",
+  "name": "Legendary",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Dark Wizard",
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-legendary",
+      "name": "Legendary Armor",
+      "category": "Armor",
+      "slug": "legendary",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-legendary.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar012_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-legendary.jpg",
+        "size": 3965,
+        "sha1": "890fc14647ef95b8146474a3f934c69d6362b6a2"
+      }
+    },
+    {
+      "itemId": "boots-legendary",
+      "name": "Legendary Boots",
+      "category": "Boots",
+      "slug": "legendary",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-legendary.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo012_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-legendary.jpg",
+        "size": 3765,
+        "sha1": "d4ef47513c076d2097f9ce4ce7165f2e6915e328"
+      }
+    },
+    {
+      "itemId": "gloves-legendary",
+      "name": "Legendary Gloves",
+      "category": "Gloves",
+      "slug": "legendary",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-legendary.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl012_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-legendary.jpg",
+        "size": 3840,
+        "sha1": "743e0a1c683526dd44aafa4c811992bb8b42f5e3"
+      }
+    },
+    {
+      "itemId": "helm-legendary",
+      "name": "Legendary Helm",
+      "category": "Helm",
+      "slug": "legendary",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-legendary.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe012_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-legendary.jpg",
+        "size": 3252,
+        "sha1": "0101c3ef93c013c32a31e1f08ce89c199143d34b"
+      }
+    },
+    {
+      "itemId": "pants-legendary",
+      "name": "Legendary Pants",
+      "category": "Pants",
+      "slug": "legendary",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-legendary.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa012_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-legendary.jpg",
+        "size": 3693,
+        "sha1": "6c66cac37615b04d20fc23cc95c4049d5f2256d6"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

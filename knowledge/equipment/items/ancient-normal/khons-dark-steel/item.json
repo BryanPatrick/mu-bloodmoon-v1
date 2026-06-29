@@ -1,0 +1,63 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "ancient-normal-khons-dark-steel",
+  "slug": "khons-dark-steel",
+  "name": "Khons Dark Steel",
+  "title": "Khons Dark Steel",
+  "category": "Ancient Normal",
+  "categorySlug": "ancient-normal",
+  "usableBy": [],
+  "listStats": {
+    "value1": "Khons Gloves",
+    "value2": "Khons Boots",
+    "value3": "Opciones por Set Completo"
+  },
+  "image": {
+    "publicPath": null,
+    "sourceUrl": null,
+    "localPath": null,
+    "size": null,
+    "sha1": null
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/khons.html",
+    "imageSourceUrl": null
+  },
+  "statsByLevel": [],
+  "parts": [
+    {
+      "name": "Khons Gloves",
+      "slug": "khons-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-khons-dark-steel-khons-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl025_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-khons-dark-steel-khons-gloves.jpg",
+        "size": 3269,
+        "sha1": "33971849e3d6ae417612f3ad02178aae18b2ae94"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Khons Boots",
+      "slug": "khons-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-khons-dark-steel-khons-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo025_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-khons-dark-steel-khons-boots.jpg",
+        "size": 3377,
+        "sha1": "aec52efa1518b76ecaa8f056cc1f622db046c089"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

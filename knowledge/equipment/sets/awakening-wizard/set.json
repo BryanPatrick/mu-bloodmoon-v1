@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-awakening-wizard",
+  "slug": "awakening-wizard",
+  "name": "Awakening Wizard",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Dark Wizard"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-awakening-wizard",
+      "name": "Awakening Soul Wizard Armor",
+      "category": "Armor",
+      "slug": "awakening-wizard",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-awakening-wizard.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/dwarmorawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-awakening-wizard.jpg",
+        "size": 1365,
+        "sha1": "c5ddc0384c95cada8cb4e0655ef27bb02f4310a2"
+      }
+    },
+    {
+      "itemId": "boots-awakening-wizard",
+      "name": "Awakening Soul Wizard Boots",
+      "category": "Boots",
+      "slug": "awakening-wizard",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-awakening-wizard.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/dwbootsawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-awakening-wizard.jpg",
+        "size": 1128,
+        "sha1": "d60d68dc3ebe1bfcd5326ae2ba0d0989a6cd3d6a"
+      }
+    },
+    {
+      "itemId": "gloves-awakening-wizard",
+      "name": "Awakening Soul Wizard Gloves",
+      "category": "Gloves",
+      "slug": "awakening-wizard",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-awakening-wizard.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/dwglovesawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-awakening-wizard.jpg",
+        "size": 1044,
+        "sha1": "b0a10eefddcc1577949be9492dddb1658cbe1e6d"
+      }
+    },
+    {
+      "itemId": "helm-awakening-wizard",
+      "name": "Holyangel Wizard Helm",
+      "category": "Helm",
+      "slug": "awakening-wizard",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-awakening-wizard.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/dwhelmawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-awakening-wizard.jpg",
+        "size": 1056,
+        "sha1": "03346789475e5006ab5c9cb2420799191a88e3b8"
+      }
+    },
+    {
+      "itemId": "pants-awakening-wizard",
+      "name": "Awakening Soul Wizard Pants",
+      "category": "Pants",
+      "slug": "awakening-wizard",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-awakening-wizard.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/dwpantsawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-awakening-wizard.jpg",
+        "size": 1236,
+        "sha1": "828eeeeee185c14056c523e4939b54e0412f1bae"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

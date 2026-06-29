@@ -1,0 +1,103 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-heras-sphinx",
+  "slug": "heras-sphinx",
+  "name": "Heras Sphinx",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Heras Skull Shield",
+      "slug": "heras-skull-shield",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-heras-sphinx-heras-skull-shield.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ish005.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-heras-sphinx-heras-skull-shield.jpg",
+        "size": 3719,
+        "sha1": "94832b57c5a0b7e1ebf967c3261041a447b9310f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Heras Boots",
+      "slug": "heras-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-heras-sphinx-heras-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo011.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-heras-sphinx-heras-boots.jpg",
+        "size": 3950,
+        "sha1": "9195dff98bf669615614cbce8d89e17dba7b9e71"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Heras Gloves",
+      "slug": "heras-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-heras-sphinx-heras-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl011.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-heras-sphinx-heras-gloves.jpg",
+        "size": 3538,
+        "sha1": "81c6018d1c3f8afe1f45db0c8da0bcbedf6cf51c"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Heras Pants",
+      "slug": "heras-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-heras-sphinx-heras-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa011.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-heras-sphinx-heras-pants.jpg",
+        "size": 3996,
+        "sha1": "5ec9feecbfe9b95410b84af70cf38827932677d1"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Heras Armor",
+      "slug": "heras-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-heras-sphinx-heras-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar011.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-heras-sphinx-heras-armor.jpg",
+        "size": 4135,
+        "sha1": "c3ad58e6f0e506d3e61419eb8e6ce554d80c6c51"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Heras Helm",
+      "slug": "heras-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-heras-sphinx-heras-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe011.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-heras-sphinx-heras-helm.jpg",
+        "size": 3579,
+        "sha1": "66a487794e26e7ce2a21240bd2871ec4f60ac605"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/heras.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

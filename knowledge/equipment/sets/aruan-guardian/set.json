@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-aruan-guardian",
+  "slug": "aruan-guardian",
+  "name": "Aruan Guardian",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Aruan Boots",
+      "slug": "aruan-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-aruan-guardian-aruan-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo044.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-aruan-guardian-aruan-boots.jpg",
+        "size": 12446,
+        "sha1": "10beb94b3bfee760714c0ac5fac266f4b43367f7"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Aruan Pants",
+      "slug": "aruan-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-aruan-guardian-aruan-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa045.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-aruan-guardian-aruan-pants.jpg",
+        "size": 12124,
+        "sha1": "2b494a4ee5d3025d83c4f4ae0742472a4fb37923"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Aruan Armor",
+      "slug": "aruan-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-aruan-guardian-aruan-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar044.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-aruan-guardian-aruan-armor.jpg",
+        "size": 12286,
+        "sha1": "f986a61d5e8bafbba0fc33bb19953a459e794adb"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Aruan Helm",
+      "slug": "aruan-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-aruan-guardian-aruan-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe040.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-aruan-guardian-aruan-helm.jpg",
+        "size": 11781,
+        "sha1": "fb47d931d0d41d01dc277c577cc5fe526389b2e2"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/aruane.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

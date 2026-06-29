@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-eternal-wings",
+  "slug": "eternal-wings",
+  "name": "Eternal Wings",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Summoner"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-eternal-wings",
+      "name": "Eternal Wing Armor",
+      "category": "Armor",
+      "slug": "eternal-wings",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-eternal-wings.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar065_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-eternal-wings.jpg",
+        "size": 3250,
+        "sha1": "20ae9860c3230276d9bb0b534cb9f104ecceffd4"
+      }
+    },
+    {
+      "itemId": "boots-eternal-wings",
+      "name": "Eternal Wing Boots",
+      "category": "Boots",
+      "slug": "eternal-wings",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-eternal-wings.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo069_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-eternal-wings.jpg",
+        "size": 2633,
+        "sha1": "c5fdef1ee2ef834cfded46e7079adcf658d51c54"
+      }
+    },
+    {
+      "itemId": "gloves-eternal-wings",
+      "name": "Eternal Wing Gloves",
+      "category": "Gloves",
+      "slug": "eternal-wings",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-eternal-wings.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl117_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-eternal-wings.jpg",
+        "size": 2596,
+        "sha1": "971623ea5c1eab9eff378555ee170bd54b97663a"
+      }
+    },
+    {
+      "itemId": "helm-eternal-wings",
+      "name": "Eternal Wing Helm",
+      "category": "Helm",
+      "slug": "eternal-wings",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-eternal-wings.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe062_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-eternal-wings.jpg",
+        "size": 2187,
+        "sha1": "06431ca9bcc784098f2e59b293d88b35e5b06cfd"
+      }
+    },
+    {
+      "itemId": "pants-eternal-wings",
+      "name": "Eternal Wing Pants",
+      "category": "Pants",
+      "slug": "eternal-wings",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-eternal-wings.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa070_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-eternal-wings.jpg",
+        "size": 2804,
+        "sha1": "5d75a170366b76fba0e2c3c80d255a06a5d7c9ae"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

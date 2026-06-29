@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "blue-eye-ancient-blue-eye-knight-conviction",
+  "slug": "blue-eye-knight-conviction",
+  "name": "Blue Eye Knight (Conviction)",
+  "family": "Blue Eye Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Blue Eye Knight (Conviction) Helm",
+      "slug": "blue-eye-knight-conviction-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-knight-conviction-blue-eye-knight-conviction-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/ihe1009.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-knight-conviction-blue-eye-knight-conviction-helm.jpg",
+        "size": 2520,
+        "sha1": "8de41bb885b71241a4726b4ca3d5341dc6fde6e9"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Blue Eye Knight (Conviction) Armor",
+      "slug": "blue-eye-knight-conviction-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-knight-conviction-blue-eye-knight-conviction-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/iar1009.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-knight-conviction-blue-eye-knight-conviction-armor.jpg",
+        "size": 2884,
+        "sha1": "89605c72fda0e56daf1ad1e03737a29347e5b6d8"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Blue Eye Knight (Conviction) Pants",
+      "slug": "blue-eye-knight-conviction-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-knight-conviction-blue-eye-knight-conviction-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/ipa1009.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-knight-conviction-blue-eye-knight-conviction-pants.jpg",
+        "size": 3048,
+        "sha1": "7cf958f78220614461047b9dc395b6fcd96983a2"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Blue Eye Knight (Conviction) Boots",
+      "slug": "blue-eye-knight-conviction-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-knight-conviction-blue-eye-knight-conviction-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/blueeye/ibo1009.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/blue-eye-ancient-blue-eye-knight-conviction-blue-eye-knight-conviction-boots.jpg",
+        "size": 2875,
+        "sha1": "856d7ea725ba519a0f81ad36f5b8f0d6b8ece0f3"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/blue-eye-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/blueeyeconviction.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

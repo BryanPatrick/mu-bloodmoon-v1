@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-bloodangel-knight",
+  "slug": "bloodangel-knight",
+  "name": "Bloodangel Knight",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Dark Knight"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-bloodangel-knight",
+      "name": "Bloodangel Knight Armor",
+      "category": "Armor",
+      "slug": "bloodangel-knight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-bloodangel-knight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/bloodbk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-bloodangel-knight.jpg",
+        "size": 1457,
+        "sha1": "75b96d19dba4ce435482c3258f60419ce36ab736"
+      }
+    },
+    {
+      "itemId": "boots-bloodangel-knight",
+      "name": "Bloodangel Knight Boots",
+      "category": "Boots",
+      "slug": "bloodangel-knight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-bloodangel-knight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/bloodbk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-bloodangel-knight.jpg",
+        "size": 1393,
+        "sha1": "6838731211e1f36b4856239e26a8b2cc98623191"
+      }
+    },
+    {
+      "itemId": "gloves-bloodangel-knight",
+      "name": "Bloodangel Knight Gloves",
+      "category": "Gloves",
+      "slug": "bloodangel-knight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-bloodangel-knight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/bloodbk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-bloodangel-knight.jpg",
+        "size": 1142,
+        "sha1": "240628fcffcc7beefef08155dbe2652fcc432f34"
+      }
+    },
+    {
+      "itemId": "helm-bloodangel-knight",
+      "name": "Bloodangel Knight Helm",
+      "category": "Helm",
+      "slug": "bloodangel-knight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-bloodangel-knight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/bloodbk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-bloodangel-knight.jpg",
+        "size": 1287,
+        "sha1": "278fdb05ab5e9b28b398d01b446badc078761011"
+      }
+    },
+    {
+      "itemId": "pants-bloodangel-knight",
+      "name": "Bloodangel Knight Pants",
+      "category": "Pants",
+      "slug": "bloodangel-knight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-bloodangel-knight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/bloodbk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-bloodangel-knight.jpg",
+        "size": 1327,
+        "sha1": "a6ee24cb7abb69e3ab81483e7befe43f3e17d43f"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

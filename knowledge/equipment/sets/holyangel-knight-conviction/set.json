@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "holyangel-ancient-holyangel-knight-conviction",
+  "slug": "holyangel-knight-conviction",
+  "name": "Holyangel Knight (Conviction)",
+  "family": "Holyangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Knight (Conviction) Helm",
+      "slug": "knight-conviction-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-knight-conviction-knight-conviction-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holybmhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-knight-conviction-knight-conviction-helm.jpg",
+        "size": 1248,
+        "sha1": "e35226505fceed999531ee9f013d935a504c65be"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Knight (Conviction)Armor",
+      "slug": "knight-conviction-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-knight-conviction-knight-conviction-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holybmarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-knight-conviction-knight-conviction-armor.jpg",
+        "size": 1413,
+        "sha1": "705bfbd1bdbe6ffcd3a67df3eb374b3f9e7197bc"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Knight (Conviction) Pants",
+      "slug": "knight-conviction-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-knight-conviction-knight-conviction-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holybmpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-knight-conviction-knight-conviction-pants.jpg",
+        "size": 1366,
+        "sha1": "7673cd95f2ef74c441be9ccd929701c9500104f4"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Knight (Conviction) Boots",
+      "slug": "knight-conviction-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-knight-conviction-knight-conviction-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/holybmboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/holyangel-ancient-holyangel-knight-conviction-knight-conviction-boots.jpg",
+        "size": 1231,
+        "sha1": "323b66d8b483d0eb8a1acd64b2743efa6d0531d2"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/holyangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/holyangelconviction.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

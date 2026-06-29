@@ -1,0 +1,98 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-plate",
+  "slug": "plate",
+  "name": "Plate",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Dark Knight",
+    "Magic Gladiator",
+    "Rage Fighter"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-plate",
+      "name": "Plate Armor",
+      "category": "Armor",
+      "slug": "plate",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-plate.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar005_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-plate.jpg",
+        "size": 4183,
+        "sha1": "46511b326f6d648e41c816b2e6d4924a487da1b5"
+      }
+    },
+    {
+      "itemId": "boots-plate",
+      "name": "Plate Boots",
+      "category": "Boots",
+      "slug": "plate",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-plate.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo005_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-plate.jpg",
+        "size": 3536,
+        "sha1": "1782eaf6fbc4abb3a972b8df24d500fb12ed55d3"
+      }
+    },
+    {
+      "itemId": "gloves-plate",
+      "name": "Plate Gloves",
+      "category": "Gloves",
+      "slug": "plate",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-plate.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl005_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-plate.jpg",
+        "size": 3368,
+        "sha1": "9e05684de8c2c34553010500624f44faa25cc9b3"
+      }
+    },
+    {
+      "itemId": "helm-plate",
+      "name": "Plate Helm",
+      "category": "Helm",
+      "slug": "plate",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-plate.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe005_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-plate.jpg",
+        "size": 3200,
+        "sha1": "d2d6084ccb517848e51989d2cfecefca7e0c46eb"
+      }
+    },
+    {
+      "itemId": "pants-plate",
+      "name": "Plate Pants",
+      "category": "Pants",
+      "slug": "plate",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-plate.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa005_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-plate.jpg",
+        "size": 3410,
+        "sha1": "03ea356d7395ab7ab3e9a4d9506b6825cae220b6"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

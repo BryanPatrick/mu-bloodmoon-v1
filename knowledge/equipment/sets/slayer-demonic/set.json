@@ -1,0 +1,94 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-slayer-demonic",
+  "slug": "slayer-demonic",
+  "name": "Slayer Demonic",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "itemId": "armor-slayer-demonic",
+      "name": "Slayer Demonic Armor",
+      "category": "Armor",
+      "slug": "slayer-demonic",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-slayer-demonic.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/slayerdemonic.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-slayer-demonic.jpg",
+        "size": 1270,
+        "sha1": "a3d321a37798b7641801f0d6875b8b417f5daffd"
+      }
+    },
+    {
+      "itemId": "boots-slayer-demonic",
+      "name": "Slayer Demonic Boots",
+      "category": "Boots",
+      "slug": "slayer-demonic",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-slayer-demonic.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/slayerdemonic.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-slayer-demonic.jpg",
+        "size": 1059,
+        "sha1": "edeb7f1c6ceec7499e8750c91ebf1bae09159dcf"
+      }
+    },
+    {
+      "itemId": "gloves-slayer-demonic",
+      "name": "Slayer Demonic Gloves",
+      "category": "Gloves",
+      "slug": "slayer-demonic",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-slayer-demonic.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/slayerdemonic.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-slayer-demonic.jpg",
+        "size": 1013,
+        "sha1": "684bf1e375e6a93c914f2d5da59e931566bdcd9c"
+      }
+    },
+    {
+      "itemId": "helm-slayer-demonic",
+      "name": "Slayer Demonic",
+      "category": "Helm",
+      "slug": "slayer-demonic",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-slayer-demonic.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/slayerdemonic.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-slayer-demonic.jpg",
+        "size": 1003,
+        "sha1": "599659eca59a3db0f2c7520697a4ad54ecd517d8"
+      }
+    },
+    {
+      "itemId": "pants-slayer-demonic",
+      "name": "Slayer Demonic Pants",
+      "category": "Pants",
+      "slug": "slayer-demonic",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-slayer-demonic.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/slayerdemonic.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-slayer-demonic.jpg",
+        "size": 1250,
+        "sha1": "6a425c8b237020646ec191a01f3259d9c77d0f7e"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

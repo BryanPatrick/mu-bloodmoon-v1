@@ -1,0 +1,104 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "ancient-normal-frigg-holy-spirit",
+  "slug": "frigg-holy-spirit",
+  "name": "Frigg Holy Spirit",
+  "title": "Frigg Holy Spirit",
+  "category": "Ancient Normal",
+  "categorySlug": "ancient-normal",
+  "usableBy": [],
+  "listStats": {
+    "value1": "Frigg Armor",
+    "value2": "Frigg Pants",
+    "value3": "Frigg Boots",
+    "value4": "Frigg Celestial Bow",
+    "value5": "Frigg Pendant of Wind"
+  },
+  "image": {
+    "publicPath": null,
+    "sourceUrl": null,
+    "localPath": null,
+    "size": null,
+    "sha1": null
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/frigg.html",
+    "imageSourceUrl": null
+  },
+  "statsByLevel": [],
+  "parts": [
+    {
+      "name": "Frigg Armor",
+      "slug": "frigg-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-frigg-holy-spirit-frigg-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar019_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-frigg-holy-spirit-frigg-armor.jpg",
+        "size": 3889,
+        "sha1": "927334c9b240acf8f2108b24d91761fe12403c1f"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Frigg Pants",
+      "slug": "frigg-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-frigg-holy-spirit-frigg-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa019_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-frigg-holy-spirit-frigg-pants.jpg",
+        "size": 3549,
+        "sha1": "9590a995273adfabdd6b4cb01e28280b802f1267"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Frigg Boots",
+      "slug": "frigg-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-frigg-holy-spirit-frigg-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo019_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-frigg-holy-spirit-frigg-boots.jpg",
+        "size": 4062,
+        "sha1": "2c1c339c6b8e0ccdaf06feeb96547171dcc5bd3f"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Frigg Celestial Bow",
+      "slug": "frigg-celestial-bow",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-frigg-holy-spirit-frigg-celestial-bow.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/bow/ibo016_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-frigg-holy-spirit-frigg-celestial-bow.jpg",
+        "size": 3477,
+        "sha1": "5e5c1d7101a0a4394ec4b45ec2e0dc3fbb739041"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Frigg Pendant of Wind",
+      "slug": "frigg-pendant-of-wind",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-frigg-holy-spirit-frigg-pendant-of-wind.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ring/iri20_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-frigg-holy-spirit-frigg-pendant-of-wind.jpg",
+        "size": 2531,
+        "sha1": "defa91767f34bcba6c4119d786b82a1728ea71c0"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "silver-heart-ancient-silver-heart-elf-defense",
+  "slug": "silver-heart-elf-defense",
+  "name": "Silver Heart Elf Defense",
+  "family": "Silver Heart Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Silver Heart Elf (Energia) Helm",
+      "slug": "silver-heart-elf-energia-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-elf-defense-silver-heart-elf-energia-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/elfhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-elf-defense-silver-heart-elf-energia-helm-detail.jpg",
+        "size": 10265,
+        "sha1": "93b4ebe88736b46c9361e2c4fd602bc9bda0c169"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Elf (Energia) Armor",
+      "slug": "silver-heart-elf-energia-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-elf-defense-silver-heart-elf-energia-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/elfarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-elf-defense-silver-heart-elf-energia-armor-detail.jpg",
+        "size": 13560,
+        "sha1": "f28a635a0f1f4c630f5759a83b62cac25b36c7ad"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Elf (Energia) Pants",
+      "slug": "silver-heart-elf-energia-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-elf-defense-silver-heart-elf-energia-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/elfpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-elf-defense-silver-heart-elf-energia-pants-detail.jpg",
+        "size": 12410,
+        "sha1": "1122d29fe49afa8c4d701f7c3257932514bb6fe7"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Elf (Energia) Gloves",
+      "slug": "silver-heart-elf-energia-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-elf-defense-silver-heart-elf-energia-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/silverheart/elfgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-elf-defense-silver-heart-elf-energia-gloves-detail.jpg",
+        "size": 10517,
+        "sha1": "fd7ec01f69758a8198f7e4acdfa489e67ffec93c"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Elf Defense Helm",
+      "slug": "silver-heart-elf-defense-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-elf-defense-silver-heart-elf-defense-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/c1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-elf-defense-silver-heart-elf-defense-helm.jpg",
+        "size": 1256,
+        "sha1": "22958fd439766cbc217b24dc2f22dbb841b02288"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Elf Defense Armor",
+      "slug": "silver-heart-elf-defense-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-elf-defense-silver-heart-elf-defense-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/c2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-elf-defense-silver-heart-elf-defense-armor.jpg",
+        "size": 1472,
+        "sha1": "f4d514a8ed5f8684fe481f537f7c152da1a75487"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Elf Defense Pants",
+      "slug": "silver-heart-elf-defense-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-elf-defense-silver-heart-elf-defense-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/c3.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-elf-defense-silver-heart-elf-defense-pants.jpg",
+        "size": 1289,
+        "sha1": "8033b60331c1eaab0ea2861b5919e1035e508e15"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Silver Heart Elf Defense Gloves",
+      "slug": "silver-heart-elf-defense-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-elf-defense-silver-heart-elf-defense-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/c4.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/silver-heart-ancient-silver-heart-elf-defense-silver-heart-elf-defense-gloves.jpg",
+        "size": 1184,
+        "sha1": "a4474cec94d1b1717a123bec8d297ece301ca03f"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/silver-heart-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/silverheartelfenergia.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

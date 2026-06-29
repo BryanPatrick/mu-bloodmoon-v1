@@ -1,0 +1,38 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "armor-bloodangel-magic-energy",
+  "slug": "bloodangel-magic-energy",
+  "name": "Bloodangel Magic Energy",
+  "title": "Bloodangel Magic Energy Armor",
+  "category": "Armor",
+  "categorySlug": "armor",
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "listStats": {
+    "normalDrop": "~",
+    "excellentDrop": "~",
+    "requiredLevel": "400"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/armor-bloodangel-magic-energy.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/bloodmg.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-bloodangel-magic-energy.jpg",
+    "size": 1474,
+    "sha1": "ba5d2fe7d48253bed27852d1aad0bdc095c7f43d"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/armor.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/armor/bloodangelmagicenergy.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/bloodmg.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

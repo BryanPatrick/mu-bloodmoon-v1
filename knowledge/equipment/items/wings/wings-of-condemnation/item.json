@@ -1,0 +1,34 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "wings-wings-of-condemnation",
+  "slug": "wings-of-condemnation",
+  "name": "Wings of Condemnation",
+  "title": "Wings of Condemnation",
+  "category": "Wings",
+  "categorySlug": "wings",
+  "usableBy": [],
+  "listStats": {
+    "normalDrop": "800"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/wings-wings-of-condemnation.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/slw3.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/wings-wings-of-condemnation.jpg",
+    "size": 2503,
+    "sha1": "cdaf52d581926db8617035e040ceb2d3b4c58f45"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/wings.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/wing/condemnation.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/slw3.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

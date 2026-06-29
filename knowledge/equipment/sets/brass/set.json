@@ -1,0 +1,98 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-brass",
+  "slug": "brass",
+  "name": "Brass",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Dark Knight",
+    "Magic Gladiator",
+    "Rage Fighter"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-brass",
+      "name": "Brass Armor",
+      "category": "Armor",
+      "slug": "brass",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-brass.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar004_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-brass.jpg",
+        "size": 4135,
+        "sha1": "7519d1ac0f4fb4ce1e4f487fc7b20050c2b92199"
+      }
+    },
+    {
+      "itemId": "boots-brass",
+      "name": "Brass Boots",
+      "category": "Boots",
+      "slug": "brass",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-brass.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo004_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-brass.jpg",
+        "size": 3854,
+        "sha1": "7e7eb388fb3b531623ecdd7c6410e84df9856a33"
+      }
+    },
+    {
+      "itemId": "gloves-brass",
+      "name": "Brass Gloves",
+      "category": "Gloves",
+      "slug": "brass",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-brass.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl004_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-brass.jpg",
+        "size": 3672,
+        "sha1": "6178fbde31eb93de7c752f6611bcdfb4aa88768e"
+      }
+    },
+    {
+      "itemId": "helm-brass",
+      "name": "Brass Helm",
+      "category": "Helm",
+      "slug": "brass",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-brass.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe004_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-brass.jpg",
+        "size": 3513,
+        "sha1": "81ead8cfa038e4ccf09733a4f46f95272d5ea5e0"
+      }
+    },
+    {
+      "itemId": "pants-brass",
+      "name": "Brass Pants",
+      "category": "Pants",
+      "slug": "brass",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-brass.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa004_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-brass.jpg",
+        "size": 3745,
+        "sha1": "bd9689e83fbc16b436b91f3e4d1e86a44eb3bf55"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

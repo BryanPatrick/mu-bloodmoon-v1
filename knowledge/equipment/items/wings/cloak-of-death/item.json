@@ -1,0 +1,35 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "wings-cloak-of-death",
+  "slug": "cloak-of-death",
+  "name": "Cloak of Death",
+  "title": "Cloak of Death",
+  "category": "Wings",
+  "categorySlug": "wings",
+  "usableBy": [],
+  "listStats": {
+    "normalDrop": "290+(Wing Level*4)",
+    "excellentDrop": "Usado por el Rage Fighter, Dark Lord Defensa: 27 + (Wing Level * 3) [Level +10~+15 Incremento de defensa +4,+5,+6,+7,+8,+9]. Incremento de Daño: 21% + (Wing Level * 1). Absorcion de Daño: 13% + (Wing Level * 2). Opciones: 25% Luck en Rate de Soul + 5% Critical Damage Rate. 3% de Posibilidad de ignorar la Defensa del Enemigo. 5% de posibilidad de Recuperar el 100% del HP. Incremento de Daño +4,+8,+12,+16. Recuperacion de HP 1%,2%,3%,4%. Reduce 3 Vida despues del ataque con exito (Incluido el Miss)."
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/wings-cloak-of-death.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/cloak.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/wings-cloak-of-death.jpg",
+    "size": 1303,
+    "sha1": "7b15b03b0af6c6e49a0e99a13cd338122e3c2ca4"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/wings.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/wing/death.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/cloak.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

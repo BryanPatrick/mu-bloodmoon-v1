@@ -1,0 +1,155 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-lucky-hegaton-s-dragon",
+  "slug": "hegaton-s-dragon",
+  "name": "Hegaton's Dragon",
+  "family": "Set Lucky",
+  "qualities": [
+    "Lucky"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Hegaton's Boots",
+      "slug": "hegaton-s-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-s-boots-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hegaton2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-s-boots-detail.jpg",
+        "size": 3025,
+        "sha1": "4cfefe2ed2935ab6b6fafe36c9ab571e2c0300e5"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hegaton's Gloves",
+      "slug": "hegaton-s-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-s-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hegaton3.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-s-gloves-detail.jpg",
+        "size": 2351,
+        "sha1": "39f398b18136e1b4785031c846bbf5c4c79c0c3d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hegaton's Helm",
+      "slug": "hegaton-s-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-s-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hegaton5.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-s-helm-detail.jpg",
+        "size": 2924,
+        "sha1": "b7372388696d6d2b17a06f0c493055ae2a11610f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hegaton's Pants",
+      "slug": "hegaton-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-s-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hegaton4.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-s-pants-detail.jpg",
+        "size": 2717,
+        "sha1": "1fa1d219de3f56d1096abcc8bff871cbecfa6463"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hegaton's Armor",
+      "slug": "hegaton-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-s-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hegaton1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-s-armor-detail.jpg",
+        "size": 3548,
+        "sha1": "bfda4486b6f1644f8a042490e1282fec8189e2fb"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hegaton Boots",
+      "slug": "hegaton-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hegatonp2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-boots.jpg",
+        "size": 1241,
+        "sha1": "facc90d4eac9867b9bfc61552938cf599e83d809"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hegaton Gloves",
+      "slug": "hegaton-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hegaton3p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-gloves.jpg",
+        "size": 1255,
+        "sha1": "6b0283dc0eb0db10fcf8b26ed8bed217b6764550"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hegaton Helm",
+      "slug": "hegaton-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hegaton5p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-helm.jpg",
+        "size": 1280,
+        "sha1": "d3a4aa509c94dcd907785edd5f0d5733dee1b85a"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hegaton Pants",
+      "slug": "hegaton-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hegaton4p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-pants.jpg",
+        "size": 1187,
+        "sha1": "ccaa310bee4eba3be09ae47ba1d112ee4a6dd5da"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Hegaton Armor",
+      "slug": "hegaton-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Hegatonp1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-hegaton-s-dragon-hegaton-armor.jpg",
+        "size": 1386,
+        "sha1": "d7fa32ba51e2048c14f93a75c85005459f495d83"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/set-lucky.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/lucky/hegaton.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

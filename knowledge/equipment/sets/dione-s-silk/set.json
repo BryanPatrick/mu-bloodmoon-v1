@@ -1,0 +1,155 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-lucky-dione-s-silk",
+  "slug": "dione-s-silk",
+  "name": "Dione's Silk",
+  "family": "Set Lucky",
+  "qualities": [
+    "Lucky"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Dione's Boots",
+      "slug": "dione-s-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-s-boots-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Dione2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-s-boots-detail.jpg",
+        "size": 2774,
+        "sha1": "d5d2b3c285a049960e07f80db7ec10ea891f6cb0"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Dione's Gloves",
+      "slug": "dione-s-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-s-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Dione3.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-s-gloves-detail.jpg",
+        "size": 1801,
+        "sha1": "872b50a314d9459e86b8ea6b3a1b70b22f88347a"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Dione's Helm",
+      "slug": "dione-s-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-s-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Dione5.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-s-helm-detail.jpg",
+        "size": 1542,
+        "sha1": "bcaede84c067516810bcdd2b48449500b17b6505"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Dione's Pants",
+      "slug": "dione-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-s-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Dione4.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-s-pants-detail.jpg",
+        "size": 2640,
+        "sha1": "08e559f885c475f7edeb144fcee669b695714027"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Dione's Armor",
+      "slug": "dione-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-s-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Dione1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-s-armor-detail.jpg",
+        "size": 2455,
+        "sha1": "e85f7f84235ea8d81a5e024c316d5a1e1ff466b3"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Dione Boots",
+      "slug": "dione-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Dionep2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-boots.jpg",
+        "size": 1296,
+        "sha1": "8c3edbdd85c4fd655d8443cfa4924e568fb4eda2"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Dione Gloves",
+      "slug": "dione-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Dione3p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-gloves.jpg",
+        "size": 1194,
+        "sha1": "fd4290cc8dddd6eae83b6765042d9211cc33c276"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Dione Helm",
+      "slug": "dione-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Dione5p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-helm.jpg",
+        "size": 912,
+        "sha1": "0be1451fc2fc9ea4e3d8a178b485aeb8c43493f3"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Dione Pants",
+      "slug": "dione-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Dione4p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-pants.jpg",
+        "size": 1174,
+        "sha1": "f67a1578c0d657f69b6fda2eb6be40a0c30e83ed"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Dione Armor",
+      "slug": "dione-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Dionep1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-dione-s-silk-dione-armor.jpg",
+        "size": 1263,
+        "sha1": "e27fefa59b94877046908f13030aa0ec48fd850a"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/set-lucky.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/lucky/dione.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

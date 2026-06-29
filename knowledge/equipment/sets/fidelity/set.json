@@ -1,0 +1,93 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-fidelity",
+  "slug": "fidelity",
+  "name": "Fidelity",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "itemId": "armor-fidelity",
+      "name": "Slayer Fidelity Armor",
+      "category": "Armor",
+      "slug": "fidelity",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-fidelity.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/felicity.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-fidelity.jpg",
+        "size": 1320,
+        "sha1": "b047fcb62e26d7837f57132498ba8dd089d16e64"
+      }
+    },
+    {
+      "itemId": "boots-fidelity",
+      "name": "Slayer Fidelity Boots",
+      "category": "Boots",
+      "slug": "fidelity",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-fidelity.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/slayerfidelity.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-fidelity.jpg",
+        "size": 1238,
+        "sha1": "fba62582923adbfc8e6a220b0825272e0d4948c4"
+      }
+    },
+    {
+      "itemId": "gloves-fidelity",
+      "name": "Slayer Fidelity Gloves",
+      "category": "Gloves",
+      "slug": "fidelity",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-fidelity.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/slayerfidelity.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-fidelity.jpg",
+        "size": 1256,
+        "sha1": "0e9a4f1dfd2dfd204952e84e05faa133cbf7e5d5"
+      }
+    },
+    {
+      "itemId": "helm-fidelity",
+      "name": "Fidelity Helm",
+      "category": "Helm",
+      "slug": "fidelity",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-fidelity.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/fidelity.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-fidelity.jpg",
+        "size": 1082,
+        "sha1": "997f67084922e01fb6e8b6154e7b4993a5455294"
+      }
+    },
+    {
+      "itemId": "pants-fidelity",
+      "name": "Slayer Fidelity Pants",
+      "category": "Pants",
+      "slug": "fidelity",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-fidelity.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/slayerfidelity.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-fidelity.jpg",
+        "size": 1331,
+        "sha1": "6789659f9bc2d7243c0f02ae944f5f1148cd027a"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

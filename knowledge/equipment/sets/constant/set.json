@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-constant",
+  "slug": "constant",
+  "name": "Constant",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Grow Lancer"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-constant",
+      "name": "Constant Armor",
+      "category": "Armor",
+      "slug": "constant",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-constant.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/gl400sarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-constant.jpg",
+        "size": 1449,
+        "sha1": "8cc9920232a17b3388814495353530b3da4bdf87"
+      }
+    },
+    {
+      "itemId": "boots-constant",
+      "name": "Constant Boots",
+      "category": "Boots",
+      "slug": "constant",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-constant.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/gl400sboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-constant.jpg",
+        "size": 1332,
+        "sha1": "623a84d4a5cf8b972a2d1233ca2c4ceadf73e636"
+      }
+    },
+    {
+      "itemId": "gloves-constant",
+      "name": "Constant Gloves",
+      "category": "Gloves",
+      "slug": "constant",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-constant.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/gl400sgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-constant.jpg",
+        "size": 864,
+        "sha1": "eb3982a1cec234070277e80da080f3f9df345dc6"
+      }
+    },
+    {
+      "itemId": "helm-constant",
+      "name": "Constant Helm",
+      "category": "Helm",
+      "slug": "constant",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-constant.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/gl400shelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-constant.jpg",
+        "size": 1108,
+        "sha1": "3c923fad024ca5af0859dbad5412ac8e05f5fba4"
+      }
+    },
+    {
+      "itemId": "pants-constant",
+      "name": "Constant Pants",
+      "category": "Pants",
+      "slug": "constant",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-constant.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/gl400spants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-constant.jpg",
+        "size": 1385,
+        "sha1": "ba733d3b7ac8b9964f2b26e61b2acc6ffc545aea"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

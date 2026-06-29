@@ -1,0 +1,30 @@
+# Dark Master Boots
+
+## Identidade
+
+- ID: `boots-dark-master`
+- Nome canonico: Dark Master
+- Categoria: Boots
+- Quem usa: Dark Lord
+- Status editorial: cataloged-from-normalized-source
+
+## Atributos de lista
+
+- normalDrop: 95
+- excellentDrop: 120
+
+## Partes relacionadas
+
+- Nao possui partes internas catalogadas.
+
+## Fontes
+
+- Indice normalizado: `apps/web/data/muEquipmentIndex.generated.json`
+- Detalhe normalizado: `apps/web/data/mu-equipment-details/boots.json`
+- URL fonte: https://www.guiamuonline.com/spanish/items/boots/darkmaster.html
+- URL imagem: https://www.guiamuonline.com/imagenes/items/boots/ibo026_s.jpg
+
+## Notas editoriais
+
+- Validar em jogo antes de publicar textos finais.
+- Este arquivo foi gerado mecanicamente a partir da base local; edicoes humanas devem preferir campos estruturados no `item.json`.

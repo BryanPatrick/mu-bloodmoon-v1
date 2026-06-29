@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-brave",
+  "slug": "brave",
+  "name": "Brave",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Dark Knight"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-brave",
+      "name": "Brave Armor",
+      "category": "Armor",
+      "slug": "brave",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-brave.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar048_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-brave.jpg",
+        "size": 12328,
+        "sha1": "ca80e9c715a48a5a3f67dbcf920dc1100e11e3ee"
+      }
+    },
+    {
+      "itemId": "boots-brave",
+      "name": "Brave Boots",
+      "category": "Boots",
+      "slug": "brave",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-brave.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo047_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-brave.jpg",
+        "size": 12512,
+        "sha1": "2a780d51aa65e6ace22886128c14309f60eca127"
+      }
+    },
+    {
+      "itemId": "gloves-brave",
+      "name": "Brave Gloves",
+      "category": "Gloves",
+      "slug": "brave",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-brave.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl108_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-brave.jpg",
+        "size": 12132,
+        "sha1": "e3654921c1dcf6f856784c373486e0b339894503"
+      }
+    },
+    {
+      "itemId": "helm-brave",
+      "name": "Brave Helm",
+      "category": "Helm",
+      "slug": "brave",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-brave.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe042_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-brave.jpg",
+        "size": 11683,
+        "sha1": "9da99ef7752bac82f0f77378b9e5712535cfda9d"
+      }
+    },
+    {
+      "itemId": "pants-brave",
+      "name": "Brave Pants",
+      "category": "Pants",
+      "slug": "brave",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-brave.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa047_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-brave.jpg",
+        "size": 12503,
+        "sha1": "bd6454cb3284b15dc7d00fcc343e71a9b4f36311"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

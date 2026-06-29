@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "darkangel-ancient-chaos-s-darkangel-summoner",
+  "slug": "chaos-s-darkangel-summoner",
+  "name": "Chaos's Darkangel Summoner",
+  "family": "Darkangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Chaos Helm",
+      "slug": "chaos-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-chaos-s-darkangel-summoner-chaos-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkhelmelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-chaos-s-darkangel-summoner-chaos-helm-detail.jpg",
+        "size": 2529,
+        "sha1": "4fbd2a1fc57c2f4448431286d0377e39e33dbb6d"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Chaos Armor",
+      "slug": "chaos-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-chaos-s-darkangel-summoner-chaos-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkarmorelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-chaos-s-darkangel-summoner-chaos-armor-detail.jpg",
+        "size": 3700,
+        "sha1": "b88f4be544da6e0cf326f91a418a6eba7aca026e"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Chaos Pants",
+      "slug": "chaos-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-chaos-s-darkangel-summoner-chaos-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkpantself.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-chaos-s-darkangel-summoner-chaos-pants-detail.jpg",
+        "size": 3642,
+        "sha1": "33b2cd57c1d71db918d17390db5e58ee7319cdfe"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Chaos Gloves",
+      "slug": "chaos-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-chaos-s-darkangel-summoner-chaos-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/darkgloveself.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-chaos-s-darkangel-summoner-chaos-gloves-detail.jpg",
+        "size": 2739,
+        "sha1": "827a65565c24eec9a389d9f8bde317a5c9ca7a03"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Chaos's Helm",
+      "slug": "chaos-s-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-chaos-s-darkangel-summoner-chaos-s-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkhelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-chaos-s-darkangel-summoner-chaos-s-helm.jpg",
+        "size": 1077,
+        "sha1": "7a70511ec6a923ecba5df3001c9f50a57e7c0e22"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Chaos's Armor",
+      "slug": "chaos-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-chaos-s-darkangel-summoner-chaos-s-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkaelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-chaos-s-darkangel-summoner-chaos-s-armor.jpg",
+        "size": 1107,
+        "sha1": "b2abb4d0b6cb1939d2a57a8ccf13009b84aa77ad"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Chaos's Pants",
+      "slug": "chaos-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-chaos-s-darkangel-summoner-chaos-s-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkpelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-chaos-s-darkangel-summoner-chaos-s-pants.jpg",
+        "size": 1027,
+        "sha1": "851088557c5efeba7d1f4d3ee28b7a8090e3cf73"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Chaos's Gloves",
+      "slug": "chaos-s-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/darkangel-ancient-chaos-s-darkangel-summoner-chaos-s-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/darkangel/darkg102.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/darkangel-ancient-chaos-s-darkangel-summoner-chaos-s-gloves.jpg",
+        "size": 983,
+        "sha1": "8fa40a0dcad0f3b8801180b155c3bed3fdb58883"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/darkangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/chaos.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

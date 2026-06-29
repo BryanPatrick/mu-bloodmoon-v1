@@ -1,0 +1,903 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "ancient-normal-broy-adamantine",
+  "slug": "broy-adamantine",
+  "name": "Broy Adamantine",
+  "title": "Broy Adamantine",
+  "category": "Ancient Normal",
+  "categorySlug": "ancient-normal",
+  "usableBy": [],
+  "listStats": {
+    "value1": "Broy Pendant of Ice",
+    "value2": "Broy Gloves",
+    "value3": "Broy Boots",
+    "value4": "Broy Pants",
+    "value5": "Opción por cada Item"
+  },
+  "image": {
+    "publicPath": null,
+    "sourceUrl": null,
+    "localPath": null,
+    "size": null,
+    "sha1": null
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/browii.html",
+    "imageSourceUrl": null
+  },
+  "statsByLevel": [
+    {
+      "itemLevel": 0,
+      "defense": 41,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 209,
+      "requiredAgility": 71,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 1,
+      "defense": 44,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 216,
+      "requiredAgility": 73,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 2,
+      "defense": 47,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 223,
+      "requiredAgility": 75,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 3,
+      "defense": 50,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 230,
+      "requiredAgility": 77,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 4,
+      "defense": 53,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 237,
+      "requiredAgility": 79,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 5,
+      "defense": 56,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 244,
+      "requiredAgility": 81,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 6,
+      "defense": 59,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 251,
+      "requiredAgility": 83,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 7,
+      "defense": 62,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 257,
+      "requiredAgility": 84,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 8,
+      "defense": 65,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 264,
+      "requiredAgility": 86,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 9,
+      "defense": 68,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 271,
+      "requiredAgility": 88,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 10,
+      "defense": 72,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 278,
+      "requiredAgility": 90,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 11,
+      "defense": 77,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 285,
+      "requiredAgility": 92,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 12,
+      "defense": 83,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 292,
+      "requiredAgility": 94,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 13,
+      "defense": 90,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 299,
+      "requiredAgility": 96,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 14,
+      "defense": 98,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 306,
+      "requiredAgility": 98,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    },
+    {
+      "itemLevel": 15,
+      "defense": 107,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 313,
+      "requiredAgility": 100,
+      "excellentDefense": null,
+      "excellentRequiredStrength": null,
+      "excellentRequiredAgility": null
+    }
+  ],
+  "parts": [
+    {
+      "name": "Broy Pendant of Ice",
+      "slug": "broy-pendant-of-ice",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-pendant-of-ice.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri21_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-pendant-of-ice.jpg",
+        "size": 2705,
+        "sha1": "9a705160d154a4f255cb9fdf88aae60644ef1f7a"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Broy Gloves",
+      "slug": "broy-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl106_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-gloves.jpg",
+        "size": 11727,
+        "sha1": "15839cea0f2874d3c2ea49dd05e665aca19e074a"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Broy Boots",
+      "slug": "broy-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo045_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-boots.jpg",
+        "size": 11969,
+        "sha1": "15e827a5cec5d6c8238858223497bcf830279511"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Broy Pants",
+      "slug": "broy-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa024_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-pants.jpg",
+        "size": 2898,
+        "sha1": "3e7cd1bae9ce771e0b20a2c556445ea72d43f6b1"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "detailParts": [
+    {
+      "name": "Broy Gloves",
+      "slug": "broy-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl106.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-gloves.jpg",
+        "size": 11727,
+        "sha1": "15839cea0f2874d3c2ea49dd05e665aca19e074a"
+      },
+      "imageError": null,
+      "statsByLevel": [
+        {
+          "itemLevel": 0,
+          "defense": 41,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 209,
+          "requiredAgility": 71,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 1,
+          "defense": 44,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 216,
+          "requiredAgility": 73,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 2,
+          "defense": 47,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 223,
+          "requiredAgility": 75,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 3,
+          "defense": 50,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 230,
+          "requiredAgility": 77,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 4,
+          "defense": 53,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 237,
+          "requiredAgility": 79,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 5,
+          "defense": 56,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 244,
+          "requiredAgility": 81,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 6,
+          "defense": 59,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 251,
+          "requiredAgility": 83,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 7,
+          "defense": 62,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 257,
+          "requiredAgility": 84,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 8,
+          "defense": 65,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 264,
+          "requiredAgility": 86,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 9,
+          "defense": 68,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 271,
+          "requiredAgility": 88,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 10,
+          "defense": 72,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 278,
+          "requiredAgility": 90,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 11,
+          "defense": 77,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 285,
+          "requiredAgility": 92,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 12,
+          "defense": 83,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 292,
+          "requiredAgility": 94,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 13,
+          "defense": 90,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 299,
+          "requiredAgility": 96,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 14,
+          "defense": 98,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 306,
+          "requiredAgility": 98,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 15,
+          "defense": 107,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 313,
+          "requiredAgility": 100,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        }
+      ]
+    },
+    {
+      "name": "Broy Boots",
+      "slug": "broy-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo045.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-boots.jpg",
+        "size": 11969,
+        "sha1": "15e827a5cec5d6c8238858223497bcf830279511"
+      },
+      "imageError": null,
+      "statsByLevel": [
+        {
+          "itemLevel": 0,
+          "defense": 46,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 216,
+          "requiredAgility": 73,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 1,
+          "defense": 49,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 223,
+          "requiredAgility": 75,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 2,
+          "defense": 52,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 230,
+          "requiredAgility": 77,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 3,
+          "defense": 55,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 237,
+          "requiredAgility": 79,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 4,
+          "defense": 58,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 244,
+          "requiredAgility": 81,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 5,
+          "defense": 61,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 251,
+          "requiredAgility": 83,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 6,
+          "defense": 64,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 257,
+          "requiredAgility": 84,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 7,
+          "defense": 67,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 264,
+          "requiredAgility": 86,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 8,
+          "defense": 70,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 271,
+          "requiredAgility": 88,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 9,
+          "defense": 73,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 278,
+          "requiredAgility": 90,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 10,
+          "defense": 77,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 285,
+          "requiredAgility": 92,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 11,
+          "defense": 82,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 292,
+          "requiredAgility": 94,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 12,
+          "defense": 88,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 299,
+          "requiredAgility": 96,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 13,
+          "defense": 95,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 306,
+          "requiredAgility": 98,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 14,
+          "defense": 103,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 313,
+          "requiredAgility": 100,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 15,
+          "defense": 112,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 320,
+          "requiredAgility": 101,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        }
+      ]
+    },
+    {
+      "name": "Broy Pants",
+      "slug": "broy-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa024.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-broy-adamantine-broy-pants.jpg",
+        "size": 2898,
+        "sha1": "3e7cd1bae9ce771e0b20a2c556445ea72d43f6b1"
+      },
+      "imageError": null,
+      "statsByLevel": [
+        {
+          "itemLevel": 0,
+          "defense": 54,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 239,
+          "requiredAgility": 54,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 1,
+          "defense": 57,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 246,
+          "requiredAgility": 57,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 2,
+          "defense": 60,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 253,
+          "requiredAgility": 60,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 3,
+          "defense": 63,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 260,
+          "requiredAgility": 63,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 4,
+          "defense": 66,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 267,
+          "requiredAgility": 66,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 5,
+          "defense": 69,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 274,
+          "requiredAgility": 69,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 6,
+          "defense": 72,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 281,
+          "requiredAgility": 72,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 7,
+          "defense": 75,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 287,
+          "requiredAgility": 76,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 8,
+          "defense": 78,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 294,
+          "requiredAgility": 79,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 9,
+          "defense": 81,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 301,
+          "requiredAgility": 82,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 10,
+          "defense": 85,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 308,
+          "requiredAgility": 86,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 11,
+          "defense": 90,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 315,
+          "requiredAgility": 91,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 12,
+          "defense": 96,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 322,
+          "requiredAgility": 97,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 13,
+          "defense": 103,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 329,
+          "requiredAgility": 104,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 14,
+          "defense": 111,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 336,
+          "requiredAgility": 106,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        },
+        {
+          "itemLevel": 15,
+          "defense": 120,
+          "durability": null,
+          "damageMin": null,
+          "damageMax": null,
+          "requiredStrength": 343,
+          "requiredAgility": 108,
+          "excellentDefense": null,
+          "excellentRequiredStrength": null,
+          "excellentRequiredAgility": null
+        }
+      ]
+    }
+  ],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

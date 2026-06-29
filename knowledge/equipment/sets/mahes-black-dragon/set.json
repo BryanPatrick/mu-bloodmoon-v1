@@ -1,0 +1,55 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-mahes-black-dragon",
+  "slug": "mahes-black-dragon",
+  "name": "Mahes Black Dragon",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Mahes Pants",
+      "slug": "mahes-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-mahes-black-dragon-mahes-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa007_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-mahes-black-dragon-mahes-pants.jpg",
+        "size": 3602,
+        "sha1": "7bb77caff04baf6f49f847f84b01e32df9982b49"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Mahes Shield",
+      "slug": "mahes-shield",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-mahes-black-dragon-mahes-shield.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/shield/ish014_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-mahes-black-dragon-mahes-shield.jpg",
+        "size": 3709,
+        "sha1": "11390bc429044ac1c9c54f2536731f1206eb4e24"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Increase Max. HP +100 Ignore Enemy's Defense +6% Increase Defense when using Shield weapons +17%",
+      "source": "listStats"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/mahes.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

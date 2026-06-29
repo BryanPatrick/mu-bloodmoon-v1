@@ -1,0 +1,55 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-bes-eclipse",
+  "slug": "bes-eclipse",
+  "name": "Bes Eclipse",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Bes Pants",
+      "slug": "bes-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-bes-eclipse-bes-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa039_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-bes-eclipse-bes-pants.jpg",
+        "size": 2511,
+        "sha1": "2596fbafc335cce4bc69c74358ef6e8ea99cc94c"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Bes Staff of Destruction",
+      "slug": "bes-staff-of-destruction",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-bes-eclipse-bes-staff-of-destruction.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/staff/ist012_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-bes-eclipse-bes-staff-of-destruction.jpg",
+        "size": 2879,
+        "sha1": "7e47647ada0a0ad2934a2e128d6c7d99d9f6ad6b"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Increase Energy +200 Increase Wizardry Damage +9% Increase Skill Damage +80",
+      "source": "listStats"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/bes.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

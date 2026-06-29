@@ -1,0 +1,99 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-anonymous-leather",
+  "slug": "anonymous-leather",
+  "name": "Anonymous Leather",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [
+    "Dark Knight",
+    "Dark Lord",
+    "Rage Fighter",
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "name": "Anonymous Boots",
+      "slug": "anonymous-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-anonymous-leather-anonymous-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo001_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-anonymous-leather-anonymous-boots.jpg",
+        "size": 3439,
+        "sha1": "b1745281f57ea23d0aa401a6a10a6abf4c7cdfbb"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Anonymous Large Shield",
+      "slug": "anonymous-large-shield",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-anonymous-leather-anonymous-large-shield.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ish023_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-anonymous-leather-anonymous-large-shield.jpg",
+        "size": 3669,
+        "sha1": "39adb23c06ba238725db3e4d0aec04807564495b"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Anonymous Helm",
+      "slug": "anonymous-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-anonymous-leather-anonymous-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe001_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-anonymous-leather-anonymous-helm.jpg",
+        "size": 2896,
+        "sha1": "0c03903739a0de2c0ec5f526a850bf64b63f4fb9"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Anonymous Pants",
+      "slug": "anonymous-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-anonymous-leather-anonymous-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa001_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-anonymous-leather-anonymous-pants.jpg",
+        "size": 3024,
+        "sha1": "111432bd32c03e22b49be776e303f636d74f10eb"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [
+    {
+      "pieces": 2,
+      "option": "HP +50"
+    },
+    {
+      "pieces": 3,
+      "option": "Agility Level +50"
+    },
+    {
+      "pieces": 4,
+      "option": "DEF +25%, if Shield item is equipped"
+    },
+    {
+      "pieces": "full-or-additional",
+      "option": "ATK DMG +30"
+    }
+  ],
+  "baseSetDefense": 67,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": "references/game-data/muonlinefanz-ancient-items-data.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/anonymous.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

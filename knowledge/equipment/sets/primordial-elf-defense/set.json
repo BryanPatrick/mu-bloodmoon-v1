@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "primordial-ancient-primordial-elf-defense",
+  "slug": "primordial-elf-defense",
+  "name": "Primordial Elf Defense",
+  "family": "Primordial Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Primordial Elf (Energia) Helm",
+      "slug": "primordial-elf-energia-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-elf-defense-primordial-elf-energia-helm-detail.png",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/helmelf.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-elf-defense-primordial-elf-energia-helm-detail.png",
+        "size": 15142,
+        "sha1": "74d91758dedf457b52b5d122a1b7439fb672c1c3"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Elf (Energia) Armor",
+      "slug": "primordial-elf-energia-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-elf-defense-primordial-elf-energia-armor-detail.png",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/armorelf.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-elf-defense-primordial-elf-energia-armor-detail.png",
+        "size": 20945,
+        "sha1": "c396a7c4842bf6a6744b0ca2e6b7988a497b74d1"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Elf (Energia) Pants",
+      "slug": "primordial-elf-energia-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-elf-defense-primordial-elf-energia-pants-detail.png",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/pantself.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-elf-defense-primordial-elf-energia-pants-detail.png",
+        "size": 20539,
+        "sha1": "b1a0eba01c188601c950984cc254785acfe458fe"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Elf (Energia) Gloves",
+      "slug": "primordial-elf-energia-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-elf-defense-primordial-elf-energia-gloves-detail.png",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/primordial/gloveslef.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-elf-defense-primordial-elf-energia-gloves-detail.png",
+        "size": 16149,
+        "sha1": "810a4cbe32e66d25f9215af7cc358f8b5d6ef2e8"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Elf Defense Helm",
+      "slug": "primordial-elf-defense-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-elf-defense-primordial-elf-defense-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/prielf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-elf-defense-primordial-elf-defense-helm.jpg",
+        "size": 1337,
+        "sha1": "55260e99934b3a0195c3d8509098099280674117"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Elf Defense Armor",
+      "slug": "primordial-elf-defense-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-elf-defense-primordial-elf-defense-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/primelf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-elf-defense-primordial-elf-defense-armor.jpg",
+        "size": 1624,
+        "sha1": "84315d82b7e345cca872d9861a0e2f3295105021"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Elf Defense Pants",
+      "slug": "primordial-elf-defense-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-elf-defense-primordial-elf-defense-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/prielf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-elf-defense-primordial-elf-defense-pants.jpg",
+        "size": 1394,
+        "sha1": "986654d3a9834c7cdb6f342725ee72f723f35141"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Primordial Elf Defense Gloves",
+      "slug": "primordial-elf-defense-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-elf-defense-primordial-elf-defense-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/prielf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/primordial-ancient-primordial-elf-defense-primordial-elf-defense-gloves.jpg",
+        "size": 1271,
+        "sha1": "cca97c64af8c37a9e52d726e2af681b4421d9209"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/primordial-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/prielfdefense.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-hirat",
+  "slug": "hirat",
+  "name": "Hirat",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Grow Lancer"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-hirat",
+      "name": "Hirat Armor",
+      "category": "Armor",
+      "slug": "hirat",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-hirat.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/hira.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-hirat.jpg",
+        "size": 1643,
+        "sha1": "388f1abe6267b3122a1b566051cd49643c9441d8"
+      }
+    },
+    {
+      "itemId": "boots-hirat",
+      "name": "Hirat Boots",
+      "category": "Boots",
+      "slug": "hirat",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-hirat.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/hira.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-hirat.jpg",
+        "size": 1221,
+        "sha1": "1840282d2a9a07343b7082fe73395eaea8e6e13d"
+      }
+    },
+    {
+      "itemId": "gloves-hirat",
+      "name": "Hirat Gloves",
+      "category": "Gloves",
+      "slug": "hirat",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-hirat.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/hira.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-hirat.jpg",
+        "size": 1242,
+        "sha1": "330d3e637d4ceb828237d69cce5f36dc34c404f5"
+      }
+    },
+    {
+      "itemId": "helm-hirat",
+      "name": "Hirat Helm",
+      "category": "Helm",
+      "slug": "hirat",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-hirat.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/hira.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-hirat.jpg",
+        "size": 1409,
+        "sha1": "6086b51bd3e581823373f2645eb88d8e793b956d"
+      }
+    },
+    {
+      "itemId": "pants-hirat",
+      "name": "Hirat Pants",
+      "category": "Pants",
+      "slug": "hirat",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-hirat.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/hira.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-hirat.jpg",
+        "size": 1402,
+        "sha1": "c16e2cc39a1de635730b1b411f7191e5dda9b9d1"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

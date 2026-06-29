@@ -1,0 +1,95 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-holyangel-knight",
+  "slug": "holyangel-knight",
+  "name": "Holyangel Knight",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Dark Knight"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-holyangel-knight",
+      "name": "Holyangel Knight Armor",
+      "category": "Armor",
+      "slug": "holyangel-knight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-holyangel-knight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/holybmarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-holyangel-knight.jpg",
+        "size": 1413,
+        "sha1": "705bfbd1bdbe6ffcd3a67df3eb374b3f9e7197bc"
+      }
+    },
+    {
+      "itemId": "boots-holyangel-knight",
+      "name": "Holyangel Knight Boots",
+      "category": "Boots",
+      "slug": "holyangel-knight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-holyangel-knight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/holybmboots.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-holyangel-knight.jpg",
+        "size": 1231,
+        "sha1": "323b66d8b483d0eb8a1acd64b2743efa6d0531d2"
+      }
+    },
+    {
+      "itemId": "gloves-holyangel-knight",
+      "name": "Holyangel Knight Gloves",
+      "category": "Gloves",
+      "slug": "holyangel-knight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-holyangel-knight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/holybmgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-holyangel-knight.jpg",
+        "size": 1206,
+        "sha1": "6e2d408440344bd659f1346b63f5cdc5515898ce"
+      }
+    },
+    {
+      "itemId": "helm-holyangel-knight",
+      "name": "Holyangel Knight Helm",
+      "category": "Helm",
+      "slug": "holyangel-knight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-holyangel-knight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/holybmhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-holyangel-knight.jpg",
+        "size": 1248,
+        "sha1": "e35226505fceed999531ee9f013d935a504c65be"
+      }
+    },
+    {
+      "itemId": "pants-holyangel-knight",
+      "name": "Holyangel Wizard Pants",
+      "category": "Pants",
+      "slug": "holyangel-knight",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-holyangel-knight.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/holybmpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-holyangel-knight.jpg",
+        "size": 1366,
+        "sha1": "7673cd95f2ef74c441be9ccd929701c9500104f4"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

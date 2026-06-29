@@ -1,0 +1,104 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "ancient-normal-magni-piercing-groove",
+  "slug": "magni-piercing-groove",
+  "name": "Magni Piercing Groove",
+  "title": "Magni Piercing Groove",
+  "category": "Ancient Normal",
+  "categorySlug": "ancient-normal",
+  "usableBy": [],
+  "listStats": {
+    "value1": "Magni Armor",
+    "value2": "Magni Helm",
+    "value3": "Magni Boots",
+    "value4": "Magni Piercing Blade Glove",
+    "value5": "Magni Ring of Wind"
+  },
+  "image": {
+    "publicPath": null,
+    "sourceUrl": null,
+    "localPath": null,
+    "size": null,
+    "sha1": null
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/magni.html",
+    "imageSourceUrl": null
+  },
+  "statsByLevel": [],
+  "parts": [
+    {
+      "name": "Magni Armor",
+      "slug": "magni-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-magni-piercing-groove-magni-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar063_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-magni-piercing-groove-magni-armor.jpg",
+        "size": 3012,
+        "sha1": "820db697df29978888f88b141e729537cb51ec49"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Magni Helm",
+      "slug": "magni-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-magni-piercing-groove-magni-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe060_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-magni-piercing-groove-magni-helm.jpg",
+        "size": 2278,
+        "sha1": "7c32a3f47c65f3d99851dc1f8239ea89a2e2fcf2"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Magni Boots",
+      "slug": "magni-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-magni-piercing-groove-magni-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo067_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-magni-piercing-groove-magni-boots.jpg",
+        "size": 2560,
+        "sha1": "bb391bf8e80e776cf3611300cf9591b2ca2588fc"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Magni Piercing Blade Glove",
+      "slug": "magni-piercing-blade-glove",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-magni-piercing-groove-magni-piercing-blade-glove.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/sword/isw033_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-magni-piercing-groove-magni-piercing-blade-glove.jpg",
+        "size": 2986,
+        "sha1": "cddccf1fbc955f90fa10b288baabac9aba44ddf3"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Magni Ring of Wind",
+      "slug": "magni-ring-of-wind",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-magni-piercing-groove-magni-ring-of-wind.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ring/iri18_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-magni-piercing-groove-magni-ring-of-wind.jpg",
+        "size": 2076,
+        "sha1": "365a30cb0ae3c3233b9a3c70b8080c5636100c54"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

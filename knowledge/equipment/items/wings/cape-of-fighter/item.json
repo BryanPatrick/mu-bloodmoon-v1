@@ -1,0 +1,35 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "wings-cape-of-fighter",
+  "slug": "cape-of-fighter",
+  "name": "Cape of Fighter",
+  "title": "Cape of Fighter",
+  "category": "Wings",
+  "categorySlug": "wings",
+  "usableBy": [],
+  "listStats": {
+    "normalDrop": "180+(Cape Level*4)",
+    "excellentDrop": "Usado por la Rage Fighter. Defensa: 15 + (Wing Level * 2) [Level +10~+15 Incremento de defensa +4,+5,+6,+7,+8,+9]. Incremento de Daño: 20% + (Wing Level * 2). Opciones: 25% Luck en Rate de Soul + 5% Critical Damage Rate. Incremento de HP: 50 + (Wing Level * 5). Incremento de Mana: 50 + (Wing Level * 5). 3% Posiblidad de ignorar la Defensa del Enemigo. Incremento de Daño +4,+8,+12,+16. Recuperacion de HP 1%,2%,3%,4%. Reduce 1 Vida despues del ataque con exito (Incluido el Miss)."
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/wings-cape-of-fighter.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/iwi022_s.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/wings-cape-of-fighter.jpg",
+    "size": 4499,
+    "sha1": "268f76ea2730b3610cc432dbc37f9e52a05c9f48"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/wings.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/wing/fighter.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/iwi022_s.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

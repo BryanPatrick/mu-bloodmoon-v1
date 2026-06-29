@@ -1,0 +1,155 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-lucky-castol-s-guardian",
+  "slug": "castol-s-guardian",
+  "name": "Castol's Guardian",
+  "family": "Set Lucky",
+  "qualities": [
+    "Lucky"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Castol's Boots",
+      "slug": "castol-s-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-s-boots-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Castol2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-s-boots-detail.jpg",
+        "size": 2237,
+        "sha1": "3d28fb6c3cecb20da3408648c87dc05c78f19d32"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Castol's Gloves",
+      "slug": "castol-s-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-s-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Castol3.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-s-gloves-detail.jpg",
+        "size": 1971,
+        "sha1": "ef3905748cce47ba63cd99ae7f98918aa0dfd2ca"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Castol's Helm",
+      "slug": "castol-s-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-s-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Castol5.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-s-helm-detail.jpg",
+        "size": 2167,
+        "sha1": "43d79c13d340f77cebd145f78981792e1145d678"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Castol's Pants",
+      "slug": "castol-s-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-s-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Castol4.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-s-pants-detail.jpg",
+        "size": 2872,
+        "sha1": "bc835be8543f05a21167d92edc7cb4ee1b753c05"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Castol's Armor",
+      "slug": "castol-s-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-s-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Castol1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-s-armor-detail.jpg",
+        "size": 3136,
+        "sha1": "700b0cba1ca13d9e4f66f43dda4b0dbee49c426e"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Castol Boots",
+      "slug": "castol-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Castolp2.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-boots.jpg",
+        "size": 1126,
+        "sha1": "7cf5e69525968d49cfd8be974fc67d557f5e6084"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Castol Gloves",
+      "slug": "castol-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Castol3p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-gloves.jpg",
+        "size": 1182,
+        "sha1": "6255a73fffd25bfd5e125bed0e68f5115309d60d"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Castol Helm",
+      "slug": "castol-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Castol5p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-helm.jpg",
+        "size": 1120,
+        "sha1": "0633455c2f1cdfebb2730ac6dd93161ff0a98ab0"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Castol Pants",
+      "slug": "castol-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Castol4p.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-pants.jpg",
+        "size": 1164,
+        "sha1": "ec457ab0eb5c8e51f80a93f673cacf90244c7a79"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Castol Armor",
+      "slug": "castol-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/lucky/Castolp1.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/set-lucky-castol-s-guardian-castol-armor.jpg",
+        "size": 1368,
+        "sha1": "fc297f5ffc58ea3ae72f775e4d610d11254fa76f"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/set-lucky.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/lucky/castol.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

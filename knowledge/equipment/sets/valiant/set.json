@@ -1,0 +1,82 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-valiant",
+  "slug": "valiant",
+  "name": "Valiant",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-valiant",
+      "name": "Valiant Armor",
+      "category": "Armor",
+      "slug": "valiant",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-valiant.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar036_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-valiant.jpg",
+        "size": 3570,
+        "sha1": "5ce6cfb4c4e0ece7ddf1e847dad2cfd1c9c346e4"
+      }
+    },
+    {
+      "itemId": "boots-valiant",
+      "name": "Valiant Boots",
+      "category": "Boots",
+      "slug": "valiant",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-valiant.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo036_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-valiant.jpg",
+        "size": 3394,
+        "sha1": "3f623c89b98c7d1161d6520b59d1d5ff8b9991ee"
+      }
+    },
+    {
+      "itemId": "gloves-valiant",
+      "name": "Valiant Gloves",
+      "category": "Gloves",
+      "slug": "valiant",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-valiant.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl036_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-valiant.jpg",
+        "size": 3006,
+        "sha1": "2890de6bc8cc9321b3f72416b11438f9afe3e5cc"
+      }
+    },
+    {
+      "itemId": "pants-valiant",
+      "name": "Valiant Pants",
+      "category": "Pants",
+      "slug": "valiant",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-valiant.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa036_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-valiant.jpg",
+        "size": 3359,
+        "sha1": "cdd7e688c960f0c6e9db68bdc1c2fe66dba38a0d"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

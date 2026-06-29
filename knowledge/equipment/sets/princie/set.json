@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-princie",
+  "slug": "princie",
+  "name": "Princie",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Grow Lancer"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-princie",
+      "name": "Armor Princie",
+      "category": "Armor",
+      "slug": "princie",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-princie.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/armor03.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-princie.jpg",
+        "size": 1241,
+        "sha1": "1453c9cd6d8c50b32cbd9ffeeb0d6797187a092b"
+      }
+    },
+    {
+      "itemId": "boots-princie",
+      "name": "Boots Princie",
+      "category": "Boots",
+      "slug": "princie",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-princie.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/boots03.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-princie.jpg",
+        "size": 1060,
+        "sha1": "e76db82934ddba041cf1eacd3b62055a6a062a5e"
+      }
+    },
+    {
+      "itemId": "gloves-princie",
+      "name": "Gloves Princie",
+      "category": "Gloves",
+      "slug": "princie",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-princie.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/gloves03.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-princie.jpg",
+        "size": 959,
+        "sha1": "0098795caef2a1ac18e0c12683c810af541fc1d7"
+      }
+    },
+    {
+      "itemId": "helm-princie",
+      "name": "Helm Princie",
+      "category": "Helm",
+      "slug": "princie",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-princie.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/helm03.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-princie.jpg",
+        "size": 998,
+        "sha1": "1da5753e0c81680630c644cb8581077ce9bccdb0"
+      }
+    },
+    {
+      "itemId": "pants-princie",
+      "name": "Pants Princie",
+      "category": "Pants",
+      "slug": "princie",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-princie.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/pants03.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-princie.jpg",
+        "size": 1187,
+        "sha1": "18a7fef7e277a08536088c39ae6c61c261984906"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

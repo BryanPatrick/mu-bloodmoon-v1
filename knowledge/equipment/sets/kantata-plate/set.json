@@ -1,0 +1,124 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-kantata-plate",
+  "slug": "kantata-plate",
+  "name": "Kantata Plate",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [
+    "Dark Knight",
+    "Magic Gladiator",
+    "Rage Fighter",
+    "All classes via rings"
+  ],
+  "parts": [
+    {
+      "name": "Kantata Boots",
+      "slug": "kantata-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ibo005.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-boots.jpg",
+        "size": 3536,
+        "sha1": "1782eaf6fbc4abb3a972b8df24d500fb12ed55d3"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Kantata Gloves",
+      "slug": "kantata-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/igl005.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-gloves.jpg",
+        "size": 3368,
+        "sha1": "9e05684de8c2c34553010500624f44faa25cc9b3"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Kantata Armor",
+      "slug": "kantata-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iar005.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-armor.jpg",
+        "size": 4183,
+        "sha1": "46511b326f6d648e41c816b2e6d4924a487da1b5"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Kantata Ring of Wind",
+      "slug": "kantata-ring-of-wind",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-ring-of-wind.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri18_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-ring-of-wind.jpg",
+        "size": 2076,
+        "sha1": "365a30cb0ae3c3233b9a3c70b8080c5636100c54"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Kantata Ring of Poison",
+      "slug": "kantata-ring-of-poison",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-ring-of-poison.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/iri003_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-kantata-plate-kantata-ring-of-poison.jpg",
+        "size": 2479,
+        "sha1": "9a22b185c4a7f4f53b822d9e164434fe935ecd39"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [
+    {
+      "pieces": 2,
+      "option": "Energy Level +15"
+    },
+    {
+      "pieces": 3,
+      "option": "Stamina Level +30"
+    },
+    {
+      "pieces": 4,
+      "option": "WIZ DMG +10%"
+    },
+    {
+      "pieces": 5,
+      "option": "Strength Level +15"
+    },
+    {
+      "pieces": "additional",
+      "option": "Skill DMG +25"
+    },
+    {
+      "pieces": "additional",
+      "option": "Excellent DMG chance +10%"
+    },
+    {
+      "pieces": "additional",
+      "option": "Excellent DMG +20"
+    }
+  ],
+  "baseSetDefense": 119,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": "references/game-data/muonlinefanz-ancient-items-data.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/kantata.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

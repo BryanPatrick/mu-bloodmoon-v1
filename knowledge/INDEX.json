@@ -1,0 +1,21 @@
+{
+  "schema": "bloodmoon.knowledge.index.v1",
+  "generatedAt": "2026-06-29T20:03:08.681Z",
+  "counts": {
+    "equipmentItems": 1719,
+    "equipmentSets": 454,
+    "tutorials": 5,
+    "sourceFiles": 72
+  },
+  "paths": {
+    "equipmentItems": "knowledge/equipment/items",
+    "equipmentSets": "knowledge/equipment/sets",
+    "equipmentTutorials": "knowledge/topics/equipment/tutorials",
+    "audit": "knowledge/audit"
+  },
+  "rules": [
+    "Preferir objetos canonicos em knowledge/equipment para renderizacao futura.",
+    "Manter references como fonte bruta ate o relatorio de redundancia liberar exclusao.",
+    "Todo item publicado deve ter fonte, status editorial e revisao humana."
+  ]
+}

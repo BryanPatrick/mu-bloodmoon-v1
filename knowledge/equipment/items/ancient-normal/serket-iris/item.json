@@ -1,0 +1,64 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "ancient-normal-serket-iris",
+  "slug": "serket-iris",
+  "name": "Serket Iris",
+  "title": "Serket Iris",
+  "category": "Ancient Normal",
+  "categorySlug": "ancient-normal",
+  "usableBy": [],
+  "listStats": {
+    "value1": "Serket Pants",
+    "value2": "Serket Helm",
+    "value3": "Opciones por Set Completo",
+    "value4": "Increase Agility +40 Increase Defense +90 Increase Damage +40"
+  },
+  "image": {
+    "publicPath": null,
+    "sourceUrl": null,
+    "localPath": null,
+    "size": null,
+    "sha1": null
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/serket.html",
+    "imageSourceUrl": null
+  },
+  "statsByLevel": [],
+  "parts": [
+    {
+      "name": "Serket Pants",
+      "slug": "serket-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-serket-iris-serket-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa037_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-serket-iris-serket-pants.jpg",
+        "size": 3229,
+        "sha1": "3f6027c265261f1f63cdda07aad1ad920e78a376"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    },
+    {
+      "name": "Serket Helm",
+      "slug": "serket-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-serket-iris-serket-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe034_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-serket-iris-serket-helm.jpg",
+        "size": 3761,
+        "sha1": "872ae993cfaa826443cddee465b985d5c316effb"
+      },
+      "imageError": null,
+      "statsByLevel": []
+    }
+  ],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

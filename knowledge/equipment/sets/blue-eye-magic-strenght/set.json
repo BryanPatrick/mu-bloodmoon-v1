@@ -1,0 +1,67 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-blue-eye-magic-strenght",
+  "slug": "blue-eye-magic-strenght",
+  "name": "Blue Eye Magic Strenght",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal"
+  ],
+  "usableBy": [
+    "Magic Gladiator"
+  ],
+  "parts": [
+    {
+      "itemId": "boots-blue-eye-magic-strenght",
+      "name": "Blue Eye Magic  Strength Boots",
+      "category": "Boots",
+      "slug": "blue-eye-magic-strenght",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-blue-eye-magic-strenght.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo1009_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-blue-eye-magic-strenght.jpg",
+        "size": 2875,
+        "sha1": "856d7ea725ba519a0f81ad36f5b8f0d6b8ece0f3"
+      }
+    },
+    {
+      "itemId": "gloves-blue-eye-magic-strenght",
+      "name": "Blue Eye Magic Strenght Gloves",
+      "category": "Gloves",
+      "slug": "blue-eye-magic-strenght",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-blue-eye-magic-strenght.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl1009_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-blue-eye-magic-strenght.jpg",
+        "size": 2789,
+        "sha1": "7374794ddcecd76ccbbac2878970f3a46f0a62c1"
+      }
+    },
+    {
+      "itemId": "pants-blue-eye-magic-strenght",
+      "name": "Blue Eye Magic Strenght Pants",
+      "category": "Pants",
+      "slug": "blue-eye-magic-strenght",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-blue-eye-magic-strenght.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa1009_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-blue-eye-magic-strenght.jpg",
+        "size": 3048,
+        "sha1": "7cf958f78220614461047b9dc395b6fcd96983a2"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

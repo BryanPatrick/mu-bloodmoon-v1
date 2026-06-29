@@ -1,0 +1,391 @@
+{
+  "generatedAt": "2026-06-29T20:03:08.681Z",
+  "totals": {
+    "files": 72,
+    "bytes": 31360140
+  },
+  "byExtension": [
+    {
+      "extension": ".json",
+      "files": 48,
+      "bytes": 31161322
+    },
+    {
+      "extension": ".log",
+      "files": 1,
+      "bytes": 51410
+    },
+    {
+      "extension": ".md",
+      "files": 12,
+      "bytes": 69076
+    },
+    {
+      "extension": ".ts",
+      "files": 11,
+      "bytes": 78332
+    }
+  ],
+  "files": [
+    {
+      "path": "apps/web/data/devReferenceAssets.ts",
+      "bytes": 23302,
+      "extension": ".ts"
+    },
+    {
+      "path": "apps/web/data/equipmentOptionRules.ts",
+      "bytes": 4190,
+      "extension": ".ts"
+    },
+    {
+      "path": "apps/web/data/externalMuReferences.ts",
+      "bytes": 13752,
+      "extension": ".ts"
+    },
+    {
+      "path": "apps/web/data/guiamuonlineItems.ts",
+      "bytes": 3007,
+      "extension": ".ts"
+    },
+    {
+      "path": "apps/web/data/guiamuReferences.ts",
+      "bytes": 6762,
+      "extension": ".ts"
+    },
+    {
+      "path": "apps/web/data/implementationRoadmap.ts",
+      "bytes": 11205,
+      "extension": ".ts"
+    },
+    {
+      "path": "apps/web/data/jewelReferenceRules.ts",
+      "bytes": 3093,
+      "extension": ".ts"
+    },
+    {
+      "path": "apps/web/data/management.ts",
+      "bytes": 5114,
+      "extension": ".ts"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/ancient-normal.json",
+      "bytes": 1291063,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/apocalypse-ancient.json",
+      "bytes": 608548,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/armor.json",
+      "bytes": 1150397,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/axe.json",
+      "bytes": 61647,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/bloodangel-ancient.json",
+      "bytes": 605198,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/blue-eye-ancient.json",
+      "bytes": 606052,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/boots.json",
+      "bytes": 1182102,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/bow.json",
+      "bytes": 196515,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/brilliant-ancient.json",
+      "bytes": 608049,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/claw.json",
+      "bytes": 86915,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/darkangel-ancient.json",
+      "bytes": 605665,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/earring.json",
+      "bytes": 6874,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/gloves.json",
+      "bytes": 1101739,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/helm.json",
+      "bytes": 1036805,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/holyangel-ancient.json",
+      "bytes": 605378,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/lance.json",
+      "bytes": 99151,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/mace.json",
+      "bytes": 49348,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/magic-gun.json",
+      "bytes": 75077,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/manticore-ancient.json",
+      "bytes": 607139,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/muun.json",
+      "bytes": 420620,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/pants.json",
+      "bytes": 1182642,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/pentagram.json",
+      "bytes": 125042,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/primordial-ancient.json",
+      "bytes": 608499,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/quiver.json",
+      "bytes": 49872,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/rune-mace.json",
+      "bytes": 75116,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/scepter.json",
+      "bytes": 111945,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/set-lucky.json",
+      "bytes": 1060963,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/shield.json",
+      "bytes": 248282,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/short-sword.json",
+      "bytes": 81592,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/silver-heart-ancient.json",
+      "bytes": 611033,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/soul-ancient.json",
+      "bytes": 601757,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/spear.json",
+      "bytes": 80038,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/staff.json",
+      "bytes": 160967,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/stick.json",
+      "bytes": 161248,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/sword.json",
+      "bytes": 297942,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/mu-equipment-details/wings.json",
+      "bytes": 49865,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/muEquipmentCatalog.ts",
+      "bytes": 2587,
+      "extension": ".ts"
+    },
+    {
+      "path": "apps/web/data/muEquipmentIndex.generated.json",
+      "bytes": 1490684,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/muFullSetImages.generated.json",
+      "bytes": 9901,
+      "extension": ".json"
+    },
+    {
+      "path": "apps/web/data/README.md",
+      "bytes": 1234,
+      "extension": ".md"
+    },
+    {
+      "path": "apps/web/data/security.ts",
+      "bytes": 2288,
+      "extension": ".ts"
+    },
+    {
+      "path": "apps/web/data/site.ts",
+      "bytes": 3032,
+      "extension": ".ts"
+    },
+    {
+      "path": "references/game-data/guiamuonline-wiki-sections-collection.log",
+      "bytes": 51410,
+      "extension": ".log"
+    },
+    {
+      "path": "references/game-data/guiamuonline-wiki-sections-data.json",
+      "bytes": 12984073,
+      "extension": ".json"
+    },
+    {
+      "path": "references/game-data/guiamuonline-wiki-sections-reference.md",
+      "bytes": 1133,
+      "extension": ".md"
+    },
+    {
+      "path": "references/game-data/item-tooltip-patterns.json",
+      "bytes": 2935,
+      "extension": ".json"
+    },
+    {
+      "path": "references/game-data/megamu-skills-data.json",
+      "bytes": 5020,
+      "extension": ".json"
+    },
+    {
+      "path": "references/game-data/megamu-skills-reference.md",
+      "bytes": 7117,
+      "extension": ".md"
+    },
+    {
+      "path": "references/game-data/muonlinefanz-ancient-items-data.json",
+      "bytes": 9619,
+      "extension": ".json"
+    },
+    {
+      "path": "references/game-data/muonlinefanz-ancient-items-reference.md",
+      "bytes": 3509,
+      "extension": ".md"
+    },
+    {
+      "path": "references/game-data/muonlinefanz-archangel-items-data.json",
+      "bytes": 10707,
+      "extension": ".json"
+    },
+    {
+      "path": "references/game-data/muonlinefanz-archangel-items-reference.md",
+      "bytes": 2649,
+      "extension": ".md"
+    },
+    {
+      "path": "references/game-data/muonlinefanz-elf-data.json",
+      "bytes": 9233,
+      "extension": ".json"
+    },
+    {
+      "path": "references/game-data/muonlinefanz-elf-reference.md",
+      "bytes": 12948,
+      "extension": ".md"
+    },
+    {
+      "path": "references/game-data/muonlinefanz-excellent-items-data.json",
+      "bytes": 9958,
+      "extension": ".json"
+    },
+    {
+      "path": "references/game-data/muonlinefanz-excellent-items-reference.md",
+      "bytes": 10904,
+      "extension": ".md"
+    },
+    {
+      "path": "references/game-data/muonlinefanz-item-guides-batch-data.json",
+      "bytes": 25366,
+      "extension": ".json"
+    },
+    {
+      "path": "references/game-data/muonlinefanz-item-guides-batch-reference.md",
+      "bytes": 2437,
+      "extension": ".md"
+    },
+    {
+      "path": "references/game-data/muonlinefanz-socket-items-data.json",
+      "bytes": 14658,
+      "extension": ".json"
+    },
+    {
+      "path": "references/game-data/muonlinefanz-socket-items-reference.md",
+      "bytes": 3340,
+      "extension": ".md"
+    },
+    {
+      "path": "references/game-data/README.md",
+      "bytes": 8471,
+      "extension": ".md"
+    },
+    {
+      "path": "references/game-data/source-collection-policy.md",
+      "bytes": 1829,
+      "extension": ".md"
+    },
+    {
+      "path": "references/game-data/webzen-bloodangel-mastery-data.json",
+      "bytes": 78083,
+      "extension": ".json"
+    },
+    {
+      "path": "references/game-data/webzen-bloodangel-mastery-reference.md",
+      "bytes": 13505,
+      "extension": ".md"
+    }
+  ]
+}

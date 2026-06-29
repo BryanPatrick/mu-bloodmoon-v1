@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "soul-ancient-soul-elf-attack",
+  "slug": "soul-elf-attack",
+  "name": "Soul Elf Attack",
+  "family": "Soul Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Awakening Elf (Agilidad) Helm",
+      "slug": "awakening-elf-agilidad-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-elf-attack-awakening-elf-agilidad-helm-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awaelfhelm.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-elf-attack-awakening-elf-agilidad-helm-detail.jpg",
+        "size": 2091,
+        "sha1": "6b1c2b6d226638d5696f7d578c562768009e01f2"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Awakening Elf (Agilidad) Armor",
+      "slug": "awakening-elf-agilidad-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-elf-attack-awakening-elf-agilidad-armor-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awaelfarmor.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-elf-attack-awakening-elf-agilidad-armor-detail.jpg",
+        "size": 4574,
+        "sha1": "2c3521699c04f402f40e93a2af31853118b3fb91"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Awakening Elf (Agilidad) Pants",
+      "slug": "awakening-elf-agilidad-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-elf-attack-awakening-elf-agilidad-pants-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awaelfpants.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-elf-attack-awakening-elf-agilidad-pants-detail.jpg",
+        "size": 3130,
+        "sha1": "b267f7b10e54da2144faab378c0b512f4ad34b75"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Awakening Elf (Agilidad) Gloves",
+      "slug": "awakening-elf-agilidad-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-elf-attack-awakening-elf-agilidad-gloves-detail.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/awaelfgloves.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-elf-attack-awakening-elf-agilidad-gloves-detail.jpg",
+        "size": 2636,
+        "sha1": "8f717d1c436e1bd5c2d206ad66a0933bfb72e7c1"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Elf Helm",
+      "slug": "soul-elf-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-elf-attack-soul-elf-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/elfhelmawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-elf-attack-soul-elf-helm.jpg",
+        "size": 1243,
+        "sha1": "8e53ac357d1b067f0f24c0c86e220e374c881c09"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Elf Armor",
+      "slug": "soul-elf-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-elf-attack-soul-elf-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/elfarmorawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-elf-attack-soul-elf-armor.jpg",
+        "size": 1496,
+        "sha1": "388e05469561fec2711a89e5539b45d7e338404b"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Elf Pants",
+      "slug": "soul-elf-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-elf-attack-soul-elf-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/elfpantsawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-elf-attack-soul-elf-pants.jpg",
+        "size": 1283,
+        "sha1": "6149b415f04047682eece1badde290988e8521d5"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Soul Elf Gloves",
+      "slug": "soul-elf-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/soul-ancient-soul-elf-attack-soul-elf-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/elfglovesawa.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/soul-ancient-soul-elf-attack-soul-elf-gloves.jpg",
+        "size": 1275,
+        "sha1": "d98c03f99a7f82fb7cbc6caf9a8adb3d938d466a"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/soul-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/awaelf.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

@@ -1,0 +1,231 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "gloves-iris",
+  "slug": "iris",
+  "name": "Iris",
+  "title": "Iris Gloves",
+  "category": "Gloves",
+  "categorySlug": "gloves",
+  "usableBy": [
+    "Fairy Elf"
+  ],
+  "listStats": {
+    "normalDrop": "61",
+    "excellentDrop": "86",
+    "attackSpeed": "6"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-iris.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl037_s.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-iris.jpg",
+    "size": 3428,
+    "sha1": "0448c266d22def4f1684901081ee49f46dd5269c"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/gloves.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/gloves/iris.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl037_s.jpg"
+  },
+  "statsByLevel": [
+    {
+      "itemLevel": 0,
+      "defense": 22,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 111,
+      "requiredAgility": 148,
+      "excellentDefense": 42,
+      "excellentRequiredStrength": 149,
+      "excellentRequiredAgility": 200
+    },
+    {
+      "itemLevel": 1,
+      "defense": 25,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 116,
+      "requiredAgility": 154,
+      "excellentDefense": 45,
+      "excellentRequiredStrength": 153,
+      "excellentRequiredAgility": 206
+    },
+    {
+      "itemLevel": 2,
+      "defense": 28,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 120,
+      "requiredAgility": 160,
+      "excellentDefense": 48,
+      "excellentRequiredStrength": 158,
+      "excellentRequiredAgility": 213
+    },
+    {
+      "itemLevel": 3,
+      "defense": 31,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 125,
+      "requiredAgility": 167,
+      "excellentDefense": 51,
+      "excellentRequiredStrength": 162,
+      "excellentRequiredAgility": 219
+    },
+    {
+      "itemLevel": 4,
+      "defense": 34,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 129,
+      "requiredAgility": 173,
+      "excellentDefense": 54,
+      "excellentRequiredStrength": 167,
+      "excellentRequiredAgility": 225
+    },
+    {
+      "itemLevel": 5,
+      "defense": 37,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 134,
+      "requiredAgility": 179,
+      "excellentDefense": 57,
+      "excellentRequiredStrength": 171,
+      "excellentRequiredAgility": 232
+    },
+    {
+      "itemLevel": 6,
+      "defense": 40,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 138,
+      "requiredAgility": 185,
+      "excellentDefense": 60,
+      "excellentRequiredStrength": 176,
+      "excellentRequiredAgility": 238
+    },
+    {
+      "itemLevel": 7,
+      "defense": 43,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 143,
+      "requiredAgility": 192,
+      "excellentDefense": 63,
+      "excellentRequiredStrength": 180,
+      "excellentRequiredAgility": 244
+    },
+    {
+      "itemLevel": 8,
+      "defense": 46,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 147,
+      "requiredAgility": 198,
+      "excellentDefense": 66,
+      "excellentRequiredStrength": 185,
+      "excellentRequiredAgility": 251
+    },
+    {
+      "itemLevel": 9,
+      "defense": 49,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 152,
+      "requiredAgility": 204,
+      "excellentDefense": 69,
+      "excellentRequiredStrength": 189,
+      "excellentRequiredAgility": 257
+    },
+    {
+      "itemLevel": 10,
+      "defense": 53,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 156,
+      "requiredAgility": 211,
+      "excellentDefense": 73,
+      "excellentRequiredStrength": 194,
+      "excellentRequiredAgility": 263
+    },
+    {
+      "itemLevel": 11,
+      "defense": 58,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 161,
+      "requiredAgility": 217,
+      "excellentDefense": 78,
+      "excellentRequiredStrength": 198,
+      "excellentRequiredAgility": 269
+    },
+    {
+      "itemLevel": 12,
+      "defense": 64,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 165,
+      "requiredAgility": 223,
+      "excellentDefense": 84,
+      "excellentRequiredStrength": 203,
+      "excellentRequiredAgility": 276
+    },
+    {
+      "itemLevel": 13,
+      "defense": 71,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 170,
+      "requiredAgility": 230,
+      "excellentDefense": 91,
+      "excellentRequiredStrength": 207,
+      "excellentRequiredAgility": 282
+    },
+    {
+      "itemLevel": 14,
+      "defense": 79,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 174,
+      "requiredAgility": 236,
+      "excellentDefense": 99,
+      "excellentRequiredStrength": 212,
+      "excellentRequiredAgility": 288
+    },
+    {
+      "itemLevel": 15,
+      "defense": 88,
+      "durability": null,
+      "damageMin": null,
+      "damageMax": null,
+      "requiredStrength": 179,
+      "requiredAgility": 242,
+      "excellentDefense": 108,
+      "excellentRequiredStrength": 216,
+      "excellentRequiredAgility": 295
+    }
+  ],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "manticore-ancient-manticore-elf-attack",
+  "slug": "manticore-elf-attack",
+  "name": "Manticore Elf Attack",
+  "family": "Manticore Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Manticore Elf (Agilidad) Helm",
+      "slug": "manticore-elf-agilidad-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-elf-attack-manticore-elf-agilidad-helm-detail.png",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/msq1zn1l.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-elf-attack-manticore-elf-agilidad-helm-detail.png",
+        "size": 8175,
+        "sha1": "7c6d8f81d0f7588149d653a67253d0338d64bc5e"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Elf (Agilidad) Armor",
+      "slug": "manticore-elf-agilidad-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-elf-attack-manticore-elf-agilidad-armor-detail.png",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/ncfh5inb.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-elf-attack-manticore-elf-agilidad-armor-detail.png",
+        "size": 16616,
+        "sha1": "52d4f6e58e062c9f6632b0ca21a4ae0fca2e709e"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Elf (Agilidad) Pants",
+      "slug": "manticore-elf-agilidad-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-elf-attack-manticore-elf-agilidad-pants-detail.png",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/g3xoof04.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-elf-attack-manticore-elf-agilidad-pants-detail.png",
+        "size": 14640,
+        "sha1": "7ff2e0988ae3e7b4aef711590f21b04ca2aea2c8"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Elf (Agilidad) Gloves",
+      "slug": "manticore-elf-agilidad-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-elf-attack-manticore-elf-agilidad-gloves-detail.png",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/manti/x2pax22j.png",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-elf-attack-manticore-elf-agilidad-gloves-detail.png",
+        "size": 9526,
+        "sha1": "fd4d9fcec2921bc0311b5ccf98272a0aca074dd4"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Elf Attack Helm",
+      "slug": "manticore-elf-attack-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-elf-attack-manticore-elf-attack-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/mantielf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-elf-attack-manticore-elf-attack-helm.jpg",
+        "size": 1062,
+        "sha1": "b337296f8da1d4e314e0f5c1d3d914ca0448a717"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Elf Attack Armor",
+      "slug": "manticore-elf-attack-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-elf-attack-manticore-elf-attack-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/mantielf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-elf-attack-manticore-elf-attack-armor.jpg",
+        "size": 1281,
+        "sha1": "8d8db3a179ee1fededfb02911bbd12a0b710d03b"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Elf Attack Pants",
+      "slug": "manticore-elf-attack-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-elf-attack-manticore-elf-attack-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/mantielf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-elf-attack-manticore-elf-attack-pants.jpg",
+        "size": 1241,
+        "sha1": "bf1133330c2011689d6330e7f5cdae872e21898f"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Manticore Elf Attack Gloves",
+      "slug": "manticore-elf-attack-gloves",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-elf-attack-manticore-elf-attack-gloves.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/mantielf.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/manticore-ancient-manticore-elf-attack-manticore-elf-attack-gloves.jpg",
+        "size": 1180,
+        "sha1": "50975b669e0c5b036d15c7e6c9664fc2f0f968a9"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/manticore-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/mantielfattack.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

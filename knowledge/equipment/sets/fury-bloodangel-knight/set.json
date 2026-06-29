@@ -1,0 +1,77 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "bloodangel-ancient-fury-bloodangel-knight",
+  "slug": "fury-bloodangel-knight",
+  "name": "Fury Bloodangel Knight",
+  "family": "Bloodangel Ancient",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Fury Helm",
+      "slug": "fury-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-fury-bloodangel-knight-fury-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodhelmbk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-fury-bloodangel-knight-fury-helm.jpg",
+        "size": 1287,
+        "sha1": "278fdb05ab5e9b28b398d01b446badc078761011"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Fury Armor",
+      "slug": "fury-armor",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-fury-bloodangel-knight-fury-armor.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodarmorbk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-fury-bloodangel-knight-fury-armor.jpg",
+        "size": 1457,
+        "sha1": "75b96d19dba4ce435482c3258f60419ce36ab736"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Fury Pants",
+      "slug": "fury-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-fury-bloodangel-knight-fury-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodpantsbk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-fury-bloodangel-knight-fury-pants.jpg",
+        "size": 1327,
+        "sha1": "a6ee24cb7abb69e3ab81483e7befe43f3e17d43f"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    },
+    {
+      "name": "Fury Boots",
+      "slug": "fury-boots",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/bloodangel-ancient-fury-bloodangel-knight-fury-boots.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/bloodbootsbk.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/bloodangel-ancient-fury-bloodangel-knight-fury-boots.jpg",
+        "size": 1393,
+        "sha1": "6838731211e1f36b4856239e26a8b2cc98623191"
+      },
+      "hasStats": true,
+      "source": "detailParts"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/bloodangel-ancient.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/fury.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

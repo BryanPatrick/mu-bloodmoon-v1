@@ -1,0 +1,34 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-item.v1",
+  "id": "wings-wings-of-flame-god",
+  "slug": "wings-of-flame-god",
+  "name": "Wings of Flame God",
+  "title": "Wings of Flame God",
+  "category": "Wings",
+  "categorySlug": "wings",
+  "usableBy": [],
+  "listStats": {
+    "normalDrop": "800"
+  },
+  "image": {
+    "publicPath": "/images/game-assets/guiamuonline/items/original/wings-wings-of-flame-god.jpg",
+    "sourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/bkw4.jpg",
+    "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/wings-wings-of-flame-god.jpg",
+    "size": 1352,
+    "sha1": "6e7da592e3aa94a73dc312e292f7722d3f98275a"
+  },
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/wings.json",
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/wing/dkw4.html",
+    "imageSourceUrl": "https://www.guiamuonline.com/imagenes/items/wing/bkw4.jpg"
+  },
+  "statsByLevel": [],
+  "parts": [],
+  "detailParts": [],
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation",
+    "notes": []
+  }
+}

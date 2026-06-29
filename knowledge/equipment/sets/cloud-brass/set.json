@@ -1,0 +1,55 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "ancient-normal-cloud-brass",
+  "slug": "cloud-brass",
+  "name": "Cloud Brass",
+  "family": "Ancient Normal",
+  "qualities": [
+    "Ancient"
+  ],
+  "usableBy": [],
+  "parts": [
+    {
+      "name": "Cloud Helm",
+      "slug": "cloud-helm",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-cloud-brass-cloud-helm.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ihe052_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-cloud-brass-cloud-helm.jpg",
+        "size": 3513,
+        "sha1": "81ead8cfa038e4ccf09733a4f46f95272d5ea5e0"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "Cloud Pants",
+      "slug": "cloud-pants",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/ancient-normal-cloud-brass-cloud-pants.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/ancient/ipa004_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/ancient-normal-cloud-brass-cloud-pants.jpg",
+        "size": 3745,
+        "sha1": "bd9689e83fbc16b436b91f3e4d1e86a44eb3bf55"
+      },
+      "hasStats": false,
+      "source": "detailParts"
+    },
+    {
+      "name": "2 Set option : Increase Critical Damage Rate +20%",
+      "source": "listStats"
+    }
+  ],
+  "setOptions": [],
+  "baseSetDefense": null,
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFile": "apps/web/data/mu-equipment-details/ancient-normal.json",
+    "ancientReference": null,
+    "sourceUrl": "https://www.guiamuonline.com/spanish/items/ancient/cloud.html"
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-source",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}

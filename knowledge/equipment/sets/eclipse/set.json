@@ -1,0 +1,96 @@
+{
+  "schema": "bloodmoon.knowledge.equipment-set.v1",
+  "id": "set-eclipse",
+  "slug": "eclipse",
+  "name": "Eclipse",
+  "family": "normal-armor-set",
+  "qualities": [
+    "Normal",
+    "Excellent"
+  ],
+  "usableBy": [
+    "Dark Wizard"
+  ],
+  "parts": [
+    {
+      "itemId": "armor-eclipse",
+      "name": "Eclipse Armor",
+      "category": "Armor",
+      "slug": "eclipse",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/armor-eclipse.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/armor/iar039_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/armor-eclipse.jpg",
+        "size": 2706,
+        "sha1": "9d4c50ab2db86c1eb0902e38f80679e02bfb9677"
+      }
+    },
+    {
+      "itemId": "boots-eclipse",
+      "name": "Eclipse Boots",
+      "category": "Boots",
+      "slug": "eclipse",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/boots-eclipse.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/boots/ibo039_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/boots-eclipse.jpg",
+        "size": 2735,
+        "sha1": "38967283da266be5404fac77a4a83cc8bf9934e0"
+      }
+    },
+    {
+      "itemId": "gloves-eclipse",
+      "name": "Eclipse Gloves",
+      "category": "Gloves",
+      "slug": "eclipse",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/gloves-eclipse.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/gloves/igl039_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/gloves-eclipse.jpg",
+        "size": 2939,
+        "sha1": "c96cdaa9596e2061eb3cb229a8db40fcaa0bb114"
+      }
+    },
+    {
+      "itemId": "helm-eclipse",
+      "name": "Eclipse Helm",
+      "category": "Helm",
+      "slug": "eclipse",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/helm-eclipse.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/helm/ihe036_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/helm-eclipse.jpg",
+        "size": 2587,
+        "sha1": "93aa6245fb0c4250e58de4df7630416039aeee51"
+      }
+    },
+    {
+      "itemId": "pants-eclipse",
+      "name": "Eclipse Pants",
+      "category": "Pants",
+      "slug": "eclipse",
+      "image": {
+        "publicPath": "/images/game-assets/guiamuonline/items/original/pants-eclipse.jpg",
+        "sourceUrl": "https://www.guiamuonline.com/imagenes/items/pants/ipa039_s.jpg",
+        "localPath": "apps/web/public/images/game-assets/guiamuonline/items/original/pants-eclipse.jpg",
+        "size": 2511,
+        "sha1": "2596fbafc335cce4bc69c74358ef6e8ea99cc94c"
+      }
+    }
+  ],
+  "setOptions": [],
+  "source": {
+    "normalizedIndex": "apps/web/data/muEquipmentIndex.generated.json",
+    "detailFiles": [
+      "apps/web/data/mu-equipment-details/armor.json",
+      "apps/web/data/mu-equipment-details/boots.json",
+      "apps/web/data/mu-equipment-details/gloves.json",
+      "apps/web/data/mu-equipment-details/helm.json",
+      "apps/web/data/mu-equipment-details/pants.json"
+    ]
+  },
+  "editorial": {
+    "status": "cataloged-from-normalized-parts",
+    "reviewStatus": "needs-human-gameplay-validation"
+  }
+}
