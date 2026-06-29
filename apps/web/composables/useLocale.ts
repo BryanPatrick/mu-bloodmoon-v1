@@ -385,7 +385,7 @@ function makeEnglish(region: 'US' | 'UK'): LocaleDictionary {
     ],
     guideCategories: [
       { title: 'Characters', description: 'Classes, lore, strengths, and builds.', links: characterLinksByRelease },
-      { title: 'Equipment', description: 'Sets, weapons, shields, wings, accessories, and special items.', links: ['Sets', 'Weapons and Shields', 'Wings and Capes', 'Accessories', 'Pets and Mounts', 'Consumables', 'Jewels', 'Excellent Items', 'Ancient Items', 'Socket Items'] },
+      { title: 'Equipment', description: 'Sets, weapons, shields, wings, accessories, and special items.', links: ['Sets', 'Weapons and Shields', 'Wings and Capes', 'Accessories', 'Pets and Mounts', 'Consumables', 'Jewels'] },
       { title: 'Formulas', description: 'Character stats, experience, and server rates.', links: ['Character Stats', 'Experience', 'Server Rates'] },
       { title: 'Builds', description: 'Progression routes for PvP, PvM, and events.', links: ['PvP', 'PvM', 'Boss', 'Events'] },
       { title: 'Chaos Machine', description: 'Mixes, materials, rates, and tips.', links: ['Chaos Weapon Mix', 'Wing Mix', 'Socket Mix', 'Jewel Mix', 'Mix Events'] },

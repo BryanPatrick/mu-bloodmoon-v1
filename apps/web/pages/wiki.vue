@@ -108,7 +108,7 @@
                 <div>
                   <h3 class="bm-heading font-display text-2xl font-bold">Catalogo de sets</h3>
                   <p class="bm-muted mt-[6px] text-sm leading-6">
-                    Default mostra todos os itens, sempre do mais fraco ao mais forte.
+                    {{ allOptionLabel }} mostra todos os itens, sempre do mais fraco ao mais forte.
                   </p>
                 </div>
               </div>
@@ -117,7 +117,7 @@
                 <label class="grid min-w-0 gap-1 text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
                   Personagem
                   <select v-model="setCharacterFilter" class="h-11 rounded-md border border-white/10 bg-white/10 px-3 text-sm font-bold normal-case tracking-normal text-white outline-none focus:border-blood-400/70">
-                    <option class="bg-zinc-950 text-white" value="Default">Default</option>
+                    <option class="bg-zinc-950 text-white" value="Default">{{ allOptionLabel }}</option>
                     <option v-for="character in setCharacterOptions" :key="character" class="bg-zinc-950 text-white" :value="character">{{ character }}</option>
                   </select>
                 </label>
@@ -125,7 +125,7 @@
                 <label class="grid min-w-0 gap-1 text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
                   Classe
                   <select v-model="setEvolutionFilter" class="h-11 rounded-md border border-white/10 bg-white/10 px-3 text-sm font-bold normal-case tracking-normal text-white outline-none focus:border-blood-400/70">
-                    <option class="bg-zinc-950 text-white" value="Default">Default</option>
+                    <option class="bg-zinc-950 text-white" value="Default">{{ allOptionLabel }}</option>
                     <option v-for="evolution in setEvolutionOptions" :key="evolution" class="bg-zinc-950 text-white" :value="evolution">{{ evolution }}</option>
                   </select>
                 </label>
@@ -133,7 +133,7 @@
                 <label class="grid min-w-0 gap-1 text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
                   Tipo
                   <select v-model="setTypeFilter" class="h-11 rounded-md border border-white/10 bg-white/10 px-3 text-sm font-bold normal-case tracking-normal text-white outline-none focus:border-blood-400/70">
-                    <option class="bg-zinc-950 text-white" value="Default">Default</option>
+                    <option class="bg-zinc-950 text-white" value="Default">{{ allOptionLabel }}</option>
                     <option v-for="type in setTypeOptions" :key="type" class="bg-zinc-950 text-white" :value="type">{{ type }}</option>
                   </select>
                 </label>
@@ -141,7 +141,7 @@
                 <label class="grid min-w-0 gap-1 text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
                   Equipamento
                   <select v-model="setEquipmentFilter" class="h-11 rounded-md border border-white/10 bg-white/10 px-3 text-sm font-bold normal-case tracking-normal text-white outline-none focus:border-blood-400/70">
-                    <option class="bg-zinc-950 text-white" value="Default">Default</option>
+                    <option class="bg-zinc-950 text-white" value="Default">{{ allOptionLabel }}</option>
                     <option v-for="equipment in setEquipmentOptions" :key="equipment" class="bg-zinc-950 text-white" :value="equipment">{{ equipment }}</option>
                   </select>
                 </label>
@@ -249,24 +249,22 @@
                     Dados locais do catalogo Guia MU, com imagens servidas pelo proprio projeto.
                   </p>
                 </div>
-                <div class="grid grid-cols-2 gap-2 text-center">
-                  <span class="rounded-md border border-white/10 bg-white/[0.04] px-4 py-2">
-                    <strong class="block font-display text-xl text-white">{{ filteredEquipmentCatalogItems.length }}</strong>
-                    <small class="text-[10px] font-black uppercase tracking-[0.14em] text-zinc-400">Itens</small>
-                  </span>
-                  <span class="rounded-md border border-white/10 bg-white/[0.04] px-4 py-2">
-                    <strong class="block font-display text-xl text-white">{{ equipmentCatalogCategories.length }}</strong>
-                    <small class="text-[10px] font-black uppercase tracking-[0.14em] text-zinc-400">Categorias</small>
-                  </span>
-                </div>
               </div>
 
-              <div class="grid gap-3 lg:grid-cols-[260px_1fr]">
+              <div class="grid gap-3 lg:grid-cols-[220px_240px_1fr]">
                 <label class="grid gap-1 text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
                   Categoria
                   <select v-model="equipmentCatalogCategoryFilter" class="h-11 rounded-md border border-white/10 bg-white/10 px-3 text-sm font-bold normal-case tracking-normal text-white outline-none focus:border-blood-400/70">
-                    <option class="bg-zinc-950 text-white" value="Default">Default</option>
+                    <option class="bg-zinc-950 text-white" value="Default">{{ allOptionLabel }}</option>
                     <option v-for="category in equipmentCatalogCategories" :key="category" class="bg-zinc-950 text-white" :value="category">{{ category }}</option>
+                  </select>
+                </label>
+
+                <label class="grid gap-1 text-xs font-black uppercase tracking-[0.14em] text-zinc-400">
+                  Classe
+                  <select v-model="equipmentCatalogClassFilter" class="h-11 rounded-md border border-white/10 bg-white/10 px-3 text-sm font-bold normal-case tracking-normal text-white outline-none focus:border-blood-400/70">
+                    <option class="bg-zinc-950 text-white" value="Default">{{ allOptionLabel }}</option>
+                    <option v-for="className in equipmentCatalogClassOptions" :key="className" class="bg-zinc-950 text-white" :value="className">{{ className }}</option>
                   </select>
                 </label>
 
@@ -603,6 +601,24 @@
               <div class="rounded-md border border-white/10 bg-black/28 p-4">
                 <p class="bm-kicker">Caracteristicas</p>
                 <h4 class="mt-2 font-display text-2xl font-black text-white">Dados do equipamento</h4>
+                <div class="mt-4 flex flex-wrap gap-2">
+                  <button
+                    v-for="quality in selectedEquipmentAvailableQualities"
+                    :key="quality"
+                    class="rounded-md border px-4 py-2 text-xs font-black uppercase tracking-[0.14em] transition"
+                    :class="qualityButtonClass(quality)"
+                    type="button"
+                    @click="selectedEquipmentQuality = quality"
+                  >
+                    {{ equipmentQualityLabels[quality] }}
+                  </button>
+                </div>
+                <div class="mt-4 rounded-md border border-white/10 bg-white/[0.035] p-3">
+                  <label class="text-xs font-black uppercase tracking-[0.16em] text-zinc-400">
+                    Blessing / refinamento +{{ selectedEquipmentBlessingLevel }}
+                    <input v-model.number="selectedEquipmentBlessingLevel" min="0" max="15" step="1" type="range" class="mt-2 w-full accent-amber-400">
+                  </label>
+                </div>
                 <dl class="mt-4 grid gap-2 md:grid-cols-2">
                   <div
                     v-for="row in selectedEquipmentStatRows"
@@ -700,7 +716,7 @@ type FullSetImage = {
   fileName: string
   publicPath: string
 }
-const { dictionary } = useLocale()
+const { dictionary, locale } = useLocale()
 const { hasPermission, loadSession } = useAuth()
 const futureCharacters = ['Grow Lancer', 'Rune Mage', 'Slayer', 'Gun Crusher', 'White Wizard', 'Mage']
 const setCharacterFilter = ref('Default')
@@ -711,12 +727,15 @@ const setNameSearch = ref('')
 const setCurrentPage = ref(1)
 const setPageSize = 20
 const equipmentCatalogCategoryFilter = ref('Default')
+const equipmentCatalogClassFilter = ref('Default')
 const equipmentCatalogSearch = ref('')
 const equipmentCatalogCurrentPage = ref(1)
 const equipmentCatalogPageSize = 24
 const selectedEquipmentItem = ref<GuideEquipmentItem | null>(null)
 const selectedEquipmentSummary = ref<GuideEquipmentSummary | null>(null)
 const selectedEquipmentLoadId = ref(0)
+const selectedEquipmentQuality = ref<EquipmentQualityKey>('normal')
+const selectedEquipmentBlessingLevel = ref(0)
 const selectedSet = ref<SetCard | null>(null)
 const selectedGuideSetItems = ref<GuideEquipmentItem[]>([])
 const selectedGuideLoadId = ref(0)
@@ -769,6 +788,41 @@ const characterEvolutionMap: Record<string, string[]> = {
   'Grow Lancer': ['Grow Lancer', 'Mirage Lancer']
 }
 const characterOrder = Object.keys(characterEvolutionMap)
+const playableClassNames = Array.from(new Set(Object.values(characterEvolutionMap).flat()))
+const playableClassSet = new Set(playableClassNames)
+const baseClassFor = (className: string) =>
+  characterOrder.find((character) => character === className || characterEvolutionMap[character]?.includes(className)) || ''
+const sanitizeClassList = (classes: string[]) =>
+  Array.from(new Set(classes.filter((className) => playableClassSet.has(className))))
+const canUseClass = (usableClasses: string[], selectedClass: string) => {
+  if (selectedClass === 'Default') {
+    return true
+  }
+
+  const cleanClasses = sanitizeClassList(usableClasses)
+  const selectedBaseClass = baseClassFor(selectedClass)
+
+  return cleanClasses.some((className) =>
+    className === selectedClass ||
+    className === selectedBaseClass ||
+    baseClassFor(className) === selectedClass
+  )
+}
+const primaryCharacterForClasses = (classes: string[]) => {
+  const cleanClasses = sanitizeClassList(classes)
+  const baseClasses = cleanClasses.map((className) => baseClassFor(className)).filter(Boolean)
+  const sortedBaseClasses = Array.from(new Set(baseClasses))
+    .sort((a, b) => characterOrder.indexOf(a) - characterOrder.indexOf(b))
+
+  return sortedBaseClasses[0] || 'Sem classe definida'
+}
+const allOptionLabel = computed(() => {
+  if (locale.value.startsWith('en')) {
+    return 'All'
+  }
+
+  return 'Todos'
+})
 const setPowerOrder = [
   'Leather',
   'Bronze',
@@ -902,6 +956,22 @@ const equipmentCatalogTopicConfigs: Record<string, { title: string, categories: 
     categories: ['Muun']
   }
 }
+const excellentWeaponOptions: EquipmentOptionRule[] = [
+  { key: 'excellent-dmg-rate', label: 'Excellent Damage Chance +10%', scope: 'excellent', appliesTo: 'weapon' },
+  { key: 'excellent-level-dmg', label: 'Attack/Wizardry Damage +1 per 20 levels', scope: 'excellent', appliesTo: 'weapon' },
+  { key: 'excellent-percent-dmg', label: 'Attack/Wizardry Damage +2%', scope: 'excellent', appliesTo: 'weapon' },
+  { key: 'excellent-speed', label: 'Attack/Wizardry Speed +7', scope: 'excellent', appliesTo: 'weapon' },
+  { key: 'excellent-hp-restore', label: 'Restore 1/8 HP per monster killed', scope: 'excellent', appliesTo: 'weapon' },
+  { key: 'excellent-mana-restore', label: 'Restore 1/8 Mana per monster killed', scope: 'excellent', appliesTo: 'weapon' }
+]
+const wingOptionRules: EquipmentOptionRule[] = [
+  { key: 'wing-chaos-machine', label: 'Wings are created through Chaos Machine mixes; they are not normal monster drops.', scope: 'normal', appliesTo: 'all' },
+  { key: 'wing-damage-increase', label: 'Damage increase scales with wing level.', scope: 'normal', appliesTo: 'all' },
+  { key: 'wing-damage-absorb', label: 'Damage absorption scales with wing level.', scope: 'normal', appliesTo: 'all' },
+  { key: 'wing-luck', label: 'May have Luck: Soul success rate +25% and Critical Damage Rate +5%.', scope: 'normal', appliesTo: 'all' },
+  { key: 'wing-recovery', label: 'Can roll HP/Mana recovery and enemy defense ignore/return options depending on wing tier.', scope: 'normal', appliesTo: 'all' },
+  { key: 'wing-life-cost', label: 'Some wings reduce HP after successful attacks, depending on tier/version.', scope: 'normal', appliesTo: 'all' }
+]
 const equipmentCatalogConfig = computed(() => equipmentCatalogTopicConfigs[activeTopicKey.value])
 const isEquipmentCatalogTopic = computed(() => activeSectionKey.value === 'equipamentos' && Boolean(equipmentCatalogConfig.value))
 const guiamuSourcesForTopic = computed(() =>
@@ -936,7 +1006,7 @@ const setCharacterName = (asset: DevReferenceAsset) => {
   const fromSetCategory = asset.category.match(/^Sets\s*-\s*(.+)$/i)?.[1]
   const fromArmorCategory = asset.category.match(/^Armaduras\s*-\s*(.+)$/i)?.[1]
 
-  return fromSetCategory || fromArmorCategory || 'Compartilhado'
+  return fromSetCategory || fromArmorCategory || 'Sem classe definida'
 }
 
 const setTier = (name: string) => {
@@ -954,15 +1024,11 @@ const normalizeSetReferenceName = (name: string) =>
 const isSetReferenceAsset = (asset: DevReferenceAsset) =>
   asset.group === 'Equipamentos' && /^Sets\s*-/i.test(asset.category)
 
-const setTypeOrder = ['Normal', 'Excellent', 'Socket', 'Ancient', 'Lucky', 'Mastery']
+const setTypeOrder = ['Normal', 'Excellent', 'Socket', 'Ancient', 'Lucky']
 const qualityOrder: EquipmentQualityKey[] = ['normal', 'excellent', 'ancient', 'socket', 'masteryAncient', 'lucky']
 const setTypeFromName = (name: string) => {
   if (socketSetNames.some((socketName) => name.toLowerCase().includes(socketName.toLowerCase()))) {
     return 'Socket'
-  }
-
-  if (masteryAncientSetNames.some((masteryName) => name.toLowerCase().includes(masteryName.toLowerCase()))) {
-    return 'Mastery'
   }
 
   return 'Normal'
@@ -973,7 +1039,6 @@ const setQualityFromType = (type: string): EquipmentQualityKey | undefined => ({
   Socket: 'socket',
   Ancient: 'ancient',
   Lucky: 'lucky',
-  Mastery: 'masteryAncient'
 })[type] as EquipmentQualityKey | undefined
 const sortSetTypes = (types: string[]) =>
   types.sort((a, b) => {
@@ -993,6 +1058,17 @@ const setBaseNameFromAncient = (item: GuideEquipmentSummary) => {
   if (item.category === 'Ancient Normal' || item.category === 'Set Lucky') {
     const parts = item.name.replace(/\s*\(.+?\)\s*/g, ' ').trim().split(/\s+/)
     return parts.length > 1 ? parts.slice(1).join(' ') : item.name
+  }
+
+  const masteryCategory = masteryAncientCategories.find((category) => category === item.category)
+  if (masteryCategory) {
+    const family = masteryCategory.replace(/\s+Ancient$/i, '')
+    const familyIndex = item.name.toLowerCase().indexOf(family.toLowerCase())
+    const baseName = familyIndex === -1 ? item.name : item.name.slice(familyIndex)
+
+    return baseName
+      .replace(/\s+/g, ' ')
+      .trim()
   }
 
   const armorCandidates = guiamuonlineArmorItems.filter((candidate) =>
@@ -1103,8 +1179,8 @@ const setCards = computed<SetCard[]>(() => {
   }
 
   for (const [name, items] of guideItemsByName) {
-    const classes = Array.from(new Set(items.flatMap((item) => item.usableBy))).filter(Boolean)
-    const characterName = classes[0] || 'Compartilhado'
+    const classes = sanitizeClassList(Array.from(new Set(items.flatMap((item) => item.usableBy))).filter(Boolean))
+    const characterName = primaryCharacterForClasses(classes)
     const evolutions = classes.length ? classes : characterEvolutionMap[characterName] || [characterName]
     const tier = setTier(name)
     const baseType = setTypeFromName(name)
@@ -1112,8 +1188,7 @@ const setCards = computed<SetCard[]>(() => {
     const setTypes = sortSetTypes(Array.from(new Set([
       baseType === 'Normal' ? 'Normal' : baseType,
       hasExcellent ? 'Excellent' : '',
-      baseType === 'Socket' ? 'Normal' : '',
-      baseType === 'Mastery' ? 'Normal' : ''
+      baseType === 'Socket' ? 'Normal' : ''
     ].filter(Boolean))))
     const pieces = Array.from(new Set(items.map((item) => item.category)))
       .sort((a, b) => setPieceNames.indexOf(a) - setPieceNames.indexOf(b))
@@ -1151,19 +1226,21 @@ const setCards = computed<SetCard[]>(() => {
     const type = item.category === 'Set Lucky'
       ? 'Lucky'
       : masteryAncientCategories.includes(item.category)
-        ? 'Mastery'
+        ? 'Ancient'
         : 'Ancient'
     const guideName = setBaseNameFromAncient(item)
     const guideItems = guideArmorItemsByName(guideName)
-    const classes = Array.from(new Set(guideItems.flatMap((piece) => piece.usableBy))).filter(Boolean)
-    const characterName = classes[0] || 'Compartilhado'
+    const classes = sanitizeClassList(Array.from(new Set(guideItems.flatMap((piece) => piece.usableBy))).filter(Boolean))
+    const characterName = primaryCharacterForClasses(classes)
     const evolutions = classes.length ? classes : characterEvolutionMap[characterName] || [characterName]
     const tier = setTier(guideName)
     const pieces = Object.values(item.listStats || {}).filter((value) => value && !/^opci/i.test(value)).slice(0, 6)
 
     upsertCard({
-      key: `${type}-${item.key}`.toLowerCase(),
-      name: item.name,
+      key: masteryAncientCategories.includes(item.category)
+        ? `set-${normalizeSetReferenceName(guideName)}`
+        : `${type}-${item.key}`.toLowerCase(),
+      name: masteryAncientCategories.includes(item.category) ? guideName : item.name,
       guideName,
       setTypes: [type],
       availableQualities: setTypesToQualities([type]),
@@ -1181,7 +1258,7 @@ const setCards = computed<SetCard[]>(() => {
         image: piece.image.publicPath || undefined
       })),
       fullSetImage: undefined,
-      searchText: `${item.name} ${guideName} ${type} ${item.category} ${characterName} ${evolutions.join(' ')} ${pieces.join(' ')}`.toLowerCase()
+      searchText: `${item.name} ${guideName} ${type} ${item.category} mastery ruud ${characterName} ${evolutions.join(' ')} ${pieces.join(' ')}`.toLowerCase()
     })
   }
 
@@ -1202,7 +1279,7 @@ const setCards = computed<SetCard[]>(() => {
 })
 
 const setCharacterOptions = computed(() =>
-  Array.from(new Set(setCards.value.map((set) => set.characterName)))
+  characterOrder.filter((character) => setCards.value.some((set) => canUseClass(set.evolutions, character)))
     .sort((a, b) => characterOrder.indexOf(a) - characterOrder.indexOf(b))
 )
 const setEvolutionOptions = computed(() => {
@@ -1217,8 +1294,8 @@ const setTypeOptions = computed(() =>
 )
 const setEquipmentOptions = computed(() => {
   const availableNames = Array.from(new Set(setCards.value
-    .filter((set) => setCharacterFilter.value === 'Default' || set.characterName === setCharacterFilter.value)
-    .filter((set) => setEvolutionFilter.value === 'Default' || set.evolutions.includes(setEvolutionFilter.value))
+    .filter((set) => setCharacterFilter.value === 'Default' || canUseClass(set.evolutions, setCharacterFilter.value))
+    .filter((set) => setEvolutionFilter.value === 'Default' || canUseClass(set.evolutions, setEvolutionFilter.value))
     .filter((set) => setTypeFilter.value === 'Default' || set.setTypes.includes(setTypeFilter.value))
     .map((set) => set.name)))
 
@@ -1228,8 +1305,8 @@ const filteredSetCards = computed(() => {
   const search = setNameSearch.value.trim().toLowerCase()
 
   return setCards.value.filter((set) => {
-    const matchesCharacter = setCharacterFilter.value === 'Default' || set.characterName === setCharacterFilter.value
-    const matchesEvolution = setEvolutionFilter.value === 'Default' || set.evolutions.includes(setEvolutionFilter.value)
+    const matchesCharacter = setCharacterFilter.value === 'Default' || canUseClass(set.evolutions, setCharacterFilter.value)
+    const matchesEvolution = setEvolutionFilter.value === 'Default' || canUseClass(set.evolutions, setEvolutionFilter.value)
     const matchesType = setTypeFilter.value === 'Default' || set.setTypes.includes(setTypeFilter.value)
     const matchesEquipment = setEquipmentFilter.value === 'Default' || set.name === setEquipmentFilter.value
     const matchesSearch = !search || set.searchText.includes(search)
@@ -1258,11 +1335,17 @@ const equipmentCatalogItems = computed(() => {
 const equipmentCatalogCategories = computed(() =>
   Array.from(new Set(equipmentCatalogItems.value.map((item) => item.category)))
 )
+const equipmentCatalogClassOptions = computed(() =>
+  playableClassNames.filter((className) =>
+    equipmentCatalogItems.value.some((item) => canUseClass(item.usableBy, className))
+  )
+)
 const filteredEquipmentCatalogItems = computed(() => {
   const search = normalizeCatalogSearch(equipmentCatalogSearch.value)
 
   return equipmentCatalogItems.value.filter((item) => {
     const matchesCategory = equipmentCatalogCategoryFilter.value === 'Default' || item.category === equipmentCatalogCategoryFilter.value
+    const matchesClass = equipmentCatalogClassFilter.value === 'Default' || canUseClass(item.usableBy, equipmentCatalogClassFilter.value)
     const matchesSearch = !search || normalizeCatalogSearch([
       item.name,
       item.title,
@@ -1271,7 +1354,7 @@ const filteredEquipmentCatalogItems = computed(() => {
       compactListStats(item)
     ].join(' ')).includes(search)
 
-    return matchesCategory && matchesSearch
+    return matchesCategory && matchesClass && matchesSearch
   })
 })
 const equipmentCatalogTotalPages = computed(() => Math.max(1, Math.ceil(filteredEquipmentCatalogItems.value.length / equipmentCatalogPageSize)))
@@ -1359,11 +1442,15 @@ const luckySetNames = ['Lucky']
 const selectedSetName = computed(() => selectedSet.value?.name || '')
 const selectedSetGuideName = computed(() => guideSetLookupName(selectedSet.value))
 const isSocketSet = computed(() => selectedSet.value?.setTypes.includes('Socket') || socketSetNames.some((name) => selectedSetGuideName.value.toLowerCase().includes(name.toLowerCase())))
-const isMasteryAncientSet = computed(() => selectedSet.value?.setTypes.includes('Mastery') || masteryAncientSetNames.some((name) => selectedSetGuideName.value.toLowerCase().includes(name.toLowerCase())))
+const isMasteryAncientSet = computed(() => masteryAncientSetNames.some((name) => selectedSetGuideName.value.toLowerCase().includes(name.toLowerCase())))
 const isLuckySet = computed(() => luckySetNames.some((name) => selectedSetName.value.toLowerCase().includes(name.toLowerCase())))
 
 const selectedAvailableQualities = computed<EquipmentQualityKey[]>(() => {
   if (selectedSet.value?.availableQualities.length) {
+    if (isMasteryAncientSet.value && selectedSet.value.availableQualities.includes('ancient')) {
+      return sortQualities(Array.from(new Set(['normal', 'excellent', ...selectedSet.value.availableQualities] as EquipmentQualityKey[])))
+    }
+
     return selectedSet.value.availableQualities
   }
 
@@ -1372,7 +1459,7 @@ const selectedAvailableQualities = computed<EquipmentQualityKey[]>(() => {
   }
 
   if (isMasteryAncientSet.value) {
-    return ['masteryAncient']
+    return ['normal', 'excellent', 'ancient']
   }
 
   if (selectedAncientReference.value) {
@@ -1388,6 +1475,26 @@ const selectedAvailableQualities = computed<EquipmentQualityKey[]>(() => {
 
 const itemRequiredLevel = (item: GuideEquipmentItem | GuideEquipmentSummary) =>
   Number(String(item.listStats?.requiredLevel || '').replace(/[^\d.-]/g, ''))
+const wingTier = (name: string) => {
+  const normalizedName = normalizeCatalogSearch(name)
+  if (['satan', 'heaven', 'elf', 'mistery'].some((tierName) => normalizedName.includes(tierName))) {
+    return 'Level 1'
+  }
+
+  if (['dragon', 'soul', 'spirit', 'darkness', 'despair'].some((tierName) => normalizedName.includes(tierName))) {
+    return 'Level 2'
+  }
+
+  if (['storm', 'eternal', 'illusion', 'ruin', 'dimension', 'lord', 'fighter'].some((tierName) => normalizedName.includes(tierName))) {
+    return 'Level 3'
+  }
+
+  if (['conqueror', 'angel', 'fate', 'annihilation', 'heaven', 'silence', 'judgment', 'transcendence'].some((tierName) => normalizedName.includes(tierName))) {
+    return 'Level alto'
+  }
+
+  return 'Validar tier'
+}
 
 const selectedIsLevel380 = computed(() => {
   if (isSocketSet.value || setQuality.value === 'socket') {
@@ -1410,7 +1517,7 @@ const selectedEquipmentOptionRows = computed<EquipmentOptionRule[]>(() => {
     return luckySetOptions
   }
 
-  if (setQuality.value === 'masteryAncient') {
+  if (setQuality.value === 'masteryAncient' || (setQuality.value === 'ancient' && isMasteryAncientSet.value)) {
     return [...masteryAncientOptions, ...miscOptions]
   }
 
@@ -1481,7 +1588,7 @@ const compactListStats = (item: GuideEquipmentItem | GuideEquipmentSummary) =>
     .join(' - ') || 'Dados detalhados disponiveis no item'
 
 const usableByText = (item: GuideEquipmentItem | GuideEquipmentSummary) =>
-  item.usableBy.length ? item.usableBy.join(', ') : 'Classe indicada na descricao'
+  sanitizeClassList(item.usableBy).length ? sanitizeClassList(item.usableBy).join(', ') : 'Classe indicada na descricao'
 
 const inheritedVisualBaseName = (item: GuideEquipmentItem | GuideEquipmentSummary) => {
   if (item.image.publicPath) {
@@ -1540,51 +1647,97 @@ const selectedEquipmentLevelZeroStats = computed(() =>
   selectedEquipmentItem.value?.levelStats[0] ||
   null
 )
+const selectedEquipmentLevelStats = computed(() =>
+  selectedEquipmentItem.value?.levelStats.find((stat) => stat.itemLevel === selectedEquipmentBlessingLevel.value) ||
+  selectedEquipmentLevelZeroStats.value
+)
+const isSelectedEquipmentWing = computed(() => selectedEquipmentDisplayItem.value?.category === 'Wings')
+const isSelectedEquipmentShield = computed(() => selectedEquipmentDisplayItem.value?.category === 'Shield')
+const selectedEquipmentKind = computed<'weapon' | 'shield' | 'wing' | 'armor'>(() => {
+  if (isSelectedEquipmentWing.value) {
+    return 'wing'
+  }
+
+  if (isSelectedEquipmentShield.value) {
+    return 'shield'
+  }
+
+  return 'weapon'
+})
+const selectedEquipmentAvailableQualities = computed<EquipmentQualityKey[]>(() => {
+  const item = selectedEquipmentDisplayItem.value
+  if (!item || isSelectedEquipmentWing.value) {
+    return ['normal']
+  }
+
+  return item.listStats.excellentDrop && item.listStats.excellentDrop !== '~'
+    ? ['normal', 'excellent']
+    : ['normal']
+})
 const selectedCatalogEquipmentOptionRows = computed(() => {
   const item = selectedEquipmentDisplayItem.value
   if (!item) {
     return [] as EquipmentOptionRule[]
   }
 
-  const baseOptions = [...baseLuckAndAdditionalOptions]
-  const isDefensive = ['Shield', 'Wings'].includes(item.category)
+  if (isSelectedEquipmentWing.value) {
+    return wingOptionRules
+  }
+
+  const appliesToCurrentItem = (option: EquipmentOptionRule) =>
+    option.appliesTo === 'all' ||
+    option.appliesTo === selectedEquipmentKind.value ||
+    (selectedEquipmentKind.value === 'shield' && option.appliesTo === 'armor')
+  const baseOptions = baseLuckAndAdditionalOptions.filter(appliesToCurrentItem)
   const isSocketFamily = armorPieceCategories.includes(item.category) &&
     socketSetNames.some((socketName) => item.name.toLowerCase().includes(socketName.toLowerCase()))
-  const excellentOptions = isDefensive ? excellentDefenseOptions : excellentDefenseOptions
+  const excellentOptions = selectedEquipmentQuality.value === 'excellent'
+    ? [...excellentDefenseOptions, ...excellentWeaponOptions].filter(appliesToCurrentItem)
+    : []
   const miscOptions = itemRequiredLevel(item) === 380 && !isSocketFamily
     ? harmonyAndGuardianOptions
     : harmonyAndGuardianOptions.filter((option) => option.scope !== 'guardian')
 
-  return [...baseOptions, ...excellentOptions, ...miscOptions]
+  return [...baseOptions, ...excellentOptions, ...miscOptions.filter(appliesToCurrentItem)]
 })
 const selectedEquipmentStatRows = computed(() => {
   const item = selectedEquipmentDisplayItem.value
-  const stat = selectedEquipmentLevelZeroStats.value
+  const stat = selectedEquipmentLevelStats.value
 
   if (!item) {
     return [] as { label: string, value: string | number }[]
   }
 
+  if (isSelectedEquipmentWing.value) {
+    return [
+      { label: 'Categoria', value: item.category },
+      { label: 'Tier', value: wingTier(item.name) },
+      { label: 'Level requerido', value: item.listStats.normalDrop },
+      { label: 'Origem', value: 'Chaos Machine' },
+      { label: 'Pode equipar', value: usableByText(item) }
+    ].filter((row) => row.value !== null && row.value !== undefined && row.value !== '~' && row.value !== '')
+  }
+
   const rows = [
     { label: 'Categoria', value: item.category },
     { label: 'Normal drop', value: item.listStats.normalDrop },
-    { label: 'Excellent drop', value: item.listStats.excellentDrop },
-    { label: 'Attack speed', value: item.listStats.attackSpeed },
+    { label: 'Excellent drop', value: selectedEquipmentAvailableQualities.value.includes('excellent') ? item.listStats.excellentDrop : undefined },
+    { label: 'Attack speed', value: stat?.attackSpeed ?? item.listStats.attackSpeed },
     { label: 'Defense', value: stat?.defense },
     { label: 'Damage min', value: stat?.damageMin },
     { label: 'Damage max', value: stat?.damageMax },
     { label: 'Durability', value: stat?.durability },
     { label: 'Required strength', value: stat?.requiredStrength },
     { label: 'Required agility', value: stat?.requiredAgility },
-    { label: 'Excellent required strength', value: stat?.excellentRequiredStrength },
-    { label: 'Excellent required agility', value: stat?.excellentRequiredAgility }
+    { label: 'Excellent required strength', value: selectedEquipmentQuality.value === 'excellent' ? stat?.excellentRequiredStrength : undefined },
+    { label: 'Excellent required agility', value: selectedEquipmentQuality.value === 'excellent' ? stat?.excellentRequiredAgility : undefined }
   ]
 
   return rows.filter((row) => row.value !== null && row.value !== undefined && row.value !== '~' && row.value !== '')
 })
 
 const selectedSetUsableByClasses = computed(() => {
-  const classes = selectedGuideSetItems.value.flatMap((item) => item?.usableBy || [])
+  const classes = sanitizeClassList(selectedGuideSetItems.value.flatMap((item) => item?.usableBy || []))
 
   return classes.length
     ? Array.from(new Set(classes))
@@ -1709,6 +1862,8 @@ const openEquipmentItemModal = async (item: GuideEquipmentSummary) => {
   selectedEquipmentLoadId.value = loadId
   selectedEquipmentSummary.value = item
   selectedEquipmentItem.value = null
+  selectedEquipmentQuality.value = 'normal'
+  selectedEquipmentBlessingLevel.value = 0
   const detail = await findMuEquipmentItem(item.category, item.name)
 
   if (selectedEquipmentLoadId.value === loadId && selectedEquipmentSummary.value?.key === item.key) {
@@ -1720,6 +1875,8 @@ const closeEquipmentItemModal = () => {
   selectedEquipmentLoadId.value += 1
   selectedEquipmentSummary.value = null
   selectedEquipmentItem.value = null
+  selectedEquipmentQuality.value = 'normal'
+  selectedEquipmentBlessingLevel.value = 0
 }
 
 watch(setCharacterFilter, () => {
@@ -1744,12 +1901,13 @@ watch([setEquipmentFilter, setNameSearch], () => {
 
 watch(activeTopicKey, () => {
   equipmentCatalogCategoryFilter.value = 'Default'
+  equipmentCatalogClassFilter.value = 'Default'
   equipmentCatalogSearch.value = ''
   equipmentCatalogCurrentPage.value = 1
   closeEquipmentItemModal()
 })
 
-watch([equipmentCatalogCategoryFilter, equipmentCatalogSearch], () => {
+watch([equipmentCatalogCategoryFilter, equipmentCatalogClassFilter, equipmentCatalogSearch], () => {
   equipmentCatalogCurrentPage.value = 1
 })
 
@@ -1768,6 +1926,12 @@ watch(equipmentCatalogTotalPages, (totalPages) => {
 watch(selectedAvailableQualities, (qualities) => {
   if (qualities.length && !qualities.includes(setQuality.value)) {
     setQuality.value = qualities[0]
+  }
+})
+
+watch(selectedEquipmentAvailableQualities, (qualities) => {
+  if (qualities.length && !qualities.includes(selectedEquipmentQuality.value)) {
+    selectedEquipmentQuality.value = qualities[0]
   }
 })
 
