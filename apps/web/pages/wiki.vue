@@ -196,7 +196,7 @@
                     <p class="mt-1 text-xs leading-5 text-zinc-400">{{ set.pieces.join(', ') }}</p>
                   </div>
                   <span class="hidden text-sm font-bold text-zinc-300 md:block">{{ set.characterName }}</span>
-                  <span class="hidden text-xs leading-5 text-zinc-400 md:block">{{ set.evolutions.join(', ') }}</span>
+                  <span class="hidden text-xs leading-5 text-zinc-400 md:block">{{ setDisplayClasses(set).join(', ') }}</span>
                   <span class="hidden text-xs leading-5 text-zinc-400 md:block">{{ set.setTypes.join(', ') }}</span>
                   <button
                     class="rounded-md border border-white/10 bg-white/[0.06] px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-white transition hover:border-ember/50 hover:bg-ember/15"
@@ -691,6 +691,7 @@ type SetCard = {
   availableQualities: EquipmentQualityKey[]
   characterName: string
   evolutions: string[]
+  requiredClassTier: number
   tier: number
   tierLabel: string
   status: DevReferenceAsset['status']
@@ -735,6 +736,7 @@ const selectedEquipmentQuality = ref<EquipmentQualityKey>('normal')
 const selectedEquipmentBlessingLevel = ref(0)
 const selectedSet = ref<SetCard | null>(null)
 const selectedGuideSetItems = ref<GuideEquipmentItem[]>([])
+const selectedAncientSetItem = ref<GuideEquipmentItem | null>(null)
 const selectedGuideLoadId = ref(0)
 const setQuality = ref<EquipmentQualityKey>('normal')
 const blessingLevel = ref(0)
@@ -789,6 +791,13 @@ const playableClassNames = Array.from(new Set(Object.values(characterEvolutionMa
 const playableClassSet = new Set(playableClassNames)
 const baseClassFor = (className: string) =>
   characterOrder.find((character) => character === className || characterEvolutionMap[character]?.includes(className)) || ''
+const classTier = (className: string) => {
+  const baseClass = baseClassFor(className)
+  const evolutions = characterEvolutionMap[baseClass] || []
+  const index = evolutions.indexOf(className)
+
+  return index === -1 ? 1 : index + 1
+}
 const sanitizeClassList = (classes: string[]) =>
   Array.from(new Set(classes.filter((className) => playableClassSet.has(className))))
 const canUseClass = (usableClasses: string[], selectedClass: string) => {
@@ -803,6 +812,22 @@ const canUseClass = (usableClasses: string[], selectedClass: string) => {
     className === selectedClass ||
     className === selectedBaseClass ||
     baseClassFor(className) === selectedClass
+  )
+}
+const classesAvailableFromTier = (classes: string[], requiredTier = 1) => {
+  const bases = Array.from(new Set(sanitizeClassList(classes).map(baseClassFor).filter(Boolean)))
+
+  return bases.flatMap((baseClass) => (characterEvolutionMap[baseClass] || [baseClass]).slice(Math.max(0, requiredTier - 1)))
+}
+const canAccessRequiredTier = (classes: string[], selectedClass: string, requiredTier = 1) => {
+  if (selectedClass === 'Default') {
+    return true
+  }
+
+  const selectedBaseClass = baseClassFor(selectedClass)
+
+  return classesAvailableFromTier(classes, requiredTier).some((className) =>
+    baseClassFor(className) === selectedBaseClass && classTier(selectedClass) >= classTier(className)
   )
 }
 const primaryCharacterForClasses = (classes: string[]) => {
@@ -926,7 +951,7 @@ const armorPieceCategories = ['Armor', 'Pants', 'Helm', 'Boots', 'Gloves']
 const ancientEquipmentCategories = ['Ancient Normal', 'Set Lucky']
 const masteryAncientCategories = ['Bloodangel Ancient', 'Darkangel Ancient', 'Holyangel Ancient', 'Soul Ancient', 'Blue Eye Ancient', 'Manticore Ancient', 'Silver Heart Ancient', 'Brilliant Ancient', 'Apocalypse Ancient', 'Primordial Ancient']
 const socketSetNames = ['Titan', 'Brave', 'Hades', 'Seraphim', 'Phantom', 'Destroy', 'Crimson', 'Eternal', 'Queen']
-const masteryAncientSetNames = ['Bloodangel', 'Darkangel', 'Holyangel', 'Soul', 'Blue Eye', 'Manticore', 'Silver Heart', 'Brilliant']
+const masteryAncientSetNames = ['Bloodangel', 'Darkangel', 'Holyangel', 'Blue Eye', 'Manticore', 'Silver Heart', 'Brilliant', 'Apocalypse', 'Primordial']
 const equipmentCatalogTopicConfigs: Record<string, { title: string, categories: string[], filter?: (item: GuideEquipmentSummary) => boolean }> = {
   armas: {
     title: 'Catalogo de armas e escudos',
@@ -1061,6 +1086,28 @@ const setQualityFromType = (type: string): EquipmentQualityKey | undefined => ({
   Ancient: 'ancient',
   Lucky: 'lucky',
 })[type] as EquipmentQualityKey | undefined
+const secondClassSetNames = [
+  'Grand Soul',
+  'Dark Soul',
+  'Venom Mist',
+  'Eclipse'
+]
+const inferRequiredClassTier = (name: string, types: string[] = []) => {
+  const normalizedName = name.toLowerCase()
+
+  if (
+    ['Bloodangel', 'Darkangel', 'Holyangel', 'Blue Eye', 'Manticore', 'Silver Heart', 'Brilliant', 'Apocalypse', 'Primordial']
+      .some((family) => normalizedName.includes(family.toLowerCase()))
+  ) {
+    return 3
+  }
+
+  if (types.includes('Socket') || secondClassSetNames.some((setName) => normalizedName.includes(setName.toLowerCase()))) {
+    return 2
+  }
+
+  return 1
+}
 const sortSetTypes = (types: string[]) =>
   types.sort((a, b) => {
     const aIndex = setTypeOrder.indexOf(a)
@@ -1113,6 +1160,7 @@ const setCards = computed<SetCard[]>(() => {
     existing.setTypes = sortSetTypes(Array.from(new Set([...existing.setTypes, ...card.setTypes])))
     existing.availableQualities = sortQualities(Array.from(new Set([...existing.availableQualities, ...card.availableQualities])))
     existing.evolutions = Array.from(new Set([...existing.evolutions, ...card.evolutions]))
+    existing.requiredClassTier = Math.min(existing.requiredClassTier, card.requiredClassTier)
     existing.pieces = Array.from(new Set([...existing.pieces, ...card.pieces]))
     existing.pieceCards = [
       ...existing.pieceCards,
@@ -1146,6 +1194,7 @@ const setCards = computed<SetCard[]>(() => {
         availableQualities,
         characterName,
         evolutions,
+        requiredClassTier: inferRequiredClassTier(name, setTypes),
         tier,
         tierLabel: tier === 1000 ? '-' : String(tier).padStart(2, '0'),
         status: asset.status,
@@ -1228,6 +1277,7 @@ const setCards = computed<SetCard[]>(() => {
       availableQualities: setTypesToQualities(setTypes),
       characterName,
       evolutions,
+      requiredClassTier: inferRequiredClassTier(name, setTypes),
       tier,
       tierLabel: tier === 1000 ? '-' : String(tier).padStart(2, '0'),
       status: 'Imagem local',
@@ -1246,9 +1296,7 @@ const setCards = computed<SetCard[]>(() => {
   for (const item of ancientSetItems) {
     const type = item.category === 'Set Lucky'
       ? 'Lucky'
-      : masteryAncientCategories.includes(item.category)
-        ? 'Ancient'
-        : 'Ancient'
+      : 'Ancient'
     const guideName = setBaseNameFromAncient(item)
     const guideItems = guideArmorItemsByName(guideName)
     const classes = sanitizeClassList(Array.from(new Set(guideItems.flatMap((piece) => piece.usableBy))).filter(Boolean))
@@ -1257,16 +1305,21 @@ const setCards = computed<SetCard[]>(() => {
     const tier = setTier(guideName)
     const pieces = Object.values(item.listStats || {}).filter(isAncientPieceText).slice(0, 8)
 
+    const setTypes = masteryAncientCategories.includes(item.category)
+      ? sortSetTypes(['Normal', 'Excellent', 'Ancient'])
+      : [type]
+
     upsertCard({
       key: masteryAncientCategories.includes(item.category)
         ? `set-${normalizeSetReferenceName(guideName)}`
         : `${type}-${item.key}`.toLowerCase(),
       name: masteryAncientCategories.includes(item.category) ? guideName : item.name,
       guideName,
-      setTypes: [type],
-      availableQualities: setTypesToQualities([type]),
+      setTypes,
+      availableQualities: setTypesToQualities(setTypes),
       characterName,
       evolutions,
+      requiredClassTier: inferRequiredClassTier(guideName, setTypes),
       tier,
       tierLabel: tier === 1000 ? '-' : String(tier).padStart(2, '0'),
       status: guideItems.some((piece) => piece.image.publicPath) ? 'Imagem local' : 'Coletar imagem',
@@ -1310,13 +1363,15 @@ const setEvolutionOptions = computed(() => {
 
   return availableCharacters.flatMap((character) => characterEvolutionMap[character] || [character])
 })
+const setDisplayClasses = (set: SetCard) =>
+  classesAvailableFromTier(set.evolutions, set.requiredClassTier)
 const setTypeOptions = computed(() =>
   sortSetTypes(Array.from(new Set(setCards.value.flatMap((set) => set.setTypes))))
 )
 const setEquipmentOptions = computed(() => {
   const availableNames = Array.from(new Set(setCards.value
     .filter((set) => setCharacterFilter.value === 'Default' || canUseClass(set.evolutions, setCharacterFilter.value))
-    .filter((set) => setEvolutionFilter.value === 'Default' || canUseClass(set.evolutions, setEvolutionFilter.value))
+    .filter((set) => setEvolutionFilter.value === 'Default' || canAccessRequiredTier(set.evolutions, setEvolutionFilter.value, set.requiredClassTier))
     .filter((set) => setTypeFilter.value === 'Default' || set.setTypes.includes(setTypeFilter.value))
     .map((set) => set.name)))
 
@@ -1327,7 +1382,7 @@ const filteredSetCards = computed(() => {
 
   return setCards.value.filter((set) => {
     const matchesCharacter = setCharacterFilter.value === 'Default' || canUseClass(set.evolutions, setCharacterFilter.value)
-    const matchesEvolution = setEvolutionFilter.value === 'Default' || canUseClass(set.evolutions, setEvolutionFilter.value)
+    const matchesEvolution = setEvolutionFilter.value === 'Default' || canAccessRequiredTier(set.evolutions, setEvolutionFilter.value, set.requiredClassTier)
     const matchesType = setTypeFilter.value === 'Default' || set.setTypes.includes(setTypeFilter.value)
     const matchesEquipment = setEquipmentFilter.value === 'Default' || set.name === setEquipmentFilter.value
     const matchesSearch = !search || set.searchText.includes(search)
@@ -1581,11 +1636,11 @@ const selectedEquipmentOptionRows = computed<EquipmentOptionRule[]>(() => {
   }
 
   if (setQuality.value === 'masteryAncient' || (setQuality.value === 'ancient' && isMasteryAncientSet.value)) {
-    return [...selectedAncientSetEffectRows.value, ...armorNormalOptionRows.value]
+    return [...armorNormalOptionRows.value, ...selectedAncientSetEffectRows.value]
   }
 
   if (setQuality.value === 'ancient') {
-    return [...selectedAncientSetEffectRows.value, ...armorNormalOptionRows.value]
+    return [...armorNormalOptionRows.value, ...selectedAncientSetEffectRows.value]
   }
 
   if (setQuality.value === 'socket') {
@@ -1788,9 +1843,13 @@ const selectedEquipmentStatRows = computed(() => {
 const selectedSetUsableByClasses = computed(() => {
   const classes = sanitizeClassList(selectedGuideSetItems.value.flatMap((item) => item?.usableBy || []))
 
-  return classes.length
+  const rawClasses = classes.length
     ? Array.from(new Set(classes))
     : selectedSet.value?.evolutions || []
+
+  return selectedSet.value
+    ? classesAvailableFromTier(rawClasses, selectedSet.value.requiredClassTier)
+    : rawClasses
 })
 
 const selectedSetUsableByText = computed(() => {
@@ -1821,42 +1880,71 @@ const guideDefenseAtLevel = (category: string, name: string, level: number, fall
   return defense ?? fallbackPieceDefense(fallbackIndex)
 }
 
-const selectedSetPiecesWithData = computed(() =>
-  setModalPieces.map((piece, index) => {
+const ancientPartCategory = (name: string) => {
+  if (/\bhelm(?:et)?\b/i.test(name)) return 'Helm'
+  if (/\barmor\b/i.test(name)) return 'Armor'
+  if (/\bpants\b/i.test(name)) return 'Pants'
+  if (/\bgloves\b/i.test(name)) return 'Gloves'
+  if (/\bboots\b/i.test(name)) return 'Boots'
+  if (/\bshield\b/i.test(name)) return 'Shield'
+  if (/\bring\b/i.test(name)) return 'Ring'
+  if (/\bpendant\b/i.test(name)) return 'Pendant'
+  if (/\b(sword|blade|axe|mace|bow|crossbow|staff|stick|scepter|spear|lance|claw|book|orb|rune|gun|star)\b/i.test(name)) return 'Weapon'
+
+  return 'Item'
+}
+const selectedAncientDetailParts = computed(() =>
+  setQuality.value === 'ancient' || setQuality.value === 'masteryAncient'
+    ? selectedAncientSetItem.value?.detailParts || selectedAncientSetItem.value?.parts || []
+    : []
+)
+const statAtBlessing = (stats: GuideEquipmentItem['levelStats'] | undefined) =>
+  stats?.find((item) => item.itemLevel === blessingLevel.value) || stats?.find((item) => item.itemLevel === 0) || stats?.[0] || null
+
+const selectedSetPiecesWithData = computed(() => {
+  const usedAncientParts = new Set<string>()
+  const mainPieces = setModalPieces.map((piece, index) => {
     const lookupName = guideSetLookupName(selectedSet.value)
     const guideItem = selectedSet.value
       ? selectedGuideSetItems.value.find((item) => item.category === piece.guideCategory && item.name === lookupName)
       : null
+    const ancientPart = selectedAncientDetailParts.value.find((candidate) =>
+      piece.aliases.some((alias) => ancientPartCategory(candidate.name) === alias)
+    )
+    if (ancientPart) {
+      usedAncientParts.add(ancientPart.name)
+    }
     const guideLevelStats = guideItem?.levelStats.find((item) => item.itemLevel === blessingLevel.value)
+    const ancientLevelStats = statAtBlessing(ancientPart?.levelStats)
     const assetPiece = selectedSet.value?.pieceCards.find((candidate) =>
       piece.aliases.some((alias) => candidate.label.toLowerCase().includes(alias.toLowerCase()) || candidate.title.toLowerCase().includes(alias.toLowerCase()))
     )
     const referencePiece = selectedAncientReference.value?.pieces?.find((candidate) =>
       piece.aliases.some((alias) => candidate.name.toLowerCase().includes(alias.toLowerCase()))
     )
-    const guideDefense = setQuality.value === 'excellent'
+    const guideDefense = ancientLevelStats?.defense ?? (setQuality.value === 'excellent'
       ? guideLevelStats?.excellentDefense ?? guideLevelStats?.defense
-      : guideLevelStats?.defense
-    const guideStrength = setQuality.value === 'excellent'
+      : guideLevelStats?.defense)
+    const guideStrength = ancientLevelStats?.requiredStrength ?? (setQuality.value === 'excellent'
       ? guideLevelStats?.excellentRequiredStrength ?? guideLevelStats?.requiredStrength
-      : guideLevelStats?.requiredStrength
-    const guideAgility = setQuality.value === 'excellent'
+      : guideLevelStats?.requiredStrength)
+    const guideAgility = ancientLevelStats?.requiredAgility ?? (setQuality.value === 'excellent'
       ? guideLevelStats?.excellentRequiredAgility ?? guideLevelStats?.requiredAgility
-      : guideLevelStats?.requiredAgility
+      : guideLevelStats?.requiredAgility)
     const defense = guideDefense ?? referencePiece?.defense ?? fallbackPieceDefense(index + 1)
-    const baseTitle = guideItem?.title || assetPiece?.title || referencePiece?.name || `${selectedSet.value?.name || 'Set'} ${piece.label}`
+    const baseTitle = ancientPart?.name || guideItem?.title || assetPiece?.title || referencePiece?.name || `${selectedSet.value?.name || 'Set'} ${piece.label}`
     const displayTitle = setQuality.value === 'excellent' && !/^excellent\s/i.test(baseTitle)
       ? `Excellent ${baseTitle}`
       : baseTitle
     const requiredStrength = guideStrength ?? referencePiece?.requirements?.strength ?? fallbackRequirement(index + 1, 14)
     const requiredAgility = guideAgility ?? referencePiece?.requirements?.agility ?? fallbackRequirement(index + 1, 8)
-    const durability = Math.max(30, 60 + (selectedSet.value?.tier === 1000 ? 1 : selectedSet.value?.tier || 1))
+    const durability = ancientLevelStats?.durability ?? Math.max(30, 60 + (selectedSet.value?.tier === 1000 ? 1 : selectedSet.value?.tier || 1))
 
     return {
       ...piece,
       title: baseTitle,
       displayTitle,
-      image: assetPiece?.image || guideItem?.image.publicPath || guideItem?.image.sourceUrl,
+      image: ancientPart?.image.publicPath || ancientPart?.image.sourceUrl || assetPiece?.image || guideItem?.image.publicPath || guideItem?.image.sourceUrl,
       defense,
       defenseLabel: piece.key === 'armor' ? 'Armor' : 'Defense',
       durability,
@@ -1864,11 +1952,37 @@ const selectedSetPiecesWithData = computed(() =>
       requiredAgility
     }
   })
-)
+  const extraPieces = selectedAncientDetailParts.value
+    .filter((part) => !usedAncientParts.has(part.name))
+    .map((part, index) => {
+      const stat = statAtBlessing(part.levelStats)
+      const category = ancientPartCategory(part.name)
+
+      return {
+        key: `ancient-extra-${slugify(part.name)}-${index}`,
+        label: category,
+        guideCategory: category,
+        aliases: [category],
+        title: part.name,
+        displayTitle: part.name,
+        image: part.image.publicPath || part.image.sourceUrl,
+        defense: stat?.damageMax ?? stat?.defense ?? '-',
+        defenseLabel: stat?.damageMax ? 'Damage max' : category === 'Shield' ? 'Defense' : 'Info',
+        durability: stat?.durability ?? '-',
+        requiredStrength: stat?.requiredStrength ?? '-',
+        requiredAgility: stat?.requiredAgility ?? '-'
+      }
+    })
+
+  return [...mainPieces, ...extraPieces]
+})
 
 const selectedSetDefense = computed(() => {
   const lookupName = guideSetLookupName(selectedSet.value)
-  const total = selectedSetPiecesWithData.value.reduce((sum, piece) => sum + piece.defense, 0)
+  const defensivePieces = selectedSetPiecesWithData.value.filter((piece) =>
+    ['helm', 'armor', 'pants', 'gloves', 'boots'].includes(piece.key) || ['Helm', 'Armor', 'Pants', 'Gloves', 'Boots', 'Shield'].includes(piece.label)
+  )
+  const total = defensivePieces.reduce((sum, piece) => sum + (typeof piece.defense === 'number' ? piece.defense : 0), 0)
   const base = selectedSet.value
     ? setModalPieces.reduce((sum, piece, index) => sum + guideDefenseAtLevel(piece.guideCategory, lookupName, 0, index + 1), 0)
     : total
@@ -1886,6 +2000,7 @@ const openSetModal = async (set: SetCard) => {
   selectedGuideLoadId.value = loadId
   selectedSet.value = set
   selectedGuideSetItems.value = []
+  selectedAncientSetItem.value = null
   const filteredQuality = setTypeFilter.value === 'Default'
     ? undefined
     : setQualityFromType(setTypeFilter.value)
@@ -1893,10 +2008,15 @@ const openSetModal = async (set: SetCard) => {
     ? filteredQuality
     : selectedAvailableQualities.value[0] || 'normal'
   blessingLevel.value = 0
-  const items = await loadGuideSetItems(set.guideName || set.name)
+  const ancientSummary = selectedAncientCatalogItem.value
+  const [items, ancientItem] = await Promise.all([
+    loadGuideSetItems(set.guideName || set.name),
+    ancientSummary ? findMuEquipmentItem(ancientSummary.category, ancientSummary.name) : Promise.resolve(null)
+  ])
 
   if (selectedGuideLoadId.value === loadId && selectedSet.value?.key === set.key) {
     selectedGuideSetItems.value = items
+    selectedAncientSetItem.value = ancientItem
   }
 }
 
@@ -1904,6 +2024,7 @@ const closeSetModal = () => {
   selectedGuideLoadId.value += 1
   selectedSet.value = null
   selectedGuideSetItems.value = []
+  selectedAncientSetItem.value = null
 }
 
 const openEquipmentItemModal = async (item: GuideEquipmentSummary) => {
