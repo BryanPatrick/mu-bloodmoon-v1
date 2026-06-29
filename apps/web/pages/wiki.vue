@@ -656,13 +656,10 @@
 import { ChevronDown, X } from 'lucide-vue-next'
 import { devReferenceAssets, type DevReferenceAsset } from '~/data/devReferenceAssets'
 import {
-  ancientSetOptions,
   baseLuckAndAdditionalOptions,
   equipmentQualityLabels,
   excellentDefenseOptions,
-  harmonyAndGuardianOptions,
   luckySetOptions,
-  masteryAncientOptions,
   socketSeedSphereOptions,
   type EquipmentOptionRule,
   type EquipmentQualityKey
@@ -1021,6 +1018,30 @@ const normalizeSetReferenceName = (name: string) =>
     .trim()
     .toLowerCase()
 
+const ancientSetEffectPattern = /\b(?:\d+\s+set option|set option|increase|double damage|excellent damage|ignore|wizardry|damage|defense|energy|agility|mana|life|hp|skill)\b/i
+const ancientPiecePattern = /\b(?:armor|pants|helm|helmet|boots|gloves|shield|pendant|ring|sword|blade|axe|mace|bow|crossbow|staff|stick|scepter|spear|lance|claw|book|orb|rune|gun)\b/i
+const isAncientSetEffectText = (value: string) => ancientSetEffectPattern.test(value)
+const isAncientPieceText = (value: string) => {
+  const normalized = value.trim()
+
+  return Boolean(normalized) &&
+    !/^opci/i.test(normalized) &&
+    !isAncientSetEffectText(normalized) &&
+    ancientPiecePattern.test(normalized)
+}
+const splitAncientSetEffectText = (value: string) => {
+  const normalized = value.replace(/\s+/g, ' ').trim()
+  const matches = [...normalized.matchAll(/(?:^|\s)(\d+\s+Set option\s*:\s*)(.*?)(?=\s+\d+\s+Set option\s*:|$)/gi)]
+
+  if (!matches.length && isAncientSetEffectText(normalized)) {
+    return [normalized]
+  }
+
+  return matches
+    .map((match) => `${match[1].trim()} ${match[2].trim()}`.replace(/\s+:/, ':'))
+    .filter(Boolean)
+}
+
 const isSetReferenceAsset = (asset: DevReferenceAsset) =>
   asset.group === 'Equipamentos' && /^Sets\s*-/i.test(asset.category)
 
@@ -1234,7 +1255,7 @@ const setCards = computed<SetCard[]>(() => {
     const characterName = primaryCharacterForClasses(classes)
     const evolutions = classes.length ? classes : characterEvolutionMap[characterName] || [characterName]
     const tier = setTier(guideName)
-    const pieces = Object.values(item.listStats || {}).filter((value) => value && !/^opci/i.test(value)).slice(0, 6)
+    const pieces = Object.values(item.listStats || {}).filter(isAncientPieceText).slice(0, 8)
 
     upsertCard({
       key: masteryAncientCategories.includes(item.category)
@@ -1437,6 +1458,56 @@ const selectedAncientReference = computed(() => {
   }) || null
 })
 
+const selectedAncientCatalogItem = computed(() => {
+  if (!selectedSet.value) {
+    return null
+  }
+
+  const ancientCategories = [...ancientEquipmentCategories, ...masteryAncientCategories]
+  const selectedKey = selectedSet.value.key.toLowerCase()
+  const selectedName = normalizeSetReferenceName(selectedSet.value.name)
+  const selectedGuideName = normalizeSetReferenceName(selectedSet.value.guideName || selectedSet.value.name)
+
+  return muEquipmentIndex.find((item) => ancientCategories.includes(item.category) && selectedKey.endsWith(item.key.toLowerCase())) ||
+    muEquipmentIndex.find((item) =>
+      ancientCategories.includes(item.category) &&
+      (
+        normalizeSetReferenceName(item.name) === selectedName ||
+        normalizeSetReferenceName(setBaseNameFromAncient(item)) === selectedGuideName
+      )
+    ) ||
+    null
+})
+
+const selectedAncientSetEffectRows = computed<EquipmentOptionRule[]>(() => {
+  const rows: EquipmentOptionRule[] = []
+  const seen = new Set<string>()
+  const addRow = (label: string) => {
+    const normalized = label.replace(/\s+/g, ' ').trim()
+    if (!normalized || seen.has(normalized.toLowerCase()) || /^opci/i.test(normalized)) {
+      return
+    }
+
+    seen.add(normalized.toLowerCase())
+    rows.push({
+      key: `ancient-set-effect-${rows.length}`,
+      label: normalized,
+      scope: 'ancient',
+      appliesTo: 'armor'
+    })
+  }
+
+  selectedAncientReference.value?.setOptions?.forEach((option) => {
+    addRow(`${option.pieces} Set option: ${option.option}`)
+  })
+
+  Object.values(selectedAncientCatalogItem.value?.listStats || {})
+    .flatMap(splitAncientSetEffectText)
+    .forEach(addRow)
+
+  return rows
+})
+
 const luckySetNames = ['Lucky']
 
 const selectedSetName = computed(() => selectedSet.value?.name || '')
@@ -1496,51 +1567,36 @@ const wingTier = (name: string) => {
   return 'Validar tier'
 }
 
-const selectedIsLevel380 = computed(() => {
-  if (isSocketSet.value || setQuality.value === 'socket') {
-    return false
-  }
-
-  const loadedItems = selectedGuideSetItems.value
-  const summaryItems = guideSetSummaryItems(selectedSet.value)
-  const allItems = loadedItems.length ? loadedItems : summaryItems
-
-  return allItems.some((item) => itemRequiredLevel(item) === 380)
-})
+const optionAppliesToKind = (option: EquipmentOptionRule, kind: 'armor' | 'weapon' | 'shield' | 'socket') =>
+  option.appliesTo === 'all' ||
+  option.appliesTo === kind ||
+  (kind === 'shield' && option.appliesTo === 'armor')
+const armorNormalOptionRows = computed(() =>
+  baseLuckAndAdditionalOptions.filter((option) => optionAppliesToKind(option, 'armor'))
+)
 
 const selectedEquipmentOptionRows = computed<EquipmentOptionRule[]>(() => {
-  const miscOptions = selectedIsLevel380.value
-    ? harmonyAndGuardianOptions
-    : harmonyAndGuardianOptions.filter((option) => option.scope !== 'guardian')
-
   if (setQuality.value === 'lucky') {
     return luckySetOptions
   }
 
   if (setQuality.value === 'masteryAncient' || (setQuality.value === 'ancient' && isMasteryAncientSet.value)) {
-    return [...masteryAncientOptions, ...miscOptions]
+    return [...selectedAncientSetEffectRows.value, ...armorNormalOptionRows.value]
   }
 
   if (setQuality.value === 'ancient') {
-    const setEffects = selectedAncientReference.value?.setOptions?.map((option, index) => ({
-      key: `ancient-set-effect-${index}`,
-      label: `${option.pieces} pecas: ${option.option}`,
-      scope: 'ancient' as const,
-      appliesTo: 'armor' as const
-    })) || ancientSetOptions
-
-    return [...setEffects, ...baseLuckAndAdditionalOptions, ...miscOptions]
+    return [...selectedAncientSetEffectRows.value, ...armorNormalOptionRows.value]
   }
 
   if (setQuality.value === 'socket') {
-    return [...baseLuckAndAdditionalOptions, ...socketSeedSphereOptions, ...miscOptions]
+    return [...armorNormalOptionRows.value, ...socketSeedSphereOptions]
   }
 
   if (setQuality.value === 'excellent') {
-    return [...baseLuckAndAdditionalOptions, ...excellentDefenseOptions, ...miscOptions]
+    return [...armorNormalOptionRows.value, ...excellentDefenseOptions]
   }
 
-  return [...baseLuckAndAdditionalOptions, ...miscOptions]
+  return armorNormalOptionRows.value
 })
 
 const selectedQualityTitleClass = computed(() => ({
@@ -1685,20 +1741,13 @@ const selectedCatalogEquipmentOptionRows = computed(() => {
   }
 
   const appliesToCurrentItem = (option: EquipmentOptionRule) =>
-    option.appliesTo === 'all' ||
-    option.appliesTo === selectedEquipmentKind.value ||
-    (selectedEquipmentKind.value === 'shield' && option.appliesTo === 'armor')
+    optionAppliesToKind(option, selectedEquipmentKind.value === 'wing' ? 'armor' : selectedEquipmentKind.value)
   const baseOptions = baseLuckAndAdditionalOptions.filter(appliesToCurrentItem)
-  const isSocketFamily = armorPieceCategories.includes(item.category) &&
-    socketSetNames.some((socketName) => item.name.toLowerCase().includes(socketName.toLowerCase()))
   const excellentOptions = selectedEquipmentQuality.value === 'excellent'
     ? [...excellentDefenseOptions, ...excellentWeaponOptions].filter(appliesToCurrentItem)
     : []
-  const miscOptions = itemRequiredLevel(item) === 380 && !isSocketFamily
-    ? harmonyAndGuardianOptions
-    : harmonyAndGuardianOptions.filter((option) => option.scope !== 'guardian')
 
-  return [...baseOptions, ...excellentOptions, ...miscOptions.filter(appliesToCurrentItem)]
+  return [...baseOptions, ...excellentOptions]
 })
 const selectedEquipmentStatRows = computed(() => {
   const item = selectedEquipmentDisplayItem.value
