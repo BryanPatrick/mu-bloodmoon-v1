@@ -1,0 +1,80 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    volumes:
+      - bloodmoon_postgres_data:/var/lib/postgresql/data
+      - ./backups:/backups
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - bloodmoon_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    image: node:22-alpine
+    restart: unless-stopped
+    working_dir: /app
+    env_file:
+      - .env.production
+    volumes:
+      - ../:/app
+      - bloodmoon_node_modules:/app/node_modules
+    command: sh -c "npm ci && npx prisma migrate deploy --schema apps/api/prisma/schema.prisma && npm run api:build && npm --workspace @blood-moon/api run start"
+    ports:
+      - "127.0.0.1:3333:3333"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  web:
+    image: node:22-alpine
+    restart: unless-stopped
+    working_dir: /app
+    env_file:
+      - .env.production
+    environment:
+      NUXT_PUBLIC_API_BASE: ${NUXT_PUBLIC_API_BASE}
+    volumes:
+      - ../:/app
+      - bloodmoon_node_modules:/app/node_modules
+    command: sh -c "npm ci && npm run web:build && node apps/web/.output/server/index.mjs"
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      - api
+
+  game-bridge-worker:
+    image: node:22-alpine
+    restart: unless-stopped
+    working_dir: /app
+    env_file:
+      - .env.production
+    volumes:
+      - ../:/app
+      - bloodmoon_node_modules:/app/node_modules
+    command: sh -c "npm ci && while true; do npm --workspace @blood-moon/api run worker:game-bridge; sleep 10; done"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  bloodmoon_postgres_data:
+  bloodmoon_redis_data:
+  bloodmoon_node_modules:

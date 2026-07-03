@@ -251,6 +251,16 @@ type EditableReferenceAsset = DevReferenceAsset & {
   source: string
   notes: string
   library: DevReferenceLibrary
+  apiLocalPath?: string
+}
+
+type ApiReferenceAsset = {
+  id: string
+  localPath: string
+  publicPath?: string | null
+  sourceUrl?: string | null
+  status: string
+  metadata?: Record<string, unknown> | null
 }
 
 type ReferenceForm = {
@@ -269,6 +279,7 @@ useHead({
 })
 
 const { hasPermission, loadSession, recordAudit } = useAuth()
+const adminContentApi = useAdminContentApi()
 const route = useRoute()
 const router = useRouter()
 const activeGroup = ref<DevReferenceGroup>('Personagens')
@@ -291,9 +302,9 @@ const form = reactive<ReferenceForm>({
   notes: ''
 })
 
-onMounted(() => {
+onMounted(async () => {
   loadSession()
-  loadStoredAssets()
+  await loadStoredAssets()
 })
 
 const libraryOptions: DevReferenceLibrary[] = ['Referencias de desenvolvimento', 'Gerados e otimizados']
@@ -385,7 +396,58 @@ const visibleSelectedAssets = computed(() => selectedSection.value?.assets.slice
 const remainingSelectedAssets = computed(() => Math.max((selectedSection.value?.assets.length || 0) - visibleSelectedAssets.value.length, 0))
 const nextAssetsAmount = computed(() => Math.min(40, remainingSelectedAssets.value))
 const assetKey = (asset: DevReferenceAsset) => asset.id || `${asset.group}-${asset.category}-${asset.title}`
-const isCustomAsset = (asset: DevReferenceAsset) => Boolean(asset.id)
+const isCustomAsset = (asset: DevReferenceAsset) => asset.source === 'Painel admin'
+
+const slugifyReference = (value: string) =>
+  value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80) || 'referencia'
+
+const stringOr = (value: unknown, fallback = '') => typeof value === 'string' ? value : fallback
+
+const mapApiAsset = (asset: ApiReferenceAsset): EditableReferenceAsset => {
+  const metadata = asset.metadata || {}
+  const group = stringOr(metadata.group, 'Fontes') as DevReferenceGroup
+  const library = stringOr(metadata.library, 'Referencias de desenvolvimento') as DevReferenceLibrary
+
+  return {
+    id: asset.id,
+    originalKey: stringOr(metadata.originalKey) || undefined,
+    apiLocalPath: asset.localPath,
+    title: stringOr(metadata.title, asset.localPath),
+    group,
+    category: stringOr(metadata.category, 'Painel admin'),
+    image: asset.publicPath || undefined,
+    status: stringOr(metadata.visualStatus, 'Imagem local') as DevReferenceStatus,
+    compatibility: stringOr(metadata.compatibility, 'referencia-visual') as DevReferenceAsset['compatibility'],
+    library,
+    source: 'Painel admin',
+    sourceUrl: asset.sourceUrl || undefined,
+    notes: stringOr(metadata.notes, 'Referencia adicionada pelo painel administrativo.')
+  }
+}
+
+const assetPayload = (asset: EditableReferenceAsset) => ({
+  sourceUrl: asset.sourceUrl || null,
+  localPath: asset.apiLocalPath || `admin://dev-reference/${asset.originalKey ? `override/${slugifyReference(asset.originalKey)}` : `${Date.now()}-${slugifyReference(asset.title)}`}`,
+  publicPath: asset.image || null,
+  kind: 'IMAGE',
+  status: 'RAW',
+  metadata: {
+    title: asset.title,
+    group: asset.group,
+    category: asset.category,
+    visualStatus: asset.status,
+    compatibility: asset.compatibility,
+    library: asset.library,
+    notes: asset.notes,
+    originalKey: asset.originalKey || null
+  }
+})
 
 const persistStoredAssets = () => {
   if (import.meta.client) {
@@ -393,9 +455,18 @@ const persistStoredAssets = () => {
   }
 }
 
-const loadStoredAssets = () => {
+const loadStoredAssets = async () => {
   if (!import.meta.client) {
     return
+  }
+
+  try {
+    const response = await adminContentApi.assets({ pageSize: 500, search: 'admin://dev-reference' }) as { data: ApiReferenceAsset[] }
+    storedAssets.value = response.data.map(mapApiAsset)
+    localStorage.setItem('blood-moon-dev-reference-assets', JSON.stringify(storedAssets.value))
+    return
+  } catch {
+    // Mantem a tela utilizavel quando a API estiver offline durante desenvolvimento local.
   }
 
   try {
@@ -456,10 +527,12 @@ const handleImageUpload = (event: Event) => {
   reader.readAsDataURL(file)
 }
 
-const saveAsset = () => {
+const saveAsset = async () => {
+  const existingAsset = storedAssets.value.find((item) => item.id === editingKey.value)
   const asset: EditableReferenceAsset = {
-    id: editingKey.value.startsWith('custom-') || editingKey.value.startsWith('override-') ? editingKey.value : `custom-${Date.now()}`,
-    originalKey: editingKey.value && !editingKey.value.startsWith('custom-') && !editingKey.value.startsWith('override-') ? editingKey.value : undefined,
+    id: existingAsset?.id || `custom-${Date.now()}`,
+    originalKey: existingAsset?.originalKey || (editingKey.value && !existingAsset && !isCustomAsset({ id: editingKey.value, title: '', group: form.group, category: '', status: form.status, compatibility: form.compatibility, source: '' }) ? editingKey.value : undefined),
+    apiLocalPath: existingAsset?.apiLocalPath,
     title: form.title.trim(),
     group: form.group,
     category: form.category.trim(),
@@ -472,37 +545,53 @@ const saveAsset = () => {
   }
 
   if (asset.originalKey) {
-    asset.id = `override-${asset.originalKey}`
+    asset.apiLocalPath = asset.apiLocalPath || `admin://dev-reference/override/${slugifyReference(asset.originalKey)}`
   }
 
   const existingIndex = storedAssets.value.findIndex((item) => item.id === asset.id || (asset.originalKey && item.originalKey === asset.originalKey))
   const action = existingIndex >= 0 ? 'editada' : 'criada'
-  if (existingIndex >= 0) {
-    storedAssets.value.splice(existingIndex, 1, asset)
-  } else {
-    storedAssets.value.push(asset)
+
+  try {
+    const saved = existingIndex >= 0
+      ? await adminContentApi.updateAsset(storedAssets.value[existingIndex].id, assetPayload(asset)) as ApiReferenceAsset
+      : await adminContentApi.createAsset(assetPayload(asset)) as ApiReferenceAsset
+    const mappedAsset = mapApiAsset(saved)
+    if (existingIndex >= 0) {
+      storedAssets.value.splice(existingIndex, 1, mappedAsset)
+    } else {
+      storedAssets.value.push(mappedAsset)
+    }
+    activeGroup.value = mappedAsset.group
+    activeLibrary.value = mappedAsset.library
+  } catch {
+    if (existingIndex >= 0) {
+      storedAssets.value.splice(existingIndex, 1, asset)
+    } else {
+      storedAssets.value.push(asset)
+    }
+    activeGroup.value = asset.group
+    activeLibrary.value = asset.library
+    recordAudit({
+      type: existingIndex >= 0 ? 'references.asset.updated' : 'references.asset.created',
+      message: `Referencia ${action}: ${asset.title}.`,
+      meta: {
+        group: asset.group,
+        category: asset.category,
+        library: asset.library,
+        persistence: 'local-fallback'
+      }
+    })
   }
 
-  activeGroup.value = asset.group
-  activeLibrary.value = asset.library
   activeStatus.value = 'Todos'
   persistStoredAssets()
-  recordAudit({
-    type: existingIndex >= 0 ? 'references.asset.updated' : 'references.asset.created',
-    message: `Referencia ${action}: ${asset.title}.`,
-    meta: {
-      group: asset.group,
-      category: asset.category,
-      library: asset.library
-    }
-  })
   closeEditor()
   nextTick(() => {
     activeSectionKey.value = `${asset.group}-${sectionTitle(asset)}`
   })
 }
 
-const deleteAsset = (asset: DevReferenceAsset) => {
+const deleteAsset = async (asset: DevReferenceAsset) => {
   if (!asset.id) {
     return
   }
@@ -512,16 +601,25 @@ const deleteAsset = (asset: DevReferenceAsset) => {
     return
   }
 
+  const target = storedAssets.value.find((item) => item.id === asset.id)
+  if (target) {
+    try {
+      await adminContentApi.archiveAsset(target.id)
+    } catch {
+      recordAudit({
+        type: 'references.asset.deleted',
+        message: `Referencia excluida localmente: ${asset.title}.`,
+        meta: {
+          group: asset.group,
+          category: asset.category,
+          persistence: 'local-fallback'
+        }
+      })
+    }
+  }
+
   storedAssets.value = storedAssets.value.filter((item) => item.id !== asset.id)
   persistStoredAssets()
-  recordAudit({
-    type: 'references.asset.deleted',
-    message: `Referencia excluida: ${asset.title}.`,
-    meta: {
-      group: asset.group,
-      category: asset.category
-    }
-  })
   if (!selectedSection.value?.assets.length) {
     activeSectionKey.value = ''
   }

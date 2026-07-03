@@ -18,16 +18,20 @@
             type="search"
           >
           <select
-            v-model="activeType"
+            v-model="activeAction"
             class="h-11 rounded-md border border-white/10 bg-white/10 px-3 text-sm font-bold text-white outline-none focus:border-blood-400/70"
           >
             <option class="bg-zinc-950 text-white" value="Todos">Todos</option>
-            <option v-for="type in eventTypes" :key="type" class="bg-zinc-950 text-white" :value="type">{{ type }}</option>
+            <option v-for="action in eventActions" :key="action" class="bg-zinc-950 text-white" :value="action">{{ action }}</option>
           </select>
         </div>
       </div>
 
-      <section class="grid gap-3 sm:grid-cols-3">
+      <p v-if="loadError" class="rounded-md border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-xs font-bold text-amber-100">
+        API de auditoria indisponivel no momento. Exibindo fallback local temporario para desenvolvimento.
+      </p>
+
+      <section class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <article v-for="card in summaryCards" :key="card.label" class="bm-panel rounded-md p-4">
           <p class="text-[11px] font-black uppercase tracking-[0.24em] text-white/45">{{ card.label }}</p>
           <p class="mt-3 font-display text-3xl font-black text-white">{{ card.value }}</p>
@@ -53,10 +57,10 @@
           </div>
 
           <div>
-            <p class="text-xs font-black uppercase tracking-[0.16em] text-ember">{{ event.type }}</p>
+            <p class="text-xs font-black uppercase tracking-[0.16em] text-ember">{{ event.action }}</p>
             <p class="mt-1 text-sm font-semibold leading-6 text-white/75">{{ event.message }}</p>
-            <div v-if="event.meta" class="mt-2 flex flex-wrap gap-2">
-              <span v-for="(value, key) in event.meta" :key="key" class="rounded-sm bg-black/25 px-2 py-1 text-[11px] font-bold text-white/58">
+            <div v-if="event.metadata" class="mt-2 flex flex-wrap gap-2">
+              <span v-for="(value, key) in event.metadata" :key="key" class="rounded-sm bg-black/25 px-2 py-1 text-[11px] font-bold text-white/58">
                 {{ key }}: {{ value }}
               </span>
             </div>
@@ -64,12 +68,12 @@
 
           <div>
             <p class="text-xs font-black uppercase tracking-[0.16em] text-white/45 lg:hidden">Usuario</p>
-            <p class="text-sm font-bold text-white">{{ event.user }}</p>
+            <p class="text-sm font-bold text-white">{{ event.actorUsername }}</p>
           </div>
 
           <div>
             <p class="text-xs font-black uppercase tracking-[0.16em] text-white/45 lg:hidden">Perfil</p>
-            <p class="text-sm font-bold text-white/70">{{ event.role }}</p>
+            <p class="text-sm font-bold text-white/70">{{ event.severity }}</p>
           </div>
         </article>
       </section>
@@ -90,28 +94,45 @@
 <script setup lang="ts">
 import { permissions } from '~/data/security'
 import type { AuditEvent } from '~/composables/useAuth'
+import type { AdminAuditApiEvent } from '~/composables/useAdminAuditApi'
 
 const { getAuditLogs, hasPermission, loadSession } = useAuth()
+const { events: fetchAuditEvents } = useAdminAuditApi()
 
 useSeoMeta({ title: 'Auditoria' })
 
-const logs = ref<AuditEvent[]>([])
-const query = ref('')
-const activeType = ref('Todos')
+type AuditRow = {
+  id: string
+  createdAt: string
+  action: string
+  message: string
+  actorUsername: string
+  severity: string
+  metadata?: Record<string, unknown>
+}
 
-onMounted(() => {
+const logs = ref<AuditRow[]>([])
+const totalEvents = ref(0)
+const totalWarnings = ref(0)
+const totalErrors = ref(0)
+const totalAuthFailures = ref(0)
+const loadError = ref('')
+const query = ref('')
+const activeAction = ref('Todos')
+
+onMounted(async () => {
   loadSession()
-  logs.value = getAuditLogs()
+  await loadAuditEvents()
 })
 
-const eventTypes = computed(() => Array.from(new Set(logs.value.map((event) => event.type))).sort())
+const eventActions = computed(() => Array.from(new Set(logs.value.map((event) => event.action))).sort())
 
 const filteredLogs = computed(() => {
   const normalizedQuery = query.value.trim().toLowerCase()
 
   return logs.value.filter((event) => {
-    const matchesType = activeType.value === 'Todos' || event.type === activeType.value
-    const matchesQuery = !normalizedQuery || [event.type, event.message, event.user, event.role]
+    const matchesType = activeAction.value === 'Todos' || event.action === activeAction.value
+    const matchesQuery = !normalizedQuery || [event.action, event.message, event.actorUsername, event.severity]
       .join(' ')
       .toLowerCase()
       .includes(normalizedQuery)
@@ -121,10 +142,61 @@ const filteredLogs = computed(() => {
 })
 
 const summaryCards = computed(() => [
-  { label: 'Eventos', value: logs.value.length.toString() },
-  { label: 'Falhas de login', value: logs.value.filter((event) => event.type === 'auth.login.failed').length.toString() },
+  { label: 'Eventos', value: totalEvents.value.toString() },
+  { label: 'Alertas/erros', value: (totalWarnings.value + totalErrors.value).toString() },
+  { label: 'Falhas de login', value: totalAuthFailures.value.toString() },
   { label: 'Eventos filtrados', value: filteredLogs.value.length.toString() }
 ])
+
+const normalizeMetadata = (metadata: unknown) =>
+  metadata && typeof metadata === 'object' && !Array.isArray(metadata)
+    ? metadata as Record<string, unknown>
+    : undefined
+
+const eventMessage = (event: AdminAuditApiEvent) => {
+  const target = event.targetId ? ` em ${event.targetType}:${event.targetId}` : ` em ${event.targetType}`
+  return `${event.action}${target}`
+}
+
+const mapApiEvent = (event: AdminAuditApiEvent): AuditRow => ({
+  id: event.id,
+  createdAt: event.createdAt,
+  action: event.action,
+  message: eventMessage(event),
+  actorUsername: event.actorUsername || 'system',
+  severity: event.severity,
+  metadata: normalizeMetadata(event.metadata)
+})
+
+const mapLocalEvent = (event: AuditEvent): AuditRow => ({
+  id: event.id,
+  createdAt: event.createdAt,
+  action: event.type,
+  message: event.message,
+  actorUsername: event.user,
+  severity: event.role,
+  metadata: event.meta
+})
+
+const loadAuditEvents = async () => {
+  try {
+    const response = await fetchAuditEvents({ pageSize: 100 })
+    logs.value = response.items.map(mapApiEvent)
+    totalEvents.value = response.summary.total
+    totalWarnings.value = response.summary.warnings
+    totalErrors.value = response.summary.errors
+    totalAuthFailures.value = response.summary.authFailures
+    loadError.value = ''
+  } catch {
+    const localLogs = getAuditLogs().map(mapLocalEvent)
+    logs.value = localLogs
+    totalEvents.value = localLogs.length
+    totalWarnings.value = 0
+    totalErrors.value = 0
+    totalAuthFailures.value = localLogs.filter((event) => event.action === 'auth.login.failed').length
+    loadError.value = 'api-offline'
+  }
+}
 
 const formatDate = (value: string) =>
   new Intl.DateTimeFormat('pt-BR', {

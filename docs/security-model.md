@@ -11,7 +11,7 @@ Isso inclui:
 - paginas;
 - componentes;
 - composables;
-- dados mockados;
+- dados locais publicos ou legados;
 - regras visuais;
 - qualquer segredo colocado no frontend por engano.
 

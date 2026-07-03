@@ -106,7 +106,7 @@ import { permissions } from '~/data/security'
 import type { CurrencyCode, RechargePack } from '~/data/management'
 
 const { hasPermission, loadSession, recordAudit } = useAuth()
-const { deleteRechargePack, loadManagement, state, upsertRechargePack } = useManagement()
+const commerceApi = useCommerceApi()
 
 useSeoMeta({ title: 'Recargas Admin' })
 
@@ -114,6 +114,8 @@ const activeCurrency = ref('Todas')
 const isEditorOpen = ref(false)
 const editingId = ref('')
 const message = ref('')
+const packs = ref<RechargePack[]>([])
+const loadError = ref('')
 
 const form = reactive({
   currency: 'WCoin' as CurrencyCode,
@@ -123,21 +125,33 @@ const form = reactive({
   highlight: false
 })
 
-onMounted(() => {
+onMounted(async () => {
   loadSession()
-  loadManagement()
+  await loadPacks()
 })
 
 const filteredPacks = computed(() =>
-  state.value.rechargePacks.filter((pack) => activeCurrency.value === 'Todas' || pack.currency === activeCurrency.value)
+  packs.value.filter((pack) => activeCurrency.value === 'Todas' || pack.currency === activeCurrency.value)
 )
 
 const summaryCards = computed(() => [
-  { label: 'Pacotes', value: state.value.rechargePacks.length.toString() },
-  { label: 'WCoin', value: state.value.rechargePacks.filter((pack) => pack.currency === 'WCoin').length.toString() },
-  { label: 'Goblin Point', value: state.value.rechargePacks.filter((pack) => pack.currency === 'Goblin Point').length.toString() },
-  { label: 'Hunt Point', value: state.value.rechargePacks.filter((pack) => pack.currency === 'Hunt Point').length.toString() }
+  { label: 'Pacotes', value: packs.value.length.toString() },
+  { label: 'WCoin', value: packs.value.filter((pack) => pack.currency === 'WCoin').length.toString() },
+  { label: 'Goblin Point', value: packs.value.filter((pack) => pack.currency === 'Goblin Point').length.toString() },
+  { label: 'Hunt Point', value: packs.value.filter((pack) => pack.currency === 'Hunt Point').length.toString() }
 ])
+
+const loadPacks = async () => {
+  try {
+    const response = await commerceApi.listRechargePackages(true)
+    packs.value = response.data
+    loadError.value = ''
+  } catch {
+    packs.value = []
+    loadError.value = 'api-offline'
+    message.value = 'API indisponivel. Pacotes locais nao serao usados como fallback.'
+  }
+}
 
 const resetForm = () => {
   form.currency = 'WCoin'
@@ -168,7 +182,7 @@ const closeEditor = () => {
   editingId.value = ''
 }
 
-const savePack = () => {
+const savePack = async () => {
   const pack: RechargePack = {
     id: editingId.value || `${form.currency.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${form.amount}`,
     currency: form.currency,
@@ -178,7 +192,15 @@ const savePack = () => {
     highlight: form.highlight
   }
 
-  upsertRechargePack(pack)
+  const savedPack = editingId.value
+    ? await commerceApi.updateRechargePackage(editingId.value, pack)
+    : await commerceApi.createRechargePackage(pack)
+  const existingIndex = packs.value.findIndex((item) => item.id === savedPack.id)
+  if (existingIndex >= 0) {
+    packs.value.splice(existingIndex, 1, savedPack)
+  } else {
+    packs.value.unshift(savedPack)
+  }
   recordAudit({
     type: editingId.value ? 'admin.recharge.pack.updated' : 'admin.recharge.pack.created',
     message: `Pacote de ${pack.amount} ${pack.currency} ${editingId.value ? 'editado' : 'criado'}.`,
@@ -188,16 +210,18 @@ const savePack = () => {
       bonus: pack.bonus
     }
   })
-  message.value = `Pacote de ${pack.amount.toLocaleString('pt-BR')} ${pack.currency} salvo.`
+  message.value = `Pacote de ${savedPack.amount.toLocaleString('pt-BR')} ${savedPack.currency} salvo no banco.`
   closeEditor()
 }
 
-const removePack = (packId: string) => {
-  const pack = deleteRechargePack(packId)
+const removePack = async (packId: string) => {
+  const pack = packs.value.find((item) => item.id === packId)
   if (!pack) {
     return
   }
 
+  await commerceApi.deleteRechargePackage(packId)
+  packs.value = packs.value.filter((item) => item.id !== packId)
   recordAudit({
     type: 'admin.recharge.pack.deleted',
     message: `Pacote de ${pack.amount} ${pack.currency} excluido.`,

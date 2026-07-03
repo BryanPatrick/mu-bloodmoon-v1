@@ -35,6 +35,10 @@
         </article>
       </section>
 
+      <p v-if="isLoadingApi || apiError" class="rounded-md border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-bold text-white/62">
+        {{ isLoadingApi ? 'Carregando contas do PostgreSQL...' : apiError }}
+      </p>
+
       <section class="grid gap-4">
         <article v-for="account in filteredAccounts" :key="account.id" class="bm-panel rounded-md p-5">
           <div class="grid gap-5 xl:grid-cols-[1fr_auto] xl:items-start">
@@ -101,20 +105,88 @@ import type { ManagedAccount, ManagedAccountStatus } from '~/data/management'
 import { permissions } from '~/data/security'
 
 const { hasPermission, loadSession, recordAudit } = useAuth()
-const { loadManagement, state, updateAccountStatus } = useManagement()
+const adminAccountsApi = useAdminAccountsApi()
 
 useSeoMeta({ title: 'Gerenciar contas' })
 
 const query = ref('')
 const activeRole = ref('Todos')
 const activeStatus = ref('Todos')
+const apiAccounts = ref<ManagedAccount[]>([])
+const apiError = ref('')
+const isLoadingApi = ref(false)
 
 onMounted(() => {
   loadSession()
-  loadManagement()
+  void loadAccountsFromApi()
 })
 
-const accounts = computed(() => state.value.accounts)
+type ApiAccount = {
+  id: string
+  username: string
+  name: string
+  email: string
+  role: string
+  status: string
+  personalIdMask?: string
+  createdAt: string
+  updatedAt: string
+  currencies: Record<string, number>
+}
+
+type ApiPaginatedResponse<T> = {
+  data: T[]
+  total: number
+}
+
+const accountStatusFromApi = (status: string): ManagedAccountStatus => ({
+  ACTIVE: 'Ativa',
+  BLOCKED: 'Bloqueada',
+  PENDING: 'Pendente'
+})[status] as ManagedAccountStatus || 'Pendente'
+
+const accountRoleFromApi = (role: string) =>
+  role.toLowerCase().replaceAll('_', '-') as ManagedAccount['role']
+
+const accountStatusToApi = (status: ManagedAccountStatus) => ({
+  Ativa: 'ACTIVE',
+  Bloqueada: 'BLOCKED',
+  Pendente: 'PENDING'
+})[status]
+
+const mapApiAccount = (account: ApiAccount): ManagedAccount => ({
+  id: account.id,
+  username: account.username,
+  name: account.name,
+  email: account.email,
+  role: accountRoleFromApi(account.role),
+  status: accountStatusFromApi(account.status),
+  personalIdMask: account.personalIdMask || 'Nao definido',
+  createdAt: account.createdAt,
+  lastLoginAt: account.updatedAt,
+  characters: 0,
+  currencies: {
+    WCoin: account.currencies.WCOIN || account.currencies.WCoin || 0,
+    'Goblin Point': account.currencies.GOBLIN_POINT || account.currencies['Goblin Point'] || 0,
+    'Hunt Point': account.currencies.HUNT_POINT || account.currencies['Hunt Point'] || 0
+  }
+})
+
+const loadAccountsFromApi = async () => {
+  isLoadingApi.value = true
+  apiError.value = ''
+  try {
+    const response = await adminAccountsApi.list({ page: 1, pageSize: 100 }) as ApiPaginatedResponse<ApiAccount>
+    apiAccounts.value = response.data.map(mapApiAccount)
+  } catch {
+    apiAccounts.value = []
+    apiError.value = 'API de contas indisponivel. Base local de desenvolvimento nao sera usada como fallback.'
+  } finally {
+    isLoadingApi.value = false
+  }
+}
+
+const accounts = computed(() => apiAccounts.value)
 const roles = computed(() => Array.from(new Set(accounts.value.map((account) => account.role))).sort())
 const statuses = computed(() => Array.from(new Set(accounts.value.map((account) => account.status))).sort())
 
@@ -141,19 +213,28 @@ const summaryCards = computed(() => [
 ])
 
 const markAccount = (account: ManagedAccount, status: ManagedAccountStatus) => {
-  const updatedAccount = updateAccountStatus(account.id, status)
-  if (!updatedAccount) {
-    return
-  }
+  void markAccountViaApi(account, status)
+}
 
-  recordAudit({
-    type: 'admin.account.status',
-    message: `Conta ${account.username} marcada como ${status}.`,
-    meta: {
-      account: account.username,
-      status
-    }
-  })
+const markAccountViaApi = async (account: ManagedAccount, status: ManagedAccountStatus) => {
+  try {
+    const updated = await adminAccountsApi.update(account.id, {
+      status: accountStatusToApi(status)
+    }) as ApiAccount
+
+    const mapped = mapApiAccount(updated)
+    apiAccounts.value = apiAccounts.value.map((item) => item.id === mapped.id ? mapped : item)
+    recordAudit({
+      type: 'admin.account.status',
+      message: `Conta ${account.username} marcada como ${status} via API.`,
+      meta: {
+        account: account.username,
+        status
+      }
+    })
+  } catch {
+    apiError.value = 'Nao foi possivel alterar a conta pela API.'
+  }
 }
 
 const statusClass = (status: ManagedAccountStatus) => ({

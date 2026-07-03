@@ -2,9 +2,13 @@
   "name": "@blood-moon/api",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
-    "check": "node scripts/check-api-structure.mjs"
+    "build": "nest build",
+    "check": "node scripts/check-api-structure.mjs && tsc -p tsconfig.json --noEmit",
+    "dev": "npm run build && node dist/apps/api/src/main.js",
+    "worker:game-bridge": "node scripts/process-game-bridge-jobs.mjs",
+    "start": "node dist/apps/api/src/main.js"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -25,6 +29,7 @@
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
+    "@types/bcrypt": "^6.0.0",
     "@types/node": "^20.0.0",
     "prisma": "^5.0.0",
     "typescript": "^5.0.0"

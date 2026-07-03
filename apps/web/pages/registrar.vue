@@ -42,8 +42,8 @@
         </p>
 
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <button class="bm-liquid-primary px-5 py-3 text-sm font-bold transition hover:scale-[1.01]" type="submit">
-            {{ t('createAccount') }}
+          <button class="bm-liquid-primary px-5 py-3 text-sm font-bold transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60" type="submit" :disabled="isSubmitting">
+            {{ isSubmitting ? 'Criando conta...' : t('createAccount') }}
           </button>
           <NuxtLink class="bm-button-glass px-5 py-3 text-center text-sm font-bold" to="/login">
             Ja tenho conta
@@ -56,6 +56,7 @@
 
 <script setup lang="ts">
 const { t } = useLocale()
+const config = useRuntimeConfig()
 useSeoMeta({ title: () => t('register') })
 
 type RegistrationField = {
@@ -70,6 +71,8 @@ const captchaOptions = ['A9K2M', 'BM7Q4', 'N0RIA', 'DL6X8']
 const captchaCode = ref(captchaOptions[0])
 const message = ref('')
 const isSuccess = ref(false)
+const isSubmitting = ref(false)
+const apiBase = computed(() => String(config.public.apiBase || 'http://localhost:3333/api').replace(/\/$/, ''))
 
 const form = reactive({
   name: '',
@@ -107,7 +110,11 @@ const refreshCaptcha = () => {
   form.captcha = ''
 }
 
-const submitRegistration = () => {
+const submitRegistration = async () => {
+  if (isSubmitting.value) {
+    return
+  }
+
   const requiredFields = registrationFields.some((field) => field.required && !form[field.model].trim())
 
   if (requiredFields || !form.captcha.trim() || !form.terms) {
@@ -134,7 +141,45 @@ const submitRegistration = () => {
     return
   }
 
-  isSuccess.value = true
-  message.value = 'Cadastro validado para teste. A integracao real com banco de dados entra na etapa de backend.'
+  isSubmitting.value = true
+  try {
+    await $fetch(`${apiBase.value}/auth/register`, {
+      method: 'POST',
+      body: {
+        name: form.name.trim(),
+        username: form.username.trim(),
+        password: form.password,
+        personalId: form.personalId.trim(),
+        email: form.email.trim(),
+        reference: form.reference.trim() || undefined
+      }
+    })
+
+    isSuccess.value = true
+    message.value = 'Conta criada com sucesso. Voce ja pode fazer login.'
+    Object.assign(form, {
+      name: '',
+      username: '',
+      password: '',
+      repeatPassword: '',
+      personalId: '',
+      email: '',
+      repeatEmail: '',
+      reference: '',
+      captcha: '',
+      terms: false
+    })
+    refreshCaptcha()
+  } catch (error: unknown) {
+    const statusCode = typeof error === 'object' && error !== null && 'statusCode' in error
+      ? Number((error as { statusCode?: number }).statusCode)
+      : 0
+    isSuccess.value = false
+    message.value = statusCode === 409
+      ? 'Usuario ou e-mail ja cadastrado.'
+      : 'Nao foi possivel criar a conta agora. Verifique os dados e tente novamente.'
+  } finally {
+    isSubmitting.value = false
+  }
 }
 </script>

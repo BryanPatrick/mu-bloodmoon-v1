@@ -17,6 +17,24 @@ Depois abra:
 http://localhost:3000
 ```
 
+Para subir o ambiente completo com PostgreSQL, API e site:
+
+```bash
+npm run dev:full
+```
+
+No Windows tambem da para dar duplo clique em:
+
+```text
+iniciar-dev.bat
+```
+
+Se quiser forcar a reimportacao dos dados para a API:
+
+```text
+iniciar-dev-com-import.bat
+```
+
 ## Estrutura
 
 - `apps/web`: site Nuxt, painel, guias, loja, recarga e referencias dev.

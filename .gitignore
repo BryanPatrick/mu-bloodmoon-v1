@@ -3,6 +3,7 @@ node_modules/
 .output/
 apps/web/.nuxt/
 apps/web/.output/
+apps/api/dist/
 .agents/
 .codex/
 .npm-cache/
@@ -17,6 +18,8 @@ yarn-error.log*
 pnpm-debug.log*
 
 work/*.log
+work/postgres-data/
+work/postgres.log
 *.local
 .DS_Store
 Thumbs.db

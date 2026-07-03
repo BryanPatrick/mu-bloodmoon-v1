@@ -22,7 +22,9 @@
           {{ message }}
         </p>
 
-        <button class="bm-liquid-primary px-5 py-3 text-sm font-bold transition hover:scale-[1.01]" type="submit">{{ t('enter') }}</button>
+        <button class="bm-liquid-primary px-5 py-3 text-sm font-bold transition hover:scale-[1.01] disabled:cursor-wait disabled:opacity-60" :disabled="isSubmitting" type="submit">
+          {{ isSubmitting ? 'Entrando...' : t('enter') }}
+        </button>
 
         <div class="flex flex-col gap-2 text-sm font-bold sm:flex-row sm:items-center sm:justify-between">
           <NuxtLink class="text-white/65 transition hover:text-white" to="/recuperar-conta">Recuperar conta</NuxtLink>
@@ -44,6 +46,7 @@ const username = ref('')
 const password = ref('')
 const message = ref('')
 const isSuccess = ref(false)
+const isSubmitting = ref(false)
 
 const messageClass = computed(() =>
   isSuccess.value
@@ -51,14 +54,23 @@ const messageClass = computed(() =>
     : 'border-blood-400/25 bg-blood-700/10 text-blood-100'
 )
 
-const submitLogin = () => {
-  const result = loginWithCredentials(username.value, password.value)
-  isSuccess.value = result.ok
-  message.value = result.message
+const submitLogin = async () => {
+  if (isSubmitting.value) {
+    return
+  }
 
-  if (result.ok) {
-    const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/'
-    router.push(redirect)
+  isSubmitting.value = true
+  try {
+    const result = await loginWithCredentials(username.value, password.value)
+    isSuccess.value = result.ok
+    message.value = result.message
+
+    if (result.ok) {
+      const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/'
+      await router.push(redirect)
+    }
+  } finally {
+    isSubmitting.value = false
   }
 }
 </script>

@@ -174,7 +174,6 @@ const route = useRoute()
 const router = useRouter()
 const { currentLocale, dictionary, locale, localeOptions, setLocale, t } = useLocale()
 const { hasPermission, isLoggedIn, loadSession, logout, user } = useAuth()
-const { getAccountByUsername, loadManagement } = useManagement()
 const headerRef = ref<HTMLElement | null>(null)
 const isMobileOpen = ref(false)
 const isLanguageOpen = ref(false)
@@ -272,14 +271,7 @@ const accountLinks = computed(() => [
   { label: 'Acessar loja', to: '/painel/loja', icon: ShoppingBag }
 ])
 
-const accountCurrencies = computed(() => {
-  const account = getAccountByUsername(user.value?.username)
-  if (!account) {
-    return user.value?.currencies || []
-  }
-
-  return Object.entries(account.currencies).map(([label, value]) => ({ label, value }))
-})
+const accountCurrencies = computed(() => user.value?.currencies || [])
 
 type LocaleCode = 'pt-BR' | 'pt-PT' | 'es-ES' | 'en-US' | 'en-GB' | 'fr-FR' | 'de-DE' | 'it-IT'
 
@@ -330,7 +322,6 @@ const chooseLocale = (code: LocaleCode) => {
 
 onMounted(() => {
   loadSession()
-  loadManagement()
   isLight.value = document.documentElement.classList.contains('light')
   document.addEventListener('click', handleOutsideClick)
 })

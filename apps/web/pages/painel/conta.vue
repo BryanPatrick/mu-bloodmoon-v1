@@ -88,19 +88,49 @@
 </template>
 
 <script setup lang="ts">
-const { loadSession, recordAudit, user } = useAuth()
-const { getAccountByUsername, loadManagement, purchasesFor, rechargesFor } = useManagement()
+import type { CommercePurchase, CommerceRecharge } from '~/composables/useCommerceApi'
+import type { AccountProfile } from '~/composables/useAccountSecurityApi'
+
+const { loadSession, user } = useAuth()
+const accountSecurityApi = useAccountSecurityApi()
+const commerceApi = useCommerceApi()
 
 useSeoMeta({ title: 'Gerenciar conta' })
 
-onMounted(() => {
+const purchases = ref<CommercePurchase[]>([])
+const recharges = ref<CommerceRecharge[]>([])
+const account = ref<AccountProfile | null>(null)
+
+onMounted(async () => {
   loadSession()
-  loadManagement()
+  await Promise.all([loadProfile(), loadHistory()])
 })
 
-const account = computed(() => getAccountByUsername(user.value?.username))
-const recentPurchases = computed(() => purchasesFor(user.value?.username).slice(0, 3))
-const recentRecharges = computed(() => rechargesFor(user.value?.username).slice(0, 3))
+const recentPurchases = computed(() => purchases.value.slice(0, 3))
+const recentRecharges = computed(() => recharges.value.slice(0, 3))
+
+const loadProfile = async () => {
+  try {
+    account.value = await accountSecurityApi.profile()
+  } catch {
+    account.value = null
+    message.value = 'Nao foi possivel carregar o perfil pela API.'
+  }
+}
+
+const loadHistory = async () => {
+  try {
+    const [purchaseRows, rechargeRows] = await Promise.all([
+      commerceApi.listAccountPurchases(),
+      commerceApi.listAccountRecharges()
+    ])
+    purchases.value = purchaseRows
+    recharges.value = rechargeRows
+  } catch {
+    purchases.value = []
+    recharges.value = []
+  }
+}
 
 const form = reactive({
   currentPassword: '',
@@ -127,7 +157,14 @@ const formatDate = (value: string) =>
     minute: '2-digit'
   }).format(new Date(value))
 
-const submitPasswordChange = () => {
+const resetPasswordForm = () => {
+  form.currentPassword = ''
+  form.personalId = ''
+  form.newPassword = ''
+  form.repeatPassword = ''
+}
+
+const submitPasswordChange = async () => {
   if (!form.currentPassword || !form.personalId || !form.newPassword || !form.repeatPassword) {
     isSuccess.value = false
     message.value = 'Preencha todos os campos para alterar a senha.'
@@ -140,14 +177,18 @@ const submitPasswordChange = () => {
     return
   }
 
-  isSuccess.value = true
-  message.value = 'Senha validada para teste. A alteracao real entra na etapa de backend.'
-  recordAudit({
-    type: 'account.password.change.validated',
-    message: 'Troca de senha validada em modo teste.',
-    meta: {
-      username: user.value?.username || 'guest'
-    }
-  })
+  try {
+    await accountSecurityApi.changePassword({
+      currentPassword: form.currentPassword,
+      personalId: form.personalId,
+      newPassword: form.newPassword
+    })
+    isSuccess.value = true
+    message.value = 'Senha alterada com sucesso.'
+    resetPasswordForm()
+  } catch {
+    isSuccess.value = false
+    message.value = 'Nao foi possivel alterar a senha. Confira a senha atual e o Personal ID.'
+  }
 }
 </script>

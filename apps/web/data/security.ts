@@ -5,11 +5,14 @@ export const permissions = {
   adminAuditView: 'admin.audit.view',
   adminFinanceManage: 'admin.finance.manage',
   adminShopManage: 'admin.shop.manage',
+  adminMarketplaceManage: 'admin.marketplace.manage',
+  adminGameBridgeManage: 'admin.game-bridge.manage',
   adminRechargeManage: 'admin.recharge.manage',
   adminSystemManage: 'admin.system.manage',
   accountManage: 'account.manage',
   charactersManage: 'characters.manage',
   shopAccess: 'shop.access',
+  marketplaceAccess: 'marketplace.access',
   rechargeAccess: 'recharge.access',
   guidesFutureView: 'guides.future.view'
 } as const
@@ -31,18 +34,21 @@ export const rolePermissions: Record<UserRole, Permission[] | ['*']> = {
     permissions.accountManage,
     permissions.charactersManage,
     permissions.shopAccess,
+    permissions.marketplaceAccess,
     permissions.rechargeAccess
   ],
   moderator: [
     permissions.accountManage,
     permissions.charactersManage,
     permissions.shopAccess,
+    permissions.marketplaceAccess,
     permissions.rechargeAccess
   ],
   'game-master': [
     permissions.accountManage,
     permissions.charactersManage,
     permissions.shopAccess,
+    permissions.marketplaceAccess,
     permissions.rechargeAccess,
     permissions.guidesFutureView
   ],
@@ -53,11 +59,14 @@ export const rolePermissions: Record<UserRole, Permission[] | ['*']> = {
     permissions.adminAuditView,
     permissions.adminFinanceManage,
     permissions.adminShopManage,
+    permissions.adminMarketplaceManage,
+    permissions.adminGameBridgeManage,
     permissions.adminRechargeManage,
     permissions.adminSystemManage,
     permissions.accountManage,
     permissions.charactersManage,
     permissions.shopAccess,
+    permissions.marketplaceAccess,
     permissions.rechargeAccess,
     permissions.guidesFutureView
   ],

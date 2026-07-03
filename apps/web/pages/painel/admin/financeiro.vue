@@ -121,12 +121,12 @@
 
 <script setup lang="ts">
 import { permissions } from '~/data/security'
-import type { PurchaseIntent, RechargeIntent } from '~/composables/useManagement'
+import type { CommercePurchase, CommerceRecharge } from '~/composables/useCommerceApi'
 
-type FinancialStatus = PurchaseIntent['status'] | RechargeIntent['status']
+type FinancialStatus = CommercePurchase['status'] | CommerceRecharge['status']
 
 const { hasPermission, loadSession, recordAudit } = useAuth()
-const { loadManagement, state, updatePurchaseStatus, updateRechargeStatus } = useManagement()
+const commerceApi = useCommerceApi()
 
 useSeoMeta({ title: 'Financeiro' })
 
@@ -135,18 +135,36 @@ const activeStatus = ref('Todos')
 const activeType = ref('Todos')
 const message = ref('')
 const isSuccess = ref(true)
+const purchases = ref<CommercePurchase[]>([])
+const recharges = ref<CommerceRecharge[]>([])
 
-onMounted(() => {
+onMounted(async () => {
   loadSession()
-  loadManagement()
+  await loadFinancialQueues()
 })
 
 const statuses = ['Preparada', 'Concluida', 'Cancelada', 'Paga']
 
+const loadFinancialQueues = async () => {
+  try {
+    const [purchaseRows, rechargeRows] = await Promise.all([
+      commerceApi.listPurchases(),
+      commerceApi.listRecharges()
+    ])
+    purchases.value = purchaseRows
+    recharges.value = rechargeRows
+  } catch {
+    purchases.value = []
+    recharges.value = []
+    isSuccess.value = false
+    message.value = 'API indisponivel. Fila financeira local nao sera usada como fallback.'
+  }
+}
+
 const filteredPurchases = computed(() => {
   const normalizedQuery = query.value.trim().toLowerCase()
 
-  return state.value.purchases.filter((purchase) => {
+  return purchases.value.filter((purchase) => {
     const matchesStatus = activeStatus.value === 'Todos' || purchase.status === activeStatus.value
     const matchesQuery = !normalizedQuery || [purchase.username, purchase.productName, purchase.currency, purchase.status]
       .join(' ')
@@ -160,7 +178,7 @@ const filteredPurchases = computed(() => {
 const filteredRecharges = computed(() => {
   const normalizedQuery = query.value.trim().toLowerCase()
 
-  return state.value.recharges.filter((recharge) => {
+  return recharges.value.filter((recharge) => {
     const matchesStatus = activeStatus.value === 'Todos' || recharge.status === activeStatus.value
     const matchesQuery = !normalizedQuery || [recharge.username, recharge.currency, recharge.status]
       .join(' ')
@@ -172,43 +190,53 @@ const filteredRecharges = computed(() => {
 })
 
 const summaryCards = computed(() => [
-  { label: 'Compras', value: state.value.purchases.length.toString() },
-  { label: 'Recargas', value: state.value.recharges.length.toString() },
-  { label: 'Pendentes', value: (state.value.purchases.filter((item) => item.status === 'Preparada').length + state.value.recharges.filter((item) => item.status === 'Preparada').length).toString() },
+  { label: 'Compras', value: purchases.value.length.toString() },
+  { label: 'Recargas', value: recharges.value.length.toString() },
+  { label: 'Pendentes', value: (purchases.value.filter((item) => item.status === 'Preparada').length + recharges.value.filter((item) => item.status === 'Preparada').length).toString() },
   { label: 'Filtrados', value: (filteredPurchases.value.length + filteredRecharges.value.length).toString() }
 ])
 
-const setPurchaseStatus = (purchaseId: string, status: PurchaseIntent['status']) => {
-  const result = updatePurchaseStatus(purchaseId, status)
-  isSuccess.value = result.ok
-  message.value = result.message
+const setPurchaseStatus = async (purchaseId: string, status: CommercePurchase['status']) => {
+  try {
+    await commerceApi.updatePurchaseStatus(purchaseId, status)
+    await loadFinancialQueues()
+    isSuccess.value = true
+    message.value = `Compra marcada como ${status}.`
 
-  if (result.ok && result.purchase) {
+    const purchase = purchases.value.find((item) => item.id === purchaseId)
     recordAudit({
       type: 'admin.finance.purchase',
-      message: `Compra ${result.purchase.productName} marcada como ${status}.`,
+      message: `Compra ${purchase?.productName || purchaseId} marcada como ${status}.`,
       meta: {
-        username: result.purchase.username,
+        username: purchase?.username || 'desconhecido',
         status
       }
     })
+  } catch (error) {
+    isSuccess.value = false
+    message.value = error instanceof Error ? error.message : 'Nao foi possivel atualizar a compra.'
   }
 }
 
-const setRechargeStatus = (rechargeId: string, status: RechargeIntent['status']) => {
-  const result = updateRechargeStatus(rechargeId, status)
-  isSuccess.value = result.ok
-  message.value = result.message
+const setRechargeStatus = async (rechargeId: string, status: CommerceRecharge['status']) => {
+  try {
+    await commerceApi.updateRechargeStatus(rechargeId, status)
+    await loadFinancialQueues()
+    isSuccess.value = true
+    message.value = `Recarga marcada como ${status}.`
 
-  if (result.ok && result.recharge) {
+    const recharge = recharges.value.find((item) => item.id === rechargeId)
     recordAudit({
       type: 'admin.finance.recharge',
-      message: `Recarga de ${result.recharge.amount} ${result.recharge.currency} marcada como ${status}.`,
+      message: `Recarga de ${recharge?.amount || 0} ${recharge?.currency || ''} marcada como ${status}.`,
       meta: {
-        username: result.recharge.username,
+        username: recharge?.username || 'desconhecido',
         status
       }
     })
+  } catch (error) {
+    isSuccess.value = false
+    message.value = error instanceof Error ? error.message : 'Nao foi possivel atualizar a recarga.'
   }
 }
 

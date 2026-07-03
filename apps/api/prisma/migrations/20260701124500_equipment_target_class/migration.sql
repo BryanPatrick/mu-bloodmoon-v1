@@ -1,0 +1,1 @@
+ALTER TYPE "EquipmentClassLinkRole" ADD VALUE IF NOT EXISTS 'TARGET';

@@ -1,0 +1,37 @@
+{
+  "schema": "bloodmoon.source-harvest.index.v1",
+  "generatedAt": "2026-06-30T19:39:46.049Z",
+  "sources": [
+    {
+      "key": "guiamu-com-ar",
+      "title": "GuiaMu Argentina",
+      "baseUrl": "https://guiamu.com.ar/?lang=pt",
+      "totals": {
+        "pages": 217,
+        "images": 4775,
+        "imageDuplicates": 0,
+        "errors": 3
+      },
+      "dataPath": "references/game-data/source-harvest/guiamu-com-ar/guiamu-com-ar-data.json",
+      "assetPath": "references/game-assets/source-harvest/guiamu-com-ar"
+    },
+    {
+      "key": "webzen-gameinfo-pt",
+      "title": "Webzen MU Online Game Info PT",
+      "baseUrl": "https://muonline.webzen.com/pt/gameinfo",
+      "totals": {
+        "pages": 219,
+        "images": 2297,
+        "imageDuplicates": 477,
+        "errors": 1
+      },
+      "dataPath": "references/game-data/source-harvest/webzen-gameinfo-pt/webzen-gameinfo-pt-data.json",
+      "assetPath": "references/game-assets/source-harvest/webzen-gameinfo-pt"
+    }
+  ],
+  "globalTotals": {
+    "pages": 436,
+    "images": 7072,
+    "errors": 4
+  }
+}

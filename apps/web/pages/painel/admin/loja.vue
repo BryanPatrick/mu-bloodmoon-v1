@@ -112,7 +112,7 @@ import { permissions } from '~/data/security'
 import type { CurrencyCode, ShopProduct } from '~/data/management'
 
 const { hasPermission, loadSession, recordAudit } = useAuth()
-const { deleteProduct, loadManagement, state, upsertProduct } = useManagement()
+const commerceApi = useCommerceApi()
 
 useSeoMeta({ title: 'Loja Admin' })
 
@@ -120,6 +120,8 @@ const query = ref('')
 const isEditorOpen = ref(false)
 const editingId = ref('')
 const message = ref('')
+const products = ref<ShopProduct[]>([])
+const loadError = ref('')
 
 const form = reactive({
   name: '',
@@ -132,14 +134,14 @@ const form = reactive({
   stock: 'Ilimitado'
 })
 
-onMounted(() => {
+onMounted(async () => {
   loadSession()
-  loadManagement()
+  await loadProducts()
 })
 
 const filteredProducts = computed(() => {
   const normalizedQuery = query.value.trim().toLowerCase()
-  return state.value.products.filter((product) =>
+  return products.value.filter((product) =>
     !normalizedQuery || [product.name, product.category, product.description, product.currency, product.status]
       .join(' ')
       .toLowerCase()
@@ -148,11 +150,23 @@ const filteredProducts = computed(() => {
 })
 
 const summaryCards = computed(() => [
-  { label: 'Produtos', value: state.value.products.length.toString() },
-  { label: 'Ativos', value: state.value.products.filter((product) => product.status === 'Ativo').length.toString() },
-  { label: 'Rascunhos', value: state.value.products.filter((product) => product.status === 'Rascunho').length.toString() },
+  { label: 'Produtos', value: products.value.length.toString() },
+  { label: 'Ativos', value: products.value.filter((product) => product.status === 'Ativo').length.toString() },
+  { label: 'Rascunhos', value: products.value.filter((product) => product.status === 'Rascunho').length.toString() },
   { label: 'Filtrados', value: filteredProducts.value.length.toString() }
 ])
+
+const loadProducts = async () => {
+  try {
+    const response = await commerceApi.listProducts(true)
+    products.value = response.data
+    loadError.value = ''
+  } catch {
+    products.value = []
+    loadError.value = 'api-offline'
+    message.value = 'API indisponivel. Produtos locais nao serao usados como fallback.'
+  }
+}
 
 const resetForm = () => {
   form.name = ''
@@ -198,7 +212,7 @@ const parsedStock = computed(() => {
   return Number.isFinite(numericStock) && normalizedStock !== '' ? numericStock : 'Ilimitado'
 })
 
-const saveProduct = () => {
+const saveProduct = async () => {
   const product: ShopProduct = {
     id: editingId.value || normalizeId(form.name),
     name: form.name.trim(),
@@ -211,7 +225,15 @@ const saveProduct = () => {
     stock: parsedStock.value
   }
 
-  upsertProduct(product)
+  const savedProduct = editingId.value
+    ? await commerceApi.updateProduct(editingId.value, product)
+    : await commerceApi.createProduct(product)
+  const existingIndex = products.value.findIndex((item) => item.id === savedProduct.id)
+  if (existingIndex >= 0) {
+    products.value.splice(existingIndex, 1, savedProduct)
+  } else {
+    products.value.unshift(savedProduct)
+  }
   recordAudit({
     type: editingId.value ? 'admin.shop.product.updated' : 'admin.shop.product.created',
     message: `Produto ${product.name} ${editingId.value ? 'editado' : 'criado'}.`,
@@ -221,17 +243,21 @@ const saveProduct = () => {
       currency: product.currency
     }
   })
-  message.value = `Produto ${product.name} salvo.`
+  message.value = `Produto ${savedProduct.name} salvo no banco.`
   closeEditor()
 }
 
-const toggleStatus = (product: ShopProduct) => {
+const toggleStatus = async (product: ShopProduct) => {
   const nextProduct = {
     ...product,
     status: product.status === 'Ativo' ? 'Rascunho' : 'Ativo'
   } satisfies ShopProduct
 
-  upsertProduct(nextProduct)
+  const savedProduct = await commerceApi.updateProduct(product.id, nextProduct)
+  const existingIndex = products.value.findIndex((item) => item.id === savedProduct.id)
+  if (existingIndex >= 0) {
+    products.value.splice(existingIndex, 1, savedProduct)
+  }
   recordAudit({
     type: 'admin.shop.product.status',
     message: `Produto ${nextProduct.name} marcado como ${nextProduct.status}.`,
@@ -240,15 +266,17 @@ const toggleStatus = (product: ShopProduct) => {
       status: nextProduct.status
     }
   })
-  message.value = `Produto ${nextProduct.name} marcado como ${nextProduct.status}.`
+  message.value = `Produto ${savedProduct.name} marcado como ${savedProduct.status}.`
 }
 
-const removeProduct = (productId: string) => {
-  const product = deleteProduct(productId)
+const removeProduct = async (productId: string) => {
+  const product = products.value.find((item) => item.id === productId)
   if (!product) {
     return
   }
 
+  await commerceApi.deleteProduct(productId)
+  products.value = products.value.filter((item) => item.id !== productId)
   recordAudit({
     type: 'admin.shop.product.deleted',
     message: `Produto ${product.name} excluido.`,

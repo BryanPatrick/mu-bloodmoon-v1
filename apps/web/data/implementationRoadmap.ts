@@ -16,6 +16,33 @@ export const roadmapPriorityLabels: RoadmapPriority[] = ['Alta', 'Media', 'Baixa
 
 export const implementationRoadmap: RoadmapItem[] = [
   {
+    title: 'CMS administrativo completo do site',
+    area: 'Painel admin',
+    status: 'Em andamento',
+    priority: 'Alta',
+    summary: 'Centralizar em uma area administrativa todo o controle editorial do site, incluindo noticias, Wiki, itens exclusivos, imagens, banners e paginas institucionais.',
+    collectedData: [
+      'Pagina /painel/admin/conteudo criada como central do CMS',
+      'Fluxo editorial definido: bruto, normalizado, revisado e publicado',
+      'PostgreSQL ja possui status editorial, escopo por season e assets vinculaveis',
+      'API administrativa ja lista, cria, edita e arquiva KnowledgeEntry',
+      'API administrativa ja lista, cria, edita e arquiva ReferenceAsset',
+      'API administrativa ja lista, cria, edita e arquiva EquipmentRecord',
+      'Painel CMS ja consome resumo, pendencias de equipamentos e assets reais do PostgreSQL',
+      'Painel CMS ja mostra amostra de equipamentos administraveis do PostgreSQL',
+      'Login backend em /api/auth/login ja emite accessToken e refreshToken',
+      'Rotas /api/admin/content ja exigem JWT e role ADMIN ou SUPER_ADMIN',
+      'Mutacoes do CMS ja gravam AuditEvent server-side com ator do JWT',
+      'Usuario admin de teste segue admin/admin ate autenticacao real entrar'
+    ],
+    nextSteps: [
+      'Adicionar formularios de criar/editar noticias, Wiki e item exclusivo',
+      'Criar editor profundo para pecas, variantes, opcoes, classes, seasons e vinculos de set',
+      'Remover ultimos estados locais apenas quando cadastro, recuperacao e sessoes estiverem 100% via API',
+      'Aplicar permissoes por modulo para socios/admins'
+    ]
+  },
+  {
     title: 'Wiki de personagens por classe',
     area: 'Personagens',
     status: 'Em andamento',
@@ -37,18 +64,19 @@ export const implementationRoadmap: RoadmapItem[] = [
   {
     title: 'Ferramenta de item com upgrade +0 ate +15',
     area: 'Equipamentos',
-    status: 'A fazer',
+    status: 'Em andamento',
     priority: 'Alta',
     summary: 'Criar um visual bonito para selecionar level do item e recalcular dano, requisitos e tooltip em tempo real.',
     collectedData: [
       'Divine Sword of Archangel +0: 220 ~ 230, speed 45, STR 381, AGI 149',
       'Curva de bonus +0 ate +15',
       'Padrao visual de arma fisica e magica',
-      'Regra de nome rosado para Archangel'
+      'Regra de nome rosado para Archangel',
+      'Modal de sets ja possui controle +0 ate +15 para leitura visual inicial'
     ],
     nextSteps: [
-      'Criar componente de tooltip de item',
-      'Criar seletor +0 ate +15 com visual Blood Moon',
+      'Transformar o modal atual em componente reutilizavel de tooltip de item',
+      'Expandir o seletor +0 ate +15 para armas, escudos, asas e acessorios',
       'Separar campos de dano fisico, dano magico, wizardry, harmony, excellent, luck e skill',
       'Integrar com Archangel e depois expandir para todas as armas'
     ]
@@ -153,17 +181,18 @@ export const implementationRoadmap: RoadmapItem[] = [
   {
     title: 'Galeria de referencias e imagens externas',
     area: 'Referencias',
-    status: 'Bloqueado',
+    status: 'Em andamento',
     priority: 'Alta',
     summary: 'Espelhar imagens dos sites de referencia e organizar por personagem, equipamento, mapa, monstro, sistema e fonte.',
     collectedData: [
       '240 imagens locais da Fairy Elf ja espelhadas',
       'Manifesto de imagens Socket',
       'Crawler de MU Online Fanz criado',
-      'Fila de paginas reais criada em source-seeds.json'
+      'Fila de paginas reais criada em source-seeds.json',
+      'ReferenceAsset ja esta consolidado no PostgreSQL com mais de mil assets importados'
     ],
     nextSteps: [
-      'Rodar o espelhador quando a conexao com muonlinefanz.com funcionar',
+      'Continuar espelhamento apenas para fontes que ainda faltarem imagem local',
       'Separar imagens originais de versoes otimizadas Blood Moon',
       'Exibir imagens espelhadas no painel Referencias Dev',
       'Manter imagens de terceiros apenas como referencia original'
@@ -172,17 +201,18 @@ export const implementationRoadmap: RoadmapItem[] = [
   {
     title: 'CRUD real de referencias e imagens',
     area: 'Painel admin',
-    status: 'A fazer',
+    status: 'Em andamento',
     priority: 'Alta',
-    summary: 'O CRUD atual funciona como prototipo local; falta backend/persistencia real para upload, edicao e exclusao.',
+    summary: 'A API administrativa ja permite catalogar e arquivar referencias; falta upload fisico definitivo para storage da hospedagem.',
     collectedData: [
       'Tela Referencias Dev criada',
       'Formulario de nova referencia, editar, excluir e upload local',
-      'Separacao por biblioteca, grupo, categoria e status'
+      'Separacao por biblioteca, grupo, categoria e status',
+      'ReferenceAsset ja tem CRUD administrativo na API para catalogo e arquivamento'
     ],
     nextSteps: [
-      'Criar API/backend para salvar imagens',
-      'Persistir referencias em banco ou arquivo administrativo',
+      'Criar upload fisico para storage e vincular ao ReferenceAsset',
+      'Ligar todos os formularios visuais do painel Referencias Dev ao CRUD da API',
       'Adicionar permissoes apenas para admin',
       'Adicionar historico de alteracao e origem da fonte'
     ]
@@ -208,37 +238,64 @@ export const implementationRoadmap: RoadmapItem[] = [
   {
     title: 'Painel de conta do jogador',
     area: 'Conta',
-    status: 'A fazer',
+    status: 'Em andamento',
     priority: 'Media',
     summary: 'A area do jogador precisa concentrar gerenciamento de personagens, conta, loja e moedas.',
     collectedData: [
       'Dropdown de boas-vindas ja existe',
       'Moedas: WCoin, Goblin Point e Hunt Point',
-      'Rotas base de painel, personagens, conta, loja e recarga'
+      'Rotas base de painel, personagens, conta, loja e recarga',
+      'APIs de conta, personagens, comercio e marketplace ja foram separadas por modulo'
     ],
     nextSteps: [
       'Criar dados reais de personagens da conta',
       'Criar troca de senha usando Personal ID apenas quando logado',
-      'Criar tela de recarga',
+      'Conectar tela de recarga aos fluxos reais de pagamento quando o provedor for escolhido',
       'Separar dashboard administrativo de area comum do jogador'
+    ]
+  },
+  {
+    title: 'Gerenciamento administrativo de contas reais',
+    area: 'Painel admin',
+    status: 'Em andamento',
+    priority: 'Alta',
+    summary: 'Migrar a tela de contas do painel admin para PostgreSQL, com permissao por role, status real e trilha de auditoria no servidor.',
+    collectedData: [
+      'API /api/admin/accounts criada com listagem paginada e filtros por busca, role e status',
+      'PATCH /api/admin/accounts/:id altera role/status e grava AuditEvent server-side',
+      'Tela /painel/admin/contas consome API real com token administrativo',
+      'Contrato de moedas padronizado como objeto WCOIN, GOBLIN_POINT e HUNT_POINT',
+      'Teste runtime validou login admin, listagem, edicao de conta temporaria e limpeza dos dados de teste'
+    ],
+    nextSteps: [
+      'Adicionar paginacao visual real na tela de contas',
+      'Criar edicao completa de saldo/moedas com auditoria e dupla confirmacao',
+      'Criar criacao de contas pelo painel admin quando necessario',
+      'Remover qualquer estado local residual apos recuperacao e conta do jogador migrarem para API'
     ]
   },
   {
     title: 'Cadastro, recuperacao e login real',
     area: 'Conta',
-    status: 'A fazer',
+    status: 'Em andamento',
     priority: 'Media',
-    summary: 'O fluxo visual existe, mas ainda precisa integrar com uma base real de contas e regras de seguranca.',
+    summary: 'O login ja autentica contra o backend, mas cadastro e recuperacao ainda precisam sair do mock/local.',
     collectedData: [
       'Formulario de cadastro com nome, usuario, senha, email, Personal ID, referencia e termos',
       'Recuperacao de conta ajustada para usar email',
-      'Conta admin de teste: admin/admin'
+      'Conta admin de teste: admin/admin',
+      'Conta player de teste: player/player',
+      'POST /api/auth/login emite accessToken e refreshToken',
+      'Contas bloqueadas nao recebem sessao no backend',
+      'POST /api/auth/register cria conta PLAYER ativa com senha e Personal ID hasheados',
+      'Cadastro real inicializa WCoin, Goblin Point e Hunt Point com saldo 0',
+      'Tela /registrar ja envia dados para API e trata duplicidade de usuario/e-mail'
     ],
     nextSteps: [
-      'Criar backend de autenticacao',
-      'Validar usuario/email duplicado',
+      'Adicionar validacao server-side mais detalhada para Personal ID e politicas de senha',
       'Criar envio real de recuperacao por email',
-      'Remover credenciais mockadas quando o backend entrar'
+      'Criar refresh/logout server-side',
+      'Remover credenciais locais de desenvolvimento antes da publicacao'
     ]
   },
   {
@@ -263,12 +320,13 @@ export const implementationRoadmap: RoadmapItem[] = [
   {
     title: 'Internacionalizacao completa',
     area: 'Site',
-    status: 'A fazer',
+    status: 'Em andamento',
     priority: 'Baixa',
     summary: 'O seletor de idioma existe, mas todo conteudo novo precisa entrar com chaves de traducao.',
     collectedData: [
       'Dropdown de idiomas no header',
-      'Idiomas base definidos: PT-BR, PT-PT, ES, EN-US, EN-GB, FR, DE, IT'
+      'Idiomas base definidos: PT-BR, PT-PT, ES, EN-US, EN-GB, FR, DE, IT',
+      'Composables e dicionarios principais ja existem no frontend'
     ],
     nextSteps: [
       'Mapear textos das novas paginas para traducoes',

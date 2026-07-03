@@ -17,11 +17,29 @@ type AuthSession = {
   createdAt: number
   expiresAt: number
   lastSeenAt: number
+  accessToken?: string
+  refreshToken?: string
 }
 
 type LoginResult = {
   ok: boolean
   message: string
+}
+
+type ApiLoginResponse = {
+  accessToken: string
+  refreshToken: string
+  user: {
+    id: string
+    username: string
+    name: string
+    role: string
+    permissions: string[]
+    currencies?: Array<{
+      currency: string
+      balance: number
+    }>
+  }
 }
 
 type LoginAttemptState = {
@@ -120,6 +138,25 @@ const writeJson = (key: string, value: unknown) => {
 const currencyRecordToList = (currencies?: Record<string, number>) =>
   Object.entries(currencies || {}).map(([label, value]) => ({ label, value }))
 
+const apiCurrencyLabels: Record<string, string> = {
+  WCOIN: 'WCoin',
+  GOBLIN_POINT: 'Goblin Point',
+  HUNT_POINT: 'Hunt Point'
+}
+
+const currenciesFromApi = (currencies?: ApiLoginResponse['user']['currencies']) =>
+  (currencies || []).map((currency) => ({
+    label: apiCurrencyLabels[currency.currency] || currency.currency,
+    value: currency.balance
+  }))
+
+const roleFromApi = (role: string): UserRole => {
+  const normalized = role.toLowerCase().replaceAll('_', '-') as UserRole
+  return ['player', 'moderator', 'game-master', 'admin', 'super-admin'].includes(normalized)
+    ? normalized
+    : 'player'
+}
+
 const getStoredManagedAccount = (username: string) => {
   const managementState = readJson<StoredManagementState | null>(managementStorageKey, null)
   return managementState?.accounts?.find((account) => account.username === username)
@@ -165,13 +202,15 @@ export const useAuth = () => {
     writeJson(auditStorageKey, [nextEvent, ...events].slice(0, maxAuditEvents))
   }
 
-  const saveSession = (nextUser: AuthUser) => {
+  const saveSession = (nextUser: AuthUser, tokens?: { accessToken?: string; refreshToken?: string }) => {
     const now = Date.now()
     const nextSession: AuthSession = {
       user: nextUser,
       createdAt: now,
       expiresAt: now + sessionDurationFor(nextUser.role),
-      lastSeenAt: now
+      lastSeenAt: now,
+      accessToken: tokens?.accessToken,
+      refreshToken: tokens?.refreshToken
     }
 
     user.value = nextUser
@@ -281,68 +320,54 @@ export const useAuth = () => {
     return nextState
   }
 
-  const loginWithCredentials = (username: string, password: string): LoginResult => {
-    const attemptState = getAttemptState()
-    if (attemptState.lockedUntil > Date.now()) {
-      const seconds = Math.ceil((attemptState.lockedUntil - Date.now()) / 1000)
-      return {
-        ok: false,
-        message: `Muitas tentativas incorretas. Tente novamente em ${seconds}s.`
+  const loginWithApi = async (username: string, password: string): Promise<LoginResult | null> => {
+    const config = useRuntimeConfig()
+    const apiBase = String(config.public.apiBase || 'http://localhost:3333/api').replace(/\/$/, '')
+
+    try {
+      const response = await $fetch<ApiLoginResponse>(`${apiBase}/auth/login`, {
+        method: 'POST',
+        body: { username, password }
+      })
+      const nextUser: AuthUser = {
+        username: response.user.username,
+        name: response.user.name,
+        role: roleFromApi(response.user.role),
+        currencies: currenciesFromApi(response.user.currencies)
       }
-    }
 
-    const normalizedUser = username.trim().toLowerCase()
-    const account = demoUsers[normalizedUser]
-
-    if (!account || account.password !== password) {
-      const failedState = registerFailedAttempt()
+      saveSession(nextUser, {
+        accessToken: response.accessToken,
+        refreshToken: response.refreshToken
+      })
+      resetAttempts()
       recordAudit({
-        type: 'auth.login.failed',
-        message: 'Tentativa de login invalida.',
-        user: normalizedUser || 'guest',
-        role: 'guest',
-        meta: { attempts: failedState.count }
+        type: 'auth.login.success',
+        message: 'Login realizado com sucesso pela API.',
+        user: nextUser.username,
+        role: nextUser.role
       })
 
       return {
-        ok: false,
-        message: failedState.lockedUntil > Date.now()
-          ? 'Muitas tentativas incorretas. Login bloqueado temporariamente.'
-          : 'Usuario ou senha invalidos. Para teste use admin / admin.'
+        ok: true,
+        message: nextUser.role === 'admin'
+          ? 'Login realizado como administrador pela API.'
+          : 'Login realizado com sucesso.'
       }
+    } catch {
+      return null
     }
+  }
 
-    const managedAccount = getStoredManagedAccount(account.username)
-    if (managedAccount?.status === 'Bloqueada') {
-      recordAudit({
-        type: 'auth.login.blocked',
-        message: 'Login bloqueado por status da conta.',
-        user: account.username,
-        role: managedAccount.role || account.role,
-        meta: { status: managedAccount.status }
-      })
-
-      return {
-        ok: false,
-        message: 'Esta conta esta bloqueada. Entre em contato com a administracao.'
-      }
+  const loginWithCredentials = async (username: string, password: string): Promise<LoginResult> => {
+    const apiResult = await loginWithApi(username, password)
+    if (apiResult) {
+      return apiResult
     }
-
-    const nextUser = mergeUserWithManagedAccount(sanitizeUser(account))
-    saveSession(nextUser)
-    resetAttempts()
-    recordAudit({
-      type: 'auth.login.success',
-      message: 'Login realizado com sucesso.',
-      user: nextUser.username,
-      role: nextUser.role
-    })
 
     return {
-      ok: true,
-      message: nextUser.role === 'admin'
-        ? 'Login de teste realizado como administrador.'
-        : 'Login realizado com sucesso.'
+      ok: false,
+      message: 'Nao foi possivel autenticar pela API. Verifique se o backend esta ligado.'
     }
   }
 

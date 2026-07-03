@@ -11,6 +11,41 @@ Este diretorio centraliza dados externos para a wiki e os guias do Blood Moon.
 
 ## Fontes coletadas
 
+### Source Harvest - GuiaMu Argentina e Webzen Game Info
+
+Arquivos:
+
+- `source-harvest/README.md`
+- `source-harvest/normalized-index.json`
+- `source-harvest/normalization-report.md`
+- `source-harvest/guiamu-com-ar/guiamu-com-ar-data.json`
+- `source-harvest/webzen-gameinfo-pt/webzen-gameinfo-pt-data.json`
+
+Arquivos fisicos:
+
+- `../game-assets/source-harvest/guiamu-com-ar`
+- `../game-assets/source-harvest/webzen-gameinfo-pt`
+
+Fontes:
+
+- https://guiamu.com.ar/?lang=pt
+- https://muonline.webzen.com/pt/gameinfo
+
+Conteudo coletado:
+
+- 436 paginas brutas rastreadas.
+- 330 paginas canonicas apos deduplicacao por titulo/texto/fonte.
+- 106 paginas duplicadas colapsadas.
+- 7072 registros brutos de imagem.
+- 1537 arquivos de imagem unicos por SHA1.
+- Categorias detectadas para personagens, equipamentos, itens, mapas, drops, spots, skills, eventos, quests e NPCs.
+
+Regra:
+
+- Estes arquivos sao a base de importacao para o PostgreSQL.
+- Nao excluir `source-harvest` nem referencias antigas enquanto os dados nao forem importados, auditados e marcados como publicados/arquivados no banco.
+- Itens off-topic detectados devem ficar como `OFF_TOPIC` ou `NEEDS_REVIEW`, nunca misturados com conteudo publicado.
+
 ### MegaMu forum - skills
 
 Arquivo:
@@ -247,6 +282,7 @@ Arquivos promovidos para o app:
 
 - `apps/web/data/equipmentOptionRules.ts`
 - `apps/web/data/jewelReferenceRules.ts`
+- `references/game-assets/user-references/equipment-tooltips`
 
 Conteudo catalogado:
 
@@ -254,6 +290,21 @@ Conteudo catalogado:
 - Regras de Luck, Additional Option, Excellent Option e Set Item Equipment Information.
 - Registro inicial de Jewel of Harmony, Jewel of Guardian e Seed Sphere.
 - Diretriz visual: brilho de upgrade/bless nao representa o item base; linhas amarelas indicam Harmony; linhas de Siege/Guardian e Socket dependem da versao e do item elegivel.
+- Tooltip fiel ao jogo deve mostrar: nome do item, defesa ou dano, velocidade quando aplicavel, durabilidade, requisitos, classes que equipam, linhas normais, linhas Excellent/Ancient/Socket/Mastery e efeito de set.
+- Filtro de personagem/classe em Sets deve representar progressao por classe-alvo, nao apenas toda a lista de classes que consegue equipar o item.
+- Season 6 e a versao publica atual. Contas administrativas podem alternar a Wiki ate Season 21 para organizar conteudo futuro.
+- Bloco Ancient/Mastery deve renderizar separado das opcoes normais: titulo `Set Item Equipment Information`, nome do set e pecas em verde, bonus por quantidade de pecas em azul e texto centralizado como tooltip do jogo.
+- Seletor de Season da Wiki deve ser compacto no canto do aside; admin abre a lista de Seasons, player visualiza apenas S6.
+- Linhas `Running speed increase` e `Swimming speed increase` nao aumentam status numerico; elas representam movimento de correr/nadar e so devem aparecer como condicao de item blessado/refinado, sem valores como `+12` ou `+7`.
+- Modal de detalhes de set deve preservar o layout, mas usar escala compacta de fontes, paddings, gaps e imagens para reduzir espacos vazios.
+
+Verificacao local em 2026-06-30:
+
+- Login `admin/admin` redireciona para a home e permite abrir a Wiki como administrador.
+- Wiki admin inicia com seletor compacto `S21` no canto do aside e mostra equipamentos de temporadas futuras no catalogo.
+- Wiki sem topico selecionado renderiza area vazia com instrucao para selecionar conteudo no menu lateral.
+- Modal Ancient validado com `Anonymous Leather`: exibe `Set Item Equipment Information`, pecas do `Anonymous Leather Set` e linhas `2 equipamentos`, `3 equipamentos`, `4 equipamentos` e `Set completo/adicional`.
+- Modal em viewport de 1024px empilha as secoes em uma coluna para evitar textos e cards esmagados.
 
 ## Proximas coletas recomendadas
 
@@ -270,3 +321,28 @@ Conteudo catalogado:
 - Catalogo usado pela rota: `data/devReferenceAssets.ts`.
 - Imagens espelhadas para o navegador: `public/dev-references/visual`.
 - Objetivo: separar referencias de personagens, equipamentos, mapas, monstros e fontes para avaliacao visual antes de publicar no site principal.
+## PostgreSQL e validacao atual
+
+- `source-harvest/postgres-import-plan.json`: plano de fontes, entradas, assets e vinculos.
+- `equipment-postgres-import-plan.json`: plano de equipamentos, variantes, pecas e opcoes.
+- `equipment-remap-audit.md`: auditoria global de equipamentos.
+
+Importacao PostgreSQL validada:
+
+- 330 entradas de conhecimento.
+- 1537 assets.
+- 1719 equipamentos.
+- 2729 variantes.
+- 2511 pecas.
+- 55 opcoes.
+
+## Regra
+
+Nao corrigir apenas o exemplo usado em tela. Se a regra for de Ancient, Excellent, Socket, Lucky, Mastery ou qualquer familia de equipamentos, ajustar o remapeamento global e regenerar:
+
+```bash
+npm run data:remap-equipment
+npm run db:import
+```
+
+Depois validar `equipment-remap-audit.md` e pelo menos uma consulta real no PostgreSQL.

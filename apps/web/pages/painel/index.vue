@@ -1,30 +1,7 @@
 <template>
   <ManagementShell>
     <div v-if="hasPermission(permissions.adminDashboardView)" class="grid gap-4">
-      <section class="bm-dashboard-shell grid gap-4 p-3 md:p-4 xl:grid-cols-[72px_1fr]">
-        <aside class="hidden rounded-[22px] border border-white/10 bg-black/22 p-3 xl:grid xl:content-between">
-          <div class="grid gap-3">
-            <button
-              v-for="item in sideActions"
-              :key="item.label"
-              class="grid size-11 place-items-center rounded-2xl border border-white/10 bg-white/[0.055] text-white/70 transition hover:border-ember/45 hover:bg-ember/15 hover:text-white"
-              type="button"
-              :aria-label="item.label"
-            >
-              <component :is="item.icon" class="size-4" />
-            </button>
-          </div>
-
-          <div class="grid gap-3">
-            <button class="grid size-11 place-items-center rounded-2xl border border-white/10 bg-white/[0.055] text-white/70" type="button" aria-label="Notificacoes">
-              <Bell class="size-4" />
-            </button>
-            <button class="grid size-11 place-items-center rounded-2xl border border-white/10 bg-white/[0.055] text-white/70" type="button" aria-label="Configuracoes">
-              <Settings class="size-4" />
-            </button>
-          </div>
-        </aside>
-
+      <section class="bm-dashboard-shell grid gap-4 p-3 md:p-4">
         <div class="grid min-w-0 gap-4">
           <div class="flex flex-wrap items-center justify-between gap-3 px-1">
             <div>
@@ -181,71 +158,51 @@
 </template>
 
 <script setup lang="ts">
-import { Bell, ClipboardList, Gem, LayoutDashboard, Mail, Search, Settings, ShieldCheck, ShoppingBag, UserCog, Users } from 'lucide-vue-next'
+import { Gem, Mail, Search, ShoppingBag, Users } from 'lucide-vue-next'
+import type { AdminDashboardSummary } from '~/composables/useAdminDashboardApi'
 import { permissions } from '~/data/security'
 
 const { hasPermission, loadSession, user } = useAuth()
-const { getAccountByUsername, loadManagement, state } = useManagement()
+const adminDashboardApi = useAdminDashboardApi()
+const dashboardSummary = ref<AdminDashboardSummary | null>(null)
 
 useSeoMeta({ title: 'Painel administrativo' })
 
-onMounted(() => {
+onMounted(async () => {
   loadSession()
-  loadManagement()
+  await loadDashboardSummary()
 })
 
-const accountCurrencies = computed(() => {
-  const account = getAccountByUsername(user.value?.username)
-  if (!account) {
-    return user.value?.currencies || []
+const loadDashboardSummary = async () => {
+  try {
+    dashboardSummary.value = await adminDashboardApi.summary()
+  } catch {
+    dashboardSummary.value = null
   }
+}
 
-  return Object.entries(account.currencies).map(([label, value]) => ({ label, value }))
-})
+const accountCurrencies = computed(() => user.value?.currencies || [])
 
-const onlineUsers = computed(() => Math.max(42, state.value.characters.length * 8 + 18))
-const recentRevenue = computed(() => (state.value.recharges.length * 129 + 586).toLocaleString('pt-BR'))
-const rechargeGrowth = computed(() => Math.max(12, state.value.recharges.length * 6))
+const onlineUsers = computed(() => dashboardSummary.value?.metrics.onlineCharacters || 0)
+const recentRevenue = computed(() => (dashboardSummary.value?.metrics.recentRevenue || 0).toLocaleString('pt-BR'))
+const rechargeGrowth = computed(() => dashboardSummary.value?.metrics.recharges ? Math.max(12, dashboardSummary.value.metrics.recharges * 6) : 0)
 const userInitials = computed(() => (user.value?.name || 'BM').slice(0, 2).toUpperCase())
 
 const heroMetrics = computed(() => [
-  { label: 'Contas', value: state.value.accounts.length.toString() },
-  { label: 'Chars', value: state.value.characters.length.toString() },
-  { label: 'Compras', value: state.value.purchases.length.toString() },
-  { label: 'Recargas', value: state.value.recharges.length.toString() }
+  { label: 'Contas', value: (dashboardSummary.value?.metrics.accounts || 0).toString() },
+  { label: 'Chars', value: (dashboardSummary.value?.metrics.characters || 0).toString() },
+  { label: 'Compras', value: (dashboardSummary.value?.metrics.purchases || 0).toString() },
+  { label: 'Recargas', value: (dashboardSummary.value?.metrics.recharges || 0).toString() }
 ])
 
-const sideActions = [
-  { label: 'Dashboard', icon: LayoutDashboard },
-  { label: 'Contas', icon: ShieldCheck },
-  { label: 'Personagens', icon: Users },
-  { label: 'Loja', icon: ShoppingBag },
-  { label: 'Conta', icon: UserCog },
-  { label: 'Pendencias', icon: ClipboardList }
-]
-
 const activityRows = computed(() => [
-  {
-    icon: Users,
-    title: 'Personagens cadastrados',
-    description: 'Base pronta para cruzar personagens, classes e futuras leituras do servidor.',
-    status: `${state.value.characters.length} registros`,
-    trend: '+8.4%'
-  },
-  {
-    icon: ShoppingBag,
-    title: 'Loja e compras',
-    description: 'Fluxo preparado para catalogo, moedas, compras e auditoria administrativa.',
-    status: `${state.value.purchases.length} compras`,
-    trend: '+4.9%'
-  },
-  {
-    icon: Gem,
-    title: 'Recargas pendentes',
-    description: 'Area financeira organizada para revisar status, comprovantes e historico.',
-    status: `${state.value.recharges.length} recargas`,
-    trend: '+12%'
-  }
+  ...(dashboardSummary.value?.activity.map((row) => ({
+    icon: row.key === 'characters' ? Users : row.key === 'purchases' ? ShoppingBag : Gem,
+    title: row.title,
+    description: row.description,
+    status: row.status,
+    trend: row.trend
+  })) || [])
 ])
 
 const chartBars = [34, 48, 42, 66, 58, 78, 52, 86, 74, 94, 70, 88]

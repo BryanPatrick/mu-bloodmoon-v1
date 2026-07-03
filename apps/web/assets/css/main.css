@@ -46,20 +46,39 @@
       radial-gradient(circle at 82% 12%, rgba(244, 114, 182, 0.34), transparent 28rem),
       radial-gradient(circle at 62% 74%, rgba(139, 92, 246, 0.24), transparent 30rem),
       linear-gradient(135deg, #fff8eb 0%, #edf8ff 48%, #fff2f7 100%);
-    --bm-surface: rgba(255, 255, 255, 0.42);
-    --bm-surface-strong: rgba(255, 255, 255, 0.54);
-    --bm-surface-soft: rgba(255, 255, 255, 0.32);
-    --bm-border: rgba(255, 255, 255, 0.64);
-    --bm-border-strong: rgba(255, 255, 255, 0.82);
-    --bm-text: #1f2937;
-    --bm-muted: #64748b;
-    --bm-heading: #111827;
-    --bm-glass-highlight: rgba(255, 255, 255, 0.78);
-    --bm-glass-shadow: rgba(67, 56, 202, 0.14);
+    --bm-surface: rgba(255, 255, 255, 0.72);
+    --bm-surface-strong: rgba(255, 255, 255, 0.82);
+    --bm-surface-soft: rgba(255, 255, 255, 0.66);
+    --bm-border: rgba(100, 116, 139, 0.22);
+    --bm-border-strong: rgba(100, 116, 139, 0.36);
+    --bm-text: #172033;
+    --bm-muted: #475569;
+    --bm-heading: #0f172a;
+    --bm-glass-highlight: rgba(255, 255, 255, 0.9);
+    --bm-glass-shadow: rgba(15, 23, 42, 0.14);
   }
 
   html {
     scroll-behavior: smooth;
+    font-size: 92%;
+  }
+
+  @media (min-width: 768px) {
+    html {
+      font-size: 82%;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    html {
+      font-size: 76%;
+    }
+  }
+
+  @media (min-width: 1680px) {
+    html {
+      font-size: 72%;
+    }
   }
 
   body {
@@ -82,14 +101,14 @@
     width: 100%;
     max-width: none;
     margin-inline: auto;
-    padding-inline: 24px;
+    padding-inline: clamp(16px, 1.5vw, 24px);
   }
 
   .bm-guide-container {
     width: 100%;
     max-width: none;
     margin-inline: auto;
-    padding-inline: 24px;
+    padding-inline: clamp(16px, 1.5vw, 24px);
   }
 
   .bm-panel {
@@ -198,7 +217,7 @@
 
   html.light .bm-nav-link:hover,
   html.light .bm-nav-link-active {
-    background: rgba(255, 255, 255, 0.62);
+    background: rgba(15, 23, 42, 0.08);
   }
 
   .bm-button-glass {
@@ -219,6 +238,49 @@
     background:
       linear-gradient(135deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.36)),
       rgba(255, 255, 255, 0.44);
+  }
+
+  html.light .bm-nav-dropdown {
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.74), rgba(236, 244, 249, 0.68)),
+      rgba(235, 241, 247, 0.96);
+    border-color: rgba(100, 116, 139, 0.28);
+  }
+
+  html.light :where(.bm-panel, .bm-glass, .bm-liquid-shell, .bm-liquid-card, .bm-dashboard-shell, .bm-dashboard-card, .bm-dashboard-hero) {
+    color: #172033;
+  }
+
+  html.light :where(.bm-panel, .bm-liquid-shell, .bm-liquid-card, .bm-dashboard-shell, .bm-dashboard-card, .bm-dashboard-hero) :where(
+    [class*="text-white"],
+    [class*="text-zinc-"],
+    [class*="text-moon"]
+  ) {
+    color: #172033 !important;
+  }
+
+  html.light :where(.bm-panel, .bm-liquid-shell, .bm-liquid-card, .bm-dashboard-shell, .bm-dashboard-card, .bm-dashboard-hero) :where(
+    .bm-muted,
+    [class*="text-white/"],
+    [class*="text-zinc-300"],
+    [class*="text-zinc-400"],
+    [class*="text-zinc-500"]
+  ) {
+    color: #526078 !important;
+  }
+
+  html.light :where(.bm-panel, .bm-liquid-shell, .bm-liquid-card, .bm-dashboard-shell, .bm-dashboard-card, .bm-dashboard-hero) :where(input, select, textarea) {
+    color: #111827 !important;
+    background: rgba(255, 255, 255, 0.72) !important;
+    border-color: rgba(100, 116, 139, 0.28) !important;
+  }
+
+  html.light :where(.bm-panel, .bm-liquid-shell, .bm-liquid-card, .bm-dashboard-shell, .bm-dashboard-card, .bm-dashboard-hero) :where(input, textarea)::placeholder {
+    color: rgba(71, 85, 105, 0.72) !important;
+  }
+
+  html.light :where(.bg-blood-700, .bg-blood-600, .bg-blood-500, .bm-liquid-primary) {
+    color: #ffffff !important;
   }
 
   .bm-heading {
@@ -399,6 +461,47 @@
 
   .bm-density-compact .bm-page-hero + section {
     padding-top: 6px !important;
+  }
+
+  @media (max-width: 1440px), (max-height: 820px) {
+    .bm-density-compact {
+      font-size: 0.88rem;
+    }
+
+    .bm-density-compact :where(.bm-panel, .bm-liquid-shell, .bm-liquid-card) {
+      border-radius: 18px;
+    }
+
+    .bm-density-compact :where(.rounded-md) {
+      border-radius: 0.32rem;
+    }
+
+    .bm-density-compact :where(.min-h-\[330px\]) {
+      min-height: 230px;
+    }
+
+    .bm-density-compact :where(.max-h-\[300px\]) {
+      max-height: 220px;
+    }
+
+    .bm-density-compact :where(.min-h-24) {
+      min-height: 4.5rem;
+    }
+
+    .bm-density-compact :where(.max-h-20) {
+      max-height: 3.6rem;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .bm-container,
+    .bm-guide-container {
+      padding-inline: 16px;
+    }
+
+    .bm-density-compact {
+      font-size: 0.82rem;
+    }
   }
 
   .bm-liquid-shell {

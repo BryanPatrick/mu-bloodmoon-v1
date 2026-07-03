@@ -27,19 +27,156 @@ enum CurrencyCode {
   HUNT_POINT
 }
 
+enum KnowledgeEntryKind {
+  CHARACTER
+  EQUIPMENT
+  ITEM
+  MAP
+  MONSTER
+  DROP
+  SKILL
+  EVENT
+  QUEST
+  NPC
+  GUIDE
+  LORE
+  SYSTEM
+  UNKNOWN
+}
+
+enum KnowledgeScope {
+  SEASON_6
+  FUTURE_SEASON
+  ALL_SEASONS
+  OFF_TOPIC
+  NEEDS_REVIEW
+}
+
+enum ReferenceAssetKind {
+  IMAGE
+  HTML
+  TEXT
+  JSON
+  OTHER
+}
+
+enum EditorialStatus {
+  RAW
+  NORMALIZED
+  REVIEWED
+  APPROVED
+  REMASTER_PENDING
+  PUBLISHED
+  ARCHIVED
+}
+
+enum EquipmentGroup {
+  SET
+  SET_PIECE
+  WEAPON
+  SHIELD
+  WING
+  ACCESSORY
+  PET
+  JEWEL
+  CONSUMABLE
+  MISC
+}
+
+enum EquipmentQuality {
+  NORMAL
+  EXCELLENT
+  ANCIENT
+  SOCKET
+  MASTERY_ANCIENT
+  LUCKY
+}
+
+enum EquipmentClassLinkRole {
+  BASE
+  PLAYABLE
+  TARGET
+}
+
+enum ShopProductStatus {
+  ACTIVE
+  DRAFT
+  ARCHIVED
+}
+
+enum PurchaseIntentStatus {
+  PREPARED
+  COMPLETED
+  CANCELLED
+}
+
+enum RechargeIntentStatus {
+  PREPARED
+  PAID
+  CANCELLED
+}
+
+enum CharacterRuntimeStatus {
+  ONLINE
+  OFFLINE
+  BLOCKED
+}
+
+enum MarketplaceListingStatus {
+  PENDING_LOCK
+  ACTIVE
+  SOLD
+  CANCELLED
+  EXPIRED
+  FAILED
+}
+
+enum MarketplaceOrderStatus {
+  PREPARED
+  PAID
+  DELIVERING
+  COMPLETED
+  CANCELLED
+  REFUNDED
+  FAILED
+}
+
+enum GameBridgeOperation {
+  LOCK_ITEM
+  RELEASE_ITEM
+  TRANSFER_ITEM
+  DELIVER_ITEM
+  CREDIT_CURRENCY
+  SYNC_INVENTORY
+}
+
+enum GameBridgeStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
 model Account {
-  id             String        @id @default(uuid())
-  username       String        @unique
+  id             String                @id @default(uuid())
+  username       String                @unique
   name           String
-  email          String        @unique
+  email          String                @unique
   passwordHash   String
   personalIdHash String?
-  role           Role          @default(PLAYER)
-  status         AccountStatus @default(PENDING)
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  role           Role                  @default(PLAYER)
+  status         AccountStatus         @default(PENDING)
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
   currencies     AccountCurrency[]
-  auditEvents    AuditEvent[]  @relation("AuditActor")
+  auditEvents    AuditEvent[]          @relation("AuditActor")
+  purchases      PurchaseIntent[]
+  recharges      RechargeIntent[]
+  characters     AccountCharacter[]
+  marketListings PlayerMarketListing[] @relation("MarketplaceSeller")
+  marketOrders   PlayerMarketOrder[]   @relation("MarketplaceBuyer")
+  bridgeJobs     GameBridgeJob[]
 }
 
 model AccountCurrency {
@@ -50,6 +187,30 @@ model AccountCurrency {
   account   Account      @relation(fields: [accountId], references: [id])
 
   @@unique([accountId, currency])
+}
+
+model AccountCharacter {
+  id             String                 @id @default(uuid())
+  accountId      String
+  key            String                 @unique
+  name           String                 @unique
+  className      String
+  level          Int                    @default(1)
+  reset          Int                    @default(0)
+  masterReset    Int                    @default(0)
+  map            String                 @default("Lorencia")
+  guild          String                 @default("-")
+  pkStatus       String                 @default("Commoner")
+  status         CharacterRuntimeStatus @default(OFFLINE)
+  metadata       Json?
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  account        Account                @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  marketListings PlayerMarketListing[]
+
+  @@index([accountId])
+  @@index([className])
+  @@index([status])
 }
 
 model AuditEvent {
@@ -63,4 +224,385 @@ model AuditEvent {
   metadata      Json?
   createdAt     DateTime @default(now())
   actor         Account? @relation("AuditActor", fields: [actorId], references: [id])
+}
+
+model ReferenceSource {
+  id        String           @id @default(uuid())
+  key       String           @unique
+  title     String
+  baseUrl   String
+  publisher String?
+  language  String?
+  notes     String?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  entries   KnowledgeEntry[]
+  assets    ReferenceAsset[]
+}
+
+model KnowledgeEntry {
+  id             String                @id @default(uuid())
+  sourceId       String?
+  sourceKey      String?
+  sourceUrl      String?
+  canonicalKey   String                @unique
+  slug           String
+  title          String
+  kind           KnowledgeEntryKind    @default(UNKNOWN)
+  scope          KnowledgeScope        @default(NEEDS_REVIEW)
+  status         EditorialStatus       @default(RAW)
+  seasonMin      Int?
+  seasonMax      Int?
+  summary        String?
+  rawData        Json?
+  normalizedData Json?
+  duplicateOfId  String?
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  source         ReferenceSource?      @relation(fields: [sourceId], references: [id])
+  duplicateOf    KnowledgeEntry?       @relation("KnowledgeEntryDuplicates", fields: [duplicateOfId], references: [id])
+  duplicates     KnowledgeEntry[]      @relation("KnowledgeEntryDuplicates")
+  assets         KnowledgeEntryAsset[]
+
+  @@index([kind])
+  @@index([scope])
+  @@index([status])
+  @@index([sourceKey])
+  @@index([slug])
+}
+
+model ReferenceAsset {
+  id            String                @id @default(uuid())
+  sourceId      String?
+  sourceUrl     String?
+  localPath     String
+  publicPath    String?
+  kind          ReferenceAssetKind    @default(IMAGE)
+  mimeType      String?
+  sha1          String?
+  bytes         Int?
+  status        EditorialStatus       @default(RAW)
+  duplicateOfId String?
+  metadata      Json?
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  source        ReferenceSource?      @relation(fields: [sourceId], references: [id])
+  duplicateOf   ReferenceAsset?       @relation("ReferenceAssetDuplicates", fields: [duplicateOfId], references: [id])
+  duplicates    ReferenceAsset[]      @relation("ReferenceAssetDuplicates")
+  entries       KnowledgeEntryAsset[]
+
+  @@unique([localPath])
+  @@index([sha1])
+  @@index([kind])
+  @@index([status])
+  @@index([sourceId])
+}
+
+model KnowledgeEntryAsset {
+  entryId   String
+  assetId   String
+  role      String         @default("reference")
+  sortOrder Int            @default(0)
+  entry     KnowledgeEntry @relation(fields: [entryId], references: [id])
+  asset     ReferenceAsset @relation(fields: [assetId], references: [id])
+
+  @@id([entryId, assetId, role])
+  @@index([assetId])
+}
+
+model EquipmentRecord {
+  id           String               @id @default(uuid())
+  key          String               @unique
+  name         String
+  title        String
+  category     String
+  categorySlug String
+  group        EquipmentGroup       @default(MISC)
+  baseSetName  String?
+  sourceUrl    String?
+  minSeason    Int                  @default(1)
+  status       EditorialStatus      @default(NORMALIZED)
+  rawData      Json?
+  remapData    Json?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  variants     EquipmentVariant[]
+  pieces       EquipmentPiece[]
+  options      EquipmentOption[]
+  classLinks   EquipmentClassLink[]
+  seasons      EquipmentSeason[]
+
+  @@index([categorySlug])
+  @@index([group])
+  @@index([minSeason])
+  @@index([status])
+}
+
+model GameCharacter {
+  id              String               @id @default(uuid())
+  key             String               @unique
+  name            String
+  sortOrder       Int                  @default(0)
+  minSeason       Int                  @default(1)
+  isSeasonSixBase Boolean              @default(false)
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  classes         GameClass[]
+  equipmentLinks  EquipmentClassLink[]
+
+  @@index([sortOrder])
+  @@index([minSeason])
+  @@index([isSeasonSixBase])
+}
+
+model GameClass {
+  id              String               @id @default(uuid())
+  characterId     String
+  key             String               @unique
+  name            String
+  tier            Int                  @default(1)
+  minSeason       Int                  @default(1)
+  isSeasonSixBase Boolean              @default(false)
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  character       GameCharacter        @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  equipmentLinks  EquipmentClassLink[]
+
+  @@index([characterId])
+  @@index([tier])
+  @@index([minSeason])
+  @@index([isSeasonSixBase])
+}
+
+model EquipmentClassLink {
+  equipmentId String
+  classId     String
+  characterId String
+  role        EquipmentClassLinkRole @default(PLAYABLE)
+  source      String                 @default("remap")
+  createdAt   DateTime               @default(now())
+  equipment   EquipmentRecord        @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  class       GameClass              @relation(fields: [classId], references: [id], onDelete: Cascade)
+  character   GameCharacter          @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@id([equipmentId, classId, role])
+  @@index([classId])
+  @@index([characterId])
+  @@index([role])
+}
+
+model EquipmentSeason {
+  id          String          @id @default(uuid())
+  equipmentId String
+  season      Int
+  visibility  KnowledgeScope  @default(NEEDS_REVIEW)
+  source      String          @default("remap")
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  equipment   EquipmentRecord @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+
+  @@unique([equipmentId, season])
+  @@index([season])
+  @@index([visibility])
+}
+
+model EquipmentVariant {
+  id          String           @id @default(uuid())
+  equipmentId String
+  quality     EquipmentQuality
+  minSeason   Int              @default(1)
+  data        Json?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  equipment   EquipmentRecord  @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+
+  @@unique([equipmentId, quality])
+  @@index([quality])
+  @@index([minSeason])
+}
+
+model EquipmentPiece {
+  id          String          @id @default(uuid())
+  equipmentId String
+  name        String
+  slot        String
+  imagePath   String?
+  data        Json?
+  sortOrder   Int             @default(0)
+  equipment   EquipmentRecord @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+
+  @@index([equipmentId])
+  @@index([slot])
+}
+
+model EquipmentOption {
+  id          String          @id @default(uuid())
+  equipmentId String
+  scope       String
+  label       String
+  data        Json?
+  sortOrder   Int             @default(0)
+  equipment   EquipmentRecord @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+
+  @@index([equipmentId])
+  @@index([scope])
+}
+
+model ShopProduct {
+  id          String            @id @default(uuid())
+  key         String            @unique
+  name        String
+  short       String
+  category    String
+  description String
+  price       Int               @default(0)
+  currency    CurrencyCode
+  status      ShopProductStatus @default(ACTIVE)
+  stock       Int?
+  metadata    Json?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  purchases   PurchaseIntent[]
+
+  @@index([category])
+  @@index([currency])
+  @@index([status])
+}
+
+model RechargePackage {
+  id        String           @id @default(uuid())
+  key       String           @unique
+  currency  CurrencyCode
+  amount    Int
+  bonus     Int              @default(0)
+  price     String
+  highlight Boolean          @default(false)
+  active    Boolean          @default(true)
+  metadata  Json?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  recharges RechargeIntent[]
+
+  @@index([currency])
+  @@index([active])
+}
+
+model PurchaseIntent {
+  id        String               @id @default(uuid())
+  accountId String
+  productId String
+  price     Int
+  currency  CurrencyCode
+  status    PurchaseIntentStatus @default(PREPARED)
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+  account   Account              @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  product   ShopProduct          @relation(fields: [productId], references: [id])
+
+  @@index([accountId])
+  @@index([productId])
+  @@index([status])
+}
+
+model RechargeIntent {
+  id        String               @id @default(uuid())
+  accountId String
+  packageId String
+  currency  CurrencyCode
+  amount    Int
+  bonus     Int                  @default(0)
+  price     String
+  status    RechargeIntentStatus @default(PREPARED)
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+  account   Account              @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  package   RechargePackage      @relation(fields: [packageId], references: [id])
+
+  @@index([accountId])
+  @@index([packageId])
+  @@index([status])
+}
+
+model PlayerMarketListing {
+  id                String                   @id @default(uuid())
+  sellerAccountId   String
+  sellerCharacterId String?
+  gameItemRef       String
+  itemName          String
+  itemCategory      String
+  itemData          Json
+  price             Int
+  currency          CurrencyCode
+  status            MarketplaceListingStatus @default(PENDING_LOCK)
+  lockJobId         String?
+  lockedAt          DateTime?
+  expiresAt         DateTime?
+  soldAt            DateTime?
+  cancelledAt       DateTime?
+  metadata          Json?
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @updatedAt
+  seller            Account                  @relation("MarketplaceSeller", fields: [sellerAccountId], references: [id], onDelete: Cascade)
+  sellerCharacter   AccountCharacter?        @relation(fields: [sellerCharacterId], references: [id])
+  orders            PlayerMarketOrder[]
+  bridgeJobs        GameBridgeJob[]
+
+  @@unique([gameItemRef])
+  @@index([sellerAccountId])
+  @@index([sellerCharacterId])
+  @@index([currency])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model PlayerMarketOrder {
+  id             String                 @id @default(uuid())
+  listingId      String
+  buyerAccountId String
+  price          Int
+  currency       CurrencyCode
+  status         MarketplaceOrderStatus @default(PREPARED)
+  paidAt         DateTime?
+  deliveredAt    DateTime?
+  cancelledAt    DateTime?
+  metadata       Json?
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  listing        PlayerMarketListing    @relation(fields: [listingId], references: [id])
+  buyer          Account                @relation("MarketplaceBuyer", fields: [buyerAccountId], references: [id], onDelete: Cascade)
+  bridgeJobs     GameBridgeJob[]
+
+  @@index([listingId])
+  @@index([buyerAccountId])
+  @@index([currency])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model GameBridgeJob {
+  id             String               @id @default(uuid())
+  accountId      String?
+  listingId      String?
+  orderId        String?
+  operation      GameBridgeOperation
+  status         GameBridgeStatus     @default(PENDING)
+  idempotencyKey String               @unique
+  attempts       Int                  @default(0)
+  payload        Json
+  result         Json?
+  error          String?
+  availableAt    DateTime             @default(now())
+  processedAt    DateTime?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  account        Account?             @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  listing        PlayerMarketListing? @relation(fields: [listingId], references: [id], onDelete: SetNull)
+  order          PlayerMarketOrder?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@index([accountId])
+  @@index([listingId])
+  @@index([orderId])
+  @@index([operation])
+  @@index([status])
+  @@index([availableAt])
 }

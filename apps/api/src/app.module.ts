@@ -1,3 +1,16 @@
+import { Module } from '@nestjs/common'
+import { ConfigModule } from '@nestjs/config'
+import { DatabaseModule } from './database/database.module'
+import { AccountsModule } from './modules/accounts/accounts.module'
+import { AdminAuditModule } from './modules/admin-audit/admin-audit.module'
+import { AdminContentModule } from './modules/admin-content/admin-content.module'
+import { AdminDashboardModule } from './modules/admin-dashboard/admin-dashboard.module'
+import { AuthModule } from './modules/auth/auth.module'
+import { CharactersModule } from './modules/characters/characters.module'
+import { CommerceModule } from './modules/commerce/commerce.module'
+import { MarketplaceModule } from './modules/marketplace/marketplace.module'
+import { WikiModule } from './modules/wiki/wiki.module'
+
 export const apiModules = [
   'auth',
   'accounts',
@@ -7,7 +20,29 @@ export const apiModules = [
   'audit',
   'references',
   'tickets',
-  'game-integration'
+  'game-integration',
+  'marketplace',
+  'wiki',
+  'admin-content'
 ] as const
 
 export type ApiModuleName = typeof apiModules[number]
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
+    DatabaseModule,
+    AuthModule,
+    AccountsModule,
+    AdminAuditModule,
+    AdminContentModule,
+    AdminDashboardModule,
+    CharactersModule,
+    CommerceModule,
+    MarketplaceModule,
+    WikiModule
+  ]
+})
+export class AppModule {}

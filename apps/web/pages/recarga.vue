@@ -61,7 +61,7 @@
               <span>R$ {{ selectedPack.price }}</span>
             </div>
           </div>
-          <button class="mt-5 w-full rounded-md bg-blood-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-blood-500" type="button" @click="continuePayment">
+          <button class="mt-5 w-full rounded-md bg-blood-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-blood-500 disabled:cursor-not-allowed disabled:opacity-50" type="button" :disabled="!selectedPack" @click="continuePayment">
             Continuar pagamento
           </button>
 
@@ -80,29 +80,47 @@ import { rechargePacks, type RechargePack } from '~/data/management'
 useSeoMeta({ title: 'Recarga de moedas' })
 
 const { loadSession, recordAudit, user } = useAuth()
-const { createRechargeIntent, loadManagement, state } = useManagement()
-const currencies = Array.from(new Set(rechargePacks.map((pack) => pack.currency)))
-const selectedCurrency = ref(currencies[0])
-const selectedPack = ref<RechargePack>(rechargePacks.find((pack) => pack.currency === selectedCurrency.value && pack.highlight) || rechargePacks[0])
+const commerceApi = useCommerceApi()
+const packs = ref<RechargePack[]>([])
+const currencies = computed(() => Array.from(new Set(packs.value.map((pack) => pack.currency))))
+const selectedCurrency = ref(rechargePacks[0].currency)
+const selectedPack = ref<RechargePack>(rechargePacks[0])
 const message = ref('')
 
-onMounted(() => {
+onMounted(async () => {
   loadSession()
-  loadManagement()
+  await loadPacks()
 })
 
-const visiblePacks = computed(() => state.value.rechargePacks.filter((pack) => pack.currency === selectedCurrency.value))
+const loadPacks = async () => {
+  try {
+    const response = await commerceApi.listRechargePackages(false)
+    packs.value = response.data
+  } catch {
+    packs.value = []
+    message.value = 'API indisponivel. Pacotes locais nao serao usados como fallback.'
+  }
+
+  selectedCurrency.value = currencies.value[0] || rechargePacks[0].currency
+  selectedPack.value = visiblePacks.value.find((pack) => pack.highlight) || visiblePacks.value[0] || rechargePacks[0]
+}
+
+const visiblePacks = computed(() => packs.value.filter((pack) => pack.currency === selectedCurrency.value))
 
 watch(selectedCurrency, () => {
   selectedPack.value = visiblePacks.value.find((pack) => pack.highlight) || visiblePacks.value[0]
 })
 
-const continuePayment = () => {
-  if (user.value) {
-    createRechargeIntent(user.value.username, selectedPack.value)
+const continuePayment = async () => {
+  if (!selectedPack.value) {
+    return
   }
 
-  message.value = `Pagamento de ${selectedPack.value.amount.toLocaleString('pt-BR')} ${selectedPack.value.currency} preparado em modo teste.`
+  if (user.value) {
+    await commerceApi.createRechargeIntent(selectedPack.value.id)
+  }
+
+  message.value = `Pagamento de ${selectedPack.value.amount.toLocaleString('pt-BR')} ${selectedPack.value.currency} preparado no banco.`
   recordAudit({
     type: 'recharge.payment.intent',
     message: `Recarga preparada: ${selectedPack.value.amount} ${selectedPack.value.currency}.`,

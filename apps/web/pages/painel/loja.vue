@@ -64,27 +64,40 @@
 </template>
 
 <script setup lang="ts">
+import type { ShopProduct } from '~/data/management'
+
 useSeoMeta({ title: 'Loja Blood Moon' })
 
 const { loadSession, recordAudit, user } = useAuth()
-const { createPurchaseIntent, loadManagement, state } = useManagement()
+const commerceApi = useCommerceApi()
 const query = ref('')
 const activeCategory = ref('Todas')
 const activeCurrency = ref('Todas')
 const message = ref('')
+const products = ref<ShopProduct[]>([])
 
-onMounted(() => {
+onMounted(async () => {
   loadSession()
-  loadManagement()
+  await loadProducts()
 })
 
-const categories = computed(() => Array.from(new Set(state.value.products.map((product) => product.category))).sort())
-const currencies = computed(() => Array.from(new Set(state.value.products.map((product) => product.currency))).sort())
+const loadProducts = async () => {
+  try {
+    const response = await commerceApi.listProducts(false)
+    products.value = response.data
+  } catch {
+    products.value = []
+    message.value = 'API indisponivel. Produtos locais nao serao usados como fallback.'
+  }
+}
+
+const categories = computed(() => Array.from(new Set(products.value.map((product) => product.category))).sort())
+const currencies = computed(() => Array.from(new Set(products.value.map((product) => product.currency))).sort())
 
 const filteredProducts = computed(() => {
   const normalizedQuery = query.value.trim().toLowerCase()
 
-  return state.value.products.filter((product) => {
+  return products.value.filter((product) => {
     const matchesCategory = activeCategory.value === 'Todas' || product.category === activeCategory.value
     const matchesCurrency = activeCurrency.value === 'Todas' || product.currency === activeCurrency.value
     const matchesQuery = !normalizedQuery || [product.name, product.category, product.description, product.currency]
@@ -96,14 +109,14 @@ const filteredProducts = computed(() => {
   })
 })
 
-const buyProduct = (name: string) => {
-  const product = state.value.products.find((item) => item.name === name)
+const buyProduct = async (name: string) => {
+  const product = products.value.find((item) => item.name === name)
   if (!product || !user.value) {
     return
   }
 
-  createPurchaseIntent(user.value.username, product)
-  message.value = `Compra de ${name} preparada em modo teste.`
+  await commerceApi.createPurchaseIntent(product.id)
+  message.value = `Compra de ${name} preparada no banco.`
   recordAudit({
     type: 'shop.purchase.intent',
     message: `Intencao de compra registrada: ${name}.`,

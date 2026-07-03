@@ -14,3 +14,9 @@ Organizacao pensada para qualquer pessoa encontrar rapido onde mexer.
 Regra simples: se um componente pertence a uma tela especifica, primeiro tente deixar perto da tela. Se for reutilizado em mais de uma tela, mova para uma destas pastas.
 
 Padrao visual: seguir `docs/design-system.md`.
+
+## Painel de gerenciamento
+
+`layout/ManagementShell.vue` e o unico responsavel pelo menu lateral do painel.
+As paginas dentro de `/painel` nao devem criar outro aside/rail de navegacao administrativa.
+Quando o menu estiver recolhido, ele deve mostrar os mesmos itens do menu aberto, apenas em modo compacto com icones.

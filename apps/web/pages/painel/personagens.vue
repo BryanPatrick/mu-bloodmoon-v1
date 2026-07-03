@@ -70,10 +70,10 @@
         </div>
 
         <div class="mt-5 flex gap-2">
-          <button class="bm-button-glass flex-1 rounded-md px-3 py-2 text-sm font-bold" type="button" @click="selectCharacter(character.name)">
+          <button class="bm-button-glass flex-1 rounded-md px-3 py-2 text-sm font-bold" type="button" @click="selectCharacter(character.id, character.name)">
             Detalhes
           </button>
-          <button class="bm-button-glass flex-1 rounded-md px-3 py-2 text-sm font-bold" type="button" @click="requestReset(character.name)">
+          <button class="bm-button-glass flex-1 rounded-md px-3 py-2 text-sm font-bold" type="button" @click="requestReset(character.id, character.name)">
             Resetar
           </button>
         </div>
@@ -87,24 +87,25 @@
 </template>
 
 <script setup lang="ts">
+import type { ManagedCharacter } from '~/data/management'
+
 useSeoMeta({ title: 'Gerenciar personagens' })
 
-const { isAdmin, loadSession, recordAudit, user } = useAuth()
-const { loadManagement, state } = useManagement()
+const { isAdmin, loadSession, recordAudit } = useAuth()
+const charactersApi = useCharactersApi()
 const query = ref('')
 const activeClass = ref('Todas')
 const activeStatus = ref('Todos')
 const message = ref('')
+const characters = ref<ManagedCharacter[]>([])
 
-onMounted(() => {
+onMounted(async () => {
   loadSession()
-  loadManagement()
+  await loadCharacters()
 })
 
 const visibleCharacters = computed(() =>
-  isAdmin.value
-    ? state.value.characters
-    : state.value.characters.filter((character) => character.ownerUsername === user.value?.username)
+  characters.value
 )
 
 const classes = computed(() => Array.from(new Set(visibleCharacters.value.map((character) => character.class))).sort())
@@ -124,21 +125,54 @@ const filteredCharacters = computed(() => {
   })
 })
 
-const selectCharacter = (name: string) => {
-  message.value = `Detalhes de ${name} preparados para a proxima etapa do painel.`
-  recordAudit({
-    type: 'characters.details.opened',
-    message: `Detalhes do personagem ${name} foram consultados.`,
-    meta: { character: name }
-  })
+const loadCharacters = async () => {
+  try {
+    const response = await charactersApi.list()
+    characters.value = response.data
+  } catch {
+    characters.value = []
+    message.value = 'Nao foi possivel carregar personagens pela API.'
+  }
 }
 
-const requestReset = (name: string) => {
-  message.value = `Solicitacao de reset para ${name} registrada em modo teste.`
-  recordAudit({
-    type: 'characters.reset.requested',
-    message: `Reset solicitado para ${name}.`,
-    meta: { character: name }
-  })
+watch([query, activeClass, activeStatus], async () => {
+  try {
+    const response = await charactersApi.list({
+      search: query.value,
+      className: activeClass.value,
+      status: activeStatus.value
+    })
+    characters.value = response.data
+  } catch {
+    // Mantem a lista atual quando a API estiver indisponivel.
+  }
+})
+
+const selectCharacter = async (id: string, name: string) => {
+  try {
+    const response = await charactersApi.action(id, 'details')
+    message.value = response.message
+  } catch {
+    message.value = `Detalhes de ${name} preparados para a proxima etapa do painel.`
+    recordAudit({
+      type: 'characters.details.opened',
+      message: `Detalhes do personagem ${name} foram consultados.`,
+      meta: { character: name }
+    })
+  }
+}
+
+const requestReset = async (id: string, name: string) => {
+  try {
+    const response = await charactersApi.action(id, 'reset-request')
+    message.value = response.message
+  } catch {
+    message.value = `Solicitacao de reset para ${name} registrada em modo teste.`
+    recordAudit({
+      type: 'characters.reset.requested',
+      message: `Reset solicitado para ${name}.`,
+      meta: { character: name }
+    })
+  }
 }
 </script>

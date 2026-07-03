@@ -7,7 +7,7 @@ bloodmoon/
       assets/         CSS e estilos globais
       components/     componentes reutilizaveis
       composables/    regras reutilizaveis do frontend
-      data/           mocks e conteudos publicos
+      data/           dados publicos, regras visuais e camada legada local
       layouts/        layouts Nuxt
       middleware/     protecao de rotas
       pages/          paginas e URLs
@@ -36,5 +36,5 @@ bloodmoon/
 - Paginas publicas: `apps/web/pages`
 - Paginas admin: `apps/web/pages/painel/admin`
 - Permissoes: `apps/web/data/security.ts`
-- Dados mockados: `apps/web/data/management.ts`
-- Futuro backend: `apps/api/src/modules`
+- Dados locais legados: `apps/web/data/management.ts`
+- Backend/API: `apps/api/src/modules`

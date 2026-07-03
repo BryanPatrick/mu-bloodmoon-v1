@@ -86,6 +86,13 @@ export const ancientSetOptions: EquipmentOptionRule[] = [
 
 export const masteryAncientOptions: EquipmentOptionRule[] = [
   {
+    key: 'mastery-stamina-line',
+    label: 'Mastery/Ancient additional line: Increase stamina +15 or equivalent value, depending on set family and version.',
+    scope: 'mastery',
+    appliesTo: 'armor',
+    notes: 'Older ancient sets usually have fixed values; Mastery/Angel era sets may vary by family and version.'
+  },
+  {
     key: 'mastery-ancient-set-effect',
     label: 'Mastery/Angel era set effect: new-generation set bonuses by equipped pieces.',
     scope: 'mastery',
