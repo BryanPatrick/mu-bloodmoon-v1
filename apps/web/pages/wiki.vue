@@ -7,38 +7,57 @@
       description="Painel central para organizar mapas, monstros, personagens, equipamentos, formulas, eventos e todo o conhecimento do servidor."
     />
 
-    <section class="bm-guide-container grid gap-4 py-[6px] lg:grid-cols-[18rem_1fr]">
-      <aside class="bm-panel h-fit rounded-md p-[24px] lg:sticky lg:top-28">
-        <div class="flex items-start justify-between gap-3">
-          <div>
+    <section
+      class="bm-guide-container grid gap-4 py-[6px] transition-[grid-template-columns]"
+      :class="isWikiAsideCollapsed ? 'lg:grid-cols-[72px_1fr]' : 'lg:grid-cols-[18rem_1fr]'"
+    >
+      <aside
+        class="bm-panel h-fit rounded-md transition-all lg:sticky lg:top-28"
+        :class="isWikiAsideCollapsed ? 'p-3' : 'p-[24px]'"
+      >
+        <div class="flex items-start justify-between gap-3" :class="{ 'justify-center': isWikiAsideCollapsed }">
+          <div v-if="!isWikiAsideCollapsed">
             <p class="bm-kicker">Wiki</p>
             <h2 class="bm-heading mt-[6px] font-display text-2xl font-bold">Conteudos</h2>
           </div>
 
-          <div class="relative">
-            <button
-              class="rounded-md border border-white/10 bg-white/10 px-2.5 py-1.5 text-xs font-black uppercase tracking-[0.12em] text-white transition hover:border-ember/45 hover:bg-white/15"
-              type="button"
-              :aria-label="wikiSeasonNotice"
-              @click="isWikiSeasonOpen = !isWikiSeasonOpen"
-            >
-              S{{ wikiSeason }}
-            </button>
-            <div
-              v-if="isWikiSeasonOpen && isWikiAdmin"
-              class="absolute right-0 z-20 mt-2 grid max-h-64 w-32 gap-1 overflow-auto rounded-md border border-white/10 bg-zinc-950/95 p-1 shadow-2xl backdrop-blur-xl"
-            >
+          <div class="flex items-start gap-2">
+            <div v-if="!isWikiAsideCollapsed" class="relative">
               <button
-                v-for="season in availableWikiSeasons"
-                :key="season"
-                class="rounded px-2 py-1.5 text-left text-xs font-black text-white/75 transition hover:bg-white/10 hover:text-white"
-                :class="{ 'bg-ember/20 text-white': wikiSeason === season }"
+                class="rounded-md border border-white/10 bg-white/10 px-2.5 py-1.5 text-xs font-black uppercase tracking-[0.12em] text-white transition hover:border-ember/45 hover:bg-white/15"
                 type="button"
-                @click="selectWikiSeason(season)"
+                :aria-label="wikiSeasonNotice"
+                @click="isWikiSeasonOpen = !isWikiSeasonOpen"
               >
-                Season {{ season }}
+                S{{ wikiSeason }}
               </button>
+              <div
+                v-if="isWikiSeasonOpen && isWikiAdmin"
+                class="absolute right-0 z-20 mt-2 grid max-h-64 w-32 gap-1 overflow-auto rounded-md border border-white/10 bg-zinc-950/95 p-1 shadow-2xl backdrop-blur-xl"
+              >
+                <button
+                  v-for="season in availableWikiSeasons"
+                  :key="season"
+                  class="rounded px-2 py-1.5 text-left text-xs font-black text-white/75 transition hover:bg-white/10 hover:text-white"
+                  :class="{ 'bg-ember/20 text-white': wikiSeason === season }"
+                  type="button"
+                  @click="selectWikiSeason(season)"
+                >
+                  Season {{ season }}
+                </button>
+              </div>
             </div>
+
+            <button
+              class="grid size-8 place-items-center rounded-md border border-white/10 bg-white/10 text-white transition hover:border-ember/45 hover:bg-white/15"
+              type="button"
+              :aria-label="isWikiAsideCollapsed ? 'Abrir menu da wiki' : 'Recolher menu da wiki'"
+              :title="isWikiAsideCollapsed ? 'Abrir menu' : 'Recolher menu'"
+              @click="toggleWikiAside"
+            >
+              <PanelLeftOpen v-if="isWikiAsideCollapsed" class="size-4" />
+              <PanelLeftClose v-else class="size-4" />
+            </button>
           </div>
         </div>
 
@@ -47,18 +66,22 @@
             <button
               class="bm-nav-link flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm font-bold"
               :class="{ 'bm-nav-link-active': openSections.includes(section.key) || activeSectionKey === section.key }"
+              :title="isWikiAsideCollapsed ? section.title : undefined"
               type="button"
               @click="selectSection(section.key)"
             >
-              <span>{{ section.title }}</span>
+              <span class="flex min-w-0 items-center gap-2" :class="{ 'mx-auto': isWikiAsideCollapsed }">
+                <component :is="wikiSectionIcon(section.key)" class="size-4 shrink-0" />
+                <span v-if="!isWikiAsideCollapsed" class="truncate">{{ section.title }}</span>
+              </span>
               <ChevronDown
-                v-if="section.topics.length"
+                v-if="!isWikiAsideCollapsed && section.topics.length"
                 class="size-4 transition-transform"
                 :class="{ 'rotate-180 text-white': openSections.includes(section.key) }"
               />
             </button>
 
-            <div v-if="section.topics.length && openSections.includes(section.key)" class="mt-1 grid gap-1 pl-4">
+            <div v-if="!isWikiAsideCollapsed && section.topics.length && openSections.includes(section.key)" class="mt-1 grid gap-1 pl-4">
               <button
                 v-for="topic in section.topics"
                 :key="topic.key"
@@ -106,6 +129,239 @@
               A regra do Jewel of Guardian e separada: itens 380 comuns podem receber a opcao 380/Siege quando elegiveis,
               mas sets 380 Socket sao outra familia de item e nao devem receber esse aviso como se fossem itens 380 comuns.
             </p>
+          </div>
+        </div>
+
+        <div v-else-if="isFairyElfTopic" class="grid gap-5 xl:grid-cols-[minmax(0,1fr)_56px] xl:items-start">
+          <nav
+            class="bm-character-quick-nav hidden gap-2 rounded-md border border-white/15 bg-zinc-950/75 p-2 shadow-2xl backdrop-blur-xl xl:sticky xl:top-28 xl:order-2 xl:grid xl:self-start"
+            aria-label="Atalhos da pagina do personagem"
+          >
+            <a
+              v-for="anchor in characterAnchorLinks"
+              :key="anchor.id"
+              class="grid size-10 place-items-center rounded-md border border-white/10 bg-white/[0.06] text-zinc-300 transition hover:border-ember/50 hover:bg-ember/15 hover:text-white"
+              :href="`#${anchor.id}`"
+              :title="anchor.label"
+              :aria-label="anchor.label"
+            >
+              <component :is="anchor.icon" class="size-4" />
+            </a>
+          </nav>
+
+          <div class="grid min-w-0 gap-5 xl:order-1">
+          <section id="personagem-visao" class="relative min-h-[340px] overflow-hidden rounded-md border border-white/10 bg-black/30">
+            <img
+              class="absolute inset-0 h-full w-full scale-105 object-cover object-right"
+              src="/images/guide-elfa-hero.png"
+              alt="Fairy Elf em Noria"
+            >
+            <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.94)_0%,rgba(0,0,0,0.78)_35%,rgba(0,0,0,0.26)_68%,rgba(0,0,0,0.02)_100%)]" />
+
+            <div class="relative flex min-h-[340px] items-center p-[24px] pr-[72px]">
+              <div class="max-w-lg rounded-md border border-white/10 bg-black/58 p-4 shadow-2xl backdrop-blur-sm">
+                <p class="bm-kicker">Personagem</p>
+                <h2 class="bm-heading mt-[6px] font-display text-4xl font-bold">Fairy Elf</h2>
+                <p class="mt-2 text-[10px] font-black uppercase tracking-[0.24em] text-ember">Guardia de Noria</p>
+                <p class="mt-4 max-w-lg text-xs font-semibold leading-6 text-zinc-100">
+                  Graciosa a distancia e implacavel sob pressao, a Fairy Elf domina o campo de batalha com flechas
+                  precisas, apoio magico e mobilidade natural. Quando suas asas se abrem, cada disparo vira uma sentenca.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section id="personagem-status" class="scroll-mt-28 rounded-md border border-white/10 bg-black/20 p-4">
+            <div class="grid gap-4 xl:grid-cols-[260px_minmax(0,1fr)_300px]">
+              <div class="rounded-md border border-white/10 bg-black/45 p-3">
+                <p class="bm-kicker">Status base</p>
+                <div class="mt-2 aspect-square">
+                  <svg class="h-full w-full" viewBox="0 0 220 220" role="img" aria-label="Grafico de atributos da Fairy Elf">
+                    <polygon points="110,18 197,82 164,188 56,188 23,82" fill="none" stroke="rgba(255,255,255,0.18)" />
+                    <polygon points="110,50 166,91 145,159 75,159 54,91" fill="none" stroke="rgba(255,255,255,0.12)" />
+                    <line x1="110" y1="110" x2="110" y2="18" stroke="rgba(255,255,255,0.10)" />
+                    <line x1="110" y1="110" x2="197" y2="82" stroke="rgba(255,255,255,0.10)" />
+                    <line x1="110" y1="110" x2="164" y2="188" stroke="rgba(255,255,255,0.10)" />
+                    <line x1="110" y1="110" x2="56" y2="188" stroke="rgba(255,255,255,0.10)" />
+                    <line x1="110" y1="110" x2="23" y2="82" stroke="rgba(255,255,255,0.10)" />
+                    <polygon :points="fairyElfRadarPoints" fill="rgba(255, 91, 54, 0.28)" stroke="rgba(255, 186, 90, 0.95)" stroke-width="2" />
+                    <circle
+                      v-for="point in fairyElfRadarDots"
+                      :key="point.label"
+                      :cx="point.x"
+                      :cy="point.y"
+                      r="3"
+                      fill="#ffba5a"
+                    />
+                    <text
+                      v-for="label in fairyElfRadarLabels"
+                      :key="label.label"
+                      :x="label.x"
+                      :y="label.y"
+                      text-anchor="middle"
+                      class="fill-zinc-200 text-[10px] font-black uppercase tracking-[0.12em]"
+                    >
+                      {{ label.label }}
+                    </text>
+                  </svg>
+                </div>
+                <div class="mt-2 grid grid-cols-5 gap-1 text-center">
+                  <div
+                    v-for="stat in fairyElfProfile.baseStats"
+                    :key="stat.label"
+                    class="rounded-sm border border-white/10 bg-white/[0.04] px-1.5 py-1.5"
+                  >
+                    <p class="text-[9px] font-black uppercase tracking-[0.12em] text-zinc-500">{{ stat.label }}</p>
+                    <p class="mt-0.5 text-xs font-black text-white">{{ stat.value }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid gap-3">
+                <div class="grid gap-2 sm:grid-cols-2">
+                  <div
+                    v-for="bar in fairyElfProfile.bars"
+                    :key="bar.label"
+                    class="rounded-md border border-white/10 bg-white/[0.035] p-2.5"
+                  >
+                    <div class="flex items-center justify-between gap-3">
+                      <p class="text-[10px] font-black uppercase tracking-[0.16em] text-zinc-400">{{ bar.label }}</p>
+                      <p class="text-xs font-black text-white">{{ bar.value }}/10</p>
+                    </div>
+                    <div class="mt-2 h-1 overflow-hidden rounded-full bg-white/10">
+                      <div class="h-full rounded-full bg-ember" :style="{ width: `${bar.value * 10}%` }" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="grid overflow-hidden rounded-md border border-white/15 bg-black/35 sm:grid-cols-2 xl:grid-cols-4">
+                  <div
+                    v-for="stat in fairyElfProfile.summary"
+                    :key="stat.label"
+                    class="border-r border-white/10 p-3 last:border-r-0"
+                  >
+                    <p class="text-[10px] font-black uppercase tracking-[0.18em] text-zinc-500">{{ stat.label }}</p>
+                    <p class="mt-1.5 font-display text-sm font-black text-white">{{ stat.value }}</p>
+                  </div>
+                </div>
+              </div>
+
+              <article id="personagem-estilo" class="scroll-mt-28 overflow-hidden rounded-md border border-white/10 bg-black/45">
+                <header class="flex items-start justify-between gap-3 border-b border-white/10 p-3">
+                  <div>
+                    <p class="bm-kicker">Estilo de jogo</p>
+                    <h3 class="mt-1 font-display text-lg font-black text-white">Rotas da Fairy Elf</h3>
+                  </div>
+                  <span class="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-zinc-300">
+                    {{ activeFairyElfStyleIndex + 1 }}/{{ fairyElfProfile.styles.length }}
+                  </span>
+                </header>
+
+                <div class="relative min-h-40 overflow-hidden">
+                  <Transition name="bm-style-card" mode="out-in">
+                    <div :key="activeFairyElfStyle.title" class="absolute inset-0">
+                      <img
+                        class="absolute inset-0 h-full w-full object-cover"
+                        :src="activeFairyElfStyle.image"
+                        :alt="activeFairyElfStyle.title"
+                      >
+                      <div class="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-black/5" />
+                      <div class="absolute bottom-3 left-3 right-3">
+                        <p class="text-[10px] font-black uppercase tracking-[0.18em] text-ember">Foco atual</p>
+                        <h4 class="mt-1 font-display text-2xl font-black text-white">{{ activeFairyElfStyle.title }}</h4>
+                      </div>
+                    </div>
+                  </Transition>
+                </div>
+
+                <footer class="border-t border-white/10 p-3">
+                  <Transition name="bm-style-copy" mode="out-in">
+                    <p :key="activeFairyElfStyle.title" class="min-h-16 text-xs font-semibold leading-5 text-zinc-300">
+                      {{ activeFairyElfStyle.description }}
+                    </p>
+                  </Transition>
+                  <div class="mt-3 flex gap-1.5">
+                    <button
+                      v-for="(style, index) in fairyElfProfile.styles"
+                      :key="style.title"
+                      class="h-1.5 flex-1 rounded-full transition"
+                      :class="index === activeFairyElfStyleIndex ? 'bg-ember' : 'bg-white/15 hover:bg-white/30'"
+                      type="button"
+                      :aria-label="`Ver estilo ${style.title}`"
+                      @click="activeFairyElfStyleIndex = index"
+                    />
+                  </div>
+                </footer>
+              </article>
+            </div>
+          </section>
+
+          <div class="grid gap-4">
+            <article id="personagem-identidade" class="scroll-mt-28 rounded-md border border-white/10 bg-black/20 p-[24px]">
+              <p class="bm-kicker">Identidade</p>
+              <h3 class="bm-heading mt-[6px] font-display text-3xl font-bold">A sentinela das asas sagradas</h3>
+              <div class="mt-4 grid gap-3 text-sm font-semibold leading-7 text-zinc-300">
+                <p>
+                  Nas florestas antigas de Noria, a Fairy Elf aprendeu que beleza e perigo podem dividir o mesmo silencio.
+                  Sua presenca no grupo muda o ritmo da luta: ela abre espaco com tiros longos, protege companheiros com
+                  encantamentos e escolhe o momento exato para transformar defesa em ataque.
+                </p>
+                <p>
+                  Em Blood Moon, a classe recompensa posicionamento, leitura de combate e evolucao constante de equipamento.
+                  O arco certo, a asa certa e uma boa rota de progressao fazem a Fairy Elf crescer de suporte essencial para
+                  ameaca decisiva.
+                </p>
+              </div>
+            </article>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <article
+              v-for="section in fairyElfProfile.sections"
+              :key="section.title"
+              :id="section.anchor"
+              class="scroll-mt-28 rounded-md border border-white/10 bg-black/20 p-[24px]"
+            >
+              <p class="bm-kicker">{{ section.kicker }}</p>
+              <h3 class="bm-heading mt-[6px] font-display text-2xl font-bold">{{ section.title }}</h3>
+              <p v-if="section.description" class="mt-3 text-sm font-semibold leading-6 text-zinc-400">{{ section.description }}</p>
+              <ul class="mt-4 grid gap-2">
+                <li
+                  v-for="item in section.items"
+                  :key="item"
+                  class="rounded-md border border-white/10 bg-white/[0.035] px-3 py-2 text-sm font-bold text-zinc-300"
+                >
+                  {{ item }}
+                </li>
+              </ul>
+            </article>
+          </div>
+
+          <div id="personagem-referencias" class="scroll-mt-28 rounded-md border border-white/10 bg-black/20 p-[24px]">
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p class="bm-kicker">Dados coletados</p>
+                <h3 class="bm-heading mt-[6px] font-display text-2xl font-bold">Referencias vinculadas a Fairy Elf</h3>
+              </div>
+              <span class="rounded-md border border-white/10 bg-white/[0.05] px-3 py-2 text-xs font-black uppercase tracking-[0.18em] text-zinc-300">
+                {{ activeCharacterKnowledgeEntries.length }} registros
+              </span>
+            </div>
+            <div v-if="activeCharacterKnowledgeEntries.length" class="mt-5 grid gap-3 lg:grid-cols-2">
+              <article
+                v-for="entry in activeCharacterKnowledgeEntries"
+                :key="entry.id"
+                class="rounded-md border border-white/10 bg-black/25 p-4"
+              >
+                <p class="bm-kicker">{{ entry.kind }}</p>
+                <h4 class="mt-2 font-display text-lg font-black text-white">{{ entry.title }}</h4>
+                <p class="mt-3 text-sm leading-6 text-zinc-400">{{ entrySummary(entry) }}</p>
+              </article>
+            </div>
+            <p v-else class="mt-5 rounded-md border border-dashed border-white/15 bg-black/20 p-5 text-sm font-bold text-zinc-400">
+              Nenhuma referencia da API foi vinculada ainda para esta personagem.
+            </p>
+          </div>
           </div>
         </div>
 
@@ -903,7 +1159,26 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronDown, X } from 'lucide-vue-next'
+import {
+  BookOpen,
+  Boxes,
+  CalendarDays,
+  ChevronDown,
+  Crosshair,
+  Database,
+  Map,
+  NotebookTabs,
+  PanelLeftClose,
+  PanelLeftOpen,
+  ScrollText,
+  Shield,
+  Sparkles,
+  Swords,
+  UserRound,
+  UsersRound,
+  WandSparkles,
+  X
+} from 'lucide-vue-next'
 import {
   baseLuckAndAdditionalOptions,
   equipmentQualityLabels,
@@ -1290,8 +1565,183 @@ const setPowerOrder = [
 
 const wikiCategories = computed(() => dictionary.value.guideCategories)
 const openSections = ref<string[]>([])
-const activeSectionKey = ref('')
+const activeSectionKey = ref('personagens')
 const activeTopicKey = ref('')
+const isWikiAsideCollapsed = ref(false)
+const activeFairyElfStyleIndex = ref(0)
+let fairyElfStyleTimer: ReturnType<typeof setInterval> | null = null
+
+const toggleWikiAside = () => {
+  isWikiAsideCollapsed.value = !isWikiAsideCollapsed.value
+}
+
+const wikiSectionIconMap = {
+  personagens: UserRound,
+  equipamentos: Shield,
+  formulas: ScrollText,
+  builds: Swords,
+  'chaos-machine': Sparkles,
+  monstros: Crosshair,
+  'mapas-e-pvm': Map,
+  eventos: CalendarDays,
+  'quests-e-npcs': NotebookTabs,
+  tutoriais: BookOpen
+}
+const wikiSectionIcon = (sectionKey: string) =>
+  wikiSectionIconMap[sectionKey as keyof typeof wikiSectionIconMap] || BookOpen
+
+const characterAnchorLinks = [
+  { id: 'personagem-visao', label: 'Visao geral', icon: UserRound },
+  { id: 'personagem-status', label: 'Status', icon: Shield },
+  { id: 'personagem-identidade', label: 'Identidade', icon: BookOpen },
+  { id: 'personagem-estilo', label: 'Estilo de jogo', icon: Crosshair },
+  { id: 'personagem-evolucao', label: 'Evolucao', icon: Sparkles },
+  { id: 'personagem-builds', label: 'Builds', icon: Swords },
+  { id: 'personagem-skills', label: 'Skills', icon: WandSparkles },
+  { id: 'personagem-equipamentos', label: 'Equipamentos', icon: Boxes },
+  { id: 'personagem-referencias', label: 'Referencias', icon: Database }
+]
+
+const fairyElfProfile = {
+  summary: [
+    { label: 'Funcao', value: 'Atiradora / Suporte' },
+    { label: 'Alcance', value: 'Longo' },
+    { label: 'Dificuldade', value: 'Media' },
+    { label: 'Leitura', value: 'Requer posicionamento' }
+  ],
+  baseStats: [
+    { label: 'STR', value: 22 },
+    { label: 'AGI', value: 25 },
+    { label: 'VIT', value: 20 },
+    { label: 'ENE', value: 15 },
+    { label: 'CMD', value: 0 }
+  ],
+  bars: [
+    { label: 'Dificuldade', value: 5 },
+    { label: 'Dano', value: 7 },
+    { label: 'Vida', value: 4 },
+    { label: 'Resistencia PvP', value: 5 },
+    { label: 'Resistencia PvE', value: 6 },
+    { label: 'Importancia', value: 9 },
+    { label: 'Mobilidade', value: 8 },
+    { label: 'Suporte', value: 9 }
+  ],
+  traits: ['Distancia', 'Buffs', 'Sustain', 'Mobilidade'],
+  styles: [
+    {
+      title: 'Distancia',
+      image: '/dev-references/visual/elfa-pose-arqueira-agachada.png',
+      description: 'Joga pelas bordas do combate, mantendo angulo seguro para punir inimigos antes que encostem.'
+    },
+    {
+      title: 'Buffs',
+      image: '/dev-references/visual/elfa-aileen-bow-referencia.png',
+      description: 'Fortalece a party com Greater Defense e Greater Damage, aumentando a margem de erro do grupo.'
+    },
+    {
+      title: 'Sustain',
+      image: '/dev-references/visual/elfa-asa-lv3-ingame.png',
+      description: 'Mantem aliados vivos em hunts longas, bosses e eventos onde controle de recursos decide a luta.'
+    },
+    {
+      title: 'Mobilidade',
+      image: '/dev-references/visual/elfa-hero-aprovada-asa-voo.png',
+      description: 'Recompensa reposicionamento constante, leitura de terreno e dominio da distancia ideal.'
+    }
+  ],
+  sections: [
+    {
+      anchor: 'personagem-evolucao',
+      kicker: 'Evolucao',
+      title: 'Linha de classes',
+      description: 'Base de progressao por temporada e evolucao da personagem.',
+      items: ['Fairy Elf', 'Muse Elf', 'High Elf', 'Noble Elf - high-version futuro']
+    },
+    {
+      anchor: 'personagem-builds',
+      kicker: 'Builds',
+      title: 'Linhas de jogo',
+      description: 'Rotas principais para organizar os guias e equipamentos.',
+      items: [
+        'Agility Elf: dano fisico a distancia, attack speed e defesa.',
+        'Energy Elf: cura, Greater Defense, Greater Damage e suporte de party.',
+        'Hibrida: equilibrio entre dano e suporte, pendente de validacao no servidor.'
+      ]
+    },
+    {
+      anchor: 'personagem-skills',
+      kicker: 'Skills',
+      title: 'Catalogo principal',
+      description: 'Skills classicas que precisam aparecer no perfil da personagem.',
+      items: [
+        'Triple Shot',
+        'Heal',
+        'Greater Defense',
+        'Greater Damage',
+        'Penetration',
+        'Ice Arrow',
+        'Infinity Arrow',
+        'Summons'
+      ]
+    },
+    {
+      anchor: 'personagem-equipamentos',
+      kicker: 'Equipamentos',
+      title: 'Progressao visual',
+      description: 'Familias iniciais para cruzar com Sets, armas, asas e referencias.',
+      items: [
+        'Sets: Vine, Silk, Wind, Spirit, Guardian, Iris, Holy Spirit, Divine e Red Spirit.',
+        'Armas: bows, crossbows, arrows, bolts e quivers.',
+        'Asas: Wings of Elf, Wings of Spirit, Wings of Life e Wing of Illusion para high-version.'
+      ]
+    }
+  ]
+}
+
+const activeFairyElfStyle = computed(() =>
+  fairyElfProfile.styles[activeFairyElfStyleIndex.value % fairyElfProfile.styles.length] || fairyElfProfile.styles[0]
+)
+
+const radarPoint = (index: number, value: number, maxValue: number) => {
+  const center = 110
+  const radius = 92
+  const angle = -Math.PI / 2 + index * ((Math.PI * 2) / 5)
+  const normalizedValue = Math.max(0, Math.min(value / maxValue, 1))
+  const distance = radius * normalizedValue
+
+  return {
+    x: Number((center + Math.cos(angle) * distance).toFixed(2)),
+    y: Number((center + Math.sin(angle) * distance).toFixed(2))
+  }
+}
+
+const radarLabel = (index: number, label: string) => {
+  const center = 110
+  const radius = 104
+  const angle = -Math.PI / 2 + index * ((Math.PI * 2) / 5)
+
+  return {
+    label,
+    x: Number((center + Math.cos(angle) * radius).toFixed(2)),
+    y: Number((center + Math.sin(angle) * radius + 4).toFixed(2))
+  }
+}
+
+const fairyElfRadarMax = computed(() =>
+  Math.max(...fairyElfProfile.baseStats.map((stat) => stat.value), 1)
+)
+const fairyElfRadarDots = computed(() =>
+  fairyElfProfile.baseStats.map((stat, index) => ({
+    label: stat.label,
+    ...radarPoint(index, stat.value, fairyElfRadarMax.value)
+  }))
+)
+const fairyElfRadarPoints = computed(() =>
+  fairyElfRadarDots.value.map((point) => `${point.x},${point.y}`).join(' ')
+)
+const fairyElfRadarLabels = computed(() =>
+  fairyElfProfile.baseStats.map((stat, index) => radarLabel(index, stat.label))
+)
 
 const tutorialSection: WikiCategory = {
   title: 'Tutoriais',
@@ -1314,6 +1764,7 @@ const activeSection = computed(() =>
 const activeTopics = computed(() => activeSection.value?.topics || [])
 const activeTopic = computed(() => activeTopics.value.find((topic) => topic.key === activeTopicKey.value))
 const isCharactersSection = computed(() => activeSectionKey.value === 'personagens')
+const isFairyElfTopic = computed(() => activeSectionKey.value === 'personagens' && activeTopicKey.value === 'fairy-elf')
 const isSetsTopic = computed(() => activeSectionKey.value === 'equipamentos' && activeTopicKey.value === 'sets')
 const isEquipmentLanding = computed(() => activeSectionKey.value === 'equipamentos' && !activeTopicKey.value)
 const equipmentTutorialCards = [
@@ -2796,6 +3247,15 @@ onMounted(() => {
   void ensureWikiStaticData()
   void loadWikiCharacters()
   void loadCharacterKnowledgePool()
+  fairyElfStyleTimer = setInterval(() => {
+    activeFairyElfStyleIndex.value = (activeFairyElfStyleIndex.value + 1) % fairyElfProfile.styles.length
+  }, 5000)
+})
+
+onBeforeUnmount(() => {
+  if (fairyElfStyleTimer) {
+    clearInterval(fairyElfStyleTimer)
+  }
 })
 
 watch(navigationSections, (sections) => {
@@ -2809,11 +3269,19 @@ watch(navigationSections, (sections) => {
 }, { immediate: true })
 
 const selectSection = (sectionKey: string) => {
+  if (isWikiAsideCollapsed.value) {
+    isWikiAsideCollapsed.value = false
+    activeSectionKey.value = sectionKey
+    activeTopicKey.value = ''
+    openSections.value = [sectionKey]
+    return
+  }
+
   activeSectionKey.value = sectionKey
   activeTopicKey.value = ''
   openSections.value = openSections.value.includes(sectionKey)
-    ? openSections.value.filter((key) => key !== sectionKey)
-    : [...openSections.value, sectionKey]
+    ? []
+    : [sectionKey]
 }
 
 const selectTopic = (sectionKey: string, topicKey: string) => {
@@ -2825,8 +3293,10 @@ const selectTopic = (sectionKey: string, topicKey: string) => {
 
   activeSectionKey.value = sectionKey
   activeTopicKey.value = topicKey
-  if (!openSections.value.includes(sectionKey)) {
-    openSections.value = [...openSections.value, sectionKey]
+  openSections.value = [sectionKey]
+
+  if (sectionKey === 'personagens') {
+    isWikiAsideCollapsed.value = true
   }
 }
 
@@ -2844,3 +3314,31 @@ function slugify (value: string) {
   return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 }
 </script>
+
+<style scoped>
+.bm-style-card-enter-active,
+.bm-style-card-leave-active {
+  transition: opacity 260ms ease, transform 260ms ease;
+}
+
+.bm-style-card-enter-from {
+  opacity: 0;
+  transform: translateX(14px);
+}
+
+.bm-style-card-leave-to {
+  opacity: 0;
+  transform: translateX(-14px);
+}
+
+.bm-style-copy-enter-active,
+.bm-style-copy-leave-active {
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.bm-style-copy-enter-from,
+.bm-style-copy-leave-to {
+  opacity: 0;
+  transform: translateY(4px);
+}
+</style>
