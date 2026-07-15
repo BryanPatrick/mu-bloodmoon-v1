@@ -12,6 +12,7 @@ apps/api/dist/
 .env.*
 !apps/api/.env.example
 !deploy/.env.production.example
+!deploy/.env.game-vps.example
 
 npm-debug.log*
 yarn-debug.log*

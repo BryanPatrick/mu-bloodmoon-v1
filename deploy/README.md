@@ -2,6 +2,18 @@
 
 Arquivos para deixar o deploy em VPS/Hostinger KVM mais direto.
 
+## Status
+
+O plano preferencial mudou: agora vamos publicar no VPS do jogo e integrar com o SQL Server existente.
+
+Use primeiro:
+
+- `deploy/GAME_VPS_CHECKLIST.md`
+- `deploy/.env.game-vps.example`
+- `docs/game-vps-sqlserver-transition.md`
+
+O Docker Compose com PostgreSQL abaixo fica como plano legado/alternativo ate concluirmos a migracao para SQL Server.
+
 Para a Hostinger, use tambem `deploy/HOSTINGER_CHECKLIST.md` como roteiro operacional.
 
 ## Estrutura recomendada no servidor

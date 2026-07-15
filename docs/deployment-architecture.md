@@ -26,49 +26,36 @@ Motivo:
 - o backend pode cuidar de autenticacao, permissao, loja, recarga, auditoria e integracao com MU;
 - fica mais facil subir tudo no mesmo VPS ou separar depois, se crescer.
 
-## Stack alvo
+## Stack alvo atual
 
 - Frontend: Nuxt 4.
-- Backend: NestJS.
-- Banco do portal: PostgreSQL.
-- ORM: Prisma.
-- Cache/fila: Redis.
-- Arquivos: S3, Cloudflare R2, MinIO ou storage equivalente.
-- Proxy: Nginx.
-- Integracao MU: servico isolado acessando o banco/servidor do jogo com auditoria.
+- Backend: NestJS ou rotas server-side Nuxt, sempre do lado servidor.
+- Banco vivo do jogo: SQL Server no VPS do MuServer.
+- Banco editorial/wiki: arquivos estaticos inicialmente, SQL Server proprio depois se fizer sentido.
+- Proxy: web server atual do VPS, a confirmar na auditoria.
+- Integracao MU: adaptadores server-side lendo o SQL Server do jogo, com escrita liberada apenas apos auditoria.
 
-## Recomendacao para Hostinger
+## Decisao atual: VPS do jogo
 
-Nao tratar este projeto como hospedagem compartilhada. O Blood Moon ja possui autenticacao, RBAC, painel administrativo, CMS, Wiki, loja, recarga, financeiro, marketplace e futura integracao com o servidor do jogo. A recomendacao para publicacao e:
+O plano com Hostinger/PostgreSQL fica como alternativa antiga. A decisao atual e publicar no mesmo VPS do jogo para reduzir latencia e aproveitar o SQL Server ja usado pelo servidor MU.
 
-- VPS/KVM com acesso root;
-- Docker Compose inicialmente;
-- Cloudflare na frente do dominio;
-- Nginx como proxy reverso;
-- Node/Nuxt e API como processos separados;
-- PostgreSQL para dados do portal;
-- Redis para cache, filas, sessoes e jobs futuros;
-- storage separado para uploads/imagens/videos/livros;
-- backups automaticos e logs persistentes.
+A regra de seguranca continua sendo: o navegador nunca acessa o SQL Server diretamente. A conexao com banco deve ficar no servidor:
 
-Fluxo alvo inicial:
+Fluxo alvo:
 
 ```text
 Internet
-  -> Cloudflare
-  -> Nginx
+  -> HTTPS / web server do VPS
   -> Nuxt 4/Nitro
-  -> API NestJS
-  -> PostgreSQL
-  -> Redis
-  -> Storage
+  -> API interna ou server routes
+  -> SQL Server local/privado do jogo
 ```
 
 ## Rotas esperadas em producao
 
 ```text
-https://bloodmoon.com.br       -> apps/web
-https://api.bloodmoon.com.br   -> apps/api
+https://mubloodmoon.com.br       -> apps/web ou proxy para apps/web
+https://mubloodmoon.com.br/api   -> API interna/proxy local
 ```
 
 ## Comandos atuais
@@ -85,38 +72,42 @@ Hoje `npm run build` compila o Nuxt dentro de `apps/web`.
 
 ## Backend
 
-`apps/api` ja possui base NestJS com Prisma, PostgreSQL, autenticacao JWT, contas, personagens, CMS, Wiki, auditoria, loja, recarga, financeiro, marketplace e fila inicial de integracao com o jogo.
+`apps/api` ja possui base NestJS com Prisma, autenticacao JWT, contas, personagens, CMS, Wiki, auditoria, loja, recarga, financeiro, marketplace e fila inicial de integracao com o jogo.
+
+Importante: o schema Prisma atual ainda esta modelado para PostgreSQL e banco proprio de portal. Para o VPS do jogo, precisamos criar/adaptar uma camada SQL Server baseada no schema real do MuServer antes de trocar provider ou ligar escrita.
 
 Antes de deploy real ainda precisamos:
 
 1. configurar `.env` de producao fora do repositorio;
-2. apontar `DATABASE_URL` para PostgreSQL do VPS;
-3. apontar `REDIS_URL` para Redis do VPS;
+2. confirmar dados reais do SQL Server do jogo;
+3. criar adaptadores server-side para leitura do SQL Server;
 4. configurar storage real para uploads;
-5. configurar Nginx/SSL;
-6. configurar backups do PostgreSQL e do storage;
+5. configurar proxy/SSL no web server existente;
+6. configurar backups do SQL Server e do storage;
 7. configurar logs e monitoramento;
-8. implementar worker real para consumir `GameBridgeJob` e conversar com o banco/servidor MU;
+8. implementar escrita real somente depois de auditar tabelas, procedures e locks;
 9. validar rate limit, firewall, Fail2Ban e Cloudflare WAF.
 
-## Cuidados para Hostinger/VPS
+## Cuidados para VPS do jogo
 
 - nao subir `.env` real para repositorio;
 - usar HTTPS;
-- rodar frontend e backend como processos separados;
-- usar Nginx como proxy;
-- manter backup do PostgreSQL;
+- manter SQL Server sem acesso publico;
+- rodar frontend/API como processo local ou proxy interno;
+- manter backup do SQL Server;
 - manter backup das imagens enviadas;
 - registrar auditoria de acoes sensiveis;
-- nunca misturar diretamente banco do portal com banco do jogo;
-- marketplace e entrega de itens devem passar por fila/idempotencia/auditoria, nunca por escrita solta direto no banco do game.
+- marketplace e entrega de itens devem passar por transacao, lock/idempotencia/auditoria, nunca por escrita solta direto no banco do game.
 
 ## Arquivos preparados para deploy
 
 - `deploy/.env.production.example`: variaveis de producao para copiar como `.env.production`.
 - `deploy/docker-compose.production.yml`: stack inicial com web, api, PostgreSQL, Redis e worker da ponte MU.
+- `deploy/.env.game-vps.example`: variaveis iniciais para o novo plano no VPS do jogo.
+- `deploy/GAME_VPS_CHECKLIST.md`: checklist operacional para auditar e publicar no VPS do jogo.
 - `deploy/nginx.bloodmoon.conf`: proxy reverso base para site e API.
 - `deploy/README.md`: passo a passo inicial para VPS/Hostinger KVM.
+- `docs/game-vps-sqlserver-transition.md`: plano de transicao para SQL Server.
 
 ## Separacao de responsabilidades
 
@@ -128,11 +119,15 @@ Antes de deploy real ainda precisamos:
 /backups    backups diarios, semanais e mensais
 ```
 
-## Banco do portal x banco do jogo
+## SQL Server do jogo
 
-O portal deve ser a origem de verdade para contas web, permissoes, auditoria, pagamentos, CMS e marketplace. O banco do jogo continua sendo a origem de verdade para inventario/personagens reais. A integracao entre os dois deve acontecer por jobs:
+O SQL Server do jogo e a origem de verdade para contas/personagens/inventario/moedas reais. A wiki e conteudo editorial podem continuar em arquivos/objetos estaticos inicialmente.
 
-1. site cria `GameBridgeJob`;
-2. worker valida o job e aplica no banco/servidor do jogo;
-3. worker marca o job como `COMPLETED` ou `FAILED`;
-4. a API finaliza efeitos financeiros apenas quando a entrega estiver confirmada.
+Para qualquer escrita sensivel:
+
+1. criar backup;
+2. validar permissao;
+3. usar transacao;
+4. registrar auditoria;
+5. testar em conta falsa;
+6. liberar em producao somente depois de rollback validado.
