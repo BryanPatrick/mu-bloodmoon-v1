@@ -9,6 +9,7 @@ O plano preferencial mudou: agora vamos publicar no VPS do jogo e integrar com o
 Use primeiro:
 
 - `deploy/GAME_VPS_CHECKLIST.md`
+- `deploy/GAME_VPS_BACKUP_AND_DEPLOY.md`
 - `deploy/.env.game-vps.example`
 - `docs/game-vps-sqlserver-transition.md`
 
