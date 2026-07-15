@@ -2,6 +2,8 @@
 
 Arquivos para deixar o deploy em VPS/Hostinger KVM mais direto.
 
+Para a Hostinger, use tambem `deploy/HOSTINGER_CHECKLIST.md` como roteiro operacional.
+
 ## Estrutura recomendada no servidor
 
 ```text
