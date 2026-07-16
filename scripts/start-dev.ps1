@@ -33,7 +33,7 @@ function Start-DevWindow {
 }
 
 function Get-EquipmentCount {
-  $env:DATABASE_URL = "postgresql://bloodmoon:bloodmoon@localhost:55432/bloodmoon_portal?schema=public"
+  $env:DATABASE_URL = "mysql://bloodmoon:bloodmoon@localhost:53306/bloodmoon_portal"
   $nodeScript = @"
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
@@ -54,13 +54,14 @@ prisma.equipmentRecord.count()
 
 Write-Host "Blood Moon - ambiente de desenvolvimento" -ForegroundColor Magenta
 Write-Host "Raiz: $repoRoot"
+$env:DATABASE_URL = "mysql://bloodmoon:bloodmoon@localhost:53306/bloodmoon_portal"
 
 if (-not (Test-Path "node_modules")) {
   Write-Step "Instalando dependencias"
   npm install
 }
 
-Write-Step "Preparando PostgreSQL e migrations"
+Write-Step "Preparando MySQL/MariaDB e schema Prisma"
 npm run db:setup
 
 $equipmentCount = Get-EquipmentCount

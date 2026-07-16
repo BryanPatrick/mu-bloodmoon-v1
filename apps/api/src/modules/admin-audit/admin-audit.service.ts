@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+﻿import { Injectable } from '@nestjs/common'
 import type { Prisma } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
 import type { AdminAuditQuery } from './admin-audit.contract'
@@ -24,10 +24,10 @@ export class AdminAuditService {
       ...(search
         ? {
             OR: [
-              { action: { contains: search, mode: 'insensitive' } },
-              { targetType: { contains: search, mode: 'insensitive' } },
-              { targetId: { contains: search, mode: 'insensitive' } },
-              { actorUsername: { contains: search, mode: 'insensitive' } }
+              { action: { contains: search } },
+              { targetType: { contains: search } },
+              { targetId: { contains: search } },
+              { actorUsername: { contains: search } }
             ]
           }
         : {})
@@ -43,7 +43,7 @@ export class AdminAuditService {
       this.prisma.auditEvent.count({ where }),
       this.prisma.auditEvent.count({ where: { severity: 'warning' } }),
       this.prisma.auditEvent.count({ where: { severity: 'error' } }),
-      this.prisma.auditEvent.count({ where: { action: { contains: 'auth.login.failed', mode: 'insensitive' } } })
+      this.prisma.auditEvent.count({ where: { action: { contains: 'auth.login.failed' } } })
     ])
 
     return {

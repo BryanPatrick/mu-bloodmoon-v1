@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+﻿import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import type { EditorialStatus, EquipmentGroup, KnowledgeEntryKind, KnowledgeScope, Prisma, ReferenceAssetKind } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
 import type {
@@ -103,8 +103,8 @@ export class AdminContentService {
       this.prisma.referenceAsset.count(),
       this.prisma.equipmentRecord.count(),
       this.prisma.knowledgeEntry.count({ where: { status: { in: ['RAW', 'NORMALIZED', 'REMASTER_PENDING'] } } }),
-      this.prisma.equipmentRecord.count({ where: { remapData: { path: ['warnings'], array_contains: ['missing-image'] } } }),
-      this.prisma.equipmentRecord.count({ where: { remapData: { path: ['warnings'], array_contains: ['missing-ancient-set-options'] } } }),
+      this.prisma.equipmentRecord.count({ where: { remapData: { path: '$.warnings', array_contains: 'missing-image' } } }),
+      this.prisma.equipmentRecord.count({ where: { remapData: { path: '$.warnings', array_contains: 'missing-ancient-set-options' } } }),
       this.prisma.knowledgeEntry.groupBy({ by: ['scope'], _count: { _all: true } }),
       this.prisma.knowledgeEntry.groupBy({ by: ['kind'], _count: { _all: true } }),
       this.prisma.knowledgeEntry.groupBy({ by: ['status'], _count: { _all: true } })
@@ -134,10 +134,10 @@ export class AdminContentService {
       ...(query.search
         ? {
             OR: [
-              { title: { contains: query.search, mode: 'insensitive' } },
-              { slug: { contains: query.search, mode: 'insensitive' } },
-              { summary: { contains: query.search, mode: 'insensitive' } },
-              { sourceUrl: { contains: query.search, mode: 'insensitive' } }
+              { title: { contains: query.search } },
+              { slug: { contains: query.search } },
+              { summary: { contains: query.search } },
+              { sourceUrl: { contains: query.search } }
             ]
           }
         : {})
@@ -275,11 +275,11 @@ export class AdminContentService {
       ...(query.search
         ? {
             OR: [
-              { localPath: { contains: query.search, mode: 'insensitive' } },
-              { publicPath: { contains: query.search, mode: 'insensitive' } },
-              { sourceUrl: { contains: query.search, mode: 'insensitive' } },
-              { mimeType: { contains: query.search, mode: 'insensitive' } },
-              { sha1: { contains: query.search, mode: 'insensitive' } }
+              { localPath: { contains: query.search } },
+              { publicPath: { contains: query.search } },
+              { sourceUrl: { contains: query.search } },
+              { mimeType: { contains: query.search } },
+              { sha1: { contains: query.search } }
             ]
           }
         : {})
@@ -411,12 +411,12 @@ export class AdminContentService {
       ...(query.search
         ? {
             OR: [
-              { key: { contains: query.search, mode: 'insensitive' } },
-              { name: { contains: query.search, mode: 'insensitive' } },
-              { title: { contains: query.search, mode: 'insensitive' } },
-              { category: { contains: query.search, mode: 'insensitive' } },
-              { baseSetName: { contains: query.search, mode: 'insensitive' } },
-              { sourceUrl: { contains: query.search, mode: 'insensitive' } }
+              { key: { contains: query.search } },
+              { name: { contains: query.search } },
+              { title: { contains: query.search } },
+              { category: { contains: query.search } },
+              { baseSetName: { contains: query.search } },
+              { sourceUrl: { contains: query.search } }
             ]
           }
         : {})
@@ -551,17 +551,17 @@ export class AdminContentService {
     const { page, pageSize, skip } = pagination(query)
     const where: Prisma.EquipmentRecordWhereInput = {
       OR: [
-        { remapData: { path: ['warnings'], array_contains: ['missing-image'] } },
-        { remapData: { path: ['warnings'], array_contains: ['missing-ancient-set-options'] } }
+        { remapData: { path: '$.warnings', array_contains: 'missing-image' } },
+        { remapData: { path: '$.warnings', array_contains: 'missing-ancient-set-options' } }
       ],
       ...(query.search
         ? {
             AND: [{
               OR: [
-                { name: { contains: query.search, mode: 'insensitive' } },
-                { title: { contains: query.search, mode: 'insensitive' } },
-                { category: { contains: query.search, mode: 'insensitive' } },
-                { baseSetName: { contains: query.search, mode: 'insensitive' } }
+                { name: { contains: query.search } },
+                { title: { contains: query.search } },
+                { category: { contains: query.search } },
+                { baseSetName: { contains: query.search } }
               ]
             }]
           }

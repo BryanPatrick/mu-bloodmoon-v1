@@ -1,0 +1,796 @@
+{
+  "generatedAt": "2026-07-16T17:25:06.205Z",
+  "domains": [
+    {
+      "key": "admin-control",
+      "title": "Administracao e seguranca",
+      "description": "Tudo que vira painel administrativo, permissao, auditoria e operacao do servidor.",
+      "entities": [
+        {
+          "name": ".htaccess",
+          "source": ".htaccess",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "class_config.json",
+          "source": "class_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "cms_config.json",
+          "source": "cms_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "controller.account_panel.php",
+          "source": "controller.account_panel.php",
+          "target": "apps/api/admin + apps/web/painel/admin",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "controller.admincp.php",
+          "source": "controller.admincp.php",
+          "target": "apps/api/admin + apps/web/painel/admin",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "email_config.json",
+          "source": "email_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "event_config.json",
+          "source": "event_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "guides_category.json",
+          "source": "guides_category.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "locale_config.json",
+          "source": "locale_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "lostpassword_config.json",
+          "source": "lostpassword_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "map_config.json",
+          "source": "map_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "map.config",
+          "source": "map.config",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "meta_config.json",
+          "source": "meta_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "model.account.php",
+          "source": "model.account.php",
+          "target": "apps/api/modules/accounts|characters|audit",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "model.admin.php",
+          "source": "model.admin.php",
+          "target": "apps/api/modules/accounts|characters|audit",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "model.character.php",
+          "source": "model.character.php",
+          "target": "apps/api/modules/accounts|characters|audit",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "model.warehouse.php",
+          "source": "model.warehouse.php",
+          "target": "apps/api/modules/accounts|characters|audit",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "plugin_config.json",
+          "source": "plugin_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "pre_defined_table_config.json",
+          "source": "pre_defined_table_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "rankings_config.json",
+          "source": "rankings_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "referral_config.json",
+          "source": "referral_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "registration_config.json",
+          "source": "registration_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "reset_config.json",
+          "source": "reset_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "scheduler_config.json",
+          "source": "scheduler_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "security_config.json",
+          "source": "security_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "social_config.json",
+          "source": "social_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "sockets_config.json",
+          "source": "sockets_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "table_config.json",
+          "source": "table_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "teleport_config.json",
+          "source": "teleport_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "vip_config.json",
+          "source": "vip_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "vip_query_config.json",
+          "source": "vip_query_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "votereward_config.json",
+          "source": "votereward_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "wcoin_exchange_config.json",
+          "source": "wcoin_exchange_config.json",
+          "target": "apps/api/config safe env mapping",
+          "priority": "high",
+          "status": "needs-review"
+        }
+      ]
+    },
+    {
+      "key": "knowledge-base",
+      "title": "Wiki, tutoriais e conteudo publico",
+      "description": "Conteudo que alimenta Wiki, guias, noticias, downloads, rankings e paginas publicas.",
+      "entities": [
+        {
+          "name": "controller.downloads.php",
+          "source": "controller.downloads.php",
+          "target": "apps/api/modules/wiki|admin-content|rankings",
+          "priority": "medium",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "controller.guides.php",
+          "source": "controller.guides.php",
+          "target": "apps/api/modules/wiki|admin-content|rankings",
+          "priority": "medium",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "controller.home.php",
+          "source": "controller.home.php",
+          "target": "apps/api/modules/wiki|admin-content|rankings",
+          "priority": "medium",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "controller.rankings.php",
+          "source": "controller.rankings.php",
+          "target": "apps/api/modules/wiki|admin-content|rankings",
+          "priority": "medium",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "model.downloads.php",
+          "source": "model.downloads.php",
+          "target": "apps/api/modules/wiki|admin-content|rankings",
+          "priority": "medium",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "model.guides.php",
+          "source": "model.guides.php",
+          "target": "apps/api/modules/wiki|admin-content|rankings",
+          "priority": "medium",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "model.rankings.php",
+          "source": "model.rankings.php",
+          "target": "apps/api/modules/wiki|admin-content|rankings",
+          "priority": "medium",
+          "status": "ready-to-map"
+        }
+      ]
+    },
+    {
+      "key": "equipment-database",
+      "title": "Itens, equipamentos e tooltips",
+      "description": "Dados de itens, opcoes, sets, imagens e material para a Wiki e loja.",
+      "entities": [
+        {
+          "name": "0",
+          "source": "0",
+          "target": "assets/equipment-previews",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "1",
+          "source": "1",
+          "target": "assets/equipment-previews",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "10",
+          "source": "10",
+          "target": "assets/equipment-previews",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "11",
+          "source": "11",
+          "target": "assets/equipment-previews",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "12",
+          "source": "12",
+          "target": "assets/equipment-previews",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "13",
+          "source": "13",
+          "target": "assets/equipment-previews",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "14",
+          "source": "14",
+          "target": "assets/equipment-previews",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "15",
+          "source": "15",
+          "target": "assets/equipment-previews",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "16",
+          "source": "16",
+          "target": "assets/equipment-previews",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "19",
+          "source": "19",
+          "target": "assets/equipment-previews",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "2",
+          "source": "2",
+          "target": "assets/equipment-previews",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "20",
+          "source": "20",
+          "target": "assets/equipment-previews",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "3",
+          "source": "3",
+          "target": "assets/equipment-previews",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "4",
+          "source": "4",
+          "target": "assets/equipment-previews",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "5",
+          "source": "5",
+          "target": "assets/equipment-previews",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "6",
+          "source": "6",
+          "target": "assets/equipment-previews",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "7",
+          "source": "7",
+          "target": "assets/equipment-previews",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "8",
+          "source": "8",
+          "target": "assets/equipment-previews",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "9",
+          "source": "9",
+          "target": "assets/equipment-previews",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "EarringAttribute.xml",
+          "source": "EarringAttribute.xml",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "ErrtelSetOption.xml",
+          "source": "ErrtelSetOption.xml",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "ExcellentCommonOption.txt",
+          "source": "ExcellentCommonOption.txt",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "ExcellentWingOption.txt",
+          "source": "ExcellentWingOption.txt",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "Item.txt",
+          "source": "Item.txt",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "Item.xml",
+          "source": "Item.xml",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "ItemAddOption.txt",
+          "source": "ItemAddOption.txt",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "ItemGradeOption.xml",
+          "source": "ItemGradeOption.xml",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "ItemLevelTooltip.txt",
+          "source": "ItemLevelTooltip.txt",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "ItemList.xml",
+          "source": "ItemList.xml",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "ItemOptionSystem_Exc.xml",
+          "source": "ItemOptionSystem_Exc.xml",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "ItemSetOption.xml",
+          "source": "ItemSetOption.xml",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "ItemSetOptionText.csv",
+          "source": "ItemSetOptionText.csv",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "ItemSetType.xml",
+          "source": "ItemSetType.xml",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "ItemTooltip.csv",
+          "source": "ItemTooltip.csv",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "ItemTooltip[11].csv",
+          "source": "ItemTooltip[11].csv",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "ItemTooltipText.csv",
+          "source": "ItemTooltipText.csv",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "JewelOfHarmonyOption.txt",
+          "source": "JewelOfHarmonyOption.txt",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "model.shop.php",
+          "source": "model.shop.php",
+          "target": "apps/api/modules/wiki|commerce|game-bridge",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "model.warehouse.php",
+          "source": "model.warehouse.php",
+          "target": "apps/api/modules/wiki|commerce|game-bridge",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "MuunInfo.xml",
+          "source": "MuunInfo.xml",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "MuunOption.xml",
+          "source": "MuunOption.xml",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "PentagramJewelOptionValue.xml",
+          "source": "PentagramJewelOptionValue.xml",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "PentagramOption.xml",
+          "source": "PentagramOption.xml",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "PentagramWingAttribute.xml",
+          "source": "PentagramWingAttribute.xml",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "SocketItem.txt",
+          "source": "SocketItem.txt",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "SocketItem[6].txt",
+          "source": "SocketItem[6].txt",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        },
+        {
+          "name": "SocketItemType.xml",
+          "source": "SocketItemType.xml",
+          "target": "references/game-data + wiki/equipment",
+          "priority": "high",
+          "status": "ready-to-map"
+        }
+      ]
+    },
+    {
+      "key": "commerce",
+      "title": "Loja, marketplace e economia",
+      "description": "Fluxos de loja, venda jogador para jogador, moedas, bau e entrega de itens.",
+      "entities": [
+        {
+          "name": "battle_pass",
+          "source": "battle_pass",
+          "target": "apps/api/modules/commerce extensions",
+          "priority": "medium",
+          "status": "future"
+        },
+        {
+          "name": "cashshop_log",
+          "source": "cashshop_log",
+          "target": "apps/api/modules/commerce extensions",
+          "priority": "medium",
+          "status": "future"
+        },
+        {
+          "name": "controller.donate.php",
+          "source": "controller.donate.php",
+          "target": "apps/api/modules/commerce|marketplace|game-bridge",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "controller.market.php",
+          "source": "controller.market.php",
+          "target": "apps/api/modules/commerce|marketplace|game-bridge",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "controller.shop.php",
+          "source": "controller.shop.php",
+          "target": "apps/api/modules/commerce|marketplace|game-bridge",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "controller.warehouse.php",
+          "source": "controller.warehouse.php",
+          "target": "apps/api/modules/commerce|marketplace|game-bridge",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "gift_code",
+          "source": "gift_code",
+          "target": "apps/api/modules/commerce extensions",
+          "priority": "medium",
+          "status": "future"
+        },
+        {
+          "name": "model.donate.php",
+          "source": "model.donate.php",
+          "target": "apps/api/modules/commerce|marketplace|game-bridge",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "model.market.php",
+          "source": "model.market.php",
+          "target": "apps/api/modules/commerce|marketplace|game-bridge",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "model.shop.php",
+          "source": "model.shop.php",
+          "target": "apps/api/modules/commerce|marketplace|game-bridge",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "model.warehouse.php",
+          "source": "model.warehouse.php",
+          "target": "apps/api/modules/commerce|marketplace|game-bridge",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "wheel_of_fortune",
+          "source": "wheel_of_fortune",
+          "target": "apps/api/modules/commerce extensions",
+          "priority": "medium",
+          "status": "future"
+        },
+        {
+          "name": "workshop",
+          "source": "workshop",
+          "target": "apps/api/modules/commerce extensions",
+          "priority": "medium",
+          "status": "future"
+        }
+      ]
+    },
+    {
+      "key": "payments",
+      "title": "Pagamentos e recargas",
+      "description": "Provedores de pagamento, webhooks, recargas e conciliacao financeira.",
+      "entities": [
+        {
+          "name": "accumulated_donation_rewards",
+          "source": "accumulated_donation_rewards",
+          "target": "apps/api/modules/commerce/recharge providers",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "binance",
+          "source": "binance",
+          "target": "apps/api/modules/commerce/recharge providers",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "coinbase",
+          "source": "coinbase",
+          "target": "apps/api/modules/commerce/recharge providers",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "mercadopago",
+          "source": "mercadopago",
+          "target": "apps/api/modules/commerce/recharge providers",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "paghiper",
+          "source": "paghiper",
+          "target": "apps/api/modules/commerce/recharge providers",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "stripe",
+          "source": "stripe",
+          "target": "apps/api/modules/commerce/recharge providers",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "transfer_wcoins",
+          "source": "transfer_wcoins",
+          "target": "apps/api/modules/commerce/recharge providers",
+          "priority": "high",
+          "status": "needs-review"
+        },
+        {
+          "name": "wcoin_to_goblin",
+          "source": "wcoin_to_goblin",
+          "target": "apps/api/modules/commerce/recharge providers",
+          "priority": "high",
+          "status": "needs-review"
+        }
+      ]
+    }
+  ]
+}

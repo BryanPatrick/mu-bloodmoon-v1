@@ -1,14 +1,19 @@
 services:
-  postgres:
-    image: postgres:16-alpine
+  mysql:
+    image: mariadb:11
     restart: unless-stopped
     env_file:
       - .env.production
+    environment:
+      MARIADB_DATABASE: ${MYSQL_DATABASE}
+      MARIADB_USER: ${MYSQL_USER}
+      MARIADB_PASSWORD: ${MYSQL_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-troque-esta-senha-root}
     volumes:
-      - bloodmoon_postgres_data:/var/lib/postgresql/data
+      - bloodmoon_mysql_data:/var/lib/mysql
       - ./backups:/backups
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      test: ["CMD-SHELL", "mariadb-admin ping -h localhost -u$$MARIADB_USER -p$$MARIADB_PASSWORD --silent"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -34,11 +39,11 @@ services:
     volumes:
       - ../:/app
       - bloodmoon_node_modules:/app/node_modules
-    command: sh -c "npm ci && npx prisma generate --schema apps/api/prisma/schema.prisma && npx prisma migrate deploy --schema apps/api/prisma/schema.prisma && npm run api:build && npm --workspace @blood-moon/api run start"
+    command: sh -c "npm ci && npx prisma generate --schema apps/api/prisma/schema.prisma && npx prisma db push --schema apps/api/prisma/schema.prisma && npm run api:build && npm --workspace @blood-moon/api run start"
     ports:
       - "127.0.0.1:3333:3333"
     depends_on:
-      postgres:
+      mysql:
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -71,10 +76,10 @@ services:
       - bloodmoon_node_modules:/app/node_modules
     command: sh -c "npm ci && npx prisma generate --schema apps/api/prisma/schema.prisma && while true; do npm --workspace @blood-moon/api run worker:game-bridge; sleep 10; done"
     depends_on:
-      postgres:
+      mysql:
         condition: service_healthy
 
 volumes:
-  bloodmoon_postgres_data:
+  bloodmoon_mysql_data:
   bloodmoon_redis_data:
   bloodmoon_node_modules:

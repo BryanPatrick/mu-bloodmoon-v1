@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+﻿import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import type { Account, AccountCurrency, AccountStatus, Prisma, Role } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
@@ -66,9 +66,9 @@ export class AccountsService {
       ...(query.search
         ? {
             OR: [
-              { username: { contains: query.search, mode: 'insensitive' } },
-              { name: { contains: query.search, mode: 'insensitive' } },
-              { email: { contains: query.search, mode: 'insensitive' } }
+              { username: { contains: query.search } },
+              { name: { contains: query.search } },
+              { email: { contains: query.search } }
             ]
           }
         : {})

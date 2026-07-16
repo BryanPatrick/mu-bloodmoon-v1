@@ -1,18 +1,19 @@
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: bloodmoon-postgres
+  mysql:
+    image: mariadb:11
+    container_name: bloodmoon-mysql
     restart: unless-stopped
     environment:
-      POSTGRES_USER: bloodmoon
-      POSTGRES_PASSWORD: bloodmoon
-      POSTGRES_DB: bloodmoon_portal
+      MARIADB_DATABASE: bloodmoon_portal
+      MARIADB_USER: bloodmoon
+      MARIADB_PASSWORD: bloodmoon
+      MARIADB_ROOT_PASSWORD: bloodmoon_root
     ports:
-      - "55432:5432"
+      - "53306:3306"
     volumes:
-      - bloodmoon_postgres_data:/var/lib/postgresql/data
+      - bloodmoon_mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U bloodmoon -d bloodmoon_portal"]
+      test: ["CMD-SHELL", "mariadb-admin ping -h localhost -ubloodmoon -pbloodmoon --silent"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -33,5 +34,5 @@ services:
       retries: 5
 
 volumes:
-  bloodmoon_postgres_data:
+  bloodmoon_mysql_data:
   bloodmoon_redis_data:

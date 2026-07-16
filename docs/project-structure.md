@@ -6,6 +6,7 @@ bloodmoon/
     web/
       assets/         CSS e estilos globais
       components/     componentes reutilizaveis
+        legacy/        componentes para telas de migracao/importacao reaproveitaveis
       composables/    regras reutilizaveis do frontend
       data/           dados publicos, regras visuais e camada legada local
       layouts/        layouts Nuxt
@@ -38,3 +39,21 @@ bloodmoon/
 - Permissoes: `apps/web/data/security.ts`
 - Dados locais legados: `apps/web/data/management.ts`
 - Backend/API: `apps/api/src/modules`
+
+## Padrao modular para projetos futuros
+
+Cada parte grande do sistema deve nascer isolada por dominio para que possamos reutilizar em outros servidores:
+
+```text
+origem/importacao -> dominio normalizado -> API segura -> admin/CMS -> tela publica
+```
+
+Exemplo com o Fonte web atual:
+
+- origem/importacao: `references/web-source-current/catalog.json`
+- API segura: `apps/api/src/modules/web-source`
+- composable: `apps/web/composables/useWebSourceApi.ts`
+- tela admin: `apps/web/pages/painel/admin/fontes-web.vue`
+- componentes reaproveitaveis: `apps/web/components/legacy`
+
+Regra: um modulo nao deve depender visualmente ou tecnicamente de outro sem necessidade. Wiki, Loja, CMS, Admin, Marketplace, Integracao com jogo e Fontes legadas precisam conseguir evoluir separados.

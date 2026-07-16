@@ -1,0 +1,816 @@
+{
+  "generatedAt": "2026-07-16T17:24:11.575Z",
+  "sourcePublicHtml": "external-backup/public_html",
+  "warning": "Catalogo sem segredos. Nao versionar arquivos de credenciais nem copias completas do sistema externo.",
+  "cms": {
+    "name": "Sistema web atual",
+    "package": "catalogado",
+    "version": "1.2.4",
+    "php": ">=8.1.0"
+  },
+  "totals": {
+    "files": 8910,
+    "dirs": 952,
+    "bytes": 244153208
+  },
+  "dirSummary": [
+    {
+      "path": "application/controllers",
+      "files": 25,
+      "dirs": 0,
+      "bytes": 1080964
+    },
+    {
+      "path": "application/models",
+      "files": 16,
+      "dirs": 0,
+      "bytes": 690532
+    },
+    {
+      "path": "application/views",
+      "files": 391,
+      "dirs": 55,
+      "bytes": 2311373
+    },
+    {
+      "path": "application/plugins",
+      "files": 1045,
+      "dirs": 330,
+      "bytes": 5896058
+    },
+    {
+      "path": "application/config",
+      "files": 41,
+      "dirs": 1,
+      "bytes": 135207
+    },
+    {
+      "path": "application/data/ServerData/en",
+      "files": 27,
+      "dirs": 1,
+      "bytes": 5942073
+    },
+    {
+      "path": "assets/item_images",
+      "files": 4124,
+      "dirs": 19,
+      "bytes": 10129673
+    },
+    {
+      "path": "assets/uploads",
+      "files": 1,
+      "dirs": 3,
+      "bytes": 206
+    },
+    {
+      "path": "assets/season6",
+      "files": 248,
+      "dirs": 11,
+      "bytes": 8568566
+    },
+    {
+      "path": "assets/admincp",
+      "files": 274,
+      "dirs": 75,
+      "bytes": 4471071
+    }
+  ],
+  "controllers": [
+    {
+      "name": ".htaccess",
+      "bytes": 13
+    },
+    {
+      "name": "controller.about.php",
+      "bytes": 1547
+    },
+    {
+      "name": "controller.account_panel.php",
+      "bytes": 90037
+    },
+    {
+      "name": "controller.admincp.php",
+      "bytes": 459186
+    },
+    {
+      "name": "controller.ajax.php",
+      "bytes": 171804
+    },
+    {
+      "name": "controller.dash.php",
+      "bytes": 732
+    },
+    {
+      "name": "controller.donate.php",
+      "bytes": 43349
+    },
+    {
+      "name": "controller.downloads.php",
+      "bytes": 786
+    },
+    {
+      "name": "controller.gmcp.php",
+      "bytes": 26027
+    },
+    {
+      "name": "controller.guides.php",
+      "bytes": 2772
+    },
+    {
+      "name": "controller.home.php",
+      "bytes": 2419
+    },
+    {
+      "name": "controller.info.php",
+      "bytes": 5330
+    },
+    {
+      "name": "controller.information.php",
+      "bytes": 699
+    },
+    {
+      "name": "controller.lost_password.php",
+      "bytes": 15380
+    },
+    {
+      "name": "controller.maintenance.php",
+      "bytes": 678
+    },
+    {
+      "name": "controller.market.php",
+      "bytes": 22618
+    },
+    {
+      "name": "controller.media.php",
+      "bytes": 2843
+    },
+    {
+      "name": "controller.payment.php",
+      "bytes": 52315
+    },
+    {
+      "name": "controller.rankings.php",
+      "bytes": 13199
+    },
+    {
+      "name": "controller.registration.php",
+      "bytes": 26771
+    },
+    {
+      "name": "controller.rules.php",
+      "bytes": 717
+    },
+    {
+      "name": "controller.shop.php",
+      "bytes": 87747
+    },
+    {
+      "name": "controller.support.php",
+      "bytes": 18100
+    },
+    {
+      "name": "controller.vote_api.php",
+      "bytes": 6569
+    },
+    {
+      "name": "controller.warehouse.php",
+      "bytes": 29326
+    }
+  ],
+  "models": [
+    {
+      "name": ".htaccess",
+      "bytes": 13
+    },
+    {
+      "name": "model.account.php",
+      "bytes": 80034
+    },
+    {
+      "name": "model.admin.php",
+      "bytes": 208474
+    },
+    {
+      "name": "model.character.php",
+      "bytes": 128894
+    },
+    {
+      "name": "model.donate.php",
+      "bytes": 40195
+    },
+    {
+      "name": "model.downloads.php",
+      "bytes": 536
+    },
+    {
+      "name": "model.gm.php",
+      "bytes": 10095
+    },
+    {
+      "name": "model.guides.php",
+      "bytes": 2612
+    },
+    {
+      "name": "model.home.php",
+      "bytes": 16066
+    },
+    {
+      "name": "model.market.php",
+      "bytes": 39668
+    },
+    {
+      "name": "model.media.php",
+      "bytes": 2712
+    },
+    {
+      "name": "model.rankings.php",
+      "bytes": 79215
+    },
+    {
+      "name": "model.shop.php",
+      "bytes": 29411
+    },
+    {
+      "name": "model.stats.php",
+      "bytes": 14626
+    },
+    {
+      "name": "model.support.php",
+      "bytes": 21338
+    },
+    {
+      "name": "model.warehouse.php",
+      "bytes": 16643
+    }
+  ],
+  "plugins": [
+    {
+      "name": "accumulated_donation_rewards",
+      "files": 19,
+      "dirs": 6,
+      "bytes": 140731
+    },
+    {
+      "name": "achievements",
+      "files": 34,
+      "dirs": 7,
+      "bytes": 498628
+    },
+    {
+      "name": "battle_pass",
+      "files": 43,
+      "dirs": 11,
+      "bytes": 599601
+    },
+    {
+      "name": "binance",
+      "files": 19,
+      "dirs": 6,
+      "bytes": 78048
+    },
+    {
+      "name": "cashshop_log",
+      "files": 14,
+      "dirs": 6,
+      "bytes": 28622
+    },
+    {
+      "name": "character_market",
+      "files": 73,
+      "dirs": 13,
+      "bytes": 419110
+    },
+    {
+      "name": "coinbase",
+      "files": 15,
+      "dirs": 5,
+      "bytes": 79169
+    },
+    {
+      "name": "credits_to_credits",
+      "files": 12,
+      "dirs": 5,
+      "bytes": 37011
+    },
+    {
+      "name": "credits_to_zen",
+      "files": 12,
+      "dirs": 5,
+      "bytes": 51580
+    },
+    {
+      "name": "currency_market",
+      "files": 19,
+      "dirs": 5,
+      "bytes": 105699
+    },
+    {
+      "name": "gerencianet",
+      "files": 300,
+      "dirs": 65,
+      "bytes": 1100668
+    },
+    {
+      "name": "gift_code",
+      "files": 20,
+      "dirs": 7,
+      "bytes": 180340
+    },
+    {
+      "name": "item_exchange",
+      "files": 24,
+      "dirs": 8,
+      "bytes": 224073
+    },
+    {
+      "name": "level_rewards",
+      "files": 25,
+      "dirs": 9,
+      "bytes": 198575
+    },
+    {
+      "name": "mercadopago",
+      "files": 45,
+      "dirs": 11,
+      "bytes": 366953
+    },
+    {
+      "name": "merchant",
+      "files": 16,
+      "dirs": 6,
+      "bytes": 82245
+    },
+    {
+      "name": "muun_market",
+      "files": 32,
+      "dirs": 7,
+      "bytes": 152822
+    },
+    {
+      "name": "nganluong",
+      "files": 30,
+      "dirs": 9,
+      "bytes": 105959
+    },
+    {
+      "name": "paghiper",
+      "files": 19,
+      "dirs": 5,
+      "bytes": 79695
+    },
+    {
+      "name": "ruud_exchange",
+      "files": 14,
+      "dirs": 6,
+      "bytes": 47399
+    },
+    {
+      "name": "skill_tree_specialization",
+      "files": 13,
+      "dirs": 5,
+      "bytes": 58343
+    },
+    {
+      "name": "slots",
+      "files": 18,
+      "dirs": 6,
+      "bytes": 84928
+    },
+    {
+      "name": "stats_specialization",
+      "files": 22,
+      "dirs": 8,
+      "bytes": 67466
+    },
+    {
+      "name": "stripe",
+      "files": 17,
+      "dirs": 5,
+      "bytes": 67710
+    },
+    {
+      "name": "transfer_char",
+      "files": 24,
+      "dirs": 11,
+      "bytes": 86634
+    },
+    {
+      "name": "transfer_character",
+      "files": 17,
+      "dirs": 7,
+      "bytes": 94534
+    },
+    {
+      "name": "transfer_credits",
+      "files": 14,
+      "dirs": 6,
+      "bytes": 46167
+    },
+    {
+      "name": "transfer_wcoins",
+      "files": 16,
+      "dirs": 7,
+      "bytes": 49696
+    },
+    {
+      "name": "vip_rewards",
+      "files": 19,
+      "dirs": 6,
+      "bytes": 162062
+    },
+    {
+      "name": "wcoin_to_goblin",
+      "files": 10,
+      "dirs": 4,
+      "bytes": 31871
+    },
+    {
+      "name": "wheel_of_fortune",
+      "files": 25,
+      "dirs": 5,
+      "bytes": 224174
+    },
+    {
+      "name": "workshop",
+      "files": 19,
+      "dirs": 8,
+      "bytes": 195789
+    },
+    {
+      "name": "xendit",
+      "files": 30,
+      "dirs": 9,
+      "bytes": 95888
+    },
+    {
+      "name": "zen_exchange",
+      "files": 16,
+      "dirs": 7,
+      "bytes": 53868
+    }
+  ],
+  "serverData": [
+    {
+      "name": "EarringAttribute.xml",
+      "bytes": 17053
+    },
+    {
+      "name": "ErrtelSetOption.xml",
+      "bytes": 4512
+    },
+    {
+      "name": "ExcellentCommonOption.txt",
+      "bytes": 1489
+    },
+    {
+      "name": "ExcellentWingOption.txt",
+      "bytes": 2222
+    },
+    {
+      "name": "Item.txt",
+      "bytes": 313972
+    },
+    {
+      "name": "Item.xml",
+      "bytes": 1628922
+    },
+    {
+      "name": "ItemAddOption.txt",
+      "bytes": 2913
+    },
+    {
+      "name": "ItemGradeOption.xml",
+      "bytes": 7003
+    },
+    {
+      "name": "ItemLevelTooltip.txt",
+      "bytes": 10931
+    },
+    {
+      "name": "ItemList.xml",
+      "bytes": 1980437
+    },
+    {
+      "name": "ItemOptionSystem_Exc.xml",
+      "bytes": 9736
+    },
+    {
+      "name": "ItemSetOption.xml",
+      "bytes": 276749
+    },
+    {
+      "name": "ItemSetOptionText.csv",
+      "bytes": 5701
+    },
+    {
+      "name": "ItemSetType.xml",
+      "bytes": 99174
+    },
+    {
+      "name": "ItemTooltip.csv",
+      "bytes": 256708
+    },
+    {
+      "name": "ItemTooltip[11].csv",
+      "bytes": 443532
+    },
+    {
+      "name": "ItemTooltipText.csv",
+      "bytes": 68439
+    },
+    {
+      "name": "JewelOfHarmonyOption.txt",
+      "bytes": 71002
+    },
+    {
+      "name": "MuunInfo.xml",
+      "bytes": 86772
+    },
+    {
+      "name": "MuunOption.xml",
+      "bytes": 18607
+    },
+    {
+      "name": "PentagramJewelOptionValue.xml",
+      "bytes": 64752
+    },
+    {
+      "name": "PentagramOption.xml",
+      "bytes": 15100
+    },
+    {
+      "name": "PentagramWingAttribute.xml",
+      "bytes": 3772
+    },
+    {
+      "name": "SocketItem.txt",
+      "bytes": 7259
+    },
+    {
+      "name": "SocketItem[6].txt",
+      "bytes": 13281
+    },
+    {
+      "name": "SocketItemType.xml",
+      "bytes": 13234
+    }
+  ],
+  "itemImageGroups": [
+    {
+      "name": "0",
+      "files": 118,
+      "dirs": 0,
+      "bytes": 365716
+    },
+    {
+      "name": "1",
+      "files": 9,
+      "dirs": 0,
+      "bytes": 11328
+    },
+    {
+      "name": "10",
+      "files": 314,
+      "dirs": 0,
+      "bytes": 650090
+    },
+    {
+      "name": "11",
+      "files": 327,
+      "dirs": 0,
+      "bytes": 798250
+    },
+    {
+      "name": "12",
+      "files": 560,
+      "dirs": 0,
+      "bytes": 1282668
+    },
+    {
+      "name": "13",
+      "files": 486,
+      "dirs": 0,
+      "bytes": 722824
+    },
+    {
+      "name": "14",
+      "files": 520,
+      "dirs": 0,
+      "bytes": 652296
+    },
+    {
+      "name": "15",
+      "files": 60,
+      "dirs": 0,
+      "bytes": 47644
+    },
+    {
+      "name": "16",
+      "files": 370,
+      "dirs": 0,
+      "bytes": 939132
+    },
+    {
+      "name": "19",
+      "files": 15,
+      "dirs": 0,
+      "bytes": 44732
+    },
+    {
+      "name": "2",
+      "files": 49,
+      "dirs": 0,
+      "bytes": 134232
+    },
+    {
+      "name": "20",
+      "files": 81,
+      "dirs": 0,
+      "bytes": 195184
+    },
+    {
+      "name": "3",
+      "files": 33,
+      "dirs": 0,
+      "bytes": 79748
+    },
+    {
+      "name": "4",
+      "files": 66,
+      "dirs": 0,
+      "bytes": 244220
+    },
+    {
+      "name": "5",
+      "files": 101,
+      "dirs": 0,
+      "bytes": 298908
+    },
+    {
+      "name": "6",
+      "files": 67,
+      "dirs": 0,
+      "bytes": 302200
+    },
+    {
+      "name": "7",
+      "files": 288,
+      "dirs": 0,
+      "bytes": 676494
+    },
+    {
+      "name": "8",
+      "files": 327,
+      "dirs": 0,
+      "bytes": 1598606
+    },
+    {
+      "name": "9",
+      "files": 330,
+      "dirs": 0,
+      "bytes": 1069284
+    }
+  ],
+  "configFiles": [
+    {
+      "name": ".htaccess",
+      "bytes": 190
+    },
+    {
+      "name": "class_config.json",
+      "bytes": 5630
+    },
+    {
+      "name": "cms_config.json",
+      "bytes": 54
+    },
+    {
+      "name": "email_config.json",
+      "bytes": 429
+    },
+    {
+      "name": "event_config.json",
+      "bytes": 2
+    },
+    {
+      "name": "guides_category.json",
+      "bytes": 210
+    },
+    {
+      "name": "locale_config.json",
+      "bytes": 99
+    },
+    {
+      "name": "lostpassword_config.json",
+      "bytes": 36
+    },
+    {
+      "name": "map_config.json",
+      "bytes": 3028
+    },
+    {
+      "name": "map.config",
+      "bytes": 2975
+    },
+    {
+      "name": "meta_config.json",
+      "bytes": 691
+    },
+    {
+      "name": "plugin_config.json",
+      "bytes": 2
+    },
+    {
+      "name": "pre_defined_table_config.json",
+      "bytes": 9861
+    },
+    {
+      "name": "rankings_config.json",
+      "bytes": 4040
+    },
+    {
+      "name": "referral_config.json",
+      "bytes": 2
+    },
+    {
+      "name": "registration_config.json",
+      "bytes": 466
+    },
+    {
+      "name": "reset_config.json",
+      "bytes": 2
+    },
+    {
+      "name": "scheduler_config.json",
+      "bytes": 2635
+    },
+    {
+      "name": "security_config.json",
+      "bytes": 2
+    },
+    {
+      "name": "social_config.json",
+      "bytes": 181
+    },
+    {
+      "name": "sockets_config.json",
+      "bytes": 82832
+    },
+    {
+      "name": "table_config.json",
+      "bytes": 1831
+    },
+    {
+      "name": "teleport_config.json",
+      "bytes": 543
+    },
+    {
+      "name": "vip_config.json",
+      "bytes": 2
+    },
+    {
+      "name": "vip_query_config.json",
+      "bytes": 3445
+    },
+    {
+      "name": "votereward_config.json",
+      "bytes": 2
+    },
+    {
+      "name": "wcoin_exchange_config.json",
+      "bytes": 2
+    }
+  ],
+  "reusePlan": [
+    {
+      "area": "Dados de itens",
+      "source": "application/data/ServerData/en",
+      "use": "Comparar arquivos de itens, tooltips, opcoes excellent, ancient, socket e harmony com a nossa base da Wiki/API."
+    },
+    {
+      "area": "Imagens de itens",
+      "source": "assets/item_images",
+      "use": "Mapear por grupo/index para preencher previews de equipamentos, armas, asas, joias e consumiveis."
+    },
+    {
+      "area": "Painel atual",
+      "source": "application/controllers/controller.admincp.php e application/models/model.admin.php",
+      "use": "Extrair fluxo funcional e transformar em modulos seguros no NestJS, sem reaproveitar acesso direto do browser ao banco."
+    },
+    {
+      "area": "Loja, mercado e bau",
+      "source": "controllers/models de shop, market, warehouse e plugins relacionados",
+      "use": "Usar como referencia de regra de negocio para loja, marketplace, bau e transferencia, reimplementando com transacao/auditoria."
+    },
+    {
+      "area": "Pagamentos",
+      "source": "plugins de provedores de pagamento",
+      "use": "Catalogar provedores possiveis e integrar novamente com webhooks seguros no backend novo."
+    },
+    {
+      "area": "Configuracoes",
+      "source": "application/config e application/config/xml",
+      "use": "Migrar valores publicos/editoriais para CMS. Segredos ficam somente em .env fora do Git."
+    }
+  ]
+}

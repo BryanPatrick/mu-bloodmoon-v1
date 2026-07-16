@@ -39,9 +39,9 @@ function listSearch(search?: string): Prisma.PlayerMarketListingWhereInput {
 
   return {
     OR: [
-      { itemName: { contains: search.trim(), mode: 'insensitive' } },
-      { itemCategory: { contains: search.trim(), mode: 'insensitive' } },
-      { gameItemRef: { contains: search.trim(), mode: 'insensitive' } }
+      { itemName: { contains: search.trim() } },
+      { itemCategory: { contains: search.trim() } },
+      { gameItemRef: { contains: search.trim() } }
     ]
   }
 }
@@ -72,7 +72,7 @@ export class MarketplaceService {
       ...listSearch(query.search),
       ...(query.currency ? { currency: query.currency } : {}),
       ...(query.status ? { status: enumOrFallback(query.status, listingStatuses, 'ACTIVE') } : {}),
-      ...(query.seller ? { seller: { username: { contains: query.seller, mode: 'insensitive' } } } : {})
+      ...(query.seller ? { seller: { username: { contains: query.seller } } } : {})
     }
 
     const [total, rows] = await Promise.all([

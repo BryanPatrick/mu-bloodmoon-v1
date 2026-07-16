@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+﻿import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import type {
   Account,
   CurrencyCode,
@@ -196,9 +196,9 @@ export class CommerceService {
       ...(query.search
         ? {
             OR: [
-              { name: { contains: query.search, mode: 'insensitive' } },
-              { category: { contains: query.search, mode: 'insensitive' } },
-              { description: { contains: query.search, mode: 'insensitive' } }
+              { name: { contains: query.search } },
+              { category: { contains: query.search } },
+              { description: { contains: query.search } }
             ]
           }
         : {})

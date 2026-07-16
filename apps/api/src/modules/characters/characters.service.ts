@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+﻿import { Injectable, NotFoundException } from '@nestjs/common'
 import type { AccountCharacter, CharacterRuntimeStatus, Prisma } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
@@ -131,11 +131,11 @@ export class CharactersService {
       ...(query.search
         ? {
             OR: [
-              { name: { contains: query.search, mode: 'insensitive' } },
-              { className: { contains: query.search, mode: 'insensitive' } },
-              { map: { contains: query.search, mode: 'insensitive' } },
-              { guild: { contains: query.search, mode: 'insensitive' } },
-              { account: { username: { contains: query.search, mode: 'insensitive' } } }
+              { name: { contains: query.search } },
+              { className: { contains: query.search } },
+              { map: { contains: query.search } },
+              { guild: { contains: query.search } },
+              { account: { username: { contains: query.search } } }
             ]
           }
         : {})

@@ -26,6 +26,8 @@ Este diretorio agora possui a primeira API executavel em NestJS para servir a ba
 - `wiki`: leitura de entradas, assets e equipamentos consolidados no PostgreSQL.
 - `commerce`: loja, pacotes de recarga, intencoes de compra/recarga e filas financeiras.
 - `marketplace`: anuncios entre jogadores, pedidos e jobs de ponte com o servidor MU.
+- `muserver-export`: leitura dos arquivos reais extraidos do backup do MuServer para inventario, CMS e Wiki.
+- `web-source`: inventario seguro da base web atual para migracao modular.
 
 ## Desenvolvimento
 
@@ -47,6 +49,36 @@ Endpoints iniciais:
 - `GET /api/wiki/equipment/sets`
 - `GET /api/wiki/equipment/missing-references`
 - `GET /api/wiki/equipment/:key`
+
+MuServer exportado:
+
+- `GET /api/muserver-export/summary`
+- `GET /api/muserver-export/cms-modules`
+- `GET /api/muserver-export/inventory`
+- `GET /api/muserver-export/items`
+- `GET /api/muserver-export/skills`
+- `GET /api/muserver-export/monsters`
+- `GET /api/muserver-export/monster-spawns`
+- `GET /api/muserver-export/maps`
+- `GET /api/muserver-export/cash-shop-products`
+- `GET /api/muserver-export/event-item-bags`
+- `GET /api/muserver-export/files/:group`
+
+As rotas de MuServer exportado sao somente leitura e usam os JSONs gerados em `references/game-data/muserver-export`.
+
+Fonte web atual:
+
+- `GET /api/source-web/current/summary`
+- `GET /api/source-web/current/controllers`
+- `GET /api/source-web/current/models`
+- `GET /api/source-web/current/plugins`
+- `GET /api/source-web/current/server-data`
+- `GET /api/source-web/current/item-image-groups`
+- `GET /api/source-web/current/reuse-plan`
+- `GET /api/source-web/current/migration-board`
+- `GET /api/source-web/current/normalized-domains`
+
+As rotas de Fonte web atual exigem Bearer token com role `ADMIN` ou `SUPER_ADMIN`, sao somente leitura e usam `references/web-source-current/catalog.json` e `references/web-source-current/normalized-domains.json`.
 
 Auth:
 
@@ -174,13 +206,13 @@ Setup local com Docker:
 npm run db:setup
 ```
 
-Esse comando sobe o servico `postgres` do `docker-compose.yml` e aplica as migrations Prisma.
-Se o Docker nao estiver saudavel, ele usa o PostgreSQL local instalado e cria um cluster isolado em `work/postgres-data`.
+Esse comando aplica o schema Prisma no MySQL/MariaDB configurado em `DATABASE_URL`.
+No ambiente Docker local, use o servico `mysql` do `docker-compose.yml`.
 
-Se Docker nao estiver instalado, configurar um PostgreSQL manualmente com:
+Se Docker nao estiver instalado, configurar um MySQL/MariaDB manualmente com:
 
 ```bash
-postgresql://bloodmoon:bloodmoon@localhost:55432/bloodmoon_portal?schema=public
+mysql://bloodmoon:bloodmoon@localhost:3306/bloodmoon_portal
 ```
 
 Depois do banco preparado:

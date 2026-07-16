@@ -139,8 +139,15 @@ npm run db:setup
 npm run db:import
 ```
 
-O ambiente local usa `postgresql://bloodmoon:bloodmoon@localhost:55432/bloodmoon_portal?schema=public`.
-Quando o Docker estiver indisponivel ou com engine quebrado, o setup cria um cluster isolado em `work/postgres-data`.
+O ambiente de deploy cPanel usa MySQL/MariaDB.
+
+URL local padrao esperada pelo script:
+
+```text
+mysql://bloodmoon:bloodmoon@localhost:3306/bloodmoon_portal
+```
+
+No cPanel, a `DATABASE_URL` real fica em variavel de ambiente do app Node e tambem em `work/cpanel-mysql-production.env` apenas na maquina local de desenvolvimento.
 
 Comando para remapear todos os equipamentos e preparar o plano de importacao:
 

@@ -51,6 +51,65 @@ Internet
   -> SQL Server local/privado do jogo
 ```
 
+## Site atual na hospedagem web
+
+O site atual publicado no dominio esta em uma hospedagem cPanel/hospedagem web, separado do VPS do jogo.
+
+Estado observado:
+
+- web server: LiteSpeed;
+- PHP: 8.1;
+- CMS: sistema web atual;
+- raiz: `public_html`;
+- banco MySQL local no cPanel: nao listado;
+- conexao do site legado com o jogo: configurada em arquivo PHP de constantes, tratado como segredo.
+
+Backup local restauravel:
+
+```text
+C:\Users\Admin\Documents\BloodMoonBackups\WebSource-web\20260716-cpanel\backup-7.16.2026_12-53-47_mubloodxz.tar.gz
+```
+
+Catalogo seguro do backup:
+
+```text
+docs/current-web-source-catalog.md
+references/web-source-current/catalog.json
+
+## Banco de dados em hospedagem compartilhada
+
+O deploy cPanel atual usa MySQL/MariaDB porque a conta disponibiliza MySQL e Node.js 22.17.0, enquanto o recurso PostgreSQL aparece no painel mas retorna erro de funcionalidade nao suportada pela API do cPanel.
+
+Para esse ambiente:
+
+- Prisma usa `provider = "mysql"`.
+- A criacao de tabelas em producao usa `prisma db push`.
+- As migrations antigas de PostgreSQL ficam como historico local e nao devem ser aplicadas no MySQL.
+- A URL real de producao deve ficar apenas em variavel de ambiente do cPanel, nunca em arquivo versionado.
+```
+
+Para atualizar o catalogo depois de uma nova extracao:
+
+```bash
+npm run web-source:catalog
+```
+
+## Como nosso build roda nesse ambiente
+
+O build do nosso projeto gera JavaScript, mas existem dois cenarios diferentes:
+
+1. **Nuxt SSR/Nitro + NestJS API**
+   - Gera JavaScript para rodar em Node.js.
+   - Precisa de processo Node ativo no servidor.
+   - E o caminho correto para painel, login, API, marketplace, loja, CMS e integracoes com SQL Server.
+
+2. **Nuxt estatico**
+   - `npm run web:generate` gera arquivos HTML/CSS/JS estaticos que LiteSpeed/PHP consegue servir.
+   - Nao substitui o backend.
+   - Ainda precisa de uma API Node separada para login, conta, loja, admin, wiki editavel e acesso ao banco.
+
+Portanto: o ambiente PHP/LiteSpeed sozinho nao executa a API NestJS nem Nuxt SSR. Se o plano hospedagem web nao tiver Node persistente, a arquitetura segura e publicar o frontend estatico no LiteSpeed e manter a API Node no VPS/Hostinger Cloud/VPS dedicado, atras de HTTPS.
+
 ## Rotas esperadas em producao
 
 ```text

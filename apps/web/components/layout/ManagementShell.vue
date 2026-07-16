@@ -122,7 +122,7 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronDown, CircleDollarSign, ClipboardList, FileSearch, FileText, Images, LayoutDashboard, PanelLeftClose, PanelLeftOpen, Settings, ShieldCheck, ShoppingBag, UserCog, Users } from 'lucide-vue-next'
+import { ChevronDown, CircleDollarSign, ClipboardList, DatabaseZap, FileSearch, FileText, Images, LayoutDashboard, PanelLeftClose, PanelLeftOpen, Settings, ShieldCheck, ShoppingBag, UserCog, Users } from 'lucide-vue-next'
 import { permissions } from '~/data/security'
 
 const route = useRoute()
@@ -168,6 +168,7 @@ const menuItems = computed(() => [
   { label: 'Marketplace Admin', to: '/painel/admin/marketplace', icon: ShoppingBag, adminOnly: true },
   { label: 'Recargas Admin', to: '/painel/admin/recargas', icon: CircleDollarSign, adminOnly: true },
   { label: 'Implementacoes', to: '/painel/admin/pendencias', icon: ClipboardList, adminOnly: true },
+  { label: 'Fontes Web', to: '/painel/admin/fontes-web', icon: DatabaseZap, adminOnly: true },
   { label: 'Auditoria', to: '/painel/admin/auditoria', icon: FileSearch, adminOnly: true },
   { label: 'Sistema', to: '/painel/admin/sistema', icon: Settings, adminOnly: true },
   {

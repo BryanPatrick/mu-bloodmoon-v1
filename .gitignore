@@ -20,6 +20,10 @@ yarn-error.log*
 pnpm-debug.log*
 
 work/*.log
+work/
+work/muserver-extracted/
+work/muserver-sample/
+work/WebSource-inspect/
 work/postgres-data/
 work/postgres.log
 *.local

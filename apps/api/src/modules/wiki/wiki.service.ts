@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+﻿import { Injectable, NotFoundException } from '@nestjs/common'
 import type { Prisma } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
 import type { PaginatedResult, WikiEntryQuery, WikiEquipmentQuery, WikiEquipmentSetQuery } from './wiki.types'
@@ -228,9 +228,9 @@ export class WikiService {
       ...(query.search
         ? {
             OR: [
-              { title: { contains: query.search, mode: 'insensitive' } },
-              { slug: { contains: query.search, mode: 'insensitive' } },
-              { summary: { contains: query.search, mode: 'insensitive' } }
+              { title: { contains: query.search } },
+              { slug: { contains: query.search } },
+              { summary: { contains: query.search } }
             ]
           }
         : {})
@@ -280,9 +280,9 @@ export class WikiService {
       ...(query.search
         ? {
             OR: [
-              { name: { contains: query.search, mode: 'insensitive' } },
-              { title: { contains: query.search, mode: 'insensitive' } },
-              { baseSetName: { contains: query.search, mode: 'insensitive' } }
+              { name: { contains: query.search } },
+              { title: { contains: query.search } },
+              { baseSetName: { contains: query.search } }
             ]
           }
         : {}),
@@ -328,9 +328,9 @@ export class WikiService {
       ...(query.search
         ? {
             OR: [
-              { name: { contains: query.search, mode: 'insensitive' } },
-              { title: { contains: query.search, mode: 'insensitive' } },
-              { baseSetName: { contains: query.search, mode: 'insensitive' } }
+              { name: { contains: query.search } },
+              { title: { contains: query.search } },
+              { baseSetName: { contains: query.search } }
             ]
           }
         : {})

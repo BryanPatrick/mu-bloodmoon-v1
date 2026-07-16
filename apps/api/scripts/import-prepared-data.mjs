@@ -1,13 +1,14 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
+import { randomUUID } from 'node:crypto'
 import { PrismaClient } from '@prisma/client'
 
 const currentDir = fileURLToPath(new URL('.', import.meta.url))
 const repoRoot = resolve(currentDir, '../../..')
 const sourcePlanPath = resolve(repoRoot, 'references/game-data/source-harvest/postgres-import-plan.json')
 const equipmentPlanPath = resolve(repoRoot, 'references/game-data/equipment-postgres-import-plan.json')
-process.env.DATABASE_URL ||= 'postgresql://bloodmoon:bloodmoon@localhost:55432/bloodmoon_portal?schema=public'
+process.env.DATABASE_URL ||= 'mysql://bloodmoon:bloodmoon@localhost:3306/bloodmoon_portal'
 const prisma = new PrismaClient()
 
 function readJson(path) {
@@ -73,6 +74,16 @@ function keyFor(value) {
 
 function uniqueStrings(values) {
   return Array.from(new Set((values || []).filter((value) => typeof value === 'string' && value.trim()).map((value) => value.trim())))
+}
+
+async function createManyInChunks(modelName, rows, chunkSize = 500) {
+  console.log(`Importing ${modelName}: ${rows.length} rows`)
+  for (let index = 0; index < rows.length; index += chunkSize) {
+    await prisma[modelName].createMany({
+      data: rows.slice(index, index + chunkSize),
+      skipDuplicates: true
+    })
+  }
 }
 
 function baseClassFor(className) {
@@ -456,10 +467,12 @@ async function seedInternalKnowledge() {
 }
 
 async function importEquipment(equipmentPlan) {
+  console.log('Importing equipment taxonomy and relations')
   const { classByName } = await seedGameTaxonomy()
   const variantsByEquipmentKey = new Map()
   const piecesByEquipmentKey = new Map()
   const optionsByEquipmentKey = new Map()
+  const equipmentIdByKey = new Map()
 
   for (const variant of equipmentPlan.variants ?? []) {
     if (!variantsByEquipmentKey.has(variant.equipmentKey)) variantsByEquipmentKey.set(variant.equipmentKey, [])
@@ -476,77 +489,77 @@ async function importEquipment(equipmentPlan) {
     optionsByEquipmentKey.get(option.equipmentKey).push(option)
   }
 
-  for (const item of equipmentPlan.equipment ?? []) {
-    const equipment = await prisma.equipmentRecord.upsert({
-      where: { key: item.key },
-      update: {
-        name: item.name,
-        title: item.title,
-        category: item.category,
-        categorySlug: item.categorySlug,
-        group: enumOrFallback(item.group, 'MISC'),
-        baseSetName: item.baseSetName ?? null,
-        sourceUrl: item.sourceUrl ?? null,
-        minSeason: item.minSeason ?? 1,
-        status: enumOrFallback(item.status, 'NORMALIZED'),
-        rawData: item.rawData ?? null,
-        remapData: item.remapData ?? null
-      },
-      create: {
-        key: item.key,
-        name: item.name,
-        title: item.title,
-        category: item.category,
-        categorySlug: item.categorySlug,
-        group: enumOrFallback(item.group, 'MISC'),
-        baseSetName: item.baseSetName ?? null,
-        sourceUrl: item.sourceUrl ?? null,
-        minSeason: item.minSeason ?? 1,
-        status: enumOrFallback(item.status, 'NORMALIZED'),
-        rawData: item.rawData ?? null,
-        remapData: item.remapData ?? null
-      }
-    })
+  await prisma.equipmentClassLink.deleteMany()
+  await prisma.equipmentSeason.deleteMany()
+  await prisma.equipmentOption.deleteMany()
+  await prisma.equipmentPiece.deleteMany()
+  await prisma.equipmentVariant.deleteMany()
+  await prisma.equipmentRecord.deleteMany()
 
-    await prisma.equipmentVariant.deleteMany({ where: { equipmentId: equipment.id } })
-    await prisma.equipmentPiece.deleteMany({ where: { equipmentId: equipment.id } })
-    await prisma.equipmentOption.deleteMany({ where: { equipmentId: equipment.id } })
-    await prisma.equipmentClassLink.deleteMany({ where: { equipmentId: equipment.id } })
-    await prisma.equipmentSeason.deleteMany({ where: { equipmentId: equipment.id } })
+  const equipmentRows = (equipmentPlan.equipment ?? []).map((item) => {
+    const id = randomUUID()
+    equipmentIdByKey.set(item.key, id)
+
+    return {
+      id,
+      key: item.key,
+      name: item.name,
+      title: item.title,
+      category: item.category,
+      categorySlug: item.categorySlug,
+      group: enumOrFallback(item.group, 'MISC'),
+      baseSetName: item.baseSetName ?? null,
+      sourceUrl: item.sourceUrl ?? null,
+      minSeason: item.minSeason ?? 1,
+      status: enumOrFallback(item.status, 'NORMALIZED'),
+      rawData: item.rawData ?? null,
+      remapData: item.remapData ?? null
+    }
+  })
+
+  await createManyInChunks('equipmentRecord', equipmentRows)
+
+  const variantRows = []
+  const pieceRows = []
+  const optionRows = []
+  const classLinkRows = []
+  const classLinkKeys = new Set()
+  const seasonRows = []
+
+  for (const item of equipmentPlan.equipment ?? []) {
+    const equipmentId = equipmentIdByKey.get(item.key)
+    if (!equipmentId) continue
 
     for (const variant of variantsByEquipmentKey.get(item.key) ?? item.variants ?? []) {
-      await prisma.equipmentVariant.create({
-        data: {
-          equipmentId: equipment.id,
-          quality: enumOrFallback(variant.quality, 'NORMAL'),
-          minSeason: variant.minSeason ?? item.minSeason ?? 1,
-          data: variant.data ?? null
-        }
+      variantRows.push({
+        id: randomUUID(),
+        equipmentId,
+        quality: enumOrFallback(variant.quality, 'NORMAL'),
+        minSeason: variant.minSeason ?? item.minSeason ?? 1,
+        data: variant.data ?? null
       })
     }
 
     for (const piece of piecesByEquipmentKey.get(item.key) ?? item.pieces ?? []) {
-      await prisma.equipmentPiece.create({
-        data: {
-          equipmentId: equipment.id,
-          name: piece.name,
-          slot: piece.slot,
-          imagePath: piece.imagePath ?? null,
-          data: piece.data ?? null,
-          sortOrder: piece.sortOrder ?? 0
-        }
+      pieceRows.push({
+        id: randomUUID(),
+        equipmentId,
+        name: piece.name,
+        slot: piece.slot,
+        imagePath: piece.imagePath ?? null,
+        data: piece.data ?? null,
+        sortOrder: piece.sortOrder ?? 0
       })
     }
 
     for (const option of optionsByEquipmentKey.get(item.key) ?? item.options ?? []) {
-      await prisma.equipmentOption.create({
-        data: {
-          equipmentId: equipment.id,
-          scope: option.scope,
-          label: option.label,
-          data: option.data ?? null,
-          sortOrder: option.sortOrder ?? 0
-        }
+      optionRows.push({
+        id: randomUUID(),
+        equipmentId,
+        scope: option.scope,
+        label: option.label,
+        data: option.data ?? null,
+        sortOrder: option.sortOrder ?? 0
       })
     }
 
@@ -565,36 +578,47 @@ async function importEquipment(equipmentPlan) {
 
       if (!gameClass || !baseCharacter) continue
 
-      await prisma.equipmentClassLink.create({
-        data: {
-          equipmentId: equipment.id,
-          classId: gameClass.id,
-          characterId: baseCharacter.id,
-          role: link.role,
-          source: 'remap'
-        }
+      const classLinkKey = `${equipmentId}:${gameClass.id}:${link.role}`
+      if (classLinkKeys.has(classLinkKey)) continue
+      classLinkKeys.add(classLinkKey)
+
+      classLinkRows.push({
+        equipmentId,
+        classId: gameClass.id,
+        characterId: baseCharacter.id,
+        role: link.role,
+        source: 'remap'
       })
     }
 
-    const seasonRows = seasonRowsForEquipment(item)
-    if (seasonRows.length) {
-      await prisma.equipmentSeason.createMany({
-        data: seasonRows.map((row) => ({
-          equipmentId: equipment.id,
-          ...row
-        })),
-        skipDuplicates: true
+    for (const row of seasonRowsForEquipment(item)) {
+      seasonRows.push({
+        id: randomUUID(),
+        equipmentId,
+        ...row
       })
     }
   }
+
+  await createManyInChunks('equipmentVariant', variantRows)
+  await createManyInChunks('equipmentPiece', pieceRows)
+  await createManyInChunks('equipmentOption', optionRows)
+  await createManyInChunks('equipmentClassLink', classLinkRows, 1000)
+  await createManyInChunks('equipmentSeason', seasonRows, 1000)
 }
 
 async function main() {
   const sourcePlan = readJson(sourcePlanPath)
   const equipmentPlan = readJson(equipmentPlanPath)
 
-  await importKnowledge(sourcePlan)
-  await seedInternalKnowledge()
+  if (process.env.SKIP_KNOWLEDGE_IMPORT !== '1') {
+    console.log('Importing knowledge entries and reference assets')
+    await importKnowledge(sourcePlan)
+    await seedInternalKnowledge()
+  } else {
+    console.log('Skipping knowledge import by SKIP_KNOWLEDGE_IMPORT=1')
+  }
+
   await importEquipment(equipmentPlan)
 
   const counts = {

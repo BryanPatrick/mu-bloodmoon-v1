@@ -8,7 +8,9 @@ import { AdminDashboardModule } from './modules/admin-dashboard/admin-dashboard.
 import { AuthModule } from './modules/auth/auth.module'
 import { CharactersModule } from './modules/characters/characters.module'
 import { CommerceModule } from './modules/commerce/commerce.module'
+import { WebSourceModule } from './modules/web-source/web-source.module'
 import { MarketplaceModule } from './modules/marketplace/marketplace.module'
+import { MuServerExportModule } from './modules/muserver-export/muserver-export.module'
 import { WikiModule } from './modules/wiki/wiki.module'
 
 export const apiModules = [
@@ -21,7 +23,9 @@ export const apiModules = [
   'references',
   'tickets',
   'game-integration',
+  'web-source',
   'marketplace',
+  'muserver-export',
   'wiki',
   'admin-content'
 ] as const
@@ -41,7 +45,9 @@ export type ApiModuleName = typeof apiModules[number]
     AdminDashboardModule,
     CharactersModule,
     CommerceModule,
+    WebSourceModule,
     MarketplaceModule,
+    MuServerExportModule,
     WikiModule
   ]
 })

@@ -4,14 +4,14 @@ Schema oficial do backend Blood Moon.
 
 ## Banco alvo
 
-- PostgreSQL
+- MySQL/MariaDB
 - Prisma ORM
 - `DATABASE_URL` obrigatoria em ambiente real
 
 Exemplo local:
 
 ```bash
-DATABASE_URL="postgresql://bloodmoon:bloodmoon@localhost:55432/bloodmoon_portal?schema=public"
+DATABASE_URL="mysql://bloodmoon:bloodmoon@localhost:3306/bloodmoon_portal"
 ```
 
 ## Areas atuais
@@ -24,11 +24,9 @@ DATABASE_URL="postgresql://bloodmoon:bloodmoon@localhost:55432/bloodmoon_portal?
 - Equipamentos consolidados.
 - Variantes, pecas e opcoes de equipamentos.
 
-## Migracoes
+## Schema
 
-A migration inicial da base de conhecimento fica em:
-
-- `apps/api/prisma/migrations/20260630195500_knowledge_base/migration.sql`
+O deploy cPanel atual usa `prisma db push`, porque as migrations antigas foram geradas para PostgreSQL e ficam apenas como historico de desenvolvimento.
 
 Plano de importacao gerado a partir das referencias:
 
@@ -48,23 +46,25 @@ Importar no banco:
 npm run db:import
 ```
 
-Contagens verificadas no PostgreSQL local:
+Contagens verificadas no MySQL de producao cPanel em 2026-07-16:
 
-- `ReferenceSource`: 2
-- `KnowledgeEntry`: 330
+- `ReferenceSource`: 3
+- `KnowledgeEntry`: 352
 - `ReferenceAsset`: 1537
 - `KnowledgeEntryAsset`: 1672
 - `EquipmentRecord`: 1719
 - `EquipmentVariant`: 2729
 - `EquipmentPiece`: 2511
 - `EquipmentOption`: 55
+- `EquipmentClassLink`: 9414
+- `EquipmentSeason`: 25990
 
 Antes de aplicar em ambiente real:
 
-1. Configurar PostgreSQL.
+1. Configurar MySQL/MariaDB.
 2. Definir `DATABASE_URL`.
 3. Rodar `npx prisma validate --schema apps/api/prisma/schema.prisma`.
-4. Rodar migration em banco vazio ou ajustar se ja existir banco produtivo.
+4. Rodar `npx prisma db push --schema apps/api/prisma/schema.prisma` em banco vazio ou controlado.
 
 Atalho local:
 
@@ -73,13 +73,7 @@ npm run db:setup
 npm run db:import
 ```
 
-Observacao: o `db:setup` tenta usar Docker primeiro. Se o Docker estiver instalado mas o engine nao estiver saudavel, ele cria um cluster PostgreSQL local isolado em `work/postgres-data` na porta `55432`.
-
-Parar o cluster local:
-
-```powershell
-& "C:\Program Files\PostgreSQL\18\bin\pg_ctl.exe" -D work/postgres-data stop
-```
+Observacao: o `db:setup` nao cria banco automaticamente em hospedagem compartilhada; ele espera que o banco e usuario ja existam e aplica o schema Prisma.
 
 ## Regra
 

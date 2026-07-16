@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -230,10 +230,10 @@ model ReferenceSource {
   id        String           @id @default(uuid())
   key       String           @unique
   title     String
-  baseUrl   String
+  baseUrl   String           @db.VarChar(512)
   publisher String?
   language  String?
-  notes     String?
+  notes     String?          @db.Text
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
   entries   KnowledgeEntry[]
@@ -244,8 +244,8 @@ model KnowledgeEntry {
   id             String                @id @default(uuid())
   sourceId       String?
   sourceKey      String?
-  sourceUrl      String?
-  canonicalKey   String                @unique
+  sourceUrl      String?               @db.Text
+  canonicalKey   String                @unique @db.VarChar(512)
   slug           String
   title          String
   kind           KnowledgeEntryKind    @default(UNKNOWN)
@@ -253,7 +253,7 @@ model KnowledgeEntry {
   status         EditorialStatus       @default(RAW)
   seasonMin      Int?
   seasonMax      Int?
-  summary        String?
+  summary        String?               @db.Text
   rawData        Json?
   normalizedData Json?
   duplicateOfId  String?
@@ -274,9 +274,9 @@ model KnowledgeEntry {
 model ReferenceAsset {
   id            String                @id @default(uuid())
   sourceId      String?
-  sourceUrl     String?
-  localPath     String
-  publicPath    String?
+  sourceUrl     String?               @db.Text
+  localPath     String                @db.VarChar(512)
+  publicPath    String?               @db.VarChar(512)
   kind          ReferenceAssetKind    @default(IMAGE)
   mimeType      String?
   sha1          String?
@@ -312,14 +312,14 @@ model KnowledgeEntryAsset {
 
 model EquipmentRecord {
   id           String               @id @default(uuid())
-  key          String               @unique
+  key          String               @unique @db.VarChar(255)
   name         String
   title        String
   category     String
   categorySlug String
   group        EquipmentGroup       @default(MISC)
   baseSetName  String?
-  sourceUrl    String?
+  sourceUrl    String?              @db.Text
   minSeason    Int                  @default(1)
   status       EditorialStatus      @default(NORMALIZED)
   rawData      Json?
@@ -454,7 +454,7 @@ model ShopProduct {
   name        String
   short       String
   category    String
-  description String
+  description String            @db.Text
   price       Int               @default(0)
   currency    CurrencyCode
   status      ShopProductStatus @default(ACTIVE)
@@ -527,7 +527,7 @@ model PlayerMarketListing {
   id                String                   @id @default(uuid())
   sellerAccountId   String
   sellerCharacterId String?
-  gameItemRef       String
+  gameItemRef       String                   @db.VarChar(255)
   itemName          String
   itemCategory      String
   itemData          Json
@@ -590,7 +590,7 @@ model GameBridgeJob {
   attempts       Int                  @default(0)
   payload        Json
   result         Json?
-  error          String?
+  error          String?              @db.Text
   availableAt    DateTime             @default(now())
   processedAt    DateTime?
   createdAt      DateTime             @default(now())

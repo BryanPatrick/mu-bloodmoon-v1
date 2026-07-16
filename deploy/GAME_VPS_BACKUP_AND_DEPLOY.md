@@ -60,6 +60,50 @@ No IP `151.243.219.30`, o teste local encontrou RDP aberto e WinRM/SSH fechados.
 - ou habilitar temporariamente WinRM/SSH com firewall restrito ao IP de administracao;
 - sem RDP interativo ou shell remoto, nao ha como fazer backup/deploy por linha de comando a partir desta maquina.
 
+## Habilitar SSH temporario no Windows
+
+Em Windows Server moderno, se o VPS for Windows e apenas RDP estiver aberto, entrar via RDP, abrir PowerShell como administrador e rodar o script:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File deploy\scripts\game-vps-enable-ssh-windows.ps1 -AllowedRemoteAddress "143.137.90.5"
+```
+
+Isso instala/inicia o OpenSSH Server e cria uma regra de firewall para permitir SSH apenas a partir do IP informado.
+
+Ao terminar a manutencao, remover o acesso temporario:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File deploy\scripts\game-vps-disable-ssh-windows.ps1
+```
+
+Se quiser parar tambem o servico SSH:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File deploy\scripts\game-vps-disable-ssh-windows.ps1 -StopService
+```
+
+## Windows Server 2012 R2: usar WinRM temporario
+
+Windows Server 2012 R2 nao possui `Add-WindowsCapability`, entao o OpenSSH Server nativo nao instala pelo comando moderno. Para esse caso, usar WinRM/PowerShell Remoting temporario, restrito ao IP de administracao.
+
+No VPS, via RDP, abrir PowerShell como administrador:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File deploy\scripts\game-vps-enable-winrm-windows.ps1 -AllowedRemoteAddress "143.137.90.5"
+```
+
+Depois da manutencao:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File deploy\scripts\game-vps-disable-winrm-windows.ps1
+```
+
+Se quiser parar tambem o servico WinRM:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File deploy\scripts\game-vps-disable-winrm-windows.ps1 -StopService
+```
+
 ## Backup do site atual
 
 ### Linux
