@@ -105,7 +105,7 @@ async function main() {
     type: 'commonjs',
     engines: { node: '22.17.0' },
     scripts: {
-      start: 'node dist/apps/api/src/main.js',
+      start: 'node server.js',
       postinstall: 'prisma generate --schema prisma/schema.prisma'
     },
     dependencies: {
@@ -122,6 +122,7 @@ async function main() {
   await copyIfExists(path.join(root, 'references', 'game-data', 'equipment-postgres-import-plan.json'), path.join(apiStage, 'references', 'game-data', 'equipment-postgres-import-plan.json'))
   await copyIfExists(path.join(root, 'references', 'game-data', 'equipment-remap-audit.md'), path.join(apiStage, 'references', 'game-data', 'equipment-remap-audit.md'))
   await writeFile(path.join(apiStage, 'package.json'), `${JSON.stringify(apiDeployPackage, null, 2)}\n`)
+  await writeFile(path.join(apiStage, 'server.js'), "require('./dist/apps/api/src/main.js')\n")
   await writeFile(
     path.join(apiStage, 'README-cpanel.md'),
     [
@@ -129,7 +130,7 @@ async function main() {
       '',
       'Node.js: selecione 22.17.0.',
       'Raiz do aplicativo: pasta extraida deste pacote.',
-      'Arquivo de inicializacao: dist/apps/api/src/main.js',
+      'Arquivo de inicializacao: server.js',
       '',
       'Variaveis obrigatorias:',
       '- NODE_ENV=production',

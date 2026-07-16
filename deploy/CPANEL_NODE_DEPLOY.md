@@ -58,7 +58,7 @@ Configuracao do app Node:
 
 - Versao Node.js: `22.17.0`
 - Raiz do aplicativo: `/home/mubloodxz/bloodmoon-api`
-- Arquivo de inicializacao: `dist/apps/api/src/main.js`
+- Arquivo de inicializacao: `server.js`
 
 Variaveis:
 
