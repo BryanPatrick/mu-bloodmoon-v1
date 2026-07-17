@@ -15,11 +15,6 @@ export default defineNuxtConfig({
   experimental: {
     appManifest: false
   },
-  nitro: {
-    externals: {
-      trace: false
-    }
-  },
   vite: {
     optimizeDeps: {
       exclude: ['lucide-vue-next']

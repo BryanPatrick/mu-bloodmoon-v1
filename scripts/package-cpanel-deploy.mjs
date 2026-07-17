@@ -1,4 +1,4 @@
-import { copyFile, cp, mkdir, rm, stat, writeFile } from 'node:fs/promises'
+import { cp, mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
 import path from 'node:path'
@@ -25,18 +25,37 @@ async function copyIfExists(from, to) {
   }
 }
 
+async function patchNuxtServerForCpanel(outputDir) {
+  const chunksDir = path.join(outputDir, 'server', 'chunks')
+  const files = []
+
+  async function collectFiles(dir) {
+    for (const entry of await readdir(dir, { withFileTypes: true })) {
+      const fullPath = path.join(dir, entry.name)
+      if (entry.isDirectory()) {
+        await collectFiles(fullPath)
+      } else if (entry.isFile() && entry.name.endsWith('.mjs')) {
+        files.push(fullPath)
+      }
+    }
+  }
+
+  await collectFiles(chunksDir)
+
+  for (const filePath of files) {
+    const source = await readFile(filePath, 'utf8')
+    const patched = source.replace(/tailwindcss\/colors(?!\.js)/g, 'tailwindcss/colors.js')
+    if (patched !== source) {
+      await writeFile(filePath, patched)
+    }
+  }
+}
+
 function zipDirectory(sourceDir, targetFile) {
   if (process.platform === 'win32') {
-    const command = [
-      '-NoProfile',
-      '-ExecutionPolicy',
-      'Bypass',
-      '-Command',
-      `if (Test-Path '${targetFile}') { Remove-Item -LiteralPath '${targetFile}' -Force }; Compress-Archive -Path '${path.join(sourceDir, '*')}' -DestinationPath '${targetFile}' -Force`
-    ]
-    const result = spawnSync('powershell', command, { stdio: 'inherit' })
+    const result = spawnSync('tar', ['-a', '-cf', targetFile, '-C', sourceDir, '.'], { stdio: 'inherit' })
     if (result.status !== 0) {
-      throw new Error(`Compress-Archive failed for ${sourceDir}`)
+      throw new Error(`tar zip failed for ${sourceDir}`)
     }
     return
   }
@@ -64,6 +83,10 @@ async function main() {
   await mkdir(apiStage, { recursive: true })
 
   await cp(webOutput, path.join(webStage, '.output'), { recursive: true })
+  await patchNuxtServerForCpanel(path.join(webStage, '.output'))
+  const webServerPackage = JSON.parse(
+    await readFile(path.join(webOutput, 'server', 'package.json'), 'utf8')
+  )
   await writeFile(
     path.join(webStage, 'package.json'),
     `${JSON.stringify(
@@ -74,7 +97,8 @@ async function main() {
         engines: { node: '22.17.0' },
         scripts: {
           start: 'node .output/server/index.mjs'
-        }
+        },
+        dependencies: webServerPackage.dependencies ?? {}
       },
       null,
       2
@@ -97,7 +121,7 @@ async function main() {
   )
 
   const apiPackage = JSON.parse(
-    await (await import('node:fs/promises')).readFile(path.join(root, 'apps', 'api', 'package.json'), 'utf8')
+    await readFile(path.join(root, 'apps', 'api', 'package.json'), 'utf8')
   )
   const apiDeployPackage = {
     name: 'bloodmoon-api-cpanel',
