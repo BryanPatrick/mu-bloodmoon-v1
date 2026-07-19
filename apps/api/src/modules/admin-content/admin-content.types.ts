@@ -1,4 +1,4 @@
-import type { EditorialStatus, EquipmentGroup, KnowledgeEntryKind, KnowledgeScope, ReferenceAssetKind } from '@prisma/client'
+import type { EditorialStatus, EquipmentClassLinkRole, EquipmentGroup, EquipmentQuality, KnowledgeEntryKind, KnowledgeScope, ReferenceAssetKind } from '@prisma/client'
 
 export type AdminContentQuery = {
   page?: string
@@ -44,6 +44,26 @@ export type AdminCreateKnowledgeEntryPayload = {
 
 export type AdminUpdateKnowledgeEntryPayload = Partial<AdminCreateKnowledgeEntryPayload>
 
+export type AdminSettingQuery = {
+  page?: string
+  pageSize?: string
+  category?: string
+  status?: EditorialStatus
+  search?: string
+}
+
+export type AdminCreateSiteSettingPayload = {
+  key: string
+  category?: string
+  label: string
+  description?: string | null
+  value: unknown
+  isPublic?: boolean
+  status?: EditorialStatus
+}
+
+export type AdminUpdateSiteSettingPayload = Partial<AdminCreateSiteSettingPayload>
+
 export type AdminCreateReferenceAssetPayload = {
   sourceId?: string | null
   sourceUrl?: string | null
@@ -73,6 +93,35 @@ export type AdminCreateEquipmentPayload = {
   status?: EditorialStatus
   rawData?: unknown
   remapData?: unknown
+  variants?: Array<{
+    quality: EquipmentQuality
+    minSeason?: number
+    data?: unknown
+  }>
+  pieces?: Array<{
+    name: string
+    slot: string
+    imagePath?: string | null
+    data?: unknown
+    sortOrder?: number
+  }>
+  options?: Array<{
+    scope: string
+    label: string
+    data?: unknown
+    sortOrder?: number
+  }>
+  classLinks?: Array<{
+    classId: string
+    characterId: string
+    role?: EquipmentClassLinkRole
+    source?: string
+  }>
+  seasons?: Array<{
+    season: number
+    visibility?: KnowledgeScope
+    source?: string
+  }>
 }
 
 export type AdminUpdateEquipmentPayload = Partial<AdminCreateEquipmentPayload>

@@ -220,6 +220,17 @@ const navMenuItems = computed(() => [
     ]
   },
   {
+    label: 'Mercado',
+    value: '/marketplace',
+    active: isNavActive('/marketplace'),
+    class: isNavActive('/marketplace') ? 'bm-nav-link-active' : '',
+    children: [
+      { label: 'Mercado de itens', description: 'Equipamentos anunciados por jogadores com entrega protegida.', to: '/marketplace', onSelect: closeAfterNavigate },
+      { label: 'Meus anuncios', description: 'Anuncie itens e acompanhe suas vendas e compras.', to: '/painel/marketplace', onSelect: closeAfterNavigate },
+      { label: 'Mercado de personagens', description: 'Area reservada para uma futura modalidade de negociacao.', disabled: true }
+    ]
+  },
+  {
     label: navLabel('/wiki', 'Wiki'),
     value: '/wiki',
     to: '/wiki',

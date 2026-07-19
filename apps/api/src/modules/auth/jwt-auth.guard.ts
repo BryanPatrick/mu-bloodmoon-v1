@@ -37,6 +37,10 @@ export class JwtAuthGuard implements CanActivate {
         throw new UnauthorizedException('Account is not active')
       }
 
+      if (payload.sessionVersion !== account.sessionVersion) {
+        throw new UnauthorizedException('Session was replaced by a newer login')
+      }
+
       request.user = {
         id: account.id,
         username: account.username,

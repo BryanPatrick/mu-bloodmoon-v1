@@ -13,4 +13,5 @@ export type AccessTokenPayload = {
   sub: string
   username: string
   role: Role
+  sessionVersion: number
 }

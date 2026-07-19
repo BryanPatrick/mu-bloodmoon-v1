@@ -86,6 +86,18 @@ Permissoes importantes:
 9. Se a conta for bloqueada durante uma sessao aberta, a sessao e encerrada ao recarregar/navegar e registra `auth.session.blocked`.
 10. Sair da conta registra `auth.logout`.
 
+### Sessao unica por conta
+
+- cada login incrementa `Account.sessionVersion`;
+- access token e refresh token carregam a versao atual da sessao;
+- o guard compara a versao do token com a conta em toda rota protegida;
+- um novo login invalida imediatamente todos os tokens anteriores da conta;
+- logout e troca de senha tambem incrementam a versao e invalidam os tokens;
+- a substituicao e o encerramento geram `auth.session.replaced` e
+  `auth.session.ended` na auditoria;
+- uma tela antiga ainda pode exibir dados ja carregados no navegador, mas nao
+  consegue consultar nem alterar dados protegidos depois da invalidacao.
+
 ## Fluxo de cadastro
 
 Rota: `/registrar`
@@ -341,7 +353,7 @@ Rota: `/painel/admin/auditoria`
 
 - `npm run api:check`: OK.
 - `npm run web:build`: OK, com aviso persistente de chunks grandes em dados gerados. O chunk SSR principal da Wiki caiu de aproximadamente `1.33 MB` para `106 kB` depois de mover catalogos auxiliares para imports dinamicos.
-- Docker/PostgreSQL: container `bloodmoon-postgres` saudavel em `localhost:55432`.
+- Docker/MySQL: container `bloodmoon-mysql` saudavel em `localhost:53306`.
 - Smoke test API:
   - `GET /api/shop/products`: 3 produtos ativos visiveis publicamente.
   - `GET /api/admin/shop/products`: 4 produtos para admin, incluindo rascunho.
@@ -391,19 +403,23 @@ Validacao atual:
 Rota: `/painel/admin/conteudo`
 
 1. Admin visualiza resumo vindo da API administrativa.
-2. A tela mostra totais de entradas, assets, equipamentos e pendencias.
-3. A lista de pendencias vem de `GET /api/admin/content/equipment-gaps`.
-4. A lista de assets vem de `GET /api/admin/content/assets`.
-5. O backend ja possui rotas para criar, editar e arquivar `KnowledgeEntry` e `ReferenceAsset`.
-6. O backend ja possui rotas para listar, criar, editar e arquivar `EquipmentRecord`.
-7. O painel mostra uma amostra de equipamentos reais do PostgreSQL para orientar o CRUD de itens exclusivos.
-8. O upload fisico de arquivo ainda nao esta implementado; o CRUD atual cataloga assets existentes ou caminhos ja persistidos.
-9. O editor profundo de equipamento ainda precisa controlar pecas, variantes, opcoes, classes e seasons.
-10. Pendencias importantes:
-   - remover estados locais residuais quando recuperacao, conta do jogador e upload fisico estiverem 100% via API;
-   - trocar fluxos administrativos legados que ainda existirem para endpoints protegidos;
-   - criar formularios completos de criacao/edicao;
-   - conectar storage de imagens.
+2. A aba `Conteudo do site` cria, edita, publica e arquiva noticias, paginas,
+   entradas da Wiki, banners, downloads e navegacao.
+3. A aba `Equipamentos` cria e edita o registro principal junto com variantes,
+   pecas, opcoes, classes permitidas e temporadas.
+4. A aba `Configuracoes` controla parametros editoriais do portal e valores
+   publicos do servidor. Segredos permanecem nas variaveis de ambiente.
+5. A aba `Auditoria` leva ao historico completo de autor, acao, alvo, severidade
+   e metadados.
+6. Noticias publicadas sao renderizadas na home e em `/noticias` por
+   `GET /api/content/entries`, sem fallback local.
+7. Wiki e equipamentos continuam consumindo as tabelas relacionais pela API.
+8. Exclusao administrativa e arquivamento logico: o dado sai do site publico,
+   mas permanece disponivel para rastreabilidade.
+9. A biblioteca de referencias continua em `/painel/admin/referencias` e usa o
+   mesmo backend protegido de assets.
+10. O upload fisico de arquivo ainda depende da definicao do storage de
+    producao; por enquanto o CRUD cataloga caminhos e assets persistidos.
 
 Auditoria server-side ja registra:
 
@@ -416,6 +432,19 @@ Auditoria server-side ja registra:
 - `admin.content.equipment.created`
 - `admin.content.equipment.updated`
 - `admin.content.equipment.archived`
+- `admin.setting.created`
+- `admin.setting.updated`
+- `admin.setting.archived`
+
+Validacao do CMS em 2026-07-18:
+
+- login administrativo e bloqueio de player validados;
+- noticia publicada criada pela API e lida pela API publica;
+- configuracao publica criada pela API e lida pela API publica;
+- equipamento criado e editado com 2 variantes, 2 pecas, 1 opcao, 1 classe e 1
+  temporada;
+- criacao, edicao e arquivamento apareceram em `AuditEvent`;
+- registros artificiais foram removidos depois do teste.
 
 ## Fluxo de auditoria
 

@@ -76,14 +76,15 @@
         <p class="bm-kicker">{{ t('latestNews') }}</p>
         <h2 class="bm-title mt-2">{{ t('followSeason') }}</h2>
         <div class="mt-8 grid gap-4">
-          <article v-for="item in dictionary.news" :key="item.title" class="bm-panel rounded-md p-5">
+          <article v-for="item in publishedNews" :key="item.id" class="bm-panel rounded-md p-5">
             <div class="bm-muted flex flex-wrap items-center gap-3 text-xs font-bold uppercase tracking-[0.2em]">
-              <span class="text-ember">{{ item.tag }}</span>
-              <span>{{ item.date }}</span>
+              <span class="text-ember">Noticia</span>
+              <span>{{ formatNewsDate(item.updatedAt) }}</span>
             </div>
             <h3 class="bm-heading mt-3 font-display text-2xl font-bold">{{ item.title }}</h3>
-            <p class="bm-muted mt-3 text-sm leading-7">{{ item.excerpt }}</p>
+            <p class="bm-muted mt-3 text-sm leading-7">{{ item.summary }}</p>
           </article>
+          <p v-if="!publishedNews.length" class="bm-muted text-sm font-bold">Nenhuma noticia publicada no momento.</p>
         </div>
       </div>
 
@@ -113,6 +114,16 @@ useSeoMeta({
 })
 
 const { dictionary, rankingRows, t } = useLocale()
+type NewsEntry = { id: string; title: string; summary?: string | null; updatedAt: string }
+const contentApi = useContentApi()
+const publishedNews = ref<NewsEntry[]>([])
+try {
+  const result = await contentApi.entries<{ data: NewsEntry[] }>({ kind: 'NEWS', pageSize: 3 })
+  publishedNews.value = result.data
+} catch {
+  publishedNews.value = []
+}
+const formatNewsDate = (value: string) => new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(value))
 const activeSlide = ref(0)
 const heroSlides = computed(() => [
   {

@@ -4,9 +4,11 @@ export type MarketplaceQuery = {
   page?: string
   pageSize?: string
   search?: string
+  category?: string
   currency?: CurrencyCode
   status?: MarketplaceListingStatus
   seller?: string
+  sort?: 'newest' | 'oldest' | 'priceAsc' | 'priceDesc'
 }
 
 export type CreateMarketplaceListingPayload = {

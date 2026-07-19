@@ -383,8 +383,24 @@ export const useAuth = () => {
     })
   }
 
-  const logout = () => {
+  const logout = async () => {
     const previousUser = user.value
+    const accessToken = session.value?.accessToken
+
+    if (accessToken) {
+      const config = useRuntimeConfig()
+      const apiBase = String(config.public.apiBase || 'http://localhost:3333/api').replace(/\/$/, '')
+
+      try {
+        await $fetch(`${apiBase}/auth/logout`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${accessToken}` }
+        })
+      } catch {
+        // A sessao local deve ser encerrada mesmo quando a API estiver indisponivel.
+      }
+    }
+
     clearSession()
 
     if (previousUser) {

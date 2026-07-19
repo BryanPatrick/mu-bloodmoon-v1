@@ -51,18 +51,10 @@ async function patchNuxtServerForCpanel(outputDir) {
   }
 }
 
-function zipDirectory(sourceDir, targetFile) {
-  if (process.platform === 'win32') {
-    const result = spawnSync('tar', ['-a', '-cf', targetFile, '-C', sourceDir, '.'], { stdio: 'inherit' })
-    if (result.status !== 0) {
-      throw new Error(`tar zip failed for ${sourceDir}`)
-    }
-    return
-  }
-
-  const result = spawnSync('zip', ['-r', targetFile, '.'], { cwd: sourceDir, stdio: 'inherit' })
+function tarGzipDirectory(sourceDir, targetFile) {
+  const result = spawnSync('tar', ['-czf', targetFile, '-C', sourceDir, '.'], { stdio: 'inherit' })
   if (result.status !== 0) {
-    throw new Error(`zip failed for ${sourceDir}`)
+    throw new Error(`tar.gz failed for ${sourceDir}`)
   }
 }
 
@@ -140,6 +132,10 @@ async function main() {
 
   await cp(apiDist, path.join(apiStage, 'dist'), { recursive: true })
   await cp(path.join(root, 'apps', 'api', 'prisma'), path.join(apiStage, 'prisma'), { recursive: true })
+  await copyIfExists(
+    path.join(root, 'apps', 'api', 'scripts', 'import-prepared-data.mjs'),
+    path.join(apiStage, 'apps', 'api', 'scripts', 'import-prepared-data.mjs')
+  )
   await copyIfExists(path.join(root, 'references', 'web-source-current'), path.join(apiStage, 'references', 'web-source-current'))
   await copyIfExists(path.join(root, 'references', 'game-data', 'muserver-export'), path.join(apiStage, 'references', 'game-data', 'muserver-export'))
   await copyIfExists(path.join(root, 'references', 'game-data', 'source-harvest'), path.join(apiStage, 'references', 'game-data', 'source-harvest'))
@@ -170,15 +166,15 @@ async function main() {
   )
 
   await mkdir(deployRoot, { recursive: true })
-  zipDirectory(webStage, path.join(deployRoot, 'bloodmoon-web-cpanel.zip'))
-  zipDirectory(apiStage, path.join(deployRoot, 'bloodmoon-api-cpanel.zip'))
+  tarGzipDirectory(webStage, path.join(deployRoot, 'bloodmoon-web-cpanel.tar.gz'))
+  tarGzipDirectory(apiStage, path.join(deployRoot, 'bloodmoon-api-cpanel.tar.gz'))
   await writeFile(
     path.join(deployRoot, 'README.md'),
     [
       '# Pacotes cPanel Blood Moon',
       '',
-      '- `bloodmoon-web-cpanel.zip`: aplicacao Nuxt publica.',
-      '- `bloodmoon-api-cpanel.zip`: API Nest com Prisma.',
+      '- `bloodmoon-web-cpanel.tar.gz`: aplicacao Nuxt publica.',
+      '- `bloodmoon-api-cpanel.tar.gz`: API Nest com Prisma.',
       '',
       'Use Node.js 22.17.0 no cPanel.',
       'A API precisa de MySQL/MariaDB acessivel via `DATABASE_URL` antes de funcionar em producao.',
@@ -187,7 +183,7 @@ async function main() {
       '1. Criar app/subdominio da API.',
       '2. Instalar dependencias da API e rodar migrations/importacao no banco final.',
       '3. Criar app do site apontando `NUXT_PUBLIC_API_BASE` para a API.',
-      '4. Validar login admin, Wiki, painel e rotas `/api/health`, `/api/wiki/equipment/sets`.',
+      '4. Validar login admin, Wiki, painel e rotas `/api/content/entries`, `/api/wiki/equipment/sets`.',
       ''
     ].join('\n')
   )

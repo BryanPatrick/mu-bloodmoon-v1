@@ -538,60 +538,28 @@
               </div>
             </div>
 
-            <div class="overflow-hidden rounded-md border border-white/10 bg-black/20">
-              <div class="grid grid-cols-[52px_64px_1fr_96px] gap-3 border-b border-white/10 bg-white/[0.035] px-4 py-3 text-xs font-black uppercase tracking-[0.16em] text-zinc-400 md:grid-cols-[52px_64px_1.15fr_0.85fr_1fr_0.9fr_112px]">
-                <span>Visual</span>
-                <span>Tier</span>
-                <span>Equipamento</span>
-                <span class="hidden md:block">Personagem</span>
-                <span class="hidden md:block">Classes</span>
-                <span class="hidden md:block">Tipo</span>
-                <span class="text-right md:text-left">Visualizar</span>
-              </div>
-
-              <div class="max-h-[520px] overflow-auto">
+            <div class="rounded-md border border-white/10 bg-black/20 p-3 sm:p-4">
+              <div>
                 <div v-if="setCardsLoading" class="px-4 py-8 text-center text-sm font-bold text-zinc-400">
                   Carregando sets do banco de dados...
                 </div>
                 <div v-else-if="setCardsError" class="px-4 py-8 text-center text-sm font-bold text-red-200">
                   {{ setCardsError }}
                 </div>
-                <article
-                  v-for="set in paginatedSetCards"
-                  :key="set.key"
-                  class="grid grid-cols-[52px_64px_1fr_96px] gap-3 border-b border-white/10 px-4 py-3 transition duration-200 last:border-b-0 hover:-translate-y-0.5 hover:border-ember/35 hover:bg-white/[0.04] hover:shadow-lg hover:shadow-ember/5 md:grid-cols-[52px_64px_1.15fr_0.85fr_1fr_0.9fr_112px]"
-                >
-                  <button
-                    class="grid size-11 place-items-center overflow-hidden rounded-md border border-white/10 bg-white/[0.04] transition hover:border-ember/50 hover:bg-ember/10"
-                    type="button"
-                    @click="openSetModal(set)"
-                  >
-                    <img
-                      v-if="setPreviewImage(set)"
-                      :src="setPreviewImage(set)"
-                      :alt="`${set.name} preview`"
-                      class="max-h-10 max-w-10 object-contain"
-                      loading="lazy"
-                      decoding="async"
-                    >
-                    <span v-else class="px-1 text-center text-[9px] font-black uppercase leading-tight tracking-[0.08em] text-white/45">Sem foto</span>
-                  </button>
-                  <span class="font-display text-lg font-black text-ember">{{ set.tierLabel }}</span>
-                  <div>
-                    <h4 class="font-display text-lg font-bold text-white">{{ set.name }}</h4>
-                    <p class="mt-1 text-xs leading-5 text-zinc-400">{{ set.pieces.join(', ') }}</p>
-                  </div>
-                  <span class="hidden text-sm font-bold text-zinc-300 md:block">{{ set.characterName }}</span>
-                  <span class="hidden text-xs leading-5 text-zinc-400 md:block">{{ setDisplayClasses(set).join(', ') }}</span>
-                  <span class="hidden text-xs leading-5 text-zinc-400 md:block">{{ set.setTypes.join(', ') }}</span>
-                  <button
-                    class="rounded-md border border-white/10 bg-white/[0.06] px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-white transition hover:border-ember/50 hover:bg-ember/15"
-                    type="button"
-                    @click="openSetModal(set)"
-                  >
-                    Ver
-                  </button>
-                </article>
+                <div v-else class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+                  <EquipmentSetCard
+                    v-for="set in paginatedSetCards"
+                    :key="set.key"
+                    :name="set.name"
+                    :tier-label="set.tierLabel"
+                    :image="setPreviewImage(set)"
+                    :character-name="set.characterName"
+                    :classes="setDisplayClasses(set)"
+                    :set-types="set.setTypes"
+                    :pieces="set.pieces"
+                    @select="openSetModal(set)"
+                  />
+                </div>
               </div>
             </div>
 

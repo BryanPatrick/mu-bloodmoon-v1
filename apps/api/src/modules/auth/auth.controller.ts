@@ -24,4 +24,10 @@ export class AuthController {
   changePassword(@Body() payload: ChangePasswordRequest, @CurrentUser() user: AuthenticatedUser) {
     return this.authService.changePassword(payload, user)
   }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  logout(@CurrentUser() user: AuthenticatedUser) {
+    return this.authService.logout(user)
+  }
 }

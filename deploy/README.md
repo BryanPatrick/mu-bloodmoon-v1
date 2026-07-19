@@ -17,6 +17,11 @@ O Docker Compose com PostgreSQL abaixo fica como plano legado/alternativo ate co
 
 Para a Hostinger, use tambem `deploy/HOSTINGER_CHECKLIST.md` como roteiro operacional.
 
+Para o ambiente atual em cPanel Node.js, use:
+
+- `deploy/CPANEL_NODE_DEPLOY.md`
+- `deploy/CPANEL_BACKUP_AUTOMATION.md`
+
 ## Estrutura recomendada no servidor
 
 ```text

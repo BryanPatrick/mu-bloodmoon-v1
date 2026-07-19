@@ -29,6 +29,11 @@ enum CurrencyCode {
 }
 
 enum KnowledgeEntryKind {
+  NEWS
+  PAGE
+  BANNER
+  DOWNLOAD
+  NAVIGATION
   CHARACTER
   EQUIPMENT
   ITEM
@@ -166,6 +171,7 @@ model Account {
   email          String                @unique
   passwordHash   String
   personalIdHash String?
+  sessionVersion Int                   @default(0)
   role           Role                  @default(PLAYER)
   status         AccountStatus         @default(PENDING)
   createdAt      DateTime              @default(now())
@@ -227,10 +233,27 @@ model AuditEvent {
   actor         Account? @relation("AuditActor", fields: [actorId], references: [id])
 }
 
+model SiteSetting {
+  id          String          @id @default(uuid())
+  key         String          @unique @db.VarChar(191)
+  category    String          @default("general") @db.VarChar(100)
+  label       String          @db.Text
+  description String?         @db.Text
+  value       Json
+  isPublic    Boolean         @default(false)
+  status      EditorialStatus @default(PUBLISHED)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([category])
+  @@index([isPublic])
+  @@index([status])
+}
+
 model ReferenceSource {
   id        String           @id @default(uuid())
   key       String           @unique
-  title     String
+  title     String           @db.Text
   baseUrl   String           @db.VarChar(512)
   publisher String?
   language  String?
@@ -248,7 +271,7 @@ model KnowledgeEntry {
   sourceUrl      String?               @db.Text
   canonicalKey   String                @unique @db.VarChar(512)
   slug           String
-  title          String
+  title          String                @db.Text
   kind           KnowledgeEntryKind    @default(UNKNOWN)
   scope          KnowledgeScope        @default(NEEDS_REVIEW)
   status         EditorialStatus       @default(RAW)
@@ -314,8 +337,8 @@ model KnowledgeEntryAsset {
 model EquipmentRecord {
   id           String               @id @default(uuid())
   key          String               @unique @db.VarChar(255)
-  name         String
-  title        String
+  name         String               @db.Text
+  title        String               @db.Text
   category     String
   categorySlug String
   group        EquipmentGroup       @default(MISC)
@@ -425,7 +448,7 @@ model EquipmentVariant {
 model EquipmentPiece {
   id          String          @id @default(uuid())
   equipmentId String
-  name        String
+  name        String          @db.Text
   slot        String
   imagePath   String?
   data        Json?
@@ -440,7 +463,7 @@ model EquipmentOption {
   id          String          @id @default(uuid())
   equipmentId String
   scope       String
-  label       String
+  label       String          @db.Text
   data        Json?
   sortOrder   Int             @default(0)
   equipment   EquipmentRecord @relation(fields: [equipmentId], references: [id], onDelete: Cascade)

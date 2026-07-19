@@ -8,7 +8,7 @@ Este documento define o fluxo oficial para coleta, revisao, banco de dados e pub
 2. Salvar o bruto em `references/game-data` e `references/game-assets`.
 3. Normalizar para um indice unico, sem apagar o bruto.
 4. Deduplicar por URL, titulo, texto e SHA1 de imagem.
-5. Importar para PostgreSQL como registros editoriais.
+5. Importar para o banco relacional via Prisma como registros editoriais.
 6. Revisar no painel administrativo.
 7. Aprovar, remasterizar ou arquivar.
 8. Publicar no site somente o que estiver aprovado.
@@ -96,9 +96,11 @@ Fluxo obrigatorio:
 3. Verificar `references/game-data/equipment-remap-audit.md`.
 4. Somente depois ajustar a UI, se ela ainda precisar de exibicao diferente.
 
-## PostgreSQL
+## Banco relacional
 
-O Prisma agora possui tabelas editoriais para organizar a base:
+O Prisma possui tabelas editoriais para organizar a base. O ambiente de
+producao e o desenvolvimento principal usam MySQL/MariaDB; o PostgreSQL local
+anterior permanece apenas como referencia de migracao.
 
 - `ReferenceSource`: uma fonte externa ou interna.
 - `KnowledgeEntry`: uma pagina, item, skill, mapa, NPC, quest, evento ou regra.
@@ -115,14 +117,21 @@ O Prisma agora possui tabelas editoriais para organizar a base:
   - `PLAYABLE`: classes que podem equipar.
   - `TARGET`: classe alvo da progressao exibida nos filtros.
 - `EquipmentSeason`: visibilidade por season, separando catalogo publico v6 de conteudo futuro.
+- `SiteSetting`: configuracoes editoriais e parametros publicos administraveis,
+  sem armazenar segredos de infraestrutura.
 
 Status local verificado:
 
 - Banco: `bloodmoon_portal`
-- Porta local: `55432`
+- Banco local principal: MySQL/MariaDB em `localhost:53306`.
 - Usuario local: `bloodmoon`
 - Cluster local quando Docker falhar: `work/postgres-data`
-- Migrations aplicadas: `20260630195500_knowledge_base`, `20260701123000_equipment_relations`, `20260701124500_equipment_target_class`
+- Instalacoes novas usam a migration baseline MySQL
+  `20260718130000_mysql_baseline`. As migrations historicas em sintaxe
+  PostgreSQL foram substituidas porque nao eram executaveis no provedor atual.
+- A baseline foi validada em banco MySQL vazio e criou 25 tabelas. O banco local
+  existente foi marcado como alinhado com `prisma migrate resolve`, sem apagar
+  ou recriar os dados importados.
 
 Comando para preparar o plano de importacao:
 
@@ -144,7 +153,7 @@ O ambiente de deploy cPanel usa MySQL/MariaDB.
 URL local padrao esperada pelo script:
 
 ```text
-mysql://bloodmoon:bloodmoon@localhost:3306/bloodmoon_portal
+mysql://bloodmoon:bloodmoon@localhost:53306/bloodmoon_portal
 ```
 
 No cPanel, a `DATABASE_URL` real fica em variavel de ambiente do app Node e tambem em `work/cpanel-mysql-production.env` apenas na maquina local de desenvolvimento.
@@ -219,11 +228,16 @@ API administrativa inicial:
 - `POST /api/admin/content/entries`: cria entrada editorial.
 - `PATCH /api/admin/content/entries/:id`: edita entrada editorial.
 - `DELETE /api/admin/content/entries/:id`: arquiva entrada editorial.
+- `GET`, `POST`, `PATCH` e `DELETE /api/admin/content/settings`: gerencia
+  configuracoes editoriais e publicas do portal.
 - `GET /api/admin/content/assets`: lista `ReferenceAsset` com filtros.
 - `POST /api/admin/content/assets`: cria registro de asset ja existente/catalogado.
 - `PATCH /api/admin/content/assets/:id`: edita registro de asset.
 - `DELETE /api/admin/content/assets/:id`: arquiva asset.
 - `GET /api/admin/content/equipment`: lista `EquipmentRecord` com filtros.
+- `GET /api/admin/content/equipment-metadata`: carrega grupos, qualidades,
+  personagens, classes e status aceitos pelo editor.
+- `GET /api/admin/content/equipment/record/:id`: carrega o equipamento completo.
 - `POST /api/admin/content/equipment`: cria equipamento ou item exclusivo.
 - `PATCH /api/admin/content/equipment/:id`: edita equipamento.
 - `DELETE /api/admin/content/equipment/:id`: arquiva equipamento.
@@ -234,14 +248,18 @@ Verificacao atual:
 - `GET /api/admin/content/summary` retornou 330 entradas, 1537 assets e 1719 equipamentos.
 - `GET /api/admin/content/assets?pageSize=3&kind=IMAGE` retornou 1537 imagens catalogadas.
 - `GET /api/admin/content/equipment?pageSize=3&group=SET` retornou 259 sets.
-- `POST` e `DELETE /api/admin/content/equipment` foram validados com item temporario e o registro de teste foi removido do banco.
+- `POST`, `PATCH` e `DELETE /api/admin/content/equipment` foram validados com
+  item temporario contendo variantes, pecas, opcoes, classe e temporada; o
+  registro de teste foi removido do banco.
 - `GET /api/admin/content/equipment-gaps?pageSize=3` retornou 259 pendencias de imagem/opcoes.
-
-Pendencia tecnica: essas rotas ainda precisam receber guard JWT/role e auditoria server-side antes de uso em producao.
-Auditoria server-side inicial: mutacoes de `KnowledgeEntry`, `ReferenceAsset` e `EquipmentRecord` ja gravam `AuditEvent` no PostgreSQL com o administrador autenticado quando houver JWT.
-Seguranca atual: `/api/admin/content` exige Bearer token valido e role `ADMIN` ou `SUPER_ADMIN`.
-Validacao atual: sem token retorna `401`, `admin/admin` acessa e `player/player` retorna `403`.
-Pendencia editorial: o CRUD de `EquipmentRecord` ainda nao edita pecas, variantes, opcoes, vinculos de classe e season em tela propria.
+- Mutacoes de `KnowledgeEntry`, `ReferenceAsset`, `EquipmentRecord` e
+  `SiteSetting` gravam `AuditEvent` com o administrador autenticado.
+- `/api/admin/content` exige Bearer token valido e role `ADMIN` ou `SUPER_ADMIN`.
+- Sem token retorna `401`; conta administrativa acessa e conta player recebe `403`.
+- O editor de equipamentos controla pecas, variantes, opcoes, vinculos de classe
+  e temporadas em uma unica operacao transacional.
+- Exclusao no painel significa arquivamento logico e auditavel, nao remocao
+  fisica do historico.
 
 ## Deduplicacao
 

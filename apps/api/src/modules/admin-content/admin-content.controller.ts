@@ -9,12 +9,15 @@ import type {
   AdminAssetQuery,
   AdminContentQuery,
   AdminEquipmentQuery,
+  AdminSettingQuery,
   AdminCreateKnowledgeEntryPayload,
   AdminCreateEquipmentPayload,
   AdminCreateReferenceAssetPayload,
+  AdminCreateSiteSettingPayload,
   AdminUpdateEquipmentPayload,
   AdminUpdateKnowledgeEntryPayload,
-  AdminUpdateReferenceAssetPayload
+  AdminUpdateReferenceAssetPayload,
+  AdminUpdateSiteSettingPayload
 } from './admin-content.types'
 
 @Controller('admin/content')
@@ -31,6 +34,26 @@ export class AdminContentController {
   @Get('entries')
   entries(@Query() query: AdminContentQuery) {
     return this.adminContentService.entries(query)
+  }
+
+  @Get('settings')
+  settings(@Query() query: AdminSettingQuery) {
+    return this.adminContentService.settings(query)
+  }
+
+  @Post('settings')
+  createSetting(@Body() payload: AdminCreateSiteSettingPayload, @CurrentUser() user: AuthenticatedUser) {
+    return this.adminContentService.createSetting(payload, user)
+  }
+
+  @Patch('settings/:id')
+  updateSetting(@Param('id') id: string, @Body() payload: AdminUpdateSiteSettingPayload, @CurrentUser() user: AuthenticatedUser) {
+    return this.adminContentService.updateSetting(id, payload, user)
+  }
+
+  @Delete('settings/:id')
+  archiveSetting(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.adminContentService.archiveSetting(id, user)
   }
 
   @Post('entries')
@@ -71,6 +94,16 @@ export class AdminContentController {
   @Get('equipment')
   equipment(@Query() query: AdminEquipmentQuery) {
     return this.adminContentService.equipment(query)
+  }
+
+  @Get('equipment-metadata')
+  equipmentMetadata() {
+    return this.adminContentService.equipmentMetadata()
+  }
+
+  @Get('equipment/record/:id')
+  equipmentDetail(@Param('id') id: string) {
+    return this.adminContentService.equipmentDetail(id)
   }
 
   @Post('equipment')

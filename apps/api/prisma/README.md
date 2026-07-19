@@ -11,8 +11,24 @@ Schema oficial do backend Blood Moon.
 Exemplo local:
 
 ```bash
-DATABASE_URL="mysql://bloodmoon:bloodmoon@localhost:3306/bloodmoon_portal"
+DATABASE_URL="mysql://bloodmoon:bloodmoon@localhost:53306/bloodmoon_portal"
 ```
+
+Instalacao nova:
+
+```bash
+npx prisma migrate deploy --schema apps/api/prisma/schema.prisma
+```
+
+Banco que ja possuia todas as tabelas antes da baseline MySQL:
+
+```bash
+npx prisma migrate resolve --applied 20260718130000_mysql_baseline --schema apps/api/prisma/schema.prisma
+```
+
+Use `migrate resolve` somente depois de confirmar que o schema existente ja
+corresponde ao `schema.prisma`. Ele registra a baseline sem recriar tabelas nem
+apagar dados.
 
 ## Areas atuais
 

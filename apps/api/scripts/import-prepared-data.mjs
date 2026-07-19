@@ -8,7 +8,7 @@ const currentDir = fileURLToPath(new URL('.', import.meta.url))
 const repoRoot = resolve(currentDir, '../../..')
 const sourcePlanPath = resolve(repoRoot, 'references/game-data/source-harvest/postgres-import-plan.json')
 const equipmentPlanPath = resolve(repoRoot, 'references/game-data/equipment-postgres-import-plan.json')
-process.env.DATABASE_URL ||= 'mysql://bloodmoon:bloodmoon@localhost:3306/bloodmoon_portal'
+process.env.DATABASE_URL ||= 'mysql://bloodmoon:bloodmoon@localhost:53306/bloodmoon_portal'
 const prisma = new PrismaClient()
 
 function readJson(path) {

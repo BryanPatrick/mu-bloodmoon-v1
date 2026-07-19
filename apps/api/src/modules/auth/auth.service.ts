@@ -58,10 +58,29 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials')
     }
 
+    const sessionAccount = await this.prisma.account.update({
+      where: { id: account.id },
+      data: { sessionVersion: { increment: 1 } },
+      include: { currencies: true }
+    })
+
+    await this.audit.record({
+      actorId: sessionAccount.id,
+      actorUsername: sessionAccount.username,
+      action: account.sessionVersion > 0 ? 'auth.session.replaced' : 'auth.session.started',
+      targetType: 'Account',
+      targetId: sessionAccount.id,
+      severity: account.sessionVersion > 0 ? 'warning' : 'info',
+      metadata: {
+        previousSessionVersion: account.sessionVersion,
+        sessionVersion: sessionAccount.sessionVersion
+      }
+    })
+
     return {
-      accessToken: await this.signAccessToken(account),
-      refreshToken: await this.signRefreshToken(account),
-      user: this.toSessionUser(account)
+      accessToken: await this.signAccessToken(sessionAccount),
+      refreshToken: await this.signRefreshToken(sessionAccount),
+      user: this.toSessionUser(sessionAccount)
     }
   }
 
@@ -181,7 +200,8 @@ export class AuthService {
     await this.prisma.account.update({
       where: { id: account.id },
       data: {
-        passwordHash: await bcrypt.hash(newPassword, 12)
+        passwordHash: await bcrypt.hash(newPassword, 12),
+        sessionVersion: { increment: 1 }
       }
     })
 
@@ -194,6 +214,24 @@ export class AuthService {
       metadata: {
         username: account.username
       }
+    })
+
+    return { ok: true }
+  }
+
+  async logout(user: AuthenticatedUser) {
+    const account = await this.prisma.account.update({
+      where: { id: user.id },
+      data: { sessionVersion: { increment: 1 } }
+    })
+
+    await this.audit.record({
+      actorId: account.id,
+      actorUsername: account.username,
+      action: 'auth.session.ended',
+      targetType: 'Account',
+      targetId: account.id,
+      metadata: { sessionVersion: account.sessionVersion }
     })
 
     return { ok: true }
@@ -248,7 +286,8 @@ export class AuthService {
     return this.jwt.signAsync({
       sub: account.id,
       username: account.username,
-      role: account.role
+      role: account.role,
+      sessionVersion: account.sessionVersion
     }, {
       expiresIn: process.env.JWT_ACCESS_TTL || '15m'
     })
@@ -259,6 +298,7 @@ export class AuthService {
       sub: account.id,
       username: account.username,
       role: account.role,
+      sessionVersion: account.sessionVersion,
       type: 'refresh'
     }, {
       secret: process.env.JWT_REFRESH_SECRET || process.env.JWT_ACCESS_SECRET || 'dev-refresh-secret-change-me',

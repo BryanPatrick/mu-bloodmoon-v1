@@ -68,14 +68,25 @@ export class MarketplaceService {
     const page = toPositiveInt(query.page, 1)
     const pageSize = Math.min(toPositiveInt(query.pageSize, 24), 100)
     const skip = (page - 1) * pageSize
-    const where: Prisma.PlayerMarketListingWhereInput = {
+    const baseWhere: Prisma.PlayerMarketListingWhereInput = {
       ...listSearch(query.search),
       ...(query.currency ? { currency: query.currency } : {}),
       ...(query.status ? { status: enumOrFallback(query.status, listingStatuses, 'ACTIVE') } : {}),
       ...(query.seller ? { seller: { username: { contains: query.seller } } } : {})
     }
+    const where: Prisma.PlayerMarketListingWhereInput = {
+      ...baseWhere,
+      ...(query.category?.trim() ? { itemCategory: { contains: query.category.trim() } } : {})
+    }
+    const orderBy: Prisma.PlayerMarketListingOrderByWithRelationInput[] = query.sort === 'priceAsc'
+      ? [{ price: 'asc' }, { createdAt: 'desc' }]
+      : query.sort === 'priceDesc'
+        ? [{ price: 'desc' }, { createdAt: 'desc' }]
+        : query.sort === 'oldest'
+          ? [{ createdAt: 'asc' }]
+          : [{ createdAt: 'desc' }]
 
-    const [total, rows] = await Promise.all([
+    const [total, rows, categoryRows] = await Promise.all([
       this.prisma.playerMarketListing.count({ where }),
       this.prisma.playerMarketListing.findMany({
         where,
@@ -84,9 +95,15 @@ export class MarketplaceService {
           sellerCharacter: true,
           orders: { take: 1, orderBy: { createdAt: 'desc' } }
         },
-        orderBy: [{ createdAt: 'desc' }],
+        orderBy,
         skip,
         take: pageSize
+      }),
+      this.prisma.playerMarketListing.groupBy({
+        by: ['itemCategory'],
+        where: baseWhere,
+        _count: { _all: true },
+        orderBy: { itemCategory: 'asc' }
       })
     ])
 
@@ -95,7 +112,10 @@ export class MarketplaceService {
       page,
       pageSize,
       total,
-      totalPages: Math.max(1, Math.ceil(total / pageSize))
+      totalPages: Math.max(1, Math.ceil(total / pageSize)),
+      facets: {
+        categories: categoryRows.map((row) => ({ value: row.itemCategory, count: row._count._all }))
+      }
     }
   }
 

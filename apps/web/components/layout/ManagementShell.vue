@@ -157,11 +157,10 @@ const menuItems = computed(() => [
     icon: FileText,
     adminOnly: true,
     children: [
-      { label: 'Resumo CMS', to: '/painel/admin/conteudo' },
-      { label: 'Wiki e tutoriais', to: '/painel/admin/conteudo?modulo=wiki' },
+      { label: 'Conteudo do site', to: '/painel/admin/conteudo?modulo=conteudo' },
       { label: 'Equipamentos', to: '/painel/admin/conteudo?modulo=equipamentos' },
-      { label: 'Noticias e banners', to: '/painel/admin/conteudo?modulo=noticias' },
-      { label: 'Assets publicados', to: '/painel/admin/conteudo?modulo=assets' }
+      { label: 'Configuracoes', to: '/painel/admin/conteudo?modulo=configuracoes' },
+      { label: 'Auditoria', to: '/painel/admin/conteudo?modulo=auditoria' }
     ]
   },
   { label: 'Loja Admin', to: '/painel/admin/loja', icon: ShoppingBag, adminOnly: true },

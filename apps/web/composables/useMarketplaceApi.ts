@@ -10,7 +10,12 @@ type ApiList<T> = {
   page: number
   pageSize: number
   totalPages: number
+  facets?: {
+    categories: Array<{ value: string, count: number }>
+  }
 }
+
+export type MarketplaceListResponse = ApiList<MarketplaceListing>
 
 export type MarketplaceListing = {
   id: string

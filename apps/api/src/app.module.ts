@@ -12,6 +12,8 @@ import { WebSourceModule } from './modules/web-source/web-source.module'
 import { MarketplaceModule } from './modules/marketplace/marketplace.module'
 import { MuServerExportModule } from './modules/muserver-export/muserver-export.module'
 import { WikiModule } from './modules/wiki/wiki.module'
+import { ContentModule } from './modules/content/content.module'
+import { AppController } from './app.controller'
 
 export const apiModules = [
   'auth',
@@ -33,6 +35,7 @@ export const apiModules = [
 export type ApiModuleName = typeof apiModules[number]
 
 @Module({
+  controllers: [AppController],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true
@@ -48,7 +51,8 @@ export type ApiModuleName = typeof apiModules[number]
     WebSourceModule,
     MarketplaceModule,
     MuServerExportModule,
-    WikiModule
+    WikiModule,
+    ContentModule
   ]
 })
 export class AppModule {}

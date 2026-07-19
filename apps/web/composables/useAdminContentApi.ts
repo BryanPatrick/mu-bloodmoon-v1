@@ -21,6 +21,11 @@ export type AdminContentEquipmentQuery = AdminContentPagination & {
   category?: string
 }
 
+export type AdminContentSettingQuery = AdminContentPagination & {
+  category?: string
+  status?: string
+}
+
 const cleanAdminQuery = (query: Record<string, unknown>) =>
   Object.fromEntries(
     Object.entries(query).filter(([, value]) => value !== undefined && value !== null && value !== '')
@@ -72,11 +77,17 @@ export const useAdminContentApi = () => {
     createEntry: (payload: Record<string, unknown>) => sendAdmin('POST', '/admin/content/entries', payload),
     updateEntry: (id: string, payload: Record<string, unknown>) => sendAdmin('PATCH', `/admin/content/entries/${id}`, payload),
     archiveEntry: (id: string) => sendAdmin('DELETE', `/admin/content/entries/${id}`),
+    settings: (query: AdminContentSettingQuery = {}) => fetchAdmin('/admin/content/settings', query),
+    createSetting: (payload: Record<string, unknown>) => sendAdmin('POST', '/admin/content/settings', payload),
+    updateSetting: (id: string, payload: Record<string, unknown>) => sendAdmin('PATCH', `/admin/content/settings/${id}`, payload),
+    archiveSetting: (id: string) => sendAdmin('DELETE', `/admin/content/settings/${id}`),
     assets: (query: AdminContentAssetQuery = {}) => fetchAdmin('/admin/content/assets', query),
     createAsset: (payload: Record<string, unknown>) => sendAdmin('POST', '/admin/content/assets', payload),
     updateAsset: (id: string, payload: Record<string, unknown>) => sendAdmin('PATCH', `/admin/content/assets/${id}`, payload),
     archiveAsset: (id: string) => sendAdmin('DELETE', `/admin/content/assets/${id}`),
     equipment: (query: AdminContentEquipmentQuery = {}) => fetchAdmin('/admin/content/equipment', query),
+    equipmentMetadata: () => fetchAdmin('/admin/content/equipment-metadata'),
+    equipmentDetail: (id: string) => fetchAdmin(`/admin/content/equipment/record/${id}`),
     createEquipment: (payload: Record<string, unknown>) => sendAdmin('POST', '/admin/content/equipment', payload),
     updateEquipment: (id: string, payload: Record<string, unknown>) => sendAdmin('PATCH', `/admin/content/equipment/${id}`, payload),
     archiveEquipment: (id: string) => sendAdmin('DELETE', `/admin/content/equipment/${id}`),

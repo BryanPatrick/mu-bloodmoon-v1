@@ -212,7 +212,7 @@ No ambiente Docker local, use o servico `mysql` do `docker-compose.yml`.
 Se Docker nao estiver instalado, configurar um MySQL/MariaDB manualmente com:
 
 ```bash
-mysql://bloodmoon:bloodmoon@localhost:3306/bloodmoon_portal
+mysql://bloodmoon:bloodmoon@localhost:53306/bloodmoon_portal
 ```
 
 Depois do banco preparado:

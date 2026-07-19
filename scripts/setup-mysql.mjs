@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process'
 import { existsSync } from 'node:fs'
 
-const databaseUrl = process.env.DATABASE_URL || 'mysql://bloodmoon:bloodmoon@localhost:3306/bloodmoon_portal'
+const databaseUrl = process.env.DATABASE_URL || 'mysql://bloodmoon:bloodmoon@localhost:53306/bloodmoon_portal'
 
 function run(command, args, options = {}) {
   console.log(`> ${command} ${args.join(' ')}`)

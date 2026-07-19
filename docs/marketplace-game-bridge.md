@@ -110,6 +110,24 @@ Regra para producao: remover qualquer etapa manual que substitua confirmacao rea
 - Frontend player: `apps/web/pages/painel/marketplace.vue`.
 - Frontend admin: `apps/web/pages/painel/admin/marketplace.vue`.
 - Cliente Nuxt: `apps/web/composables/useMarketplaceApi.ts`.
+- Componentes visuais: `apps/web/components/marketplace`.
+
+## Experiencia publica do mercado
+
+A consulta publica aceita busca, categoria, moeda, ordenacao e paginacao no servidor. A resposta tambem entrega as categorias disponiveis como facetas para que os filtros nao dependam somente da pagina atualmente carregada.
+
+O catalogo permite grade e lista, preservando a preferencia no navegador. O detalhe do item mostra atributos normalizados de `itemData`, vendedor, preco e a regra de entrega protegida antes da compra.
+
+Campos visuais reconhecidos em `itemData`:
+
+- imagem: `imageUrl`, `imagePath`, `thumbnail` ou `image`;
+- nivel: `level` ou `itemLevel`;
+- qualidade: `quality` ou `type`;
+- opcoes: `options`, `excellentOptions` ou `attributes`;
+- durabilidade: `durability`;
+- sorte: `luck`.
+
+O mercado de personagens permanece desabilitado. Ele exige fluxo proprio de bloqueio da conta/personagem, validacao de guild, inventario, bau, leiloes ativos e transferencia segura; nao deve reutilizar ingenuamente o fluxo de um item.
 
 ## Proximos requisitos para o worker real
 
