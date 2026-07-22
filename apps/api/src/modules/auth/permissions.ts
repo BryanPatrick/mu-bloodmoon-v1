@@ -1,14 +1,23 @@
-import type { Role } from '@prisma/client'
+import type { AccountPermission, Role } from '@prisma/client'
 
 export const permissionKeys = {
   adminDashboardView: 'admin.dashboard.view',
-  adminRoadmapView: 'admin.roadmap.view',
-  adminReferencesManage: 'admin.references.manage',
+  adminAccountsView: 'admin.accounts.view',
+  adminAccountsStatusManage: 'admin.accounts.status.manage',
+  adminRolesManage: 'admin.roles.manage',
+  adminContentManage: 'admin.content.manage',
   adminAuditView: 'admin.audit.view',
-  adminFinanceManage: 'admin.finance.manage',
   adminShopManage: 'admin.shop.manage',
+  adminOrdersOperate: 'admin.orders.operate',
   adminMarketplaceManage: 'admin.marketplace.manage',
   adminGameBridgeManage: 'admin.game-bridge.manage',
+  adminFinanceView: 'admin.finance.view',
+  adminFinancialReportsView: 'admin.finance.reports.view',
+  adminServerSettingsManage: 'admin.server-settings.manage',
+  adminGameDataView: 'admin.game-data.view',
+  adminRoadmapView: 'admin.roadmap.view',
+  adminReferencesManage: 'admin.references.manage',
+  adminFinanceManage: 'admin.finance.manage',
   adminRechargeManage: 'admin.recharge.manage',
   adminSystemManage: 'admin.system.manage',
   accountManage: 'account.manage',
@@ -21,45 +30,38 @@ export const permissionKeys = {
 
 export type PermissionKey = typeof permissionKeys[keyof typeof permissionKeys]
 
+export const delegableAdminPermissions: PermissionKey[] = [
+  permissionKeys.adminDashboardView,
+  permissionKeys.adminAccountsView,
+  permissionKeys.adminAccountsStatusManage,
+  permissionKeys.adminContentManage,
+  permissionKeys.adminAuditView,
+  permissionKeys.adminShopManage,
+  permissionKeys.adminOrdersOperate,
+  permissionKeys.adminMarketplaceManage,
+  permissionKeys.adminGameBridgeManage
+]
+
+const playerPermissions: PermissionKey[] = [
+  permissionKeys.accountManage,
+  permissionKeys.charactersManage,
+  permissionKeys.shopAccess,
+  permissionKeys.marketplaceAccess,
+  permissionKeys.rechargeAccess
+]
+
 const rolePermissions: Record<Role, PermissionKey[] | ['*']> = {
-  PLAYER: [
-    permissionKeys.accountManage,
-    permissionKeys.charactersManage,
-    permissionKeys.shopAccess,
-    permissionKeys.marketplaceAccess,
-    permissionKeys.rechargeAccess
-  ],
-  MODERATOR: [
-    permissionKeys.accountManage,
-    permissionKeys.charactersManage,
-    permissionKeys.shopAccess,
-    permissionKeys.marketplaceAccess,
-    permissionKeys.rechargeAccess
-  ],
-  GAME_MASTER: [
-    permissionKeys.accountManage,
-    permissionKeys.charactersManage,
-    permissionKeys.shopAccess,
-    permissionKeys.marketplaceAccess,
-    permissionKeys.rechargeAccess,
-    permissionKeys.guidesFutureView
-  ],
+  PLAYER: playerPermissions,
   ADMIN: [
+    ...playerPermissions,
     permissionKeys.adminDashboardView,
-    permissionKeys.adminRoadmapView,
-    permissionKeys.adminReferencesManage,
+    permissionKeys.adminAccountsView,
+    permissionKeys.adminAccountsStatusManage,
+    permissionKeys.adminContentManage,
     permissionKeys.adminAuditView,
-    permissionKeys.adminFinanceManage,
     permissionKeys.adminShopManage,
+    permissionKeys.adminOrdersOperate,
     permissionKeys.adminMarketplaceManage,
-    permissionKeys.adminGameBridgeManage,
-    permissionKeys.adminRechargeManage,
-    permissionKeys.adminSystemManage,
-    permissionKeys.accountManage,
-    permissionKeys.charactersManage,
-    permissionKeys.shopAccess,
-    permissionKeys.marketplaceAccess,
-    permissionKeys.rechargeAccess,
     permissionKeys.guidesFutureView
   ],
   SUPER_ADMIN: ['*']
@@ -67,7 +69,24 @@ const rolePermissions: Record<Role, PermissionKey[] | ['*']> = {
 
 export const permissionsForRole = (role: Role) => {
   const permissions = rolePermissions[role]
-  return permissions[0] === '*' ? ['*'] : permissions
+  return permissions[0] === '*' ? ['*'] : [...permissions]
+}
+
+export const permissionsForAccount = (role: Role, overrides: Pick<AccountPermission, 'key' | 'granted'>[] = []) => {
+  const base = permissionsForRole(role)
+  if (base.includes('*')) {
+    return base
+  }
+
+  const result = new Set(base)
+  for (const override of overrides) {
+    if (override.granted) {
+      result.add(override.key as PermissionKey)
+    } else {
+      result.delete(override.key as PermissionKey)
+    }
+  }
+  return [...result]
 }
 
 export const roleHasAny = (role: Role | undefined, allowedRoles: Role[]) =>

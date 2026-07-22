@@ -80,6 +80,11 @@ export type AdminCreateReferenceAssetPayload = {
 
 export type AdminUpdateReferenceAssetPayload = Partial<AdminCreateReferenceAssetPayload>
 
+export type AdminUploadImagePayload = {
+  name?: string
+  dataUrl?: string
+}
+
 export type AdminCreateEquipmentPayload = {
   key?: string
   name: string

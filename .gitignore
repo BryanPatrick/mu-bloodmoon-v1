@@ -4,6 +4,8 @@ node_modules/
 apps/web/.nuxt/
 apps/web/.output/
 apps/api/dist/
+apps/api/storage/uploads/*
+!apps/api/storage/uploads/.gitkeep
 .agents/
 .codex/
 .npm-cache/

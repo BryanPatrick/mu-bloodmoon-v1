@@ -3,10 +3,24 @@ export type AdminDashboardSummary = {
     accounts: number
     characters: number
     onlineCharacters: number
-    purchases: number
-    recharges: number
+    purchases?: number
+    recharges?: number
+    activeListings?: number
+    pendingTickets?: number
+    blockedAccounts?: number
     pending: number
-    recentRevenue: number
+    recentRevenue?: number
+    revenue30Days?: number
+    paidRecharges?: number
+    completedMarketOrders?: number
+  }
+  financial?: {
+    revenueTotal: number
+    revenue30Days: number
+    paidRecharges: number
+    completedMarketOrders: number
+    marketplaceVolume: Record<string, number>
+    monthlyRevenue: Array<{ month: string, value: number }>
   }
   activity: Array<{
     key: string
@@ -45,7 +59,10 @@ export const useAdminDashboardApi = () => {
   const apiBase = computed(() => String(config.public.apiBase || 'http://localhost:3333/api').replace(/\/$/, ''))
 
   return {
-    summary: () => $fetch<AdminDashboardSummary>(`${apiBase.value}/admin/dashboard/summary`, {
+    operational: () => $fetch<AdminDashboardSummary>(`${apiBase.value}/admin/dashboard/operational`, {
+      headers: readAccessToken() ? { Authorization: `Bearer ${readAccessToken()}` } : {}
+    }),
+    strategic: () => $fetch<AdminDashboardSummary>(`${apiBase.value}/admin/dashboard/strategic`, {
       headers: readAccessToken() ? { Authorization: `Bearer ${readAccessToken()}` } : {}
     })
   }

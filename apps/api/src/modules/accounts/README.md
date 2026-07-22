@@ -7,7 +7,9 @@ Modulo administrativo para listar e alterar contas do portal.
 - `GET /api/admin/accounts`
 - `PATCH /api/admin/accounts/:id`
 
-Ambos exigem Bearer token com role `ADMIN` ou `SUPER_ADMIN`.
+Ambos exigem Bearer token, papel administrativo e permissao granular.
+`ADMIN` lista e altera apenas contas `PLAYER`. `SUPER_ADMIN` pode listar os
+tres papeis.
 
 ## Contrato
 
@@ -24,11 +26,16 @@ O hash do Personal ID nunca deve sair da API.
 
 ## Auditoria
 
-Toda alteracao de role ou status grava `AuditEvent` com acao `admin.account.updated`.
+Toda alteracao exige justificativa com no minimo cinco caracteres. Alteracoes
+de papel gravam `admin.account.role.changed`; alteracoes de status gravam
+`admin.account.status.changed`, sempre com valores anterior/proximo e ator.
+
+Somente `SUPER_ADMIN` pode promover `PLAYER` para `ADMIN` ou rebaixar `ADMIN`
+para `PLAYER`. Autoalteracao e atribuicao de `SUPER_ADMIN` pela API sao
+bloqueadas.
 
 ## Proximos passos
 
 - Criar endpoint de criacao administrativa de contas.
 - Criar edicao auditada de moedas.
-- Adicionar paginacao e filtros server-side completos na UI.
 - Integrar troca de senha e recuperacao de conta ao mesmo modulo.

@@ -1,6 +1,6 @@
 <template>
   <ManagementShell>
-    <div v-if="hasPermission(permissions.adminDashboardView)" class="grid gap-6">
+    <div v-if="hasPermission(permissions.adminAccountsView)" class="grid gap-6">
       <div class="flex flex-col gap-5 border-b border-white/10 pb-6 xl:flex-row xl:items-end xl:justify-between">
         <div>
           <p class="bm-kicker">Administracao</p>
@@ -36,7 +36,7 @@
       </section>
 
       <p v-if="isLoadingApi || apiError" class="rounded-md border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-bold text-white/62">
-        {{ isLoadingApi ? 'Carregando contas do PostgreSQL...' : apiError }}
+        {{ isLoadingApi ? 'Carregando contas do banco...' : apiError }}
       </p>
 
       <section class="grid gap-4">
@@ -92,9 +92,38 @@
               <button class="rounded-md border border-blood-500/40 bg-blood-900/30 px-4 py-3 text-sm font-black text-blood-100" type="button" @click="markAccount(account, 'Bloqueada')">
                 Bloquear
               </button>
+              <button
+                v-if="user?.role === 'super-admin' && account.role === 'player'"
+                class="bm-button-glass rounded-md px-4 py-3 text-sm font-black"
+                type="button"
+                @click="changeRole(account, 'ADMIN')"
+              >
+                Promover a ADM
+              </button>
+              <button
+                v-if="user?.role === 'super-admin' && account.role === 'admin'"
+                class="rounded-md border border-amber-500/40 bg-amber-900/20 px-4 py-3 text-sm font-black text-amber-100"
+                type="button"
+                @click="changeRole(account, 'PLAYER')"
+              >
+                Rebaixar a player
+              </button>
+              <button v-if="user?.role === 'super-admin' && account.role === 'admin'" class="bm-button-glass rounded-md px-4 py-3 text-sm font-black" type="button" @click="openPermissions(account)">Permissões</button>
+              <button class="bm-button-glass rounded-md px-4 py-3 text-sm font-black" type="button" @click="revokeSessions(account)">Revogar sessões</button>
             </div>
           </div>
         </article>
+      </section>
+
+      <section v-if="permissionAccount" class="bm-panel grid gap-4 rounded-md p-5">
+        <div class="flex items-center justify-between gap-3"><div><p class="bm-kicker">Permissões do ADM</p><h2 class="mt-1 font-display text-2xl font-black uppercase">{{ permissionAccount.username }}</h2></div><button class="bm-admin-action" type="button" @click="permissionAccount = null">Fechar</button></div>
+        <div class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+          <label v-for="permission in delegablePermissions" :key="permission.key" class="flex items-center gap-3 rounded-md border border-white/10 bg-white/[0.04] p-3 text-sm font-bold">
+            <input v-model="selectedPermissions" type="checkbox" :value="permission.key" class="size-4 accent-ember">
+            {{ permission.label }}
+          </label>
+        </div>
+        <button class="bm-admin-primary w-fit" type="button" @click="savePermissions">Salvar permissões</button>
       </section>
     </div>
   </ManagementShell>
@@ -104,7 +133,7 @@
 import type { ManagedAccount, ManagedAccountStatus } from '~/data/management'
 import { permissions } from '~/data/security'
 
-const { hasPermission, loadSession, recordAudit } = useAuth()
+const { hasPermission, loadSession, recordAudit, user } = useAuth()
 const adminAccountsApi = useAdminAccountsApi()
 
 useSeoMeta({ title: 'Gerenciar contas' })
@@ -115,6 +144,17 @@ const activeStatus = ref('Todos')
 const apiAccounts = ref<ManagedAccount[]>([])
 const apiError = ref('')
 const isLoadingApi = ref(false)
+const permissionAccount = ref<ManagedAccount | null>(null)
+const selectedPermissions = ref<string[]>([])
+const delegablePermissions = [
+  { key: permissions.adminAccountsView, label: 'Consultar jogadores' },
+  { key: permissions.adminAccountsStatusManage, label: 'Bloquear e desbloquear jogadores' },
+  { key: permissions.adminContentManage, label: 'Gerenciar conteúdo' },
+  { key: permissions.adminShopManage, label: 'Gerenciar loja' },
+  { key: permissions.adminOrdersOperate, label: 'Operar pedidos' },
+  { key: permissions.adminMarketplaceManage, label: 'Moderar marketplace' },
+  { key: permissions.adminAuditView, label: 'Visualizar logs permitidos' }
+]
 
 onMounted(() => {
   loadSession()
@@ -132,6 +172,7 @@ type ApiAccount = {
   createdAt: string
   updatedAt: string
   currencies: Record<string, number>
+  characters?: number
 }
 
 type ApiPaginatedResponse<T> = {
@@ -164,7 +205,7 @@ const mapApiAccount = (account: ApiAccount): ManagedAccount => ({
   personalIdMask: account.personalIdMask || 'Nao definido',
   createdAt: account.createdAt,
   lastLoginAt: account.updatedAt,
-  characters: 0,
+  characters: account.characters || 0,
   currencies: {
     WCoin: account.currencies.WCOIN || account.currencies.WCoin || 0,
     'Goblin Point': account.currencies.GOBLIN_POINT || account.currencies['Goblin Point'] || 0,
@@ -217,9 +258,13 @@ const markAccount = (account: ManagedAccount, status: ManagedAccountStatus) => {
 }
 
 const markAccountViaApi = async (account: ManagedAccount, status: ManagedAccountStatus) => {
+  const reason = requestReason(`Alterar o status de ${account.username} para ${status}`)
+  if (!reason) return
+
   try {
     const updated = await adminAccountsApi.update(account.id, {
-      status: accountStatusToApi(status)
+      status: accountStatusToApi(status),
+      reason
     }) as ApiAccount
 
     const mapped = mapApiAccount(updated)
@@ -235,6 +280,56 @@ const markAccountViaApi = async (account: ManagedAccount, status: ManagedAccount
   } catch {
     apiError.value = 'Nao foi possivel alterar a conta pela API.'
   }
+}
+
+const changeRole = async (account: ManagedAccount, role: 'PLAYER' | 'ADMIN') => {
+  const action = role === 'ADMIN' ? 'promover a ADM' : 'rebaixar a player'
+  const reason = requestReason(`${action}: ${account.username}`)
+  if (!reason || !window.confirm(`Confirma ${action} para ${account.username}?`)) return
+
+  try {
+    const updated = await adminAccountsApi.update(account.id, { role, reason }) as ApiAccount
+    const mapped = mapApiAccount(updated)
+    apiAccounts.value = apiAccounts.value.map((item) => item.id === mapped.id ? mapped : item)
+  } catch {
+    apiError.value = 'Nao foi possivel alterar o papel da conta pela API.'
+  }
+}
+
+const openPermissions = async (account: ManagedAccount) => {
+  try {
+    const result = await adminAccountsApi.permissions(account.id) as { effective: string[] }
+    permissionAccount.value = account
+    selectedPermissions.value = delegablePermissions.filter((permission) => result.effective.includes(permission.key)).map((permission) => permission.key)
+  } catch { apiError.value = 'Não foi possível carregar as permissões desta conta.' }
+}
+
+const savePermissions = async () => {
+  if (!permissionAccount.value) return
+  const reason = requestReason(`Alterar permissões de ${permissionAccount.value.username}`)
+  if (!reason) return
+  const entries = delegablePermissions.map((permission) => ({ key: permission.key, granted: selectedPermissions.value.includes(permission.key) }))
+  try {
+    await adminAccountsApi.updatePermissions(permissionAccount.value.id, { permissions: entries, reason })
+    permissionAccount.value = null
+    apiError.value = ''
+  } catch { apiError.value = 'Não foi possível salvar as permissões.' }
+}
+
+const revokeSessions = async (account: ManagedAccount) => {
+  const reason = requestReason(`Revogar todas as sessões de ${account.username}`)
+  if (!reason || !window.confirm(`Encerrar todas as sessões de ${account.username}?`)) return
+  try { await adminAccountsApi.revokeSessions(account.id, reason); apiError.value = '' } catch { apiError.value = 'Não foi possível revogar as sessões.' }
+}
+
+const requestReason = (action: string) => {
+  if (!import.meta.client) return ''
+  const reason = window.prompt(`${action}. Informe a justificativa (minimo 5 caracteres):`)?.trim() || ''
+  if (reason.length < 5) {
+    apiError.value = 'A alteracao foi cancelada: informe uma justificativa com pelo menos 5 caracteres.'
+    return ''
+  }
+  return reason
 }
 
 const statusClass = (status: ManagedAccountStatus) => ({

@@ -5,9 +5,11 @@
   "type": "commonjs",
   "scripts": {
     "build": "nest build",
-    "check": "node scripts/check-api-structure.mjs && tsc -p tsconfig.json --noEmit",
+    "check": "node scripts/check-api-structure.mjs && node scripts/check-security-structure.mjs && tsc -p tsconfig.json --noEmit",
     "dev": "npm run build && node dist/apps/api/src/main.js",
     "worker:game-bridge": "node scripts/process-game-bridge-jobs.mjs",
+    "db:seed:test": "node --env-file-if-exists=.env scripts/seed-test-accounts.mjs",
+    "check:security:integration": "node scripts/check-auth-integration.mjs",
     "start": "node dist/apps/api/src/main.js"
   },
   "dependencies": {
@@ -22,8 +24,10 @@
     "class-transformer": "^0.5.0",
     "class-validator": "^0.14.0",
     "helmet": "^7.0.0",
+    "otplib": "^13.4.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.0",
+    "qrcode": "^1.5.4",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.0"
   },
@@ -31,6 +35,7 @@
     "@nestjs/cli": "^10.0.0",
     "@types/bcrypt": "^6.0.0",
     "@types/node": "^20.0.0",
+    "@types/qrcode": "^1.5.6",
     "prisma": "^5.0.0",
     "typescript": "^5.0.0"
   }

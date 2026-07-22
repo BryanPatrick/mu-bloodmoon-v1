@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import helmet from 'helmet'
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
+import { SafeExceptionFilter } from './common/safe-exception.filter'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -17,6 +18,7 @@ async function bootstrap() {
     credentials: true
   })
   app.use(helmet())
+  app.useGlobalFilters(new SafeExceptionFilter())
   if (globalPrefix) {
     app.setGlobalPrefix(globalPrefix)
   }

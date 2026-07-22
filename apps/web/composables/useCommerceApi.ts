@@ -200,6 +200,16 @@ export const useCommerceApi = () => {
       const rows = await get<Array<Omit<CommerceRecharge, 'currency' | 'status'> & { currency: ApiCurrencyCode, status: ApiRechargeStatus }>>('/account/recharges')
       return rows.map((row) => ({ ...row, currency: currencyFromApi[row.currency], status: rechargeStatusFromApi[row.status] }))
     },
+    listOperationalOrders: async () => {
+      const result = await get<{
+        purchases: Array<Omit<CommercePurchase, 'currency' | 'status'> & { currency: ApiCurrencyCode, status: ApiPurchaseStatus }>,
+        recharges: Array<Omit<CommerceRecharge, 'currency' | 'status'> & { currency: ApiCurrencyCode, status: ApiRechargeStatus }>
+      }>('/admin/shop/orders')
+      return {
+        purchases: result.purchases.map((row) => ({ ...row, currency: currencyFromApi[row.currency], status: purchaseStatusFromApi[row.status] })),
+        recharges: result.recharges.map((row) => ({ ...row, currency: currencyFromApi[row.currency], status: rechargeStatusFromApi[row.status] }))
+      }
+    },
     listPurchases: async () => {
       const rows = await get<Array<Omit<CommercePurchase, 'currency' | 'status'> & { currency: ApiCurrencyCode, status: ApiPurchaseStatus }>>('/admin/finance/purchases')
       return rows.map((row) => ({ ...row, currency: currencyFromApi[row.currency], status: purchaseStatusFromApi[row.status] }))

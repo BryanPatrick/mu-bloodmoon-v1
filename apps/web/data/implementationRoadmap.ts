@@ -24,22 +24,22 @@ export const implementationRoadmap: RoadmapItem[] = [
     collectedData: [
       'Pagina /painel/admin/conteudo criada como central do CMS',
       'Fluxo editorial definido: bruto, normalizado, revisado e publicado',
-      'PostgreSQL ja possui status editorial, escopo por season e assets vinculaveis',
+      'MySQL/MariaDB ja possui status editorial, escopo por season e assets vinculaveis',
       'API administrativa ja lista, cria, edita e arquiva KnowledgeEntry',
       'API administrativa ja lista, cria, edita e arquiva ReferenceAsset',
       'API administrativa ja lista, cria, edita e arquiva EquipmentRecord',
-      'Painel CMS ja consome resumo, pendencias de equipamentos e assets reais do PostgreSQL',
-      'Painel CMS ja mostra amostra de equipamentos administraveis do PostgreSQL',
+      'Painel CMS ja consome resumo, pendencias de equipamentos e assets reais do banco',
+      'Painel CMS ja mostra amostra de equipamentos administraveis do banco',
       'Login backend em /api/auth/login ja emite accessToken e refreshToken',
-      'Rotas /api/admin/content ja exigem JWT e role ADMIN ou SUPER_ADMIN',
+      'Rotas /api/admin/content exigem JWT, papel e permissao granular',
       'Mutacoes do CMS ja gravam AuditEvent server-side com ator do JWT',
-      'Usuario admin de teste segue admin/admin ate autenticacao real entrar'
+      'Contas de teste sao criadas apenas por seed local com senha via ambiente'
     ],
     nextSteps: [
       'Adicionar formularios de criar/editar noticias, Wiki e item exclusivo',
       'Criar editor profundo para pecas, variantes, opcoes, classes, seasons e vinculos de set',
       'Remover ultimos estados locais apenas quando cadastro, recuperacao e sessoes estiverem 100% via API',
-      'Aplicar permissoes por modulo para socios/admins'
+      'Criar editor visual para excecoes individuais de permissao por ADM'
     ]
   },
   {
@@ -283,8 +283,7 @@ export const implementationRoadmap: RoadmapItem[] = [
     collectedData: [
       'Formulario de cadastro com nome, usuario, senha, email, Personal ID, referencia e termos',
       'Recuperacao de conta ajustada para usar email',
-      'Conta admin de teste: admin/admin',
-      'Conta player de teste: player/player',
+      'Seeds locais separados para Player, ADM e Super ADM, sem senha fixa no codigo',
       'POST /api/auth/login emite accessToken e refreshToken',
       'Contas bloqueadas nao recebem sessao no backend',
       'POST /api/auth/register cria conta PLAYER ativa com senha e Personal ID hasheados',
@@ -294,8 +293,8 @@ export const implementationRoadmap: RoadmapItem[] = [
     nextSteps: [
       'Adicionar validacao server-side mais detalhada para Personal ID e politicas de senha',
       'Criar envio real de recuperacao por email',
-      'Criar refresh/logout server-side',
-      'Remover credenciais locais de desenvolvimento antes da publicacao'
+      'Criar recuperacao por email com token de uso unico',
+      'Migrar tokens do navegador para cookies HttpOnly antes da publicacao'
     ]
   },
   {

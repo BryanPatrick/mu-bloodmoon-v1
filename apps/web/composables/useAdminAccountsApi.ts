@@ -9,6 +9,7 @@ export type AdminAccountQuery = {
 export type UpdateAdminAccountPayload = {
   role?: string
   status?: string
+  reason: string
 }
 
 const authStorageKey = 'blood-moon-auth'
@@ -50,6 +51,11 @@ export const useAdminAccountsApi = () => {
         method: 'PATCH',
         body: payload,
         headers: headers()
-      })
+      }),
+    permissions: (id: string) => $fetch(`${apiBase.value}/admin/accounts/${id}/permissions`, { headers: headers() }),
+    updatePermissions: (id: string, payload: { permissions: Array<{ key: string, granted: boolean }>, reason: string }) =>
+      $fetch(`${apiBase.value}/admin/accounts/${id}/permissions`, { method: 'PATCH', body: payload, headers: headers() }),
+    revokeSessions: (id: string, reason: string) =>
+      $fetch(`${apiBase.value}/admin/accounts/${id}/sessions/revoke`, { method: 'PATCH', body: { reason }, headers: headers() })
   }
 }

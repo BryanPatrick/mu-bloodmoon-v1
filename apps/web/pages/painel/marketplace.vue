@@ -22,11 +22,6 @@
           </div>
 
           <label class="grid gap-2 text-xs font-black uppercase tracking-[0.18em] text-white/45">
-            Referencia unica do item
-            <input v-model="form.gameItemRef" class="h-11 rounded-md border border-white/10 bg-white/10 px-4 text-sm font-bold text-white outline-none placeholder:text-white/45 focus:border-blood-400/70" placeholder="ex: vault:admin:slot-01" required>
-          </label>
-
-          <label class="grid gap-2 text-xs font-black uppercase tracking-[0.18em] text-white/45">
             Nome do item
             <input v-model="form.itemName" class="h-11 rounded-md border border-white/10 bg-white/10 px-4 text-sm font-bold text-white outline-none placeholder:text-white/45 focus:border-blood-400/70" placeholder="Excellent Bow +9" required>
           </label>
@@ -50,11 +45,6 @@
               </select>
             </label>
           </div>
-
-          <label class="grid gap-2 text-xs font-black uppercase tracking-[0.18em] text-white/45">
-            Dados brutos do item
-            <textarea v-model="itemDataText" class="min-h-32 resize-y rounded-md border border-white/10 bg-white/10 px-4 py-3 text-sm font-bold text-white outline-none placeholder:text-white/45 focus:border-blood-400/70" placeholder='{"level":9,"excellent":true}' />
-          </label>
 
           <button class="rounded-md bg-blood-700 px-5 py-3 text-sm font-black text-white transition hover:bg-blood-500" type="submit">
             Criar anuncio pendente
@@ -121,7 +111,7 @@
                   {{ order.currency }}
                 </span>
               </div>
-              <h3 class="mt-3 font-display text-2xl font-black">{{ order.itemName || order.gameItemRef }}</h3>
+              <h3 class="mt-3 font-display text-2xl font-black">{{ order.itemName || 'Item do marketplace' }}</h3>
               <p class="mt-1 text-sm font-bold text-white/58">
                 {{ order.price.toLocaleString('pt-BR') }} {{ order.currency }} - vendedor {{ order.sellerUsername || 'desconhecido' }}
               </p>
@@ -143,7 +133,6 @@ const message = ref('')
 const isSuccess = ref(true)
 const listings = ref<MarketplaceListing[]>([])
 const orders = ref<MarketplaceOrder[]>([])
-const itemDataText = ref('{\n  "source": "manual-dev",\n  "pendingGameSync": true\n}')
 const form = reactive<CreateMarketplaceListingPayload>({
   gameItemRef: '',
   itemName: '',
@@ -170,15 +159,15 @@ const loadRows = async () => {
 
 const createListing = async () => {
   try {
-    const itemData = itemDataText.value.trim() ? JSON.parse(itemDataText.value) : {}
-    await marketplaceApi.createListing({ ...form, itemData })
+    const gameItemRef = `pending-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+    await marketplaceApi.createListing({ ...form, gameItemRef, itemData: { pendingGameSync: true } })
     Object.assign(form, { gameItemRef: '', itemName: '', itemCategory: '', itemData: {}, price: 1, currency: 'WCOIN' })
     isSuccess.value = true
     message.value = 'Anuncio criado como PENDING_LOCK. Ele so fica ativo depois do lock do item no jogo.'
     await loadRows()
-  } catch (error) {
+  } catch {
     isSuccess.value = false
-    message.value = error instanceof Error ? error.message : 'Nao foi possivel criar o anuncio.'
+    message.value = 'Não foi possível criar o anúncio. Confira os dados e tente novamente.'
   }
 }
 
@@ -188,9 +177,9 @@ const cancelListing = async (listing: MarketplaceListing) => {
     isSuccess.value = true
     message.value = `Anuncio ${listing.itemName} cancelado.`
     await loadRows()
-  } catch (error) {
+  } catch {
     isSuccess.value = false
-    message.value = error instanceof Error ? error.message : 'Nao foi possivel cancelar o anuncio.'
+    message.value = 'Não foi possível cancelar o anúncio. Tente novamente.'
   }
 }
 

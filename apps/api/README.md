@@ -5,16 +5,16 @@ Backend planejado para o portal Blood Moon.
 Stack alvo:
 
 - NestJS
-- PostgreSQL
+- MySQL/MariaDB
 - Prisma
 - Redis
 - Storage S3/R2/MinIO para imagens
 
-Este diretorio agora possui a primeira API executavel em NestJS para servir a base de conhecimento consolidada no PostgreSQL.
+Este diretorio possui a API NestJS para servir a base de conhecimento consolidada no MySQL/MariaDB.
 
 ## Modulos
 
-- `auth`: login, sessao, refresh token, recuperacao e troca de senha.
+- `auth`: login, sessao unica, historico de dispositivos, 2FA TOTP, refresh token, recuperacao e troca de senha.
 - `accounts`: contas, perfis, status, moedas e seguranca.
 - `characters`: personagens, acoes administrativas e leitura do servidor MU.
 - `shop`: produtos, categorias, estoque e entrega.
@@ -23,7 +23,7 @@ Este diretorio agora possui a primeira API executavel em NestJS para servir a ba
 - `references`: imagens, fontes, itens, mapas, monstros e dados coletados.
 - `tickets`: suporte e atendimento.
 - `game-integration`: camada isolada para comunicacao com o servidor MU.
-- `wiki`: leitura de entradas, assets e equipamentos consolidados no PostgreSQL.
+- `wiki`: leitura de entradas, assets e equipamentos consolidados no MySQL/MariaDB.
 - `commerce`: loja, pacotes de recarga, intencoes de compra/recarga e filas financeiras.
 - `marketplace`: anuncios entre jogadores, pedidos e jobs de ponte com o servidor MU.
 - `muserver-export`: leitura dos arquivos reais extraidos do backup do MuServer para inventario, CMS e Wiki.
@@ -85,19 +85,23 @@ Auth:
 - `POST /api/auth/login`
 - `POST /api/auth/register`
 - `POST /api/auth/change-password`
+- `POST /api/auth/2fa/setup`
+- `POST /api/auth/2fa/verify`
+- `POST /api/auth/2fa/disable`
 - `GET /api/account/profile`
+- `GET /api/account/sessions`
 
-Credenciais locais de desenvolvimento:
-
-- Admin: `admin / admin`
-- Admin Personal ID: `admin`
-- Player: `player / player`
-- Player Personal ID: `player`
+Contas de teste sao criadas somente pelo seed local documentado em
+`src/modules/auth/README.md`. Login nunca cria contas automaticamente e nao ha
+senha fixa de desenvolvimento no codigo.
 
 O cadastro cria contas `PLAYER` ativas, grava senha e Personal ID com bcrypt, inicializa `WCOIN`, `GOBLIN_POINT` e `HUNT_POINT` com saldo `0` e registra auditoria `auth.account.registered`.
-O login retorna `user.currencies` com os saldos reais do PostgreSQL para o header e painel nao dependerem de fallback local.
+O login retorna permissoes e moedas reais do MySQL/MariaDB; a interface nao usa
+fallback local para papel, status ou saldo.
 `GET /api/account/profile` retorna perfil, status, Personal ID mascarado e moedas da conta logada.
 Troca de senha exige Bearer token, senha atual, Personal ID e nova senha; a API valida hashes bcrypt e registra `auth.password.changed`.
+Cada login cria uma sessao persistida e revoga as sessoes ativas anteriores. Access token e refresh token carregam o identificador da sessao; sessoes revogadas ou expiradas sao recusadas pelo guard.
+O 2FA usa TOTP compativel com aplicativos autenticadores. O segredo fica criptografado com AES-256-GCM e exige `TWO_FACTOR_ENCRYPTION_KEY` em producao.
 
 Admin CMS:
 
@@ -123,9 +127,10 @@ Admin contas:
 - `GET /api/admin/accounts`
 - `PATCH /api/admin/accounts/:id`
 
-As rotas `/api/admin/accounts/*` exigem Bearer token e role `ADMIN` ou `SUPER_ADMIN`.
+As rotas `/api/admin/accounts/*` exigem Bearer token, papel administrativo e permissao granular.
 O endpoint de listagem aceita `page`, `pageSize`, `search`, `role` e `status`.
-O endpoint de edicao altera `role` e/ou `status`, registra auditoria server-side e retorna a conta no mesmo contrato da listagem.
+O endpoint de edicao exige justificativa. `ADMIN` altera somente status de
+`PLAYER`; apenas `SUPER_ADMIN` promove ou rebaixa entre `PLAYER` e `ADMIN`.
 
 Comercio:
 
@@ -180,7 +185,8 @@ Auditoria administrativa:
 
 - `GET /api/admin/audit/events`
 
-Exige `ADMIN` ou `SUPER_ADMIN` e le `AuditEvent` do PostgreSQL.
+Exige permissao `admin.audit.view` e le `AuditEvent` do MySQL/MariaDB. Eventos
+financeiros, de papel e configuracao estrategica nao sao expostos ao `ADMIN`.
 
 ## Banco de dados
 

@@ -1,6 +1,11 @@
 export type LoginRequest = {
   username: string
   password: string
+  totpCode?: string
+}
+
+export type RefreshRequest = {
+  refreshToken: string
 }
 
 export type RegisterRequest = {
@@ -24,10 +29,24 @@ export type SessionUser = {
   name: string
   role: string
   permissions: string[]
+  twoFactorEnabled: boolean
   currencies: Array<{
     currency: string
     balance: number
   }>
+}
+
+export type TwoFactorSetupRequest = {
+  currentPassword: string
+}
+
+export type TwoFactorVerifyRequest = {
+  code: string
+}
+
+export type TwoFactorDisableRequest = {
+  currentPassword: string
+  code: string
 }
 
 export type LoginResponse = {

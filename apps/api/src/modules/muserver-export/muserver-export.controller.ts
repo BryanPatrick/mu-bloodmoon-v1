@@ -1,8 +1,17 @@
-import { Controller, Get, Param, Query } from '@nestjs/common'
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common'
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'
+import { RequirePermissions } from '../auth/permissions.decorator'
+import { PermissionsGuard } from '../auth/permissions.guard'
+import { permissionKeys } from '../auth/permissions'
+import { Roles } from '../auth/roles.decorator'
+import { RolesGuard } from '../auth/roles.guard'
 import { MuServerExportService } from './muserver-export.service'
 import type { MuServerExportQuery } from './muserver-export.types'
 
 @Controller('muserver-export')
+@UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+@Roles('ADMIN', 'SUPER_ADMIN')
+@RequirePermissions(permissionKeys.adminGameDataView)
 export class MuServerExportController {
   constructor(private readonly exportService: MuServerExportService) {}
 

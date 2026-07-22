@@ -1,12 +1,16 @@
 import { Controller, Get, UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
+import { RequirePermissions } from '../auth/permissions.decorator'
+import { PermissionsGuard } from '../auth/permissions.guard'
+import { permissionKeys } from '../auth/permissions'
 import { RolesGuard } from '../auth/roles.guard'
 import { Roles } from '../auth/roles.decorator'
 import { WebSourceService } from './web-source.service'
 
 @Controller('source-web/current')
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
 @Roles('ADMIN', 'SUPER_ADMIN')
+@RequirePermissions(permissionKeys.adminGameDataView)
 export class WebSourceController {
   constructor(private readonly webSourceService: WebSourceService) {}
 

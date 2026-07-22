@@ -17,6 +17,15 @@
           autocomplete="current-password"
           type="password"
         >
+        <input
+          v-if="requiresTwoFactor"
+          v-model="totpCode"
+          class="bm-liquid-field px-4 py-3 text-sm outline-none transition focus:border-cyan-200/80"
+          placeholder="Codigo de autenticacao (6 digitos)"
+          autocomplete="one-time-code"
+          inputmode="numeric"
+          maxlength="6"
+        >
 
         <p v-if="message" class="rounded-md border px-4 py-3 text-sm font-bold" :class="messageClass">
           {{ message }}
@@ -44,6 +53,8 @@ useSeoMeta({ title: () => t('login') })
 
 const username = ref('')
 const password = ref('')
+const totpCode = ref('')
+const requiresTwoFactor = ref(false)
 const message = ref('')
 const isSuccess = ref(false)
 const isSubmitting = ref(false)
@@ -61,9 +72,10 @@ const submitLogin = async () => {
 
   isSubmitting.value = true
   try {
-    const result = await loginWithCredentials(username.value, password.value)
+    const result = await loginWithCredentials(username.value, password.value, totpCode.value)
     isSuccess.value = result.ok
     message.value = result.message
+    requiresTwoFactor.value = Boolean(result.requiresTwoFactor)
 
     if (result.ok) {
       const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/'

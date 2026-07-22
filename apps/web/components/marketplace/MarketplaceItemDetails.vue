@@ -71,7 +71,7 @@ const stats = computed(() => [
   { label: 'Nivel', value: `+${Number(data.value.level || data.value.itemLevel || 0)}` },
   { label: 'Luck', value: data.value.luck ? 'Sim' : 'Nao' },
   { label: 'Durabilidade', value: String(data.value.durability || '--') },
-  { label: 'Referencia', value: props.listing?.gameItemRef || '--' }
+  { label: 'Origem', value: props.listing?.sellerCharacter?.name || 'Inventário do jogador' }
 ])
 const currencyLabel = computed(() => props.listing ? ({ WCOIN: 'WCoin', GOBLIN_POINT: 'GP', HUNT_POINT: 'HP' }[props.listing.currency] || props.listing.currency) : '')
 const modalUi = { content: 'max-w-4xl bg-transparent shadow-none ring-0', overlay: 'bg-black/75 backdrop-blur-sm' }

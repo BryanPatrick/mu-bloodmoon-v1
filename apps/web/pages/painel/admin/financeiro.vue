@@ -1,6 +1,6 @@
 <template>
   <ManagementShell>
-    <div v-if="hasPermission(permissions.adminFinanceManage)" class="grid gap-6">
+    <div v-if="hasPermission(permissions.adminFinancialReportsView)" class="grid gap-6">
       <div class="flex flex-col gap-5 border-b border-white/10 pb-6 xl:flex-row xl:items-end xl:justify-between">
         <div>
           <p class="bm-kicker">Administracao</p>

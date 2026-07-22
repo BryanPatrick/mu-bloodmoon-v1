@@ -93,7 +93,7 @@ export const managedAccounts: ManagedAccount[] = [
     username: 'gmtest',
     name: 'GM Teste',
     email: 'gm@bloodmoon.local',
-    role: 'game-master',
+    role: 'admin',
     status: 'Pendente',
     personalIdMask: '***-**-7781',
     createdAt: '2026-06-11T09:42:00.000Z',

@@ -100,6 +100,38 @@
         </article>
       </section>
 
+      <section class="bm-panel grid gap-4 rounded-md p-5">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div><p class="bm-kicker">Pacotes e moedas</p><h2 class="mt-1 font-display text-2xl font-black uppercase">Recargas da loja</h2></div>
+          <button class="bm-admin-primary" type="button" @click="resetPackForm">Novo pacote</button>
+        </div>
+        <form class="grid gap-3 md:grid-cols-5" @submit.prevent="savePack">
+          <select v-model="packForm.currency" class="field"><option value="WCoin">WCoin</option><option value="Goblin Point">Goblin Point</option><option value="Hunt Point">Hunt Point</option></select>
+          <input v-model.number="packForm.amount" class="field" min="1" type="number" placeholder="Quantidade" required>
+          <input v-model.number="packForm.bonus" class="field" min="0" type="number" placeholder="Bônus">
+          <input v-model="packForm.price" class="field" placeholder="Preço" required>
+          <button class="rounded-md bg-blood-700 px-4 text-sm font-black" type="submit">{{ editingPackId ? 'Atualizar' : 'Adicionar' }}</button>
+        </form>
+        <div class="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+          <article v-for="pack in rechargePackages" :key="pack.id" class="rounded-md border border-white/10 bg-white/[0.04] p-4">
+            <strong>{{ pack.amount.toLocaleString('pt-BR') }} {{ pack.currency }}</strong>
+            <p class="mt-1 text-xs text-white/50">Bônus {{ pack.bonus.toLocaleString('pt-BR') }} · R$ {{ pack.price }}</p>
+            <div class="mt-3 flex gap-2"><button class="bm-admin-action" type="button" @click="editPack(pack)">Editar</button><button class="bm-admin-danger" type="button" @click="removePack(pack)">Remover</button></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="bm-panel grid gap-4 rounded-md p-5">
+        <div><p class="bm-kicker">Operação</p><h2 class="mt-1 font-display text-2xl font-black uppercase">Pedidos individuais</h2><p class="mt-2 text-xs text-white/50">Dados necessários para entrega e suporte, sem indicadores financeiros globais.</p></div>
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[720px] text-left text-xs">
+            <thead class="text-white/45"><tr><th class="p-3">Jogador</th><th>Pedido</th><th>Status</th><th>Data</th><th class="text-right">Ações</th></tr></thead>
+            <tbody><tr v-for="order in operationalOrders" :key="order.id" class="border-t border-white/10"><td class="p-3 font-bold">{{ order.username }}</td><td>{{ order.label }}</td><td>{{ order.status }}</td><td>{{ formatDate(order.createdAt) }}</td><td class="text-right"><button v-if="order.kind === 'purchase' && order.status === 'Preparada'" class="bm-admin-action" type="button" @click="completeOrder(order.id)">Concluir entrega</button></td></tr></tbody>
+          </table>
+          <p v-if="!operationalOrders.length" class="p-6 text-center text-sm text-white/45">Nenhum pedido registrado.</p>
+        </div>
+      </section>
+
       <p v-if="message" class="rounded-md border border-emerald-400/25 bg-emerald-500/10 px-4 py-3 text-sm font-bold text-emerald-100">
         {{ message }}
       </p>
@@ -109,7 +141,8 @@
 
 <script setup lang="ts">
 import { permissions } from '~/data/security'
-import type { CurrencyCode, ShopProduct } from '~/data/management'
+import type { CurrencyCode, RechargePack, ShopProduct } from '~/data/management'
+import type { CommercePurchase, CommerceRecharge } from '~/composables/useCommerceApi'
 
 const { hasPermission, loadSession, recordAudit } = useAuth()
 const commerceApi = useCommerceApi()
@@ -121,7 +154,12 @@ const isEditorOpen = ref(false)
 const editingId = ref('')
 const message = ref('')
 const products = ref<ShopProduct[]>([])
+const rechargePackages = ref<RechargePack[]>([])
+const purchases = ref<CommercePurchase[]>([])
+const recharges = ref<CommerceRecharge[]>([])
 const loadError = ref('')
+const editingPackId = ref('')
+const packForm = reactive({ currency: 'WCoin' as CurrencyCode, amount: 0, bonus: 0, price: '', highlight: false })
 
 const form = reactive({
   name: '',
@@ -136,8 +174,35 @@ const form = reactive({
 
 onMounted(async () => {
   loadSession()
-  await loadProducts()
+  await Promise.all([loadProducts(), loadStoreOperations()])
 })
+
+const loadStoreOperations = async () => {
+  try {
+    const [packs, orders] = await Promise.all([commerceApi.listRechargePackages(true), commerceApi.listOperationalOrders()])
+    rechargePackages.value = packs.data
+    purchases.value = orders.purchases
+    recharges.value = orders.recharges
+  } catch {
+    message.value = 'Não foi possível carregar pacotes e pedidos da loja.'
+  }
+}
+
+const operationalOrders = computed(() => [
+  ...purchases.value.map((row) => ({ id: row.id, username: row.username, label: row.productName, status: row.status, createdAt: row.createdAt, kind: 'purchase' as const })),
+  ...recharges.value.map((row) => ({ id: row.id, username: row.username, label: `${row.amount.toLocaleString('pt-BR')} ${row.currency}`, status: row.status, createdAt: row.createdAt, kind: 'recharge' as const }))
+].sort((a, b) => b.createdAt.localeCompare(a.createdAt)))
+
+const resetPackForm = () => { editingPackId.value = ''; Object.assign(packForm, { currency: 'WCoin', amount: 0, bonus: 0, price: '', highlight: false }) }
+const editPack = (pack: RechargePack) => { editingPackId.value = pack.id; Object.assign(packForm, pack) }
+const savePack = async () => {
+  const payload: RechargePack = { id: editingPackId.value, currency: packForm.currency, amount: Number(packForm.amount), bonus: Number(packForm.bonus), price: packForm.price, highlight: packForm.highlight }
+  editingPackId.value ? await commerceApi.updateRechargePackage(editingPackId.value, payload) : await commerceApi.createRechargePackage(payload)
+  resetPackForm(); await loadStoreOperations(); message.value = 'Pacote salvo e registrado na auditoria.'
+}
+const removePack = async (pack: RechargePack) => { if (!confirm(`Remover pacote de ${pack.amount} ${pack.currency}?`)) return; await commerceApi.deleteRechargePackage(pack.id); await loadStoreOperations(); message.value = 'Pacote removido.' }
+const completeOrder = async (id: string) => { await commerceApi.updatePurchaseStatus(id, 'Concluida'); await loadStoreOperations(); message.value = 'Entrega concluída e auditada.' }
+const formatDate = (value: string) => new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(value))
 
 const filteredProducts = computed(() => {
   const normalizedQuery = query.value.trim().toLowerCase()

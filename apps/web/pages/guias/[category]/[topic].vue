@@ -385,7 +385,7 @@ const topicTitle = computed(() => pretty(topicSlug.value))
 const blocks = ['Descricao', 'Pontos fortes', 'Pontos fracos', 'Builds', 'Equipamentos', 'Dicas']
 const characterCategorySlugs = ['personagens', 'personajes', 'characters']
 const futureCharacterSlugs = ['grow-lancer', 'rune-mage', 'slayer', 'gun-crusher', 'white-wizard', 'mage']
-const isAdmin = computed(() => user.value?.role === 'admin')
+const isAdmin = computed(() => user.value?.role === 'admin' || user.value?.role === 'super-admin')
 const isFutureGuideLocked = computed(() => characterCategorySlugs.includes(categorySlug.value) && futureCharacterSlugs.includes(topicSlug.value) && !isAdmin.value)
 const equipmentCategorySlugs = ['equipamentos', 'equipments', 'equipment']
 const isSetsGuide = computed(() => equipmentCategorySlugs.includes(categorySlug.value) && topicSlug.value === 'sets')

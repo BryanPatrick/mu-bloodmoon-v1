@@ -84,12 +84,55 @@
         </p>
       </section>
     </div>
+    <div class="mt-6 grid gap-6 xl:grid-cols-2">
+      <section class="bm-panel rounded-md p-6">
+        <p class="bm-kicker">Protecao adicional</p>
+        <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
+          <h2 class="font-display text-2xl font-black">Autenticacao em duas etapas</h2>
+          <span class="rounded-md border px-3 py-1 text-xs font-black" :class="account?.twoFactorEnabled ? 'border-emerald-300/25 bg-emerald-400/10 text-emerald-200' : 'border-amber-300/25 bg-amber-400/10 text-amber-100'">
+            {{ account?.twoFactorEnabled ? 'ATIVA' : 'DESATIVADA' }}
+          </span>
+        </div>
+        <p class="mt-3 text-sm font-semibold text-white/55">Use Google Authenticator, Microsoft Authenticator ou outro aplicativo TOTP.</p>
+
+        <div v-if="!account?.twoFactorEnabled" class="mt-5 grid gap-3">
+          <input v-model="twoFactorPassword" class="rounded-md border border-white/10 bg-black/[0.35] px-4 py-3 text-sm outline-none focus:border-blood-400" placeholder="Senha atual" type="password">
+          <button v-if="!twoFactorSetup" class="bm-liquid-primary w-fit px-5 py-3 text-sm font-black" type="button" @click="startTwoFactor">Gerar QR code</button>
+          <div v-else class="grid gap-4 rounded-md border border-white/10 bg-black/20 p-4 sm:grid-cols-[10rem_1fr]">
+            <img :src="twoFactorSetup.qrCode" alt="QR code para configurar autenticacao em duas etapas" class="aspect-square w-40 rounded-md bg-white p-2">
+            <div class="grid content-start gap-3">
+              <p class="text-xs font-bold text-white/55">Escaneie o QR code ou use esta chave:</p>
+              <code class="break-all rounded-md bg-black/35 p-3 text-xs text-cyan-100">{{ twoFactorSetup.secret }}</code>
+              <input v-model="twoFactorCode" class="rounded-md border border-white/10 bg-black/[0.35] px-4 py-3 text-sm outline-none focus:border-blood-400" placeholder="Codigo de 6 digitos" inputmode="numeric" maxlength="6">
+              <button class="bm-liquid-primary w-fit px-5 py-3 text-sm font-black" type="button" @click="confirmTwoFactor">Confirmar e ativar</button>
+            </div>
+          </div>
+        </div>
+        <div v-else class="mt-5 grid gap-3 sm:grid-cols-2">
+          <input v-model="twoFactorPassword" class="rounded-md border border-white/10 bg-black/[0.35] px-4 py-3 text-sm outline-none focus:border-blood-400" placeholder="Senha atual" type="password">
+          <input v-model="twoFactorCode" class="rounded-md border border-white/10 bg-black/[0.35] px-4 py-3 text-sm outline-none focus:border-blood-400" placeholder="Codigo de 6 digitos" inputmode="numeric" maxlength="6">
+          <button class="bm-admin-danger w-fit sm:col-span-2" type="button" @click="disableTwoFactor">Desativar 2FA</button>
+        </div>
+        <p v-if="twoFactorMessage" class="mt-4 rounded-md border border-white/10 bg-white/[0.04] p-3 text-sm font-bold">{{ twoFactorMessage }}</p>
+      </section>
+
+      <section class="bm-panel rounded-md p-6">
+        <div class="flex flex-wrap items-center justify-between gap-3"><div><p class="bm-kicker">Seguranca</p><h2 class="mt-2 font-display text-2xl font-black">Historico de sessoes</h2></div><button class="bm-admin-danger" type="button" @click="revokeAllSessions">Encerrar todas</button></div>
+        <div class="mt-4 grid gap-2">
+          <article v-for="item in sessions" :key="item.id" class="flex items-center justify-between gap-3 rounded-md border border-white/10 bg-white/[0.04] p-3">
+            <div><strong>{{ item.label }}</strong><p class="mt-1 text-xs text-white/45">{{ item.ipAddress || 'IP nao identificado' }} · atividade {{ formatDate(item.lastSeenAt) }}</p><p v-if="item.revokeReason" class="mt-1 text-xs text-amber-200/70">{{ item.revokeReason }}</p></div>
+            <span class="text-xs font-black" :class="item.active ? 'text-emerald-200' : 'text-white/35'">{{ item.current ? 'ATUAL' : item.active ? 'ATIVA' : 'ENCERRADA' }}</span>
+          </article>
+          <p v-if="!sessions.length" class="rounded-md border border-white/10 p-4 text-sm text-white/45">Nenhuma sessao registrada.</p>
+        </div>
+      </section>
+    </div>
   </ManagementShell>
 </template>
 
 <script setup lang="ts">
 import type { CommercePurchase, CommerceRecharge } from '~/composables/useCommerceApi'
-import type { AccountProfile } from '~/composables/useAccountSecurityApi'
+import type { AccountProfile, AccountSession } from '~/composables/useAccountSecurityApi'
 
 const { loadSession, user } = useAuth()
 const accountSecurityApi = useAccountSecurityApi()
@@ -100,11 +143,45 @@ useSeoMeta({ title: 'Gerenciar conta' })
 const purchases = ref<CommercePurchase[]>([])
 const recharges = ref<CommerceRecharge[]>([])
 const account = ref<AccountProfile | null>(null)
+const sessions = ref<AccountSession[]>([])
+const twoFactorPassword = ref('')
+const twoFactorCode = ref('')
+const twoFactorMessage = ref('')
+const twoFactorSetup = ref<{ secret: string, uri: string, qrCode: string } | null>(null)
 
 onMounted(async () => {
   loadSession()
-  await Promise.all([loadProfile(), loadHistory()])
+  await Promise.all([loadProfile(), loadHistory(), loadSessions()])
 })
+
+const loadSessions = async () => { try { sessions.value = await accountSecurityApi.sessions() } catch { sessions.value = [] } }
+const revokeAllSessions = async () => {
+  if (!confirm('Encerrar todas as sessões, inclusive esta?')) return
+  try { await accountSecurityApi.revokeSessions('Revogação solicitada pelo titular da conta'); await navigateTo('/login') } catch { message.value = 'Não foi possível encerrar as sessões.' }
+}
+
+const startTwoFactor = async () => {
+  twoFactorMessage.value = ''
+  try { twoFactorSetup.value = await accountSecurityApi.setupTwoFactor(twoFactorPassword.value) }
+  catch { twoFactorMessage.value = 'Nao foi possivel iniciar o 2FA. Confira sua senha.' }
+}
+
+const confirmTwoFactor = async () => {
+  try {
+    await accountSecurityApi.verifyTwoFactor(twoFactorCode.value)
+    twoFactorMessage.value = 'Autenticacao em duas etapas ativada.'
+    twoFactorSetup.value = null
+    twoFactorPassword.value = ''
+    twoFactorCode.value = ''
+    await loadProfile()
+  } catch { twoFactorMessage.value = 'Codigo invalido ou expirado. Tente novamente.' }
+}
+
+const disableTwoFactor = async () => {
+  if (!confirm('Desativar a autenticacao em duas etapas e encerrar a sessao atual?')) return
+  try { await accountSecurityApi.disableTwoFactor(twoFactorPassword.value, twoFactorCode.value); await navigateTo('/login') }
+  catch { twoFactorMessage.value = 'Nao foi possivel desativar. Confira a senha e o codigo.' }
+}
 
 const recentPurchases = computed(() => purchases.value.slice(0, 3))
 const recentRecharges = computed(() => recharges.value.slice(0, 3))

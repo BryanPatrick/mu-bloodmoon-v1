@@ -71,6 +71,12 @@ export const useAdminContentApi = () => {
         : {}
     })
 
+  const uploadImage = async (payload: { name: string, dataUrl: string }) => {
+    const result = await sendAdmin<{ id: string, name: string, url: string, mimeType: string, bytes: number }>('POST', '/admin/content/assets/upload', payload)
+    const apiOrigin = apiBase.value.replace(/\/api$/, '')
+    return { ...result, url: result.url.startsWith('http') ? result.url : `${apiOrigin}${result.url}` }
+  }
+
   return {
     summary: () => fetchAdmin('/admin/content/summary'),
     entries: (query: AdminContentEntryQuery = {}) => fetchAdmin('/admin/content/entries', query),
@@ -83,6 +89,7 @@ export const useAdminContentApi = () => {
     archiveSetting: (id: string) => sendAdmin('DELETE', `/admin/content/settings/${id}`),
     assets: (query: AdminContentAssetQuery = {}) => fetchAdmin('/admin/content/assets', query),
     createAsset: (payload: Record<string, unknown>) => sendAdmin('POST', '/admin/content/assets', payload),
+    uploadImage,
     updateAsset: (id: string, payload: Record<string, unknown>) => sendAdmin('PATCH', `/admin/content/assets/${id}`, payload),
     archiveAsset: (id: string) => sendAdmin('DELETE', `/admin/content/assets/${id}`),
     equipment: (query: AdminContentEquipmentQuery = {}) => fetchAdmin('/admin/content/equipment', query),

@@ -69,6 +69,8 @@ NODE_ENV=production
 DATABASE_URL=mysql://mubloodxz_bmapi:SENHA_DO_ARQUIVO_WORK@localhost:3306/mubloodxz_bloodmoon
 JWT_ACCESS_SECRET=troque-por-um-segredo-longo
 JWT_REFRESH_SECRET=troque-por-outro-segredo-longo
+TWO_FACTOR_ENCRYPTION_KEY=troque-por-uma-terceira-chave-aleatoria
+SESSION_TTL_HOURS=24
 WEB_PUBLIC_URLS=https://mubloodmoon.com.br,https://www.mubloodmoon.com.br
 API_GLOBAL_PREFIX=api
 ```

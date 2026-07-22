@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { JwtService } from '@nestjs/jwt'
 import type { Role } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
-import { permissionsForRole } from './permissions'
+import { permissionsForAccount } from './permissions'
 import type { AccessTokenPayload, AuthenticatedUser } from './auth.types'
 
 type RequestWithHeaders = {
@@ -30,7 +30,8 @@ export class JwtAuthGuard implements CanActivate {
     try {
       const payload = await this.jwt.verifyAsync<AccessTokenPayload>(token)
       const account = await this.prisma.account.findUnique({
-        where: { id: payload.sub }
+        where: { id: payload.sub },
+        include: { permissions: true }
       })
 
       if (!account || account.status !== 'ACTIVE') {
@@ -41,13 +42,22 @@ export class JwtAuthGuard implements CanActivate {
         throw new UnauthorizedException('Session was replaced by a newer login')
       }
 
+      const session = payload.sid ? await this.prisma.accountSession.findUnique({ where: { id: payload.sid } }) : null
+      if (!session || session.accountId !== account.id || session.revokedAt || session.expiresAt <= new Date()) {
+        throw new UnauthorizedException('Session is no longer active')
+      }
+
+      await this.prisma.accountSession.update({ where: { id: session.id }, data: { lastSeenAt: new Date() } })
+
       request.user = {
         id: account.id,
         username: account.username,
         name: account.name,
         email: account.email,
         role: account.role as Role,
-        permissions: permissionsForRole(account.role)
+        permissions: permissionsForAccount(account.role, account.permissions),
+        sessionVersion: account.sessionVersion,
+        sessionId: session.id
       }
 
       return true

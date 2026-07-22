@@ -14,6 +14,7 @@ import { MuServerExportModule } from './modules/muserver-export/muserver-export.
 import { WikiModule } from './modules/wiki/wiki.module'
 import { ContentModule } from './modules/content/content.module'
 import { AppController } from './app.controller'
+import { SupportModule } from './modules/support/support.module'
 
 export const apiModules = [
   'auth',
@@ -52,7 +53,8 @@ export type ApiModuleName = typeof apiModules[number]
     MarketplaceModule,
     MuServerExportModule,
     WikiModule,
-    ContentModule
+    ContentModule,
+    SupportModule
   ]
 })
 export class AppModule {}

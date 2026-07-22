@@ -27,47 +27,20 @@
           </div>
 
           <nav v-if="isShellReady" class="mt-4 grid gap-2" aria-label="Menu de gerenciamento">
-            <div v-if="referenceItem" class="grid gap-1">
-              <button
-                class="bm-nav-link flex w-full items-center rounded-2xl text-left text-sm font-bold"
-                :class="[
-                  isMenuCollapsed ? 'justify-center px-0 py-3' : 'gap-3 px-3 py-3',
-                  { 'bm-nav-link-active': route.path.startsWith(referenceItem.to) }
-                ]"
-                type="button"
-                :title="isMenuCollapsed ? referenceItem.label : undefined"
-                @click="isReferenceOpen = !isReferenceOpen"
-              >
-                <component :is="referenceItem.icon" class="size-4 text-ember" />
-                <span v-if="!isMenuCollapsed" class="min-w-0 flex-1">{{ referenceItem.label }}</span>
-                <ChevronDown v-if="!isMenuCollapsed" class="size-4 transition" :class="{ 'rotate-180': isReferenceOpen }" />
-              </button>
-
-              <div v-if="isReferenceOpen && !isMenuCollapsed" class="grid gap-1 pl-7">
-                <NuxtLink
-                  v-for="child in referenceItem.children"
-                  :key="child.to"
-                  :to="child.to"
-                  class="rounded-2xl px-3 py-2 text-xs font-black text-white/58 transition hover:bg-white/10 hover:text-white"
-                  :class="{ 'bg-white/10 text-white': route.fullPath === child.to }"
-                >
-                  {{ child.label }}
-                </NuxtLink>
-              </div>
-            </div>
-
-            <template v-for="item in visibleItems" :key="item.to">
+            <template v-for="item in visibleMenuItems" :key="item.to">
               <div v-if="item.children?.length && !isMenuCollapsed" class="grid gap-1">
-                <NuxtLink
-                  :to="item.to"
+                <button
                   class="bm-nav-link flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-bold"
-                  :class="{ 'bm-nav-link-active': route.path === item.to || item.children.some((child) => route.fullPath === child.to) }"
+                  :class="{ 'bm-nav-link-active': isItemActive(item) }"
+                  type="button"
+                  @click="toggleSection(item.to)"
                 >
                   <component :is="item.icon" class="size-4 text-ember" />
-                  <span>{{ item.label }}</span>
-                </NuxtLink>
+                  <span class="min-w-0 flex-1 text-left">{{ item.label }}</span>
+                  <ChevronDown class="size-4 transition" :class="{ 'rotate-180': openSections.has(item.to) }" />
+                </button>
 
-                <div class="ml-5 grid gap-1 border-l border-white/10 pl-4">
+                <div v-if="openSections.has(item.to)" class="ml-5 grid gap-1 border-l border-white/10 pl-4">
                   <NuxtLink
                     v-for="child in item.children"
                     :key="child.to"
@@ -122,14 +95,19 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronDown, CircleDollarSign, ClipboardList, DatabaseZap, FileSearch, FileText, Images, LayoutDashboard, PanelLeftClose, PanelLeftOpen, Settings, ShieldCheck, ShoppingBag, UserCog, Users } from 'lucide-vue-next'
-import { permissions } from '~/data/security'
+import {
+  Bell, BookOpen, CalendarDays, ChevronDown, CircleDollarSign, FileSearch,
+  FileText, Gamepad2, Gavel, LayoutDashboard, Newspaper, PackageCheck,
+  PanelLeftClose, PanelLeftOpen, Settings, ShieldCheck, ShoppingBag,
+  Store, TicketCheck, UserCog, Users
+} from 'lucide-vue-next'
+import { permissions, type Permission, type UserRole } from '~/data/security'
 
 const route = useRoute()
 const { hasPermission, loadSession, user } = useAuth()
-const isReferenceOpen = ref(route.path.startsWith('/painel/admin/referencias'))
 const isShellReady = ref(false)
 const isMenuCollapsed = ref(false)
+const openSections = ref(new Set<string>())
 const menuCollapsedStorageKey = 'blood-moon-management-menu-collapsed'
 
 onMounted(() => {
@@ -147,49 +125,72 @@ const toggleMenu = () => {
 
 const accountCurrencies = computed(() => user.value?.currencies || [])
 
-const menuItems = computed(() => [
-  { label: 'Dashboard', to: '/painel', icon: LayoutDashboard, adminOnly: true },
-  { label: 'Contas', to: '/painel/admin/contas', icon: ShieldCheck, adminOnly: true },
-  { label: 'Financeiro', to: '/painel/admin/financeiro', icon: CircleDollarSign, adminOnly: true },
-  {
-    label: 'Conteudo CMS',
-    to: '/painel/admin/conteudo',
-    icon: FileText,
-    adminOnly: true,
-    children: [
-      { label: 'Conteudo do site', to: '/painel/admin/conteudo?modulo=conteudo' },
-      { label: 'Equipamentos', to: '/painel/admin/conteudo?modulo=equipamentos' },
-      { label: 'Configuracoes', to: '/painel/admin/conteudo?modulo=configuracoes' },
-      { label: 'Auditoria', to: '/painel/admin/conteudo?modulo=auditoria' }
-    ]
-  },
-  { label: 'Loja Admin', to: '/painel/admin/loja', icon: ShoppingBag, adminOnly: true },
-  { label: 'Marketplace Admin', to: '/painel/admin/marketplace', icon: ShoppingBag, adminOnly: true },
-  { label: 'Recargas Admin', to: '/painel/admin/recargas', icon: CircleDollarSign, adminOnly: true },
-  { label: 'Implementacoes', to: '/painel/admin/pendencias', icon: ClipboardList, adminOnly: true },
-  { label: 'Fontes Web', to: '/painel/admin/fontes-web', icon: DatabaseZap, adminOnly: true },
-  { label: 'Auditoria', to: '/painel/admin/auditoria', icon: FileSearch, adminOnly: true },
-  { label: 'Sistema', to: '/painel/admin/sistema', icon: Settings, adminOnly: true },
-  {
-    label: 'Referencias Dev',
-    to: '/painel/admin/referencias',
-    icon: Images,
-    adminOnly: true,
-    children: [
-      { label: 'Personagens', to: '/painel/admin/referencias?grupo=Personagens' },
-      { label: 'Equipamentos', to: '/painel/admin/referencias?grupo=Equipamentos' },
-      { label: 'Mapas', to: '/painel/admin/referencias?grupo=Mapas' },
-      { label: 'Monstros', to: '/painel/admin/referencias?grupo=Monstros' },
-      { label: 'Fontes', to: '/painel/admin/referencias?grupo=Fontes' }
-    ]
-  },
-  { label: 'Gerenciar personagens', to: '/painel/personagens', icon: Users, adminOnly: false },
-  { label: 'Gerenciar conta', to: '/painel/conta', icon: UserCog, adminOnly: false },
-  { label: 'Meus anuncios', to: '/painel/marketplace', icon: ShoppingBag, adminOnly: false },
-  { label: 'Acessar loja', to: '/painel/loja', icon: ShoppingBag, adminOnly: false }
-])
+type MenuChild = { label: string; to: string }
+type MenuItem = {
+  label: string
+  to: string
+  icon: unknown
+  permission?: Permission
+  roles?: UserRole[]
+  children?: MenuChild[]
+}
 
-const visibleMenuItems = computed(() => menuItems.value.filter((item) => !item.adminOnly || hasPermission(permissions.adminDashboardView)))
-const referenceItem = computed(() => visibleMenuItems.value.find((item) => item.to === '/painel/admin/referencias'))
-const visibleItems = computed(() => visibleMenuItems.value.filter((item) => item.to !== '/painel/admin/referencias'))
+const administrativeItems: MenuItem[] = [
+  { label: 'Dashboard administrativo', to: '/painel', icon: LayoutDashboard, permission: permissions.adminDashboardView },
+  { label: 'Jogadores', to: '/painel/admin/contas', icon: Users, permission: permissions.adminAccountsView, roles: ['admin'] },
+  { label: 'Contas', to: '/painel/admin/contas', icon: ShieldCheck, permission: permissions.adminAccountsView, roles: ['super-admin'] },
+  { label: 'Administradores', to: '/painel/admin/contas?perfil=admin', icon: UserCog, permission: permissions.adminRolesManage, roles: ['super-admin'] },
+  { label: 'Personagens', to: '/painel/admin/personagens', icon: Gamepad2, permission: permissions.adminAccountsView },
+  {
+    label: 'Conteúdo',
+    to: '/painel/admin/conteudo?area=paginas',
+    icon: FileText,
+    permission: permissions.adminContentManage,
+    children: [
+      { label: 'Páginas', to: '/painel/admin/conteudo?area=paginas' },
+      { label: 'Banners', to: '/painel/admin/conteudo?area=banners' },
+      { label: 'Classes', to: '/painel/admin/conteudo?area=classes' },
+      { label: 'Mapas', to: '/painel/admin/conteudo?area=mapas' },
+      { label: 'Itens', to: '/painel/admin/conteudo?area=itens' }
+    ]
+  },
+  { label: 'Wiki', to: '/painel/admin/conteudo?area=wiki', icon: BookOpen, permission: permissions.adminContentManage },
+  { label: 'Notícias', to: '/painel/admin/conteudo?area=noticias', icon: Newspaper, permission: permissions.adminContentManage },
+  { label: 'Eventos', to: '/painel/admin/conteudo?area=eventos', icon: CalendarDays, permission: permissions.adminContentManage },
+  { label: 'Loja Admin', to: '/painel/admin/loja', icon: Store, permission: permissions.adminShopManage },
+  { label: 'Marketplace Admin', to: '/painel/admin/marketplace', icon: ShoppingBag, permission: permissions.adminMarketplaceManage },
+  { label: 'Moderação', to: '/painel/admin/moderacao', icon: Gavel, permission: permissions.adminAccountsStatusManage },
+  { label: 'Tickets', to: '/painel/admin/tickets', icon: TicketCheck, permission: permissions.adminAccountsStatusManage },
+  { label: 'Financeiro', to: '/painel/admin/financeiro', icon: CircleDollarSign, permission: permissions.adminFinancialReportsView, roles: ['super-admin'] },
+  { label: 'Auditoria', to: '/painel/admin/auditoria', icon: FileSearch, permission: permissions.adminAuditView },
+  { label: 'Configurações do servidor', to: '/painel/admin/sistema', icon: Settings, permission: permissions.adminServerSettingsManage, roles: ['super-admin'] }
+]
+
+const playerItems: MenuItem[] = [
+  { label: 'Dashboard', to: '/painel', icon: LayoutDashboard, roles: ['player'] },
+  { label: 'Minha conta', to: '/painel/conta', icon: UserCog },
+  { label: 'Meus personagens', to: '/painel/personagens', icon: Users },
+  { label: 'Loja', to: '/painel/loja', icon: Store },
+  { label: 'Marketplace', to: '/painel/marketplace', icon: ShoppingBag },
+  { label: 'Minhas compras', to: '/painel/compras', icon: PackageCheck },
+  { label: 'Meus anúncios', to: '/painel/marketplace?visao=meus-anuncios', icon: ShoppingBag },
+  { label: 'Notificações', to: '/painel/notificacoes', icon: Bell },
+  { label: 'Suporte', to: '/painel/suporte', icon: TicketCheck },
+  { label: 'Configurações', to: '/painel/configuracoes', icon: Settings }
+]
+
+const visibleMenuItems = computed(() => {
+  const role = user.value?.role
+  if (!role) return []
+  const items = role === 'player' ? playerItems : [...administrativeItems, ...playerItems.filter((item) => item.to !== '/painel')]
+  return items.filter((item) => (!item.roles || item.roles.includes(role)) && (!item.permission || hasPermission(item.permission)))
+})
+
+const toggleSection = (key: string) => {
+  const next = new Set(openSections.value)
+  next.has(key) ? next.delete(key) : next.add(key)
+  openSections.value = next
+}
+
+const isItemActive = (item: MenuItem) => route.fullPath === item.to || item.children?.some((child) => route.fullPath === child.to)
 </script>

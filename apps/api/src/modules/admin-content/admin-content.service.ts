@@ -1,5 +1,8 @@
 ﻿import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import type { EditorialStatus, EquipmentClassLinkRole, EquipmentGroup, EquipmentQuality, KnowledgeEntryKind, KnowledgeScope, Prisma, ReferenceAssetKind } from '@prisma/client'
+import { randomUUID } from 'node:crypto'
+import { mkdir, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { PrismaService } from '../../database/prisma.service'
 import type {
   AdminAssetQuery,
@@ -13,7 +16,8 @@ import type {
   AdminUpdateEquipmentPayload,
   AdminUpdateKnowledgeEntryPayload,
   AdminUpdateReferenceAssetPayload,
-  AdminUpdateSiteSettingPayload
+  AdminUpdateSiteSettingPayload,
+  AdminUploadImagePayload
 } from './admin-content.types'
 import { AuditService } from '../audit/audit.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
@@ -107,6 +111,47 @@ export class AdminContentService {
     private readonly prisma: PrismaService,
     private readonly audit: AuditService
   ) {}
+
+  async uploadImage(payload: AdminUploadImagePayload, user?: AuthenticatedUser) {
+    const match = payload.dataUrl?.match(/^data:(image\/(?:png|jpeg|webp));base64,([A-Za-z0-9+/=]+)$/)
+    if (!match) throw new BadRequestException('Envie uma imagem PNG, JPEG ou WebP valida.')
+
+    const buffer = Buffer.from(match[2], 'base64')
+    if (!buffer.length || buffer.length > 5 * 1024 * 1024) {
+      throw new BadRequestException('A imagem deve ter no maximo 5 MB.')
+    }
+
+    const mimeType = match[1]
+    const extension = mimeType === 'image/jpeg' ? 'jpg' : mimeType.split('/')[1]
+    const fileName = `${randomUUID()}.${extension}`
+    const uploadDirectory = join(process.cwd(), 'storage', 'uploads')
+    await mkdir(uploadDirectory, { recursive: true })
+    await writeFile(join(uploadDirectory, fileName), buffer)
+
+    const friendlyName = payload.name?.trim().slice(0, 120) || `Imagem ${new Date().toLocaleDateString('pt-BR')}`
+    const publicPath = `/api/media/${fileName}`
+    const asset = await this.prisma.referenceAsset.create({
+      data: {
+        kind: 'IMAGE',
+        localPath: publicPath,
+        publicPath,
+        mimeType,
+        bytes: buffer.length,
+        status: 'PUBLISHED',
+        metadata: { friendlyName }
+      }
+    })
+
+    await this.audit.record({
+      ...auditActor(user),
+      action: 'admin.asset.uploaded',
+      targetType: 'ReferenceAsset',
+      targetId: asset.id,
+      metadata: { name: friendlyName, mimeType, bytes: buffer.length }
+    })
+
+    return { id: asset.id, name: friendlyName, url: publicPath, mimeType, bytes: buffer.length }
+  }
 
   async summary() {
     const [

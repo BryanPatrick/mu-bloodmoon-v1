@@ -7,6 +7,8 @@ export type AuthenticatedUser = {
   email: string
   role: Role
   permissions: string[]
+  sessionVersion?: number
+  sessionId?: string
 }
 
 export type AccessTokenPayload = {
@@ -14,4 +16,6 @@ export type AccessTokenPayload = {
   username: string
   role: Role
   sessionVersion: number
+  sid: string
+  type?: 'refresh'
 }

@@ -1,6 +1,6 @@
 <template>
   <ManagementShell>
-    <div v-if="hasPermission(permissions.adminSystemManage)" class="grid gap-6">
+    <div v-if="hasPermission(permissions.adminServerSettingsManage)" class="grid gap-6">
       <div class="border-b border-white/10 pb-6">
         <p class="bm-kicker">Administracao</p>
         <h1 class="mt-3 font-display text-4xl font-black uppercase sm:text-5xl">Sistema</h1>

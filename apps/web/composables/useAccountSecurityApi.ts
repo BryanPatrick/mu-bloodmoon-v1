@@ -15,6 +15,20 @@ export type AccountProfile = {
   currencies: Record<string, number>
   createdAt: string
   updatedAt: string
+  twoFactorEnabled: boolean
+}
+
+export type AccountSession = {
+  id: string
+  current: boolean
+  active: boolean
+  createdAt: string
+  lastSeenAt: string
+  expiresAt: string
+  revokedAt: string | null
+  revokeReason: string | null
+  ipAddress: string | null
+  label: string
 }
 
 const authStorageKey = 'blood-moon-auth'
@@ -48,6 +62,11 @@ export const useAccountSecurityApi = () => {
         method: 'POST',
         body: payload,
         headers: authHeaders()
-      })
+      }),
+    sessions: () => $fetch<AccountSession[]>(`${apiBase.value}/account/sessions`, { headers: authHeaders() }),
+    revokeSessions: (reason: string) => $fetch<{ ok: boolean }>(`${apiBase.value}/account/sessions/revoke`, { method: 'PATCH', body: { reason }, headers: authHeaders() }),
+    setupTwoFactor: (currentPassword: string) => $fetch<{ secret: string, uri: string, qrCode: string }>(`${apiBase.value}/auth/2fa/setup`, { method: 'POST', body: { currentPassword }, headers: authHeaders() }),
+    verifyTwoFactor: (code: string) => $fetch<{ ok: true }>(`${apiBase.value}/auth/2fa/verify`, { method: 'POST', body: { code }, headers: authHeaders() }),
+    disableTwoFactor: (currentPassword: string, code: string) => $fetch<{ ok: true }>(`${apiBase.value}/auth/2fa/disable`, { method: 'POST', body: { currentPassword, code }, headers: authHeaders() })
   }
 }

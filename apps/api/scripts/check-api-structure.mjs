@@ -17,6 +17,8 @@ const required = [
   'src/modules/auth/current-user.decorator.ts',
   'src/modules/auth/jwt-auth.guard.ts',
   'src/modules/auth/permissions.ts',
+  'src/modules/auth/permissions.decorator.ts',
+  'src/modules/auth/permissions.guard.ts',
   'src/modules/auth/roles.decorator.ts',
   'src/modules/auth/roles.guard.ts',
   'src/modules/accounts/accounts.contract.ts',
@@ -61,6 +63,9 @@ const required = [
   'src/modules/wiki/wiki.service.ts',
   'src/modules/wiki/wiki.types.ts',
   'prisma/schema.prisma',
+  'scripts/seed-test-accounts.mjs',
+  'scripts/check-security-structure.mjs',
+  'scripts/check-auth-integration.mjs',
   '.env.example'
 ]
 

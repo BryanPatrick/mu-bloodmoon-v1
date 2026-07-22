@@ -55,7 +55,6 @@
               <p class="mt-1 text-sm font-bold text-white/58">
                 {{ listing.sellerUsername || 'sem vendedor' }} - {{ listing.itemCategory }} - {{ listing.price.toLocaleString('pt-BR') }} {{ listing.currency }}
               </p>
-              <p class="mt-1 text-xs font-bold text-white/42">Ref: {{ listing.gameItemRef }}</p>
             </div>
 
             <div class="grid gap-2 sm:grid-cols-2 xl:w-80">
@@ -65,7 +64,7 @@
                 :disabled="listing.status !== 'PENDING_LOCK'"
                 @click="activateListing(listing)"
               >
-                Ativar dev
+                Aprovar anúncio
               </button>
               <button
                 class="rounded-md border border-blood-500/40 bg-blood-900/30 px-4 py-3 text-sm font-black text-blood-100 disabled:cursor-not-allowed disabled:opacity-45"
@@ -80,51 +79,13 @@
         </article>
       </section>
 
-      <section class="grid gap-4">
-        <div class="flex items-end justify-between border-b border-white/10 pb-3">
-          <div>
-            <p class="bm-kicker">Ponte MU</p>
-            <h2 class="mt-1 font-display text-2xl font-black uppercase">Jobs de integracao</h2>
-          </div>
-          <span class="text-xs font-black uppercase tracking-[0.2em] text-white/45">{{ bridgeJobs.length }} registros</span>
-        </div>
-
-        <article v-for="job in bridgeJobs" :key="job.id" class="bm-panel rounded-md p-5">
-          <div class="grid gap-4 xl:grid-cols-[1fr_auto] xl:items-center">
-            <div>
-              <div class="flex flex-wrap gap-2">
-                <span class="rounded-sm px-2 py-1 text-[11px] font-black uppercase tracking-[0.14em]" :class="bridgeStatusClass(job.status)">
-                  {{ job.status }}
-                </span>
-                <span class="rounded-sm bg-white/10 px-2 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-white/65">
-                  {{ job.operation }}
-                </span>
-              </div>
-              <h3 class="mt-3 break-all font-display text-xl font-black">{{ job.idempotencyKey }}</h3>
-              <p class="mt-1 text-sm font-bold text-white/58">
-                Conta: {{ job.accountUsername || 'n/a' }} - tentativas: {{ job.attempts }}
-              </p>
-              <p v-if="job.error" class="mt-2 text-sm font-bold text-blood-100">{{ job.error }}</p>
-            </div>
-
-            <div class="grid gap-2 sm:grid-cols-2 xl:w-80">
-              <button class="bm-button-glass rounded-md px-4 py-3 text-sm font-black" type="button" @click="setBridgeJob(job, 'COMPLETED')">
-                Completar
-              </button>
-              <button class="rounded-md border border-blood-500/40 bg-blood-900/30 px-4 py-3 text-sm font-black text-blood-100" type="button" @click="setBridgeJob(job, 'FAILED')">
-                Falhou
-              </button>
-            </div>
-          </div>
-        </article>
-      </section>
     </div>
   </ManagementShell>
 </template>
 
 <script setup lang="ts">
 import { permissions } from '~/data/security'
-import type { GameBridgeJob, MarketplaceListing } from '~/composables/useMarketplaceApi'
+import type { MarketplaceListing } from '~/composables/useMarketplaceApi'
 
 useSeoMeta({ title: 'Admin Marketplace' })
 
@@ -133,7 +94,6 @@ const marketplaceApi = useMarketplaceApi()
 const query = ref('')
 const status = ref('')
 const listings = ref<MarketplaceListing[]>([])
-const bridgeJobs = ref<GameBridgeJob[]>([])
 const message = ref('')
 const isSuccess = ref(true)
 const listingStatuses: MarketplaceListing['status'][] = ['PENDING_LOCK', 'ACTIVE', 'SOLD', 'CANCELLED', 'EXPIRED', 'FAILED']
@@ -145,23 +105,21 @@ const messageClass = computed(() =>
 )
 
 const loadAll = async () => {
-  const [listingRows, jobRows] = await Promise.all([
-    marketplaceApi.listAdminListings({ search: query.value || undefined, status: status.value || undefined, pageSize: 100 }),
-    marketplaceApi.listBridgeJobs()
+  const [listingRows] = await Promise.all([
+    marketplaceApi.listAdminListings({ search: query.value || undefined, status: status.value || undefined, pageSize: 100 })
   ])
   listings.value = listingRows.data
-  bridgeJobs.value = jobRows
 }
 
 const activateListing = async (listing: MarketplaceListing) => {
   try {
     await marketplaceApi.activateListing(listing.id)
     isSuccess.value = true
-    message.value = `${listing.itemName} ativado em modo dev.`
+    message.value = `${listing.itemName} aprovado.`
     await loadAll()
-  } catch (error) {
+  } catch {
     isSuccess.value = false
-    message.value = error instanceof Error ? error.message : 'Nao foi possivel ativar o anuncio.'
+    message.value = 'Não foi possível aprovar o anúncio. Tente novamente.'
   }
 }
 
@@ -171,21 +129,9 @@ const setListingStatus = async (listing: MarketplaceListing, nextStatus: Marketp
     isSuccess.value = true
     message.value = `${listing.itemName} alterado para ${nextStatus}.`
     await loadAll()
-  } catch (error) {
+  } catch {
     isSuccess.value = false
-    message.value = error instanceof Error ? error.message : 'Nao foi possivel alterar o anuncio.'
-  }
-}
-
-const setBridgeJob = async (job: GameBridgeJob, nextStatus: GameBridgeJob['status']) => {
-  try {
-    await marketplaceApi.updateBridgeJob(job.id, nextStatus, { source: 'admin-panel-dev' }, nextStatus === 'FAILED' ? 'Falha marcada manualmente.' : null)
-    isSuccess.value = true
-    message.value = `Job ${job.operation} marcado como ${nextStatus}.`
-    await loadAll()
-  } catch (error) {
-    isSuccess.value = false
-    message.value = error instanceof Error ? error.message : 'Nao foi possivel alterar o job.'
+    message.value = 'Não foi possível alterar o anúncio. Tente novamente.'
   }
 }
 
@@ -194,12 +140,6 @@ const listingStatusClass = (value: MarketplaceListing['status']) => ({
   'bg-emerald-500/15 text-emerald-100': value === 'ACTIVE',
   'bg-sky-500/15 text-sky-100': value === 'SOLD',
   'bg-blood-700/25 text-blood-100': ['CANCELLED', 'FAILED', 'EXPIRED'].includes(value)
-})
-
-const bridgeStatusClass = (value: GameBridgeJob['status']) => ({
-  'bg-ember/15 text-ember': ['PENDING', 'PROCESSING'].includes(value),
-  'bg-emerald-500/15 text-emerald-100': value === 'COMPLETED',
-  'bg-blood-700/25 text-blood-100': ['FAILED', 'CANCELLED'].includes(value)
 })
 
 watch([query, status], loadAll)

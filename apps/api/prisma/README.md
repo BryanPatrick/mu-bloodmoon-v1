@@ -42,7 +42,15 @@ apagar dados.
 
 ## Schema
 
-O deploy cPanel atual usa `prisma db push`, porque as migrations antigas foram geradas para PostgreSQL e ficam apenas como historico de desenvolvimento.
+O deploy cPanel atual usa MySQL/MariaDB. Prefira `prisma migrate deploy`; use
+`prisma db push` somente em banco vazio ou ambiente controlado.
+
+## Autorizacao
+
+`Account.role` possui apenas `PLAYER`, `ADMIN` e `SUPER_ADMIN`.
+`AccountPermission` permite concessoes ou revogacoes individuais sem alterar a
+matriz base do papel. A migration `20260722120000_role_permissions` converte
+papeis legados para `ADMIN` antes de restringir o enum.
 
 Plano de importacao gerado a partir das referencias:
 
