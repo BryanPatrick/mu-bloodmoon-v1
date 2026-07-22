@@ -6,6 +6,7 @@ const planPath = path.join(root, 'references', 'game-data', 'equipment-postgres-
 const plan = JSON.parse(await readFile(planPath, 'utf8'))
 const equipment = Array.isArray(plan.equipment) ? plan.equipment : []
 const variants = Array.isArray(plan.variants) ? plan.variants : []
+const options = Array.isArray(plan.options) ? plan.options : []
 
 function fail(message) {
   throw new Error(`Equipment catalog check failed: ${message}`)
@@ -44,6 +45,34 @@ assertSet('armor-set-leather', {
 assertSet('armor-set-black-dragon', { minimumPieces: 5, targetClasses: ['Blade Knight'] })
 assertSet('armor-set-great-dragon', { minimumPieces: 5, targetClasses: ['Blade Knight'] })
 
+const warriorLeather = setByKey('ancient-normal-warrior-leather') || groupedSets.find((item) => item.name === 'Warrior Leather')
+if (!warriorLeather) fail('missing Warrior Leather Ancient set')
+const warriorPieces = (plan.pieces || []).filter((piece) => piece.equipmentKey === warriorLeather.key).map((piece) => piece.slot)
+for (const slot of ['Weapon', 'Ring']) {
+  if (!warriorPieces.includes(slot)) fail(`Warrior Leather is missing its ${slot}`)
+}
+
+for (const [setName, expectedImage] of [['Brave', 'bravery-set.jpg'], ['Titan', 'titan-set.jpg']]) {
+  const item = groupedArmorSets.find((set) => set.name === setName)
+  if (!item?.remapData?.fullSetImage?.endsWith(expectedImage)) {
+    fail(`${setName} is missing its collected full-set image`)
+  }
+}
+
+for (const socketSet of groupedArmorSets.filter((item) =>
+  variants.some((variant) => variant.equipmentKey === item.key && variant.quality === 'SOCKET')
+)) {
+  const socketVariants = variants.filter((variant) => variant.equipmentKey === socketSet.key)
+  if (socketVariants.some((variant) => variant.quality === 'NORMAL')) {
+    fail(`${socketSet.name} is Socket but was also published as Normal`)
+  }
+
+  const targetClasses = socketSet.remapData?.targetClasses ?? []
+  if (targetClasses.some((className) => ['Dark Knight', 'Dark Wizard', 'Fairy Elf', 'Summoner', 'Magic Gladiator', 'Dark Lord'].includes(className))) {
+    fail(`${socketSet.name} targets a base class instead of an advanced class: ${targetClasses.join(', ')}`)
+  }
+}
+
 const qualities = new Set(
   variants
     .filter((variant) => groupedSets.some((item) => item.key === variant.equipmentKey))
@@ -52,6 +81,10 @@ const qualities = new Set(
 
 for (const quality of ['NORMAL', 'EXCELLENT', 'ANCIENT', 'SOCKET', 'LUCKY']) {
   if (!qualities.has(quality)) fail(`set variants do not include quality ${quality}`)
+}
+
+if (options.length < 300) {
+  fail(`only ${options.length} equipment options were normalized; expected the harvested Ancient catalog`)
 }
 
 const futureClasses = new Set([

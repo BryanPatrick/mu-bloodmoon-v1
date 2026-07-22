@@ -110,8 +110,24 @@ function classWhere(query: WikiEquipmentQuery): Prisma.EquipmentRecordWhereInput
   }
 }
 
+const characterReleaseOrder = [
+  'Dark Knight',
+  'Dark Wizard',
+  'Fairy Elf',
+  'Magic Gladiator',
+  'Dark Lord',
+  'Summoner',
+  'Rage Fighter'
+]
+
 function primaryCharacter(record: { remapData: Prisma.JsonValue | null; classLinks?: Array<{ role: string; character: { name: string }; class: { name: string } }> }) {
-  const baseLink = record.classLinks?.find((link) => link.role === 'BASE')
+  const baseLink = record.classLinks
+    ?.filter((link) => link.role === 'BASE')
+    .sort((left, right) => {
+      const leftIndex = characterReleaseOrder.indexOf(left.character.name)
+      const rightIndex = characterReleaseOrder.indexOf(right.character.name)
+      return (leftIndex === -1 ? Number.MAX_SAFE_INTEGER : leftIndex) - (rightIndex === -1 ? Number.MAX_SAFE_INTEGER : rightIndex)
+    })[0]
   if (baseLink) return baseLink.character.name
 
   const data = jsonObject(record.remapData)
@@ -370,9 +386,11 @@ export class WikiService {
     const availableQualities = qualities.map(qualityKey)
     const tier = setTier(record.baseSetName || record.name, record.minSeason)
     const pieceNames = record.pieces.map((piece) => piece.name || piece.slot)
+    const fullSetImage = typeof remapData.fullSetImage === 'string' ? remapData.fullSetImage : undefined
+    const needsSetOptions = qualities.some((quality) => ['ANCIENT', 'LUCKY', 'MASTERY_ANCIENT'].includes(quality))
     const missingReferences = {
-      image: warnings.includes('missing-image') || !record.pieces.some((piece) => piece.imagePath),
-      setOptions: warnings.includes('missing-ancient-set-options') || !record.options.length,
+      image: !fullSetImage && !record.pieces.some((piece) => piece.imagePath),
+      setOptions: needsSetOptions && (warnings.includes('missing-ancient-set-options') || !record.options.length),
       classMap: warnings.includes('missing-character-class-map') || (!baseClasses.length && !playableClasses.length),
       pieceImages: record.pieces.filter((piece) => !piece.imagePath).map((piece) => piece.name || piece.slot)
     }
@@ -389,11 +407,12 @@ export class WikiService {
       evolutions: playableClasses.length ? playableClasses : baseClasses,
       baseClasses,
       targetClasses,
-      requiredClassTier: 1,
+      requiredClassTier: targetClassTier,
       targetClassTier,
       minSeason: record.minSeason,
       tier,
       tierLabel: String(tier).padStart(2, '0'),
+      fullSetImage,
       status: missingReferences.image ? 'Coletar imagem' : 'Imagem local',
       compatibility: record.minSeason <= 6 ? 'v6-prioridade' : 'high-version-futuro',
       pieces: pieceNames.length ? pieceNames : stringArray((rawData.listStats as Record<string, unknown> | undefined) ? Object.values(rawData.listStats as Record<string, unknown>) : []),

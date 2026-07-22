@@ -1,6 +1,6 @@
 # Equipment Remap Audit
 
-Generated at: 2026-07-21T12:31:51.967Z
+Generated at: 2026-07-22T02:27:32.636Z
 
 ## Totals
 
@@ -8,98 +8,97 @@ Generated at: 2026-07-21T12:31:51.967Z
 - Ancient/lucky/mastery entries: 259
 - Missing character/class map: 5
 - Missing ancient piece list: 0
-- Missing ancient set options: 240
-- Missing images: 259
+- Missing ancient set options: 196
+- Missing images: 0
 
 ## Warning totals
 
-- missing-image: 259
-- missing-ancient-set-options: 240
+- missing-ancient-set-options: 196
 - source-has-unknown-class-token-b: 108
 - missing-character-class-map: 5
 
 ## Ancient entries needing review
 
-- Warrior Leather (Ancient Normal): missing-image
-- Hyperion Bronze (Ancient Normal): missing-image
-- Eplete Scale (Ancient Normal): missing-ancient-set-options, missing-image
-- Garuda Brass (Ancient Normal): missing-ancient-set-options, missing-image
-- Kantata Plate (Ancient Normal): missing-image
-- Hyon Dragon (Ancient Normal): missing-ancient-set-options, missing-image
-- Apollo Pad (Ancient Normal): missing-ancient-set-options, missing-image
-- Evis Bone (Ancient Normal): missing-ancient-set-options, missing-image
-- Heras Sphinx (Ancient Normal): missing-ancient-set-options, missing-image
-- Anubis Legendary (Ancient Normal): missing-ancient-set-options, missing-image
-- Ceto Vine (Ancient Normal): missing-ancient-set-options, missing-image
-- Gaia Silk (Ancient Normal): missing-ancient-set-options, missing-image
-- Odin Wind (Ancient Normal): missing-ancient-set-options, missing-image
-- Argo Spirit (Ancient Normal): missing-image
-- Gywen Guardian (Ancient Normal): missing-image
-- Gaion Atlans (Ancient Normal): missing-ancient-set-options, missing-image
-- Vicious Dragon (Ancient Normal): missing-ancient-set-options, missing-image
-- Enis Legendary (Ancient Normal): missing-ancient-set-options, missing-image
-- Aruan Guardian (Ancient Normal): missing-ancient-set-options, missing-image
-- Muren Storm Crow (Ancient Normal): missing-ancient-set-options, missing-image
-- Agnis Adamantine (Ancient Normal): missing-ancient-set-options, missing-image
-- Broy Adamantine (Ancient Normal): missing-ancient-set-options, missing-image
-- Chrono Red Wing (Ancient Normal): missing-ancient-set-options, missing-image
-- Semeden Red Wing (Ancient Normal): missing-ancient-set-options, missing-image
-- Anonymous Leather (Ancient Normal): missing-image
-- Mist Bronze (Ancient Normal): missing-image
-- Berserker Scale (Ancient Normal): missing-ancient-set-options, missing-image
-- Cloud Brass (Ancient Normal): missing-image
-- Rave Plate (Ancient Normal): missing-image
-- Barnake Pad (Ancient Normal): missing-image
-- Sylion Bone (Ancient Normal): missing-ancient-set-options, missing-image
-- Minet Sphinx (Ancient Normal): missing-image
-- Drake Vine (Ancient Normal): missing-image
-- Fase Silk (Ancient Normal): missing-image
-- Elvian Wind (Ancient Normal): missing-image
-- Karis Spirit (Ancient Normal): missing-image
-- Vega Sacred Fire (Ancient Normal): missing-ancient-set-options, missing-image
-- Chamer Sacred Fire (Ancient Normal): missing-ancient-set-options, missing-image
-- Mahes Black Dragon (Ancient Normal): missing-ancient-set-options, missing-image
-- Bes Eclipse (Ancient Normal): missing-image
-- Serket Iris (Ancient Normal): missing-image
-- Apis Valiant (Ancient Normal): missing-ancient-set-options, missing-image
-- Hapy Ancient (Ancient Normal): missing-image
-- Khons Dark Steel (Ancient Normal): missing-ancient-set-options, missing-image
-- Horus Holy Storm (Ancient Normal): missing-image
-- Bragi Dark Phoenix (Ancient Normal): missing-ancient-set-options, missing-image
-- Alvis Grand Soul (Ancient Normal): missing-ancient-set-options, missing-image
-- Frigg Holy Spirit (Ancient Normal): missing-ancient-set-options, missing-image
-- Tyr Thunder Hawk (Ancient Normal): missing-ancient-set-options, missing-image
-- Surt Glorious (Ancient Normal): missing-ancient-set-options, missing-image
-- Elune Demonic (Ancient Normal): missing-ancient-set-options, missing-image
-- Magni Piercing Groove (Ancient Normal): missing-ancient-set-options, missing-image
-- Dorov Gru Hill (Ancient Normal): missing-ancient-set-options, missing-image
-- Anas Hirat (Ancient Normal): missing-ancient-set-options, missing-image
-- Akhir Hirat (Ancient Normal): missing-ancient-set-options, missing-image
-- Camill Sate (Ancient Normal): missing-ancient-set-options, missing-image
-- Carthy Sate (Ancient Normal): missing-ancient-set-options, missing-image
-- Kenaz Arka (Ancient Normal): missing-ancient-set-options, missing-image
-- Kenaz Iria (Ancient Normal): missing-ancient-set-options, missing-image
-- Molos Nigthwing (Ancient Normal): missing-ancient-set-options, missing-image
-- Vesper Nightwing (Ancient Normal): missing-ancient-set-options, missing-image
-- Burning Frere (Ancient Normal): missing-ancient-set-options, missing-image
-- Falcon Frere (Ancient Normal): missing-ancient-set-options, missing-image
-- Apocalypse Knight (Apocalypse Ancient): missing-ancient-set-options, missing-image
-- Apocalypse Knight (Conviction) (Apocalypse Ancient): missing-ancient-set-options, missing-image
-- Apocalypse Wizard (Apocalypse Ancient): missing-ancient-set-options, missing-image
-- Apocalypse Elf Attack (Apocalypse Ancient): missing-ancient-set-options, missing-image
-- Apocalypse Elf Defense (Apocalypse Ancient): missing-ancient-set-options, missing-image
-- Apocalypse Magic Strength (Apocalypse Ancient): missing-ancient-set-options, missing-image
-- Apocalypse Magic Energy (Apocalypse Ancient): missing-ancient-set-options, missing-image
-- Apocalypse Lord (Apocalypse Ancient): missing-ancient-set-options, missing-image
-- Apocalypse Summoner (Apocalypse Ancient): missing-ancient-set-options, missing-image
-- Apocalypse Fighter (Apocalypse Ancient): missing-ancient-set-options, missing-image
-- Apocalypse Lancer (Apocalypse Ancient): missing-ancient-set-options, missing-image
-- Apocalypse Rune (Apocalypse Ancient): missing-ancient-set-options, missing-image
-- Apocalypse Slayer (Apocalypse Ancient): missing-ancient-set-options, missing-image
-- Apocalypse Gunner (Apocalypse Ancient): missing-ancient-set-options, missing-image
-- Apocalypse Kundun (Apocalypse Ancient): missing-ancient-set-options, missing-image
-- Apocalypse Lemuria (Apocalypse Ancient): missing-ancient-set-options, missing-image
-- Apocalypse Illusion (Apocalypse Ancient): missing-ancient-set-options, missing-image
+- Apocalypse Knight (Apocalypse Ancient): missing-ancient-set-options
+- Apocalypse Knight (Conviction) (Apocalypse Ancient): missing-ancient-set-options
+- Apocalypse Wizard (Apocalypse Ancient): missing-ancient-set-options
+- Apocalypse Elf Attack (Apocalypse Ancient): missing-ancient-set-options
+- Apocalypse Elf Defense (Apocalypse Ancient): missing-ancient-set-options
+- Apocalypse Magic Strength (Apocalypse Ancient): missing-ancient-set-options
+- Apocalypse Magic Energy (Apocalypse Ancient): missing-ancient-set-options
+- Apocalypse Lord (Apocalypse Ancient): missing-ancient-set-options
+- Apocalypse Summoner (Apocalypse Ancient): missing-ancient-set-options
+- Apocalypse Fighter (Apocalypse Ancient): missing-ancient-set-options
+- Apocalypse Lancer (Apocalypse Ancient): missing-ancient-set-options
+- Apocalypse Rune (Apocalypse Ancient): missing-ancient-set-options
+- Apocalypse Slayer (Apocalypse Ancient): missing-ancient-set-options
+- Apocalypse Gunner (Apocalypse Ancient): missing-ancient-set-options
+- Apocalypse Kundun (Apocalypse Ancient): missing-ancient-set-options
+- Apocalypse Lemuria (Apocalypse Ancient): missing-ancient-set-options
+- Apocalypse Illusion (Apocalypse Ancient): missing-ancient-set-options
+- Fury Bloodangel Knight (Bloodangel Ancient): missing-ancient-set-options
+- Bloodangel Knight (Conviction) (Bloodangel Ancient): missing-ancient-set-options
+- Transcendence Bloodangel Wizard (Bloodangel Ancient): missing-ancient-set-options
+- Flurry Bloodangel Elf Attack (Bloodangel Ancient): missing-ancient-set-options
+- Salvific's Bloodangel Elf Support (Bloodangel Ancient): missing-ancient-set-options
+- Honor Bloodangel Summoner (Bloodangel Ancient): missing-ancient-set-options
+- Extremity Bloodangel Magic Strength (Bloodangel Ancient): missing-ancient-set-options
+- Horsepower's Bloodangel Magic (Bloodangel Ancient): missing-ancient-set-options
+- Conquest Bloodangel Lord (Bloodangel Ancient): missing-ancient-set-options
+- Destruction Bloodangel Fighter (Bloodangel Ancient): missing-ancient-set-options
+- Tenacity Bloodangel Lancer (Bloodangel Ancient): missing-ancient-set-options
+- Bloodangel Rune (Bloodangel Ancient): missing-ancient-set-options
+- Bloodangel Slayer (Bloodangel Ancient): missing-ancient-set-options
+- Bloodangel Gunner (Bloodangel Ancient): missing-ancient-set-options
+- Bloodangel Kundun (Bloodangel Ancient): missing-ancient-set-options
+- Bloodangel Lemuria (Bloodangel Ancient): missing-ancient-set-options
+- Bloodangel Illusion (Bloodangel Ancient): missing-ancient-set-options
+- Blue Eye Knight (Blue Eye Ancient): missing-ancient-set-options
+- Blue Eye Knight (Conviction) (Blue Eye Ancient): missing-ancient-set-options
+- Blue Eye Wizard (Blue Eye Ancient): missing-ancient-set-options
+- Blue Eye Elf Attack (Blue Eye Ancient): missing-ancient-set-options
+- Blue Eye Elf Support (Blue Eye Ancient): missing-ancient-set-options
+- Blue Eye Magic Strength (Blue Eye Ancient): missing-ancient-set-options
+- Blue Eye Magic Energy (Blue Eye Ancient): missing-ancient-set-options
+- Blue Eye Lord (Blue Eye Ancient): missing-ancient-set-options
+- Blue Eye Summoner (Blue Eye Ancient): missing-ancient-set-options
+- Blue Eye Fighter (Blue Eye Ancient): missing-ancient-set-options
+- Blue Eye Lancer (Blue Eye Ancient): missing-ancient-set-options
+- Blue Eye Rune (Blue Eye Ancient): missing-ancient-set-options
+- Blue Eye Slayer (Blue Eye Ancient): missing-ancient-set-options
+- Blue Eye Gunner (Blue Eye Ancient): missing-ancient-set-options
+- Blue Eye Kundun (Blue Eye Ancient): missing-ancient-set-options
+- Blue Eye Lemuria (Blue Eye Ancient): missing-ancient-set-options
+- Blue Eye Illusion (Blue Eye Ancient): missing-ancient-set-options
+- Brilliant Knight (Brilliant Ancient): missing-ancient-set-options
+- Brilliant Knight (Conviction) (Brilliant Ancient): missing-ancient-set-options
+- Brilliant Wizard (Brilliant Ancient): missing-ancient-set-options
+- Brilliant Elf Attack (Brilliant Ancient): missing-ancient-set-options
+- Brilliant Elf Defense (Brilliant Ancient): missing-ancient-set-options
+- Brilliant Magic Strength (Brilliant Ancient): missing-ancient-set-options
+- Brilliant Magic Energy (Brilliant Ancient): missing-ancient-set-options
+- Brilliant Lord (Brilliant Ancient): missing-ancient-set-options
+- Brilliant Summoner (Brilliant Ancient): missing-ancient-set-options
+- Brilliant Fighter (Brilliant Ancient): missing-ancient-set-options
+- Brilliant Lancer (Brilliant Ancient): missing-ancient-set-options
+- Brilliant Rune (Brilliant Ancient): missing-ancient-set-options
+- Brilliant Slayer (Brilliant Ancient): missing-ancient-set-options
+- Brilliant Gunner (Brilliant Ancient): missing-ancient-set-options
+- Brilliant Kundun (Brilliant Ancient): missing-ancient-set-options
+- Brilliant Lemuria (Brilliant Ancient): missing-ancient-set-options
+- Brilliant Illusion (Brilliant Ancient): missing-ancient-set-options
+- Courage's Darkangel Knight (Darkangel Ancient): missing-ancient-set-options
+- Darkangel Knight (Conviction) (Darkangel Ancient): missing-ancient-set-options
+- Wisdom's Darkangel Wizard (Darkangel Ancient): missing-ancient-set-options
+- Speed's Darkangel Elf Attack (Darkangel Ancient): missing-ancient-set-options
+- Resurgen's Darkangel Elf Support (Darkangel Ancient): missing-ancient-set-options
+- Chaos's Darkangel Summoner (Darkangel Ancient): missing-ancient-set-options
+- Determination's Darkangel Magic Strength (Darkangel Ancient): missing-ancient-set-options
+- Fallen's Darkangel Magic Energy (Darkangel Ancient): missing-ancient-set-options
+- Justice's Darkangel Lord (Darkangel Ancient): missing-ancient-set-options
+- Will's Darkangel Fighter (Darkangel Ancient): missing-ancient-set-options
+- Retribution's Darkangel Lancer (Darkangel Ancient): missing-ancient-set-options
+- Darkangel Rune (Darkangel Ancient): missing-ancient-set-options
 
 ## Rule
 

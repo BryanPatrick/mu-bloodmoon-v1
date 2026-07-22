@@ -6,11 +6,17 @@ const repoRoot = resolve(fileURLToPath(new URL('..', import.meta.url)))
 const detailsDir = resolve(repoRoot, 'apps/web/data/mu-equipment-details')
 const indexPath = resolve(repoRoot, 'apps/web/data/muEquipmentIndex.generated.json')
 const ancientPath = resolve(repoRoot, 'references/game-data/muonlinefanz-ancient-items-data.json')
+const fullSetImagesPath = resolve(repoRoot, 'apps/web/data/muFullSetImages.generated.json')
+const normalizedAncientPath = resolve(repoRoot, 'references/game-data/guiamu-ancient-sets-normalized.json')
 const outputPath = resolve(repoRoot, 'apps/web/data/muEquipmentRemap.generated.json')
 const reportPath = resolve(repoRoot, 'references/game-data/equipment-remap-audit.md')
+const guiamuItemImagesDir = resolve(repoRoot, 'apps/web/public/images/game-assets/guiamuonline/items/original')
 
 const index = JSON.parse(readFileSync(indexPath, 'utf8'))
 const ancientReference = JSON.parse(readFileSync(ancientPath, 'utf8'))
+const fullSetImages = JSON.parse(readFileSync(fullSetImagesPath, 'utf8'))
+const normalizedAncient = JSON.parse(readFileSync(normalizedAncientPath, 'utf8'))
+const guiamuItemImageFiles = new Set(readdirSync(guiamuItemImagesDir))
 
 const characterEvolutionMap = {
   'Dark Knight': ['Dark Knight', 'Blade Knight', 'Blade Master', 'Dragon Knight'],
@@ -54,6 +60,25 @@ const accessorySlots = new Set(['Earring', 'Pentagram', 'Quiver'])
 const masteryAncientCategories = new Set(['Bloodangel Ancient', 'Darkangel Ancient', 'Holyangel Ancient', 'Soul Ancient', 'Blue Eye Ancient', 'Manticore Ancient', 'Silver Heart Ancient', 'Brilliant Ancient', 'Apocalypse Ancient', 'Primordial Ancient'])
 const ancientCategories = new Set(['Ancient Normal', 'Set Lucky', ...masteryAncientCategories])
 const socketSetNames = ['Titan', 'Brave', 'Hades', 'Seraphim', 'Phantom', 'Destroy', 'Crimson', 'Eternal', 'Queen']
+const secondClassSetNames = new Set([
+  'Black Dragon',
+  'Dark Phoenix',
+  'Great Dragon',
+  'Ashcrow',
+  'Grand Soul',
+  'Dark Soul',
+  'Venom Mist',
+  'Eclipse',
+  'Iris',
+  'Holy Spirit',
+  'Divine',
+  'Red Spirit',
+  'Thunder Hawk',
+  'Hurricane',
+  'Volcano',
+  'Dark Master',
+  'Sunlight'
+].map((name) => name.toLowerCase()))
 const masterySeasonByFamily = {
   Bloodangel: 11,
   Darkangel: 12,
@@ -118,6 +143,18 @@ const progressionSetOrder = [
 
 const ancientPiecePattern = /\b(?:armor|pants|helm|helmet|boots|gloves|shield|pendant|ring|sword|blade|axe|mace|bow|crossbow|staff|stick|scepter|spear|lance|claw|book|orb|rune|gun)\b/i
 const ancientEffectPattern = /\b(?:\d+\s+set option|set option|increase|double damage|excellent damage|ignore|wizardry|damage|defense|energy|agility|mana|life|hp|skill|stamina|strength|critical|excellent)\b/i
+const slotFromPieceText = (value) => {
+  if (/\bhelm(?:et)?\b/i.test(value)) return 'Helm'
+  if (/\barmor\b/i.test(value)) return 'Armor'
+  if (/\bpants\b/i.test(value)) return 'Pants'
+  if (/\bgloves\b/i.test(value)) return 'Gloves'
+  if (/\bboots\b/i.test(value)) return 'Boots'
+  if (/\bshield\b/i.test(value)) return 'Shield'
+  if (/\bring\b/i.test(value)) return 'Ring'
+  if (/\bpendant\b/i.test(value)) return 'Pendant'
+  if (/\b(sword|blade|breaker|rapier|axe|mace|bow|crossbow|staff|stick|scepter|spear|lance|claw|book|orb|rune|gun|star|weapon)\b/i.test(value)) return 'Weapon'
+  return ''
+}
 
 const normalize = (value) =>
   String(value || '')
@@ -135,6 +172,23 @@ const keyFor = (value) =>
     .replace(/[^a-z0-9]+/gi, '-')
     .replace(/^-|-$/g, '')
     .toLowerCase()
+
+const ancientPieceImage = (item, pieceName) => {
+  if (!ancientCategories.has(item.category)) return null
+
+  const prefix = `${item.categorySlug}-${keyFor(item.name)}-`
+  const exactName = `${prefix}${keyFor(pieceName)}.jpg`
+  if (guiamuItemImageFiles.has(exactName)) {
+    return `/images/game-assets/guiamuonline/items/original/${exactName}`
+  }
+
+  const slot = slotFromPieceText(pieceName)
+  if (!slot) return null
+  const slotMatches = [...guiamuItemImageFiles].filter((file) => file.startsWith(prefix) && slotFromPieceText(file) === slot)
+  if (slotMatches.length !== 1) return null
+
+  return `/images/game-assets/guiamuonline/items/original/${slotMatches[0]}`
+}
 
 const correctedSetName = (value) =>
   String(value || '')
@@ -159,14 +213,16 @@ const expandClasses = (classes) =>
 function progressionClassTier(item, baseSetName, qualities) {
   const minSeason = seasonFor(item, qualities)
   if (qualities.includes('masteryAncient') || (item.category?.includes('Ancient') && minSeason >= 11)) return 3
+  if (qualities.includes('socket')) return 3
   if (item.category === 'Set Lucky') return 2
 
   const haystack = normalize(`${baseSetName || item.name} ${item.name}`)
+  if ([...secondClassSetNames].some((name) => haystack.includes(name))) return 2
   const orderIndex = progressionSetOrder.findIndex((name) => haystack.includes(normalize(name)))
 
   if (orderIndex === -1) return minSeason > 6 ? 3 : 1
   if (orderIndex <= 4) return 1
-  if (orderIndex <= 24) return 2
+  if (orderIndex <= 28) return 2
   return 3
 }
 
@@ -312,9 +368,13 @@ function qualitiesFor(item) {
     else if (masteryAncientCategories.has(item.category)) qualities.push('normal', 'excellent', 'masteryAncient', 'ancient')
     else qualities.push('ancient')
   } else {
-    qualities.push('normal')
-    if (item.listStats?.excellentDrop && item.listStats.excellentDrop !== '~') qualities.push('excellent')
-    if (socketSetNames.some((name) => normalize(item.name).includes(normalize(name)))) qualities.push('socket')
+    const isSocket = socketSetNames.some((name) => normalize(item.name).includes(normalize(name)))
+    if (isSocket) {
+      qualities.push('socket')
+    } else {
+      qualities.push('normal')
+      if (item.listStats?.excellentDrop && item.listStats.excellentDrop !== '~') qualities.push('excellent')
+    }
   }
   return unique(qualities)
 }
@@ -362,12 +422,27 @@ const sourceItems = index.map((summary) => {
   const sample = (ancientReference.sampleSetsCapturedFromPage || []).find((entry) => normalize(entry.name?.replace(/\s+Set$/i, '')) === normalize(summary.name) || normalize(entry.name?.replace(/\s+Set$/i, '')) === normalize(baseSetName))
   const sampleOptions = sample?.setOptions?.map((option) => `${option.pieces} Set option: ${option.option}`) || []
   const samplePieces = sample?.pieces?.map((piece) => piece.name) || []
+  const normalizedSample = (normalizedAncient.sets || []).find((entry) => normalize(entry.matchedName) === normalize(summary.name))
+  const normalizedOptions = normalizedSample?.options?.map((option) => `${option.pieces} Set option: ${option.label}`) || []
+  const normalizedPieces = normalizedSample?.pieces?.map((piece) => `${summary.name} ${piece.slot}`) || []
+  const preferredPieces = unique([...ancientPieces, ...samplePieces])
+  const preferredOptions = unique([...setOptions, ...sampleOptions])
+  const preferredPieceSlots = new Set(preferredPieces.map(slotFromPieceText).filter(Boolean))
+  const missingNormalizedPieces = normalizedPieces.filter((piece) => !preferredPieceSlots.has(slotFromPieceText(piece)))
+  const slots = ancientCategories.has(summary.category)
+    ? unique([...preferredPieces, ...missingNormalizedPieces])
+    : [summary.category]
+  const pieceImages = Object.fromEntries(
+    slots
+      .map((piece) => [piece, ancientPieceImage(summary, piece)])
+      .filter(([, imagePath]) => imagePath)
+  )
   const warnings = []
 
   if (ancientCategories.has(summary.category) && !classInfo.baseClasses.length) warnings.push('missing-character-class-map')
-  if (ancientCategories.has(summary.category) && !ancientPieces.length && !samplePieces.length) warnings.push('missing-ancient-piece-list')
-  if (ancientCategories.has(summary.category) && !setOptions.length && !sampleOptions.length) warnings.push('missing-ancient-set-options')
-  if (!summary.image?.publicPath && !summary.image?.sourceUrl) warnings.push('missing-image')
+  if (ancientCategories.has(summary.category) && !ancientPieces.length && !samplePieces.length && !normalizedPieces.length) warnings.push('missing-ancient-piece-list')
+  if (ancientCategories.has(summary.category) && !setOptions.length && !sampleOptions.length && !normalizedOptions.length) warnings.push('missing-ancient-set-options')
+  if (!summary.image?.publicPath && !summary.image?.sourceUrl && !Object.keys(pieceImages).length) warnings.push('missing-image')
   if ((summary.usableBy || []).includes('B')) warnings.push('source-has-unknown-class-token-b')
 
   const baseClassMinSeason = classInfo.baseClasses.length
@@ -389,10 +464,9 @@ const sourceItems = index.map((summary) => {
     baseClasses: classInfo.baseClasses,
     playableClasses: classInfo.playableClasses,
     targetClasses,
-    slots: ancientCategories.has(summary.category)
-      ? unique([...ancientPieces, ...samplePieces])
-      : [summary.category],
-    setOptions: unique([...setOptions, ...sampleOptions]),
+    slots,
+    pieceImages,
+    setOptions: preferredOptions.length ? preferredOptions : normalizedOptions,
     levelStatsCount: detail.levelStats?.length || 0,
     hasExcellentStats: Boolean(detail.levelStats?.some((stat) => stat.excellentDefense || stat.excellentRequiredStrength || stat.excellentRequiredAgility)),
     listStats: summary.listStats || {},
@@ -437,6 +511,13 @@ const groupedArmorSets = [...armorFamilies.entries()].map(([familyKey, family]) 
     .map((item) => `${preferredName} ${item.category}`)
   const sourceImages = family.map((item) => item.image).filter(Boolean)
   const image = sourceImages.find((entry) => entry?.publicPath || entry?.sourceUrl) || sourceImages[0] || null
+  const fullSetAliases = {
+    brave: 'bravery',
+    destroy: 'destruction',
+    eternal: 'eternal-wing'
+  }
+  const fullSetKey = `${fullSetAliases[keyFor(preferredName)] || keyFor(preferredName)}-set`
+  const fullSetImage = fullSetImages.find((entry) => entry.key === fullSetKey)?.publicPath || null
   const warnings = unique(family.flatMap((item) => item.warnings).filter((warning) => warning !== 'missing-image'))
   if (!sourceImages.some((entry) => entry?.publicPath || entry?.sourceUrl)) warnings.push('missing-image')
   if (!baseClasses.length) warnings.push('missing-character-class-map')
@@ -453,6 +534,7 @@ const groupedArmorSets = [...armorFamilies.entries()].map(([familyKey, family]) 
     minSeason,
     sourceUrl: family.find((item) => item.sourceUrl)?.sourceUrl || null,
     image,
+    fullSetImage,
     baseClasses,
     playableClasses,
     targetClasses,

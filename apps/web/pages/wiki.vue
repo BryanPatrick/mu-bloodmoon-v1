@@ -553,7 +553,7 @@
                     :name="set.name"
                     :tier-label="set.tierLabel"
                     :image="setPreviewImage(set)"
-                    :character-name="set.characterName"
+                    :character-name="setDisplayCharacter(set)"
                     :classes="setDisplayClasses(set)"
                     :set-types="set.setTypes"
                     :pieces="set.pieces"
@@ -1225,6 +1225,7 @@ type SetCard = {
   availableQualities: EquipmentQualityKey[]
   characterName: string
   evolutions: string[]
+  baseClasses?: string[]
   targetClasses?: string[]
   requiredClassTier: number
   targetClassTier: number
@@ -2180,7 +2181,11 @@ const inferRequiredClassTier = (name: string, types: string[] = []) => {
     return 3
   }
 
-  if (types.includes('Socket') || secondClassSetNames.some((setName) => normalizedName.includes(setName.toLowerCase()))) {
+  if (types.includes('Socket')) {
+    return 3
+  }
+
+  if (secondClassSetNames.some((setName) => normalizedName.includes(setName.toLowerCase()))) {
     return 2
   }
 
@@ -2196,7 +2201,11 @@ const inferTargetClassTier = (name: string, types: string[] = []) => {
     return 3
   }
 
-  if (types.includes('Socket') || secondClassSetNames.some((setName) => normalizedName.includes(setName.toLowerCase()))) {
+  if (types.includes('Socket')) {
+    return 3
+  }
+
+  if (secondClassSetNames.some((setName) => normalizedName.includes(setName.toLowerCase()))) {
     return 2
   }
 
@@ -2293,8 +2302,22 @@ const setEvolutionOptions = computed(() => {
 
   return availableCharacters.flatMap((character) => characterEvolutionMap[character] || [character])
 })
-const setDisplayClasses = (set: SetCard) =>
-  classesAvailableFromTier(set.evolutions, set.requiredClassTier)
+const setDisplayClasses = (set: SetCard) => {
+  if (setEvolutionFilter.value !== 'Default') {
+    return [setEvolutionFilter.value]
+  }
+
+  if (setCharacterFilter.value !== 'Default') {
+    const target = set.targetClasses?.find((className) => baseClassFor(className) === setCharacterFilter.value)
+    return target ? [target] : []
+  }
+
+  return set.targetClasses?.length
+    ? sanitizeClassList(set.targetClasses)
+    : classesAvailableFromTier(set.evolutions, set.requiredClassTier)
+}
+const setDisplayCharacter = (set: SetCard) =>
+  setCharacterFilter.value !== 'Default' ? setCharacterFilter.value : set.characterName
 const setTypeOptions = computed(() =>
   sortSetTypes(Array.from(new Set(setCards.value.flatMap((set) => set.setTypes))))
 )

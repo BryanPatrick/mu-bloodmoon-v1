@@ -7,8 +7,11 @@
         :aria-label="`Visualizar ${name}`"
         @click="emit('select')"
       >
-        <span class="absolute left-3 top-3 rounded-sm border border-white/10 bg-black/65 px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-ember">
-          Tier {{ tierLabel }}
+        <span
+          class="absolute left-3 top-3 rounded-sm border border-white/10 bg-black/65 px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-ember"
+          title="Posicao aproximada do set na progressao de equipamentos. Nao representa o nivel de upgrade."
+        >
+          Progressao {{ tierLabel }}
         </span>
         <img
           v-if="image"
@@ -45,7 +48,7 @@
           >
             {{ className }}
           </span>
-          <span v-if="remainingClassCount" class="equipment-set-card__class px-1 py-1 text-[9px] font-black text-zinc-500">+{{ remainingClassCount }}</span>
+          <span v-if="remainingClassCount" class="equipment-set-card__class px-1 py-1 text-[9px] font-black text-zinc-500">+{{ remainingClassCount }} classes</span>
         </div>
 
         <button

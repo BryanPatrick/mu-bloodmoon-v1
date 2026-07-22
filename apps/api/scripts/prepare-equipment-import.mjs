@@ -39,7 +39,7 @@ function slotFromPieceName(name, fallback = 'Item') {
   if (/\bshield\b/i.test(name)) return 'Shield'
   if (/\bring\b/i.test(name)) return 'Ring'
   if (/\bpendant\b/i.test(name)) return 'Pendant'
-  if (/\b(sword|blade|axe|mace|bow|crossbow|staff|stick|scepter|spear|lance|claw|book|orb|rune|gun|star)\b/i.test(name)) return 'Weapon'
+  if (/\b(sword|blade|breaker|rapier|axe|mace|bow|crossbow|staff|stick|scepter|spear|lance|claw|book|orb|rune|gun|star|weapon)\b/i.test(name)) return 'Weapon'
   return fallback
 }
 
@@ -62,6 +62,7 @@ const equipment = remap.items.map((item) => ({
     baseClasses: item.baseClasses,
     playableClasses: item.playableClasses,
     targetClasses: item.targetClasses,
+    fullSetImage: item.fullSetImage || null,
     sourcePieceKeys: item.sourcePieceKeys || [],
     warnings: item.warnings,
     hasExcellentStats: item.hasExcellentStats
@@ -96,7 +97,7 @@ const pieces = remap.items.flatMap((item) => {
     : (item.slots || []).map((piece) => ({
         name: piece,
         slot: slotFromPieceName(piece, item.category),
-        imagePath: item.image?.publicPath || null,
+        imagePath: item.pieceImages?.[piece] || item.image?.publicPath || null,
         sourceEquipmentKey: null
       }))
 
