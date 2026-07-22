@@ -30,7 +30,7 @@
       <div class="flex flex-col gap-3 p-4">
         <div class="flex flex-wrap justify-center gap-1.5" aria-label="Caracteristicas do equipamento">
           <span
-            v-for="setType in setTypes"
+            v-for="setType in displaySetTypes"
             :key="setType"
             class="equipment-set-card__quality flex min-h-7 basis-[calc(33.333%-0.375rem)] items-center justify-center rounded-sm border px-1.5 py-1 text-center text-[8px] font-black uppercase leading-tight tracking-[0.08em]"
             :style="badgeStyle"
@@ -47,22 +47,12 @@
         <div v-if="displayChibis.length" class="border-t border-white/8 pt-3">
           <p class="text-center text-[8px] font-black uppercase tracking-[0.16em] text-zinc-500">Personagens compativeis</p>
           <div class="mt-2 flex flex-wrap justify-center gap-2">
-            <span
+            <EquipmentCharacterChibi
               v-for="character in displayChibis"
               :key="character.name"
-              class="equipment-set-card__character grid size-10 place-items-center overflow-hidden rounded-sm border border-white/10 bg-white/[0.045]"
-              :title="character.name"
-              :aria-label="character.name"
-              role="img"
-            >
-              <img
-                :src="character.image"
-                :alt="character.name"
-                class="size-full object-contain p-0.5"
-                loading="lazy"
-                decoding="async"
-              >
-            </span>
+              :name="character.name"
+              :image="character.image"
+            />
           </div>
         </div>
         <div v-else class="flex flex-wrap justify-center gap-1.5 border-t border-white/8 pt-3">
@@ -121,6 +111,7 @@ const frameFamily = computed<EquipmentFrameFamily>(() => {
 })
 
 const displayChibis = computed(() => props.characterChibis || [])
+const displaySetTypes = computed(() => props.setTypes.includes('Socket') ? ['Socket'] : props.setTypes)
 
 const badgeStyle = computed(() => ({
   color: 'var(--frame-primary)',

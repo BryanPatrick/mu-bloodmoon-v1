@@ -877,17 +877,29 @@
             </button>
           </div>
 
-          <div class="grid gap-2.5 xl:grid-cols-[minmax(240px,0.78fr)_minmax(310px,0.95fr)] 2xl:grid-cols-[310px_390px_1fr] 2xl:gap-3">
+          <div class="grid items-stretch gap-2.5 xl:grid-cols-3 2xl:gap-3">
             <section class="rounded-md border border-white/10 bg-black/28 p-3">
-              <p class="bm-kicker">Set completo</p>
-              <h3 class="bm-heading mt-1.5 font-display text-2xl font-black leading-tight">{{ selectedSet.name }}</h3>
-              <p class="mt-1.5 text-xs font-bold text-zinc-400">{{ selectedSet.characterName }} - Tier {{ selectedSet.tierLabel }}</p>
+              <div class="flex min-h-12 items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="bm-kicker">Set completo</p>
+                  <h3 class="bm-heading mt-1.5 font-display text-2xl font-black leading-tight">{{ selectedSet.name }}</h3>
+                </div>
+                <div v-if="selectedSet.characterChibis?.length" class="flex shrink-0 flex-wrap justify-end gap-1.5">
+                  <EquipmentCharacterChibi
+                    v-for="character in selectedSet.characterChibis"
+                    :key="character.name"
+                    :name="character.name"
+                    :image="character.image"
+                    size="md"
+                  />
+                </div>
+              </div>
 
-              <div class="mt-3 grid min-h-[330px] place-items-center rounded-md border border-white/10 bg-gradient-to-b from-white/[0.06] to-black/30 p-3">
+              <div class="mt-3 grid min-h-[270px] place-items-center rounded-md border border-white/10 bg-gradient-to-b from-white/[0.06] to-black/30 p-3">
                 <img
                   v-if="selectedSetFullImage"
                   :alt="`${selectedSet.name} completo`"
-                  class="max-h-[300px] max-w-full rounded-sm object-contain"
+                  class="max-h-[250px] max-w-full rounded-sm object-contain"
                   loading="lazy"
                   decoding="async"
                   :src="selectedSetFullImage"
@@ -916,7 +928,6 @@
               <div class="mt-4">
                 <p class="bm-kicker">Descricao e refinamento</p>
                 <h4 class="mt-1.5 font-display text-xl font-black text-white">Defesa total: {{ selectedSetDefense.total }}</h4>
-                <p class="mt-2 text-xs leading-5 text-zinc-400">{{ selectedSetUsableByText }}</p>
               </div>
 
               <label class="mt-4 grid gap-2 text-[0.68rem] font-black uppercase tracking-[0.16em] text-zinc-400">
@@ -935,8 +946,13 @@
                 </div>
               </div>
 
+            </section>
+
+            <section class="rounded-md border border-white/10 bg-black/28 p-3">
+              <p class="bm-kicker">Possiveis opcoes do equipamento</p>
+              <h3 class="mt-1.5 font-display text-xl font-black text-white">Caracteristicas disponiveis</h3>
+
               <div class="mt-4 grid gap-1.5">
-                <p class="text-[0.68rem] font-black uppercase tracking-[0.16em] text-zinc-500">Possiveis opcoes do equipamento</p>
                 <p
                   v-for="option in selectedEquipmentOptionRows"
                   :key="option.key"
@@ -974,7 +990,7 @@
               </div>
             </section>
 
-            <section class="rounded-md border border-white/10 bg-black/28 p-3 xl:col-span-2 2xl:col-span-1">
+            <section class="rounded-md border border-white/10 bg-black/28 p-3 xl:col-span-3">
               <div class="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <p class="bm-kicker">Equipamentos do set</p>
@@ -2532,6 +2548,10 @@ const isMasteryAncientSet = computed(() => masteryAncientSetNames.some((name) =>
 const isLuckySet = computed(() => luckySetNames.some((name) => selectedSetName.value.toLowerCase().includes(name.toLowerCase())))
 
 const selectedAvailableQualities = computed<EquipmentQualityKey[]>(() => {
+  if (isSocketSet.value) {
+    return ['socket']
+  }
+
   if (selectedSet.value?.availableQualities.length) {
     if (isMasteryAncientSet.value && selectedSet.value.availableQualities.includes('ancient')) {
       return sortQualities(Array.from(new Set(['normal', 'excellent', ...selectedSet.value.availableQualities] as EquipmentQualityKey[])))
@@ -2550,10 +2570,6 @@ const selectedAvailableQualities = computed<EquipmentQualityKey[]>(() => {
 
   if (selectedAncientReference.value) {
     return ['ancient']
-  }
-
-  if (isSocketSet.value) {
-    return ['normal', 'excellent', 'socket']
   }
 
   return ['normal', 'excellent']
@@ -2819,14 +2835,6 @@ const selectedSetUsableByClasses = computed(() => {
     : rawClasses
 })
 
-const selectedSetUsableByText = computed(() => {
-  if (!selectedSet.value) {
-    return ''
-  }
-
-  return `Pode ser equipado por: ${selectedSetUsableByClasses.value.join(', ')}.`
-})
-
 const fallbackPieceDefense = (pieceIndex: number) => {
   const tier = selectedSet.value?.tier === 1000 ? 1 : selectedSet.value?.tier || 1
   return Math.max(4, Math.round(tier * 2.4 + pieceIndex * 3))
@@ -3061,21 +3069,25 @@ const loadSetCardsFromApi = async () => {
 
     apiSetCards.value = [firstPage, ...restPages]
       .flatMap((page) => page.data)
-      .map((set) => ({
-        ...set,
-        availableQualities: sortQualities(set.availableQualities),
-        setTypes: sortSetTypes(set.setTypes),
-        searchText: set.searchText || [
-          set.name,
-          set.guideName,
-          set.category,
-          set.characterName,
-          ...set.evolutions,
-          ...set.setTypes,
-          ...set.pieces,
-          ...(set.dbSetOptions || [])
-        ].join(' ').toLowerCase()
-      }))
+      .map((set) => {
+        const isSocket = set.setTypes.includes('Socket') || set.availableQualities.includes('socket')
+
+        return {
+          ...set,
+          availableQualities: isSocket ? ['socket'] : sortQualities(set.availableQualities),
+          setTypes: isSocket ? ['Socket'] : sortSetTypes(set.setTypes),
+          searchText: set.searchText || [
+            set.name,
+            set.guideName,
+            set.category,
+            set.characterName,
+            ...set.evolutions,
+            ...set.setTypes,
+            ...set.pieces,
+            ...(set.dbSetOptions || [])
+          ].join(' ').toLowerCase()
+        }
+      })
     setCardsMissingTotals.value = missing.totals
   } catch (error) {
     if (loadId !== setCardsLoadId) {
