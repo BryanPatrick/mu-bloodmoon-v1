@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-07-22T02:27:33.131Z",
+  "generatedAt": "2026-07-22T03:21:18.966Z",
   "sourceFile": "apps/web/data/muEquipmentRemap.generated.json",
   "totals": {
     "equipment": 1914,
-    "variants": 2933,
+    "variants": 2991,
     "pieces": 3440,
     "options": 348,
     "warnings": {
@@ -92703,6 +92703,23 @@
     },
     {
       "equipmentKey": "armor-titan-gunner",
+      "quality": "NORMAL",
+      "minSeason": 16,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Gun Crusher",
+          "Gun Breaker",
+          "Master Gun Breaker"
+        ],
+        "targetClasses": [
+          "Master Gun Breaker"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "armor-titan-gunner",
       "quality": "SOCKET",
       "minSeason": 16,
       "data": {
@@ -92857,6 +92874,23 @@
     },
     {
       "equipmentKey": "armor-destroy",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Magic Gladiator",
+          "Duel Master",
+          "Magic Knight"
+        ],
+        "targetClasses": [
+          "Magic Knight"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "armor-destroy",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -92931,6 +92965,24 @@
     },
     {
       "equipmentKey": "armor-brave",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Dark Knight",
+          "Blade Knight",
+          "Blade Master",
+          "Dragon Knight"
+        ],
+        "targetClasses": [
+          "Blade Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "armor-brave",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -92968,6 +93020,24 @@
     },
     {
       "equipmentKey": "armor-seraphim",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Fairy Elf",
+          "Muse Elf",
+          "High Elf",
+          "Noble Elf"
+        ],
+        "targetClasses": [
+          "High Elf"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "armor-seraphim",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -92980,6 +93050,24 @@
         ],
         "targetClasses": [
           "High Elf"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "armor-hades",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Dark Wizard",
+          "Soul Master",
+          "Grand Master",
+          "Soul Wizard"
+        ],
+        "targetClasses": [
+          "Grand Master"
         ],
         "warnings": []
       }
@@ -93004,6 +93092,23 @@
     },
     {
       "equipmentKey": "armor-phantom",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Magic Gladiator",
+          "Duel Master",
+          "Magic Knight"
+        ],
+        "targetClasses": [
+          "Magic Knight"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "armor-phantom",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -93015,6 +93120,23 @@
         ],
         "targetClasses": [
           "Magic Knight"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "armor-eternal-wings",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Summoner",
+          "Bloody Summoner",
+          "Dimension Master"
+        ],
+        "targetClasses": [
+          "Dimension Master"
         ],
         "warnings": []
       }
@@ -93049,6 +93171,24 @@
         ],
         "targetClasses": [
           "Dark Lord"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "armor-titan",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Dark Knight",
+          "Blade Knight",
+          "Blade Master",
+          "Dragon Knight"
+        ],
+        "targetClasses": [
+          "Blade Master"
         ],
         "warnings": []
       }
@@ -93129,6 +93269,22 @@
         ],
         "targetClasses": [
           "Grow Lancer"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "armor-crimson-skull",
+      "quality": "NORMAL",
+      "minSeason": 6,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Rage Fighter",
+          "Fist Master"
+        ],
+        "targetClasses": [
+          "Fist Master"
         ],
         "warnings": []
       }
@@ -100162,6 +100318,24 @@
     },
     {
       "equipmentKey": "boots-brave",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Dark Knight",
+          "Blade Knight",
+          "Blade Master",
+          "Dragon Knight"
+        ],
+        "targetClasses": [
+          "Blade Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "boots-brave",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -100254,6 +100428,24 @@
     },
     {
       "equipmentKey": "boots-hades",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Dark Wizard",
+          "Soul Master",
+          "Grand Master",
+          "Soul Wizard"
+        ],
+        "targetClasses": [
+          "Grand Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "boots-hades",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -100266,6 +100458,23 @@
         ],
         "targetClasses": [
           "Grand Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "boots-destroy",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Magic Gladiator",
+          "Duel Master",
+          "Magic Knight"
+        ],
+        "targetClasses": [
+          "Magic Knight"
         ],
         "warnings": []
       }
@@ -100376,6 +100585,24 @@
     },
     {
       "equipmentKey": "boots-titan",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Dark Knight",
+          "Blade Knight",
+          "Blade Master",
+          "Dragon Knight"
+        ],
+        "targetClasses": [
+          "Blade Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "boots-titan",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -100394,6 +100621,23 @@
     },
     {
       "equipmentKey": "boots-phantom",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Magic Gladiator",
+          "Duel Master",
+          "Magic Knight"
+        ],
+        "targetClasses": [
+          "Magic Knight"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "boots-phantom",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -100405,6 +100649,24 @@
         ],
         "targetClasses": [
           "Magic Knight"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "boots-seraphim",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Fairy Elf",
+          "Muse Elf",
+          "High Elf",
+          "Noble Elf"
+        ],
+        "targetClasses": [
+          "High Elf"
         ],
         "warnings": []
       }
@@ -100561,6 +100823,23 @@
     },
     {
       "equipmentKey": "boots-eternal-wings",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Summoner",
+          "Bloody Summoner",
+          "Dimension Master"
+        ],
+        "targetClasses": [
+          "Dimension Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "boots-eternal-wings",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -100650,6 +100929,23 @@
         ],
         "targetClasses": [
           "Duel Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "boots-titan-gunner",
+      "quality": "NORMAL",
+      "minSeason": 16,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Gun Crusher",
+          "Gun Breaker",
+          "Master Gun Breaker"
+        ],
+        "targetClasses": [
+          "Master Gun Breaker"
         ],
         "warnings": []
       }
@@ -101008,6 +101304,22 @@
         ],
         "targetClasses": [
           "Master Gun Breaker"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "boots-crimson-skull",
+      "quality": "NORMAL",
+      "minSeason": 6,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Rage Fighter",
+          "Fist Master"
+        ],
+        "targetClasses": [
+          "Fist Master"
         ],
         "warnings": []
       }
@@ -108770,6 +109082,24 @@
     },
     {
       "equipmentKey": "gloves-brave",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Dark Knight",
+          "Blade Knight",
+          "Blade Master",
+          "Dragon Knight"
+        ],
+        "targetClasses": [
+          "Blade Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "gloves-brave",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -108782,6 +109112,23 @@
         ],
         "targetClasses": [
           "Blade Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "gloves-destroy",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Magic Gladiator",
+          "Duel Master",
+          "Magic Knight"
+        ],
+        "targetClasses": [
+          "Magic Knight"
         ],
         "warnings": []
       }
@@ -108824,6 +109171,24 @@
     },
     {
       "equipmentKey": "gloves-seraphim",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Fairy Elf",
+          "Muse Elf",
+          "High Elf",
+          "Noble Elf"
+        ],
+        "targetClasses": [
+          "High Elf"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "gloves-seraphim",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -108842,6 +109207,24 @@
     },
     {
       "equipmentKey": "gloves-hades",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Dark Wizard",
+          "Soul Master",
+          "Grand Master",
+          "Soul Wizard"
+        ],
+        "targetClasses": [
+          "Grand Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "gloves-hades",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -108854,6 +109237,24 @@
         ],
         "targetClasses": [
           "Grand Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "gloves-titan",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Dark Knight",
+          "Blade Knight",
+          "Blade Master",
+          "Dragon Knight"
+        ],
+        "targetClasses": [
+          "Blade Master"
         ],
         "warnings": []
       }
@@ -108917,6 +109318,23 @@
     },
     {
       "equipmentKey": "gloves-phantom",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Magic Gladiator",
+          "Duel Master",
+          "Magic Knight"
+        ],
+        "targetClasses": [
+          "Magic Knight"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "gloves-phantom",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -108940,6 +109358,23 @@
         "sourceQuality": "normal",
         "classes": [],
         "targetClasses": [],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "gloves-eternal-wings",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Summoner",
+          "Bloody Summoner",
+          "Dimension Master"
+        ],
+        "targetClasses": [
+          "Dimension Master"
+        ],
         "warnings": []
       }
     },
@@ -109007,6 +109442,23 @@
         ],
         "targetClasses": [
           "Lord Emperor"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "gloves-titan-gunner",
+      "quality": "NORMAL",
+      "minSeason": 16,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Gun Crusher",
+          "Gun Breaker",
+          "Master Gun Breaker"
+        ],
+        "targetClasses": [
+          "Master Gun Breaker"
         ],
         "warnings": []
       }
@@ -112807,6 +113259,24 @@
     },
     {
       "equipmentKey": "helm-hades",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Dark Wizard",
+          "Soul Master",
+          "Grand Master",
+          "Soul Wizard"
+        ],
+        "targetClasses": [
+          "Grand Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "helm-hades",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -112908,6 +113378,23 @@
     },
     {
       "equipmentKey": "helm-titan-gunner",
+      "quality": "NORMAL",
+      "minSeason": 16,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Gun Crusher",
+          "Gun Breaker",
+          "Master Gun Breaker"
+        ],
+        "targetClasses": [
+          "Master Gun Breaker"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "helm-titan-gunner",
       "quality": "SOCKET",
       "minSeason": 16,
       "data": {
@@ -112919,6 +113406,24 @@
         ],
         "targetClasses": [
           "Master Gun Breaker"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "helm-titan",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Dark Knight",
+          "Blade Knight",
+          "Blade Master",
+          "Dragon Knight"
+        ],
+        "targetClasses": [
+          "Blade Master"
         ],
         "warnings": []
       }
@@ -112937,6 +113442,24 @@
         ],
         "targetClasses": [
           "Blade Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "helm-seraphim",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Fairy Elf",
+          "Muse Elf",
+          "High Elf",
+          "Noble Elf"
+        ],
+        "targetClasses": [
+          "High Elf"
         ],
         "warnings": []
       }
@@ -113010,6 +113533,23 @@
     },
     {
       "equipmentKey": "helm-eternal-wings",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Summoner",
+          "Bloody Summoner",
+          "Dimension Master"
+        ],
+        "targetClasses": [
+          "Dimension Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "helm-eternal-wings",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -113021,6 +113561,24 @@
         ],
         "targetClasses": [
           "Dimension Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "helm-brave",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Dark Knight",
+          "Blade Knight",
+          "Blade Master",
+          "Dragon Knight"
+        ],
+        "targetClasses": [
+          "Blade Master"
         ],
         "warnings": []
       }
@@ -113297,6 +113855,22 @@
         ],
         "targetClasses": [
           "Blade Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "helm-crimson-skull",
+      "quality": "NORMAL",
+      "minSeason": 6,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Rage Fighter",
+          "Fist Master"
+        ],
+        "targetClasses": [
+          "Fist Master"
         ],
         "warnings": []
       }
@@ -119923,6 +120497,17 @@
     },
     {
       "equipmentKey": "muun-figure-skating-queen",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [],
+        "targetClasses": [],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "muun-figure-skating-queen",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -120297,6 +120882,17 @@
     },
     {
       "equipmentKey": "muun-fairy-queen-lunadil",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [],
+        "targetClasses": [],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "muun-fairy-queen-lunadil",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -120353,6 +120949,17 @@
         "targetClasses": [
           "Dark Lord"
         ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "muun-shadow-phantom",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [],
+        "targetClasses": [],
         "warnings": []
       }
     },
@@ -122406,6 +123013,23 @@
     },
     {
       "equipmentKey": "pants-titan-gunner",
+      "quality": "NORMAL",
+      "minSeason": 16,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Gun Crusher",
+          "Gun Breaker",
+          "Master Gun Breaker"
+        ],
+        "targetClasses": [
+          "Master Gun Breaker"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "pants-titan-gunner",
       "quality": "SOCKET",
       "minSeason": 16,
       "data": {
@@ -122455,6 +123079,24 @@
     },
     {
       "equipmentKey": "pants-brave",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Dark Knight",
+          "Blade Knight",
+          "Blade Master",
+          "Dragon Knight"
+        ],
+        "targetClasses": [
+          "Blade Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "pants-brave",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -122467,6 +123109,23 @@
         ],
         "targetClasses": [
           "Blade Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "pants-destroy",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Magic Gladiator",
+          "Duel Master",
+          "Magic Knight"
+        ],
+        "targetClasses": [
+          "Magic Knight"
         ],
         "warnings": []
       }
@@ -122545,6 +123204,24 @@
     },
     {
       "equipmentKey": "pants-hades",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Dark Wizard",
+          "Soul Master",
+          "Grand Master",
+          "Soul Wizard"
+        ],
+        "targetClasses": [
+          "Grand Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "pants-hades",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -122585,6 +123262,23 @@
     },
     {
       "equipmentKey": "pants-phantom",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Magic Gladiator",
+          "Duel Master",
+          "Magic Knight"
+        ],
+        "targetClasses": [
+          "Magic Knight"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "pants-phantom",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -122619,6 +123313,24 @@
     },
     {
       "equipmentKey": "pants-seraphim",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Fairy Elf",
+          "Muse Elf",
+          "High Elf",
+          "Noble Elf"
+        ],
+        "targetClasses": [
+          "High Elf"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "pants-seraphim",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -122631,6 +123343,24 @@
         ],
         "targetClasses": [
           "High Elf"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "pants-titan",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Dark Knight",
+          "Blade Knight",
+          "Blade Master",
+          "Dragon Knight"
+        ],
+        "targetClasses": [
+          "Blade Master"
         ],
         "warnings": []
       }
@@ -122747,6 +123477,23 @@
         ],
         "targetClasses": [
           "Duel Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "pants-eternal-wings",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Summoner",
+          "Bloody Summoner",
+          "Dimension Master"
+        ],
+        "targetClasses": [
+          "Dimension Master"
         ],
         "warnings": []
       }
@@ -122885,6 +123632,22 @@
         ],
         "targetClasses": [
           "Master Gun Breaker"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "pants-crimson-skull",
+      "quality": "NORMAL",
+      "minSeason": 6,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Rage Fighter",
+          "Fist Master"
+        ],
+        "targetClasses": [
+          "Fist Master"
         ],
         "warnings": []
       }
@@ -124888,6 +125651,17 @@
       "equipmentKey": "pentagram-hero-elixir",
       "quality": "NORMAL",
       "minSeason": 1,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [],
+        "targetClasses": [],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "pentagram-brave-hero-elixir",
+      "quality": "NORMAL",
+      "minSeason": 4,
       "data": {
         "sourceQuality": "normal",
         "classes": [],
@@ -128911,6 +129685,24 @@
         ],
         "targetClasses": [
           "Magic Gladiator"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "shield-crimson-glory-shield",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Dark Knight",
+          "Blade Knight",
+          "Blade Master",
+          "Dragon Knight"
+        ],
+        "targetClasses": [
+          "Blade Master"
         ],
         "warnings": []
       }
@@ -133630,6 +134422,23 @@
     },
     {
       "equipmentKey": "stick-eternal-wings-stick",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Summoner",
+          "Bloody Summoner",
+          "Dimension Master"
+        ],
+        "targetClasses": [
+          "Dimension Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "stick-eternal-wings-stick",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -135791,6 +136600,17 @@
       "minSeason": 1,
       "data": {
         "sourceQuality": "excellent",
+        "classes": [],
+        "targetClasses": [],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "wings-wing-of-eternal",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
         "classes": [],
         "targetClasses": [],
         "warnings": []
@@ -138518,6 +139338,23 @@
     },
     {
       "equipmentKey": "armor-set-titan-gunner",
+      "quality": "NORMAL",
+      "minSeason": 16,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Gun Crusher",
+          "Gun Breaker",
+          "Master Gun Breaker"
+        ],
+        "targetClasses": [
+          "Master Gun Breaker"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "armor-set-titan-gunner",
       "quality": "SOCKET",
       "minSeason": 16,
       "data": {
@@ -138682,6 +139519,23 @@
     },
     {
       "equipmentKey": "armor-set-destroy",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Magic Gladiator",
+          "Duel Master",
+          "Magic Knight"
+        ],
+        "targetClasses": [
+          "Magic Knight"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "armor-set-destroy",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -138795,6 +139649,24 @@
     },
     {
       "equipmentKey": "armor-set-brave",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Dark Knight",
+          "Blade Knight",
+          "Blade Master",
+          "Dragon Knight"
+        ],
+        "targetClasses": [
+          "Blade Master"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "armor-set-brave",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -138851,6 +139723,24 @@
     },
     {
       "equipmentKey": "armor-set-seraphim",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Fairy Elf",
+          "Muse Elf",
+          "High Elf",
+          "Noble Elf"
+        ],
+        "targetClasses": [
+          "High Elf"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "armor-set-seraphim",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -138863,6 +139753,24 @@
         ],
         "targetClasses": [
           "High Elf"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "armor-set-hades",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Dark Wizard",
+          "Soul Master",
+          "Grand Master",
+          "Soul Wizard"
+        ],
+        "targetClasses": [
+          "Grand Master"
         ],
         "warnings": []
       }
@@ -138887,6 +139795,23 @@
     },
     {
       "equipmentKey": "armor-set-phantom",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Magic Gladiator",
+          "Duel Master",
+          "Magic Knight"
+        ],
+        "targetClasses": [
+          "Magic Knight"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "armor-set-phantom",
       "quality": "SOCKET",
       "minSeason": 4,
       "data": {
@@ -138898,6 +139823,23 @@
         ],
         "targetClasses": [
           "Magic Knight"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "armor-set-eternal-wings",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Summoner",
+          "Bloody Summoner",
+          "Dimension Master"
+        ],
+        "targetClasses": [
+          "Dimension Master"
         ],
         "warnings": []
       }
@@ -138932,6 +139874,24 @@
         ],
         "targetClasses": [
           "Dark Lord"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "armor-set-titan",
+      "quality": "NORMAL",
+      "minSeason": 4,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Dark Knight",
+          "Blade Knight",
+          "Blade Master",
+          "Dragon Knight"
+        ],
+        "targetClasses": [
+          "Blade Master"
         ],
         "warnings": []
       }
@@ -139014,6 +139974,22 @@
         ],
         "targetClasses": [
           "Grow Lancer"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "equipmentKey": "armor-set-crimson-skull",
+      "quality": "NORMAL",
+      "minSeason": 6,
+      "data": {
+        "sourceQuality": "normal",
+        "classes": [
+          "Rage Fighter",
+          "Fist Master"
+        ],
+        "targetClasses": [
+          "Fist Master"
         ],
         "warnings": []
       }

@@ -1,18 +1,18 @@
 <template>
   <EquipmentFrame :family="frameFamily" class="h-full">
     <article class="equipment-set-card group flex h-full min-h-[360px] flex-col">
+      <header class="flex min-h-12 items-center justify-center border-b border-white/10 bg-black/35 px-3 py-2 text-center">
+        <h4 class="line-clamp-2 font-display text-sm font-black uppercase leading-tight text-white" :title="name">
+          {{ name }}
+        </h4>
+      </header>
+
       <button
         class="relative grid min-h-[180px] flex-1 place-items-center overflow-hidden border-b border-white/10 bg-black/25 p-5 text-left"
         type="button"
         :aria-label="`Visualizar ${name}`"
         @click="emit('select')"
       >
-        <span
-          class="absolute left-3 top-3 rounded-sm border border-white/10 bg-black/65 px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-ember"
-          title="Posicao aproximada do set na progressao de equipamentos. Nao representa o nivel de upgrade."
-        >
-          Progressao {{ tierLabel }}
-        </span>
         <img
           v-if="image"
           :src="image"
@@ -28,27 +28,51 @@
       </button>
 
       <div class="flex flex-col gap-3 p-4">
-        <div class="flex items-start justify-between gap-3">
-          <div class="min-w-0">
-            <p class="text-[9px] font-black uppercase tracking-[0.18em] text-ember">{{ characterName }}</p>
-            <h4 class="mt-1 line-clamp-2 font-display text-lg font-black uppercase leading-tight text-white">{{ name }}</h4>
-          </div>
-          <span class="shrink-0 rounded-sm border px-2 py-1 text-[9px] font-black uppercase tracking-[0.12em]" :style="badgeStyle">
-            {{ primaryType }}
+        <div class="flex flex-wrap justify-center gap-1.5" aria-label="Caracteristicas do equipamento">
+          <span
+            v-for="setType in setTypes"
+            :key="setType"
+            class="equipment-set-card__quality flex min-h-7 basis-[calc(33.333%-0.375rem)] items-center justify-center rounded-sm border px-1.5 py-1 text-center text-[8px] font-black uppercase leading-tight tracking-[0.08em]"
+            :style="badgeStyle"
+          >
+            {{ setType }}
           </span>
         </div>
 
-        <p class="equipment-set-card__description line-clamp-2 min-h-8 text-[10px] leading-4 text-zinc-400">{{ pieces.join(', ') || 'Pecas a catalogar' }}</p>
+        <div class="border-t border-white/8 pt-3 text-center">
+          <p class="text-[8px] font-black uppercase tracking-[0.16em] text-zinc-500">Partes do equipamento</p>
+          <p class="equipment-set-card__description mt-1.5 line-clamp-3 min-h-8 text-[10px] leading-4 text-zinc-300">{{ pieces.join(', ') || 'Pecas a catalogar' }}</p>
+        </div>
 
-        <div class="flex flex-wrap gap-1.5">
+        <div v-if="displayChibis.length" class="border-t border-white/8 pt-3">
+          <p class="text-center text-[8px] font-black uppercase tracking-[0.16em] text-zinc-500">Personagens compativeis</p>
+          <div class="mt-2 flex flex-wrap justify-center gap-2">
+            <span
+              v-for="character in displayChibis"
+              :key="character.name"
+              class="equipment-set-card__character grid size-10 place-items-center overflow-hidden rounded-sm border border-white/10 bg-white/[0.045]"
+              :title="character.name"
+              :aria-label="character.name"
+              role="img"
+            >
+              <img
+                :src="character.image"
+                :alt="character.name"
+                class="size-full object-contain p-0.5"
+                loading="lazy"
+                decoding="async"
+              >
+            </span>
+          </div>
+        </div>
+        <div v-else class="flex flex-wrap justify-center gap-1.5 border-t border-white/8 pt-3">
           <span
-            v-for="className in visibleClasses"
+            v-for="className in classes"
             :key="className"
             class="equipment-set-card__class rounded-sm border border-white/10 bg-white/[0.045] px-2 py-1 text-[9px] font-bold text-zinc-300"
           >
             {{ className }}
           </span>
-          <span v-if="remainingClassCount" class="equipment-set-card__class px-1 py-1 text-[9px] font-black text-zinc-500">+{{ remainingClassCount }} classes</span>
         </div>
 
         <button
@@ -68,10 +92,9 @@ import type { EquipmentFrameFamily } from './types'
 
 const props = defineProps<{
   name: string
-  tierLabel: string
   image?: string
-  characterName: string
   classes: string[]
+  characterChibis?: Array<{ name: string, image: string }>
   setTypes: string[]
   pieces: string[]
 }>()
@@ -97,9 +120,7 @@ const frameFamily = computed<EquipmentFrameFamily>(() => {
   return 'normal'
 })
 
-const primaryType = computed(() => props.setTypes[0] || 'Normal')
-const visibleClasses = computed(() => props.classes.slice(0, 2))
-const remainingClassCount = computed(() => Math.max(0, props.classes.length - visibleClasses.value.length))
+const displayChibis = computed(() => props.characterChibis || [])
 
 const badgeStyle = computed(() => ({
   color: 'var(--frame-primary)',

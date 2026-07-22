@@ -120,6 +120,16 @@ const characterReleaseOrder = [
   'Rage Fighter'
 ]
 
+const characterChibiImages: Record<string, string> = {
+  'Dark Knight': '/images/characters/chibi/dark-knight.png',
+  'Dark Wizard': '/images/characters/chibi/dark-wizard.png',
+  'Fairy Elf': '/images/characters/chibi/fairy-elf.png',
+  'Magic Gladiator': '/images/characters/chibi/magic-gladiator.png',
+  'Dark Lord': '/images/characters/chibi/dark-lord.png',
+  Summoner: '/images/characters/chibi/summoner.png',
+  'Rage Fighter': '/images/characters/chibi/rage-fighter.png'
+}
+
 function primaryCharacter(record: { remapData: Prisma.JsonValue | null; classLinks?: Array<{ role: string; character: { name: string }; class: { name: string } }> }) {
   const baseLink = record.classLinks
     ?.filter((link) => link.role === 'BASE')
@@ -394,6 +404,9 @@ export class WikiService {
       classMap: warnings.includes('missing-character-class-map') || (!baseClasses.length && !playableClasses.length),
       pieceImages: record.pieces.filter((piece) => !piece.imagePath).map((piece) => piece.name || piece.slot)
     }
+    const characterChibis = baseClasses
+      .filter((name) => characterChibiImages[name])
+      .map((name) => ({ name, image: characterChibiImages[name] }))
 
     return {
       key: record.key,
@@ -406,6 +419,7 @@ export class WikiService {
       characterName: primaryCharacter(record),
       evolutions: playableClasses.length ? playableClasses : baseClasses,
       baseClasses,
+      characterChibis,
       targetClasses,
       requiredClassTier: targetClassTier,
       targetClassTier,

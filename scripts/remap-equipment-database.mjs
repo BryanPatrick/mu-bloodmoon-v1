@@ -370,7 +370,7 @@ function qualitiesFor(item) {
   } else {
     const isSocket = socketSetNames.some((name) => normalize(item.name).includes(normalize(name)))
     if (isSocket) {
-      qualities.push('socket')
+      qualities.push('normal', 'socket')
     } else {
       qualities.push('normal')
       if (item.listStats?.excellentDrop && item.listStats.excellentDrop !== '~') qualities.push('excellent')

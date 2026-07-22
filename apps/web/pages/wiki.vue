@@ -551,10 +551,9 @@
                     v-for="set in paginatedSetCards"
                     :key="set.key"
                     :name="set.name"
-                    :tier-label="set.tierLabel"
                     :image="setPreviewImage(set)"
-                    :character-name="setDisplayCharacter(set)"
                     :classes="setDisplayClasses(set)"
+                    :character-chibis="set.characterChibis"
                     :set-types="set.setTypes"
                     :pieces="set.pieces"
                     @select="openSetModal(set)"
@@ -1217,6 +1216,10 @@ type SetPieceCard = {
   title: string
   image?: string
 }
+type SetCharacterChibi = {
+  name: string
+  image: string
+}
 type SetCard = {
   key: string
   name: string
@@ -1226,6 +1229,7 @@ type SetCard = {
   characterName: string
   evolutions: string[]
   baseClasses?: string[]
+  characterChibis?: SetCharacterChibi[]
   targetClasses?: string[]
   requiredClassTier: number
   targetClassTier: number

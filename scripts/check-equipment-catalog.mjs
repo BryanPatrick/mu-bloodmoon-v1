@@ -63,8 +63,8 @@ for (const socketSet of groupedArmorSets.filter((item) =>
   variants.some((variant) => variant.equipmentKey === item.key && variant.quality === 'SOCKET')
 )) {
   const socketVariants = variants.filter((variant) => variant.equipmentKey === socketSet.key)
-  if (socketVariants.some((variant) => variant.quality === 'NORMAL')) {
-    fail(`${socketSet.name} is Socket but was also published as Normal`)
+  if (!socketVariants.some((variant) => variant.quality === 'NORMAL')) {
+    fail(`${socketSet.name} must expose both its Normal and Socket characteristics`)
   }
 
   const targetClasses = socketSet.remapData?.targetClasses ?? []
