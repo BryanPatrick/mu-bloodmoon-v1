@@ -985,45 +985,13 @@
                 </span>
               </div>
 
-              <div class="mt-3 grid gap-2.5 xl:grid-cols-2">
-                <article
+              <div class="mt-3 grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-2">
+                <EquipmentPieceTooltip
                   v-for="piece in selectedSetPiecesWithData"
                   :key="piece.key"
-                  class="grid gap-3 rounded-md border border-white/10 bg-[#111215]/95 p-3 shadow-xl sm:grid-cols-[92px_1fr]"
-                >
-                  <div class="grid min-h-24 place-items-center rounded-md border border-white/10 bg-white/[0.04] p-2">
-                    <img v-if="piece.image" :src="piece.image" :alt="piece.displayTitle" class="max-h-20 max-w-full object-contain" loading="lazy" decoding="async">
-                    <span v-else class="text-center text-[0.68rem] font-black uppercase tracking-[0.16em] text-zinc-600">{{ piece.label }}</span>
-                  </div>
-                  <div>
-                    <p class="bm-kicker">{{ piece.label }}</p>
-                    <h4 class="mt-1.5 font-display text-lg font-black leading-tight" :class="selectedQualityTitleClass">
-                      {{ piece.displayTitle }}
-                    </h4>
-                    <dl class="mt-2 grid gap-0.5 text-[0.72rem] leading-4 text-zinc-300">
-                      <div class="flex justify-between gap-2">
-                        <dt class="text-zinc-500">{{ piece.defenseLabel }}</dt>
-                        <dd class="font-bold text-zinc-100">{{ piece.defense }}</dd>
-                      </div>
-                      <div v-if="piece.speedLabel" class="flex justify-between gap-2">
-                        <dt class="text-zinc-500">{{ piece.speedLabel }}</dt>
-                        <dd class="font-bold text-zinc-100">{{ piece.speedValue }}</dd>
-                      </div>
-                      <div class="flex justify-between gap-2">
-                        <dt class="text-zinc-500">Durability</dt>
-                        <dd class="font-bold text-zinc-100">{{ piece.durability }}/{{ piece.durability }}</dd>
-                      </div>
-                      <div class="flex justify-between gap-2">
-                        <dt class="text-zinc-500">Strength available</dt>
-                        <dd class="font-bold text-zinc-100">{{ piece.requiredStrength }}</dd>
-                      </div>
-                      <div class="flex justify-between gap-2">
-                        <dt class="text-zinc-500">Agility available</dt>
-                        <dd class="font-bold text-zinc-100">{{ piece.requiredAgility }}</dd>
-                      </div>
-                    </dl>
-                  </div>
-                </article>
+                  :piece="piece"
+                  :quality="setQuality"
+                />
               </div>
             </section>
           </div>
@@ -2646,14 +2614,6 @@ const selectedEquipmentOptionRows = computed<EquipmentOptionRule[]>(() => {
   return armorNormalOptionRows.value
 })
 
-const selectedQualityTitleClass = computed(() => ({
-  'text-emerald-400': setQuality.value === 'excellent',
-  'text-lime-400': setQuality.value === 'ancient',
-  'text-violet-300': setQuality.value === 'socket',
-  'text-amber-300': setQuality.value === 'masteryAncient' || setQuality.value === 'lucky',
-  'text-white': setQuality.value === 'normal'
-}))
-
 const qualityButtonClass = (quality: EquipmentQualityKey) => quality === setQuality.value
   ? {
       normal: 'border-ember/60 bg-ember/20 text-white',
@@ -2872,11 +2832,6 @@ const fallbackPieceDefense = (pieceIndex: number) => {
   return Math.max(4, Math.round(tier * 2.4 + pieceIndex * 3))
 }
 
-const fallbackRequirement = (pieceIndex: number, multiplier: number) => {
-  const tier = selectedSet.value?.tier === 1000 ? 1 : selectedSet.value?.tier || 1
-  return Math.max(0, Math.round(tier * multiplier + pieceIndex * 7))
-}
-
 const guideDefenseAtLevel = (category: string, name: string, level: number, fallbackIndex: number) => {
   const guideItem = selectedGuideSetItems.value.find((item) => item.category === category && item.name === name)
   const stat = guideItem?.levelStats.find((item) => item.itemLevel === level)
@@ -2950,9 +2905,11 @@ const selectedSetPiecesWithData = computed(() => {
     const displayTitle = setQuality.value === 'excellent' && !/^excellent\s/i.test(baseTitle)
       ? `Excellent ${baseTitle}`
       : baseTitle
-    const requiredStrength = guideStrength ?? referencePiece?.requirements?.strength ?? fallbackRequirement(index + 1, 14)
-    const requiredAgility = guideAgility ?? referencePiece?.requirements?.agility ?? fallbackRequirement(index + 1, 8)
-    const durability = ancientLevelStats?.durability ?? Math.max(30, 60 + (selectedSet.value?.tier === 1000 ? 1 : selectedSet.value?.tier || 1))
+    const requiredStrength = guideStrength ?? referencePiece?.requirements?.strength
+    const requiredAgility = guideAgility ?? referencePiece?.requirements?.agility
+    const durability = ancientLevelStats?.durability ?? guideLevelStats?.durability ?? Math.max(30, 60 + (selectedSet.value?.tier === 1000 ? 1 : selectedSet.value?.tier || 1))
+    const requiredLevel = guideItem?.listStats.requiredLevel
+    const usableBy = selectedSetUsableByClasses.value
 
     return {
       ...piece,
@@ -2964,8 +2921,10 @@ const selectedSetPiecesWithData = computed(() => {
       speedLabel,
       speedValue,
       durability,
+      requiredLevel,
       requiredStrength,
-      requiredAgility
+      requiredAgility,
+      usableBy
     }
   })
   const extraPieces = selectedAncientDetailParts.value
@@ -2987,8 +2946,10 @@ const selectedSetPiecesWithData = computed(() => {
         speedLabel: '',
         speedValue: '',
         durability: stat?.durability ?? '-',
+        requiredLevel: undefined,
         requiredStrength: stat?.requiredStrength ?? '-',
-        requiredAgility: stat?.requiredAgility ?? '-'
+        requiredAgility: stat?.requiredAgility ?? '-',
+        usableBy: selectedSetUsableByClasses.value
       }
     })
 
