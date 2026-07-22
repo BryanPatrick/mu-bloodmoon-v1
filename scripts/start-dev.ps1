@@ -55,6 +55,9 @@ prisma.equipmentRecord.count()
 Write-Host "Blood Moon - ambiente de desenvolvimento" -ForegroundColor Magenta
 Write-Host "Raiz: $repoRoot"
 $env:DATABASE_URL = "mysql://bloodmoon:bloodmoon@localhost:53306/bloodmoon_portal"
+$env:API_PUBLIC_URL = "http://localhost:3333"
+$env:WEB_PUBLIC_URL = "http://localhost:3000"
+$env:NUXT_PUBLIC_API_BASE = "http://localhost:3333/api"
 
 if (-not (Test-Path "node_modules")) {
   Write-Step "Instalando dependencias"

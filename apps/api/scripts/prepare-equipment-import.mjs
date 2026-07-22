@@ -62,6 +62,7 @@ const equipment = remap.items.map((item) => ({
     baseClasses: item.baseClasses,
     playableClasses: item.playableClasses,
     targetClasses: item.targetClasses,
+    sourcePieceKeys: item.sourcePieceKeys || [],
     warnings: item.warnings,
     hasExcellentStats: item.hasExcellentStats
   }
@@ -81,19 +82,37 @@ const variants = remap.items.flatMap((item) =>
   }))
 )
 
-const pieces = remap.items.flatMap((item) =>
-  (item.slots || []).map((piece, index) => ({
+const pieces = remap.items.flatMap((item) => {
+  const sourcePieces = (item.sourcePieceKeys || [])
+    .map((key) => remap.byKey?.[key])
+    .filter(Boolean)
+  const itemPieces = sourcePieces.length
+    ? sourcePieces.map((sourcePiece) => ({
+        name: `${item.name} ${sourcePiece.category}`,
+        slot: sourcePiece.category,
+        imagePath: sourcePiece.image?.publicPath || null,
+        sourceEquipmentKey: sourcePiece.key
+      }))
+    : (item.slots || []).map((piece) => ({
+        name: piece,
+        slot: slotFromPieceName(piece, item.category),
+        imagePath: item.image?.publicPath || null,
+        sourceEquipmentKey: null
+      }))
+
+  return itemPieces.map((piece, index) => ({
     equipmentKey: item.key,
-    name: piece,
-    slot: slotFromPieceName(piece, item.category),
-    imagePath: item.image?.publicPath || null,
+    name: piece.name,
+    slot: piece.slot,
+    imagePath: piece.imagePath,
     sortOrder: index,
     data: {
       baseSetName: item.baseSetName,
-      category: item.category
+      category: item.category,
+      sourceEquipmentKey: piece.sourceEquipmentKey
     }
   }))
-)
+})
 
 const options = remap.items.flatMap((item) =>
   (item.setOptions || []).map((option, index) => ({

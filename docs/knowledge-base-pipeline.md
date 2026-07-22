@@ -54,14 +54,16 @@ Totais importados e verificados no PostgreSQL local:
 - 330 entradas de conhecimento.
 - 1537 assets de referencia.
 - 1672 vinculos entre entradas e assets.
-- 1719 equipamentos.
-- 2729 variantes de equipamento.
-- 2511 pecas de equipamento.
+- 1914 equipamentos.
+- 2992 variantes de equipamento.
+- 3430 pecas de equipamento.
 - 55 opcoes de equipamento.
 - 14 personagens jogaveis catalogados.
 - 43 classes/evolucoes catalogadas.
-- 9414 vinculos equipamento-classe, separados em `BASE`, `PLAYABLE` e `TARGET`.
-- 25990 vinculos equipamento-season.
+- 10330 vinculos equipamento-classe, separados em `BASE`, `PLAYABLE` e `TARGET`.
+- 25430 vinculos equipamento-season.
+
+As pecas de armadura importadas individualmente sao agrupadas pelo remapeador em familias publicaveis de set. A familia mantem as pecas de origem, imagens, qualidades e classes-alvo; assim a Wiki lista o set uma vez e abre suas pecas no detalhe. O comando `npm run data:check-equipment` impede regressao desse agrupamento e vazamento de classes futuras na Season 6.
 
 ## Regra para arquivos auxiliares
 
@@ -245,7 +247,7 @@ API administrativa inicial:
 
 Verificacao atual:
 
-- `GET /api/admin/content/summary` retornou 330 entradas, 1537 assets e 1719 equipamentos.
+- `GET /api/admin/content/summary` retornou 330 entradas, 1537 assets e 1914 equipamentos.
 - `GET /api/admin/content/assets?pageSize=3&kind=IMAGE` retornou 1537 imagens catalogadas.
 - `GET /api/admin/content/equipment?pageSize=3&group=SET` retornou 259 sets.
 - `POST`, `PATCH` e `DELETE /api/admin/content/equipment` foram validados com

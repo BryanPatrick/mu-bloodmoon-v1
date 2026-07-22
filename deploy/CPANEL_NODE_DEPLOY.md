@@ -32,11 +32,11 @@ work/deploy/cpanel/bloodmoon-web-cpanel.tar.gz
 - Base consolidada foi importada no MySQL remoto:
   - 352 entradas de conhecimento;
   - 1.537 assets;
-  - 1.719 equipamentos;
-  - 2.729 variantes;
-  - 2.511 pecas;
-  - 9.414 vinculos classe/equipamento;
-  - 25.990 vinculos de temporada.
+  - 1.914 equipamentos;
+  - 2.992 variantes;
+  - 3.430 pecas;
+  - 10.330 vinculos classe/equipamento;
+  - 25.430 vinculos de temporada.
 - Os pacotes `.tar.gz` preservam permissoes de diretorio no Linux. Nao use ZIP criado pelo `tar -a` do Windows.
 - Aplicativos ativos no Node.js Selector:
   - API: `/home/mubloodxz/bmapi`;

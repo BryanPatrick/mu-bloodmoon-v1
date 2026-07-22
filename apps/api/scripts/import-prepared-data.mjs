@@ -90,16 +90,17 @@ function baseClassFor(className) {
   return Object.entries(characterEvolutionMap).find(([base, classes]) => base === className || classes.includes(className))?.[0] || null
 }
 
-function publicInSeasonSix(baseClasses, minSeason) {
+function publicInSeasonSix(baseClasses, minSeason, group) {
   if ((minSeason ?? 1) > 6) return false
-  if (!baseClasses.length) return true
+  const classBoundGroups = new Set(['SET', 'SET_PIECE', 'WEAPON', 'SHIELD', 'WING'])
+  if (!baseClasses.length) return !classBoundGroups.has(group)
   return baseClasses.some((className) => seasonSixBaseClassNames.has(className))
 }
 
 function seasonRowsForEquipment(item) {
   const minSeason = item.minSeason ?? 1
   const baseClasses = uniqueStrings(item.remapData?.baseClasses)
-  const isSeasonSix = publicInSeasonSix(baseClasses, minSeason)
+  const isSeasonSix = publicInSeasonSix(baseClasses, minSeason, item.group)
   const rows = []
 
   for (let season = Math.max(1, minSeason); season <= 21; season += 1) {

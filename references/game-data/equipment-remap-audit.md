@@ -1,12 +1,12 @@
 # Equipment Remap Audit
 
-Generated at: 2026-07-01T20:11:01.943Z
+Generated at: 2026-07-21T12:31:51.967Z
 
 ## Totals
 
-- Items remapped: 1719
+- Items remapped: 1914
 - Ancient/lucky/mastery entries: 259
-- Missing character/class map: 0
+- Missing character/class map: 5
 - Missing ancient piece list: 0
 - Missing ancient set options: 240
 - Missing images: 259
@@ -15,7 +15,8 @@ Generated at: 2026-07-01T20:11:01.943Z
 
 - missing-image: 259
 - missing-ancient-set-options: 240
-- source-has-unknown-class-token-b: 95
+- source-has-unknown-class-token-b: 108
+- missing-character-class-map: 5
 
 ## Ancient entries needing review
 

@@ -370,7 +370,7 @@ Rota: `/painel/admin/auditoria`
   - `PurchaseIntent`: 2.
   - `RechargeIntent`: 2.
   - `AuditEvent`: 5.
-  - `EquipmentRecord`: 1719.
+  - `EquipmentRecord`: 1914.
   - `ReferenceAsset`: 1537.
   - `KnowledgeEntry`: 330.
 

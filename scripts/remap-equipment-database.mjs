@@ -31,6 +31,22 @@ const characterEvolutionMap = {
 
 const characterOrder = Object.keys(characterEvolutionMap)
 const playableClassNames = new Set(Object.values(characterEvolutionMap).flat())
+const characterMinSeason = {
+  'Dark Knight': 1,
+  'Dark Wizard': 1,
+  'Fairy Elf': 1,
+  Summoner: 3,
+  'Magic Gladiator': 1,
+  'Dark Lord': 1,
+  'Rage Fighter': 6,
+  'Grow Lancer': 10,
+  'Rune Mage': 14,
+  Slayer: 15,
+  'Gun Crusher': 16,
+  'White Wizard': 17,
+  Lemuria: 18,
+  'Illusion Knight': 20
+}
 const armorSlots = new Set(['Armor', 'Pants', 'Helm', 'Boots', 'Gloves'])
 const weaponSlots = new Set(['Axe', 'Mace', 'Bow', 'Spear', 'Sword', 'Staff', 'Stick', 'Scepter', 'Lance', 'Rune Mace', 'Short Sword', 'Claw', 'Magic Gun'])
 const shieldSlots = new Set(['Shield'])
@@ -42,6 +58,7 @@ const masterySeasonByFamily = {
   Bloodangel: 11,
   Darkangel: 12,
   Holyangel: 13,
+  Awakening: 14,
   Soul: 14,
   'Blue Eye': 15,
   Manticore: 16,
@@ -50,6 +67,21 @@ const masterySeasonByFamily = {
   Apocalypse: 19,
   Primordial: 20
 }
+
+// These regular armor lines were added after the Season 6 catalog. Their exact
+// episode can be refined later without exposing them to the current server.
+const postSeasonSixArmorFamilies = new Map([
+  ['Succubus', 7],
+  ['Ambition', 7],
+  ['Hell Night', 7],
+  ['Magic Knight', 7],
+  ['Dark Devil', 7],
+  ['Lazy Wind', 7],
+  ['Stormwing', 7],
+  ['Sticky', 7],
+  ['Light Lord', 7],
+  ['Trace', 7]
+])
 
 const progressionSetOrder = [
   'Leather',
@@ -96,6 +128,26 @@ const normalize = (value) =>
     .toLowerCase()
 
 const unique = (values) => Array.from(new Set(values.filter(Boolean)))
+const keyFor = (value) =>
+  String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/gi, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase()
+
+const correctedSetName = (value) =>
+  String(value || '')
+    .replace(/\bstrenght\b/gi, 'Strength')
+    .replace(/\bfigther\b/gi, 'Fighter')
+    .replace(/\bsilver hear\b/gi, 'Silver Heart')
+    .replace(/\bconvicition\b/gi, 'Conviction')
+    .replace(/\blegenday\b/gi, 'Legendary')
+    .replace(/\bgrasher\b/gi, 'Crasher')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+const canonicalSetKey = (value) => normalize(correctedSetName(value))
 const baseClassFor = (className) =>
   characterOrder.find((character) => character === className || characterEvolutionMap[character]?.includes(className)) || ''
 const expandClasses = (classes) =>
@@ -271,6 +323,9 @@ function seasonFor(item, qualities) {
   const haystack = normalize(`${item.name} ${item.category}`)
   const family = Object.keys(masterySeasonByFamily).find((name) => haystack.includes(normalize(name)))
   if (family) return masterySeasonByFamily[family]
+  const postSeasonSixFamily = [...postSeasonSixArmorFamilies.entries()]
+    .find(([name]) => haystack.includes(normalize(name)))
+  if (postSeasonSixFamily) return postSeasonSixFamily[1]
   if (qualities.includes('lucky')) return 6
   if (qualities.includes('socket')) return 4
   return 1
@@ -281,14 +336,20 @@ function classesFor(item, baseSetName) {
   const modernBaseClass = modernSetTokenToBaseClass.find(([pattern]) => pattern.test(item.name))?.[1]
   const baseFromAncient = ancientSetToBaseClasses.get(normalize(item.name)) || ancientSetToBaseClasses.get(normalize(baseSetName)) || []
   const fromUsable = (item.usableBy || []).filter((className) => playableClassNames.has(className) || characterEvolutionMap[className])
-  const baseClasses = unique([aliasBaseClass, modernBaseClass, ...baseFromAncient, ...fromUsable.map((className) => baseClassFor(className) || className)])
+  const explicitBaseClasses = unique([
+    ...baseFromAncient,
+    ...fromUsable.map((className) => baseClassFor(className) || className)
+  ])
+  const baseClasses = explicitBaseClasses.length
+    ? explicitBaseClasses
+    : unique([aliasBaseClass, modernBaseClass])
   return {
     baseClasses,
     playableClasses: expandClasses(baseClasses.length ? baseClasses : fromUsable)
   }
 }
 
-const remapped = index.map((summary) => {
+const sourceItems = index.map((summary) => {
   const detail = details.get(summary.key) || summary
   const qualities = qualitiesFor(summary)
   const group = itemGroup(summary)
@@ -309,6 +370,10 @@ const remapped = index.map((summary) => {
   if (!summary.image?.publicPath && !summary.image?.sourceUrl) warnings.push('missing-image')
   if ((summary.usableBy || []).includes('B')) warnings.push('source-has-unknown-class-token-b')
 
+  const baseClassMinSeason = classInfo.baseClasses.length
+    ? Math.min(...classInfo.baseClasses.map((className) => characterMinSeason[className] || 1))
+    : 1
+
   return {
     key: summary.key,
     name: summary.name,
@@ -318,7 +383,7 @@ const remapped = index.map((summary) => {
     group,
     baseSetName,
     qualities,
-    minSeason: seasonFor(summary, qualities),
+    minSeason: Math.max(seasonFor(summary, qualities), baseClassMinSeason),
     sourceUrl: summary.sourceUrl,
     image: summary.image,
     baseClasses: classInfo.baseClasses,
@@ -334,6 +399,74 @@ const remapped = index.map((summary) => {
     warnings
   }
 })
+
+// Armor pages are stored one row per slot. The Wiki needs one catalog record per
+// set while retaining those source rows for item-level lookups and admin editing.
+const armorFamilies = new Map()
+for (const item of sourceItems.filter((entry) => entry.group === 'set-piece')) {
+  const familyKey = canonicalSetKey(item.name)
+  if (!familyKey) continue
+  const family = armorFamilies.get(familyKey) || []
+  family.push(item)
+  armorFamilies.set(familyKey, family)
+}
+
+const groupedArmorSets = [...armorFamilies.entries()].map(([familyKey, family]) => {
+  const preferredName = correctedSetName(
+    family
+      .map((item) => item.name)
+      .sort((a, b) => correctedSetName(a).length - correctedSetName(b).length)[0]
+  )
+  const qualities = unique(family.flatMap((item) => item.qualities))
+  const baseClasses = unique(family.flatMap((item) => item.baseClasses))
+  const playableClasses = expandClasses(baseClasses)
+  const minSeason = Math.max(
+    Math.max(...family.map((item) => item.minSeason || 1)),
+    baseClasses.length
+      ? Math.min(...baseClasses.map((className) => characterMinSeason[className] || 1))
+      : 1
+  )
+  const representative = {
+    ...family[0],
+    name: preferredName,
+    category: 'Armor Set'
+  }
+  const targetClasses = targetClassesFor(representative, preferredName, qualities, baseClasses)
+  const slots = family
+    .sort((a, b) => [...armorSlots].indexOf(a.category) - [...armorSlots].indexOf(b.category))
+    .map((item) => `${preferredName} ${item.category}`)
+  const sourceImages = family.map((item) => item.image).filter(Boolean)
+  const image = sourceImages.find((entry) => entry?.publicPath || entry?.sourceUrl) || sourceImages[0] || null
+  const warnings = unique(family.flatMap((item) => item.warnings).filter((warning) => warning !== 'missing-image'))
+  if (!sourceImages.some((entry) => entry?.publicPath || entry?.sourceUrl)) warnings.push('missing-image')
+  if (!baseClasses.length) warnings.push('missing-character-class-map')
+
+  return {
+    key: `armor-set-${keyFor(familyKey)}`,
+    name: preferredName,
+    title: preferredName,
+    category: 'Armor Set',
+    categorySlug: 'armor-set',
+    group: 'set',
+    baseSetName: preferredName,
+    qualities,
+    minSeason,
+    sourceUrl: family.find((item) => item.sourceUrl)?.sourceUrl || null,
+    image,
+    baseClasses,
+    playableClasses,
+    targetClasses,
+    slots,
+    setOptions: [],
+    levelStatsCount: Math.max(...family.map((item) => item.levelStatsCount || 0)),
+    hasExcellentStats: family.some((item) => item.hasExcellentStats),
+    listStats: Object.fromEntries(family.map((item) => [item.category, item.listStats])),
+    warnings,
+    sourcePieceKeys: family.map((item) => item.key)
+  }
+})
+
+const remapped = [...sourceItems, ...groupedArmorSets]
 
 const byKey = Object.fromEntries(remapped.map((item) => [item.key, item]))
 const warningTotals = {}
