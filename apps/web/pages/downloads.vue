@@ -47,14 +47,14 @@ const downloads = computed(() => [
     title: t('officialLauncher'),
     description: t('officialLauncherDescription'),
     meta: 'Windows 10/11 · atualização automática · login integrado',
-    url: 'https://update.mubloodmoon.com.br/launcher/BloodMoonLauncher-v1.1.0.zip'
+    url: 'https://www.mediafire.com/file/sym1k306koijhsq/BloodMoonLauncher-v1.1.0.zip/file'
   },
   {
     type: t('fullClient'),
     title: 'Blood Moon Full Client',
     description: t('fullClientDescription'),
     meta: 'Cliente completo · launcher incluso · pronto para jogar',
-    url: 'https://www.mediafire.com/file/xya75qzxlp37dpr/BloodMoon-Cliente-Completo.zip/file'
+    url: 'https://www.mediafire.com/file/vqnt0wc39ejdl2j/BloodMoon-Cliente-Completo-v1.1.0.zip/file'
   },
   { type: 'Patch', title: t('updatePatch'), description: t('updatePatchDescription'), url: null },
   { type: t('playerExtras'), title: t('playerExtras'), description: t('playerExtrasDescription'), url: null }
