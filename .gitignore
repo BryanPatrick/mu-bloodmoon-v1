@@ -4,6 +4,11 @@ node_modules/
 apps/web/.nuxt/
 apps/web/.output/
 apps/api/dist/
+apps/launcher/bin/
+apps/launcher/obj/
+apps/launcher/Assets/launcher-shell.jpg
+apps/launcher-updater/bin/
+apps/launcher-updater/obj/
 apps/api/storage/uploads/*
 !apps/api/storage/uploads/.gitkeep
 .agents/
@@ -23,6 +28,7 @@ pnpm-debug.log*
 
 work/*.log
 work/
+apps/web/public/downloads/*.zip
 work/muserver-extracted/
 work/muserver-sample/
 work/WebSource-inspect/

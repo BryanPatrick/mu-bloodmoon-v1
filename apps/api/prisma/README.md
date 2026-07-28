@@ -30,6 +30,12 @@ Use `migrate resolve` somente depois de confirmar que o schema existente ja
 corresponde ao `schema.prisma`. Ele registra a baseline sem recriar tabelas nem
 apagar dados.
 
+Nunca marque migrations funcionais como aplicadas apenas para permitir o boot.
+Migrations de papeis, permissoes, suporte, moderacao e launcher precisam ter
+seu SQL executado e suas tabelas conferidas no schema real. Em 2026-07-28, esse
+atalho deixou `_prisma_migrations` divergente do MySQL e causou Prisma `P2021`
+no login de producao.
+
 ## Areas atuais
 
 - Contas, moedas e auditoria.
@@ -44,6 +50,10 @@ apagar dados.
 
 O deploy cPanel atual usa MySQL/MariaDB. Prefira `prisma migrate deploy`; use
 `prisma db push` somente em banco vazio ou ambiente controlado.
+
+O bootstrap do cPanel resolve automaticamente apenas a baseline MySQL e a
+migration de sessao unica quando as tabelas preexistentes forem detectadas.
+Demais migrations devem passar pelo fluxo normal de `migrate deploy`.
 
 ## Autorizacao
 

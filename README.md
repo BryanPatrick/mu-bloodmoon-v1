@@ -39,6 +39,7 @@ iniciar-dev-com-import.bat
 
 - `apps/web`: site Nuxt, painel, guias, loja, recarga e referencias dev.
 - `apps/api`: base planejada do backend NestJS.
+- `apps/launcher`: launcher Windows, atualizador seguro e configuracoes do cliente.
 - `packages/shared`: tipos e constantes compartilhadas.
 - `references`: imagens, dados brutos e referencias coletadas.
 - `docs`: documentacao do sistema e deploy.
@@ -51,6 +52,9 @@ npm run dev
 npm run build
 npm run preview
 npm run api:check
+npm run launcher:build
+npm run launcher:preview
+npm run launcher:publish
 npm run check
 ```
 

@@ -75,6 +75,11 @@ async function main() {
   await mkdir(apiStage, { recursive: true })
 
   await cp(webOutput, path.join(webStage, '.output'), { recursive: true })
+  // Binaries are uploaded independently so routine web deploys stay small.
+  await rm(
+    path.join(webStage, '.output', 'public', 'downloads', 'BloodMoonLauncher.zip'),
+    { force: true }
+  )
   await patchNuxtServerForCpanel(path.join(webStage, '.output'))
   const webServerPackage = JSON.parse(
     await readFile(path.join(webOutput, 'server', 'package.json'), 'utf8')
@@ -152,19 +157,19 @@ async function main() {
       "const schema = path.join(appRoot, 'prisma', 'schema.prisma')",
       "const runPrisma = (args, options = {}) => spawnSync(process.execPath, [prismaCli, ...args, '--schema', schema], { cwd: appRoot, encoding: 'utf8', ...options })",
       "const assertPrisma = (result, action) => {",
-      "  if (result.stdout) process.stdout.write(result.stdout)",
-      "  if (result.stderr) process.stderr.write(result.stderr)",
-      "  if (result.status !== 0) throw new Error(`Prisma failed during ${action} with status ${result.status}`)",
+      "  if (result.status === 0) return",
+      "  const output = `${result.stdout || ''}\\n${result.stderr || ''}`.trim()",
+      "  throw new Error(`Prisma failed during ${action} with status ${result.status}${output ? `\\n${output}` : ''}`)",
       "}",
-      "assertPrisma(runPrisma(['generate']), 'client generation')",
+      "if (process.env.PRISMA_GENERATE_ON_START === '1') {",
+      "  assertPrisma(runPrisma(['generate']), 'client generation')",
+      "}",
       "let migration = runPrisma(['migrate', 'deploy'])",
       "const migrationOutput = `${migration.stdout || ''}\\n${migration.stderr || ''}`",
       "if (migration.status !== 0 && migrationOutput.includes('P3005')) {",
       "  const legacyMigrations = [",
       "    '20260718130000_mysql_baseline',",
-      "    '20260718150000_single_session',",
-      "    '20260722120000_role_permissions',",
-      "    '20260722143000_support_and_moderation'",
+      "    '20260718150000_single_session'",
       "  ]",
       "  console.warn('Existing production schema detected; recording its migration baseline.')",
       "  for (const name of legacyMigrations) assertPrisma(runPrisma(['migrate', 'resolve', '--applied', name]), `baseline ${name}`)",

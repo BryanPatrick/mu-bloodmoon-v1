@@ -101,6 +101,41 @@ Depois de iniciar os dois apps:
 3. Abrir Wiki e conferir equipamentos/personagens.
 4. Abrir painel admin e conferir dashboard, contas e fontes web.
 
+## Diagnostico de producao
+
+### Login retorna HTTP 500
+
+Antes de reiniciar ou republicar a API, consulte o `stderr.log` da aplicacao e
+confirme se todas as tabelas das migrations realmente existem. O registro em
+`_prisma_migrations` sozinho nao comprova que o SQL foi executado.
+
+Em 2026-07-28, a API falhou com Prisma `P2021` porque
+`AccountPermission`, `SupportTicket` e `AccountModeration` estavam ausentes,
+apesar de suas migrations constarem como aplicadas. O reparo exigiu:
+
+1. comparar `schema.prisma`, migrations e schema real pelo phpMyAdmin;
+2. criar as tabelas ausentes sem apagar dados;
+3. normalizar os papeis para `PLAYER`, `ADMIN` e `SUPER_ADMIN`;
+4. validar login, refresh, painel administrativo, Wiki e launcher pela API.
+
+Nao use `prisma migrate resolve --applied` para migrations funcionais que ainda
+precisam criar ou alterar tabelas.
+
+### Aplicacao nao inicia ou pacote fica truncado
+
+Verifique primeiro a cota de disco do cPanel. Cache do npm, lixeira e pacotes
+antigos podem impedir copias internas do Prisma e produzir erros pouco claros.
+O `server.js` empacotado nao gera o Prisma Client durante todo boot. Essa etapa
+so e executada quando a variavel abaixo for definida explicitamente:
+
+```env
+PRISMA_GENERATE_ON_START=1
+```
+
+Em operacao normal, gere o client durante o build/deploy e deixe essa variavel
+ausente. Depois de gerar os pacotes, confirme que ambos possuem tamanho maior
+que zero antes do upload.
+
 ## Rollback
 
 Antes de trocar o site em producao, manter o backup do cPanel salvo fora do projeto. Se algo falhar, restaurar o backup pelo cPanel ou recolocar a pasta anterior do site.

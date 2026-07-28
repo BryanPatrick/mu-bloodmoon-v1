@@ -15,6 +15,7 @@ import { WikiModule } from './modules/wiki/wiki.module'
 import { ContentModule } from './modules/content/content.module'
 import { AppController } from './app.controller'
 import { SupportModule } from './modules/support/support.module'
+import { LauncherModule } from './modules/launcher/launcher.module'
 
 export const apiModules = [
   'auth',
@@ -30,7 +31,8 @@ export const apiModules = [
   'marketplace',
   'muserver-export',
   'wiki',
-  'admin-content'
+  'admin-content',
+  'launcher'
 ] as const
 
 export type ApiModuleName = typeof apiModules[number]
@@ -54,7 +56,8 @@ export type ApiModuleName = typeof apiModules[number]
     MuServerExportModule,
     WikiModule,
     ContentModule,
-    SupportModule
+    SupportModule,
+    LauncherModule
   ]
 })
 export class AppModule {}

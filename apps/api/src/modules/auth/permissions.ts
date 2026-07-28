@@ -30,17 +30,10 @@ export const permissionKeys = {
 
 export type PermissionKey = typeof permissionKeys[keyof typeof permissionKeys]
 
-export const delegableAdminPermissions: PermissionKey[] = [
-  permissionKeys.adminDashboardView,
-  permissionKeys.adminAccountsView,
-  permissionKeys.adminAccountsStatusManage,
-  permissionKeys.adminContentManage,
-  permissionKeys.adminAuditView,
-  permissionKeys.adminShopManage,
-  permissionKeys.adminOrdersOperate,
-  permissionKeys.adminMarketplaceManage,
-  permissionKeys.adminGameBridgeManage
-]
+const adminPermissions = Object.values(permissionKeys)
+  .filter((permission): permission is PermissionKey => permission.startsWith('admin.'))
+
+export const delegableAdminPermissions: PermissionKey[] = [...adminPermissions]
 
 const playerPermissions: PermissionKey[] = [
   permissionKeys.accountManage,
@@ -54,14 +47,7 @@ const rolePermissions: Record<Role, PermissionKey[] | ['*']> = {
   PLAYER: playerPermissions,
   ADMIN: [
     ...playerPermissions,
-    permissionKeys.adminDashboardView,
-    permissionKeys.adminAccountsView,
-    permissionKeys.adminAccountsStatusManage,
-    permissionKeys.adminContentManage,
-    permissionKeys.adminAuditView,
-    permissionKeys.adminShopManage,
-    permissionKeys.adminOrdersOperate,
-    permissionKeys.adminMarketplaceManage,
+    ...adminPermissions,
     permissionKeys.guidesFutureView
   ],
   SUPER_ADMIN: ['*']

@@ -9,8 +9,20 @@
               <p class="bm-kicker">{{ item.type }}</p>
               <h2 class="bm-heading mt-2 font-display text-2xl font-bold">{{ item.title }}</h2>
               <p class="bm-muted mt-3 text-sm leading-7">{{ item.description }}</p>
+              <p v-if="item.meta" class="bm-muted mt-2 text-xs">{{ item.meta }}</p>
             </div>
-            <button class="rounded-md bg-blood-700 px-5 py-3 text-sm font-bold text-white">Download</button>
+            <a
+              v-if="item.url"
+              :href="item.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="rounded-md bg-blood-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-blood-600"
+            >
+              Download
+            </a>
+            <span v-else class="rounded-md border border-white/10 px-5 py-3 text-xs font-bold uppercase tracking-widest text-white/45">
+              Em breve
+            </span>
           </div>
         </div>
       </div>
@@ -30,9 +42,21 @@ useSeoMeta({ title: 'Downloads' })
 
 const { t } = useLocale()
 const downloads = computed(() => [
-  { type: t('fullClient'), title: 'Blood Moon Full Client', description: t('fullClientDescription') },
-  { type: 'Patch', title: t('updatePatch'), description: t('updatePatchDescription') },
-  { type: 'Launcher', title: t('officialLauncher'), description: t('officialLauncherDescription') },
-  { type: t('playerExtras'), title: t('playerExtras'), description: t('playerExtrasDescription') }
+  {
+    type: 'Launcher',
+    title: t('officialLauncher'),
+    description: t('officialLauncherDescription'),
+    meta: 'Windows 10/11 · atualização automática · login integrado',
+    url: 'https://update.mubloodmoon.com.br/launcher/BloodMoonLauncher-v1.1.0.zip'
+  },
+  {
+    type: t('fullClient'),
+    title: 'Blood Moon Full Client',
+    description: t('fullClientDescription'),
+    meta: 'Cliente completo · launcher incluso · pronto para jogar',
+    url: 'https://www.mediafire.com/file/xya75qzxlp37dpr/BloodMoon-Cliente-Completo.zip/file'
+  },
+  { type: 'Patch', title: t('updatePatch'), description: t('updatePatchDescription'), url: null },
+  { type: t('playerExtras'), title: t('playerExtras'), description: t('playerExtrasDescription'), url: null }
 ])
 </script>

@@ -8,5 +8,6 @@ As paginas seguem o roteamento do Nuxt. Evite renomear pastas sem revisar as URL
 - `painel/admin`: area administrativa.
 - `guias`: wiki/guias do servidor.
 - `dev`: rotas antigas de desenvolvimento; novas ferramentas devem preferir `painel/admin`.
+- `downloads.vue`: centraliza os links publicos do launcher, cliente completo e futuros patches.
 
 Quando uma pagina ficar grande demais, mova componentes internos para `components` ou crie composables especificos para regras de tela.
