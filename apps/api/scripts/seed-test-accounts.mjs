@@ -19,6 +19,41 @@ if (!personalId || personalId.length < 4) {
 const prisma = new PrismaClient()
 const passwordHash = await bcrypt.hash(password, 12)
 const personalIdHash = await bcrypt.hash(personalId, 12)
+const testAdminPermissions = [
+  'admin.dashboard.view',
+  'admin.accounts.view',
+  'admin.accounts.status.manage',
+  'admin.content.manage',
+  'admin.audit.view',
+  'admin.audit.history.view',
+  'admin.work-logs.view',
+  'admin.work-logs.manage',
+  'admin.operational-logs.view',
+  'admin.errors.view',
+  'admin.errors.manage',
+  'admin.alerts.view',
+  'admin.alerts.manage',
+  'admin.logs.export',
+  'admin.shop.manage',
+  'admin.store.view',
+  'admin.store.categories',
+  'admin.store.products',
+  'admin.store.review',
+  'admin.store.publish',
+  'admin.store.orders',
+  'admin.store.refund',
+  'admin.store.deliveries',
+  'admin.store.test',
+  'admin.orders.operate',
+  'admin.marketplace.manage',
+  'admin.roadmap.view',
+  'admin.roadmap.create',
+  'admin.roadmap.edit',
+  'admin.roadmap.review',
+  'admin.roadmap.approve',
+  'admin.roadmap.publish',
+  'admin.roadmap.delete'
+]
 
 const fixtures = [
   { username: 'player_teste', name: 'Player Teste', email: 'player@teste.local', role: 'PLAYER' },
@@ -67,6 +102,16 @@ try {
       where: { accountId: account.id, revokedAt: null },
       data: { revokedAt: new Date(), revokeReason: 'Fixture de teste reiniciada' }
     })
+
+    if (fixture.role === 'ADMIN') {
+      for (const key of testAdminPermissions) {
+        await prisma.accountPermission.upsert({
+          where: { accountId_key: { accountId: account.id, key } },
+          update: { granted: true },
+          create: { accountId: account.id, key, granted: true }
+        })
+      }
+    }
 
     if (fixture.role === 'PLAYER') {
       for (const character of [

@@ -92,7 +92,7 @@
       </nav>
     </section>
 
-    <MarketplaceItemDetails v-model:open="detailsOpen" :listing="selectedListing" :buying="isBuying" @buy="buy" />
+    <MarketplaceItemDetails v-model:open="detailsOpen" :listing="selectedListing" :buying="isBuying" @buy="buy" @report="reportListing" />
   </main>
 </template>
 
@@ -193,6 +193,27 @@ const buy = async (listing: MarketplaceListing) => {
     message.value = error instanceof Error ? error.message : 'Nao foi possivel comprar este item.'
   } finally {
     isBuying.value = false
+  }
+}
+
+const reportListing = async (listing: MarketplaceListing) => {
+  loadSession()
+  if (!isLoggedIn.value) {
+    await navigateTo(`/login?redirect=${encodeURIComponent('/marketplace')}`)
+    return
+  }
+  const reason = import.meta.client ? window.prompt('Motivo da denuncia:')?.trim() : ''
+  if (!reason) return
+  const description = import.meta.client ? window.prompt('Descreva o problema encontrado:')?.trim() : ''
+  if (!description) return
+  try {
+    await marketplaceApi.createReport({ listingId: listing.id, reason, description })
+    isSuccess.value = true
+    message.value = 'Denuncia enviada para a equipe de moderacao.'
+    detailsOpen.value = false
+  } catch {
+    isSuccess.value = false
+    message.value = 'Nao foi possivel enviar a denuncia.'
   }
 }
 

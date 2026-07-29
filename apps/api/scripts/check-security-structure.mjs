@@ -13,13 +13,19 @@ const permissions = read('src/modules/auth/permissions.ts')
 const protectedControllers = [
   'src/modules/accounts/accounts.controller.ts',
   'src/modules/admin-audit/admin-audit.controller.ts',
+  'src/modules/admin-observability/admin-observability.controller.ts',
+  'src/modules/admin-observability/admin-errors.controller.ts',
   'src/modules/admin-content/admin-content.controller.ts',
   'src/modules/admin-dashboard/admin-dashboard.controller.ts',
   'src/modules/commerce/commerce.controller.ts',
   'src/modules/marketplace/marketplace.controller.ts',
   'src/modules/support/support.controller.ts',
   'src/modules/muserver-export/muserver-export.controller.ts',
-  'src/modules/web-source/web-source.controller.ts'
+  'src/modules/web-source/web-source.controller.ts',
+  'src/modules/roadmap/roadmap.controller.ts',
+  'src/modules/community/community-admin.controller.ts',
+  'src/modules/admin-tasks/admin-tasks.controller.ts',
+  'src/modules/admin-reports/admin-reports.controller.ts'
 ]
 
 for (const role of ['PLAYER', 'ADMIN', 'SUPER_ADMIN']) {
@@ -45,13 +51,18 @@ for (const file of protectedControllers) {
 const protectedModules = [
   'src/modules/accounts/accounts.module.ts',
   'src/modules/admin-audit/admin-audit.module.ts',
+  'src/modules/admin-observability/admin-observability.module.ts',
   'src/modules/admin-content/admin-content.module.ts',
   'src/modules/admin-dashboard/admin-dashboard.module.ts',
   'src/modules/commerce/commerce.module.ts',
   'src/modules/marketplace/marketplace.module.ts',
   'src/modules/support/support.module.ts',
   'src/modules/muserver-export/muserver-export.module.ts',
-  'src/modules/web-source/web-source.module.ts'
+  'src/modules/web-source/web-source.module.ts',
+  'src/modules/roadmap/roadmap.module.ts',
+  'src/modules/community/community.module.ts',
+  'src/modules/admin-tasks/admin-tasks.module.ts',
+  'src/modules/admin-reports/admin-reports.module.ts'
 ]
 for (const file of protectedModules) {
   const source = read(file)

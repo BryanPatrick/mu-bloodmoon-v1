@@ -1,26 +1,14 @@
 ﻿import { Injectable } from '@nestjs/common'
 import type { Prisma } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
+import { sanitizeSensitiveData } from '../../common/sensitive-data'
 import type { AuthenticatedUser } from '../auth/auth.types'
+import { permissionKeys } from '../auth/permissions'
 import type { AdminAuditQuery } from './admin-audit.contract'
 
 const toPositiveInt = (value: string | undefined, fallback: number) => {
   const parsed = Number(value)
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback
-}
-
-const hiddenKeys = /password|token|secret|localpath|publicpath|root|bucket|credential/i
-const sanitizeMetadata = (value: unknown, maskNetwork: boolean): unknown => {
-  if (Array.isArray(value)) return value.map((item) => sanitizeMetadata(item, maskNetwork))
-  if (!value || typeof value !== 'object') {
-    if (typeof value === 'string' && (/^[A-Za-z]:\\/.test(value) || value.startsWith('internal://'))) return 'Informação interna protegida'
-    return value
-  }
-  return Object.fromEntries(Object.entries(value as Record<string, unknown>).map(([key, item]) => {
-    if (hiddenKeys.test(key)) return [key, 'Informação protegida']
-    if (maskNetwork && key.toLowerCase() === 'ip' && typeof item === 'string') return [key, item.replace(/\d+$/, '***')]
-    return [key, sanitizeMetadata(item, maskNetwork)]
-  }))
 }
 
 @Injectable()
@@ -31,18 +19,12 @@ export class AdminAuditService {
     const page = toPositiveInt(query.page, 1)
     const pageSize = Math.min(toPositiveInt(query.pageSize, 30), 100)
     const search = query.search?.trim()
+    const fullView =
+      user.role === 'SUPER_ADMIN' ||
+      user.permissions.includes('*') ||
+      user.permissions.includes(permissionKeys.adminAuditFullView)
 
     const where: Prisma.AuditEventWhereInput = {
-      ...(user.role === 'ADMIN'
-        ? {
-            NOT: [
-              { action: { contains: 'finance' } },
-              { action: { contains: 'recharge' } },
-              { action: { contains: 'role.changed' } },
-              { action: { contains: 'server-setting' } }
-            ]
-          }
-        : {}),
       ...(query.action ? { action: query.action } : {}),
       ...(query.severity ? { severity: query.severity } : {}),
       ...(query.targetType ? { targetType: query.targetType } : {}),
@@ -74,11 +56,20 @@ export class AdminAuditService {
     return {
       items: items.map((event) => ({
         id: event.id,
+        module: event.module,
+        actorId: event.actorId,
         actorUsername: event.actorUsername || 'system',
+        actorRole: event.actorRole,
         action: event.action,
         targetType: event.targetType,
+        targetId: event.targetId,
+        targetUserId: event.targetUserId,
+        result: event.result,
         severity: event.severity,
-        metadata: sanitizeMetadata(event.metadata, user.role === 'ADMIN'),
+        correlationId: event.correlationId,
+        beforeData: sanitizeSensitiveData(event.beforeData, { maskPersonalData: !fullView }),
+        afterData: sanitizeSensitiveData(event.afterData, { maskPersonalData: !fullView }),
+        metadata: sanitizeSensitiveData(event.metadata, { maskPersonalData: !fullView }),
         createdAt: event.createdAt.toISOString()
       })),
       total,

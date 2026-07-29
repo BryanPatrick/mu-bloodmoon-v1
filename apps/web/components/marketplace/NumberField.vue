@@ -1,0 +1,2 @@
+<template><label class="grid gap-2 text-[9px] font-black uppercase tracking-[.16em] text-white/45">{{ label }}<input :value="modelValue" class="bm-admin-input" min="0" type="number" @input="$emit('update:modelValue', Number(($event.target as HTMLInputElement).value))"></label></template>
+<script setup lang="ts">defineProps<{ modelValue: number, label: string }>(); defineEmits<{ 'update:modelValue': [value: number] }>()</script>

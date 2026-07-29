@@ -45,6 +45,7 @@
           </div>
           <div class="flex items-center justify-between gap-4 sm:justify-end">
             <strong class="font-display text-xl text-ember">{{ listing.price.toLocaleString('pt-BR') }} {{ currencyLabel }}</strong>
+            <UButton color="neutral" variant="ghost" @click="$emit('report', listing)"><Flag class="size-4" /> Denunciar</UButton>
             <UButton color="primary" :loading="buying" @click="$emit('buy', listing)"><ShoppingCart class="size-4" /> Comprar</UButton>
           </div>
         </footer>
@@ -54,11 +55,11 @@
 </template>
 
 <script setup lang="ts">
-import { Gem, ShieldCheck, ShoppingCart, X } from 'lucide-vue-next'
+import { Flag, Gem, ShieldCheck, ShoppingCart, X } from 'lucide-vue-next'
 import type { MarketplaceListing } from '~/composables/useMarketplaceApi'
 
 const props = defineProps<{ open: boolean, listing: MarketplaceListing | null, buying?: boolean }>()
-const emit = defineEmits<{ 'update:open': [value: boolean], buy: [listing: MarketplaceListing] }>()
+const emit = defineEmits<{ 'update:open': [value: boolean], buy: [listing: MarketplaceListing], report: [listing: MarketplaceListing] }>()
 const isOpen = computed({ get: () => props.open, set: (value) => emit('update:open', value) })
 const data = computed<Record<string, unknown>>(() => props.listing?.itemData && typeof props.listing.itemData === 'object' ? props.listing.itemData as Record<string, unknown> : {})
 const imageUrl = computed(() => String(data.value.imageUrl || data.value.imagePath || data.value.thumbnail || data.value.image || ''))

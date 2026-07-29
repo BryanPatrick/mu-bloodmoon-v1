@@ -1,209 +1,200 @@
 <template>
   <ManagementShell>
-    <div v-if="hasPermission(permissions.adminAuditView)" class="grid gap-6">
-      <div class="flex flex-col gap-5 border-b border-white/10 pb-6 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <p class="bm-kicker">Seguranca</p>
-          <h1 class="mt-3 font-display text-4xl font-black uppercase sm:text-5xl">Auditoria</h1>
-          <p class="mt-3 max-w-3xl text-sm font-semibold leading-7 text-white/70">
-            Registro das principais acoes administrativas e tentativas de acesso do site.
-          </p>
-        </div>
+    <div class="grid gap-4">
+      <AdminObservabilityHeader
+        eyebrow="Auditoria"
+        title="Ações administrativas"
+        description="Registro imutável de alterações, responsáveis, resultados e contexto de cada operação administrativa."
+      >
+        <UButton color="neutral" variant="soft" :loading="loading" @click="load">
+          <RefreshCw class="size-4" />
+          Atualizar
+        </UButton>
+      </AdminObservabilityHeader>
 
-        <div class="bm-glass flex flex-col gap-3 rounded-md p-3 sm:flex-row">
-          <input
-            v-model="query"
-            class="h-11 min-w-0 rounded-md border border-white/10 bg-white/10 px-4 text-sm font-bold text-white outline-none placeholder:text-white/45 focus:border-blood-400/70 sm:w-72"
-            placeholder="Buscar evento"
-            type="search"
-          >
-          <select
-            v-model="activeAction"
-            class="h-11 rounded-md border border-white/10 bg-white/10 px-3 text-sm font-bold text-white outline-none focus:border-blood-400/70"
-          >
-            <option class="bg-zinc-950 text-white" value="Todos">Todos</option>
-            <option v-for="action in eventActions" :key="action" class="bg-zinc-950 text-white" :value="action">{{ action }}</option>
-          </select>
+      <AdminObservabilityNav />
+
+      <section class="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+        <article v-for="card in summaryCards" :key="card.label" class="bm-panel rounded-md p-3">
+          <p class="text-[10px] font-black uppercase tracking-[0.2em] text-white/45">{{ card.label }}</p>
+          <p class="mt-2 font-display text-2xl font-black">{{ card.value }}</p>
+        </article>
+      </section>
+
+      <form class="bm-panel grid gap-3 rounded-md p-3 lg:grid-cols-[1fr_180px_160px_160px_auto]" @submit.prevent="applyFilters">
+        <input v-model="filters.search" class="bm-admin-input" type="search" placeholder="Buscar ação, entidade, usuário ou correlação">
+        <input v-model="filters.module" class="bm-admin-input" placeholder="Módulo">
+        <select v-model="filters.result" class="bm-admin-input">
+          <option value="">Todos os resultados</option>
+          <option v-for="value in results" :key="value" :value="value">{{ value }}</option>
+        </select>
+        <select v-model="filters.severity" class="bm-admin-input">
+          <option value="">Todas severidades</option>
+          <option v-for="value in severities" :key="value" :value="value">{{ value }}</option>
+        </select>
+        <div class="flex gap-2">
+          <UButton type="submit">Filtrar</UButton>
+          <UButton color="neutral" variant="ghost" square aria-label="Limpar filtros" @click="clearFilters">
+            <X class="size-4" />
+          </UButton>
+        </div>
+      </form>
+
+      <p v-if="errorMessage" class="rounded-md border border-red-400/25 bg-red-500/10 px-4 py-3 text-sm font-bold text-red-100">
+        {{ errorMessage }}
+      </p>
+
+      <section v-if="items.length" class="overflow-hidden rounded-md border border-white/10 bg-white/[0.025]">
+        <div class="hidden grid-cols-[130px_110px_1fr_150px_110px_90px] gap-3 border-b border-white/10 bg-white/[0.045] px-4 py-3 text-[10px] font-black uppercase tracking-[0.18em] text-white/45 xl:grid">
+          <span>Data</span><span>Módulo</span><span>Ação e entidade</span><span>Responsável</span><span>Resultado</span><span>Detalhes</span>
+        </div>
+        <article v-for="item in items" :key="item.id" class="grid gap-3 border-b border-white/8 px-4 py-3 last:border-0 xl:grid-cols-[130px_110px_1fr_150px_110px_90px] xl:items-center">
+          <p class="text-xs font-bold text-white/60">{{ formatDate(item.createdAt) }}</p>
+          <span class="w-fit rounded-sm bg-white/8 px-2 py-1 text-[10px] font-black uppercase text-white/65">{{ item.module }}</span>
+          <div class="min-w-0">
+            <p class="truncate text-xs font-black uppercase text-ember">{{ item.action }}</p>
+            <p class="mt-1 truncate text-xs font-semibold text-white/55">{{ item.targetType }}{{ item.targetId ? ` · ${item.targetId}` : '' }}</p>
+            <p v-if="item.correlationId" class="mt-1 truncate font-mono text-[10px] text-white/35">ID {{ item.correlationId }}</p>
+          </div>
+          <div>
+            <p class="text-xs font-black">{{ item.actorUsername || 'system' }}</p>
+            <p class="text-[10px] uppercase text-white/40">{{ item.actorRole || 'SYSTEM' }}</p>
+          </div>
+          <span class="w-fit rounded-sm px-2 py-1 text-[10px] font-black" :class="resultClass(item.result)">{{ item.result }}</span>
+          <UButton color="neutral" variant="soft" size="xs" @click="selected = item">Ver</UButton>
+        </article>
+      </section>
+
+      <AdminEmptyState
+        v-else-if="!loading"
+        title="Nenhuma ação encontrada"
+        description="Ajuste os filtros ou aguarde novas operações administrativas."
+        :icon="FileSearch"
+      />
+
+      <div class="flex items-center justify-between">
+        <p class="text-xs font-bold text-white/45">{{ total }} registros</p>
+        <div class="flex items-center gap-2">
+          <UButton color="neutral" variant="soft" square :disabled="page <= 1 || loading" aria-label="Página anterior" @click="changePage(page - 1)"><ChevronLeft class="size-4" /></UButton>
+          <span class="text-xs font-black">Página {{ page }} de {{ totalPages }}</span>
+          <UButton color="neutral" variant="soft" square :disabled="page >= totalPages || loading" aria-label="Próxima página" @click="changePage(page + 1)"><ChevronRight class="size-4" /></UButton>
         </div>
       </div>
 
-      <p v-if="loadError" class="rounded-md border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-xs font-bold text-amber-100">
-        API de auditoria indisponivel no momento. Exibindo fallback local temporario para desenvolvimento.
-      </p>
-
-      <section class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <article v-for="card in summaryCards" :key="card.label" class="bm-panel rounded-md p-4">
-          <p class="text-[11px] font-black uppercase tracking-[0.24em] text-white/45">{{ card.label }}</p>
-          <p class="mt-3 font-display text-3xl font-black text-white">{{ card.value }}</p>
-        </article>
-      </section>
-
-      <section v-if="filteredLogs.length" class="overflow-hidden rounded-md border border-white/10 bg-white/[0.035]">
-        <div class="hidden grid-cols-[170px_1fr_150px_120px] gap-4 border-b border-white/10 bg-white/[0.05] px-4 py-3 text-[11px] font-black uppercase tracking-[0.18em] text-white/45 lg:grid">
-          <span>Data</span>
-          <span>Evento</span>
-          <span>Usuario</span>
-          <span>Perfil</span>
-        </div>
-
-        <article
-          v-for="event in filteredLogs"
-          :key="event.id"
-          class="grid gap-3 border-b border-white/10 px-4 py-4 last:border-b-0 lg:grid-cols-[170px_1fr_150px_120px] lg:items-start"
-        >
-          <div>
-            <p class="text-xs font-black uppercase tracking-[0.16em] text-white/45 lg:hidden">Data</p>
-            <p class="text-sm font-bold text-white/75">{{ formatDate(event.createdAt) }}</p>
-          </div>
-
-          <div>
-            <p class="text-xs font-black uppercase tracking-[0.16em] text-ember">{{ event.action }}</p>
-            <p class="mt-1 text-sm font-semibold leading-6 text-white/75">{{ event.message }}</p>
-            <div v-if="event.metadata" class="mt-2 flex flex-wrap gap-2">
-              <span v-for="(value, key) in event.metadata" :key="key" class="rounded-sm bg-black/25 px-2 py-1 text-[11px] font-bold text-white/58">
-                {{ key }}: {{ value }}
-              </span>
+      <UModal v-model:open="detailsOpen" title="Detalhes da auditoria" description="Dados protegidos e histórico da operação.">
+        <template #body>
+          <div v-if="selected" class="grid gap-3 text-sm">
+            <div class="grid gap-3 sm:grid-cols-2">
+              <AuditField label="Ação" :value="selected.action" />
+              <AuditField label="Módulo" :value="selected.module" />
+              <AuditField label="Entidade" :value="`${selected.targetType}:${selected.targetId || '-'}`" />
+              <AuditField label="Correlação" :value="selected.correlationId || '-'" mono />
+              <AuditField label="Motivo" :value="selected.reason || '-'" />
+              <AuditField label="Resultado" :value="selected.result" />
             </div>
+            <AuditJsonBlock title="Antes" :value="selected.beforeData" />
+            <AuditJsonBlock title="Depois" :value="selected.afterData" />
+            <AuditJsonBlock title="Metadados" :value="selected.metadata" />
           </div>
-
-          <div>
-            <p class="text-xs font-black uppercase tracking-[0.16em] text-white/45 lg:hidden">Usuario</p>
-            <p class="text-sm font-bold text-white">{{ event.actorUsername }}</p>
-          </div>
-
-          <div>
-            <p class="text-xs font-black uppercase tracking-[0.16em] text-white/45 lg:hidden">Perfil</p>
-            <p class="text-sm font-bold text-white/70">{{ event.severity }}</p>
-          </div>
-        </article>
-      </section>
-
-      <section v-else class="grid min-h-[280px] place-items-center rounded-md border border-dashed border-white/15 bg-white/[0.035] p-8 text-center">
-        <div class="max-w-xl">
-          <p class="bm-kicker">Sem registros</p>
-          <h2 class="mt-3 font-display text-3xl font-black uppercase">Nenhum evento encontrado</h2>
-          <p class="mt-3 text-sm font-semibold leading-7 text-white/65">
-            Os eventos de login, logout e alteracoes administrativas vao aparecer aqui conforme o sistema for usado.
-          </p>
-        </div>
-      </section>
+        </template>
+      </UModal>
     </div>
   </ManagementShell>
 </template>
 
 <script setup lang="ts">
-import { permissions } from '~/data/security'
-import type { AuditEvent } from '~/composables/useAuth'
-import type { AdminAuditApiEvent } from '~/composables/useAdminAuditApi'
+import { ChevronLeft, ChevronRight, FileSearch, RefreshCw, X } from 'lucide-vue-next'
+import type { AuditRecord } from '~/composables/useAdminObservabilityApi'
 
-const { getAuditLogs, hasPermission, loadSession } = useAuth()
-const { events: fetchAuditEvents } = useAdminAuditApi()
+useSeoMeta({ title: 'Ações administrativas' })
 
-useSeoMeta({ title: 'Auditoria' })
-
-type AuditRow = {
-  id: string
-  createdAt: string
-  action: string
-  message: string
-  actorUsername: string
-  severity: string
-  metadata?: Record<string, unknown>
-}
-
-const logs = ref<AuditRow[]>([])
-const totalEvents = ref(0)
-const totalWarnings = ref(0)
-const totalErrors = ref(0)
-const totalAuthFailures = ref(0)
-const loadError = ref('')
-const query = ref('')
-const activeAction = ref('Todos')
+const api = useAdminObservabilityApi()
+const { loadSession } = useAuth()
+const items = ref<AuditRecord[]>([])
+const selected = ref<AuditRecord | null>(null)
+const loading = ref(false)
+const errorMessage = ref('')
+const total = ref(0)
+const page = ref(1)
+const pageSize = 30
+const summary = ref<Record<string, number | boolean>>({})
+const filters = reactive({ search: '', module: '', result: '', severity: '' })
+const results = ['SUCCESS', 'FAILURE', 'PARTIAL', 'DENIED']
+const severities = ['info', 'warning', 'error', 'critical']
+const detailsOpen = computed({
+  get: () => Boolean(selected.value),
+  set: (value) => { if (!value) selected.value = null }
+})
+const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize)))
+const summaryCards = computed(() => [
+  { label: 'Auditorias', value: Number(summary.value.auditEvents || 0) },
+  { label: 'Trabalhos', value: Number(summary.value.workLogs || 0) },
+  { label: 'Eventos', value: Number(summary.value.operationalEvents || 0) },
+  { label: 'Erros abertos', value: Number(summary.value.openErrors || 0) },
+  { label: 'Críticos', value: Number(summary.value.criticalErrors || 0) },
+  { label: 'Alertas', value: Number(summary.value.openAlerts || 0) }
+])
 
 onMounted(async () => {
   loadSession()
-  await loadAuditEvents()
+  await load()
 })
 
-const eventActions = computed(() => Array.from(new Set(logs.value.map((event) => event.action))).sort())
-
-const filteredLogs = computed(() => {
-  const normalizedQuery = query.value.trim().toLowerCase()
-
-  return logs.value.filter((event) => {
-    const matchesType = activeAction.value === 'Todos' || event.action === activeAction.value
-    const matchesQuery = !normalizedQuery || [event.action, event.message, event.actorUsername, event.severity]
-      .join(' ')
-      .toLowerCase()
-      .includes(normalizedQuery)
-
-    return matchesType && matchesQuery
-  })
-})
-
-const summaryCards = computed(() => [
-  { label: 'Eventos', value: totalEvents.value.toString() },
-  { label: 'Alertas/erros', value: (totalWarnings.value + totalErrors.value).toString() },
-  { label: 'Falhas de login', value: totalAuthFailures.value.toString() },
-  { label: 'Eventos filtrados', value: filteredLogs.value.length.toString() }
-])
-
-const normalizeMetadata = (metadata: unknown) =>
-  metadata && typeof metadata === 'object' && !Array.isArray(metadata)
-    ? metadata as Record<string, unknown>
-    : undefined
-
-const eventMessage = (event: AdminAuditApiEvent) => {
-  const target = event.targetId ? ` em ${event.targetType}:${event.targetId}` : ` em ${event.targetType}`
-  return `${event.action}${target}`
-}
-
-const mapApiEvent = (event: AdminAuditApiEvent): AuditRow => ({
-  id: event.id,
-  createdAt: event.createdAt,
-  action: event.action,
-  message: eventMessage(event),
-  actorUsername: event.actorUsername || 'system',
-  severity: event.severity,
-  metadata: normalizeMetadata(event.metadata)
-})
-
-const mapLocalEvent = (event: AuditEvent): AuditRow => ({
-  id: event.id,
-  createdAt: event.createdAt,
-  action: event.type,
-  message: event.message,
-  actorUsername: event.user,
-  severity: event.role,
-  metadata: event.meta
-})
-
-const loadAuditEvents = async () => {
+const load = async () => {
+  loading.value = true
+  errorMessage.value = ''
   try {
-    const response = await fetchAuditEvents({ pageSize: 100 })
-    logs.value = response.items.map(mapApiEvent)
-    totalEvents.value = response.summary.total
-    totalWarnings.value = response.summary.warnings
-    totalErrors.value = response.summary.errors
-    totalAuthFailures.value = response.summary.authFailures
-    loadError.value = ''
-  } catch {
-    const localLogs = getAuditLogs().map(mapLocalEvent)
-    logs.value = localLogs
-    totalEvents.value = localLogs.length
-    totalWarnings.value = 0
-    totalErrors.value = 0
-    totalAuthFailures.value = localLogs.filter((event) => event.action === 'auth.login.failed').length
-    loadError.value = 'api-offline'
+    const [response, summaryResponse] = await Promise.all([
+      api.audit({ ...filters, page: page.value, pageSize }),
+      api.summary()
+    ])
+    items.value = response.items
+    total.value = response.total
+    summary.value = summaryResponse
+  } catch (error) {
+    items.value = []
+    errorMessage.value = 'Não foi possível carregar a auditoria pela API.'
+    console.error(error)
+  } finally {
+    loading.value = false
   }
 }
 
+const applyFilters = async () => {
+  page.value = 1
+  await load()
+}
+const clearFilters = async () => {
+  Object.assign(filters, { search: '', module: '', result: '', severity: '' })
+  page.value = 1
+  await load()
+}
+const changePage = async (next: number) => {
+  page.value = next
+  await load()
+}
 const formatDate = (value: string) =>
-  new Intl.DateTimeFormat('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit'
-  }).format(new Date(value))
+  new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(value))
+const resultClass = (result: string) => ({
+  'bg-emerald-400/15 text-emerald-200': result === 'SUCCESS',
+  'bg-red-400/15 text-red-200': result === 'FAILURE' || result === 'DENIED',
+  'bg-amber-400/15 text-amber-100': result === 'PARTIAL'
+})
 </script>
+
+<style scoped>
+.bm-admin-input {
+  min-height: 2.5rem;
+  min-width: 0;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 0.375rem;
+  background: rgb(255 255 255 / 0.06);
+  padding: 0 0.75rem;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  outline: none;
+}
+.bm-admin-input:focus { border-color: rgb(248 113 113 / 0.55); }
+.bm-admin-input option { background: #111; color: white; }
+</style>

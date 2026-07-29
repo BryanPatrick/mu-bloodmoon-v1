@@ -84,7 +84,7 @@
                 <button
                   class="rounded-md border border-blood-500/40 bg-blood-900/30 px-4 py-3 text-sm font-black text-blood-100 disabled:cursor-not-allowed disabled:opacity-45"
                   type="button"
-                  :disabled="!['PENDING_LOCK', 'ACTIVE'].includes(listing.status)"
+                  :disabled="!['DRAFT', 'ESCROW_PENDING', 'ACTIVE'].includes(listing.status)"
                   @click="cancelListing(listing)"
                 >
                   Cancelar
@@ -163,7 +163,7 @@ const createListing = async () => {
     await marketplaceApi.createListing({ ...form, gameItemRef, itemData: { pendingGameSync: true } })
     Object.assign(form, { gameItemRef: '', itemName: '', itemCategory: '', itemData: {}, price: 1, currency: 'WCOIN' })
     isSuccess.value = true
-    message.value = 'Anuncio criado como PENDING_LOCK. Ele so fica ativo depois do lock do item no jogo.'
+    message.value = 'Anuncio enviado ao escrow. Ele so fica ativo depois do bloqueio real do item no jogo.'
     await loadRows()
   } catch {
     isSuccess.value = false
@@ -184,10 +184,10 @@ const cancelListing = async (listing: MarketplaceListing) => {
 }
 
 const listingStatusClass = (status: MarketplaceListing['status']) => ({
-  'bg-ember/15 text-ember': status === 'PENDING_LOCK',
+  'bg-ember/15 text-ember': ['DRAFT', 'ESCROW_PENDING', 'RETURN_PENDING', 'MANUAL_REVIEW'].includes(status),
   'bg-emerald-500/15 text-emerald-100': status === 'ACTIVE',
   'bg-sky-500/15 text-sky-100': status === 'SOLD',
-  'bg-blood-700/25 text-blood-100': ['CANCELLED', 'FAILED', 'EXPIRED'].includes(status)
+  'bg-blood-700/25 text-blood-100': ['CANCELED', 'FAILED', 'EXPIRED', 'SUSPENDED'].includes(status)
 })
 
 const orderStatusClass = (status: MarketplaceOrder['status']) => ({

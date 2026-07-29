@@ -6,6 +6,7 @@ type AuthCurrency = {
 }
 
 type AuthUser = {
+  id?: string
   username: string
   name: string
   role: UserRole
@@ -193,6 +194,7 @@ export const useAuth = () => {
         body: { refreshToken }
       })
       const nextUser: AuthUser = {
+        id: response.user.id,
         username: response.user.username,
         name: response.user.name,
         role: roleFromApi(response.user.role),
@@ -296,6 +298,7 @@ export const useAuth = () => {
         body: { username, password, ...(totpCode ? { totpCode } : {}) }
       })
       const nextUser: AuthUser = {
+        id: response.user.id,
         username: response.user.username,
         name: response.user.name,
         role: roleFromApi(response.user.role),

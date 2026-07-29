@@ -9,12 +9,19 @@ export type AdminAuditQuery = {
 
 export type AdminAuditEventDto = {
   id: string
+  module: string
   actorId: string | null
   actorUsername: string
+  actorRole: string | null
   action: string
   targetType: string
   targetId: string | null
+  targetUserId: string | null
+  result: string
   severity: string
+  correlationId: string | null
+  beforeData: unknown
+  afterData: unknown
   metadata: unknown
   createdAt: string
 }

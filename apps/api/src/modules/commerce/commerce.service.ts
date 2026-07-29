@@ -9,9 +9,11 @@ import type {
   ShopProduct,
   ShopProductStatus
 } from '@prisma/client'
+import { randomUUID } from 'node:crypto'
 import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
+import { ObservabilityService } from '../observability/observability.service'
 import type {
   CommerceQuery,
   CreatePurchaseIntentPayload,
@@ -34,7 +36,7 @@ const seedProducts: ShopProductPayload[] = [
     description: 'Beneficios iniciais para evolucao e conforto.',
     price: 350,
     currency: 'WCOIN',
-    status: 'ACTIVE',
+    status: 'DRAFT',
     stock: null
   },
   {
@@ -45,7 +47,7 @@ const seedProducts: ShopProductPayload[] = [
     description: 'Servico de alteracao de nome de personagem.',
     price: 180,
     currency: 'WCOIN',
-    status: 'ACTIVE',
+    status: 'DRAFT',
     stock: null
   },
   {
@@ -56,7 +58,7 @@ const seedProducts: ShopProductPayload[] = [
     description: 'Credito de reset especial para temporada.',
     price: 120,
     currency: 'GOBLIN_POINT',
-    status: 'ACTIVE',
+    status: 'DRAFT',
     stock: null
   },
   {
@@ -103,14 +105,32 @@ const pagination = (query: CommerceQuery) => {
 
 const productData = (payload: ShopProductPayload): Prisma.ShopProductUncheckedCreateInput => ({
   key: payload.key?.trim() || normalizeKey(payload.name),
+  slug: payload.slug?.trim() || payload.key?.trim() || normalizeKey(payload.name),
   name: payload.name.trim(),
-  short: payload.short.trim().toUpperCase().slice(0, 8),
+  short: (payload.short || payload.name.slice(0, 3)).trim().toUpperCase().slice(0, 8),
   category: payload.category.trim(),
+  categoryId: payload.categoryId || null,
+  summary: payload.summary?.trim() || null,
   description: payload.description.trim(),
   price: Math.max(0, Number(payload.price) || 0),
-  currency: payload.currency,
-  status: payload.status || 'ACTIVE',
-  stock: payload.stock ?? null
+  currency: payload.currency || 'WCOIN',
+  status: payload.status || 'DRAFT',
+  stock: payload.stock ?? null,
+  images: payload.images as Prisma.InputJsonValue | undefined,
+  featured: Boolean(payload.featured),
+  deliveryTarget: payload.deliveryTarget || 'ACCOUNT',
+  accountLimit: payload.accountLimit ?? null,
+  periodLimit: payload.periodLimit ?? null,
+  periodDays: payload.periodDays ?? null,
+  saleStartsAt: payload.saleStartsAt ? new Date(payload.saleStartsAt) : null,
+  saleEndsAt: payload.saleEndsAt ? new Date(payload.saleEndsAt) : null,
+  scheduledPublishAt: payload.scheduledPublishAt ? new Date(payload.scheduledPublishAt) : null,
+  technicalCode: payload.technicalCode?.trim() || null,
+  sourceOrigin: payload.sourceOrigin?.trim() || null,
+  ambiguous: Boolean(payload.ambiguous),
+  internalNotes: payload.internalNotes?.trim() || null,
+  revisionReason: payload.revisionReason?.trim() || null,
+  sortOrder: Math.max(0, Number(payload.sortOrder) || 0)
 })
 
 const rechargePackageData = (payload: RechargePackagePayload): Prisma.RechargePackageUncheckedCreateInput => ({
@@ -123,9 +143,8 @@ const rechargePackageData = (payload: RechargePackagePayload): Prisma.RechargePa
   active: payload.active ?? true
 })
 
-const mapProduct = (product: ShopProduct) => ({
+const mapProduct = (product: ShopProduct & { variants?: Array<Record<string, any>> }) => ({
   id: product.id,
-  key: product.key,
   name: product.name,
   short: product.short,
   category: product.category,
@@ -134,6 +153,32 @@ const mapProduct = (product: ShopProduct) => ({
   currency: product.currency,
   status: product.status,
   stock: product.stock,
+  slug: product.slug,
+  summary: product.summary,
+  images: Array.isArray(product.images) ? product.images : [],
+  featured: product.featured,
+  deliveryTarget: product.deliveryTarget,
+  accountLimit: product.accountLimit,
+  periodLimit: product.periodLimit,
+  periodDays: product.periodDays,
+  saleStartsAt: product.saleStartsAt?.toISOString() || null,
+  saleEndsAt: product.saleEndsAt?.toISOString() || null,
+  variants: (product.variants || []).map((variant) => ({
+    id: variant.id,
+    name: variant.name,
+    durationSeconds: variant.durationSeconds,
+    quantity: variant.quantity,
+    itemLevel: variant.itemLevel,
+    options: variant.options,
+    price: variant.price,
+    currency: variant.currency,
+    stock: variant.stock,
+    available: variant.available,
+    accountLimit: variant.accountLimit,
+    periodLimit: variant.periodLimit,
+    periodDays: variant.periodDays,
+    deliveryTarget: variant.deliveryTarget
+  })),
   createdAt: product.createdAt.toISOString(),
   updatedAt: product.updatedAt.toISOString()
 })
@@ -155,7 +200,8 @@ const mapRechargePackage = (pack: RechargePackage) => ({
 export class CommerceService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly audit: AuditService
+    private readonly audit: AuditService,
+    private readonly observability: ObservabilityService
   ) {}
 
   async ensureSeeded() {
@@ -189,7 +235,14 @@ export class CommerceService {
     await this.ensureSeeded()
     const { page, pageSize, skip } = pagination(query)
     const where: Prisma.ShopProductWhereInput = {
-      ...(publicOnly ? { status: 'ACTIVE' } : {}),
+      ...(publicOnly
+        ? {
+            status: 'ACTIVE',
+            deletedAt: null,
+            OR: [{ saleStartsAt: null }, { saleStartsAt: { lte: new Date() } }],
+            AND: [{ OR: [{ saleEndsAt: null }, { saleEndsAt: { gte: new Date() } }] }]
+          }
+        : { deletedAt: query.includeDeleted === 'true' ? undefined : null }),
       ...(query.status && !publicOnly ? { status: query.status } : {}),
       ...(query.currency ? { currency: query.currency } : {}),
       ...(query.category ? { category: query.category } : {}),
@@ -208,7 +261,13 @@ export class CommerceService {
       this.prisma.shopProduct.count({ where }),
       this.prisma.shopProduct.findMany({
         where,
-        orderBy: [{ status: 'asc' }, { category: 'asc' }, { name: 'asc' }],
+        include: {
+          variants: {
+            where: publicOnly ? { available: true } : undefined,
+            orderBy: [{ sortOrder: 'asc' }, { price: 'asc' }]
+          }
+        },
+        orderBy: [{ sortOrder: 'asc' }, { category: 'asc' }, { name: 'asc' }],
         skip,
         take: pageSize
       })
@@ -246,6 +305,7 @@ export class CommerceService {
       where: { id },
       data: {
         ...(payload.key ? { key: payload.key.trim() } : {}),
+        ...(payload.slug ? { slug: payload.slug.trim() } : {}),
         ...(payload.name ? { name: payload.name.trim() } : {}),
         ...(payload.short ? { short: payload.short.trim().toUpperCase().slice(0, 8) } : {}),
         ...(payload.category ? { category: payload.category.trim() } : {}),
@@ -253,7 +313,24 @@ export class CommerceService {
         ...(payload.price !== undefined ? { price: Math.max(0, Number(payload.price) || 0) } : {}),
         ...(payload.currency ? { currency: payload.currency } : {}),
         ...(payload.status ? { status: payload.status as ShopProductStatus } : {}),
-        ...(payload.stock !== undefined ? { stock: payload.stock } : {})
+        ...(payload.stock !== undefined ? { stock: payload.stock } : {}),
+        ...(payload.categoryId !== undefined ? { categoryId: payload.categoryId } : {}),
+        ...(payload.summary !== undefined ? { summary: payload.summary?.trim() || null } : {}),
+        ...(payload.images !== undefined ? { images: payload.images as Prisma.InputJsonValue } : {}),
+        ...(payload.featured !== undefined ? { featured: Boolean(payload.featured) } : {}),
+        ...(payload.deliveryTarget ? { deliveryTarget: payload.deliveryTarget } : {}),
+        ...(payload.accountLimit !== undefined ? { accountLimit: payload.accountLimit } : {}),
+        ...(payload.periodLimit !== undefined ? { periodLimit: payload.periodLimit } : {}),
+        ...(payload.periodDays !== undefined ? { periodDays: payload.periodDays } : {}),
+        ...(payload.saleStartsAt !== undefined ? { saleStartsAt: payload.saleStartsAt ? new Date(payload.saleStartsAt) : null } : {}),
+        ...(payload.saleEndsAt !== undefined ? { saleEndsAt: payload.saleEndsAt ? new Date(payload.saleEndsAt) : null } : {}),
+        ...(payload.technicalCode !== undefined ? { technicalCode: payload.technicalCode?.trim() || null } : {}),
+        ...(payload.sourceOrigin !== undefined ? { sourceOrigin: payload.sourceOrigin?.trim() || null } : {}),
+        ...(payload.ambiguous !== undefined ? { ambiguous: Boolean(payload.ambiguous) } : {}),
+        ...(payload.internalNotes !== undefined ? { internalNotes: payload.internalNotes?.trim() || null } : {}),
+        ...(payload.sortOrder !== undefined ? { sortOrder: Math.max(0, Number(payload.sortOrder) || 0) } : {}),
+        updatedBy: user.id,
+        version: { increment: 1 }
       }
     })
 
@@ -276,7 +353,7 @@ export class CommerceService {
       action: 'admin.shop.product.archived',
       targetType: 'ShopProduct',
       targetId: product.id,
-      metadata: { key: product.key, name: product.name }
+      metadata: { name: product.name }
     })
     return product
   }
@@ -356,23 +433,135 @@ export class CommerceService {
   }
 
   async createPurchaseIntent(payload: CreatePurchaseIntentPayload, user: AuthenticatedUser) {
-    const product = await this.prisma.shopProduct.findUnique({ where: { id: payload.productId } })
-    if (!product || product.status !== 'ACTIVE') {
+    const now = new Date()
+    const quantity = Math.max(1, Math.min(100, Number(payload.quantity) || 1))
+    const product = await this.prisma.shopProduct.findUnique({
+      where: { id: payload.productId },
+      include: { variants: true }
+    })
+    if (
+      !product ||
+      product.status !== 'ACTIVE' ||
+      product.deletedAt ||
+      (product.saleStartsAt && product.saleStartsAt > now) ||
+      (product.saleEndsAt && product.saleEndsAt < now)
+    ) {
       throw new NotFoundException('Product not available')
     }
 
-    const purchase = await this.prisma.purchaseIntent.create({
-      data: {
-        accountId: user.id,
-        productId: product.id,
-        price: product.price,
-        currency: product.currency
-      },
-      include: {
-        product: true,
-        account: true
+    const variant = payload.variantId
+      ? product.variants.find((item) => item.id === payload.variantId && item.available)
+      : product.variants.filter((item) => item.available).sort((a, b) => a.sortOrder - b.sortOrder)[0]
+    if (payload.variantId && !variant) throw new BadRequestException('Selected product variant is not available')
+
+    const unitPrice = variant?.price ?? product.price
+    const currency = variant?.currency ?? product.currency
+    const totalPrice = unitPrice * quantity
+    const target = variant?.deliveryTarget ?? product.deliveryTarget
+    const accountLimit = variant?.accountLimit ?? product.accountLimit
+    const periodLimit = variant?.periodLimit ?? product.periodLimit
+    const periodDays = variant?.periodDays ?? product.periodDays
+
+    if (unitPrice <= 0) throw new BadRequestException('Product does not have a valid price')
+    if (target !== 'ACCOUNT') {
+      if (!payload.destinationCharacterId) throw new BadRequestException('Select the destination character')
+      const character = await this.prisma.accountCharacter.findFirst({
+        where: { id: payload.destinationCharacterId, accountId: user.id }
+      })
+      if (!character) throw new BadRequestException('Destination character does not belong to this account')
+    }
+
+    const countedStatuses: PurchaseIntentStatus[] = ['PREPARED', 'PENDING_PAYMENT', 'PAID', 'DELIVERING', 'COMPLETED']
+    if (accountLimit) {
+      const previous = await this.prisma.purchaseIntent.aggregate({
+        where: { accountId: user.id, productId: product.id, status: { in: countedStatuses } },
+        _sum: { quantity: true }
+      })
+      if ((previous._sum.quantity || 0) + quantity > accountLimit) {
+        throw new BadRequestException('Account purchase limit exceeded')
       }
-    })
+    }
+    if (periodLimit && periodDays) {
+      const periodStart = new Date(now.getTime() - periodDays * 86_400_000)
+      const previous = await this.prisma.purchaseIntent.aggregate({
+        where: { accountId: user.id, productId: product.id, status: { in: countedStatuses }, createdAt: { gte: periodStart } },
+        _sum: { quantity: true }
+      })
+      if ((previous._sum.quantity || 0) + quantity > periodLimit) {
+        throw new BadRequestException('Purchase limit for this period exceeded')
+      }
+    }
+
+    const correlationId = randomUUID()
+    const purchase = await this.prisma.$transaction(async (tx) => {
+      // Recheck limits inside the serializable transaction so concurrent clicks
+      // cannot both pass the preflight validation.
+      if (accountLimit) {
+        const previous = await tx.purchaseIntent.aggregate({
+          where: { accountId: user.id, productId: product.id, status: { in: countedStatuses } },
+          _sum: { quantity: true }
+        })
+        if ((previous._sum.quantity || 0) + quantity > accountLimit) {
+          throw new BadRequestException('Account purchase limit exceeded')
+        }
+      }
+      if (periodLimit && periodDays) {
+        const periodStart = new Date(now.getTime() - periodDays * 86_400_000)
+        const previous = await tx.purchaseIntent.aggregate({
+          where: { accountId: user.id, productId: product.id, status: { in: countedStatuses }, createdAt: { gte: periodStart } },
+          _sum: { quantity: true }
+        })
+        if ((previous._sum.quantity || 0) + quantity > periodLimit) {
+          throw new BadRequestException('Purchase limit for this period exceeded')
+        }
+      }
+      if (variant?.stock !== null && variant?.stock !== undefined) {
+        const reserved = await tx.shopProductVariant.updateMany({
+          where: { id: variant.id, available: true, stock: { gte: quantity } },
+          data: { stock: { decrement: quantity } }
+        })
+        if (!reserved.count) throw new BadRequestException('Insufficient variant stock')
+      } else if (product.stock !== null) {
+        const reserved = await tx.shopProduct.updateMany({
+          where: { id: product.id, status: 'ACTIVE', stock: { gte: quantity } },
+          data: { stock: { decrement: quantity } }
+        })
+        if (!reserved.count) throw new BadRequestException('Insufficient product stock')
+      }
+
+      const charged = await tx.accountCurrency.updateMany({
+        where: { accountId: user.id, currency, balance: { gte: totalPrice } },
+        data: { balance: { decrement: totalPrice } }
+      })
+      if (!charged.count) throw new BadRequestException('Insufficient balance')
+
+      return tx.purchaseIntent.create({
+        data: {
+          accountId: user.id,
+          productId: product.id,
+          variantId: variant?.id || null,
+          destinationCharacterId: payload.destinationCharacterId || null,
+          quantity,
+          price: totalPrice,
+          currency,
+          status: 'PAID',
+          correlationId,
+          deliveries: {
+            create: {
+              status: 'WAITING',
+              target,
+              accountId: user.id,
+              characterId: payload.destinationCharacterId || null,
+              itemCode: product.technicalCode,
+              itemName: variant ? `${product.name} - ${variant.name}` : product.name,
+              quantity: (variant?.quantity || 1) * quantity,
+              correlationId: `${correlationId}:delivery`
+            }
+          }
+        },
+        include: { product: true, variant: true, account: true, deliveries: true }
+      })
+    }, { isolationLevel: 'Serializable' })
 
     await this.audit.record({
       actorId: user.id,
@@ -380,7 +569,17 @@ export class CommerceService {
       action: 'shop.purchase.intent',
       targetType: 'PurchaseIntent',
       targetId: purchase.id,
-      metadata: { product: product.name, price: product.price, currency: product.currency }
+      metadata: { product: product.name, variant: variant?.name, quantity, price: totalPrice, currency, correlationId }
+    })
+    await this.observability.recordOperationalEvent({
+      module: 'store',
+      eventType: 'ORDER_CREATED',
+      entityType: 'PurchaseIntent',
+      entityId: purchase.id,
+      actorUserId: user.id,
+      correlationId,
+      description: `Pedido ${purchase.id} criado para ${product.name}.`,
+      data: { productId: product.id, variantId: variant?.id, quantity, price: totalPrice, currency }
     })
 
     return this.mapPurchase(purchase)
@@ -414,6 +613,15 @@ export class CommerceService {
       targetType: 'RechargeIntent',
       targetId: recharge.id,
       metadata: { currency: pack.currency, amount: pack.amount, bonus: pack.bonus }
+    })
+    await this.observability.recordOperationalEvent({
+      module: 'store',
+      eventType: 'PAYMENT_INTENT_CREATED',
+      entityType: 'RechargeIntent',
+      entityId: recharge.id,
+      actorUserId: user.id,
+      description: `Intencao de recarga ${recharge.id} criada.`,
+      data: { currency: pack.currency, amount: pack.amount, bonus: pack.bonus }
     })
 
     return this.mapRecharge(recharge)
@@ -486,6 +694,21 @@ export class CommerceService {
         targetId: id,
         metadata: { previousStatus: purchase.status, nextStatus: payload.status, username: updated.account.username }
       })
+      await this.observability.recordOperationalEvent({
+        module: 'store',
+        eventType:
+          payload.status === 'COMPLETED'
+            ? 'ORDER_COMPLETED'
+            : payload.status === 'CANCELLED'
+              ? 'ORDER_CANCELLED'
+              : 'ORDER_STATUS_CHANGED',
+        entityType: 'PurchaseIntent',
+        entityId: id,
+        actorUserId: user.id,
+        targetUserId: purchase.accountId,
+        description: `Pedido ${id} alterado de ${purchase.status} para ${payload.status}.`,
+        data: { previousStatus: purchase.status, nextStatus: payload.status }
+      })
 
       return this.mapPurchase(updated)
     })
@@ -520,6 +743,21 @@ export class CommerceService {
         targetType: 'RechargeIntent',
         targetId: id,
         metadata: { previousStatus: recharge.status, nextStatus: payload.status, username: updated.account.username }
+      })
+      await this.observability.recordOperationalEvent({
+        module: 'store',
+        eventType:
+          payload.status === 'PAID'
+            ? 'PAYMENT_CONFIRMED'
+            : payload.status === 'CANCELLED'
+              ? 'PAYMENT_CANCELLED'
+              : 'PAYMENT_STATUS_CHANGED',
+        entityType: 'RechargeIntent',
+        entityId: id,
+        actorUserId: user.id,
+        targetUserId: recharge.accountId,
+        description: `Recarga ${id} alterada de ${recharge.status} para ${payload.status}.`,
+        data: { previousStatus: recharge.status, nextStatus: payload.status, amount }
       })
 
       return this.mapRecharge(updated)

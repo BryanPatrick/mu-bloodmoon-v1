@@ -103,15 +103,45 @@ enum EquipmentClassLinkRole {
 }
 
 enum ShopProductStatus {
-  ACTIVE
   DRAFT
+  IN_REVIEW
+  APPROVED
+  SCHEDULED
+  ACTIVE
+  INACTIVE
   ARCHIVED
+  BLOCKED
 }
 
 enum PurchaseIntentStatus {
   PREPARED
+  PENDING_PAYMENT
+  PAID
+  DELIVERING
   COMPLETED
+  MANUAL_REVIEW
+  REFUND_PENDING
+  REFUNDED
+  FAILED
   CANCELLED
+}
+
+enum StoreDeliveryStatus {
+  WAITING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REPROCESSING
+  MANUAL_REVIEW
+  REFUNDED
+}
+
+enum StoreDeliveryTarget {
+  ACCOUNT
+  CHARACTER
+  INVENTORY
+  VAULT
+  MAIL
 }
 
 enum RechargeIntentStatus {
@@ -127,11 +157,17 @@ enum CharacterRuntimeStatus {
 }
 
 enum MarketplaceListingStatus {
-  PENDING_LOCK
+  DRAFT
+  ESCROW_PENDING
   ACTIVE
+  RESERVED
   SOLD
-  CANCELLED
+  CANCELED
   EXPIRED
+  SUSPENDED
+  RETURN_PENDING
+  RETURNED
+  MANUAL_REVIEW
   FAILED
 }
 
@@ -143,6 +179,136 @@ enum MarketplaceOrderStatus {
   CANCELLED
   REFUNDED
   FAILED
+}
+
+enum MarketplaceEscrowStatus {
+  ENTRY_PENDING
+  HELD
+  TRANSFER_PENDING
+  RETURN_PENDING
+  RELEASED_TO_BUYER
+  RETURNED_TO_SELLER
+  FROZEN
+  MANUAL_REVIEW
+  FAILED
+}
+
+enum MarketplaceReportStatus {
+  NEW
+  ASSIGNED
+  INVESTIGATING
+  WAITING_FOR_USER
+  RESOLVED
+  REJECTED
+  ESCALATED
+}
+
+enum MarketplaceTaskStatus {
+  PENDING
+  IN_PROGRESS
+  BLOCKED
+  DONE
+  CANCELED
+}
+
+enum CommunityPostStatus {
+  DRAFT
+  PUBLISHED
+  HIDDEN
+  REMOVED
+  ARCHIVED
+}
+
+enum CommunityReportStatus {
+  NEW
+  ASSIGNED
+  INVESTIGATING
+  WAITING_FOR_USER
+  RESOLVED
+  REJECTED
+  ESCALATED
+  REOPENED
+}
+
+enum CommunityReportPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum CommunityModerationType {
+  WARNING
+  SOCIAL_SUSPENSION
+  POST_BLOCK
+  COMMENT_BLOCK
+  MESSAGE_LIMIT
+  AVATAR_REMOVAL
+  COVER_REMOVAL
+  REACH_LIMIT
+}
+
+enum CommunityAchievementRarity {
+  COMMON
+  UNCOMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+enum CommunityQuestStatus {
+  DRAFT
+  SCHEDULED
+  ACTIVE
+  ENDED
+  CANCELLED
+  ARCHIVED
+}
+
+enum CommunityTaskStatus {
+  PENDING
+  IN_PROGRESS
+  BLOCKED
+  DONE
+  CANCELLED
+}
+
+enum AdminTaskStatus {
+  BACKLOG
+  OPEN
+  ASSIGNED
+  IN_PROGRESS
+  WAITING
+  IN_REVIEW
+  COMPLETED
+  CANCELED
+  REOPENED
+}
+
+enum AdminTaskPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+  CRITICAL
+}
+
+enum AdminTaskComplexity {
+  SIMPLE
+  STANDARD
+  COMPLEX
+  INVESTIGATION
+  CRITICAL
+}
+
+enum AdminTaskEvidenceType {
+  IMAGE
+  FILE
+  INTERNAL_LINK
+  DESCRIPTION
+  LOG
+  ENTITY_CHANGE
+  BEFORE_AFTER
 }
 
 enum GameBridgeOperation {
@@ -177,35 +343,419 @@ enum ModerationActionType {
   BAN
 }
 
+enum AuditResult {
+  SUCCESS
+  FAILURE
+  PARTIAL
+  DENIED
+}
+
+enum WorkLogResult {
+  SUCCESS
+  PARTIAL
+  FAILURE
+  CANCELLED
+}
+
+enum SystemErrorSeverity {
+  INFO
+  WARNING
+  ERROR
+  CRITICAL
+}
+
+enum SystemErrorStatus {
+  NEW
+  ACKNOWLEDGED
+  INVESTIGATING
+  WAITING
+  RESOLVED
+  IGNORED
+  REOPENED
+}
+
+enum OperationalEventSeverity {
+  INFO
+  WARNING
+  ERROR
+  CRITICAL
+}
+
+enum SystemAlertStatus {
+  OPEN
+  ACKNOWLEDGED
+  RESOLVED
+  IGNORED
+}
+
+enum AdminExportStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  EXPIRED
+}
+
+enum RoadmapHorizon {
+  NOW
+  NEXT
+  FUTURE
+  ANALYSIS
+  COMPLETED
+  CANCELLED
+}
+
+enum RoadmapStatus {
+  PROPOSED
+  ANALYSIS
+  PLANNED
+  DESIGN
+  DEVELOPMENT
+  TESTING
+  CLOSED_BETA
+  PUBLIC_BETA
+  READY
+  RELEASED
+  PAUSED
+  POSTPONED
+  CANCELLED
+}
+
+enum RoadmapPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum RoadmapVisibility {
+  PUBLIC
+  UNLISTED
+  ADMIN_ONLY
+}
+
+enum RoadmapWorkflowStatus {
+  DRAFT
+  IN_REVIEW
+  APPROVED
+  SCHEDULED
+  PUBLISHED
+  UNPUBLISHED
+  ARCHIVED
+  REJECTED
+}
+
+enum RoadmapUpdateType {
+  GENERAL
+  PROGRESS
+  STATUS
+  SCOPE
+  DELIVERY
+  DELAY
+  CANCELLATION
+}
+
+enum RoadmapTaskStatus {
+  PENDING
+  IN_PROGRESS
+  BLOCKED
+  DONE
+  CANCELLED
+}
+
+enum RoadmapWorkSituation {
+  ON_TRACK
+  AT_RISK
+  DELAYED
+  BLOCKED
+  DONE
+}
+
+enum RoadmapRelationType {
+  NEWS
+  PATCH_NOTE
+}
+
 model Account {
-  id                String                @id @default(uuid())
-  username          String                @unique
-  name              String
-  email             String                @unique
-  passwordHash      String
-  personalIdHash    String?
-  sessionVersion    Int                   @default(0)
-  twoFactorEnabled  Boolean               @default(false)
-  twoFactorSecret   String?               @db.Text
-  twoFactorPending  String?               @db.Text
-  role              Role                  @default(PLAYER)
-  status            AccountStatus         @default(PENDING)
-  createdAt         DateTime              @default(now())
-  updatedAt         DateTime              @updatedAt
-  currencies        AccountCurrency[]
-  auditEvents       AuditEvent[]          @relation("AuditActor")
-  purchases         PurchaseIntent[]
-  recharges         RechargeIntent[]
-  characters        AccountCharacter[]
-  marketListings    PlayerMarketListing[] @relation("MarketplaceSeller")
-  marketOrders      PlayerMarketOrder[]   @relation("MarketplaceBuyer")
-  bridgeJobs        GameBridgeJob[]
-  permissions       AccountPermission[]
-  supportTickets    SupportTicket[]       @relation("TicketOwner")
-  assignedTickets   SupportTicket[]       @relation("TicketAssignee")
-  moderationActions AccountModeration[]   @relation("ModerationTarget")
-  moderationIssued  AccountModeration[]   @relation("ModerationActor")
-  sessions          AccountSession[]
+  id                   String                      @id @default(uuid())
+  username             String                      @unique
+  name                 String
+  email                String                      @unique
+  passwordHash         String
+  personalIdHash       String?
+  sessionVersion       Int                         @default(0)
+  twoFactorEnabled     Boolean                     @default(false)
+  twoFactorSecret      String?                     @db.Text
+  twoFactorPending     String?                     @db.Text
+  role                 Role                        @default(PLAYER)
+  status               AccountStatus               @default(PENDING)
+  createdAt            DateTime                    @default(now())
+  updatedAt            DateTime                    @updatedAt
+  currencies           AccountCurrency[]
+  auditEvents          AuditEvent[]                @relation("AuditActor")
+  purchases            PurchaseIntent[]
+  recharges            RechargeIntent[]
+  characters           AccountCharacter[]
+  marketListings       PlayerMarketListing[]       @relation("MarketplaceSeller")
+  marketOrders         PlayerMarketOrder[]         @relation("MarketplaceBuyer")
+  marketplaceReports   MarketplaceReport[]         @relation("MarketplaceReporter")
+  communityProfile     CommunityProfile?
+  communityPosts       CommunityPost[]             @relation("CommunityPostAuthor")
+  communityComments    CommunityComment[]          @relation("CommunityCommentAuthor")
+  communityReactions   CommunityReaction[]
+  communityReports     CommunityReport[]           @relation("CommunityReporter")
+  reportedCommunity    CommunityReport[]           @relation("CommunityReportedUser")
+  achievementGrants    CommunityAchievementGrant[]
+  badgeGrants          CommunityBadgeGrant[]
+  questProgress        CommunityQuestParticipant[]
+  bridgeJobs           GameBridgeJob[]
+  permissions          AccountPermission[]
+  supportTickets       SupportTicket[]             @relation("TicketOwner")
+  assignedTickets      SupportTicket[]             @relation("TicketAssignee")
+  moderationActions    AccountModeration[]         @relation("ModerationTarget")
+  moderationIssued     AccountModeration[]         @relation("ModerationActor")
+  sessions             AccountSession[]
+  adminTasksAssigned   AdminTask[]                 @relation("AdminTaskAssignee")
+  adminTasksAssignedBy AdminTask[]                 @relation("AdminTaskAssigner")
+  adminTasksCreated    AdminTask[]                 @relation("AdminTaskCreator")
+  adminTaskComments    AdminTaskComment[]
+  adminTaskEvidence    AdminTaskEvidence[]
+}
+
+model AdminTask {
+  id               String              @id @default(uuid())
+  title            String              @db.VarChar(191)
+  description      String              @db.LongText
+  module           String              @db.VarChar(100)
+  type             String              @db.VarChar(100)
+  priority         AdminTaskPriority   @default(NORMAL)
+  complexity       AdminTaskComplexity @default(STANDARD)
+  status           AdminTaskStatus     @default(OPEN)
+  assignedTo       String?
+  assignedBy       String?
+  createdBy        String
+  dueAt            DateTime?
+  startedAt        DateTime?
+  completedAt      DateTime?
+  estimatedMinutes Int?
+  actualMinutes    Int?
+  entityType       String?             @db.VarChar(191)
+  entityId         String?             @db.VarChar(191)
+  errorId          String?             @db.VarChar(191)
+  reportId         String?             @db.VarChar(191)
+  internalNotes    String?             @db.LongText
+  result           String?             @db.LongText
+  approvalRequired Boolean             @default(false)
+  reviewedBy       String?             @db.VarChar(191)
+  reviewedAt       DateTime?
+  reviewReason     String?             @db.Text
+  reopenedCount    Int                 @default(0)
+  rejectedCount    Int                 @default(0)
+  sourceTaskType   String?             @db.VarChar(100)
+  sourceTaskId     String?             @db.VarChar(191)
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  assignee         Account?            @relation("AdminTaskAssignee", fields: [assignedTo], references: [id], onDelete: SetNull)
+  assigner         Account?            @relation("AdminTaskAssigner", fields: [assignedBy], references: [id], onDelete: SetNull)
+  creator          Account             @relation("AdminTaskCreator", fields: [createdBy], references: [id], onDelete: Restrict)
+  comments         AdminTaskComment[]
+  evidence         AdminTaskEvidence[]
+  links            AdminTaskLink[]
+  history          AdminTaskHistory[]
+
+  @@unique([sourceTaskType, sourceTaskId])
+  @@index([assignedTo, status, dueAt])
+  @@index([module, status, priority])
+  @@index([entityType, entityId])
+  @@index([errorId])
+  @@index([reportId])
+  @@index([createdAt])
+}
+
+model AdminTaskComment {
+  id          String    @id @default(uuid())
+  taskId      String
+  authorId    String
+  content     String    @db.LongText
+  attachments Json?
+  editedAt    DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  task        AdminTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  author      Account   @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([taskId, createdAt])
+  @@index([authorId, createdAt])
+}
+
+model AdminTaskEvidence {
+  id          String                @id @default(uuid())
+  taskId      String
+  authorId    String
+  type        AdminTaskEvidenceType
+  title       String                @db.VarChar(191)
+  description String?               @db.Text
+  url         String?               @db.VarChar(1024)
+  entityType  String?               @db.VarChar(191)
+  entityId    String?               @db.VarChar(191)
+  beforeData  Json?
+  afterData   Json?
+  metadata    Json?
+  createdAt   DateTime              @default(now())
+  task        AdminTask             @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  author      Account               @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([taskId, createdAt])
+  @@index([authorId, createdAt])
+  @@index([entityType, entityId])
+}
+
+model AdminTaskLink {
+  id         String    @id @default(uuid())
+  taskId     String
+  module     String    @db.VarChar(100)
+  entityType String    @db.VarChar(191)
+  entityId   String    @db.VarChar(191)
+  label      String?   @db.VarChar(191)
+  createdBy  String    @db.VarChar(191)
+  createdAt  DateTime  @default(now())
+  task       AdminTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, entityType, entityId])
+  @@index([module, entityType, entityId])
+}
+
+model AdminTaskHistory {
+  id            String           @id @default(uuid())
+  taskId        String
+  actorId       String           @db.VarChar(191)
+  action        String           @db.VarChar(100)
+  fromStatus    AdminTaskStatus?
+  toStatus      AdminTaskStatus?
+  description   String           @db.Text
+  beforeData    Json?
+  afterData     Json?
+  correlationId String?          @db.VarChar(80)
+  createdAt     DateTime         @default(now())
+  task          AdminTask        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId, createdAt])
+  @@index([actorId, createdAt])
+  @@index([correlationId])
+}
+
+model RoadmapItem {
+  id                 String                @id @default(uuid())
+  title              String                @db.VarChar(191)
+  slug               String                @unique @db.VarChar(191)
+  summary            String                @db.Text
+  description        String                @db.LongText
+  objective          String?               @db.Text
+  problem            String?               @db.Text
+  playerBenefit      String?               @db.Text
+  scopeIncluded      Json?
+  scopeExcluded      Json?
+  category           String                @db.VarChar(100)
+  horizon            RoadmapHorizon
+  status             RoadmapStatus
+  priority           RoadmapPriority       @default(MEDIUM)
+  progress           Int                   @default(0)
+  estimatedPeriod    String?               @db.VarChar(100)
+  completedAt        DateTime?
+  image              String?               @db.VarChar(512)
+  icon               String?               @db.VarChar(100)
+  tags               Json?
+  dependencies       Json?
+  visibility         RoadmapVisibility     @default(PUBLIC)
+  sortOrder          Int                   @default(0)
+  ownerId            String?               @db.VarChar(191)
+  internalDeadline   DateTime?
+  lastWorkAt         DateTime?
+  workSituation      RoadmapWorkSituation  @default(ON_TRACK)
+  workflowStatus     RoadmapWorkflowStatus @default(DRAFT)
+  createdBy          String                @db.VarChar(191)
+  updatedBy          String                @db.VarChar(191)
+  reviewedBy         String?               @db.VarChar(191)
+  approvedBy         String?               @db.VarChar(191)
+  publishedBy        String?               @db.VarChar(191)
+  internalNotes      String?               @db.Text
+  publicNotes        String?               @db.Text
+  revisionReason     String?               @db.Text
+  version            Int                   @default(1)
+  reviewedAt         DateTime?
+  approvedAt         DateTime?
+  publishedAt        DateTime?
+  scheduledPublishAt DateTime?
+  archivedAt         DateTime?
+  deletedAt          DateTime?
+  deletedBy          String?               @db.VarChar(191)
+  deletionReason     String?               @db.Text
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+  updates            RoadmapUpdate[]
+  tasks              RoadmapTask[]
+  relations          RoadmapRelation[]
+
+  @@index([workflowStatus, visibility, publishedAt])
+  @@index([horizon, status, sortOrder])
+  @@index([category, priority])
+  @@index([ownerId, internalDeadline])
+  @@index([deletedAt])
+}
+
+model RoadmapUpdate {
+  id              String            @id @default(uuid())
+  roadmapItemId   String
+  title           String            @db.VarChar(191)
+  content         String            @db.LongText
+  updateType      RoadmapUpdateType @default(GENERAL)
+  oldStatus       RoadmapStatus?
+  newStatus       RoadmapStatus?
+  oldProgress     Int?
+  newProgress     Int?
+  createdBy       String            @db.VarChar(191)
+  visibility      RoadmapVisibility @default(PUBLIC)
+  evidence        Json?
+  durationMinutes Int?
+  createdAt       DateTime          @default(now())
+  roadmapItem     RoadmapItem       @relation(fields: [roadmapItemId], references: [id], onDelete: Cascade)
+
+  @@index([roadmapItemId, createdAt])
+  @@index([visibility, createdAt])
+}
+
+model RoadmapTask {
+  id            String            @id @default(uuid())
+  roadmapItemId String
+  title         String            @db.VarChar(191)
+  description   String?           @db.Text
+  status        RoadmapTaskStatus @default(PENDING)
+  assigneeId    String?           @db.VarChar(191)
+  dueAt         DateTime?
+  completedAt   DateTime?
+  createdBy     String            @db.VarChar(191)
+  updatedBy     String            @db.VarChar(191)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  roadmapItem   RoadmapItem       @relation(fields: [roadmapItemId], references: [id], onDelete: Cascade)
+
+  @@index([roadmapItemId, status])
+  @@index([assigneeId, status])
+  @@index([dueAt, status])
+}
+
+model RoadmapRelation {
+  id            String              @id @default(uuid())
+  roadmapItemId String
+  type          RoadmapRelationType
+  entityId      String              @db.VarChar(191)
+  label         String?             @db.VarChar(191)
+  createdBy     String              @db.VarChar(191)
+  createdAt     DateTime            @default(now())
+  roadmapItem   RoadmapItem         @relation(fields: [roadmapItemId], references: [id], onDelete: Cascade)
+
+  @@unique([roadmapItemId, type, entityId])
+  @@index([type, entityId])
 }
 
 model AccountSession {
@@ -309,16 +859,217 @@ model AccountCharacter {
 }
 
 model AuditEvent {
-  id            String   @id @default(uuid())
+  id            String      @id @default(uuid())
+  module        String      @default("system") @db.VarChar(100)
+  action        String      @db.VarChar(191)
+  targetType    String      @db.VarChar(191)
+  targetId      String?     @db.VarChar(191)
   actorId       String?
-  actorUsername String?
-  action        String
-  targetType    String
-  targetId      String?
-  severity      String   @default("info")
+  actorUsername String?     @db.VarChar(191)
+  actorRole     String?     @db.VarChar(40)
+  targetUserId  String?     @db.VarChar(191)
+  beforeData    Json?
+  afterData     Json?
+  reason        String?     @db.Text
+  result        AuditResult @default(SUCCESS)
+  severity      String      @default("info") @db.VarChar(40)
+  ipAddress     String?     @db.VarChar(80)
+  userAgent     String?     @db.VarChar(512)
+  sessionId     String?     @db.VarChar(191)
+  correlationId String?     @db.VarChar(80)
   metadata      Json?
-  createdAt     DateTime @default(now())
-  actor         Account? @relation("AuditActor", fields: [actorId], references: [id])
+  createdAt     DateTime    @default(now())
+  actor         Account?    @relation("AuditActor", fields: [actorId], references: [id])
+
+  @@index([module, createdAt])
+  @@index([action, createdAt])
+  @@index([targetType, targetId])
+  @@index([actorId, createdAt])
+  @@index([targetUserId, createdAt])
+  @@index([correlationId])
+  @@index([result, createdAt])
+}
+
+model AdminWorkLog {
+  id              String        @id @default(uuid())
+  userId          String
+  username        String?       @db.VarChar(191)
+  module          String        @db.VarChar(100)
+  action          String        @db.VarChar(191)
+  entityType      String        @db.VarChar(191)
+  entityId        String?       @db.VarChar(191)
+  taskId          String?       @db.VarChar(191)
+  description     String        @db.Text
+  startedAt       DateTime
+  completedAt     DateTime?
+  durationMinutes Int?
+  evidence        Json?
+  result          WorkLogResult @default(SUCCESS)
+  correlationId   String?       @db.VarChar(80)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([userId, createdAt])
+  @@index([module, createdAt])
+  @@index([taskId])
+  @@index([entityType, entityId])
+  @@index([correlationId])
+  @@index([result, createdAt])
+}
+
+model SystemError {
+  id              String                  @id @default(uuid())
+  fingerprint     String                  @unique @db.VarChar(191)
+  module          String                  @db.VarChar(100)
+  severity        SystemErrorSeverity     @default(ERROR)
+  errorCode       String?                 @db.VarChar(191)
+  publicMessage   String                  @db.Text
+  internalMessage String                  @db.Text
+  stackTrace      String?                 @db.LongText
+  correlationId   String?                 @db.VarChar(80)
+  userId          String?                 @db.VarChar(191)
+  accountId       String?                 @db.VarChar(191)
+  entityType      String?                 @db.VarChar(191)
+  entityId        String?                 @db.VarChar(191)
+  requestPath     String?                 @db.VarChar(512)
+  requestMethod   String?                 @db.VarChar(20)
+  environment     String                  @default("production") @db.VarChar(40)
+  occurrenceCount Int                     @default(1)
+  firstOccurredAt DateTime                @default(now())
+  lastOccurredAt  DateTime                @default(now())
+  status          SystemErrorStatus       @default(NEW)
+  assignedTo      String?                 @db.VarChar(191)
+  resolution      String?                 @db.Text
+  resolvedBy      String?                 @db.VarChar(191)
+  resolvedAt      DateTime?
+  taskId          String?                 @db.VarChar(191)
+  metadata        Json?
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+  occurrences     SystemErrorOccurrence[]
+  timeline        SystemErrorTimeline[]
+
+  @@index([module, lastOccurredAt])
+  @@index([severity, status])
+  @@index([assignedTo, status])
+  @@index([correlationId])
+  @@index([entityType, entityId])
+  @@index([taskId])
+}
+
+model SystemErrorOccurrence {
+  id            String      @id @default(uuid())
+  systemErrorId String
+  correlationId String?     @db.VarChar(80)
+  userId        String?     @db.VarChar(191)
+  requestPath   String?     @db.VarChar(512)
+  requestMethod String?     @db.VarChar(20)
+  ipAddress     String?     @db.VarChar(80)
+  userAgent     String?     @db.VarChar(512)
+  metadata      Json?
+  occurredAt    DateTime    @default(now())
+  systemError   SystemError @relation(fields: [systemErrorId], references: [id], onDelete: Cascade)
+
+  @@index([systemErrorId, occurredAt])
+  @@index([correlationId])
+}
+
+model SystemErrorTimeline {
+  id            String      @id @default(uuid())
+  systemErrorId String
+  actorUserId   String?     @db.VarChar(191)
+  actorUsername String?     @db.VarChar(191)
+  type          String      @db.VarChar(80)
+  fromStatus    String?     @db.VarChar(40)
+  toStatus      String?     @db.VarChar(40)
+  description   String      @db.Text
+  evidence      Json?
+  createdAt     DateTime    @default(now())
+  systemError   SystemError @relation(fields: [systemErrorId], references: [id], onDelete: Cascade)
+
+  @@index([systemErrorId, createdAt])
+  @@index([actorUserId, createdAt])
+}
+
+model OperationalEvent {
+  id            String                   @id @default(uuid())
+  module        String                   @db.VarChar(100)
+  eventType     String                   @db.VarChar(191)
+  severity      OperationalEventSeverity @default(INFO)
+  entityType    String?                  @db.VarChar(191)
+  entityId      String?                  @db.VarChar(191)
+  actorUserId   String?                  @db.VarChar(191)
+  targetUserId  String?                  @db.VarChar(191)
+  correlationId String?                  @db.VarChar(80)
+  description   String                   @db.Text
+  data          Json?
+  occurredAt    DateTime                 @default(now())
+
+  @@index([module, occurredAt])
+  @@index([eventType, occurredAt])
+  @@index([entityType, entityId])
+  @@index([correlationId])
+  @@index([severity, occurredAt])
+}
+
+model SystemAlert {
+  id             String              @id @default(uuid())
+  module         String              @db.VarChar(100)
+  alertType      String              @db.VarChar(191)
+  severity       SystemErrorSeverity
+  title          String              @db.VarChar(255)
+  message        String              @db.Text
+  sourceType     String?             @db.VarChar(100)
+  sourceId       String?             @db.VarChar(191)
+  correlationId  String?             @db.VarChar(80)
+  status         SystemAlertStatus   @default(OPEN)
+  assignedTo     String?             @db.VarChar(191)
+  acknowledgedBy String?             @db.VarChar(191)
+  acknowledgedAt DateTime?
+  resolvedBy     String?             @db.VarChar(191)
+  resolvedAt     DateTime?
+  metadata       Json?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@index([status, severity, createdAt])
+  @@index([module, createdAt])
+  @@index([assignedTo, status])
+  @@index([sourceType, sourceId])
+  @@index([correlationId])
+}
+
+model AdminLogExport {
+  id              String            @id @default(uuid())
+  requestedBy     String            @db.VarChar(191)
+  requestedByName String?           @db.VarChar(191)
+  source          String            @db.VarChar(80)
+  format          String            @default("csv") @db.VarChar(20)
+  filters         Json?
+  status          AdminExportStatus @default(PENDING)
+  recordCount     Int               @default(0)
+  fileName        String?           @db.VarChar(255)
+  checksum        String?           @db.VarChar(128)
+  errorMessage    String?           @db.Text
+  correlationId   String?           @db.VarChar(80)
+  createdAt       DateTime          @default(now())
+  completedAt     DateTime?
+  expiresAt       DateTime?
+
+  @@index([requestedBy, createdAt])
+  @@index([source, status])
+  @@index([correlationId])
+}
+
+model ObservabilityRetentionPolicy {
+  id                String   @id @default(uuid())
+  dataType          String   @unique @db.VarChar(80)
+  retentionDays     Int
+  immutableForAdmin Boolean  @default(false)
+  enabled           Boolean  @default(true)
+  updatedBy         String?  @db.VarChar(191)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 model SiteSetting {
@@ -561,24 +1312,110 @@ model EquipmentOption {
 }
 
 model ShopProduct {
-  id          String            @id @default(uuid())
-  key         String            @unique
-  name        String
-  short       String
-  category    String
-  description String            @db.Text
-  price       Int               @default(0)
-  currency    CurrencyCode
-  status      ShopProductStatus @default(ACTIVE)
-  stock       Int?
-  metadata    Json?
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
-  purchases   PurchaseIntent[]
+  id                 String               @id @default(uuid())
+  key                String               @unique
+  slug               String               @unique
+  name               String
+  short              String
+  category           String
+  categoryId         String?
+  summary            String?              @db.Text
+  description        String               @db.LongText
+  price              Int                  @default(0)
+  currency           CurrencyCode
+  status             ShopProductStatus    @default(DRAFT)
+  stock              Int?
+  images             Json?
+  featured           Boolean              @default(false)
+  deliveryTarget     StoreDeliveryTarget  @default(ACCOUNT)
+  accountLimit       Int?
+  periodLimit        Int?
+  periodDays         Int?
+  saleStartsAt       DateTime?
+  saleEndsAt         DateTime?
+  scheduledPublishAt DateTime?
+  publishedAt        DateTime?
+  archivedAt         DateTime?
+  deletedAt          DateTime?
+  deletedBy          String?
+  deletionReason     String?              @db.Text
+  technicalCode      String?
+  sourceOrigin       String?
+  ambiguous          Boolean              @default(false)
+  internalNotes      String?              @db.Text
+  revisionReason     String?              @db.Text
+  createdBy          String?
+  updatedBy          String?
+  reviewedBy         String?
+  approvedBy         String?
+  publishedBy        String?
+  reviewedAt         DateTime?
+  approvedAt         DateTime?
+  version            Int                  @default(1)
+  sortOrder          Int                  @default(0)
+  metadata           Json?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  categoryRecord     StoreCategory?       @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  variants           ShopProductVariant[]
+  purchases          PurchaseIntent[]
 
   @@index([category])
+  @@index([categoryId])
   @@index([currency])
-  @@index([status])
+  @@index([status, publishedAt])
+  @@index([featured, status])
+  @@index([status, sortOrder])
+  @@index([deletedAt])
+}
+
+model StoreCategory {
+  id          String        @id @default(uuid())
+  name        String
+  slug        String        @unique
+  description String?       @db.Text
+  image       String?
+  sortOrder   Int           @default(0)
+  active      Boolean       @default(true)
+  archivedAt  DateTime?
+  deletedAt   DateTime?
+  deletedBy   String?
+  createdBy   String?
+  updatedBy   String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  products    ShopProduct[]
+
+  @@index([active, sortOrder])
+  @@index([deletedAt])
+}
+
+model ShopProductVariant {
+  id              String               @id @default(uuid())
+  productId       String
+  name            String
+  sku             String               @unique
+  durationSeconds Int?
+  quantity        Int                  @default(1)
+  itemLevel       Int?
+  options         Json?
+  price           Int
+  currency        CurrencyCode
+  stock           Int?
+  available       Boolean              @default(true)
+  accountLimit    Int?
+  periodLimit     Int?
+  periodDays      Int?
+  deliveryTarget  StoreDeliveryTarget?
+  sortOrder       Int                  @default(0)
+  technicalData   Json?
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  product         ShopProduct          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  purchases       PurchaseIntent[]
+
+  @@index([productId, available, sortOrder])
+  @@index([currency])
 }
 
 model RechargePackage {
@@ -600,20 +1437,101 @@ model RechargePackage {
 }
 
 model PurchaseIntent {
-  id        String               @id @default(uuid())
-  accountId String
-  productId String
-  price     Int
-  currency  CurrencyCode
-  status    PurchaseIntentStatus @default(PREPARED)
-  createdAt DateTime             @default(now())
-  updatedAt DateTime             @updatedAt
-  account   Account              @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  product   ShopProduct          @relation(fields: [productId], references: [id])
+  id                     String               @id @default(uuid())
+  accountId              String
+  productId              String
+  variantId              String?
+  destinationCharacterId String?
+  quantity               Int                  @default(1)
+  price                  Int
+  currency               CurrencyCode
+  status                 PurchaseIntentStatus @default(PREPARED)
+  correlationId          String               @unique
+  internalNotes          String?              @db.Text
+  manualReviewReason     String?              @db.Text
+  refundReason           String?              @db.Text
+  refundedBy             String?
+  refundedAt             DateTime?
+  cancelledBy            String?
+  cancelledAt            DateTime?
+  completedAt            DateTime?
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
+  account                Account              @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  product                ShopProduct          @relation(fields: [productId], references: [id])
+  variant                ShopProductVariant?  @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  deliveries             StoreDelivery[]
+  notes                  StoreOrderNote[]
 
   @@index([accountId])
   @@index([productId])
+  @@index([variantId])
   @@index([status])
+  @@index([createdAt])
+}
+
+model StoreDelivery {
+  id            String              @id @default(uuid())
+  purchaseId    String
+  status        StoreDeliveryStatus @default(WAITING)
+  target        StoreDeliveryTarget
+  accountId     String
+  characterId   String?
+  itemCode      String?
+  itemName      String
+  quantity      Int                 @default(1)
+  attempts      Int                 @default(0)
+  maxAttempts   Int                 @default(3)
+  lastError     String?             @db.Text
+  correlationId String              @unique
+  assignedTo    String?
+  reprocessedBy String?
+  processingAt  DateTime?
+  completedAt   DateTime?
+  failedAt      DateTime?
+  refundedAt    DateTime?
+  evidence      Json?
+  metadata      Json?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  purchase      PurchaseIntent      @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([purchaseId])
+  @@index([accountId])
+  @@index([assignedTo, status])
+}
+
+model StoreOrderNote {
+  id         String         @id @default(uuid())
+  purchaseId String
+  authorId   String
+  authorName String
+  content    String         @db.Text
+  evidence   Json?
+  createdAt  DateTime       @default(now())
+  purchase   PurchaseIntent @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+
+  @@index([purchaseId, createdAt])
+}
+
+model StoreProductTest {
+  id            String    @id @default(uuid())
+  productId     String
+  variantId     String?
+  testAccountId String
+  testCharacter String?
+  environment   String
+  status        String
+  result        Json?
+  rollbackData  Json?
+  correlationId String    @unique
+  createdBy     String
+  createdAt     DateTime  @default(now())
+  completedAt   DateTime?
+
+  @@index([productId, createdAt])
+  @@index([testAccountId, createdAt])
 }
 
 model RechargeIntent {
@@ -645,19 +1563,27 @@ model PlayerMarketListing {
   itemData          Json
   price             Int
   currency          CurrencyCode
-  status            MarketplaceListingStatus @default(PENDING_LOCK)
+  status            MarketplaceListingStatus @default(ESCROW_PENDING)
   lockJobId         String?
   lockedAt          DateTime?
   expiresAt         DateTime?
   soldAt            DateTime?
   cancelledAt       DateTime?
   metadata          Json?
+  adminNotes        String?                  @db.Text
+  moderationReason  String?                  @db.Text
+  suspendedBy       String?                  @db.VarChar(191)
+  suspendedAt       DateTime?
+  returnedAt        DateTime?
   createdAt         DateTime                 @default(now())
   updatedAt         DateTime                 @updatedAt
   seller            Account                  @relation("MarketplaceSeller", fields: [sellerAccountId], references: [id], onDelete: Cascade)
   sellerCharacter   AccountCharacter?        @relation(fields: [sellerCharacterId], references: [id])
   orders            PlayerMarketOrder[]
   bridgeJobs        GameBridgeJob[]
+  escrow            MarketplaceEscrow?
+  reports           MarketplaceReport[]
+  tasks             MarketplaceTask[]
 
   @@unique([gameItemRef])
   @@index([sellerAccountId])
@@ -674,6 +1600,9 @@ model PlayerMarketOrder {
   price          Int
   currency       CurrencyCode
   status         MarketplaceOrderStatus @default(PREPARED)
+  fee            Int                    @default(0)
+  sellerAmount   Int                    @default(0)
+  correlationId  String                 @unique @db.VarChar(80)
   paidAt         DateTime?
   deliveredAt    DateTime?
   cancelledAt    DateTime?
@@ -683,12 +1612,427 @@ model PlayerMarketOrder {
   listing        PlayerMarketListing    @relation(fields: [listingId], references: [id])
   buyer          Account                @relation("MarketplaceBuyer", fields: [buyerAccountId], references: [id], onDelete: Cascade)
   bridgeJobs     GameBridgeJob[]
+  reports        MarketplaceReport[]
+  tasks          MarketplaceTask[]
 
   @@index([listingId])
   @@index([buyerAccountId])
   @@index([currency])
   @@index([status])
   @@index([createdAt])
+}
+
+model MarketplaceEscrow {
+  id                 String                  @id @default(uuid())
+  listingId          String                  @unique
+  gameItemRef        String                  @db.VarChar(255)
+  itemSerial         String?                 @db.VarChar(191)
+  originalOwnerId    String                  @db.VarChar(191)
+  buyerAccountId     String?                 @db.VarChar(191)
+  status             MarketplaceEscrowStatus @default(ENTRY_PENDING)
+  location           String                  @default("GAME_INVENTORY") @db.VarChar(100)
+  internalHash       String                  @unique @db.VarChar(191)
+  attempts           Int                     @default(0)
+  lastError          String?                 @db.Text
+  enteredAt          DateTime?
+  exitedAt           DateTime?
+  frozenAt           DateTime?
+  frozenBy           String?                 @db.VarChar(191)
+  manualReviewReason String?                 @db.Text
+  metadata           Json?
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+  listing            PlayerMarketListing     @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([originalOwnerId, status])
+  @@index([buyerAccountId, status])
+  @@index([itemSerial])
+}
+
+model MarketplaceReport {
+  id             String                  @id @default(uuid())
+  listingId      String?
+  orderId        String?
+  reporterId     String
+  reportedUserId String?                 @db.VarChar(191)
+  reason         String                  @db.VarChar(191)
+  description    String                  @db.Text
+  evidence       Json?
+  status         MarketplaceReportStatus @default(NEW)
+  assignedTo     String?                 @db.VarChar(191)
+  resolution     String?                 @db.Text
+  decisionReason String?                 @db.Text
+  resolvedBy     String?                 @db.VarChar(191)
+  resolvedAt     DateTime?
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+  listing        PlayerMarketListing?    @relation(fields: [listingId], references: [id], onDelete: SetNull)
+  order          PlayerMarketOrder?      @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  reporter       Account                 @relation("MarketplaceReporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  tasks          MarketplaceTask[]
+
+  @@index([status, createdAt])
+  @@index([assignedTo, status])
+  @@index([listingId])
+  @@index([orderId])
+  @@index([reportedUserId, status])
+}
+
+model MarketplaceTask {
+  id          String                @id @default(uuid())
+  listingId   String?
+  orderId     String?
+  reportId    String?
+  title       String                @db.VarChar(191)
+  description String?               @db.Text
+  type        String                @db.VarChar(100)
+  status      MarketplaceTaskStatus @default(PENDING)
+  priority    String                @default("MEDIUM") @db.VarChar(40)
+  assigneeId  String?               @db.VarChar(191)
+  dueAt       DateTime?
+  completedAt DateTime?
+  createdBy   String                @db.VarChar(191)
+  updatedBy   String                @db.VarChar(191)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  listing     PlayerMarketListing?  @relation(fields: [listingId], references: [id], onDelete: SetNull)
+  order       PlayerMarketOrder?    @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  report      MarketplaceReport?    @relation(fields: [reportId], references: [id], onDelete: SetNull)
+
+  @@index([status, assigneeId])
+  @@index([type, status])
+  @@index([listingId])
+  @@index([orderId])
+  @@index([reportId])
+}
+
+model MarketplaceEconomyConfig {
+  id                   String   @id @default("default")
+  publicationFee       Int      @default(0)
+  saleFeePercent       Int      @default(5)
+  listingDurationHours Int      @default(168)
+  maxListings          Int      @default(10)
+  vipDiscountPercent   Int      @default(0)
+  acceptedCurrencies   Json
+  minimumPrice         Int      @default(1)
+  maximumPrice         Int      @default(1000000)
+  cooldownMinutes      Int      @default(0)
+  allowedCategories    Json?
+  updatedBy            String?  @db.VarChar(191)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model CommunityProfile {
+  id                   String                      @id @default(uuid())
+  accountId            String                      @unique
+  displayName          String                      @db.VarChar(100)
+  bio                  String?                     @db.Text
+  avatarUrl            String?                     @db.VarChar(512)
+  coverUrl             String?                     @db.VarChar(512)
+  isPublic             Boolean                     @default(true)
+  socialSuspendedUntil DateTime?
+  postBlockedUntil     DateTime?
+  commentBlockedUntil  DateTime?
+  messagesLimitedUntil DateTime?
+  reachLimitedUntil    DateTime?
+  warningCount         Int                         @default(0)
+  createdAt            DateTime                    @default(now())
+  updatedAt            DateTime                    @updatedAt
+  account              Account                     @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  moderationActions    CommunityModerationAction[]
+
+  @@index([displayName])
+  @@index([socialSuspendedUntil])
+}
+
+model CommunityPost {
+  id                 String                  @id @default(uuid())
+  authorId           String
+  title              String?                 @db.VarChar(191)
+  content            String                  @db.LongText
+  media              Json?
+  status             CommunityPostStatus     @default(PUBLISHED)
+  isPinned           Boolean                 @default(false)
+  isFeatured         Boolean                 @default(false)
+  reachLimited       Boolean                 @default(false)
+  administrativeEdit Boolean                 @default(false)
+  administrativeNote String?                 @db.Text
+  editedBy           String?                 @db.VarChar(191)
+  hiddenBy           String?                 @db.VarChar(191)
+  hiddenAt           DateTime?
+  removedBy          String?                 @db.VarChar(191)
+  removedAt          DateTime?
+  deletionReason     String?                 @db.Text
+  publishedAt        DateTime?
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+  author             Account                 @relation("CommunityPostAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  comments           CommunityComment[]
+  reactions          CommunityReaction[]
+  reports            CommunityReport[]
+  revisions          CommunityPostRevision[]
+
+  @@index([status, publishedAt])
+  @@index([authorId, createdAt])
+  @@index([isPinned, isFeatured, createdAt])
+}
+
+model CommunityPostRevision {
+  id         String        @id @default(uuid())
+  postId     String
+  title      String?       @db.VarChar(191)
+  content    String        @db.LongText
+  media      Json?
+  editedBy   String        @db.VarChar(191)
+  editorRole String        @db.VarChar(40)
+  reason     String        @db.Text
+  createdAt  DateTime      @default(now())
+  post       CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId, createdAt])
+}
+
+model CommunityComment {
+  id        String              @id @default(uuid())
+  postId    String
+  authorId  String
+  parentId  String?
+  content   String              @db.Text
+  status    CommunityPostStatus @default(PUBLISHED)
+  hiddenBy  String?             @db.VarChar(191)
+  hiddenAt  DateTime?
+  removedBy String?             @db.VarChar(191)
+  removedAt DateTime?
+  reason    String?             @db.Text
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  post      CommunityPost       @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author    Account             @relation("CommunityCommentAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  parent    CommunityComment?   @relation("CommunityCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   CommunityComment[]  @relation("CommunityCommentReplies")
+  reactions CommunityReaction[]
+  reports   CommunityReport[]
+
+  @@index([postId, status, createdAt])
+  @@index([authorId, createdAt])
+  @@index([parentId])
+}
+
+model CommunityReaction {
+  id        String            @id @default(uuid())
+  accountId String
+  postId    String?
+  commentId String?
+  type      String            @default("LIKE") @db.VarChar(40)
+  createdAt DateTime          @default(now())
+  account   Account           @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  post      CommunityPost?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  comment   CommunityComment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([accountId, postId, type])
+  @@unique([accountId, commentId, type])
+  @@index([postId, type])
+  @@index([commentId, type])
+}
+
+model CommunityReport {
+  id             String                  @id @default(uuid())
+  reporterId     String
+  reportedUserId String?
+  postId         String?
+  commentId      String?
+  reason         String                  @db.VarChar(191)
+  description    String?                 @db.Text
+  evidence       Json?
+  priority       CommunityReportPriority @default(NORMAL)
+  status         CommunityReportStatus   @default(NEW)
+  assigneeId     String?                 @db.VarChar(191)
+  decision       String?                 @db.Text
+  internalNotes  String?                 @db.Text
+  dueAt          DateTime?
+  resolvedBy     String?                 @db.VarChar(191)
+  resolvedAt     DateTime?
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+  reporter       Account                 @relation("CommunityReporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  reportedUser   Account?                @relation("CommunityReportedUser", fields: [reportedUserId], references: [id], onDelete: SetNull)
+  post           CommunityPost?          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  comment        CommunityComment?       @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@index([status, priority, createdAt])
+  @@index([assigneeId, status])
+  @@index([reportedUserId, createdAt])
+}
+
+model CommunityModerationAction {
+  id         String                  @id @default(uuid())
+  profileId  String
+  actorId    String                  @db.VarChar(191)
+  type       CommunityModerationType
+  reason     String                  @db.Text
+  expiresAt  DateTime?
+  restoredAt DateTime?
+  restoredBy String?                 @db.VarChar(191)
+  evidence   Json?
+  createdAt  DateTime                @default(now())
+  profile    CommunityProfile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId, type, createdAt])
+  @@index([actorId, createdAt])
+}
+
+model CommunityAchievement {
+  id          String                      @id @default(uuid())
+  name        String                      @db.VarChar(191)
+  slug        String                      @unique @db.VarChar(191)
+  description String                      @db.Text
+  category    String                      @db.VarChar(100)
+  rarity      CommunityAchievementRarity  @default(COMMON)
+  points      Int                         @default(0)
+  condition   Json?
+  imageUrl    String?                     @db.VarChar(512)
+  isActive    Boolean                     @default(false)
+  createdBy   String                      @db.VarChar(191)
+  updatedBy   String                      @db.VarChar(191)
+  deletedAt   DateTime?
+  createdAt   DateTime                    @default(now())
+  updatedAt   DateTime                    @updatedAt
+  grants      CommunityAchievementGrant[]
+
+  @@index([isActive, category])
+  @@index([deletedAt])
+}
+
+model CommunityAchievementGrant {
+  id            String               @id @default(uuid())
+  achievementId String
+  accountId     String
+  grantedBy     String?              @db.VarChar(191)
+  reason        String?              @db.Text
+  progressData  Json?
+  grantedAt     DateTime             @default(now())
+  revokedAt     DateTime?
+  revokedBy     String?              @db.VarChar(191)
+  revokeReason  String?              @db.Text
+  achievement   CommunityAchievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  account       Account              @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@unique([achievementId, accountId])
+  @@index([accountId, grantedAt])
+}
+
+model CommunityQuest {
+  id               String                      @id @default(uuid())
+  name             String                      @db.VarChar(191)
+  slug             String                      @unique @db.VarChar(191)
+  description      String                      @db.Text
+  objective        Json
+  reward           Json
+  audience         Json?
+  participantLimit Int?
+  startsAt         DateTime?
+  endsAt           DateTime?
+  status           CommunityQuestStatus        @default(DRAFT)
+  createdBy        String                      @db.VarChar(191)
+  updatedBy        String                      @db.VarChar(191)
+  publishedBy      String?                     @db.VarChar(191)
+  createdAt        DateTime                    @default(now())
+  updatedAt        DateTime                    @updatedAt
+  participants     CommunityQuestParticipant[]
+
+  @@index([status, startsAt, endsAt])
+}
+
+model CommunityQuestParticipant {
+  id           String         @id @default(uuid())
+  questId      String
+  accountId    String
+  progress     Int            @default(0)
+  progressData Json?
+  completedAt  DateTime?
+  rewardedAt   DateTime?
+  validatedBy  String?        @db.VarChar(191)
+  joinedAt     DateTime       @default(now())
+  quest        CommunityQuest @relation(fields: [questId], references: [id], onDelete: Cascade)
+  account      Account        @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@unique([questId, accountId])
+  @@index([questId, completedAt])
+}
+
+model CommunityBadge {
+  id          String                @id @default(uuid())
+  name        String                @db.VarChar(191)
+  slug        String                @unique @db.VarChar(191)
+  description String                @db.Text
+  imageUrl    String?               @db.VarChar(512)
+  visibility  String                @default("PUBLIC") @db.VarChar(40)
+  maxGrants   Int?
+  validDays   Int?
+  isActive    Boolean               @default(true)
+  createdBy   String                @db.VarChar(191)
+  updatedBy   String                @db.VarChar(191)
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  grants      CommunityBadgeGrant[]
+
+  @@index([isActive, visibility])
+}
+
+model CommunityBadgeGrant {
+  id        String         @id @default(uuid())
+  badgeId   String
+  accountId String
+  grantedBy String         @db.VarChar(191)
+  reason    String         @db.Text
+  grantedAt DateTime       @default(now())
+  expiresAt DateTime?
+  removedAt DateTime?
+  removedBy String?        @db.VarChar(191)
+  badge     CommunityBadge @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  account   Account        @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@unique([badgeId, accountId])
+  @@index([accountId, expiresAt])
+}
+
+model CommunityPolicy {
+  id                     String   @id @default("default")
+  blockedWords           Json?
+  allowedDomains         Json?
+  blockedDomains         Json?
+  spamRules              Json?
+  maxPostsPerHour        Int      @default(10)
+  maxCommentsPerHour     Int      @default(40)
+  postCooldownSeconds    Int      @default(30)
+  commentCooldownSeconds Int      @default(10)
+  updatedBy              String?  @db.VarChar(191)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+}
+
+model CommunityTask {
+  id          String                  @id @default(uuid())
+  title       String                  @db.VarChar(191)
+  description String?                 @db.Text
+  entityType  String                  @db.VarChar(100)
+  entityId    String?                 @db.VarChar(191)
+  status      CommunityTaskStatus     @default(PENDING)
+  priority    CommunityReportPriority @default(NORMAL)
+  assigneeId  String?                 @db.VarChar(191)
+  dueAt       DateTime?
+  evidence    Json?
+  createdBy   String                  @db.VarChar(191)
+  updatedBy   String                  @db.VarChar(191)
+  completedAt DateTime?
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+
+  @@index([assigneeId, status])
+  @@index([entityType, entityId])
+  @@index([dueAt, status])
 }
 
 model GameBridgeJob {

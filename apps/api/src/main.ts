@@ -18,7 +18,7 @@ async function bootstrap() {
     credentials: true
   })
   app.use(helmet())
-  app.useGlobalFilters(new SafeExceptionFilter())
+  app.useGlobalFilters(app.get(SafeExceptionFilter))
   if (globalPrefix) {
     app.setGlobalPrefix(globalPrefix)
   }

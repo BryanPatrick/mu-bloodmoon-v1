@@ -5,9 +5,10 @@
   "type": "commonjs",
   "scripts": {
     "build": "nest build",
-    "check": "node scripts/check-api-structure.mjs && node scripts/check-security-structure.mjs && tsc -p tsconfig.json --noEmit",
+    "check": "node scripts/check-api-structure.mjs && node scripts/check-security-structure.mjs && node scripts/check-observability-structure.mjs && node scripts/check-roadmap-structure.mjs && node scripts/check-store-structure.mjs && node scripts/check-marketplace-structure.mjs && node scripts/check-community-structure.mjs && node scripts/check-admin-tasks-structure.mjs && node scripts/check-admin-reports-structure.mjs && tsc -p tsconfig.json --noEmit",
     "dev": "npm run build && node dist/apps/api/src/main.js",
     "worker:game-bridge": "node scripts/process-game-bridge-jobs.mjs",
+    "worker:marketplace-expirations": "node scripts/process-marketplace-expirations.mjs",
     "db:seed:test": "node --env-file-if-exists=.env scripts/seed-test-accounts.mjs",
     "check:security:integration": "node scripts/check-auth-integration.mjs",
     "start": "node dist/apps/api/src/main.js"
@@ -23,6 +24,7 @@
     "bcrypt": "^5.1.0",
     "class-transformer": "^0.5.0",
     "class-validator": "^0.14.0",
+    "exceljs": "^4.4.0",
     "helmet": "^7.0.0",
     "otplib": "^13.4.1",
     "passport": "^0.7.0",

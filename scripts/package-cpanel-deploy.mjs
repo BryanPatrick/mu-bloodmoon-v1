@@ -137,6 +137,10 @@ async function main() {
   await cp(apiDist, path.join(apiStage, 'dist'), { recursive: true })
   await cp(path.join(root, 'apps', 'api', 'prisma'), path.join(apiStage, 'prisma'), { recursive: true })
   await copyIfExists(
+    path.join(root, 'docs', 'catalogs'),
+    path.join(apiStage, 'docs', 'catalogs')
+  )
+  await copyIfExists(
     path.join(root, 'apps', 'api', 'scripts', 'import-prepared-data.mjs'),
     path.join(apiStage, 'apps', 'api', 'scripts', 'import-prepared-data.mjs')
   )

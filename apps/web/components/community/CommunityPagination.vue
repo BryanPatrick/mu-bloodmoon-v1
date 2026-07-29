@@ -1,0 +1,2 @@
+<template><nav v-if="totalPages>1" class="flex items-center justify-center gap-2"><UButton color="neutral" variant="soft" size="sm" :disabled="page<=1" @click="$emit('change',page-1)">Anterior</UButton><span class="text-[10px] text-white/45">{{ page }} / {{ totalPages }} · {{ total }} registros</span><UButton color="neutral" variant="soft" size="sm" :disabled="page>=totalPages" @click="$emit('change',page+1)">Próxima</UButton></nav></template>
+<script setup lang="ts">defineProps<{page:number,totalPages:number,total:number}>();defineEmits(['change'])</script>

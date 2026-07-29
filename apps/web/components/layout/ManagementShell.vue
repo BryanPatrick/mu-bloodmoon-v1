@@ -96,9 +96,8 @@
 
 <script setup lang="ts">
 import {
-  Bell, BookOpen, CalendarDays, ChevronDown, CircleDollarSign, FileSearch,
-  FileText, Gamepad2, Gavel, LayoutDashboard, Newspaper, PackageCheck,
-  PanelLeftClose, PanelLeftOpen, Settings, ShieldCheck, ShoppingBag,
+  Activity, BarChart3, Bell, ChevronDown, FileSearch, LayoutDashboard, Map, PackageCheck,
+  ListTodo, MessageCircle, PanelLeftClose, PanelLeftOpen, Settings, ShoppingBag,
   Store, TicketCheck, UserCog, Users
 } from 'lucide-vue-next'
 import { permissions, type Permission, type UserRole } from '~/data/security'
@@ -125,7 +124,12 @@ const toggleMenu = () => {
 
 const accountCurrencies = computed(() => user.value?.currencies || [])
 
-type MenuChild = { label: string; to: string }
+type MenuChild = {
+  label: string
+  to: string
+  permission?: Permission
+  roles?: UserRole[]
+}
 type MenuItem = {
   label: string
   to: string
@@ -136,34 +140,118 @@ type MenuItem = {
 }
 
 const administrativeItems: MenuItem[] = [
-  { label: 'Dashboard administrativo', to: '/painel', icon: LayoutDashboard, permission: permissions.adminDashboardView },
-  { label: 'Jogadores', to: '/painel/admin/contas', icon: Users, permission: permissions.adminAccountsView, roles: ['admin'] },
-  { label: 'Contas', to: '/painel/admin/contas', icon: ShieldCheck, permission: permissions.adminAccountsView, roles: ['super-admin'] },
-  { label: 'Administradores', to: '/painel/admin/contas?perfil=admin', icon: UserCog, permission: permissions.adminRolesManage, roles: ['super-admin'] },
-  { label: 'Personagens', to: '/painel/admin/personagens', icon: Gamepad2, permission: permissions.adminAccountsView },
+  { label: 'Dashboard', to: '/painel', icon: LayoutDashboard, permission: permissions.adminDashboardView },
   {
-    label: 'Conteúdo',
-    to: '/painel/admin/conteudo?area=paginas',
-    icon: FileText,
-    permission: permissions.adminContentManage,
+    label: 'Gestão',
+    to: '/painel/admin/tarefas',
+    icon: ListTodo,
     children: [
-      { label: 'Páginas', to: '/painel/admin/conteudo?area=paginas' },
-      { label: 'Banners', to: '/painel/admin/conteudo?area=banners' },
-      { label: 'Classes', to: '/painel/admin/conteudo?area=classes' },
-      { label: 'Mapas', to: '/painel/admin/conteudo?area=mapas' },
-      { label: 'Itens', to: '/painel/admin/conteudo?area=itens' }
+      { label: 'Tarefas', to: '/painel/admin/tarefas?tab=tasks', permission: permissions.adminTasksView },
+      { label: 'Notificações', to: '/painel/notificacoes' },
+      { label: 'Minha atividade', to: '/painel/admin/logs-trabalho?usuario=me', permission: permissions.adminWorkLogsView }
     ]
   },
-  { label: 'Wiki', to: '/painel/admin/conteudo?area=wiki', icon: BookOpen, permission: permissions.adminContentManage },
-  { label: 'Notícias', to: '/painel/admin/conteudo?area=noticias', icon: Newspaper, permission: permissions.adminContentManage },
-  { label: 'Eventos', to: '/painel/admin/conteudo?area=eventos', icon: CalendarDays, permission: permissions.adminContentManage },
-  { label: 'Loja Admin', to: '/painel/admin/loja', icon: Store, permission: permissions.adminShopManage },
-  { label: 'Marketplace Admin', to: '/painel/admin/marketplace', icon: ShoppingBag, permission: permissions.adminMarketplaceManage },
-  { label: 'Moderação', to: '/painel/admin/moderacao', icon: Gavel, permission: permissions.adminAccountsStatusManage },
-  { label: 'Tickets', to: '/painel/admin/tickets', icon: TicketCheck, permission: permissions.adminAccountsStatusManage },
-  { label: 'Financeiro', to: '/painel/admin/financeiro', icon: CircleDollarSign, permission: permissions.adminFinancialReportsView, roles: ['super-admin'] },
-  { label: 'Auditoria', to: '/painel/admin/auditoria', icon: FileSearch, permission: permissions.adminAuditView },
-  { label: 'Configurações do servidor', to: '/painel/admin/sistema', icon: Settings, permission: permissions.adminServerSettingsManage, roles: ['super-admin'] }
+  {
+    label: 'Roadmap',
+    to: '/painel/admin/roadmap',
+    icon: Map,
+    children: [
+      { label: 'Iniciativas', to: '/painel/admin/roadmap', permission: permissions.adminRoadmapView },
+      { label: 'Atualizações', to: '/painel/admin/roadmap?visao=atualizacoes', permission: permissions.adminRoadmapView },
+      { label: 'Categorias', to: '/painel/admin/roadmap?visao=categorias', permission: permissions.adminRoadmapView },
+      { label: 'Revisões', to: '/painel/admin/roadmap?workflowStatus=IN_REVIEW', permission: permissions.adminRoadmapReview }
+    ]
+  },
+  {
+    label: 'Loja',
+    to: '/painel/admin/loja',
+    icon: Store,
+    children: [
+      { label: 'Produtos', to: '/painel/admin/loja?tab=products', permission: permissions.adminStoreView },
+      { label: 'Categorias', to: '/painel/admin/loja?tab=categories', permission: permissions.adminStoreCategories },
+      { label: 'Variantes', to: '/painel/admin/loja?tab=products&modo=variantes', permission: permissions.adminStoreProducts },
+      { label: 'Pedidos', to: '/painel/admin/loja?tab=orders', permission: permissions.adminStoreOrders },
+      { label: 'Entregas', to: '/painel/admin/loja?tab=deliveries', permission: permissions.adminStoreDeliveries },
+      { label: 'Estornos', to: '/painel/admin/loja?tab=orders&status=REFUND_PENDING', permission: permissions.adminStoreRefund },
+      { label: 'Importação do catálogo', to: '/painel/admin/loja?tab=products&modo=importacao', permission: permissions.adminStoreProducts }
+    ]
+  },
+  {
+    label: 'Marketplace',
+    to: '/painel/admin/marketplace',
+    icon: ShoppingBag,
+    children: [
+      { label: 'Anúncios', to: '/painel/admin/marketplace?secao=listings', permission: permissions.adminMarketplaceListingsModerate },
+      { label: 'Transações', to: '/painel/admin/marketplace?secao=transactions', permission: permissions.adminMarketplaceTransactionsOperate },
+      { label: 'Escrow', to: '/painel/admin/marketplace?secao=escrow', permission: permissions.adminMarketplaceEscrowOperate },
+      { label: 'Denúncias', to: '/painel/admin/marketplace?secao=reports', permission: permissions.adminMarketplaceReportsModerate },
+      { label: 'Usuários suspensos', to: '/painel/admin/marketplace?secao=listings&status=SUSPENDED', permission: permissions.adminMarketplaceUsersSuspend },
+      { label: 'Configurações econômicas', to: '/painel/admin/marketplace?secao=economy', permission: permissions.adminMarketplaceEconomyManage }
+    ]
+  },
+  {
+    label: 'Comunidade',
+    to: '/painel/admin/comunidade',
+    icon: MessageCircle,
+    children: [
+      { label: 'Publicações', to: '/painel/admin/comunidade?tab=posts', permission: permissions.adminCommunityPostsModerate },
+      { label: 'Comentários', to: '/painel/admin/comunidade?tab=comments', permission: permissions.adminCommunityCommentsModerate },
+      { label: 'Denúncias', to: '/painel/admin/comunidade?tab=reports', permission: permissions.adminCommunityReportsModerate },
+      { label: 'Usuários', to: '/painel/admin/comunidade?tab=users', permission: permissions.adminCommunityUsersModerate },
+      { label: 'Conquistas', to: '/painel/admin/comunidade?tab=achievements', permission: permissions.adminCommunityAchievementsManage },
+      { label: 'Quests', to: '/painel/admin/comunidade?tab=quests', permission: permissions.adminCommunityQuestsManage },
+      { label: 'Badges', to: '/painel/admin/comunidade?tab=badges', permission: permissions.adminCommunityBadgesManage },
+      { label: 'Moderação', to: '/painel/admin/comunidade?tab=policy', permission: permissions.adminCommunityPolicyManage }
+    ]
+  },
+  {
+    label: 'Monitoramento',
+    to: '/painel/admin/erros',
+    icon: Activity,
+    children: [
+      { label: 'Central de erros', to: '/painel/admin/erros', permission: permissions.adminErrorsView },
+      { label: 'Falhas de entrega', to: '/painel/admin/eventos-operacionais?modulo=store&busca=DELIVERY_FAILED', permission: permissions.adminOperationalLogsView },
+      { label: 'Falhas de marketplace', to: '/painel/admin/eventos-operacionais?modulo=marketplace&severidade=ERROR', permission: permissions.adminOperationalLogsView },
+      { label: 'Alertas', to: '/painel/admin/alertas', permission: permissions.adminAlertsView }
+    ]
+  },
+  {
+    label: 'Auditoria',
+    to: '/painel/admin/auditoria',
+    icon: FileSearch,
+    children: [
+      { label: 'Ações administrativas', to: '/painel/admin/auditoria', permission: permissions.adminAuditView },
+      { label: 'Histórico de alterações', to: '/painel/admin/historico', permission: permissions.adminAuditHistoryView },
+      { label: 'Logs de trabalho', to: '/painel/admin/logs-trabalho', permission: permissions.adminWorkLogsView },
+      { label: 'Eventos do sistema', to: '/painel/admin/eventos-operacionais', permission: permissions.adminOperationalLogsView }
+    ]
+  },
+  {
+    label: 'Relatórios',
+    to: '/painel/admin/relatorios',
+    icon: BarChart3,
+    children: [
+      { label: 'Equipe', to: '/painel/admin/relatorios?category=team', permission: permissions.adminTasksReportsView },
+      { label: 'Roadmap', to: '/painel/admin/relatorios?category=roadmap', permission: permissions.adminRoadmapView },
+      { label: 'Loja', to: '/painel/admin/relatorios?category=store', permission: permissions.adminStoreView },
+      { label: 'Marketplace', to: '/painel/admin/relatorios?category=marketplace', permission: permissions.adminMarketplaceReportsView },
+      { label: 'Comunidade', to: '/painel/admin/relatorios?category=community', permission: permissions.adminCommunityReportsView },
+      { label: 'Erros', to: '/painel/admin/relatorios?category=errors', permission: permissions.adminErrorsView }
+    ]
+  },
+  {
+    label: 'Configurações',
+    to: '/painel/admin/sistema',
+    icon: Settings,
+    roles: ['super-admin'],
+    children: [
+      { label: 'Permissões', to: '/painel/admin/contas?secao=permissoes', permission: permissions.adminRolesManage, roles: ['super-admin'] },
+      { label: 'Administradores', to: '/painel/admin/contas?perfil=admin', permission: permissions.adminRolesManage, roles: ['super-admin'] },
+      { label: 'Moedas', to: '/painel/admin/financeiro?secao=moedas', permission: permissions.adminFinanceManage, roles: ['super-admin'] },
+      { label: 'Integrações', to: '/painel/admin/sistema?secao=integracoes', permission: permissions.adminServerSettingsManage, roles: ['super-admin'] },
+      { label: 'Configurações gerais', to: '/painel/admin/sistema', permission: permissions.adminServerSettingsManage, roles: ['super-admin'] }
+    ]
+  }
 ]
 
 const playerItems: MenuItem[] = [
@@ -172,6 +260,8 @@ const playerItems: MenuItem[] = [
   { label: 'Meus personagens', to: '/painel/personagens', icon: Users },
   { label: 'Loja', to: '/painel/loja', icon: Store },
   { label: 'Marketplace', to: '/painel/marketplace', icon: ShoppingBag },
+  { label: 'Comunidade', to: '/comunidade', icon: MessageCircle },
+  { label: 'Meu perfil social', to: '/comunidade?painel=perfil', icon: UserCog },
   { label: 'Minhas compras', to: '/painel/compras', icon: PackageCheck },
   { label: 'Meus anúncios', to: '/painel/marketplace?visao=meus-anuncios', icon: ShoppingBag },
   { label: 'Notificações', to: '/painel/notificacoes', icon: Bell },
@@ -182,8 +272,18 @@ const playerItems: MenuItem[] = [
 const visibleMenuItems = computed(() => {
   const role = user.value?.role
   if (!role) return []
-  const items = role === 'player' ? playerItems : [...administrativeItems, ...playerItems.filter((item) => item.to !== '/painel')]
-  return items.filter((item) => (!item.roles || item.roles.includes(role)) && (!item.permission || hasPermission(item.permission)))
+  const items = role === 'player' ? playerItems : administrativeItems
+  return items
+    .filter((item) => (!item.roles || item.roles.includes(role)) && (!item.permission || hasPermission(item.permission)))
+    .map((item) => ({
+      ...item,
+      children: item.children?.filter(
+        (child) =>
+          (!child.roles || child.roles.includes(role)) &&
+          (!child.permission || hasPermission(child.permission))
+      )
+    }))
+    .filter((item) => !item.children || item.children.length > 0)
 })
 
 const toggleSection = (key: string) => {
@@ -193,4 +293,20 @@ const toggleSection = (key: string) => {
 }
 
 const isItemActive = (item: MenuItem) => route.fullPath === item.to || item.children?.some((child) => route.fullPath === child.to)
+
+const openActiveSection = () => {
+  const active = visibleMenuItems.value.find((item) =>
+    item.children?.some((child) => route.path === child.to.split('?')[0])
+  )
+  if (!active) return
+  const next = new Set(openSections.value)
+  next.add(active.to)
+  openSections.value = next
+}
+
+watch(
+  [() => route.fullPath, () => visibleMenuItems.value.length],
+  openActiveSection,
+  { immediate: true }
+)
 </script>

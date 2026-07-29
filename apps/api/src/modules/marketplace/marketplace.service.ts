@@ -1,8 +1,10 @@
 ﻿import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import { createHash, randomUUID } from 'node:crypto'
 import type { Account, CurrencyCode, GameBridgeJob, GameBridgeStatus, MarketplaceListingStatus, MarketplaceOrderStatus, PlayerMarketListing, PlayerMarketOrder, Prisma } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
+import { ObservabilityService } from '../observability/observability.service'
 import type {
   CreateMarketplaceListingPayload,
   CreateMarketplaceOrderPayload,
@@ -12,7 +14,10 @@ import type {
   UpdateMarketplaceOrderStatusPayload
 } from './marketplace.contract'
 
-const listingStatuses: MarketplaceListingStatus[] = ['PENDING_LOCK', 'ACTIVE', 'SOLD', 'CANCELLED', 'EXPIRED', 'FAILED']
+const listingStatuses: MarketplaceListingStatus[] = [
+  'DRAFT', 'ESCROW_PENDING', 'ACTIVE', 'RESERVED', 'SOLD', 'CANCELED',
+  'EXPIRED', 'SUSPENDED', 'RETURN_PENDING', 'RETURNED', 'MANUAL_REVIEW', 'FAILED'
+]
 const orderStatuses: MarketplaceOrderStatus[] = ['PREPARED', 'PAID', 'DELIVERING', 'COMPLETED', 'CANCELLED', 'REFUNDED', 'FAILED']
 
 function toPositiveInt(value: string | undefined, fallback: number) {
@@ -57,19 +62,32 @@ function auditActor(user: AuthenticatedUser) {
 export class MarketplaceService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly audit: AuditService
+    private readonly audit: AuditService,
+    private readonly observability: ObservabilityService
   ) {}
 
   async listPublic(query: MarketplaceQuery) {
-    return this.listListings({ ...query, status: 'ACTIVE' })
+    return this.listListings({ ...query, status: 'ACTIVE' }, true)
   }
 
-  async listListings(query: MarketplaceQuery) {
+  async listListings(query: MarketplaceQuery, hideExpired = false) {
     const page = toPositiveInt(query.page, 1)
     const pageSize = Math.min(toPositiveInt(query.pageSize, 24), 100)
     const skip = (page - 1) * pageSize
     const baseWhere: Prisma.PlayerMarketListingWhereInput = {
-      ...listSearch(query.search),
+      ...(hideExpired
+        ? {
+            AND: [
+              listSearch(query.search),
+              {
+                OR: [
+                  { expiresAt: null },
+                  { expiresAt: { gt: new Date() } }
+                ]
+              }
+            ]
+          }
+        : listSearch(query.search)),
       ...(query.currency ? { currency: query.currency } : {}),
       ...(query.status ? { status: enumOrFallback(query.status, listingStatuses, 'ACTIVE') } : {}),
       ...(query.seller ? { seller: { username: { contains: query.seller } } } : {})
@@ -149,6 +167,45 @@ export class MarketplaceService {
       throw new BadRequestException('Dados invalidos para anunciar item.')
     }
 
+    const economy = await this.prisma.marketplaceEconomyConfig.findUnique({ where: { id: 'default' } })
+    const acceptedCurrencies = Array.isArray(economy?.acceptedCurrencies)
+      ? economy.acceptedCurrencies.map(String)
+      : ['WCOIN', 'GOBLIN_POINT', 'HUNT_POINT']
+    const allowedCategories = Array.isArray(economy?.allowedCategories)
+      ? economy.allowedCategories.map(String)
+      : []
+    if (!acceptedCurrencies.includes(payload.currency)) {
+      throw new BadRequestException('Moeda nao aceita pelo marketplace.')
+    }
+    if (economy && (price < economy.minimumPrice || price > economy.maximumPrice)) {
+      throw new BadRequestException(`O preco deve ficar entre ${economy.minimumPrice} e ${economy.maximumPrice}.`)
+    }
+    if (allowedCategories.length && !allowedCategories.includes(itemCategory)) {
+      throw new BadRequestException('Categoria nao permitida no marketplace.')
+    }
+    const activeListings = await this.prisma.playerMarketListing.count({
+      where: {
+        sellerAccountId: user.id,
+        status: { in: ['DRAFT', 'ESCROW_PENDING', 'ACTIVE', 'RESERVED', 'MANUAL_REVIEW'] }
+      }
+    })
+    if (economy && activeListings >= economy.maxListings) {
+      throw new BadRequestException('Limite de anuncios ativos atingido.')
+    }
+    if (economy?.cooldownMinutes) {
+      const lastListing = await this.prisma.playerMarketListing.findFirst({
+        where: { sellerAccountId: user.id },
+        orderBy: { createdAt: 'desc' },
+        select: { createdAt: true }
+      })
+      const cooldownEnds = lastListing
+        ? lastListing.createdAt.getTime() + economy.cooldownMinutes * 60_000
+        : 0
+      if (cooldownEnds > Date.now()) {
+        throw new BadRequestException('Aguarde o cooldown antes de criar outro anuncio.')
+      }
+    }
+
     if (payload.sellerCharacterId) {
       const character = await this.prisma.accountCharacter.findFirst({
         where: { id: payload.sellerCharacterId, accountId: user.id }
@@ -160,6 +217,11 @@ export class MarketplaceService {
     }
 
     const result = await this.prisma.$transaction(async (tx) => {
+      const seller = await tx.account.findUnique({ where: { id: user.id } })
+      if (!seller) throw new BadRequestException('Conta vendedora invalida.')
+      if (economy?.publicationFee) {
+        await this.debitCurrency(tx, seller, payload.currency, economy.publicationFee)
+      }
       const listing = await tx.playerMarketListing.create({
         data: {
           sellerAccountId: user.id,
@@ -170,8 +232,12 @@ export class MarketplaceService {
           itemData: jsonValue(payload.itemData),
           price,
           currency: payload.currency,
-          status: 'PENDING_LOCK',
-          expiresAt: payload.expiresAt ? new Date(payload.expiresAt) : null,
+          status: 'ESCROW_PENDING',
+          expiresAt: payload.expiresAt
+            ? new Date(payload.expiresAt)
+            : economy
+              ? new Date(Date.now() + economy.listingDurationHours * 3_600_000)
+              : null,
           metadata: {
             source: 'player-marketplace',
             lockRequired: true
@@ -196,6 +262,25 @@ export class MarketplaceService {
         }
       })
 
+      const serial = typeof payload.itemData === 'object' && payload.itemData
+        && typeof (payload.itemData as { serial?: unknown }).serial === 'string'
+        ? (payload.itemData as { serial: string }).serial
+        : null
+      await tx.marketplaceEscrow.create({
+        data: {
+          listingId: listing.id,
+          gameItemRef,
+          itemSerial: serial,
+          originalOwnerId: user.id,
+          status: 'ENTRY_PENDING',
+          location: 'GAME_INVENTORY',
+          internalHash: createHash('sha256')
+            .update(`${listing.id}:${gameItemRef}:${user.id}`)
+            .digest('hex'),
+          metadata: { lockJobId: job.id }
+        }
+      })
+
       const updated = await tx.playerMarketListing.update({
         where: { id: listing.id },
         data: { lockJobId: job.id },
@@ -212,6 +297,15 @@ export class MarketplaceService {
       targetId: result.listing.id,
       metadata: { itemName, price, currency: payload.currency, gameItemRef, bridgeJobId: result.job.id }
     })
+    await this.observability.recordOperationalEvent({
+      module: 'marketplace',
+      eventType: 'ITEM_ESCROW_LOCK_REQUESTED',
+      entityType: 'PlayerMarketListing',
+      entityId: result.listing.id,
+      actorUserId: user.id,
+      description: `Item ${itemName} enviado para bloqueio de escrow.`,
+      data: { gameItemRef, bridgeJobId: result.job.id }
+    })
 
     return this.mapListing(result.listing)
   }
@@ -227,14 +321,14 @@ export class MarketplaceService {
       throw new NotFoundException('Anuncio nao encontrado.')
     }
 
-    if (!['PENDING_LOCK', 'ACTIVE'].includes(listing.status)) {
+    if (!['DRAFT', 'ESCROW_PENDING', 'ACTIVE', 'SUSPENDED', 'MANUAL_REVIEW'].includes(listing.status)) {
       throw new BadRequestException('Somente anuncios pendentes ou ativos podem ser cancelados.')
     }
 
     const updated = await this.prisma.$transaction(async (tx) => {
       const row = await tx.playerMarketListing.update({
         where: { id },
-        data: { status: 'CANCELLED', cancelledAt: new Date() },
+        data: { status: 'CANCELED', cancelledAt: new Date() },
         include: { seller: true, sellerCharacter: true, orders: true }
       })
 
@@ -248,6 +342,11 @@ export class MarketplaceService {
         }
       })
 
+      await tx.marketplaceEscrow.updateMany({
+        where: { listingId: listing.id },
+        data: { status: 'RETURN_PENDING', manualReviewReason: 'listing-canceled' }
+      })
+
       return row
     })
 
@@ -257,6 +356,16 @@ export class MarketplaceService {
       targetType: 'PlayerMarketListing',
       targetId: id,
       metadata: { itemName: listing.itemName, gameItemRef: listing.gameItemRef }
+    })
+    await this.observability.recordOperationalEvent({
+      module: 'marketplace',
+      eventType: 'ITEM_RETURN_REQUESTED',
+      entityType: 'PlayerMarketListing',
+      entityId: id,
+      actorUserId: user.id,
+      targetUserId: listing.sellerAccountId,
+      description: `Retorno do item ${listing.itemName} solicitado apos cancelamento.`,
+      data: { gameItemRef: listing.gameItemRef }
     })
 
     return this.mapListing(updated)
@@ -286,6 +395,19 @@ export class MarketplaceService {
         throw new BadRequestException('Conta compradora invalida.')
       }
 
+      const reserved = await tx.playerMarketListing.updateMany({
+        where: { id: listing.id, status: 'ACTIVE' },
+        data: { status: 'RESERVED' }
+      })
+      if (reserved.count !== 1) {
+        throw new BadRequestException('Outro comprador reservou este item.')
+      }
+
+      const economy = await tx.marketplaceEconomyConfig.findUnique({ where: { id: 'default' } })
+      const fee = Math.floor(
+        listing.price * Math.max(0, Math.min(100, economy?.saleFeePercent || 0)) / 100
+      )
+      const correlationId = randomUUID()
       await this.debitCurrency(tx, buyer, listing.currency, listing.price)
 
       const row = await tx.playerMarketOrder.create({
@@ -295,15 +417,23 @@ export class MarketplaceService {
           price: listing.price,
           currency: listing.currency,
           status: 'DELIVERING',
+          fee,
+          sellerAmount: listing.price - fee,
+          correlationId,
           paidAt: new Date(),
           metadata: { escrow: true }
         },
         include: { buyer: true, listing: { include: { seller: true, sellerCharacter: true } } }
       })
 
-      await tx.playerMarketListing.update({
-        where: { id: listing.id },
-        data: { status: 'SOLD', soldAt: new Date() }
+      await tx.marketplaceEscrow.update({
+        where: { listingId: listing.id },
+        data: {
+          status: 'TRANSFER_PENDING',
+          buyerAccountId: user.id,
+          location: 'ESCROW_VAULT',
+          attempts: { increment: 1 }
+        }
       })
 
       await tx.gameBridgeJob.create({
@@ -335,6 +465,15 @@ export class MarketplaceService {
       targetId: order.id,
       metadata: { listingId: order.listingId, price: order.price, currency: order.currency }
     })
+    await this.observability.recordOperationalEvent({
+      module: 'marketplace',
+      eventType: 'DELIVERY_STARTED',
+      entityType: 'PlayerMarketOrder',
+      entityId: order.id,
+      actorUserId: user.id,
+      description: `Entrega do pedido ${order.id} iniciada via escrow.`,
+      data: { listingId: order.listingId, price: order.price, currency: order.currency }
+    })
 
     return this.mapOrder(order)
   }
@@ -359,7 +498,7 @@ export class MarketplaceService {
       throw new NotFoundException('Anuncio nao encontrado.')
     }
 
-    if (listing.status !== 'PENDING_LOCK') {
+    if (listing.status !== 'ESCROW_PENDING') {
       throw new BadRequestException('Apenas anuncios aguardando lock podem ser ativados.')
     }
 
@@ -370,6 +509,11 @@ export class MarketplaceService {
           data: { status: 'COMPLETED', processedAt: new Date(), result: { devApprovedBy: user.username } }
         })
       }
+
+      await tx.marketplaceEscrow.update({
+        where: { listingId: id },
+        data: { status: 'HELD', location: 'ESCROW_VAULT', enteredAt: new Date() }
+      })
 
       return tx.playerMarketListing.update({
         where: { id },
@@ -385,6 +529,16 @@ export class MarketplaceService {
       targetId: id,
       metadata: { itemName: listing.itemName, gameItemRef: listing.gameItemRef }
     })
+    await this.observability.recordOperationalEvent({
+      module: 'marketplace',
+      eventType: 'ITEM_ENTERED_ESCROW',
+      entityType: 'PlayerMarketListing',
+      entityId: id,
+      actorUserId: user.id,
+      targetUserId: listing.sellerAccountId,
+      description: `Item ${listing.itemName} confirmado no escrow e anuncio ativado.`,
+      data: { gameItemRef: listing.gameItemRef }
+    })
 
     return this.mapListing(updated)
   }
@@ -398,7 +552,7 @@ export class MarketplaceService {
     const status = enumOrFallback(payload.status, listingStatuses, listing.status)
     const updated = await this.prisma.playerMarketListing.update({
       where: { id },
-      data: { status, ...(status === 'CANCELLED' ? { cancelledAt: new Date() } : {}) },
+      data: { status, ...(status === 'CANCELED' ? { cancelledAt: new Date() } : {}) },
       include: { seller: true, sellerCharacter: true, orders: true }
     })
 
@@ -408,6 +562,21 @@ export class MarketplaceService {
       targetType: 'PlayerMarketListing',
       targetId: id,
       metadata: { previousStatus: listing.status, nextStatus: status, reason: payload.reason || null }
+    })
+    await this.observability.recordOperationalEvent({
+      module: 'marketplace',
+      eventType:
+        status === 'EXPIRED'
+          ? 'LISTING_EXPIRED'
+          : status === 'CANCELED'
+            ? 'LISTING_CANCELLED'
+            : 'LISTING_STATUS_CHANGED',
+      entityType: 'PlayerMarketListing',
+      entityId: id,
+      actorUserId: user.id,
+      targetUserId: listing.sellerAccountId,
+      description: `Anuncio ${id} alterado de ${listing.status} para ${status}.`,
+      data: { reason: payload.reason || null }
     })
 
     return this.mapListing(updated)
@@ -425,7 +594,24 @@ export class MarketplaceService {
     const status = enumOrFallback(payload.status, orderStatuses, order.status)
     const updated = await this.prisma.$transaction(async (tx) => {
       if (status === 'COMPLETED' && order.status !== 'COMPLETED') {
-        await this.creditCurrency(tx, order.listing.sellerAccountId, order.currency, order.price)
+        await this.creditCurrency(
+          tx,
+          order.listing.sellerAccountId,
+          order.currency,
+          order.sellerAmount || order.price
+        )
+        await tx.playerMarketListing.update({
+          where: { id: order.listingId },
+          data: { status: 'SOLD', soldAt: new Date() }
+        })
+        await tx.marketplaceEscrow.update({
+          where: { listingId: order.listingId },
+          data: {
+            status: 'RELEASED_TO_BUYER',
+            location: 'BUYER_INVENTORY',
+            exitedAt: new Date()
+          }
+        })
       }
 
       if (status === 'REFUNDED' && order.status !== 'REFUNDED') {
@@ -449,6 +635,24 @@ export class MarketplaceService {
       targetType: 'PlayerMarketOrder',
       targetId: id,
       metadata: { previousStatus: order.status, nextStatus: status, reason: payload.reason || null }
+    })
+    await this.observability.recordOperationalEvent({
+      module: 'marketplace',
+      eventType:
+        status === 'COMPLETED'
+          ? 'DELIVERY_COMPLETED'
+          : status === 'FAILED'
+            ? 'DELIVERY_FAILED'
+            : status === 'REFUNDED'
+              ? 'ORDER_REFUNDED'
+              : 'ORDER_STATUS_CHANGED',
+      severity: status === 'FAILED' ? 'ERROR' : 'INFO',
+      entityType: 'PlayerMarketOrder',
+      entityId: id,
+      actorUserId: user.id,
+      targetUserId: order.buyerAccountId,
+      description: `Pedido ${id} alterado de ${order.status} para ${status}.`,
+      data: { listingId: order.listingId, reason: payload.reason || null }
     })
 
     return this.mapOrder(updated)
@@ -479,6 +683,49 @@ export class MarketplaceService {
       targetId: id,
       metadata: { previousStatus: job.status, nextStatus: payload.status, operation: job.operation }
     })
+    await this.observability.recordOperationalEvent({
+      module: 'marketplace',
+      eventType:
+        payload.status === 'COMPLETED'
+          ? 'INTEGRATION_JOB_COMPLETED'
+          : payload.status === 'FAILED'
+            ? 'INTEGRATION_JOB_FAILED'
+            : 'INTEGRATION_JOB_UPDATED',
+      severity: payload.status === 'FAILED' ? 'ERROR' : 'INFO',
+      entityType: 'GameBridgeJob',
+      entityId: id,
+      actorUserId: user.id,
+      description: `Job ${job.operation} alterado de ${job.status} para ${payload.status}.`,
+      data: { operation: job.operation, error: payload.error || null }
+    })
+
+    if (payload.status === 'FAILED') {
+      const errorCodeByOperation: Partial<Record<GameBridgeJob['operation'], string>> = {
+        LOCK_ITEM: 'MARKETPLACE_ESCROW_LOCK_FAILED',
+        RELEASE_ITEM: 'MARKETPLACE_ITEM_RETURN_FAILED',
+        TRANSFER_ITEM: 'MARKETPLACE_DELIVERY_FAILED',
+        CREDIT_CURRENCY: 'MARKETPLACE_SELLER_CREDIT_FAILED'
+      }
+      const errorCode = errorCodeByOperation[job.operation] || 'MARKETPLACE_INTEGRATION_FAILED'
+      await this.observability.recordSystemError({
+        module: 'marketplace',
+        severity: job.operation === 'RELEASE_ITEM' ? 'CRITICAL' : 'ERROR',
+        errorCode,
+        publicMessage: 'Uma operacao do marketplace precisa de revisao manual.',
+        internalMessage: payload.error || `Falha no job ${job.operation}.`,
+        correlationId: updated.order?.correlationId || null,
+        userId: user.id,
+        accountId: job.accountId,
+        entityType: 'GameBridgeJob',
+        entityId: id,
+        metadata: {
+          operation: job.operation,
+          listingId: job.listingId,
+          orderId: job.orderId,
+          attempts: updated.attempts
+        }
+      })
+    }
 
     return this.mapBridgeJob(updated)
   }
@@ -515,6 +762,8 @@ export class MarketplaceService {
       price: row.price,
       currency: row.currency,
       status: row.status,
+      adminNotes: row.adminNotes,
+      moderationReason: row.moderationReason,
       lockedAt: row.lockedAt?.toISOString() || null,
       expiresAt: row.expiresAt?.toISOString() || null,
       soldAt: row.soldAt?.toISOString() || null,
@@ -535,6 +784,9 @@ export class MarketplaceService {
       price: row.price,
       currency: row.currency,
       status: row.status,
+      fee: row.fee,
+      sellerAmount: row.sellerAmount,
+      correlationId: row.correlationId,
       paidAt: row.paidAt?.toISOString() || null,
       deliveredAt: row.deliveredAt?.toISOString() || null,
       createdAt: row.createdAt.toISOString(),

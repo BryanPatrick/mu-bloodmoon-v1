@@ -1,5 +1,7 @@
 type MarketplaceCurrencyCode = 'WCOIN' | 'GOBLIN_POINT' | 'HUNT_POINT'
-type MarketplaceListingStatus = 'PENDING_LOCK' | 'ACTIVE' | 'SOLD' | 'CANCELLED' | 'EXPIRED' | 'FAILED'
+export type MarketplaceListingStatus =
+  | 'DRAFT' | 'ESCROW_PENDING' | 'ACTIVE' | 'RESERVED' | 'SOLD' | 'CANCELED'
+  | 'EXPIRED' | 'SUSPENDED' | 'RETURN_PENDING' | 'RETURNED' | 'MANUAL_REVIEW' | 'FAILED'
 type MarketplaceOrderStatus = 'PREPARED' | 'PAID' | 'DELIVERING' | 'COMPLETED' | 'CANCELLED' | 'REFUNDED' | 'FAILED'
 type GameBridgeStatus = 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'CANCELLED'
 type GameBridgeOperation = 'LOCK_ITEM' | 'RELEASE_ITEM' | 'TRANSFER_ITEM' | 'DELIVER_ITEM' | 'CREDIT_CURRENCY' | 'SYNC_INVENTORY'
@@ -44,8 +46,11 @@ export type MarketplaceOrder = {
   itemName: string | null
   gameItemRef: string | null
   price: number
+  fee: number
+  sellerAmount: number
   currency: MarketplaceCurrencyCode
   status: MarketplaceOrderStatus
+  correlationId: string | null
   paidAt: string | null
   deliveredAt: string | null
   createdAt: string
@@ -68,6 +73,87 @@ export type GameBridgeJob = {
   processedAt: string | null
   createdAt: string
   updatedAt: string
+}
+
+export type MarketplaceAdminPage<T> = {
+  data: T[]
+  total: number
+  page: number
+  pageSize: number
+  totalPages: number
+}
+
+export type MarketplaceDashboard = {
+  activeListings: number
+  createdToday: number
+  soldListings: number
+  expiredListings: number
+  suspendedListings: number
+  transactionsInProgress: number
+  escrowHeld: number
+  returnFailures: number
+  pendingReports: number
+  suspendedUsers: number
+  criticalErrors: number
+  assignedTasks: number
+  financial?: { volume: number, fees: number, averagePrice: number, completedSales: number }
+}
+
+export type MarketplaceEscrow = {
+  id: string
+  gameItemRef: string
+  itemSerial: string | null
+  originalOwnerId: string
+  buyerAccountId: string | null
+  status: string
+  location: string
+  internalHash: string
+  attempts: number
+  lastError: string | null
+  enteredAt: string | null
+  exitedAt: string | null
+  listing: MarketplaceListing & {
+    seller?: { id: string, username: string }
+    orders?: Array<MarketplaceOrder & { buyer?: { id: string, username: string } }>
+  }
+}
+
+export type MarketplaceReport = {
+  id: string
+  reason: string
+  description: string
+  status: string
+  assignedTo: string | null
+  reportedUserId: string | null
+  resolution: string | null
+  createdAt: string
+  reporter: { id: string, username: string }
+  listing: { id: string, itemName: string, status: string } | null
+}
+
+export type MarketplaceTask = {
+  id: string
+  title: string
+  description: string | null
+  type: string
+  status: string
+  priority: string
+  assigneeId: string | null
+  dueAt: string | null
+  listing?: { id: string, itemName: string } | null
+}
+
+export type MarketplaceEconomy = {
+  publicationFee: number
+  saleFeePercent: number
+  listingDurationHours: number
+  maxListings: number
+  vipDiscountPercent: number
+  acceptedCurrencies: MarketplaceCurrencyCode[]
+  minimumPrice: number
+  maximumPrice: number
+  cooldownMinutes: number
+  allowedCategories: string[] | null
 }
 
 export type CreateMarketplaceListingPayload = {
@@ -117,6 +203,8 @@ export const useMarketplaceApi = () => {
       send<MarketplaceListing>('DELETE', `/marketplace/listings/${id}`),
     createOrder: (listingId: string) =>
       send<MarketplaceOrder>('POST', '/marketplace/orders', { listingId }),
+    createReport: (payload: { listingId?: string, orderId?: string, reason: string, description: string, evidence?: unknown }) =>
+      send<MarketplaceReport>('POST', '/marketplace/reports', payload),
     listMyListings: () =>
       get<MarketplaceListing[]>('/account/marketplace/listings'),
     listMyOrders: () =>
@@ -132,6 +220,49 @@ export const useMarketplaceApi = () => {
     listBridgeJobs: (query: Record<string, unknown> = {}) =>
       get<GameBridgeJob[]>('/admin/game-bridge/jobs', query),
     updateBridgeJob: (id: string, status: GameBridgeStatus, result?: unknown, error?: string | null) =>
-      send<GameBridgeJob>('PATCH', `/admin/game-bridge/jobs/${id}`, { status, result, error })
+      send<GameBridgeJob>('PATCH', `/admin/game-bridge/jobs/${id}`, { status, result, error }),
+    adminDashboard: () =>
+      get<MarketplaceDashboard>('/admin/marketplace/dashboard'),
+    adminManageListings: (query: Record<string, unknown> = {}) =>
+      get<MarketplaceAdminPage<MarketplaceListing>>('/admin/marketplace/manage/listings', query),
+    adminListingAction: (id: string, action: string, reason: string, notes = '') =>
+      send<MarketplaceListing>('POST', `/admin/marketplace/listings/${id}/actions`, { action, reason, notes }),
+    adminListingBulkAction: (ids: string[], action: string, reason: string) =>
+      send<{ total: number, succeeded: number, failed: number }>(
+        'POST',
+        '/admin/marketplace/listings/bulk-actions',
+        { ids, action, reason }
+      ),
+    adminExportListings: (query: Record<string, unknown> = {}) =>
+      get<{ exportedAt: string, total: number, truncated: boolean, rows: unknown[] }>(
+        '/admin/marketplace/listings/export',
+        query
+      ),
+    adminTransactions: (query: Record<string, unknown> = {}) =>
+      get<MarketplaceAdminPage<MarketplaceOrder>>('/admin/marketplace/transactions', query),
+    adminTransactionAction: (id: string, action: string, reason: string) =>
+      send<unknown>('POST', `/admin/marketplace/transactions/${id}/actions`, { action, reason }),
+    adminEscrow: (query: Record<string, unknown> = {}) =>
+      get<MarketplaceAdminPage<MarketplaceEscrow>>('/admin/marketplace/escrow', query),
+    adminEscrowAction: (id: string, action: string, reason: string) =>
+      send<MarketplaceEscrow>('POST', `/admin/marketplace/escrow/${id}/actions`, { action, reason }),
+    adminReports: (query: Record<string, unknown> = {}) =>
+      get<MarketplaceAdminPage<MarketplaceReport>>('/admin/marketplace/reports', query),
+    adminUpdateReport: (id: string, payload: Record<string, unknown>) =>
+      send<MarketplaceReport>('PATCH', `/admin/marketplace/reports/${id}`, payload),
+    adminSuspendReportedUser: (id: string, reason: string) =>
+      send<unknown>('POST', `/admin/marketplace/reports/${id}/suspend-user`, { reason }),
+    adminTasks: (query: Record<string, unknown> = {}) =>
+      get<MarketplaceAdminPage<MarketplaceTask>>('/admin/marketplace/tasks', query),
+    adminCreateTask: (payload: Record<string, unknown>) =>
+      send<MarketplaceTask>('POST', '/admin/marketplace/tasks', payload),
+    adminUpdateTask: (id: string, payload: Record<string, unknown>) =>
+      send<MarketplaceTask>('PATCH', `/admin/marketplace/tasks/${id}`, payload),
+    adminEconomy: () =>
+      get<MarketplaceEconomy>('/admin/marketplace/economy'),
+    adminUpdateEconomy: (payload: MarketplaceEconomy & { reason: string }) =>
+      send<MarketplaceEconomy>('PATCH', '/admin/marketplace/economy', payload),
+    adminAnalytics: () =>
+      get<Record<string, unknown>>('/admin/marketplace/analytics')
   }
 }

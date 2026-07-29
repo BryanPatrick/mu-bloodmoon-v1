@@ -220,6 +220,14 @@ const navMenuItems = computed(() => [
     ]
   },
   {
+    label: navLabel('/loja', 'Loja'),
+    value: '/loja',
+    to: '/loja',
+    active: isNavActive('/loja'),
+    class: isNavActive('/loja') ? 'bm-nav-link-active' : '',
+    onSelect: closeAfterNavigate
+  },
+  {
     label: 'Mercado',
     value: '/marketplace',
     active: isNavActive('/marketplace'),
@@ -236,6 +244,22 @@ const navMenuItems = computed(() => [
     to: '/wiki',
     active: isNavActive('/wiki'),
     class: isNavActive('/wiki') ? 'bm-nav-link-active' : '',
+    onSelect: closeAfterNavigate
+  },
+  {
+    label: navLabel('/roadmap', 'Roadmap'),
+    value: '/roadmap',
+    to: '/roadmap',
+    active: isNavActive('/roadmap'),
+    class: isNavActive('/roadmap') ? 'bm-nav-link-active' : '',
+    onSelect: closeAfterNavigate
+  },
+  {
+    label: navLabel('/comunidade', 'Comunidade'),
+    value: '/comunidade',
+    to: '/comunidade',
+    active: isNavActive('/comunidade'),
+    class: isNavActive('/comunidade') ? 'bm-nav-link-active' : '',
     onSelect: closeAfterNavigate
   },
   {

@@ -12,15 +12,20 @@ import type {
   CreateMarketplaceListingPayload,
   CreateMarketplaceOrderPayload,
   MarketplaceQuery,
+  MarketplaceReportPayload,
   UpdateGameBridgeJobPayload,
   UpdateMarketplaceListingStatusPayload,
   UpdateMarketplaceOrderStatusPayload
 } from './marketplace.contract'
 import { MarketplaceService } from './marketplace.service'
+import { MarketplaceAdminService } from './marketplace-admin.service'
 
 @Controller()
 export class MarketplaceController {
-  constructor(private readonly marketplaceService: MarketplaceService) {}
+  constructor(
+    private readonly marketplaceService: MarketplaceService,
+    private readonly marketplaceAdmin: MarketplaceAdminService
+  ) {}
 
   @Get('marketplace/listings')
   listings(@Query() query: MarketplaceQuery) {
@@ -43,6 +48,12 @@ export class MarketplaceController {
   @UseGuards(JwtAuthGuard)
   createOrder(@Body() payload: CreateMarketplaceOrderPayload, @CurrentUser() user: AuthenticatedUser) {
     return this.marketplaceService.createOrder(payload, user)
+  }
+
+  @Post('marketplace/reports')
+  @UseGuards(JwtAuthGuard)
+  createReport(@Body() payload: MarketplaceReportPayload, @CurrentUser() user: AuthenticatedUser) {
+    return this.marketplaceAdmin.createReport(payload, user)
   }
 
   @Get('account/marketplace/listings')
