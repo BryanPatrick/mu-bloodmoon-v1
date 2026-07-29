@@ -124,9 +124,11 @@ async function main() {
     name: 'bloodmoon-api-cpanel',
     private: true,
     type: 'commonjs',
-    engines: { node: '22.17.0' },
+    engines: { node: '>=20.19.3' },
     scripts: {
-      start: 'node server.js'
+      start: 'node server.js',
+      'prisma:generate': 'prisma generate --schema=prisma/schema.prisma',
+      'prisma:migrate': 'prisma migrate deploy --schema=prisma/schema.prisma'
     },
     dependencies: {
       ...apiPackage.dependencies,
@@ -152,61 +154,14 @@ async function main() {
   await writeFile(path.join(apiStage, 'package.json'), `${JSON.stringify(apiDeployPackage, null, 2)}\n`)
   await writeFile(
     path.join(apiStage, 'server.js'),
-    [
-      "const { spawnSync } = require('node:child_process')",
-      "const { existsSync, rmSync } = require('node:fs')",
-      "const path = require('node:path')",
-      "const appRoot = __dirname",
-      "const prismaCli = require.resolve('prisma/build/index.js')",
-      "const schema = path.join(appRoot, 'prisma', 'schema.prisma')",
-      "const runPrisma = (args, options = {}) => spawnSync(process.execPath, [prismaCli, ...args, '--schema', schema], { cwd: appRoot, encoding: 'utf8', ...options })",
-      "const assertPrisma = (result, action) => {",
-      "  if (result.status === 0) return",
-      "  const output = `${result.stdout || ''}\\n${result.stderr || ''}`.trim()",
-      "  throw new Error(`Prisma failed during ${action} with status ${result.status}${output ? `\\n${output}` : ''}`)",
-      "}",
-      "if (process.env.PRISMA_GENERATE_ON_START === '1') {",
-      "  assertPrisma(runPrisma(['generate']), 'client generation')",
-      "}",
-      "let migration = runPrisma(['migrate', 'deploy'])",
-      "const migrationOutput = `${migration.stdout || ''}\\n${migration.stderr || ''}`",
-      "if (migration.status !== 0 && migrationOutput.includes('P3005')) {",
-      "  const legacyMigrations = [",
-      "    '20260718130000_mysql_baseline',",
-      "    '20260718150000_single_session'",
-      "  ]",
-      "  console.warn('Existing production schema detected; recording its migration baseline.')",
-      "  for (const name of legacyMigrations) assertPrisma(runPrisma(['migrate', 'resolve', '--applied', name]), `baseline ${name}`)",
-      "  migration = runPrisma(['migrate', 'deploy'])",
-      "}",
-      "const obsoleteMigrations = [",
-      "  '20260630195500_knowledge_base',",
-      "  '20260701123000_equipment_relations',",
-      "  '20260701124500_equipment_target_class',",
-      "  '20260702110000_shop_recharge_management',",
-      "  '20260702113000_account_characters',",
-      "  '20260702123000_marketplace_game_bridge'",
-      "]",
-      "const retryOutput = `${migration.stdout || ''}\\n${migration.stderr || ''}`",
-      "if (migration.status !== 0 && retryOutput.includes('P3009')) {",
-      "  assertPrisma(runPrisma(['migrate', 'resolve', '--rolled-back', obsoleteMigrations[0]]), 'legacy migration rollback')",
-      "  for (const name of obsoleteMigrations) {",
-      "    const migrationDir = path.join(appRoot, 'prisma', 'migrations', name)",
-      "    if (existsSync(migrationDir)) rmSync(migrationDir, { recursive: true, force: true })",
-      "  }",
-      "  migration = runPrisma(['migrate', 'deploy'])",
-      "}",
-      "assertPrisma(migration, 'migration deployment')",
-      "require('./dist/apps/api/src/main.js')",
-      ''
-    ].join('\n')
+    "require('./dist/apps/api/src/main.js')\n"
   )
   await writeFile(
     path.join(apiStage, 'README-cpanel.md'),
     [
       '# Blood Moon API - cPanel',
       '',
-      'Node.js: selecione 22.17.0.',
+      'Node.js: selecione 20.19.3.',
       'Raiz do aplicativo: pasta extraida deste pacote.',
       'Arquivo de inicializacao: server.js',
       '',
@@ -219,6 +174,10 @@ async function main() {
       '- SESSION_TTL_HOURS=24',
       '- WEB_PUBLIC_URLS=https://mubloodmoon.com.br,https://www.mubloodmoon.com.br',
       '- API_GLOBAL_PREFIX=api',
+      '',
+      'Antes de iniciar ou reiniciar o aplicativo, execute uma unica vez:',
+      '- npm run prisma:generate',
+      '- npm run prisma:migrate',
       '',
       'Observacao: se o app for montado diretamente em uma subpasta /api e o Passenger remover o prefixo da URL, use API_GLOBAL_PREFIX vazio.',
       ''

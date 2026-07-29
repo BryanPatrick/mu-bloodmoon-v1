@@ -125,16 +125,23 @@ precisam criar ou alterar tabelas.
 
 Verifique primeiro a cota de disco do cPanel. Cache do npm, lixeira e pacotes
 antigos podem impedir copias internas do Prisma e produzir erros pouco claros.
-O `server.js` empacotado nao gera o Prisma Client durante todo boot. Essa etapa
-so e executada quando a variavel abaixo for definida explicitamente:
+O `server.js` empacotado nunca gera o Prisma Client durante o boot. O client
+deve ser gerado uma unica vez durante o build/deploy. Isso evita que reinicios
+concorrentes do Passenger tentem gravar o mesmo binario e esgotem o limite de
+processos da conta. Depois de gerar os pacotes, confirme que ambos possuem
+tamanho maior que zero antes do upload.
 
-```env
-PRISMA_GENERATE_ON_START=1
+A API usa Node.js 20.19.3 no CloudLinux. Antes de habilitar ou reiniciar o
+Passenger, execute exatamente uma vez, nesta ordem:
+
+```bash
+npm install
+npm run prisma:generate
+npm run prisma:migrate
 ```
 
-Em operacao normal, gere o client durante o build/deploy e deixe essa variavel
-ausente. Depois de gerar os pacotes, confirme que ambos possuem tamanho maior
-que zero antes do upload.
+O `server.js` somente inicia o NestJS. Nunca execute geracao do client ou
+migrations durante o boot do Passenger.
 
 ## Rollback
 
