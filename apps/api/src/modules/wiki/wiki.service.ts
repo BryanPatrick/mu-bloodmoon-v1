@@ -72,13 +72,14 @@ function qualityLabel(quality: string) {
 }
 
 function seasonWhere(season: number | undefined): Prisma.EquipmentRecordWhereInput {
-  if (!Number.isFinite(season)) return {}
+  const scopedSeason = Number.isFinite(season) ? Math.min(season as number, 6) : 6
 
   return {
+    minSeason: { lte: 6 },
     seasons: {
       some: {
-        season,
-        ...(season && season <= 6 ? { visibility: 'SEASON_6' as const } : {})
+        season: scopedSeason,
+        visibility: 'SEASON_6' as const
       }
     }
   }
@@ -237,29 +238,30 @@ export class WikiService {
 
   async entries(query: WikiEntryQuery): Promise<PaginatedResult<unknown>> {
     const { page, pageSize, skip } = pagination(query)
-    const season = query.season ? Number.parseInt(query.season, 10) : undefined
+    const requestedSeason = query.season ? Number.parseInt(query.season, 10) : 6
+    const season = Number.isFinite(requestedSeason) ? Math.min(requestedSeason, 6) : 6
     const where: Prisma.KnowledgeEntryWhereInput = {
+      scope: query.scope || 'SEASON_6',
       ...(query.kind ? { kind: query.kind } : {}),
-      ...(query.scope ? { scope: query.scope } : {}),
-      ...(Number.isFinite(season)
-        ? {
-            OR: [
-              { seasonMin: null, seasonMax: null },
-              { seasonMin: { lte: season }, seasonMax: null },
-              { seasonMin: null, seasonMax: { gte: season } },
-              { seasonMin: { lte: season }, seasonMax: { gte: season } }
-            ]
-          }
-        : {}),
-      ...(query.search
-        ? {
-            OR: [
-              { title: { contains: query.search } },
-              { slug: { contains: query.search } },
-              { summary: { contains: query.search } }
-            ]
-          }
-        : {})
+      AND: [
+        {
+          OR: [
+            { seasonMin: null, seasonMax: null },
+            { seasonMin: { lte: season }, seasonMax: null },
+            { seasonMin: null, seasonMax: { gte: season } },
+            { seasonMin: { lte: season }, seasonMax: { gte: season } }
+          ]
+        },
+        ...(query.search
+          ? [{
+              OR: [
+                { title: { contains: query.search } },
+                { slug: { contains: query.search } },
+                { summary: { contains: query.search } }
+              ]
+            }]
+          : [])
+      ],
     }
 
     const [total, data] = await Promise.all([
@@ -285,6 +287,7 @@ export class WikiService {
 
   async characters() {
     return this.prisma.gameCharacter.findMany({
+      where: { minSeason: { lte: 6 } },
       orderBy: [{ sortOrder: 'asc' }, { minSeason: 'asc' }, { name: 'asc' }],
       include: {
         classes: {

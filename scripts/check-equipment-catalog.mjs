@@ -34,7 +34,7 @@ function assertSet(key, expected) {
 const groupedSets = equipment.filter((item) => item.group === 'SET')
 const groupedArmorSets = groupedSets.filter((item) => item.categorySlug === 'armor-set')
 
-if (groupedArmorSets.length < 190) {
+if (groupedArmorSets.length < 50) {
   fail(`only ${groupedArmorSets.length} armor sets were grouped`)
 }
 
@@ -83,25 +83,15 @@ for (const quality of ['NORMAL', 'EXCELLENT', 'ANCIENT', 'SOCKET', 'LUCKY']) {
   if (!qualities.has(quality)) fail(`set variants do not include quality ${quality}`)
 }
 
-if (options.length < 300) {
+if (options.length < 250) {
   fail(`only ${options.length} equipment options were normalized; expected the harvested Ancient catalog`)
 }
 
-const futureClasses = new Set([
-  'Grow Lancer',
-  'Rune Mage',
-  'Slayer',
-  'Gun Crusher',
-  'White Wizard',
-  'Mage',
-  'Illusion Knight',
-  'Alchemist'
-])
-const seasonSixLeaks = groupedSets.filter((item) => {
-  if (Number(item.minSeason ?? 1) > 6) return false
-  const baseClasses = item.remapData?.baseClasses ?? []
-  return baseClasses.length > 0 && baseClasses.every((className) => futureClasses.has(className))
-})
+const seasonSixClasses = new Set(['Dark Knight', 'Dark Wizard', 'Fairy Elf', 'Magic Gladiator', 'Dark Lord', 'Summoner', 'Rage Fighter'])
+const seasonSixLeaks = groupedSets.filter((item) =>
+  Number(item.minSeason ?? 1) > 6 ||
+  (item.remapData?.baseClasses ?? []).some((className) => !seasonSixClasses.has(className))
+)
 
 if (seasonSixLeaks.length > 0) {
   fail(`future-only sets marked for Season 6: ${seasonSixLeaks.map((item) => item.name).join(', ')}`)

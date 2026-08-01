@@ -9,11 +9,11 @@
   ],
   "scripts": {
     "dev": "nuxt dev apps/web",
-    "build": "nuxt build apps/web",
+    "build": "nuxt build apps/web && node scripts/patch-nitro-output.mjs",
     "generate": "nuxt generate apps/web",
     "preview": "nuxt preview apps/web/.output",
     "web:dev": "nuxt dev apps/web",
-    "web:build": "nuxt build apps/web",
+    "web:build": "nuxt build apps/web && node scripts/patch-nitro-output.mjs",
     "web:generate": "nuxt generate apps/web",
     "web:preview": "nuxt preview apps/web/.output",
     "dev:full": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-dev.ps1",

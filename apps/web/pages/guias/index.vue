@@ -30,21 +30,14 @@
 
 <script setup lang="ts">
 import { useSiteStore } from '~/stores/site'
-import { permissions } from '~/data/security'
 
 useSeoMeta({ title: 'Guias' })
 const store = useSiteStore()
-const { hasPermission, loadSession } = useAuth()
-const futureCharacters = ['Grow Lancer', 'Rune Mage', 'Slayer', 'Gun Crusher', 'White Wizard', 'Mage']
-
-onMounted(loadSession)
 
 const linksForCategory = (category: { title: string, links: string[] }) =>
   category.links.map((label) => ({
     label,
-    disabled: category.title === 'Personagens' || category.title === 'Personajes' || category.title === 'Characters'
-      ? futureCharacters.includes(label) && !hasPermission(permissions.guidesFutureView)
-      : false
+    disabled: false
   }))
 
 const slugify = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')

@@ -19,20 +19,13 @@ const normalizedAncient = JSON.parse(readFileSync(normalizedAncientPath, 'utf8')
 const guiamuItemImageFiles = new Set(readdirSync(guiamuItemImagesDir))
 
 const characterEvolutionMap = {
-  'Dark Knight': ['Dark Knight', 'Blade Knight', 'Blade Master', 'Dragon Knight'],
-  'Dark Wizard': ['Dark Wizard', 'Soul Master', 'Grand Master', 'Soul Wizard'],
-  'Fairy Elf': ['Fairy Elf', 'Muse Elf', 'High Elf', 'Noble Elf'],
+  'Dark Knight': ['Dark Knight', 'Blade Knight', 'Blade Master'],
+  'Dark Wizard': ['Dark Wizard', 'Soul Master', 'Grand Master'],
+  'Fairy Elf': ['Fairy Elf', 'Muse Elf', 'High Elf'],
   Summoner: ['Summoner', 'Bloody Summoner', 'Dimension Master'],
-  'Magic Gladiator': ['Magic Gladiator', 'Duel Master', 'Magic Knight'],
-  'Dark Lord': ['Dark Lord', 'Lord Emperor', 'Empire Lord'],
-  'Rage Fighter': ['Rage Fighter', 'Fist Master'],
-  'Grow Lancer': ['Grow Lancer', 'Mirage Lancer'],
-  'Rune Mage': ['Rune Mage', 'Rune Spell Master', 'Grand Rune Master'],
-  Slayer: ['Slayer', 'Royal Slayer', 'Master Slayer'],
-  'Gun Crusher': ['Gun Crusher', 'Gun Breaker', 'Master Gun Breaker'],
-  'White Wizard': ['White Wizard', 'Light Wizard', 'Shine Wizard'],
-  Lemuria: ['Lemuria', 'Warmage', 'Archmage'],
-  'Illusion Knight': ['Illusion Knight', 'Mirage Knight', 'Illusion Master']
+  'Magic Gladiator': ['Magic Gladiator', 'Duel Master'],
+  'Dark Lord': ['Dark Lord', 'Lord Emperor'],
+  'Rage Fighter': ['Rage Fighter', 'Fist Master']
 }
 
 const characterOrder = Object.keys(characterEvolutionMap)
@@ -44,14 +37,7 @@ const characterMinSeason = {
   Summoner: 3,
   'Magic Gladiator': 1,
   'Dark Lord': 1,
-  'Rage Fighter': 6,
-  'Grow Lancer': 10,
-  'Rune Mage': 14,
-  Slayer: 15,
-  'Gun Crusher': 16,
-  'White Wizard': 17,
-  Lemuria: 18,
-  'Illusion Knight': 20
+  'Rage Fighter': 6
 }
 const armorSlots = new Set(['Armor', 'Pants', 'Helm', 'Boots', 'Gloves'])
 const weaponSlots = new Set(['Axe', 'Mace', 'Bow', 'Spear', 'Sword', 'Staff', 'Stick', 'Scepter', 'Lance', 'Rune Mace', 'Short Sword', 'Claw', 'Magic Gun'])
@@ -59,6 +45,7 @@ const shieldSlots = new Set(['Shield'])
 const accessorySlots = new Set(['Earring', 'Pentagram', 'Quiver'])
 const masteryAncientCategories = new Set(['Bloodangel Ancient', 'Darkangel Ancient', 'Holyangel Ancient', 'Soul Ancient', 'Blue Eye Ancient', 'Manticore Ancient', 'Silver Heart Ancient', 'Brilliant Ancient', 'Apocalypse Ancient', 'Primordial Ancient'])
 const ancientCategories = new Set(['Ancient Normal', 'Set Lucky', ...masteryAncientCategories])
+const postSeasonItemPattern = /\b(fidelity|nightwing|wings of silence|cloak of limit|bloodangel|darkangel|holyangel|blue eye|manticore|silver heart|apocalypse|primordial)\b/i
 const socketSetNames = ['Titan', 'Brave', 'Hades', 'Seraphim', 'Phantom', 'Destroy', 'Crimson', 'Eternal', 'Queen']
 const secondClassSetNames = new Set([
   'Black Dragon',
@@ -266,17 +253,13 @@ const ancientAliasToBaseClass = new Map([
   ['sphinx', 'Dark Wizard'],
   ['violent wind', 'Fairy Elf'],
   ['robust', 'Rage Fighter'],
-  ['gun grasher scale', 'Gun Crusher'],
-  ['gun crasher scale', 'Gun Crusher'],
   ['dragon', 'Dark Knight'],
   ['guardian', 'Fairy Elf'],
   ['legendary', 'Dark Wizard'],
   ['storm crow', 'Magic Gladiator'],
   ['adamantine', 'Dark Lord'],
   ['red wing', 'Summoner'],
-  ['storm jahad', 'Grow Lancer'],
   ['gru hill', 'Rage Fighter'],
-  ['gun crasher frere', 'Gun Crusher'],
   ['great dragon', 'Dark Knight'],
   ['dark soul', 'Dark Wizard'],
   ['red spirit', 'Summoner'],
@@ -292,14 +275,7 @@ const modernSetTokenToBaseClass = [
   [/\bmagic(?:\s+(strength|energy))?\b/i, 'Magic Gladiator'],
   [/\blord\b/i, 'Dark Lord'],
   [/summoner/i, 'Summoner'],
-  [/fighter/i, 'Rage Fighter'],
-  [/lancer/i, 'Grow Lancer'],
-  [/\brune\b/i, 'Rune Mage'],
-  [/slayer/i, 'Slayer'],
-  [/gunner|gun\s*crusher|gun\s*breaker/i, 'Gun Crusher'],
-  [/kundun/i, 'White Wizard'],
-  [/lemuria/i, 'Lemuria'],
-  [/illusion/i, 'Illusion Knight']
+  [/fighter/i, 'Rage Fighter']
 ]
 for (const [baseClass, setNames] of Object.entries(ancientReference.setsByClass || {})) {
   for (const setName of setNames) {
@@ -548,7 +524,11 @@ const groupedArmorSets = [...armorFamilies.entries()].map(([familyKey, family]) 
   }
 })
 
-const remapped = [...sourceItems, ...groupedArmorSets]
+const remapped = [...sourceItems, ...groupedArmorSets].filter((item) =>
+  Number(item.minSeason ?? 1) <= 6 &&
+  !postSeasonItemPattern.test(`${item.name} ${item.title}`) &&
+  (!item.baseClasses?.length || item.baseClasses.some((className) => characterOrder.includes(className)))
+)
 
 const byKey = Object.fromEntries(remapped.map((item) => [item.key, item]))
 const warningTotals = {}

@@ -36,13 +36,7 @@ const characters: Seed[] = [
   ['Summoner', 'summoner', 'validar'],
   ['Magic Gladiator', 'magic-gladiator', 'v6-prioridade'],
   ['Dark Lord', 'dark-lord', 'v6-prioridade'],
-  ['Rage Fighter', 'rage-fighter', 'validar'],
-  ['White Wizard', 'white-wizard', 'high-version-futuro'],
-  ['Mage', 'mage', 'high-version-futuro'],
-  ['Rune Mage', 'rune-mage', 'high-version-futuro'],
-  ['Slayer', 'slayer', 'high-version-futuro'],
-  ['Gun Crusher', 'gun-crusher', 'high-version-futuro'],
-  ['Grow Lancer', 'grow-lancer', 'high-version-futuro']
+  ['Rage Fighter', 'rage-fighter', 'validar']
 ].map(([title, slug, compatibility]) => ({
   title,
   group: 'Personagens',
@@ -59,27 +53,19 @@ const itemCategories: Seed[] = [
   ['Necklaces', itemUrl('necklace/'), 'Pendants e colares por elemento/tipo.'],
   ['Pets', itemUrl('pets/'), 'Pets classicos e utilitarios.'],
   ['Mounts', itemUrl('mounts/'), 'Montarias e criaturas equipaveis.'],
-  ['Muun', itemUrl('muun/'), 'Conteudo moderno, preservar para servidor futuro.'],
   ['Excellent Items', itemUrl('excellent-items/'), 'Itens excellent e opcoes especiais.'],
-  ['Pentagrams', itemUrl('pentagrams/'), 'Sistema elemental moderno; high-version-futuro.'],
   ['Wings Capes', itemUrl('wings/'), 'Asas e capas por classe e tier.'],
-  ['Earrings', itemUrl('earrings/'), 'Acessorios modernos; high-version-futuro.'],
-  ['Guardian Mounts', itemUrl('guardian-mounts/'), 'Montarias guardian modernas.'],
   ['Ancient Items', itemUrl('ancient-items/'), 'Sets ancient e bonus de set.'],
   ['Lucky Sets', itemUrl('lucky/'), 'Sets lucky; validar versao.'],
   ['Socket Items', itemUrl('socket-items/'), 'Itens socket; validar escopo v6.'],
   ['Siege Items', itemUrl('siege/'), 'Itens ligados a Castle Siege.'],
   ['Moss Items', itemUrl('moss/'), 'Itens de Moss/Gamble.'],
-  ['Archangel Items', itemUrl('archangel-items/'), 'Armas Archangel e versoes blessed.'],
-  ['Mastery Sets', itemUrl('mastery-sets/'), 'Sets mastery modernos para servidor high-version.'],
-  ['Mastery Weapons', itemUrl('mastery-weapons/'), 'Armas mastery modernas para servidor high-version.'],
-  ['Enhanced Sets', itemUrl('enhanced-sets/'), 'Sets enhanced modernos.'],
-  ['Enhanced Weapons', itemUrl('enhanced-weapons/'), 'Armas enhanced modernas.']
+  ['Archangel Items', itemUrl('archangel-items/'), 'Armas Archangel e versoes blessed.']
 ].map(([title, sourceUrl, notes]) => ({
   title,
   group: 'Equipamentos',
   category: 'Categoria externa',
-  compatibility: title.includes('Mastery') || title.includes('Enhanced') || title === 'Muun' || title === 'Pentagrams' || title === 'Earrings' ? 'high-version-futuro' : 'validar',
+  compatibility: 'validar',
   sourceUrl,
   notes
 })) as Seed[]

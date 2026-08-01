@@ -17,7 +17,7 @@ Depois abra:
 http://localhost:3000
 ```
 
-Para subir o ambiente completo com PostgreSQL, API e site:
+Para subir o ambiente completo com MySQL, API e site:
 
 ```bash
 npm run dev:full
@@ -44,6 +44,23 @@ iniciar-dev-com-import.bat
 - `references`: imagens, dados brutos e referencias coletadas.
 - `docs`: documentacao do sistema e deploy.
 - `scripts`: scripts auxiliares.
+
+## Escopo do servidor
+
+O portal publicado trabalha exclusivamente com a Season 6, incluindo personagens e evolucoes somente ate Rage Fighter/Fist Master.
+Conteudo de temporadas posteriores nao deve ser importado, publicado nem reintroduzido pelos scripts de coleta.
+
+O material historico removido do repositorio esta preservado fora do projeto em:
+
+```text
+C:\Users\Admin\Documents\BloodMoonBackups\ProjectCleanup\20260730-season6-scope
+```
+
+Para auditar o recorte sem alterar arquivos:
+
+```bash
+node scripts/prune-season6-scope.mjs
+```
 
 ## Comandos
 

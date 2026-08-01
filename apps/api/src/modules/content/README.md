@@ -5,7 +5,7 @@ API publica do CMS Blood Moon.
 Responsabilidades:
 
 - publicar apenas entradas com status `PUBLISHED`;
-- limitar o conteudo publico a `SEASON_6` e `ALL_SEASONS`;
+- limitar o conteudo publico exclusivamente a `SEASON_6`;
 - publicar apenas configuracoes marcadas como publicas e publicadas;
 - manter consultas publicas separadas das rotas administrativas.
 

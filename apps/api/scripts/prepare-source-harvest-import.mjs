@@ -103,9 +103,12 @@ const entries = data.pages.map((page) => {
       files: page.files
     }
   }
-})
+}).filter((entry) => entry.scope !== 'FUTURE_SEASON' && (entry.seasonMin === null || entry.seasonMin <= 6))
 
-const assets = data.uniqueImages.map((image) => ({
+const retainedEntryUrls = new Set(entries.map((entry) => entry.sourceUrl))
+const assets = data.uniqueImages.filter((image) =>
+  (image.pageUrls || []).some((pageUrl) => retainedEntryUrls.has(pageUrl))
+).map((image) => ({
   sourceKey: image.localPath.includes('/guiamu-com-ar/') || image.localPath.includes('\\guiamu-com-ar\\')
     ? 'guiamu-com-ar'
     : 'webzen-gameinfo-pt',
@@ -148,7 +151,6 @@ const plan = {
     assets: assets.length,
     entryAssets: entryAssets.length,
     offTopicEntries: entries.filter((entry) => entry.scope === 'OFF_TOPIC').length,
-    futureSeasonEntries: entries.filter((entry) => entry.scope === 'FUTURE_SEASON').length,
     season6Entries: entries.filter((entry) => entry.scope === 'SEASON_6').length
   },
   sources,

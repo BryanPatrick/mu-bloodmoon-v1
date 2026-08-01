@@ -20,20 +20,13 @@ function enumOrFallback(value, fallback) {
 }
 
 const characterEvolutionMap = {
-  'Dark Knight': ['Dark Knight', 'Blade Knight', 'Blade Master', 'Dragon Knight'],
-  'Dark Wizard': ['Dark Wizard', 'Soul Master', 'Grand Master', 'Soul Wizard'],
-  'Fairy Elf': ['Fairy Elf', 'Muse Elf', 'High Elf', 'Noble Elf'],
+  'Dark Knight': ['Dark Knight', 'Blade Knight', 'Blade Master'],
+  'Dark Wizard': ['Dark Wizard', 'Soul Master', 'Grand Master'],
+  'Fairy Elf': ['Fairy Elf', 'Muse Elf', 'High Elf'],
   Summoner: ['Summoner', 'Bloody Summoner', 'Dimension Master'],
-  'Magic Gladiator': ['Magic Gladiator', 'Duel Master', 'Magic Knight'],
-  'Dark Lord': ['Dark Lord', 'Lord Emperor', 'Empire Lord'],
-  'Rage Fighter': ['Rage Fighter', 'Fist Master'],
-  'Grow Lancer': ['Grow Lancer', 'Mirage Lancer'],
-  'Rune Mage': ['Rune Mage', 'Rune Spell Master', 'Grand Rune Master'],
-  Slayer: ['Slayer', 'Royal Slayer', 'Master Slayer'],
-  'Gun Crusher': ['Gun Crusher', 'Gun Breaker', 'Master Gun Breaker'],
-  'White Wizard': ['White Wizard', 'Light Wizard', 'Shine Wizard'],
-  Lemuria: ['Lemuria', 'Warmage', 'Archmage'],
-  'Illusion Knight': ['Illusion Knight', 'Mirage Knight', 'Illusion Master']
+  'Magic Gladiator': ['Magic Gladiator', 'Duel Master'],
+  'Dark Lord': ['Dark Lord', 'Lord Emperor'],
+  'Rage Fighter': ['Rage Fighter', 'Fist Master']
 }
 
 const characterMinSeason = {
@@ -43,14 +36,7 @@ const characterMinSeason = {
   Summoner: 3,
   'Magic Gladiator': 1,
   'Dark Lord': 1,
-  'Rage Fighter': 6,
-  'Grow Lancer': 10,
-  'Rune Mage': 14,
-  Slayer: 15,
-  'Gun Crusher': 16,
-  'White Wizard': 17,
-  Lemuria: 18,
-  'Illusion Knight': 20
+  'Rage Fighter': 6
 }
 
 const seasonSixBaseClassNames = new Set([
@@ -103,11 +89,11 @@ function seasonRowsForEquipment(item) {
   const isSeasonSix = publicInSeasonSix(baseClasses, minSeason, item.group)
   const rows = []
 
-  for (let season = Math.max(1, minSeason); season <= 21; season += 1) {
+  for (let season = Math.max(1, minSeason); season <= 6; season += 1) {
     if (season <= 6 && !isSeasonSix) continue
     rows.push({
       season,
-      visibility: season <= 6 ? 'SEASON_6' : 'FUTURE_SEASON',
+      visibility: 'SEASON_6',
       source: 'remap'
     })
   }
@@ -402,7 +388,7 @@ async function seedInternalKnowledge() {
       slug: `personagem-${keyFor(characterName)}`,
       title: characterName,
       kind: 'CHARACTER',
-      scope: (characterMinSeason[characterName] ?? 1) <= 6 ? 'SEASON_6' : 'FUTURE_SEASON',
+      scope: 'SEASON_6',
       seasonMin: characterMinSeason[characterName] ?? 1,
       summary: `${characterName}: personagem catalogado com evolucoes ${classes.join(' > ')}.`,
       headings: classes

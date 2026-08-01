@@ -219,7 +219,7 @@ Escopo desejado:
 Campos importantes:
 
 - `kind`: tipo do conteudo, como `CHARACTER`, `EQUIPMENT`, `MAP`, `SKILL`, `EVENT`.
-- `scope`: separa `SEASON_6`, `FUTURE_SEASON`, `ALL_SEASONS`, `OFF_TOPIC` e `NEEDS_REVIEW`.
+- `scope`: o projeto publicado aceita `SEASON_6`; material fora desse recorte permanece apenas no backup externo.
 - `status`: fluxo editorial entre `RAW`, `NORMALIZED`, `REVIEWED`, `APPROVED`, `REMASTER_PENDING`, `PUBLISHED` e `ARCHIVED`.
 - `duplicateOfId`: preserva rastreabilidade sem duplicar conteudo publicado.
 
@@ -282,7 +282,7 @@ Imagens:
 O servidor atual usa Season 6 como alvo publico.
 
 - Player ve apenas `SEASON_6` e conteudo aprovado.
-- Admin ve `SEASON_6`, `FUTURE_SEASON`, `ALL_SEASONS`, `NEEDS_REVIEW` e material bruto.
+- Admin ve `SEASON_6`, `NEEDS_REVIEW` e material bruto pertencente ao recorte oficial.
 - Conteudo moderno deve ser preservado para uso futuro, mas nao pode poluir a Wiki publica de Season 6.
 
 ## Regras de publicacao

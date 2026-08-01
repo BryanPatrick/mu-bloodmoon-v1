@@ -79,13 +79,7 @@ const characterLinksByRelease = [
   'Magic Gladiator',
   'Dark Lord',
   'Summoner',
-  'Rage Fighter',
-  'Grow Lancer',
-  'Rune Mage',
-  'Slayer',
-  'Gun Crusher',
-  'White Wizard',
-  'Mage'
+  'Rage Fighter'
 ]
 const ptCommon = {
   login: 'Login',

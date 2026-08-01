@@ -33,7 +33,7 @@ export class LauncherService {
         where: {
           kind: { in: ['NEWS', 'EVENT'] },
           status: 'PUBLISHED',
-          scope: { in: ['SEASON_6', 'ALL_SEASONS'] }
+          scope: 'SEASON_6'
         },
         orderBy: [{ updatedAt: 'desc' }],
         take: 8,

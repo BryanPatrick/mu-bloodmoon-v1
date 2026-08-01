@@ -47,7 +47,7 @@ const allowedKinds: KnowledgeEntryKind[] = [
   'UNKNOWN'
 ]
 
-const allowedScopes: KnowledgeScope[] = ['SEASON_6', 'FUTURE_SEASON', 'ALL_SEASONS', 'OFF_TOPIC', 'NEEDS_REVIEW']
+const allowedScopes: KnowledgeScope[] = ['SEASON_6', 'OFF_TOPIC', 'NEEDS_REVIEW']
 const allowedStatuses: EditorialStatus[] = ['RAW', 'NORMALIZED', 'REVIEWED', 'APPROVED', 'REMASTER_PENDING', 'PUBLISHED', 'ARCHIVED']
 const allowedAssetKinds: ReferenceAssetKind[] = ['IMAGE', 'HTML', 'TEXT', 'JSON', 'OTHER']
 const allowedEquipmentGroups: EquipmentGroup[] = ['SET', 'SET_PIECE', 'WEAPON', 'SHIELD', 'WING', 'ACCESSORY', 'PET', 'JEWEL', 'CONSUMABLE', 'MISC']
@@ -91,6 +91,27 @@ function auditActor(user?: AuthenticatedUser) {
   return {
     actorId: user?.id,
     actorUsername: user?.username
+  }
+}
+
+function assertSeasonSixScope(payload: {
+  scope?: KnowledgeScope
+  seasonMin?: number | null
+  seasonMax?: number | null
+  minSeason?: number
+  seasons?: Array<{ season: number }>
+  variants?: Array<{ minSeason?: number }>
+}) {
+  const seasons = [
+    payload.seasonMin,
+    payload.seasonMax,
+    payload.minSeason,
+    ...(payload.seasons || []).map((item) => item.season),
+    ...(payload.variants || []).map((item) => item.minSeason)
+  ].filter((value): value is number => typeof value === 'number')
+
+  if (payload.scope === 'FUTURE_SEASON' || seasons.some((season) => season > 6)) {
+    throw new BadRequestException('Blood Moon accepts content only through Season 6.')
   }
 }
 
@@ -306,6 +327,7 @@ export class AdminContentService {
   }
 
   async createEntry(payload: AdminCreateKnowledgeEntryPayload, user?: AuthenticatedUser) {
+    assertSeasonSixScope(payload)
     if (!payload.title?.trim()) {
       throw new BadRequestException('title is required')
     }
@@ -343,6 +365,7 @@ export class AdminContentService {
   }
 
   async updateEntry(id: string, payload: AdminUpdateKnowledgeEntryPayload, user?: AuthenticatedUser) {
+    assertSeasonSixScope(payload)
     const entry = await this.prisma.knowledgeEntry.findUnique({ where: { id } })
     if (!entry) {
       throw new NotFoundException(`Knowledge entry not found: ${id}`)
@@ -598,6 +621,7 @@ export class AdminContentService {
   }
 
   async createEquipment(payload: AdminCreateEquipmentPayload, user?: AuthenticatedUser) {
+    assertSeasonSixScope(payload)
     if (!payload.name?.trim()) {
       throw new BadRequestException('name is required')
     }
@@ -624,7 +648,7 @@ export class AdminContentService {
         pieces: payload.pieces?.length ? { create: payload.pieces.map((item, index) => ({ name: item.name.trim(), slot: item.slot.trim(), imagePath: item.imagePath?.trim() || null, data: jsonValue(item.data), sortOrder: item.sortOrder ?? index })) } : undefined,
         options: payload.options?.length ? { create: payload.options.map((item, index) => ({ scope: item.scope.trim(), label: item.label.trim(), data: jsonValue(item.data), sortOrder: item.sortOrder ?? index })) } : undefined,
         classLinks: payload.classLinks?.length ? { create: payload.classLinks.map((item) => ({ classId: item.classId, characterId: item.characterId, role: enumOrFallback(item.role, allowedClassLinkRoles, 'PLAYABLE'), source: item.source?.trim() || 'admin' })) } : undefined,
-        seasons: payload.seasons?.length ? { create: payload.seasons.map((item) => ({ season: item.season, visibility: enumOrFallback(item.visibility, allowedScopes, item.season <= 6 ? 'SEASON_6' : 'FUTURE_SEASON'), source: item.source?.trim() || 'admin' })) } : undefined
+        seasons: payload.seasons?.length ? { create: payload.seasons.map((item) => ({ season: item.season, visibility: enumOrFallback(item.visibility, allowedScopes, 'SEASON_6'), source: item.source?.trim() || 'admin' })) } : undefined
       },
       include: equipmentRelations
     })
@@ -641,6 +665,7 @@ export class AdminContentService {
   }
 
   async updateEquipment(id: string, payload: AdminUpdateEquipmentPayload, user?: AuthenticatedUser) {
+    assertSeasonSixScope(payload)
     const record = await this.prisma.equipmentRecord.findUnique({ where: { id } })
     if (!record) {
       throw new NotFoundException(`Equipment record not found: ${id}`)
@@ -665,7 +690,7 @@ export class AdminContentService {
         ...(payload.pieces !== undefined ? { pieces: { deleteMany: {}, create: payload.pieces.map((item, index) => ({ name: item.name.trim(), slot: item.slot.trim(), imagePath: item.imagePath?.trim() || null, data: jsonValue(item.data), sortOrder: item.sortOrder ?? index })) } } : {}),
         ...(payload.options !== undefined ? { options: { deleteMany: {}, create: payload.options.map((item, index) => ({ scope: item.scope.trim(), label: item.label.trim(), data: jsonValue(item.data), sortOrder: item.sortOrder ?? index })) } } : {}),
         ...(payload.classLinks !== undefined ? { classLinks: { deleteMany: {}, create: payload.classLinks.map((item) => ({ classId: item.classId, characterId: item.characterId, role: enumOrFallback(item.role, allowedClassLinkRoles, 'PLAYABLE'), source: item.source?.trim() || 'admin' })) } } : {}),
-        ...(payload.seasons !== undefined ? { seasons: { deleteMany: {}, create: payload.seasons.map((item) => ({ season: item.season, visibility: enumOrFallback(item.visibility, allowedScopes, item.season <= 6 ? 'SEASON_6' : 'FUTURE_SEASON'), source: item.source?.trim() || 'admin' })) } } : {})
+        ...(payload.seasons !== undefined ? { seasons: { deleteMany: {}, create: payload.seasons.map((item) => ({ season: item.season, visibility: enumOrFallback(item.visibility, allowedScopes, 'SEASON_6'), source: item.source?.trim() || 'admin' })) } } : {})
       },
       include: equipmentRelations
     }))

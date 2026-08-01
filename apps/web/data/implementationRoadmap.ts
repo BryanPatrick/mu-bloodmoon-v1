@@ -47,17 +47,16 @@ export const implementationRoadmap: RoadmapItem[] = [
     area: 'Personagens',
     status: 'Em andamento',
     priority: 'Alta',
-    summary: 'Transformar os dados coletados em paginas completas para cada personagem, mantendo a ordem de lancamento e bloqueando classes futuras para players.',
+    summary: 'Transformar os dados coletados em paginas completas para cada personagem disponivel na Season 6, mantendo a ordem de lancamento.',
     collectedData: [
       'Fairy Elf com lore, formulas, skills, armas, sets e wings',
       'Dark Lord com referencias visuais e direcao artistica',
-      'Lista de personagens v6, validar e high-version-futuro',
+      'Lista oficial de personagens da Season 6',
       'MegaMu com NPCs e origem de skills'
     ],
     nextSteps: [
       'Completar pagina da Fairy Elf com dados coletados',
-      'Replicar estrutura para Dark Knight, Dark Wizard, Magic Gladiator, Dark Lord e Rage Fighter',
-      'Deixar Grow Lancer em diante visivel apenas para admin e desabilitado para players',
+      'Replicar estrutura para Dark Knight, Dark Wizard, Magic Gladiator, Dark Lord, Summoner e Rage Fighter',
       'Adicionar filtros por classe, build, skill e equipamento relacionado'
     ]
   },

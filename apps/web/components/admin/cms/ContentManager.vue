@@ -30,7 +30,7 @@
         <div class="grid gap-3 md:grid-cols-3"><label class="bm-admin-label">Tipo<select v-model="form.kind" class="bm-admin-field"><option v-for="item in areaConfig.kinds" :key="item" :value="item">{{ item }}</option></select></label><label class="bm-admin-label">Escopo<select v-model="form.scope" class="bm-admin-field"><option v-for="item in scopes" :key="item" :value="item">{{ item }}</option></select></label><label class="bm-admin-label">Status<select v-model="form.status" class="bm-admin-field"><option v-for="item in statuses" :key="item" :value="item">{{ item }}</option></select></label></div>
         <label class="bm-admin-label">Resumo<textarea v-model="form.summary" class="bm-admin-field min-h-20" /></label>
         <label class="bm-admin-label">Conteudo<textarea v-model="form.content" class="bm-admin-field min-h-64" placeholder="Texto que sera renderizado no site" /></label>
-        <div class="grid gap-3 md:grid-cols-2"><label class="bm-admin-label">Season minima<input v-model.number="form.seasonMin" class="bm-admin-field" type="number" min="1"></label><label class="bm-admin-label">Season maxima<input v-model.number="form.seasonMax" class="bm-admin-field" type="number" min="1"></label></div>
+        <div class="grid gap-3 md:grid-cols-2"><label class="bm-admin-label">Season minima<input v-model.number="form.seasonMin" class="bm-admin-field" type="number" min="1" max="6"></label><label class="bm-admin-label">Season maxima<input v-model.number="form.seasonMax" class="bm-admin-field" type="number" min="1" max="6"></label></div>
         <div class="flex justify-end gap-2"><button class="bm-admin-action" type="button" @click="modalOpen = false">Cancelar</button><button class="bm-admin-primary" :disabled="saving" type="submit"><Save :size="16" /> {{ saving ? 'Salvando...' : 'Salvar' }}</button></div>
       </form>
     </CmsModal>
@@ -55,7 +55,7 @@ const areaDefinitions: Record<string, { label: string, kinds: string[] }> = {
 }
 const areaConfig = computed(() => areaDefinitions[props.area] || areaDefinitions.paginas!)
 const statuses = ['RAW', 'NORMALIZED', 'REVIEWED', 'APPROVED', 'PUBLISHED', 'ARCHIVED']
-const scopes = ['SEASON_6', 'FUTURE_SEASON', 'ALL_SEASONS', 'OFF_TOPIC', 'NEEDS_REVIEW']
+const scopes = ['SEASON_6', 'OFF_TOPIC', 'NEEDS_REVIEW']
 const rows = ref<Entry[]>([]); const search = ref(''); const kind = ref(''); const status = ref(''); const loading = ref(false); const saving = ref(false); const modalOpen = ref(false); const message = ref('')
 const emptyForm = () => ({ id: '', title: '', slug: '', kind: areaConfig.value.kinds[0] || 'PAGE', scope: 'SEASON_6', status: 'RAW', summary: '', content: '', seasonMin: 1 as number | null, seasonMax: 6 as number | null })
 const form = reactive(emptyForm())

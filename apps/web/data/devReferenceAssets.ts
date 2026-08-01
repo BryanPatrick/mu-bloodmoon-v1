@@ -512,16 +512,6 @@ const localDevReferenceAssets: DevReferenceAsset[] = [
     notes: 'Vine, Silk, Wind, Spirit, Guardian, Iris, Holy Spirit, Divine e Red Spirit.'
   },
   {
-    title: 'Sets modernos da Fairy Elf',
-    group: 'Equipamentos',
-    category: 'Catalogo externo',
-    status: 'Catalogado',
-    compatibility: 'high-version-futuro',
-    source: 'MU Online Fanz',
-    sourceUrl: 'https://muonlinefanz.com/guide/characters/elf/',
-    notes: 'Bloodangel, Darkangel, Holyangel, Manticore, Silver Heart, Brilliant, Soul e Blue Eye para servidor futuro.'
-  },
-  {
     title: 'Noria - floresta realista',
     group: 'Mapas',
     category: 'Noria',

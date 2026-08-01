@@ -740,7 +740,6 @@
                 <select v-model="knowledgeScopeFilter" class="h-11 rounded-md border border-white/10 bg-white/10 px-3 text-sm font-bold text-white outline-none focus:border-blood-400/70">
                   <option class="bg-zinc-950 text-white" value="">Todos escopos</option>
                   <option class="bg-zinc-950 text-white" value="SEASON_6">Season 6</option>
-                  <option class="bg-zinc-950 text-white" value="FUTURE_SEASON">Futuro</option>
                   <option class="bg-zinc-950 text-white" value="NEEDS_REVIEW">Revisar</option>
                 </select>
               </div>
@@ -1267,20 +1266,15 @@ const { dictionary, locale } = useLocale()
 const { hasPermission, loadSession } = useAuth()
 const wikiApi = useWikiApi()
 const isWikiAdmin = computed(() => hasPermission(permissions.adminDashboardView))
-const seasonOptions = Array.from({ length: 16 }, (_, index) => index + 6)
-const wikiSeason = ref(isWikiAdmin.value ? 21 : 6)
+const seasonOptions = [6]
+const wikiSeason = ref(6)
 const isWikiSeasonOpen = ref(false)
-const availableWikiSeasons = computed(() => isWikiAdmin.value ? seasonOptions : [6])
-const wikiSeasonNotice = computed(() =>
-  isWikiAdmin.value
-    ? 'Administradores podem alternar entre Season 6 e Season 21.'
-    : 'Jogadores visualizam apenas a Season 6 atual do servidor.'
-)
+const availableWikiSeasons = computed(() => seasonOptions)
+const wikiSeasonNotice = computed(() => 'A Wiki exibe apenas o escopo oficial Season 6 do servidor.')
 const selectWikiSeason = (season: number) => {
   wikiSeason.value = season
   isWikiSeasonOpen.value = false
 }
-const futureCharacters = ['Grow Lancer', 'Rune Mage', 'Slayer', 'Gun Crusher', 'White Wizard', 'Mage']
 const setCharacterFilter = ref('Default')
 const setEvolutionFilter = ref('Default')
 const setEquipmentFilter = ref('Default')
@@ -1398,20 +1392,13 @@ const setModalPieces = [
   }
 ]
 const characterEvolutionMap: Record<string, string[]> = {
-  'Dark Knight': ['Dark Knight', 'Blade Knight', 'Blade Master', 'Dragon Knight'],
-  'Dark Wizard': ['Dark Wizard', 'Soul Master', 'Grand Master', 'Soul Wizard'],
-  'Fairy Elf': ['Fairy Elf', 'Muse Elf', 'High Elf', 'Noble Elf'],
+  'Dark Knight': ['Dark Knight', 'Blade Knight', 'Blade Master'],
+  'Dark Wizard': ['Dark Wizard', 'Soul Master', 'Grand Master'],
+  'Fairy Elf': ['Fairy Elf', 'Muse Elf', 'High Elf'],
   Summoner: ['Summoner', 'Bloody Summoner', 'Dimension Master'],
-  'Magic Gladiator': ['Magic Gladiator', 'Duel Master', 'Magic Knight'],
-  'Dark Lord': ['Dark Lord', 'Lord Emperor', 'Empire Lord'],
-  'Rage Fighter': ['Rage Fighter', 'Fist Master'],
-  'Grow Lancer': ['Grow Lancer', 'Mirage Lancer'],
-  'Rune Mage': ['Rune Mage', 'Rune Spell Master', 'Grand Rune Master'],
-  Slayer: ['Slayer', 'Royal Slayer', 'Master Slayer'],
-  'Gun Crusher': ['Gun Crusher', 'Gun Breaker', 'Master Gun Breaker'],
-  'White Wizard': ['White Wizard', 'Light Wizard', 'Shine Wizard'],
-  Lemuria: ['Lemuria', 'Warmage', 'Archmage'],
-  'Illusion Knight': ['Illusion Knight', 'Mirage Knight', 'Illusion Master']
+  'Magic Gladiator': ['Magic Gladiator', 'Duel Master'],
+  'Dark Lord': ['Dark Lord', 'Lord Emperor'],
+  'Rage Fighter': ['Rage Fighter', 'Fist Master']
 }
 const characterOrder = Object.keys(characterEvolutionMap)
 const playableClassNames = Array.from(new Set(Object.values(characterEvolutionMap).flat()))
@@ -1899,7 +1886,7 @@ const apiDerivedWikiCharacters = computed<WikiCharacterRecord[]>(() =>
       const headings = entryHeadings(entry)
       const classNames = (headings.length ? headings : [entry.title]).filter(Boolean)
       const name = classNames[0] || entry.title
-      const minSeason = entry.seasonMin || (entry.scope === 'FUTURE_SEASON' ? 7 : 1)
+      const minSeason = entry.seasonMin || 1
 
       return {
         key: slugify(name),
@@ -3142,16 +3129,9 @@ watch(availableWikiSeasons, (seasons) => {
   }
 })
 
-watch(isWikiAdmin, (isAdmin, wasAdmin) => {
-  if (isAdmin && !wasAdmin) {
-    wikiSeason.value = 21
-    return
-  }
-
-  if (!isAdmin) {
-    wikiSeason.value = 6
-    isWikiSeasonOpen.value = false
-  }
+watch(isWikiAdmin, () => {
+  wikiSeason.value = 6
+  isWikiSeasonOpen.value = false
 }, { immediate: true })
 
 watch(activeTopicKey, () => {
@@ -3272,9 +3252,7 @@ function linksForCategory (category: WikiCategory): WikiTopic[] {
   return category.links.map((label) => ({
     key: slugify(label),
     label,
-    disabled: ['Personagens', 'Personajes', 'Characters'].includes(category.title)
-      ? futureCharacters.includes(label) && !hasPermission(permissions.guidesFutureView)
-      : false
+    disabled: false
   }))
 }
 

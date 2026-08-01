@@ -17,7 +17,7 @@ export class ContentService {
     const pageSize = Math.min(positiveInt(query.pageSize, 24), 100)
     const where: Prisma.KnowledgeEntryWhereInput = {
       status: 'PUBLISHED',
-      scope: { in: ['SEASON_6', 'ALL_SEASONS'] },
+      scope: 'SEASON_6',
       ...(query.kind ? { kind: query.kind } : {}),
       ...(query.search ? { OR: [{ title: { contains: query.search } }, { summary: { contains: query.search } }] } : {})
     }
@@ -36,7 +36,7 @@ export class ContentService {
 
   async entry(slug: string) {
     const entry = await this.prisma.knowledgeEntry.findFirst({
-      where: { slug, status: 'PUBLISHED', scope: { in: ['SEASON_6', 'ALL_SEASONS'] } },
+      where: { slug, status: 'PUBLISHED', scope: 'SEASON_6' },
       include: { assets: { include: { asset: true }, orderBy: { sortOrder: 'asc' } } }
     })
     if (!entry) throw new NotFoundException(`Published content not found: ${slug}`)
