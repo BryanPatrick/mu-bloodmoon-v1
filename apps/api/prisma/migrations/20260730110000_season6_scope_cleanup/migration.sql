@@ -1,5 +1,6 @@
 -- Blood Moon currently operates exclusively on Season 6 through Rage Fighter.
--- Child rows are removed by the cascade relations declared in the Prisma schema.
+-- Remove dependent knowledge rows explicitly because the legacy relations were
+-- created without ON DELETE CASCADE in production.
 
 DELETE FROM `EquipmentRecord`
 WHERE `minSeason` > 6;
@@ -10,8 +11,23 @@ WHERE `season` > 6 OR `visibility` = 'FUTURE_SEASON';
 DELETE FROM `EquipmentVariant`
 WHERE `minSeason` > 6;
 
+UPDATE `KnowledgeEntry` AS `entry`
+INNER JOIN `KnowledgeEntry` AS `futureEntry`
+        ON `entry`.`duplicateOfId` = `futureEntry`.`id`
+SET `entry`.`duplicateOfId` = NULL
+WHERE `futureEntry`.`scope` = 'FUTURE_SEASON'
+   OR `futureEntry`.`seasonMin` > 6;
+
+DELETE `entryAsset`
+FROM `KnowledgeEntryAsset` AS `entryAsset`
+INNER JOIN `KnowledgeEntry` AS `entry`
+        ON `entry`.`id` = `entryAsset`.`entryId`
+WHERE `entry`.`scope` = 'FUTURE_SEASON'
+   OR `entry`.`seasonMin` > 6;
+
 DELETE FROM `KnowledgeEntry`
-WHERE `scope` = 'FUTURE_SEASON' OR `seasonMin` > 6;
+WHERE `scope` = 'FUTURE_SEASON'
+   OR `seasonMin` > 6;
 
 UPDATE `KnowledgeEntry`
 SET `scope` = 'SEASON_6',

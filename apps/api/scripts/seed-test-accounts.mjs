@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 
 if (process.env.NODE_ENV === 'production') {
   throw new Error('Test account seed is disabled in production')
