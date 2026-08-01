@@ -154,7 +154,7 @@ const referenceRoots = [
   join(repoRoot, 'references/game-assets/source-harvest'),
   join(repoRoot, 'references/game-assets/muonlinefanz')
 ]
-const postSeasonAssetPattern = /(bloodangel|darkangel|holyangel|awakening|blue-eye|silver-heart|manticore|brilliant-ancient|soul-ancient|apocalypse-ancient|primordial-ancient|mastery)/i
+const postSeasonAssetPattern = /(bloodangel|darkangel|holyangel|awakening|blue-eye|silver-heart|manticore|brilliant-ancient|soul-ancient|apocalypse-ancient|primordial-ancient|mastery|magic-gun|rune-mace|pentagram|muun)/i
 const removedImageNames = new Set([...removedImagePaths].map((path) => basename(path).toLowerCase()))
 const referenceRemovals = []
 const walkReferences = (root) => {
@@ -169,7 +169,13 @@ referenceRoots.forEach(walkReferences)
 
 for (const root of [
   join(repoRoot, 'apps/web/public/dev-references'),
-  join(repoRoot, 'references/game-assets/webzen')
+  join(repoRoot, 'apps/web/public/images/game-assets/guiamuonline'),
+  join(repoRoot, 'apps/web/public/images/game-assets/muonlinefanz'),
+  join(repoRoot, 'apps/web/public/images/game-assets/socket-items'),
+  join(repoRoot, 'references/game-assets/webzen'),
+  join(repoRoot, 'references/game-assets/guiamuonline'),
+  join(repoRoot, 'references/game-assets/muonlinefanz'),
+  join(repoRoot, 'references/game-assets/socket-items')
 ]) {
   const walkPostSeasonAssets = (directory) => {
     if (!existsSync(directory)) return
