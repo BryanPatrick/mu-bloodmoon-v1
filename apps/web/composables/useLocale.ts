@@ -84,8 +84,6 @@ const characterLinksByRelease = [
 const ptCommon = {
   login: 'Login',
   register: 'Registrar',
-  darkMode: 'Modo escuro',
-  lightMode: 'Modo claro',
   language: 'Idioma',
   previousSlide: 'Slide anterior',
   nextSlide: 'Próximo slide',
@@ -234,8 +232,6 @@ const dictionaries: Record<LocaleCode, LocaleDictionary> = {
     common: {
       login: 'Iniciar sesión',
       register: 'Registrarse',
-      darkMode: 'Modo oscuro',
-      lightMode: 'Modo claro',
       language: 'Idioma',
       previousSlide: 'Slide anterior',
       nextSlide: 'Siguiente slide',
@@ -305,8 +301,6 @@ function makeEnglish(region: 'US' | 'UK'): LocaleDictionary {
     common: {
       login: 'Login',
       register: 'Register',
-      darkMode: 'Dark mode',
-      lightMode: 'Light mode',
       language: 'Language',
       previousSlide: 'Previous slide',
       nextSlide: 'Next slide',

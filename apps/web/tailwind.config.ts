@@ -1,7 +1,6 @@
 import type { Config } from 'tailwindcss'
 
 export default <Partial<Config>>{
-  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {
@@ -25,10 +24,7 @@ export default <Partial<Config>>{
         glow: '0 0 40px rgba(239, 68, 68, 0.18)',
         panel: '0 18px 60px rgba(0, 0, 0, 0.35)'
       },
-      backgroundImage: {
-        'hero-blood':
-          'linear-gradient(90deg, rgba(8,9,13,.95), rgba(28,8,13,.78), rgba(8,9,13,.42)), url("https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&w=1800&q=80")'
-      }
+      backgroundImage: {}
     }
   }
 }

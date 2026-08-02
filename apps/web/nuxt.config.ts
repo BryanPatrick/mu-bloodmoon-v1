@@ -53,7 +53,7 @@ export default defineNuxtConfig({
         },
         { property: 'og:site_name', content: 'Blood Moon' },
         { property: 'og:type', content: 'website' },
-        { name: 'theme-color', content: '#13080b' }
+        { name: 'theme-color', content: '#f5f2ec' }
       ],
       link: [
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -62,7 +62,6 @@ export default defineNuxtConfig({
           rel: 'stylesheet',
           href: 'https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Inter:wght@400;500;600;700;800&display=swap'
         },
-        { rel: 'preconnect', href: 'https://images.unsplash.com' },
         { rel: 'icon', type: 'image/png', href: '/favicon.png' },
         { rel: 'shortcut icon', href: '/favicon.ico' },
         { rel: 'apple-touch-icon', href: '/favicon.png' }

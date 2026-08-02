@@ -1,7 +1,7 @@
 <template>
   <div class="flex min-h-screen flex-col overflow-x-hidden">
     <SiteHeader />
-    <main class="flex-1 pt-20" :class="mainDensityClass">
+    <main class="flex-1 pt-[80px] max-md:pt-[68px]" :class="mainDensityClass">
       <slot />
     </main>
     <SiteFooter class="bm-density-compact" />

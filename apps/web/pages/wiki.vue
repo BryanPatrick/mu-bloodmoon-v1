@@ -1,19 +1,25 @@
 <template>
   <div>
-    <PageHero
-      wide
-      kicker="Base de conhecimento"
-      title="Wiki Blood Moon"
-      description="Painel central para organizar mapas, monstros, personagens, equipamentos, formulas, eventos e todo o conhecimento do servidor."
-    />
+    <section class="wiki-hero">
+      <img src="/images/guide-elfa-hero.png" alt="Wiki Blood Moon" class="wiki-hero-image">
+      <div class="wiki-hero-overlay" />
+      <div class="bm-guide-container wiki-hero-content">
+        <p><Diamond class="size-2.5" /> Base de conhecimento</p>
+        <h1>Wiki <span>Blood Moon</span></h1>
+        <small>Encontre tudo que precisa sobre itens, personagens, mapas e sistemas do servidor.</small>
+        <label class="wiki-search"><Search class="size-4" /><input v-model="wikiSearch" type="search" placeholder="Pesquisar item, personagem ou sistema..."></label>
+        <div class="wiki-popular"><strong>Pesquisas populares</strong><button v-for="topic in popularTopics" :key="topic.label" type="button" @click="selectTopic(topic.section, topic.key)">{{ topic.label }}</button></div>
+      </div>
+    </section>
 
     <section
-      class="bm-guide-container grid gap-4 py-[6px] transition-[grid-template-columns]"
-      :class="isWikiAsideCollapsed ? 'lg:grid-cols-[72px_1fr]' : 'lg:grid-cols-[18rem_1fr]'"
+      class="bm-guide-container wiki-shell transition-[grid-template-columns]"
+      :class="!activeSectionKey ? 'wiki-shell-landing' : (isWikiAsideCollapsed ? 'grid gap-4 lg:grid-cols-[72px_1fr]' : 'grid gap-4 lg:grid-cols-[18rem_1fr]')"
     >
       <aside
+        v-if="activeSectionKey"
         class="bm-panel h-fit rounded-md transition-all lg:sticky lg:top-28"
-        :class="isWikiAsideCollapsed ? 'p-3' : 'p-[24px]'"
+        :class="isWikiAsideCollapsed ? 'is-wiki-collapsed p-3' : 'p-[24px]'"
       >
         <div class="flex items-start justify-between gap-3" :class="{ 'justify-center': isWikiAsideCollapsed }">
           <div v-if="!isWikiAsideCollapsed">
@@ -99,8 +105,22 @@
         </nav>
       </aside>
 
-      <section class="bm-panel rounded-md p-[24px]">
-        <div v-if="isEquipmentLanding" class="grid gap-5">
+      <section :class="activeSectionKey ? 'bm-panel rounded-md p-[24px]' : 'wiki-landing-panel'">
+        <div v-if="!activeSectionKey" class="wiki-landing">
+          <header><p>Explore todo o conhecimento</p><h2>Pesquise no Wiki</h2><span /></header>
+          <div class="wiki-category-grid">
+            <button v-for="section in wikiLandingCategories" :key="section.key" class="wiki-category-card" type="button" @click="selectSection(section.key)">
+              <span class="wiki-category-icon"><BloodMoonIcon :name="section.icon" /></span>
+              <span><strong>{{ section.title }}</strong><small>{{ section.description }}</small></span>
+              <ChevronRight class="wiki-category-arrow size-4" />
+            </button>
+          </div>
+          <div class="wiki-lower-grid">
+            <section class="wiki-list-panel"><h3>Tópicos populares</h3><button v-for="topic in wikiFeaturedTopics" :key="topic.label" type="button" @click="selectTopic(topic.section, topic.key)"><span class="wiki-topic-thumb"><component :is="topic.icon" /></span><strong>{{ topic.label }}</strong><ChevronRight class="size-3.5" /></button><NuxtLink to="/wiki">Veja todos os tópicos</NuxtLink></section>
+            <section class="wiki-list-panel wiki-updates"><h3>Atualizações recentes</h3><article v-for="update in wikiRecentUpdates" :key="update.title"><span><FileText class="size-3.5" /></span><strong>{{ update.title }}</strong><time>{{ update.date }}</time></article><NuxtLink to="/noticias">Veja todas as novidades</NuxtLink></section>
+          </div>
+        </div>
+        <div v-else-if="isEquipmentLanding" class="grid gap-5">
           <div class="rounded-md border border-white/10 bg-black/20 p-[24px]">
             <p class="bm-kicker">Guia de equipamentos</p>
             <h2 class="bm-heading mt-[6px] font-display text-3xl font-bold">Como ler os equipamentos do Blood Moon</h2>
@@ -1114,16 +1134,23 @@ import {
   Boxes,
   CalendarDays,
   ChevronDown,
+  ChevronRight,
   Crosshair,
   Database,
+  Diamond,
+  FileText,
+  Gem,
   Map,
   NotebookTabs,
   PanelLeftClose,
   PanelLeftOpen,
   ScrollText,
+  Search,
   Shield,
   Sparkles,
+  Settings,
   Swords,
+  TrendingUp,
   UserRound,
   UsersRound,
   WandSparkles,
@@ -1509,7 +1536,14 @@ const setPowerOrder = [
 
 const wikiCategories = computed(() => dictionary.value.guideCategories)
 const openSections = ref<string[]>([])
-const activeSectionKey = ref('personagens')
+const activeSectionKey = ref('')
+const wikiSearch = ref('')
+const popularTopics = [
+  { label: 'Fairy Elf', section: 'personagens', key: 'fairy-elf' },
+  { label: 'Sets', section: 'equipamentos', key: 'sets' },
+  { label: 'Mapas', section: 'mapas-pvm', key: 'mapas' },
+  { label: 'Eventos', section: 'eventos', key: 'eventos' }
+]
 const activeTopicKey = ref('')
 const isWikiAsideCollapsed = ref(false)
 const activeFairyElfStyleIndex = ref(0)
@@ -1700,6 +1734,36 @@ const navigationSections = computed<WikiSection[]>(() =>
     topics: linksForCategory(category)
   }))
 )
+
+const wikiLandingCategories = computed(() => {
+  const sectionByTitle = (title: string, fallback: string) =>
+    navigationSections.value.find((section) => slugify(section.title).includes(title))?.key || fallback
+
+  return [
+    { key: sectionByTitle('personagens', 'personagens'), title: 'Personagens', description: 'Classes, evoluções e estilos de jogo.', icon: 'characters' },
+    { key: sectionByTitle('equipamentos', 'equipamentos'), title: 'Itens', description: 'Sets, armas, asas e acessórios.', icon: 'items' },
+    { key: sectionByTitle('mapas', 'mapas-e-pvm'), title: 'Mapas', description: 'Mundos, spots, monstros e chefes.', icon: 'maps' },
+    { key: sectionByTitle('builds', 'builds'), title: 'Progresso', description: 'Builds, evolução e rotas de avanço.', icon: 'progress' },
+    { key: sectionByTitle('chaos-machine', 'chaos-machine'), title: 'Sistemas', description: 'Combinações e sistemas do servidor.', icon: 'systems' },
+    { key: sectionByTitle('tutoriais', 'tutoriais'), title: 'Guias', description: 'Tutoriais para começar e evoluir.', icon: 'book' }
+  ]
+})
+
+const wikiFeaturedTopics = [
+  { label: 'Asas', section: 'equipamentos', key: 'asas-e-capas', icon: Sparkles },
+  { label: 'Itens Excellent', section: 'tutoriais', key: 'itens-excellent', icon: Gem },
+  { label: 'Castle Siege', section: 'eventos', key: 'castle-siege', icon: Shield },
+  { label: 'Chaos Machine', section: 'chaos-machine', key: 'chaos-weapon-mix', icon: Settings },
+  { label: 'Guia de lugares', section: 'mapas-e-pvm', key: 'mapas', icon: Map },
+  { label: 'Pets', section: 'equipamentos', key: 'pets-e-mounts', icon: Boxes }
+]
+const wikiRecentUpdates = [
+  { title: 'Atualização de conteúdo e equipamentos', date: '31 jul. 2026' },
+  { title: 'Novos filtros para a biblioteca', date: '30 jul. 2026' },
+  { title: 'Mapas, monstros e bosses revisados', date: '29 jul. 2026' },
+  { title: 'Guias de personagens organizados', date: '28 jul. 2026' },
+  { title: 'Itens da Season 6 consolidados', date: '27 jul. 2026' }
+]
 
 const activeSection = computed(() =>
   navigationSections.value.find((section) => section.key === activeSectionKey.value)
@@ -3190,6 +3254,9 @@ watch(selectedEquipmentAvailableQualities, (qualities) => {
 })
 
 onMounted(() => {
+  if (window.innerWidth < 1024) {
+    isWikiAsideCollapsed.value = true
+  }
   loadSession()
   void loadSetCardsFromApi()
   void ensureWikiStaticData()
@@ -3262,6 +3329,7 @@ function slugify (value: string) {
 </script>
 
 <style scoped>
+.wiki-hero{position:relative;min-height:330px;overflow:hidden;border-bottom:1px solid #d5ccc4}.wiki-hero-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right 34%;filter:grayscale(.55) sepia(.45);opacity:.25}.wiki-hero-overlay{position:absolute;inset:0;background:linear-gradient(90deg,#f5f2ec 0%,rgba(245,242,236,.93) 58%,rgba(245,242,236,.52) 100%)}.wiki-hero-content{position:relative;z-index:1;display:flex;min-height:330px;flex-direction:column;justify-content:center;padding-block:42px}.wiki-hero-content>p{display:flex;align-items:center;gap:7px;color:#73090b;font-size:9px;font-weight:900;letter-spacing:.14em;text-transform:uppercase}.wiki-hero-content h1{margin-top:8px;color:#171313;font-size:38px;font-weight:500;text-transform:uppercase}.wiki-hero-content h1 span{color:#73090b}.wiki-hero-content small{margin-top:7px;color:#645d58;font-size:11px}.wiki-search{display:flex;width:min(100%,680px);height:43px;align-items:center;gap:9px;margin-top:20px;border:1px solid #d3cac1;background:rgba(255,255,255,.82);padding:0 14px;color:#7d716b}.wiki-search input{min-width:0;flex:1;background:transparent;font-size:11px}.wiki-popular{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:12px}.wiki-popular strong{margin-right:4px;color:#73090b;font-size:8px;text-transform:uppercase}.wiki-popular button{border:1px solid #cabfb6;background:rgba(255,255,255,.65);padding:4px 8px;color:#5e534d;font-size:8px}.wiki-popular button:hover{border-color:#73090b;color:#73090b}.wiki-shell{padding-block:34px 60px}.wiki-shell-landing{display:block}.wiki-landing-panel{background:transparent}.wiki-landing{max-width:1080px;min-height:420px;margin-inline:auto}.wiki-landing>header{text-align:center}.wiki-landing>header p{color:#73090b;font-size:9px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}.wiki-landing>header h2{margin-top:5px;color:#3c1717;font-size:24px;font-weight:800;text-transform:uppercase}.wiki-landing>header span{display:block;width:5px;height:5px;margin:9px auto 0;transform:rotate(45deg);background:#73090b}.wiki-category-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}.wiki-category-card{position:relative;display:grid;min-height:104px;grid-template-columns:68px minmax(0,1fr) 18px;align-items:center;gap:13px;border:1px solid #cfc4ba;background:rgba(255,255,255,.5);padding:15px 18px;text-align:left;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}.wiki-category-card:before,.wiki-category-card:after{position:absolute;width:11px;height:11px;content:''}.wiki-category-card:before{left:-1px;top:-1px;border-left:2px solid #73090b;border-top:2px solid #73090b}.wiki-category-card:after{right:-1px;bottom:-1px;border-right:2px solid #73090b;border-bottom:2px solid #73090b}.wiki-category-card:hover{transform:translateY(-2px);border-color:#a78e83;box-shadow:0 9px 20px rgba(70,6,8,.09)}.wiki-category-icon{display:grid;width:58px;height:58px;place-items:center;border-right:1px solid #d6cdc5;color:#73090b}.wiki-category-icon svg{width:34px;height:34px;stroke-width:1.25}.wiki-category-card strong{display:block;color:#5a1114;font-family:Cinzel,serif;font-size:13px;text-transform:uppercase}.wiki-category-card small{display:block;margin-top:5px;color:#796e68;font-size:9px;line-height:1.4}.wiki-category-arrow{color:#947c72}.wiki-lower-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}.wiki-list-panel{position:relative;border:1px solid #cfc4ba;background:rgba(255,255,255,.45);padding:18px 22px 14px}.wiki-list-panel h3{padding-bottom:12px;border-bottom:1px solid #d9d0c8;color:#5b1114;font-family:Cinzel,serif;font-size:14px;text-transform:uppercase}.wiki-list-panel button,.wiki-list-panel article{display:grid;width:100%;min-height:40px;grid-template-columns:30px 1fr auto;align-items:center;gap:9px;border-bottom:1px solid #e0d8d0;text-align:left}.wiki-list-panel button:hover strong{color:#73090b}.wiki-topic-thumb,.wiki-list-panel article>span{display:grid;width:24px;height:24px;place-items:center;background:#ebe4dd;color:#73090b}.wiki-list-panel strong{font-size:9px}.wiki-list-panel time{color:#897c75;font-size:8px}.wiki-list-panel>a{display:block;margin-top:12px;color:#73090b;font-size:8px;font-weight:900;text-align:center;text-transform:uppercase}.wiki-list-panel:before,.wiki-list-panel:after{position:absolute;width:12px;height:12px;content:''}.wiki-list-panel:before{left:-1px;top:-1px;border-left:2px solid #73090b;border-top:2px solid #73090b}.wiki-list-panel:after{right:-1px;bottom:-1px;border-right:2px solid #73090b;border-bottom:2px solid #73090b}
 .bm-style-card-enter-active,
 .bm-style-card-leave-active {
   transition: opacity 260ms ease, transform 260ms ease;
@@ -3286,5 +3354,14 @@ function slugify (value: string) {
 .bm-style-copy-leave-to {
   opacity: 0;
   transform: translateY(4px);
+}
+@media (max-width: 1023px) {
+  .wiki-hero,.wiki-hero-content{min-height:300px}
+  .wiki-category-grid{grid-template-columns:repeat(2,1fr)}
+  .is-wiki-collapsed { min-height: 56px; }
+  .is-wiki-collapsed nav { display: none; }
+}
+@media (max-width: 767px) {
+  .wiki-hero,.wiki-hero-content{min-height:285px}.wiki-hero-content h1{font-size:29px}.wiki-category-grid,.wiki-lower-grid{grid-template-columns:1fr}.wiki-category-card{min-height:92px;grid-template-columns:58px 1fr 16px;padding:12px}.wiki-category-icon{width:48px;height:48px}.wiki-category-icon svg{width:28px;height:28px}.wiki-shell{padding-block:26px 44px}
 }
 </style>

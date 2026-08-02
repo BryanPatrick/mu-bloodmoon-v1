@@ -1,121 +1,51 @@
 <template>
-  <section class="market-filters bm-glass" aria-label="Filtros do marketplace">
-    <div class="grid min-w-0 gap-2 lg:grid-cols-[minmax(16rem,1.4fr)_repeat(3,minmax(10rem,.65fr))_auto]">
-      <div class="relative min-w-0">
-        <Search class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-white/42" />
-        <input
-          :value="search"
-          class="market-control w-full pl-10"
-          type="search"
-          placeholder="Pesquisar pelo nome do item"
-          @input="$emit('update:search', ($event.target as HTMLInputElement).value)"
-        >
-      </div>
+  <section class="market-filters" aria-label="Filtros do marketplace">
+    <header><BloodMoonIcon name="systems" /><strong>Filtros</strong></header>
 
-      <select :value="category" class="market-control" @change="$emit('update:category', ($event.target as HTMLSelectElement).value)">
+    <div class="filter-section">
+      <label for="market-category"><BloodMoonIcon name="items" /> Categoria</label>
+      <select id="market-category" :value="category" class="market-control" @change="$emit('update:category', ($event.target as HTMLSelectElement).value)">
         <option value="">Todas as categorias</option>
-        <option v-for="option in categories" :key="option.value" :value="option.value">
-          {{ option.value }} ({{ option.count }})
-        </option>
+        <option v-for="option in categories" :key="option.value" :value="option.value">{{ option.value }} ({{ option.count }})</option>
       </select>
+    </div>
 
-      <select :value="currency" class="market-control" @change="$emit('update:currency', ($event.target as HTMLSelectElement).value)">
+    <div class="filter-section">
+      <label for="market-currency"><BloodMoonIcon name="xp" /> Moeda</label>
+      <select id="market-currency" :value="currency" class="market-control" @change="$emit('update:currency', ($event.target as HTMLSelectElement).value)">
         <option value="">Todas as moedas</option>
-        <option value="WCOIN">WCoin</option>
-        <option value="GOBLIN_POINT">Goblin Point</option>
-        <option value="HUNT_POINT">Hunt Point</option>
+        <option value="WCOIN">WCoin</option><option value="GOBLIN_POINT">Goblin Point</option><option value="HUNT_POINT">Hunt Point</option>
       </select>
+    </div>
 
-      <select :value="sort" class="market-control" @change="$emit('update:sort', ($event.target as HTMLSelectElement).value)">
-        <option value="newest">Mais recentes</option>
-        <option value="oldest">Mais antigos</option>
-        <option value="priceAsc">Menor preco</option>
-        <option value="priceDesc">Maior preco</option>
-      </select>
-
-      <div class="flex items-center gap-2">
-        <UButton
-          :color="view === 'grid' ? 'primary' : 'neutral'"
-          :variant="view === 'grid' ? 'solid' : 'soft'"
-          square
-          aria-label="Visualizacao em grade"
-          @click="$emit('update:view', 'grid')"
-        >
-          <LayoutGrid class="size-4" />
-        </UButton>
-        <UButton
-          :color="view === 'list' ? 'primary' : 'neutral'"
-          :variant="view === 'list' ? 'solid' : 'soft'"
-          square
-          aria-label="Visualizacao em lista"
-          @click="$emit('update:view', 'list')"
-        >
-          <List class="size-4" />
-        </UButton>
-        <UButton v-if="hasFilters" color="neutral" variant="ghost" square aria-label="Limpar filtros" @click="$emit('clear')">
-          <RotateCcw class="size-4" />
-        </UButton>
+    <div class="filter-section">
+      <p><BloodMoonIcon name="drop" /> Tipos de item</p>
+      <div class="filter-shortcuts">
+        <button v-for="shortcut in shortcuts" :key="shortcut" :class="{ 'is-active': category.toLowerCase().includes(shortcut.toLowerCase()) }" type="button" @click="$emit('update:category', shortcut)">
+          <span />{{ shortcut }}
+        </button>
       </div>
     </div>
 
-    <div class="mt-2 flex flex-wrap items-center gap-2 border-t border-white/10 pt-2">
-      <span class="mr-1 text-[10px] font-black uppercase tracking-[0.16em] text-white/42">Atalhos</span>
-      <button
-        v-for="shortcut in shortcuts"
-        :key="shortcut"
-        class="market-chip"
-        :class="{ 'market-chip-active': category.toLowerCase().includes(shortcut.toLowerCase()) }"
-        type="button"
-        @click="$emit('update:category', shortcut)"
-      >
-        {{ shortcut }}
-      </button>
+    <div class="filter-section">
+      <label for="market-sort"><BloodMoonIcon name="progress" /> Ordenar</label>
+      <select id="market-sort" :value="sort" class="market-control" @change="$emit('update:sort', ($event.target as HTMLSelectElement).value)">
+        <option value="newest">Mais recentes</option><option value="oldest">Mais antigos</option><option value="priceAsc">Menor preço</option><option value="priceDesc">Maior preço</option>
+      </select>
     </div>
+
+    <button class="clear-button" type="button" :disabled="!hasFilters" @click="$emit('clear')"><RotateCcw class="size-3.5" /> Limpar filtros</button>
   </section>
 </template>
 
 <script setup lang="ts">
-import { LayoutGrid, List, RotateCcw, Search } from 'lucide-vue-next'
-
-const props = defineProps<{
-  search: string
-  category: string
-  currency: string
-  sort: string
-  view: 'grid' | 'list'
-  categories: Array<{ value: string, count: number }>
-}>()
-
-defineEmits<{
-  'update:search': [value: string]
-  'update:category': [value: string]
-  'update:currency': [value: string]
-  'update:sort': [value: string]
-  'update:view': [value: 'grid' | 'list']
-  clear: []
-}>()
-
-const shortcuts = ['Armaduras', 'Armas', 'Asas', 'Acessorios', 'Joias']
+import { RotateCcw } from 'lucide-vue-next'
+const props = defineProps<{ search: string; category: string; currency: string; sort: string; view: 'grid' | 'list'; categories: Array<{ value: string; count: number }> }>()
+defineEmits<{ 'update:search': [value: string]; 'update:category': [value: string]; 'update:currency': [value: string]; 'update:sort': [value: string]; 'update:view': [value: 'grid' | 'list']; clear: [] }>()
+const shortcuts = ['Armaduras', 'Armas', 'Asas', 'Acessórios', 'Joias']
 const hasFilters = computed(() => Boolean(props.search || props.category || props.currency || props.sort !== 'newest'))
 </script>
 
 <style scoped>
-.market-filters { border-radius: 8px; padding: 10px; }
-.market-control {
-  min-height: 38px;
-  border: 1px solid rgb(255 255 255 / 0.13);
-  border-radius: 6px;
-  background: rgb(0 0 0 / 0.34);
-  padding: 0 12px;
-  color: rgb(255 255 255 / 0.88);
-  font-size: 12px;
-  font-weight: 750;
-  outline: none;
-}
-.market-control:focus { border-color: rgb(245 158 11 / 0.7); }
-.market-control option { background: #111318; color: white; }
-.market-chip { border: 1px solid rgb(255 255 255 / 0.1); border-radius: 999px; background: rgb(255 255 255 / 0.055); padding: 5px 10px; color: rgb(255 255 255 / 0.55); font-size: 10px; font-weight: 850; }
-.market-chip:hover, .market-chip-active { border-color: rgb(245 158 11 / 0.45); background: rgb(245 158 11 / 0.12); color: #fbbf24; }
-html.light .market-control { border-color: rgb(15 23 42 / 0.15); background: rgb(255 255 255 / 0.76); color: #172033; }
-html.light .market-chip { border-color: rgb(15 23 42 / 0.12); color: #475569; }
+.market-filters{border:1px solid #d5ccc3;background:#faf7f2}.market-filters header{display:flex;align-items:center;gap:10px;padding:17px;border-bottom:1px solid #d5ccc3;color:#460608;text-transform:uppercase}.market-filters header strong{font-family:Cinzel,serif;font-size:15px}.filter-section{padding:16px;border-bottom:1px solid #e2dad2}.filter-section>label,.filter-section>p{display:flex;align-items:center;gap:9px;margin-bottom:10px;color:#460608;font-size:11px;font-weight:900;text-transform:uppercase}.market-control{width:100%;height:38px;border:1px solid #cfc5bc;border-radius:3px;background:#f5f2ec;padding:0 10px;color:#27211e;font-size:11px}.market-control:focus{border-color:#73090b}.filter-shortcuts{display:grid;gap:8px}.filter-shortcuts button{display:flex;align-items:center;gap:8px;color:#5f5751;font-size:11px;text-align:left}.filter-shortcuts button span{width:12px;height:12px;border:1px solid #c7bbb1;background:#fff}.filter-shortcuts button.is-active{color:#73090b;font-weight:850}.filter-shortcuts button.is-active span{border-color:#73090b;background:#73090b;box-shadow:inset 0 0 0 2px #fff}.clear-button{display:flex;width:calc(100% - 32px);min-height:36px;align-items:center;justify-content:center;gap:7px;margin:16px;border:1px solid #a88f87;color:#5d0b0f;font-size:10px;font-weight:900;text-transform:uppercase}.clear-button:disabled{opacity:.45}.clear-button:not(:disabled):hover{background:#73090b;color:#fff}
 </style>

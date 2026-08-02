@@ -1,2 +1,20 @@
-<template><ManagementShell><section class="grid gap-4"><header><p class="bm-kicker">Preferências pessoais</p><h1 class="mt-2 font-display text-3xl font-black uppercase">Configurações</h1></header><article class="bm-panel grid gap-4 rounded-md p-5 md:grid-cols-2"><label class="bm-admin-label">Idioma<select v-model="preferences.language" class="bm-admin-field"><option value="pt-BR">Português Brasil</option><option value="en-US">English</option><option value="es">Español</option></select></label><label class="bm-admin-label">Aparência<select v-model="preferences.theme" class="bm-admin-field"><option value="dark">Escuro</option><option value="light">Claro</option><option value="system">Sistema</option></select></label><label class="flex items-center gap-3 text-sm font-bold"><input v-model="preferences.notifications" type="checkbox" class="size-4 accent-ember">Receber notificações do servidor</label><div class="md:col-span-2"><button class="bm-admin-primary" type="button" @click="save">Salvar preferências</button><span v-if="saved" class="ml-3 text-xs text-emerald-200">Preferências salvas.</span></div></article><article class="bm-panel rounded-md p-5"><h2 class="font-display text-xl font-black uppercase">Segurança e sessões</h2><p class="mt-2 text-sm text-white/55">Alteração de senha, e-mail e sessões ativas ficam centralizadas na sua conta.</p><NuxtLink to="/painel/conta" class="bm-admin-action mt-4 inline-flex">Abrir segurança da conta</NuxtLink></article></section></ManagementShell></template>
-<script setup lang="ts">const preferences=reactive({language:'pt-BR',theme:'dark',notifications:true});const saved=ref(false);onMounted(()=>{try{Object.assign(preferences,JSON.parse(localStorage.getItem('blood-moon-preferences')||'{}'))}catch{}});const save=()=>{localStorage.setItem('blood-moon-preferences',JSON.stringify(preferences));saved.value=true;setTimeout(()=>saved.value=false,2000)};useSeoMeta({title:'Configurações'})</script>
+<template>
+  <ManagementShell>
+    <section class="grid gap-4">
+      <header><p class="bm-kicker">Preferencias pessoais</p><h1 class="mt-2 font-display text-3xl font-bold">Configuracoes</h1></header>
+      <article class="bm-panel grid gap-4 p-5 md:grid-cols-2">
+        <label class="bm-admin-label">Idioma<select v-model="preferences.language" class="bm-admin-field"><option value="pt-BR">Portugues Brasil</option><option value="en-US">English</option><option value="es">Espanol</option></select></label>
+        <label class="flex items-center gap-3 text-sm font-bold"><input v-model="preferences.notifications" type="checkbox" class="size-4 accent-blood-700">Receber notificacoes do servidor</label>
+        <div class="md:col-span-2"><button class="bm-admin-primary" type="button" @click="save">Salvar preferencias</button><span v-if="saved" class="ml-3 text-xs text-emerald-700">Preferencias salvas.</span></div>
+      </article>
+      <article class="bm-panel p-5"><h2 class="font-display text-xl font-bold">Seguranca e sessoes</h2><p class="bm-muted mt-2 text-sm">Alteracao de senha, e-mail e sessoes ativas ficam centralizadas na sua conta.</p><NuxtLink to="/painel/conta" class="bm-admin-action mt-4">Abrir seguranca da conta</NuxtLink></article>
+    </section>
+  </ManagementShell>
+</template>
+<script setup lang="ts">
+const preferences = reactive({ language: 'pt-BR', notifications: true })
+const saved = ref(false)
+onMounted(() => { try { Object.assign(preferences, JSON.parse(localStorage.getItem('blood-moon-preferences') || '{}')) } catch {} })
+const save = () => { localStorage.setItem('blood-moon-preferences', JSON.stringify(preferences)); saved.value = true; setTimeout(() => { saved.value = false }, 2000) }
+useSeoMeta({ title: 'Configuracoes' })
+</script>
