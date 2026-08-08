@@ -4,11 +4,14 @@ Baseado na auditoria estatica e nas verificacoes de 2026-08-08. Itens nao foram
 marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
 "o que impede usuarios reais de usar o portal com seguranca?"
 
-**Community: `BETA_READY`** (Etapa 14 -- jornada E2E completa, 111/111 PASS,
-nenhum BLOCKER funcional na Community; ver
-community-current-state.md#validacao-e2e-completa-etapa-14). As demais areas
-do site (autenticacao/recuperacao de senha, loja/marketplace, deploy/producao)
-continuam com blockers proprios abertos abaixo -- `BETA_READY` cobre
+**Community: `COMMUNITY_BETA_READY`** (Etapa 16 -- gate de release formal,
+checklist completo revalidado, 111/111 PASS, zero BLOCKER no
+codigo/funcionalidade da Community; 2 riscos HIGH documentados, nenhum deles
+um BLOCKER de codigo -- ver
+community-current-state.md#gate-de-release-para-beta-etapa-16 para o
+relatorio completo e a decisao formal registrada no Hub). As demais areas do
+site (autenticacao/recuperacao de senha, loja/marketplace, deploy/producao)
+continuam com blockers proprios abertos abaixo -- este resultado cobre
 especificamente a Community, nao o site inteiro.
 
 ## BLOCKER

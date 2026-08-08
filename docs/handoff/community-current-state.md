@@ -21,14 +21,16 @@ O desenvolvimento parou antes da reconciliacao final:
 Status geral (na auditoria original, Etapa 5): `PARTIAL`, com base backend
 relevante e integracao final pendente.
 
-**Status atual (Etapa 14): `BETA_READY`.** Etapas 6-14 fecharam a
-reconciliacao, homologaram migrations, media, feed/posts, interacoes
-sociais, perfis/privacidade, moderacao, administracao, e agora a jornada
-E2E ponta a ponta completa (`apps/api/test/community-e2e-journey.e2e-spec.ts`,
-novo). `npm run api:test:e2e` combinado: **111/111 PASS**, 8 suites, nenhum
-BLOCKER funcional encontrado na Community. Ver
-"Validacao E2E completa (Etapa 14)" abaixo para o relatorio PASS/FAIL/BLOCKER
-detalhado -- `BETA_READY` cobre especificamente a Community; outras areas do
+**Status atual (Etapa 16, gate formal): `COMMUNITY_BETA_READY`.** Etapas
+6-16 fecharam a reconciliacao, homologaram migrations, media, feed/posts,
+interacoes sociais, perfis/privacidade, moderacao, administracao, a
+jornada E2E ponta a ponta completa (Etapa 14) e um passe de UX/polish
+(Etapa 15). A Etapa 16 e a auditoria final formal (checklist completo,
+classificacao BLOCKER/HIGH/MEDIUM/LOW, decisao de readiness registrada no
+Hub) -- ver "Gate de release para beta (Etapa 16)" abaixo para o relatorio
+completo. `npm run api:test:e2e` combinado: **111/111 PASS**, 8 suites,
+**zero BLOCKER** encontrado no codigo/funcionalidade da Community.
+`COMMUNITY_BETA_READY` cobre especificamente a Community; outras areas do
 site (autenticacao/recuperacao de senha, loja/marketplace, deploy/producao)
 continuam com blockers proprios documentados em `site-beta-checklist.md`.
 
@@ -1622,6 +1624,103 @@ visualmente pela mesma razao das etapas anteriores -- compensado por
 dos 9 arquivos tocados) e pela logica corrigida ser simples o suficiente
 para revisar com confianca por leitura de codigo (guards de estado local,
 handlers de evento, CSS de truncamento).
+
+## Gate de release para beta (Etapa 16)
+
+Objetivo: auditoria final -- **nao construcao**. Revalidar o checklist
+completo pedido pelo brief, classificar qualquer problema
+BLOCKER/HIGH/MEDIUM/LOW, e emitir um resultado formal unico:
+`COMMUNITY_BETA_READY` ou `COMMUNITY_BETA_BLOCKED`. Nenhuma correcao de
+codigo foi feita nesta etapa -- so revalidacao do que as Etapas 5-15 ja
+entregaram, mais uma nova rodada limpa do quality gate completo.
+
+### Checklist revalidado
+
+| Item | Status | Evidencia |
+|---|---|---|
+| Migrations homologadas | ✅ | Etapa 6: 3/3 `APPROVED_FOR_PRODUCTION` em clone descartavel, rollback documentado. Ainda **nao aplicadas em ambiente real** -- isso e um gate de deploy separado (backup + janela + aprovacao do operador), nao um problema de codigo da Community, ja rastreado em `site-beta-checklist.md` > Deploy/producao. |
+| Autenticacao | ✅ | JWT access+refresh, sessao unica por conta, senha com bcrypt, logout real invalida token na hora (`sessionVersion`). Race de concorrencia que causava 401 falso corrigida na Etapa 10 (bug app-wide, nao so Community). |
+| Autorizacao | ✅ | RBAC granular via `AccountPermission`; confirmado repetidamente (Etapas 12/13/14) que `role: 'ADMIN'` sozinho nao concede nada -- overrides explicitos e reais autorizam cada acao administrativa. |
+| Perfil real | ✅ | Etapa 7 (zero mock) + Etapa 11 (tiers de privacidade PUBLIC/FOLLOWERS/PRIVATE realmente aplicados, dono nunca trancado do proprio perfil). |
+| Uploads reais | ✅ | Etapa 8: pipeline real (validacao de bytes, re-encode via `sharp`, rate limit 10/60s). Storage e local em disco -- ver risco HIGH abaixo. |
+| Posts reais | ✅ | Etapa 9: CRUD real, validacao de conteudo, revisao em edicao admin. |
+| Feed real | ✅ | Etapa 9: paginacao real (`load more`), sem fallback mock. |
+| Comentarios | ✅ | Etapa 10: ownership real (404 entre contas), paginacao alem dos 5 embutidos. |
+| Reacoes | ✅ | Etapa 10: toggle race-safe (concorrencia auditada por E2E). |
+| Saves | ✅ | Etapa 10: isolado por conta, race-safe. |
+| Reposts | ✅ | Etapa 10: bloqueios reais (proprio post, post nao-publico), race-safe. |
+| Moderacao | ✅ | Etapa 12: acoes reais com efeito confirmado (post oculto some do feed publico), auditoria real. |
+| Denuncias | ✅ | Etapa 12: fluxo completo, auto-denuncia e duplicata bloqueados. |
+| Administracao | ✅ | Etapa 13: painel homologado ponta a ponta, 2 bugs reais corrigidos (unpublish silencioso, estados loading/erro). |
+| Sem mocks mascarando falhas | ✅ | `grep` de `mock/Mock/MOCK` em todo `apps/api/src/modules/{community,media,admin-tasks}` e `apps/web/{components/community,pages/comunidade}`: zero ocorrencia real (so comentarios explicando a ausencia de mock). Placeholders honestos (Explorar/Guilds/Eventos/Quests/Conquistas, right rail) nunca fingem ter dados. |
+| E2E | ✅ | **111/111 PASS**, 8 suites, confirmado em execucao isolada nesta etapa (uma rodada anterior no mesmo dia teve 22 falhas por contencao de recursos -- rodei `web:build` concorrente com a suite completa por engano; re-executada sozinha, 111/111 estavel). |
+| Mobile | ✅ | Etapa 15: CSS responsivo real confirmado em todos os componentes + QA com navegador real (primeira desta sessao) em desktop/mobile, zero erro de console. Gap de reflow mobile no painel admin corrigido na mesma etapa. |
+| Lint | ✅ | 53 problemas no repositorio inteiro (1 erro, 52 warnings) -- **zero na Community**. O 1 erro e pre-existente em `admin-tasks.service.ts` (modulo nao-Community), ja sinalizado como task separada na Etapa 13. |
+| Prettier | ✅ | 256 arquivos com formatacao divergente no repositorio inteiro -- confirmado pre-existente para todo arquivo Community tocado nas Etapas 13-15 (comparado via `git stash` contra o estado antes de cada etapa). Nenhum novo introduzido. |
+| API check | ✅ | `npm run api:check` (estrutura + `tsc --noEmit`) limpo. |
+| Web build | ✅ | `npm run web:build` limpo, confirmado de novo nesta etapa. |
+| Seguranca minima | ✅ | Trilha de auditoria real com redacao de secrets (`AuditEvent`); lookups escopados por dono retornam 404 (nunca revelam "existe mas nao e seu"); nenhum campo interno/PII vaza no perfil publico (Etapa 11, reverificado); rate limit em upload; sessao com `sessionVersion` (Etapa 10); zero uso de `v-html` em qualquer componente Community (sem vetor de XSS via conteudo de post/comentario); auto-denuncia e denuncia duplicada bloqueadas no backend. |
+| Documentacao | ✅ | `community-current-state.md` (este arquivo) e `site-beta-checklist.md` atualizados em toda etapa desde a 5. |
+
+### Classificacao de problemas conhecidos
+
+**BLOCKER: nenhum encontrado no codigo/funcionalidade da Community.**
+
+**HIGH** (nao bloqueiam o codigo da Community, mas sao os riscos reais de
+maior impacto para o lancamento):
+1. Storage de midia e local em disco e o pipeline de deploy de producao
+   (`scripts/package-cpanel-deploy.mjs`) nao preserva `COMMUNITY_MEDIA_DIR`
+   entre deploys -- um redeploy de rotina pode apagar avatares/midia de
+   post de usuarios reais em silencio. Ja rastreado como BLOCKER em
+   `site-beta-checklist.md` > Deploy/producao (nao Community) -- migrar
+   storage exige escopo e aprovacao explicitos, fora do "so o minimo
+   necessario" desta etapa.
+2. QA visual autenticado (perfil proprio, hover cards, painel admin) nunca
+   foi feito por navegador real em nenhuma etapa -- bloqueado por captcha
+   no cadastro (`/registrar`), limitacao constante desde a Etapa 9.
+   Compensado por 111 casos de E2E de contrato + revisao de codigo, mas e
+   um gap de verificacao residual, nao um defeito conhecido.
+
+**MEDIUM**:
+1. Sem sancao dedicada de "mute" ou "ban" permanente -- `SOCIAL_SUSPENSION`
+   com `expiresAt` distante e o mais proximo (mapeado na Etapa 12, nao
+   construido).
+2. Sem remocao administrativa de uma imagem isolada numa galeria -- so
+   ocultar/remover o post inteiro (Etapa 12).
+3. Sem job de limpeza para midia temporaria orfa de upload multi-arquivo
+   parcialmente falho (Etapa 8).
+4. Confirmacao usa `window.confirm`/`window.prompt` nativos em toda parte
+   em vez de um dialogo estilizado -- revisado e deliberadamente nao
+   trocado na Etapa 15 (seria um redesenho de interacao, nao um "polish").
+5. Dominio real de anuncios/eventos/trending/sugestoes de perfil ausente
+   na right rail -- estado honesto de indisponivel, nao mock (Etapa 9).
+6. Secoes de navegacao Explorar/Guilds/Eventos/Quests/Conquistas/Busca
+   social continuam placeholder -- nunca construidas, nunca mascaradas.
+7. 1 erro de lint pre-existente fora da Community (`admin-tasks.service.ts`).
+8. 256 arquivos com formatacao divergente pre-existente em todo o
+   repositorio -- reformatar em massa fica fora de escopo.
+9. Paginacao do feed continua por offset, nao cursor -- decisao aceita na
+   Etapa 9, baixo risco na escala atual.
+
+**LOW**:
+1. Sem lazy-loading de imagem (`loading="lazy"`/`NuxtImg`) -- sem medicao
+   de LCP/CLS que justifique a mudanca agora (Etapa 15).
+2. Painel admin usa Tailwind enquanto o resto da Community usa CSS
+   customizado com variaveis `--bm-*` -- decisao de arquitetura
+   pre-existente, so cosmetica.
+3. Possiveis outras ocorrencias de mojibake alem da corrigida na Etapa 12
+   -- nenhuma varredura completa do repositorio foi feita.
+
+### Resultado final
+
+**`COMMUNITY_BETA_READY`.**
+
+Nenhum BLOCKER conhecido no codigo/funcionalidade da Community. Os dois
+itens HIGH sao riscos reais que merecem atencao antes/durante o
+lancamento -- especialmente o item 1 (persistencia de midia no deploy),
+que e uma acao de infraestrutura, nao de codigo da Community, e portanto
+nao impede este gate especificamente. Decisao formal de readiness
+registrada no AI Knowledge Hub.
 
 ## Catalogo de mocks/fallbacks (Etapa 5)
 
