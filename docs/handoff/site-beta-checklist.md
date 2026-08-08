@@ -9,7 +9,7 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
 ### Comunidade
 
 - [x] Preservar/revisar o diff local Community antes de qualquer merge. (Etapa 5: auditado via `git status`/`git diff --stat`, catalogado no Hub, nada descartado -- ver docs/handoff/community-current-state.md.)
-- [ ] Homologar as tres migrations Community em clone descartavel do MySQL.
+- [x] Homologar as tres migrations Community em clone descartavel do MySQL. (Etapa 6: aplicadas em sequencia real em container MariaDB descartavel e isolado, todas classificadas ADDITIVE, todas `APPROVED_FOR_PRODUCTION` -- ver docs/handoff/community-current-state.md#homologacao-das-migrations-etapa-6. Ainda nao aplicadas em nenhum ambiente real; E2E autenticado completo continua pendente, ver item abaixo.)
 - [ ] Executar E2E autenticado de perfil, upload, post, edicao, exclusao, comentario,
   resposta, reacao, save, repost, follow, block e denuncia.
 - [ ] Remover o fallback silencioso de perfil mockado no caminho de usuario real.

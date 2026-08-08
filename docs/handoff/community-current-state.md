@@ -287,6 +287,111 @@ as tres abaixo vem depois dela, nessa ordem, e cada uma depende da anterior
 completa (clone descartavel do MySQL, teste de rollback) fica para a Etapa 6,
 conforme o proprio handoff da Etapa C1 ja registrava.
 
+## Homologacao das migrations (Etapa 6)
+
+Executada em 2026-08-08 contra um container MariaDB 11 **descartavel e isolado**
+(`docker run`, sem volume nomeado, destruido ao final) -- nunca o container
+`bloodmoon-mysql` de desenvolvimento, nunca producao, nenhum dado real de
+jogador em nenhum momento. Sequencia real testada: baseline (14 migrations
+ja commitadas) -> migration 1 -> estado -> migration 2 -> estado -> migration
+3 -> estado final, com `SHOW TABLES`/`DESCRIBE`/`SHOW CREATE TABLE` apos cada
+passo. `prisma migrate deploy` aplicou as 17 migrations sem erro em nenhum
+passo; `prisma migrate status` confirmou "Database schema is up to date"
+ao final; `prisma generate` produziu o client sem erro (apos um EPERM
+transitorio de lock de arquivo do Windows, resolvido limpando o cache
+`.prisma/client` -- nao relacionado as migrations).
+
+### Classificacao de risco
+
+| Migration | Classificacao | Motivo |
+|---|---|---|
+| `20260802130000_community_social_profiles` | `ADDITIVE` | 10 colunas novas em `CommunityProfile` (todas nullable ou com `DEFAULT`); `ALTER ... MODIFY COLUMN` do ENUM de `CommunityModerationAction.type` -- **verificado empiricamente**: os 8 valores originais (`WARNING`...`REACH_LIMIT`) sobrevivem intactos, incluindo `REACH_LIMIT`, cuja posicao ordinal muda de 8/8 para 10/10 (teste dedicado: 3 linhas semeadas com o enum antigo, `MODIFY COLUMN` aplicado, valores relidos identicos -- MySQL/MariaDB remapeiam por valor de string, nao por indice bruto); coluna nova em `CommunityPolicy` com `DEFAULT`; 2 tabelas novas (`CommunityFollow`, `CommunityUsernameHistory`). Nenhum `DROP`, nenhuma coluna passou de nullable para `NOT NULL` sem default, nenhum dado preexistente e afetado. |
+| `20260802170000_community_posts_stage_three` | `ADDITIVE` | 10 colunas novas em `CommunityPost`, 4 em `CommunityPostRevision` (todas nullable/default); 2 indices compostos novos; tabela nova `CommunityMedia` com FK real para `CommunityPost.id` (`ON DELETE SET NULL`, verificada -- insert com `postId` inexistente foi corretamente rejeitado pelo banco). Nenhum `DROP`, nenhuma alteracao destrutiva. |
+| `20260802190000_community_social_interactions` | `ADDITIVE` | Tabela nova `CommunityCommentRevision` (FK real para `CommunityComment.id`, `ON DELETE CASCADE`, verificada); 2 colunas nullable novas em `CommunityComment`; tabelas novas `CommunityPostSave`/`CommunityRepost` (FK real para `CommunityPost.id`, `ON DELETE CASCADE`, unique `accountId+postId` -- verificado: segunda tentativa de save duplicado foi corretamente rejeitada); tabela nova `CommunitySocialRelation` (unique `actorId+targetId+type`). Nenhum `DROP`, nenhuma alteracao destrutiva. |
+
+**Achado de arquitetura (nao bloqueia a aplicacao das migrations, mas exige
+decisao futura)**: `CommunityFollow` (`followerId`/`followingId`),
+`CommunityUsernameHistory` (`accountId`/`changedBy`) e
+`CommunitySocialRelation` (`actorId`/`targetId`) **nao tem nenhuma
+referencia a `Account`** -- nem `FOREIGN KEY` no SQL, nem `@relation` no
+`schema.prisma`. Confirmado tanto por leitura do schema quanto
+empiricamente: um `CommunityFollow` apontando para uma conta inexistente
+foi aceito pelo banco sem erro. A integridade referencial dessas tres
+tabelas depende inteiramente da disciplina do service layer (NestJS) --
+nada no schema impede um id orfao. Nao e um bug das migrations em si (o
+design e deliberado, mesmo padrao ja usado em `CommunityPost.sourceType`/
+`sourceId`), mas e um risco real para a Etapa 7+ se qualquer fluxo futuro
+inserir esses ids sem validar a conta primeiro.
+
+### Testes minimos executados (schema, nao E2E autenticado)
+
+Via Prisma Client gerado, contra o banco descartavel ja com as 3 migrations
+aplicadas -- 16/16 verificacoes com sucesso, incluindo dois testes negativos
+deliberados:
+
+- perfil (`CommunityProfile.create` com as novas colunas de visibilidade);
+- follow (`CommunityFollow.create`, incluindo o caso de `followingId`
+  inexistente -- aceito, confirmando a ausencia de FK acima);
+- post (`CommunityPost.create` com `type`/`visibility`/`tags`/`mentions`);
+- midia (`CommunityMedia.create` com FK valida; `CommunityMedia.create` com
+  `postId` inexistente -- corretamente rejeitado);
+- comentario + revisao (`CommunityComment.create`,
+  `CommunityCommentRevision.create`, `edited`/`editedAt`);
+- reacao (`CommunityReaction.create`);
+- save (`CommunityPostSave.create`; duplicata -- corretamente rejeitada pelo
+  `UNIQUE(accountId, postId)`);
+- repost (`CommunityRepost.create`);
+- bloqueio social (`CommunitySocialRelation.create` tipo `BLOCK`);
+- moderacao (`CommunityModerationAction.create` usando o valor de enum novo
+  `USERNAME_CHANGE`, confirmando que a aplicacao consegue gravar os valores
+  adicionados pela migration 1).
+
+E2E autenticado real (login -> perfil -> upload -> post -> ... -> report,
+via HTTP/JWT contra a API rodando) **nao foi executado nesta etapa** -- o
+smoke test acima e no nivel de schema/Prisma Client, nao de aplicacao
+completa. Fica para a Etapa 7, conforme o proprio objetivo desta etapa
+(homologar as migrations, nao substituir os mocks nem fazer E2E completo).
+
+### Rollback / recovery (estrategia real, nao inventada)
+
+Prisma Migrate **nao gera migrations de reversao automaticas** neste
+projeto -- confirmado: cada pasta em `apps/api/prisma/migrations/` contem
+apenas `migration.sql`, nenhum `down.sql`/equivalente existe em nenhuma das
+17 migrations. Nao existe um comando `prisma migrate down` nativo para uso
+em producao. A estrategia real de recuperacao, caso uma destas 3 migrations
+precise ser desfeita apos aplicacao em producao, e:
+
+1. **Backup completo do MySQL de producao antes de aplicar** (dump
+   restauravel, testado) -- pre-requisito, nao opcional.
+2. Aplicar as migrations (`prisma migrate deploy`).
+3. Validacao imediata pos-deploy (smoke test funcional minimo).
+4. **Se um problema for encontrado**: restaurar o backup completo do passo 1.
+   Isso reverte o banco inteiro ao estado anterior a todas as 3 migrations
+   (nao existe reversao seletiva de uma migration especifica sem escrever
+   SQL de reversao manual, o que nao foi feito nem e recomendado nesta
+   etapa).
+
+Esta etapa **nao executou nenhum passo deste procedimento contra producao**
+-- e a documentacao da estrategia para quando a aplicacao real acontecer
+(Etapa 7 ou posterior, mediante aprovacao explicita), nao uma execucao.
+
+### Resultado
+
+| Migration | Resultado |
+|---|---|
+| `20260802130000_community_social_profiles` | `APPROVED_FOR_PRODUCTION` |
+| `20260802170000_community_posts_stage_three` | `APPROVED_FOR_PRODUCTION` |
+| `20260802190000_community_social_interactions` | `APPROVED_FOR_PRODUCTION` |
+
+Aprovacao e sobre a **seguranca tecnica da migration em si** (schema,
+constraints, ausencia de perda de dados) -- nao e autorizacao para aplicar
+em producao agora. Isso continua exigindo: backup verificado, janela de
+manutencao/coordenacao, e aprovacao explicita do operador, per
+[docs/security-model.md](../security-model.md) deste repositorio e pelo
+protocolo de acoes destrutivas do AI Knowledge Hub (Knowledge Hub e um
+repositorio separado -- ver `docs/protocols/destructive-actions.md` la).
+**Nenhuma migration foi aplicada em producao nesta etapa.**
+
 ## Midia e seguranca
 
 `MediaService`:
