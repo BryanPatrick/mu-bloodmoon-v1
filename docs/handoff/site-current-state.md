@@ -1,8 +1,19 @@
 # BloodMoon portal - estado atual do site
 
-Data da auditoria: 2026-08-08
-Branch auditada: `main`
-Base inicial da auditoria: `a2aaf21` (`feat: apply Blood Moon v1.5 visual identity`)
+Data da auditoria original: 2026-08-08 (Etapa 5, estatica, sem runtime).
+Data da revalidacao: 2026-08-08 (Etapa 17, pente-fino pre-beta com codigo
+atual + navegador real). Branch auditada: `main`.
+Base inicial da auditoria: `a2aaf21` (`feat: apply Blood Moon v1.5 visual identity`).
+
+**Este documento e majoritariamente historico (Etapa 5).** Community foi
+completamente revalidada e homologada nas Etapas 6-16 (ver
+`community-current-state.md`, status atual `COMMUNITY_BETA_READY`) -- as
+observacoes de Community abaixo estao desatualizadas, mantidas so por
+registro historico. **O restante do site foi revalidado do zero na Etapa 17
+diretamente contra o codigo atual (nao a partir deste documento)** -- ver
+"Auditoria site-wide (Etapa 17)" ao final deste arquivo para o estado real
+e atual de autenticacao, recuperacao de senha, loja, marketplace/GameBridge,
+wiki, rankings, busca, launcher, paginas de erro, SEO e seguranca.
 
 ## Escopo e criterio
 
@@ -312,3 +323,334 @@ integracao e fidelidade de dados.
    como listas vazias.
 8. Conclusao: Community sem mocks no caminho real, migrations homologadas, fluxos
    autenticados testados e principais blockers do beta fechados.
+
+## Auditoria site-wide (Etapa 17)
+
+Objetivo do brief: pente-fino no portal inteiro antes do beta -- "nao
+assumir que build passou significa que funciona". Metodologia: 6 agentes de
+auditoria de codigo em paralelo (um por cluster de modulos, cada um lendo o
+codigo atual diretamente, nao este documento), mais QA ao vivo em navegador
+real (dev server + build de producao) para o que e alcancavel sem
+autenticacao, mais quality gate completo. Nenhuma correcao de codigo foi
+feita nesta etapa -- e auditoria, com tasks especificas criadas por BLOCKER
+em vez de uma refatoracao unica.
+
+### Autenticacao, cadastro, recuperacao de senha, 2FA, perfil
+
+- **Login**: real, JWT+refresh+2FA via `auth.service.ts:34-113`, sem mock.
+  Erro generico correto (nao revela se o problema foi usuario ou senha,
+  `auth.service.ts:52,58`). **Sem rate limit no backend** -- `/auth/login` e
+  `/auth/register` nao usam `ThrottlerGuard` (so o upload de midia da
+  Community tem, `media.module.ts:16`, 10/60s). O "bloqueio" de 5
+  tentativas existente e **so client-side** via `localStorage`
+  (`useAuth.ts:50-53,74-75,272-290`) -- trivialmente contornavel chamando a
+  API direto.
+- **Cadastro**: validacao real de username/senha/email (`auth.service.ts:148-186`).
+  **Sem verificacao de e-mail** -- conta e criada `ACTIVE` imediatamente
+  (`auth.service.ts:196`); o enum `AccountStatus.PENDING` existe no schema
+  mas nunca e usado em lugar nenhum do codigo (confirmado por grep, zero
+  ocorrencias). **CAPTCHA e decorativo**: `registrar.vue:70-71` e um array
+  fixo de 4 codigos (`A9K2M`, `BM7Q4`, `N0RIA`, `DL6X8`) validado so no
+  browser (`registrar.vue:138-142`) -- o campo **nunca e enviado** ao
+  backend (`registrar.vue:146-156`), e `AuthService.register()` nao tem
+  nenhum parametro/validacao de captcha. **Isso significa que o CAPTCHA nao
+  bloqueia nada automatizado que fale com a API diretamente** -- cadastro
+  em massa por bot e credential-stuffing sao possiveis hoje sem nenhuma
+  barreira real.
+- **Recuperacao de senha (`/recuperar-conta`)**: confirmado 100% stub,
+  igual ao que ja era suspeitado, so que sem nenhuma ambiguidade agora. O
+  handler inteiro (`recuperar-conta.vue:63-72`) e sincrono, nao faz
+  nenhuma chamada de rede, e sempre mostra "Solicitacao registrada para
+  teste..." se o campo de e-mail nao estiver vazio -- independente do
+  e-mail existir ou nao. Nao ha rota no backend (`auth.controller.ts` nao
+  tem `forgot-password`/`reset-password`), nao ha model de token no
+  schema, e **nao existe nenhuma infraestrutura de e-mail/SMTP em todo o
+  `apps/api`** (grep por `nodemailer|smtp|sendMail` retorna zero).
+- **2FA**: real e completo (setup/verify/disable via `two-factor.service.ts`,
+  segredo cifrado AES-256-GCM em repouso, aplicado obrigatoriamente no
+  login se ativado). Nenhum bypass encontrado.
+- **Perfil/conta do jogador** (`painel/conta.vue`): troca de senha, lista/
+  revogacao de sessoes e gestao de 2FA sao reais, Prisma-backed, sem mock.
+- **Tokens em `localStorage`** (nao cookie httpOnly) -- `useAuth.ts:70,97-101,155-174`.
+  Implicacao factual: um XSS em qualquer parte do app exporia ambos os
+  tokens (acesso e refresh) sem precisar interceptar rede.
+- **Zero teste automatizado** cobre auth/cadastro/recuperacao/2FA/perfil --
+  nem E2E, nem unitario (confirmado: `apps/api/src` nao tem nenhum
+  `*.spec.ts`, `apps/api/test/` so tem specs de Community).
+
+### Loja e Recarga (commerce)
+
+- **Modulo real e unico**: `apps/api/src/modules/commerce/*`. `shop`/
+  `recharge` (contract-only) sao arquivos orfaos, nunca importados --
+  ruido, nao uma segunda implementacao.
+- **Nenhum gateway de pagamento existe no codigo** -- zero dependencia
+  Stripe/PagSeguro/Mercado Pago/etc. em qualquer `package.json`, zero rota
+  de webhook. "Compra" = debito direto e imediato de moeda virtual
+  (`commerce.service.ts:435-586`, `PurchaseIntent` nasce `status: 'PAID'`
+  na hora, linha 547) -- nao existe nem um gateway simulado/stub para
+  homologar depois, e preciso construir do zero.
+- **Entrega e 100% manual** -- um admin clica "Concluir" no painel
+  (`store-admin.service.ts:1107-1166`), o que so muda o status no banco.
+  **Nao existe worker/fila automatica** consumindo `StoreDelivery`; o
+  proprio painel admin documenta isso (`store-admin.service.ts:1217`:
+  "Simulacao nao alterou o servidor de jogo").
+- **Recarga** (`recarga.vue`) e ainda mais manual: o texto da propria
+  pagina admite (`recarga.vue:9`): *"A integracao real de pagamento entra
+  na etapa de backend."* Confirmar pagamento = admin troca um status
+  manualmente (`commerce.service.ts:717-765`), sem nenhuma verificacao
+  contra uma transacao real.
+- **Sem idempotencia no purchase-intent** -- `correlationId` e gerado pelo
+  servidor (`commerce.service.ts:495`), nao pelo cliente, entao nao
+  deduplica um duplo-clique/duas abas.
+- **Ponto positivo real**: debito de saldo/estoque e transacional
+  (`Serializable`, `commerce.service.ts:496-564`) -- nao ha corrupcao de
+  dados na criacao. O risco esta depois: se uma entrega falha/trava, o
+  dinheiro fica debitado sem estorno automatico -- so um admin percebendo
+  manualmente resolve.
+- **Zero teste automatizado** para compra/saldo/entrega/estorno/recarga.
+
+### Marketplace, Escrow e Game Bridge
+
+- **Confirma e piora o que ja era suspeitado**: o worker
+  (`apps/api/scripts/process-game-bridge-jobs.mjs:129-135`) **sempre
+  falha por design** -- `throw new Error('MU bridge worker is not
+  connected to the game database yet.')`. Modo dry-run e o padrao
+  (`MU_BRIDGE_ENABLED=false` no `.env.example`). Nenhuma conexao a
+  SQL Server do jogo existe em lugar nenhum de `apps/api` hoje.
+  `apps/api/src/modules/game-integration/` so tem um arquivo de tipos --
+  nao ha servico real.
+- **Nao existe wiring automatico de job concluido -> listagem/pedido
+  concluido** -- mesmo se o worker um dia funcionasse de verdade, nada no
+  codigo atual conectaria "job completou" a "pedido entregue". Isso e
+  feito manualmente por endpoints administrativos.
+- **Endpoints administrativos "de desenvolvimento" continuam vivos em
+  producao**: `activateListing`, `updateListingStatus`,
+  `updateOrderStatus`, `updateBridgeJob` (`marketplace.controller.ts:79-117`)
+  pulam a maquina de estados/motivo obrigatorio que o resto do painel usa
+  -- exatamente o que `docs/marketplace-game-bridge.md:101-103` e
+  `docs/payment-and-escrow-flow.md:49-56` ja dizem que **precisa ser
+  removido antes de producao**, mas ainda nao foi.
+  `docs/game-vps-sqlserver-transition.md:94-100` reforca: "Nao ativar
+  marketplace com transferencia real de item antes de validar o formato
+  do inventario/warehouse."
+- **Escrow e um ledger real com transacoes DB** (`$transaction` em toda
+  mudanca de estado que toca dinheiro/custodia), reserva de listagem via
+  `updateMany` condicional (protecao real contra venda dupla,
+  `marketplace.service.ts:398-404`). Sem deteccao automatica de transacao
+  presa -- so o worker de expiracao de listagens existe
+  (`process-marketplace-expirations.mjs`), nada equivalente para pedidos
+  travados em `DELIVERING`.
+- **`site-beta-checklist.md`** ja tinha os 3 itens de homologacao de
+  loja/marketplace/GameBridge como BLOCKER nao marcados -- confirmado que
+  continuam corretos e, pela auditoria de codigo, ainda mais distantes do
+  que "pendente de homologacao" sugeria: nao ha nem infraestrutura real
+  para homologar contra.
+- **Zero teste automatizado** para marketplace/escrow/GameBridge.
+
+### Home, noticias, eventos, roadmap, suporte
+
+- **Home** (`index.vue`): maioria real (config do servidor via
+  `SiteSetting`), mas `Season 6` esta hardcoded (`index.vue:22,160`), e
+  **duas noticias falsas fixas** (`index.vue:132-135`, "Notas de patch
+  0.5", "Previa do evento de lancamento", datadas de `2026-05-18`) sao
+  misturadas **sem nenhuma distincao visual** com noticias reais sempre
+  que a API retorna menos de 2 itens reais -- um usuario nao tem como
+  saber que esta vendo conteudo inventado.
+- **Noticias** (`/noticias`): lista real, sem mock, mas **nao existe
+  pagina de detalhe/artigo completo** (`noticias/[slug].vue` nao existe)
+  -- o campo "Conteudo" que o CMS admin captura nunca chega ao publico.
+- **Eventos**: nao e um dominio proprio -- e so mais um `kind` (`EVENT`)
+  dentro do mesmo CMS unificado de conteudo, consumido pela Wiki (eventos
+  de jogo) e pela pagina de notificacoes, sem pagina/calendario publico
+  dedicado.
+- **Roadmap**: o modulo mais maduro encontrado em toda a auditoria --
+  workflow real DRAFT->APROVADO->PUBLICADO->ARQUIVADO com permissao por
+  transicao, auto-publish agendado, auditoria completa, SEO por item real
+  (`[slug].vue:35`). Nenhum problema relevante encontrado.
+- **Suporte**: o modulo real chama-se `support` (nao `tickets`) --
+  `apps/api/src/modules/tickets/` e **codigo morto orfao**, nunca
+  registrado em `app.module.ts`, com um contrato de tipos incompativel com
+  o schema real (deveria ser removido para evitar confusao futura). Fila
+  de tickets do admin funciona mas e "fina": sem filtro de status na UI,
+  atribuicao so implicita (quem responde vira o assignee).
+- **404/erro**: **BLOCKER confirmado ao vivo em navegador**, ver secao
+  dedicada abaixo.
+- **500**: tratamento do backend e solido e seguro por padrao -- nenhuma
+  stack trace ou mensagem interna vaza ao browser em nenhum ambiente
+  (`safe-exception.filter.ts:46-81`, sempre ativo, nao so em producao).
+  Ponto positivo real, sem ressalva.
+- **SEO/robots/sitemap**: so titulo (sem descricao) em Home/Noticias;
+  Roadmap tem SEO completo e dinamico. **Nao existe `robots.txt` nem
+  geracao de sitemap em lugar nenhum** do projeto. Favicon e real e
+  proprio (nao o padrao do Nuxt).
+
+### Wiki, Rankings, Busca, Launcher/Download
+
+- **Achado novo e serio**: o backend real de equipamentos da Wiki
+  (Prisma/DB, 613 itens/1031 variantes, pipeline de import real) **nao e
+  usado pela propria pagina que deveria consumi-lo**. `wiki.vue` nunca
+  chama `wikiApi.equipment()`/`equipmentDetail()`/`summary()` -- em vez
+  disso carrega um JSON estatico raspado de um site de fas externo
+  (`guiamuonline.com`, 554 itens, numero diferente do banco real) via
+  `apps/web/data/muEquipmentCatalog.ts`/`guiamuonlineItems.ts`. O backend
+  real existe e funciona, mas e efetivamente codigo morto para navegacao
+  de itens -- so sets/personagens/guias da Wiki usam a API de verdade.
+  Esse mesmo JSON e importado duas vezes por dois modulos quase-duplicados,
+  gerando chunks de build duplicados (confirmado: dois chunks de ~668KB e
+  ~376KB com o mesmo conteudo inicial `ancient-normal-warrior-leather`).
+- **A caixa de busca global da Wiki e decorativa** -- `wikiSearch`
+  (`wiki.vue:10`, ref declarado na linha 1540) nunca e lido em nenhum
+  outro lugar do arquivo de 3367 linhas; parece funcional mas nao filtra
+  nada.
+- **Rankings e 100% um stub vazio, sem excecao** -- `useLocale.ts:23`:
+  `const baseRankingRows = []` hardcoded, sem nenhuma fonte de dado. Nao
+  existe modulo `rankings` no backend, nenhum model `Ranking` no schema, e
+  **nao existe infraestrutura de agendamento/cron em todo o `apps/api`**
+  (confirmado por grep, zero `@Cron`/`ScheduleModule`). O estado vazio
+  ("O ranking ainda nao possui dados sincronizados") e honesto -- nao ha
+  dado falso -- mas tambem nunca vai deixar de ser vazio sem trabalho
+  novo de verdade.
+- **Busca site-wide nao existe** -- confirmado ausencia total (nenhuma
+  pagina, componente ou rota de API de busca global).
+- **Downloads**: links do launcher e cliente completo reais e testados
+  como acessiveis (HTTP 200 via HEAD request ao vivo). "Patch" e "Extras"
+  mostram "Em breve" porque tem `url: null` no codigo -- intencional, nao
+  quebrado.
+  **Launcher/auto-update**: mecanismo real e bem construido (RSA-2048 +
+  SHA-256 + aplicacao transacional com rollback, `apps/launcher/Services/
+  PatchService.cs`), mas o manifesto de producao esta vazio
+  (`manifest.production.json`: `files: []`) -- nao ha nada para
+  distribuir ainda, o mecanismo existe mas nao tem conteudo.
+
+### Painel administrativo, notificacoes, relatorios, seguranca
+
+- **Contas admin/RBAC**: real, Prisma-backed, e **confirmado consistente
+  com o modelo ja validado em Community** -- so um `PermissionsGuard`
+  compartilhado em todo o site, `role` sozinho nunca concede `admin.*`.
+- **Observabilidade** (erros/alertas/auditoria/logs de trabalho): real e
+  extensamente conectado. Duas falhas concretas: (1) politica de retencao
+  e so um valor de configuracao -- **nao existe job de expurgo agendado
+  em lugar nenhum**; (2) exportacao CSV do painel de observabilidade nao
+  neutraliza injecao de formula (`=`,`+`,`-`,`@`) como a exportacao de
+  relatorios administrativos ja faz -- risco real se um admin abrir um
+  CSV exportado com texto controlado pelo usuario (motivo de acao, etc.)
+  no Excel.
+- **Notificacoes pessoais**: confirmado que nao existe -- nao ha model
+  `Notification` no schema; a pagina so re-filtra o mesmo feed global de
+  noticias/eventos.
+- **Relatorios/exportacoes**: reais, ExcelJS de verdade, sem numero
+  inventado, com checksum e trilha de auditoria por exportacao.
+- **Headers de seguranca**: `helmet()` sem nenhuma customizacao (sem CSP/
+  HSTS/frame-options proprios). CORS restrito por origem (nao
+  wildcard), mas `localhost`/`127.0.0.1` ficam liberados incondicionalmente
+  mesmo em producao. **Rate limit continua ausente globalmente** -- so
+  upload de midia da Community tem (10/60s); toda outra rota, incluindo
+  login/cadastro/exportacoes/acoes administrativas, nao tem limite algum.
+- **Achado sensivel**: um arquivo local (nao versionado, no `.gitignore`)
+  contem uma credencial real de banco de dados de producao em texto
+  plano. Confirmado que **nao esta no Git** (nunca commitado, `git
+  check-ignore` confirma), mas esta em texto plano no disco desta maquina
+  -- recomendacao: mover para um gerenciador de segredos e rotacionar se
+  esse arquivo ja foi copiado/compartilhado de forma insegura em algum
+  momento. Valor da credencial deliberadamente **nao reproduzido** neste
+  documento.
+
+### Bug de producao confirmado ao vivo: 404 quebra em pagina de erro crua
+
+Nao existe `apps/web/error.vue` nem rota catch-all (`[...slug].vue`) --
+confirmado por busca no repositorio inteiro. Testado ao vivo, duas vezes,
+contra o **build de producao real** (`node apps/web/.output/server/index.mjs`,
+nao o dev server):
+
+- `curl` (sem `Accept: text/html`) para uma rota inexistente recebe
+  corretamente **HTTP 404** com JSON `{"statusCode":404,"message":"Page
+  not found: ..."}` -- o backend/roteador Nitro esta correto.
+- **Um navegador real navegando para a mesma URL recebe HTTP 500** (nao
+  404) e renderiza a pagina de erro padrao (nao customizada) do proprio
+  Nuxt, mostrando literalmente `500` / `undefined` / "This page is
+  temporarily unavailable." -- confirmado via `read_network_requests`
+  (`GET .../rota-inexistente -> 500 Server Error`) e via HTML bruto
+  devolvido (o template padrao do Nuxt, nao um componente customizado do
+  projeto).
+- **Isso significa que qualquer link quebrado, URL digitada errada ou
+  bookmark antigo -- o trafego mais comum de qualquer site publico -- vai
+  mostrar aos usuarios reais uma tela de erro generica e sem identidade
+  visual, com um titulo confuso ("500 undefined") em vez de um "404 -
+  pagina nao encontrada" com volta para a Home.** Reproduzido de forma
+  consistente em duas URLs diferentes.
+
+### Classificacao final (BLOCKER / HIGH / MEDIUM / LOW)
+
+**BLOCKER** (bloqueiam o beta ate serem tratados; uma task especifica foi
+criada no Hub para cada um):
+
+1. Recuperacao de senha inexistente (so mensagem falsa de sucesso, zero
+   backend, zero e-mail).
+2. CAPTCHA de cadastro decorativo/contornavel + zero rate limit em
+   login/cadastro no backend -- cadastro em massa e credential-stuffing
+   sao possiveis hoje sem nenhuma barreira real.
+3. Loja sem nenhum gateway de pagamento real e sem entrega automatizada
+   (100% manual via admin) -- "compra" e so debito de saldo interno.
+4. Marketplace/Escrow/GameBridge sem homologacao real -- worker sempre
+   falha por design, nenhuma conexao ao banco do jogo existe, endpoints
+   administrativos "de desenvolvimento" inseguros continuam vivos.
+5. Paginas inexistentes (404) quebram em uma tela de erro crua/sem marca
+   ("500 undefined") em vez de um 404 real, confirmado em producao.
+6. Nenhum teste automatizado (E2E ou unitario) cobre auth, cadastro,
+   recuperacao, 2FA, loja, recarga, marketplace, escrow, GameBridge, wiki,
+   rankings, suporte, painel administrativo ou observabilidade -- so
+   Community tem cobertura real.
+
+**HIGH**:
+
+- Storage de midia da Community nao sobrevive a redeploy de producao (ja
+  documentado em `community-current-state.md`).
+- Wiki: catalogo de equipamentos real (banco de dados, pipeline de
+  import) e ignorado pela propria pagina, que usa dado raspado de site
+  externo em vez disso -- risco de desalinhamento entre o que a Wiki
+  mostra e o que o servidor de jogo realmente tem (Season 6, atributos).
+- Rankings 100% vazio, sem nenhuma fonte de dado (nao e "desatualizado",
+  e "nunca existiu").
+- Ausencia de `robots.txt`/sitemap.
+- Politica de retencao de dados sem job de expurgo real.
+- Credencial de producao real em texto plano num arquivo local
+  (nao versionado no Git, mas presente no disco).
+
+**MEDIUM**:
+
+- Home mistura 2 noticias falsas fixas com noticias reais sem nenhuma
+  distincao visual.
+- Pagina de detalhe/artigo completo de noticia nao existe.
+- Modulo `tickets` orfao/morto (nao usado, tipos incompativeis com o
+  schema real) -- risco de confusao futura, nao um bug ativo.
+- Caixa de busca global da Wiki e decorativa (nao filtra nada).
+- Exportacao CSV do painel de observabilidade nao neutraliza injecao de
+  formula (diferente da exportacao de relatorios, que ja neutraliza).
+- CORS libera `localhost`/`127.0.0.1` mesmo em producao.
+- Headers de seguranca (`helmet()`) sem nenhuma customizacao de CSP/HSTS.
+- Chunks de build duplicados (~668KB + ~376KB) por import duplicado do
+  mesmo JSON de equipamentos em dois modulos quase-identicos.
+- Fila de suporte administrativa sem filtro de status na UI.
+
+**LOW**:
+
+- `Season 6` hardcoded na Home em vez de vir de configuracao.
+- Inconsistencia de fallback de secret entre `auth.module.ts` (com guarda
+  de `NODE_ENV`) e um ponto em `auth.service.ts` (sem a mesma guarda,
+  hoje inofensivo pois o module-level throw ja impede o boot sem segredo
+  real em producao).
+- Endpoint `admin-audit` duplicado/morto (a UI real usa so
+  `admin-observability`).
+- `getMuEquipmentPage()` em `muEquipmentCatalog.ts` nunca chamado (codigo
+  morto).
+
+### Resultado
+
+**`SITE_BETA_BLOCKED`.**
+
+6 BLOCKERs confirmados por auditoria de codigo + evidencia ao vivo (um
+deles, o 404, reproduzido diretamente em navegador contra o build de
+producao). Nenhum foi corrigido nesta etapa por decisao deliberada de
+escopo -- o brief pede tasks especificas por blocker em vez de uma
+refatoracao gigante. Ver `site-beta-checklist.md` para o checklist
+atualizado e o Hub para as tasks individuais de cada BLOCKER.

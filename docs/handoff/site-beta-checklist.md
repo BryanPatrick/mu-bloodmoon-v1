@@ -9,10 +9,20 @@ checklist completo revalidado, 111/111 PASS, zero BLOCKER no
 codigo/funcionalidade da Community; 2 riscos HIGH documentados, nenhum deles
 um BLOCKER de codigo -- ver
 community-current-state.md#gate-de-release-para-beta-etapa-16 para o
-relatorio completo e a decisao formal registrada no Hub). As demais areas do
-site (autenticacao/recuperacao de senha, loja/marketplace, deploy/producao)
-continuam com blockers proprios abertos abaixo -- este resultado cobre
-especificamente a Community, nao o site inteiro.
+relatorio completo e a decisao formal registrada no Hub).
+
+**Site inteiro: `SITE_BETA_BLOCKED`** (Etapa 17 -- pente-fino completo,
+6 agentes de auditoria de codigo em paralelo + QA ao vivo em navegador real
+contra o build de producao + quality gate. 6 BLOCKERs confirmados: recuperacao
+de senha inexistente, CAPTCHA decorativo/sem rate limit real em login e
+cadastro, loja sem gateway de pagamento/entrega automatizada, marketplace/
+escrow/GameBridge sem homologacao real, paginas 404 quebrando em erro cru
+("500 undefined") confirmado ao vivo em producao, e zero teste automatizado
+fora de Community. Ver
+site-current-state.md#auditoria-site-wide-etapa-17 para o relatorio completo
+por modulo e a classificacao BLOCKER/HIGH/MEDIUM/LOW. Nenhum BLOCKER foi
+corrigido nesta etapa -- tasks especificas foram criadas no Hub para cada um,
+por instrucao explicita do brief.)
 
 ## BLOCKER
 
@@ -81,7 +91,9 @@ especificamente a Community, nao o site inteiro.
 
 ### Autenticacao e seguranca
 
-- [ ] E2E de cadastro, login, refresh, logout, sessao unica e 2FA com banco de teste.
+- [ ] E2E de cadastro, login, refresh, logout, sessao unica e 2FA com banco de teste. (Etapa 17:
+  confirmado zero teste -- nem E2E nem unitario -- cobre qualquer parte de auth/cadastro/
+  recuperacao/2FA/perfil. Fica pendente.)
 - [x] Corrigir race de concorrencia no `JwtAuthGuard` que podia causar 401 falso ("sessao invalida")
   em requisicoes autenticadas simultaneas legitimas (ex.: duplo-clique). (Etapa 10: encontrado
   escrevendo o teste de concorrencia de reacoes/saves/reposts da Community -- o guard fazia um
@@ -89,9 +101,24 @@ especificamente a Community, nao o site inteiro.
   invalido; duas requisicoes concorrentes da mesma sessao podiam colidir nesse UPDATE (MySQL 1020)
   e a perdedora era deslogada por engano. Afeta toda a API, nao so Community. Corrigido isolando
   esse UPDATE em seu proprio try/catch -- ver community-current-state.md#interacoes-sociais-etapa-10.)
-- [ ] Implementar recuperacao de senha real com token curto, expiração e invalidacao.
-- [ ] Revisar armazenamento de access/refresh token no browser e protecao XSS.
-- [ ] Validar rate limit para login, cadastro, recuperacao, posts, comentarios e upload.
+- [ ] **BLOCKER (Etapa 17):** Implementar recuperacao de senha real com token curto, expiração e
+  invalidacao. Confirmado 100% ausente -- `recuperar-conta.vue:63-72` e sincrono, nunca chama a
+  API, sempre mostra sucesso falso se o e-mail nao estiver vazio. Nao ha rota no backend, nao ha
+  model de token, nao ha infraestrutura de e-mail/SMTP em `apps/api` (grep zero resultados). Ver
+  site-current-state.md#auditoria-site-wide-etapa-17.
+- [ ] Revisar armazenamento de access/refresh token no browser e protecao XSS. (Etapa 17: confirmado
+  que ambos os tokens ficam em `localStorage` -- `useAuth.ts:70,97-101,155-174` -- nao em cookie
+  httpOnly. Nenhum vetor de XSS confirmado nesta etapa, mas a exposicao factual existe caso um
+  surja em qualquer parte do app.)
+- [ ] **BLOCKER (Etapa 17):** Validar rate limit para login, cadastro, recuperacao, posts,
+  comentarios e upload. Confirmado: **zero rate limit no backend** para login/cadastro
+  (`ThrottlerGuard` so existe no upload de midia da Community, 10/60s). O "bloqueio" de tentativas
+  de login e client-side apenas (`localStorage`, `useAuth.ts:50-53,74-75,272-290`), contornavel
+  chamando a API direto. **Alem disso, o CAPTCHA de cadastro e puramente decorativo**:
+  `registrar.vue:70-71` e um array fixo de 4 codigos validado so no browser, o campo nunca e
+  enviado ao backend, `AuthService.register()` nao tem nenhuma validacao de captcha. Cadastro em
+  massa e credential-stuffing sao possiveis hoje sem nenhuma barreira real. Ver
+  site-current-state.md#auditoria-site-wide-etapa-17.
 - [ ] Testar matriz PLAYER/ADMIN/SUPER_ADMIN e overrides de permissao no backend. (Etapa 12,
   escopo Community apenas: confirmado que PLAYER recebe 401/403 real em endpoint administrativo
   (E2E); confirmado que `role: 'ADMIN'` sozinho NAO concede `admin.community.*` automaticamente
@@ -99,16 +126,61 @@ especificamente a Community, nao o site inteiro.
   estendida por E2E a todo o painel administrativo da Community (posts, comentarios, denuncias,
   usuarios/moderacao, catalogos, policy, tarefas, analytics) -- confirmado que um moderador com
   overrides granulares reais age exatamente no que foi concedido e recebe 403 em qualquer acao
-  fora do escopo, nao um binario `role === 'ADMIN'`. Matriz completa para os demais modulos (loja,
-  marketplace, suporte, etc.) continua sem E2E dedicado.)
-- [ ] Confirmar segredo/`.env` apenas no ambiente e executar secret scan antes do beta.
+  fora do escopo, nao um binario `role === 'ADMIN'`. Etapa 17: confirmado por auditoria de codigo
+  (nao E2E) que o mesmo `PermissionsGuard` compartilhado e usado site-wide -- contas
+  administrativas fora de Community seguem o mesmo modelo, sem divergencia. Matriz completa por
+  E2E dedicado continua so em Community.)
+- [ ] Confirmar segredo/`.env` apenas no ambiente e executar secret scan antes do beta. (Etapa 17:
+  scan de codigo confirmado limpo -- nenhum segredo hardcoded em arquivos versionados. Achado
+  sensivel: uma credencial real de banco de producao existe em texto plano num arquivo local
+  gitignored, nao versionado -- recomendado migrar para gerenciador de segredos e rotacionar se o
+  arquivo ja circulou. Valor nao reproduzido em nenhum documento por seguranca.)
 
 ### Loja e marketplace
 
-- [ ] Homologar compra, saldo, idempotencia, entrega, retry, estorno e auditoria.
-- [ ] Homologar escrow completo: entrada, reserva, venda, entrega, retorno e rollback.
-- [ ] Simular concorrencia para impedir compra/entrega duplicada.
-- [ ] Bloquear operacoes reais quando GameBridge estiver indisponivel/inconsistente.
+- [ ] **BLOCKER (Etapa 17):** Homologar compra, saldo, idempotencia, entrega, retry, estorno e
+  auditoria. Confirmado: **nenhum gateway de pagamento existe no codigo** (zero dependencia
+  Stripe/PagSeguro/Mercado Pago, zero webhook) -- "compra" e so debito imediato de moeda virtual
+  (`commerce.service.ts:435-586`, `PurchaseIntent` nasce `PAID` na hora). Entrega e 100% manual via
+  admin clicando "Concluir" -- nao existe worker/fila automatica (o proprio painel documenta isso
+  em `store-admin.service.ts:1217`). Sem idempotencia no purchase-intent (`correlationId` gerado
+  pelo servidor, nao dedupllica duplo-clique/duas abas). Debito de saldo/estoque em si e
+  transacional (ponto positivo real), mas entrega travada/falha deixa dinheiro debitado sem
+  estorno automatico. Ver site-current-state.md#auditoria-site-wide-etapa-17.
+- [ ] **BLOCKER (Etapa 17):** Homologar escrow completo: entrada, reserva, venda, entrega, retorno
+  e rollback. Escrow em si e um ledger real com transacoes DB e reserva atomica contra venda dupla
+  (`marketplace.service.ts:398-404`) -- mas ver GameBridge abaixo: nada conclui uma venda de forma
+  automatica mesmo com o escrow correto.
+- [ ] Simular concorrencia para impedir compra/entrega duplicada. (Etapa 17: reserva de listagem via
+  `updateMany` condicional confirmada real -- protege contra venda dupla. Purchase-intent do
+  commerce nao tem idempotencia client-side, ver item acima.)
+- [ ] **BLOCKER (Etapa 17):** Bloquear operacoes reais quando GameBridge estiver
+  indisponivel/inconsistente. Confirmado: o worker (`apps/api/scripts/process-game-bridge-jobs.mjs:
+  129-135`) **sempre falha por design** ("MU bridge worker is not connected to the game database
+  yet"), modo dry-run e o padrao, nenhuma conexao a SQL Server do jogo existe em `apps/api` hoje.
+  Nao ha wiring automatico de "job concluido" -> "pedido/listagem concluido" -- isso e feito
+  manualmente. Endpoints administrativos "de desenvolvimento"
+  (`activateListing`/`updateListingStatus`/`updateOrderStatus`/`updateBridgeJob`,
+  `marketplace.controller.ts:79-117`) pulam a maquina de estados e continuam vivos em producao,
+  exatamente o que `docs/marketplace-game-bridge.md:101-103` e `docs/payment-and-escrow-flow.md:
+  49-56` ja dizem que precisa ser removido antes de producao. Ver
+  site-current-state.md#auditoria-site-wide-etapa-17.
+
+### Site inteiro (Etapa 17)
+
+- [ ] **BLOCKER:** Corrigir paginas 404 quebrando em erro cru de producao. Confirmado ao vivo,
+  contra o build de producao real (nao dev server): nao existe `apps/web/error.vue` nem rota
+  catch-all; um navegador real navegando para uma URL inexistente recebe HTTP 500 (nao 404) e
+  renderiza a pagina de erro padrao **nao customizada** do Nuxt ("500" / "undefined" / "This page
+  is temporarily unavailable"). `curl` sem `Accept: text/html` recebe corretamente 404 -- o bug e
+  especificamente na renderizacao para navegador. Afeta todo link quebrado/URL digitada
+  errada/bookmark antigo -- o trafego mais comum de qualquer site publico. Reproduzido 2x.
+- [ ] **BLOCKER:** Adicionar teste automatizado minimo (E2E ou unitario) para pelo menos os fluxos
+  criticos fora de Community: login/cadastro, compra na loja, criacao de listagem no marketplace.
+  Confirmado: `apps/api/src` nao tem nenhum `*.spec.ts`; `apps/api/test/` so tem specs de
+  Community; `apps/web` nao tem nenhum teste. Todo o resto do site (auth, loja, marketplace,
+  suporte, wiki, rankings, painel admin, observabilidade) roda sem nenhuma rede de seguranca
+  automatizada.
 
 ### Deploy/producao
 
@@ -181,25 +253,65 @@ especificamente a Community, nao o site inteiro.
 
 ### Paginas publicas e dados mock
 
-- [ ] Remover textos/metricas ficticios da Home e traducoes antes de divulgacao.
-- [ ] Revisar noticias/eventos publicados e fallbacks editoriais.
+- [ ] Remover textos/metricas ficticios da Home e traducoes antes de divulgacao. (Etapa 17:
+  confirmado -- `index.vue:132-137` mistura 2 noticias falsas fixas ("Notas de patch 0.5",
+  "Previa do evento de lancamento", datadas de 2026-05-18) com noticias reais sem NENHUMA
+  distincao visual sempre que a API retorna menos de 2 itens reais. Tambem `Season 6` hardcoded
+  em vez de vir de configuracao, `index.vue:22,160`.)
+- [ ] Revisar noticias/eventos publicados e fallbacks editoriais. (Etapa 17: pagina de
+  detalhe/artigo completo de noticia nao existe -- `noticias/[slug].vue` ausente, o campo
+  "Conteudo" capturado no CMS admin nunca chega ao publico. "Eventos" nao e dominio proprio, e so
+  um `kind` dentro do CMS unificado, sem pagina/calendario publico dedicado.)
 - [ ] Decidir destino de `/guias` versus `/wiki` e evitar navegacao duplicada.
-- [ ] Confirmar ranking sincronizado com o servidor ou comunicar indisponibilidade.
-- [ ] Validar links atuais de launcher e cliente completo.
+- [x] Confirmar ranking sincronizado com o servidor ou comunicar indisponibilidade. (Etapa 17:
+  confirmado que Rankings e **100% um stub vazio, sem excecao** -- `useLocale.ts:23`, array
+  hardcoded `[]`, sem fonte de dado alguma. Nao existe modulo `rankings` no backend, nenhum model
+  no schema, nenhuma infraestrutura de cron/agendamento em todo `apps/api`. O estado vazio
+  exibido e honesto (nao inventa dado), mas tambem nunca vai deixar de ser vazio sem trabalho
+  novo de verdade -- movido para HIGH em vez de aberto como antes, ja que a comunicacao de
+  indisponibilidade em si esta correta.)
+- [x] Validar links atuais de launcher e cliente completo. (Etapa 17: confirmado ao vivo -- ambos
+  os links (launcher v1.1.0, cliente completo v1.1.0) retornam HTTP 200 via HEAD request real.
+  "Patch" e "Extras" mostram "Em breve" intencionalmente (`url: null` no codigo, nao quebrado).
+  Mecanismo de auto-update do launcher e real e bem construido (RSA-2048+SHA-256+rollback), mas o
+  manifesto de producao esta vazio -- nada para distribuir ainda.)
 
 ### Wiki
 
 - [ ] Smoke de busca/filtros/equipamentos com API e base de producao clonada.
+- [ ] **HIGH (Etapa 17):** o backend real de equipamentos (Prisma/DB, 613 itens/1031 variantes,
+  pipeline de import real) **nao e usado pela propria pagina da Wiki**. `wiki.vue` nunca chama
+  `wikiApi.equipment()`/`equipmentDetail()`/`summary()` -- carrega em vez disso um JSON estatico
+  raspado de um site de fas externo (`guiamuonline.com`, 554 itens, numero diferente do banco
+  real) via `apps/web/data/muEquipmentCatalog.ts`. Risco real de desalinhamento entre o que a
+  Wiki mostra e o que o servidor realmente tem. O mesmo JSON e importado duas vezes por dois
+  modulos quase-duplicados, gerando dois chunks de build de ~668KB/~376KB com o mesmo conteudo.
+- [ ] A caixa de busca global da Wiki e decorativa -- `wikiSearch` (`wiki.vue:10`, ref na linha
+  1540) nunca e lido em nenhum outro lugar do arquivo; parece funcional mas nao filtra nada.
 - [ ] Confirmar que somente Season 6/Rage Fighter ou anterior e exibido ao publico.
 - [ ] Verificar imagens ausentes e dados incompletos sem inventar atributos.
 - [ ] Reduzir carregamento inicial de catalogos grandes por lazy loading/paginacao.
 
 ### Suporte e administracao
 
-- [ ] E2E de abertura, atribuicao, resposta e resolucao de ticket.
-- [ ] Validar auditoria para toda acao administrativa sensivel.
-- [ ] Testar central de erros, alertas e exportacoes por permissao.
-- [ ] Reconciliar itens antigos de roadmap interno que ja foram implementados.
+- [ ] E2E de abertura, atribuicao, resposta e resolucao de ticket. (Etapa 17: confirmado que o
+  modulo real chama-se `support` (nao `tickets`) -- `apps/api/src/modules/tickets/` e codigo
+  morto orfao, nunca registrado em `app.module.ts`, com tipos incompativeis com o schema real;
+  recomendado remover para evitar confusao futura. Fila de tickets do admin funciona mas e "fina"
+  -- sem filtro de status na UI, atribuicao so implicita.)
+- [ ] Validar auditoria para toda acao administrativa sensivel. (Etapa 17: confirmado real e
+  extenso via `AuditEvent`/`AdminWorkLog`/`OperationalEvent` -- todo o painel administrativo
+  (contas, observabilidade, relatorios) grava trilha real. Ver riscos especificos abaixo.)
+- [ ] Testar central de erros, alertas e exportacoes por permissao. (Etapa 17: confirmado real e
+  bem conectado -- `SystemError` populado pelo filtro global de excecoes, alertas com
+  reconhecimento/resolucao rastreados. Dois gaps: (1) politica de retencao e so um valor de
+  configuracao, sem job de expurgo agendado real em lugar nenhum da API; (2) exportacao CSV do
+  painel de observabilidade nao neutraliza injecao de formula (`=`,`+`,`-`,`@`), diferente da
+  exportacao de relatorios administrativos que ja neutraliza -- risco real se um admin abrir um
+  CSV exportado com texto controlado pelo usuario no Excel.)
+- [ ] Reconciliar itens antigos de roadmap interno que ja foram implementados. (Etapa 17: Roadmap
+  confirmado como o modulo mais maduro de todo o site -- workflow real completo, auto-publish
+  agendado, SEO dinamico por item, nenhum problema relevante encontrado.)
 
 ### Mobile
 
@@ -248,17 +360,37 @@ especificamente a Community, nao o site inteiro.
 
 ### SEO e social sharing
 
-- [ ] Adicionar metadata/OG especifica para noticias, roadmap, produtos, anuncios e posts.
+- [ ] Adicionar metadata/OG especifica para noticias, roadmap, produtos, anuncios e posts. (Etapa
+  17: Roadmap ja tem SEO completo e dinamico por item (`[slug].vue:35`); Home/Noticias so tem
+  titulo, sem descricao.)
 - [ ] Definir canonical URLs para aliases e perfis.
-- [ ] Gerar sitemap/robots coerentes com rotas privadas.
+- [ ] **HIGH (Etapa 17):** Gerar sitemap/robots coerentes com rotas privadas. Confirmado: **nao
+  existe `robots.txt` nem geracao de sitemap em lugar nenhum** do projeto (nenhum modulo
+  `@nuxtjs/robots`/`@nuxtjs/sitemap`, nenhum arquivo estatico). Favicon e real e proprio (nao o
+  padrao do Nuxt) -- unico item deste bloco ja resolvido.
 - [ ] Garantir que conteudo privado/administrativo nao seja indexado.
 
 ### Performance
 
-- [ ] Investigar chunks acima de 500 kB reportados pelo build.
+- [ ] Investigar chunks acima de 500 kB reportados pelo build. (Etapa 17: causa raiz identificada
+  para o maior deles -- import duplicado do mesmo JSON de detalhes de equipamento em
+  `apps/web/data/muEquipmentCatalog.ts` e `guiamuonlineItems.ts` gera dois chunks de ~668KB/~376KB
+  com conteudo identico. Corrigir consolidando num unico modulo elimina a duplicacao.)
 - [ ] Lazy-load da Wiki, icon bundle e managers administrativos.
 - [ ] Medir LCP/CLS/INP das paginas principais com assets reais.
 - [ ] Configurar cache/CDN adequado para imagens publicas.
+
+### Seguranca (Etapa 17)
+
+- [ ] Customizar headers de seguranca (`helmet()`). Confirmado uso 100% default -- sem CSP/HSTS/
+  frame-options proprios configurados em `apps/api/src/main.ts`.
+- [ ] Restringir CORS a `localhost`/`127.0.0.1` apenas fora de producao. Confirmado que esses
+  origins ficam liberados incondicionalmente mesmo quando `NODE_ENV=production`
+  (`main.ts`, lista de origens).
+- [ ] Centralizar resolucao de segredo JWT de fallback. Confirmado uma inconsistencia entre
+  `auth.module.ts` (guarda `NODE_ENV`, impede boot sem segredo real em producao) e um ponto em
+  `auth.service.ts:121,388` que usa o mesmo fallback sem a mesma guarda local -- hoje inofensivo
+  (o module-level throw ja impede o boot), mas fragil a refatoracao futura.
 
 ### Erros e observabilidade
 
@@ -266,8 +398,16 @@ especificamente a Community, nao o site inteiro.
   caso real corrigido na Community -- "carregar mais comentarios" tinha `finally` sem `catch`,
   falha virava rejeicao nao tratada e silenciosa; demais areas do site nao auditadas nesta etapa.)
 - [ ] Incluir correlationId nas mensagens operacionais de suporte quando seguro.
-- [ ] Testar agrupamento, atribuicao, resolucao e reabertura de SystemError.
-- [ ] Definir retencao real para auditoria/comercial/financeiro.
+- [ ] Testar agrupamento, atribuicao, resolucao e reabertura de SystemError. (Etapa 17: confirmado
+  real -- `SystemError` fingerprinting/reabertura automatica ja funcionam via
+  `observability.service.ts`.)
+- [ ] Definir retencao real para auditoria/comercial/financeiro. (Etapa 17: confirmado que a
+  politica de retencao (`ObservabilityRetentionPolicy`) e um valor de configuracao editavel real,
+  mas **sem nenhum job de expurgo agendado** por tras -- nenhum `@Cron`/`ScheduleModule` existe em
+  `apps/api`. A politica hoje nao apaga nada sozinha.)
+- [ ] Neutralizar injecao de formula CSV na exportacao do painel de observabilidade (`=`,`+`,`-`,
+  `@`) -- a exportacao de relatorios administrativos ja faz isso corretamente, a de
+  observabilidade nao (Etapa 17).
 
 ## LOW
 
@@ -282,9 +422,18 @@ especificamente a Community, nao o site inteiro.
 
 - [ ] Dividir `apps/web/pages/wiki.vue` em modulos menores depois da estabilizacao.
 - [ ] Decidir se `CommunityTask` sera adaptado ou migrado para `AdminTask`.
-- [ ] Atualizar/remover documentos historicos que contradizem o codigo atual.
+- [ ] Atualizar/remover documentos historicos que contradizem o codigo atual. (Etapa 17: confirmado
+  que `docs/game-vps-sqlserver-transition.md` esta ela mesma desatualizada -- afirma que o schema
+  usa provider `postgresql` quando o schema atual usa `mysql`. Adicionar a lista.)
 - [x] Adicionar lint frontend. (Etapa 5: ESLint 10 flat config cobrindo apps/web/apps/api/packages/shared -- `npm run lint`.)
 - [ ] Adicionar testes unitarios para services criticos.
+- [ ] Remover modulo orfao `apps/api/src/modules/tickets/` (Etapa 17: nunca registrado em
+  `app.module.ts`, tipos incompativeis com o `SupportTicket` real do schema -- risco de confusao
+  futura, nao um bug ativo).
+- [ ] Remover endpoint duplicado `admin-audit` (Etapa 17: `admin-observability` e o unico
+  realmente usado pela UI -- `useAdminAuditApi` tem zero usos em qualquer `.vue`).
+- [ ] Remover funcao morta `getMuEquipmentPage()` em `apps/web/data/muEquipmentCatalog.ts` (Etapa
+  17: nunca chamada em lugar nenhum).
 
 ## Ordem pratica recomendada
 
