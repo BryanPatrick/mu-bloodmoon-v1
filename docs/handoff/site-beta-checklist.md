@@ -15,8 +15,14 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
   **perfil** coberto -- `apps/api/test/community-profile.e2e-spec.ts`, 6/6 PASS.
   Etapa 8: escopo de **midia/upload** coberto -- `apps/api/test/community-media.e2e-spec.ts`,
   10/10 PASS (valido, tipo invalido, arquivo grande, corrompido, sem-auth, avatar,
-  post com midia, falha de storage). Combinado: `npm run api:test:e2e` 16/16 PASS.
-  comentario/reacao/save/repost/follow/block/denuncia continuam sem E2E -- ver Etapa 9+.)
+  post com midia, falha de storage). Etapa 9: escopo de **feed/posts** coberto --
+  `apps/api/test/community-post.e2e-spec.ts`, 15/15 PASS (criar, visualizar via
+  permalink, editar proprio, excluir proprio, permissao entre usuarios distintos
+  em editar E excluir, validacao de conteudo, ARTICLE sem titulo, paginacao,
+  visibilidade PRIVATE). Combinado: `npm run api:test:e2e` 31/31 PASS.
+  comentario/reacao/save/repost/follow/block/denuncia continuam sem E2E -- ver Etapa 10+.
+  QA visual autenticado em navegador (clicar criar/editar/excluir) continua pendente --
+  bloqueado por captcha no cadastro, ver community-current-state.md#feed-e-posts-etapa-9.)
 - [x] Remover o fallback silencioso de perfil mockado no caminho de usuario real. (Etapa 7: `stage-two.mock.ts` deletado; `pages/comunidade/[username].vue` usa somente dado real, com estados loading/error/not-found explicitos.)
 - [x] Garantir que falha de API nao seja exibida como conteudo inventado. (Etapa 7, escopo perfil: erro real -> estado de erro real, nunca dado inventado. Demais telas Community fora do escopo desta etapa.)
 
@@ -55,8 +61,15 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
 ### Comunidade
 
 - [x] Substituir profile/user rail mock por dados reais ou estado vazio honesto. (Etapa 7: `pages/comunidade/index.vue` busca o proprio perfil real quando ha sessao; mostra convite de login honesto quando nao ha. `communityAdsMock`/eventos/trending/sugestoes do rail direito continuam mock -- fora do escopo, ver item HIGH "Substituir anuncios/right rail mock".)
-- [ ] Substituir anuncios/right rail mock por conteudo administrativo ou ocultar blocos.
-- [ ] Adicionar paginacao/infinite loading visivel ao feed.
+- [x] Substituir anuncios/right rail mock por conteudo administrativo ou ocultar blocos. (Etapa 9:
+  `communityAdsMock`/`communityEventsMock`/`communityTrendingMock`/`communitySuggestionsMock`
+  removidos por inteiro do repositorio -- `stage-one.mock.ts` e `CommunityAdCard.vue` deletados.
+  `CommunityRightRail.vue` mostra estado honesto de indisponivel. Anuncios/eventos/trending/
+  sugestoes *reais* continuam nao implementados -- item movido para MEDIUM abaixo como
+  "implementar dominio real", nao mais um mock enganando o usuario.)
+- [x] Adicionar paginacao/infinite loading visivel ao feed. (Etapa 9: botao "Carregar mais
+  publicacoes" sobre o page/pageSize offset ja existente no backend; qualquer mutacao reseta
+  para pagina 1 fresca. Nao migrado para cursor -- ver MEDIUM abaixo.)
 - [ ] Ligar hover card e follow/unfollow em todos os locais de username.
 - [ ] Validar privacidade de perfil/personagem/equipamento/stats/guild/atividade.
 - [ ] Implementar notificacoes persistidas para mencoes, comentarios, follow e conquistas.
@@ -103,6 +116,13 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
   upload multi-arquivo parcialmente falho deixa `CommunityMedia` sem post associado, sem
   endpoint de exclusao avulsa ainda. Nao e risco de seguranca, e desperdicio de storage.)
 - [ ] Converter GIF pesado para formato de video quando apropriado.
+- [ ] Implementar dominio real de anuncios/eventos sociais/trending/sugestoes de perfil para a
+  right rail (Etapa 9 removeu os mocks e deixou um estado honesto de indisponivel no lugar --
+  nenhum schema/endpoint real existe ainda para nenhum dos quatro).
+- [ ] Avaliar migrar a paginacao do feed de offset (`page`/`pageSize`, atual) para cursor
+  (`createdAt`/`id`) se o volume de posts justificar -- offset pode saltar/duplicar sob
+  insercao concorrente durante "carregar mais" (Etapa 9, nao corrigido, baixo risco na escala
+  atual).
 
 ### Loja/marketplace/roadmap
 

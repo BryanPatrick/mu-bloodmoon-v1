@@ -13,13 +13,15 @@ upload, comentarios e seguidores devem continuar fora da camada de apresentacao.
   GIF e artigo usando a API autenticada e o pipeline seguro de midia.
 - `CommunityPostCard`: renderizacao do feed real, estado `Editado`, midia,
   tags, mencoes e acoes do autor.
-- `CommunityAdCard`: publicidade propria claramente identificada.
-- `CommunityRightRail`: anuncios, eventos, tendencias e sugestoes.
+- `CommunityRightRail`: coluna direita da home.
 - `CommunityPlaceholderView`: destino seguro para secoes ainda nao implementadas.
 
-Os blocos editoriais da coluna direita ainda usam dados de demonstracao
-isolados em `features/community/data/stage-one.mock.ts`. Publicacoes e perfis
-nao usam fallback local: falhas da API sao exibidas de forma honesta na tela.
+Publicacoes, perfis e a coluna direita nao usam fallback local: falhas ou
+ausencia de dado real sao exibidas de forma honesta na tela. (Etapa 9: os
+mocks de anuncio/evento/trending/sugestao que existiam em
+`features/community/data/stage-one.mock.ts` e `CommunityAdCard` foram
+removidos por inteiro -- `CommunityRightRail` mostra um estado explicito de
+"ainda nao disponivel" em vez de dado fabricado.)
 
 ## Etapa 2
 

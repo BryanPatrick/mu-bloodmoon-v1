@@ -40,6 +40,7 @@ export const useCommunityApi = () => {
     createPost: (body: unknown) => request('/community/posts', { method: 'POST', body }),
     uploadMedia,
     uploadPostMedia: uploadMedia,
+    getPost: (id: string, authenticated = false) => request(authenticated ? `/community/posts/${id}/authenticated` : `/community/posts/${id}`),
     updatePost: (id: string, body: unknown) => request(`/community/posts/${id}`, { method: 'PATCH', body }),
     removePost: (id: string) => request(`/community/posts/${id}`, { method: 'DELETE' }),
     comment: (id: string, body: unknown) => request(`/community/posts/${id}/comments`, { method: 'POST', body }),

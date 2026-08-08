@@ -172,6 +172,47 @@ export class CommunityService {
     return value
   }
 
+  // Shared by feed() (many posts) and getPost() (one post, permalink view) --
+  // same author/comments/reactions/counts shape either way, so a viewer
+  // opening a shared link sees exactly what the feed would have shown them.
+  private postInclude(user?: AuthenticatedUser) {
+    return {
+      author: { select: { id: true, username: true, name: true, communityProfile: true } },
+      comments: {
+        where: { status: 'PUBLISHED', parentId: null }, orderBy: { createdAt: 'asc' }, take: 5,
+        include: {
+          author: { select: { id: true, username: true, name: true, communityProfile: true } },
+          reactions: { select: { type: true, accountId: true } },
+          replies: {
+            where: { status: 'PUBLISHED' }, orderBy: { createdAt: 'asc' }, take: 5,
+            include: { author: { select: { id: true, username: true, name: true, communityProfile: true } }, reactions: { select: { type: true, accountId: true } } }
+          }
+        }
+      },
+      reactions: { select: { type: true, accountId: true } },
+      saves: user ? { where: { accountId: user.id }, select: { id: true } } : false,
+      reposts: user ? { where: { accountId: user.id }, select: { id: true } } : false,
+      _count: { select: { comments: true, reactions: true, saves: true, reposts: true } }
+    } satisfies Prisma.CommunityPostInclude
+  }
+
+  private postContext(post: { authorId: string, saves?: unknown[], reposts?: unknown[], reactions: { type: string, accountId: string }[], isFeatured: boolean, sponsored: boolean, official: boolean, sourceType: string | null }, user: AuthenticatedUser | undefined, followedIds: string[]) {
+    return {
+      viewer: {
+        saved: Boolean(user && post.saves?.length),
+        reposted: Boolean(user && post.reposts?.length),
+        reactions: user ? post.reactions.filter((reaction) => reaction.accountId === user.id).map((reaction) => reaction.type) : []
+      },
+      labels: [
+        ...(followedIds.includes(post.authorId) ? ['FOLLOWING'] : []),
+        ...(post.isFeatured ? ['TRENDING'] : []),
+        ...(post.sponsored ? ['SPONSORED'] : []),
+        ...(post.official ? ['OFFICIAL'] : []),
+        ...(['ACHIEVEMENT', 'MARKETPLACE', 'EVENT', 'GUIDE'].includes(post.sourceType || '') ? [post.sourceType] : [])
+      ]
+    }
+  }
+
   async feed(query: CommunityQuery, user?: AuthenticatedUser) {
     const { page, pageSize, skip } = pageValues(query)
     const search = query.search?.trim()
@@ -205,24 +246,7 @@ export class CommunityService {
     const [data, total] = await Promise.all([
       this.prisma.communityPost.findMany({
         where,
-        include: {
-          author: { select: { id: true, username: true, name: true, communityProfile: true } },
-          comments: {
-            where: { status: 'PUBLISHED', parentId: null }, orderBy: { createdAt: 'asc' }, take: 5,
-            include: {
-              author: { select: { id: true, username: true, name: true, communityProfile: true } },
-              reactions: { select: { type: true, accountId: true } },
-              replies: {
-                where: { status: 'PUBLISHED' }, orderBy: { createdAt: 'asc' }, take: 5,
-                include: { author: { select: { id: true, username: true, name: true, communityProfile: true } }, reactions: { select: { type: true, accountId: true } } }
-              }
-            }
-          },
-          reactions: { select: { type: true, accountId: true } },
-          saves: user ? { where: { accountId: user.id }, select: { id: true } } : false,
-          reposts: user ? { where: { accountId: user.id }, select: { id: true } } : false,
-          _count: { select: { comments: true, reactions: true, saves: true, reposts: true } }
-        },
+        include: this.postInclude(user),
         orderBy: feed === 'recent' || feed === 'following' || feed === 'saved'
           ? [{ createdAt: 'desc' }]
           : [{ isPinned: 'desc' }, { isFeatured: 'desc' }, { official: 'desc' }, { createdAt: 'desc' }],
@@ -231,22 +255,30 @@ export class CommunityService {
       }),
       this.prisma.communityPost.count({ where })
     ])
-    const withContext = data.map((post) => ({
-      ...post,
-      viewer: {
-        saved: Boolean(user && post.saves?.length),
-        reposted: Boolean(user && post.reposts?.length),
-        reactions: user ? post.reactions.filter((reaction) => reaction.accountId === user.id).map((reaction) => reaction.type) : []
-      },
-      labels: [
-        ...(followedIds.includes(post.authorId) ? ['FOLLOWING'] : []),
-        ...(post.isFeatured ? ['TRENDING'] : []),
-        ...(post.sponsored ? ['SPONSORED'] : []),
-        ...(post.official ? ['OFFICIAL'] : []),
-        ...(['ACHIEVEMENT', 'MARKETPLACE', 'EVENT', 'GUIDE'].includes(post.sourceType || '') ? [post.sourceType] : [])
-      ]
-    }))
+    const withContext = data.map((post) => ({ ...post, ...this.postContext(post, user, followedIds) }))
     return { data: withContext, total, page, pageSize, totalPages: Math.max(1, Math.ceil(total / pageSize)) }
+  }
+
+  // Powers both the public permalink (`GET /community/posts/:id`) and the
+  // authenticated variant -- same visibility/block rules as the feed (a post
+  // hidden from a viewer in the feed must also be hidden when opened
+  // directly by a shared link, not just filtered out of a list).
+  async getPost(id: string, user?: AuthenticatedUser) {
+    if (user) {
+      await this.accessiblePost(id, user)
+    } else {
+      const guarded = await this.prisma.communityPost.findFirst({
+        where: { id, status: 'PUBLISHED', visibility: 'PUBLIC' },
+        select: { id: true, author: { select: { communityProfile: { select: { isPublic: true } } } } }
+      })
+      if (!guarded || guarded.author.communityProfile?.isPublic === false) throw new NotFoundException('Publicação não encontrada.')
+    }
+    const followedIds = user
+      ? (await this.prisma.communityFollow.findMany({ where: { followerId: user.id }, select: { followingId: true } })).map((item) => item.followingId)
+      : []
+    const post = await this.prisma.communityPost.findUnique({ where: { id }, include: this.postInclude(user) })
+    if (!post) throw new NotFoundException('Publicação não encontrada.')
+    return { ...post, ...this.postContext(post, user, followedIds) }
   }
 
   async publicProfile(username: string) {

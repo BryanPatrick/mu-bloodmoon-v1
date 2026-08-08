@@ -107,16 +107,17 @@ Status geral: `PARTIAL`, com base backend relevante e integracao final pendente.
 | Feed Seguindo | DONE | Parametro `feed=following`; depende de Follow persistido. |
 | Feed Recentes | DONE | Parametro `feed=recent`. |
 | Para Voce | PARTIAL | Regra simples; nao ha ranking/recomendacao madura. |
-| Paginacao backend | DONE | Query/page/pageSize e resposta paginada. |
-| Paginacao UI do feed | PARTIAL | Home requisita pageSize 30 e nao expoe controles de pagina. |
+| Paginacao backend | DONE | Query/page/pageSize e resposta paginada (offset, nao cursor). |
+| Paginacao UI do feed | `DONE` | Etapa 9: botao "Carregar mais publicacoes" acumula paginas alem da 1a; qualquer mutacao (criar/editar/excluir/reagir/salvar/repostar/comentar) reseta para a pagina 1 fresca, por design -- ver "Feed e Posts (Etapa 9)" abaixo. |
 | Criar post | DONE | Tipos TEXT/IMAGE/GALLERY/GIF/ARTICLE preparados. |
-| Editar post | DONE | Proprio autor; cria revisao. |
-| Excluir post | DONE | Soft delete/auditoria preservada. |
+| Visualizar post | `DONE` | Etapa 9: `GET /community/posts/:id` (+ `/authenticated`) real, com as mesmas regras de visibilidade/bloqueio do feed -- fecha o link morto do "Copiar link" (ver linha abaixo). |
+| Editar post | DONE | Proprio autor; cria revisao; permissao verificada no backend (E2E prova que outro usuario recebe 404, nao so que o botao fica oculto). |
+| Excluir post | DONE | Soft delete/auditoria preservada; mesma prova de permissao via E2E. |
 | Comentarios | DONE | Criar/editar/excluir e um nivel de resposta. |
 | Reacoes | DONE | Toggle generico para post/comentario. |
 | Salvos | DONE | Toggle + feed salvo; colecoes futuras apenas no schema. |
 | Repost interno | DONE | Toggle persistido. |
-| Copiar link | DONE | Cliente copia URL; deep-link do post nao e destacado automaticamente. |
+| Copiar link | `DONE` | Etapa 9: o link gerado (`/comunidade?post=<id>`) agora abre um modal real com a publicacao (antes: query param nunca lido, link nao fazia nada). |
 | Hashtags/mencoes | PARTIAL | Campos e parsing/contratos existem; busca/notificacao nao. |
 | Perfil publico | `DONE` | Etapa 7: sem mock/fallback. `GET /community/profiles/:username` real, mapeado direto para a UI; loading/erro/nao-encontrado honestos. Ver "Perfil (Etapa 7)" abaixo. |
 | Editar perfil | `DONE` | Etapa 7: `PATCH /community/me` com validacao real (tipo, enum, URL) no backend; UI sem atualizacao otimista -- so fecha e reflete apos confirmacao do servidor; erro exibido inline se a API falhar. |
@@ -136,9 +137,9 @@ Status geral: `PARTIAL`, com base backend relevante e integracao final pendente.
 | Eventos sociais | MISSING | Navegacao e placeholder, sem dominio dedicado. |
 | Notificacoes sociais | MISSING | Sem entidade/inbox/preferencias. |
 | Busca social | MISSING | Sem indice unificado de pessoas/posts/tags. |
-| Ads reais | MISSING | Right rail usa mocks; sem campanha/impressao/clique. |
+| Ads reais | MISSING | Etapa 9: mocks removidos (`communityAdsMock` e o resto de `stage-one.mock.ts`, `CommunityAdCard.vue` deletados). Right rail mostra estado honesto de indisponivel -- nao inventa mais anuncios/eventos/trending/sugestoes. Sem campanha/impressao/clique real. |
 | Estatisticas sociais | PARTIAL | Stats basicos de perfil/API; sem snapshots/privacy efetiva completa. |
-| Estados loading/vazio/erro | DONE feed | Perfil oculta erro usando mock; outras secoes sao placeholder. |
+| Estados loading/vazio/erro | DONE feed | Etapa 9: right rail tambem honesto (era mock antes). Outras secoes de navegacao (Explorar/Guilds/Eventos/Quests/Conquistas) continuam `CommunityPlaceholderView`, honesto. |
 | Responsividade | PARTIAL | Breakpoints e drawer existem; sem QA visual runtime nesta auditoria. |
 
 ## Endpoints publicos/autenticados
@@ -690,6 +691,170 @@ Fora do escopo: QA visual manual em navegador; testes de outros modulos
 Community alem de perfil/midia (feed, comentarios, reacoes, follow/block,
 denuncia -- ainda sem E2E).
 
+## Feed e Posts (Etapa 9)
+
+Objetivo da etapa: feed e posts operando exclusivamente sobre API/banco reais,
+sem fallback que possa enganar o usuario no beta.
+
+### Fallbacks removidos (right rail)
+
+Unico mock real remanescente ligado a feed/posts (perfil ja foi resolvido na
+Etapa 7, midia na Etapa 8): `communityAdsMock`, `communityEventsMock`,
+`communityTrendingMock`, `communitySuggestionsMock`, todos em
+`stage-one.mock.ts`, consumidos incondicionalmente (sem checar API, sem
+estado vazio) por `CommunityRightRail.vue` e, para dois deles, tambem
+interpolados no feed mobile de `pages/comunidade/index.vue`. Investigacao
+confirmou **zero backend real por tras de qualquer um dos quatro** -- nao
+existe model/tabela de anuncio, campanha, evento social, calculo de trending
+ou algoritmo de sugestao no schema Prisma. Como o brief instruiu
+explicitamente a nao inventar anuncios falsos e a preferir um estado
+vazio/indisponivel real quando a funcionalidade subjacente nao existe:
+
+- `stage-one.mock.ts` e o diretorio `features/community/data/` foram
+  **deletados** (ficaram 100% orfaos);
+- `CommunityAdCard.vue` foi **deletado** (unico consumidor era o mock);
+- `CommunityRightRail.vue` foi reescrito para um estado honesto ("Anuncios,
+  eventos, topicos em alta e sugestoes de perfil ainda nao estao disponiveis
+  ... nada aqui e inventado"), verificado visualmente no navegador (ver
+  "QA visual" abaixo);
+- `pages/comunidade/index.vue` teve a interpolacao de anuncios mockados no
+  feed mobile removida.
+
+Construir anuncios/eventos/trending/sugestoes reais e um dominio novo
+(schema, endpoints, admin) -- fora do escopo desta etapa, permanece `MISSING`
+na matriz funcional acima, nao `BLOCKER_BETA` fabricado (nao ha mais dado
+falso exibido a um usuario real; a area so mostra que ainda nao existe).
+
+`CommunityPostCard.vue`/`CommunityPostComposer.vue` foram auditados e
+confirmados **ja reais** desde a Etapa 8 (pipeline de midia real, sem
+base64/mock) -- nenhuma mudanca necessaria neles nesta etapa alem do que
+segue abaixo.
+
+### Gap real fechado: permalink de post ("abrir post")
+
+Nao havia `GET /community/posts/:id` -- o botao "Copiar link" ja existia e
+gerava uma URL (`/comunidade?post=<id>`), mas nada no frontend lia esse
+query param e nada no backend servia um post isolado. Um link "copiado" era
+um link morto: exatamente o tipo de recurso real-mas-quebrado que engana um
+usuario no beta. Fechado nesta etapa:
+
+- **Backend**: `CommunityService.getPost(id, user?)` (`community.service.ts`),
+  com as mesmas regras de visibilidade/bloqueio do feed -- reaproveita
+  `accessiblePost` para visitante autenticado; visitante anonimo so ve posts
+  `PUBLIC` de perfil publico. A logica de include/contexto por post
+  (`author`, `comments`, `reactions`, `_count`, `viewer`, `labels`) foi
+  extraida de `feed()` para os metodos privados `postInclude()`/
+  `postContext()`, reaproveitados por ambos -- sem duplicar o bloco grande de
+  `include` do Prisma.
+- **Rotas**: `GET /community/posts/:id` (publica) e
+  `GET /community/posts/:id/authenticated` (JWT), mesmo padrao ja usado por
+  `feed`/`feed/authenticated`.
+- **Frontend**: `pages/comunidade/index.vue` agora le `route.query.post`,
+  busca o post real via `api.getPost()` e abre um modal (mesmo padrao visual
+  do drawer de perfil) reaproveitando `CommunityPostCard.vue` -- editar/
+  excluir a partir do modal funciona (fecha o modal e reflete no composer/
+  feed real, sem estado duplicado).
+
+### Paginacao do feed
+
+Backend ja usava paginacao real por `page`/`pageSize` (offset, `skip`/`take`
+no Prisma) -- **nao cursor**; decisao de manter offset nesta etapa (simples,
+já testado, suficiente na escala atual; migrar para cursor por
+`createdAt`/`id` fica registrado como melhoria futura caso o feed cresça o
+bastante para offset apresentar duplicatas/saltos sob insercao concorrente).
+O gap real era a UI: `pages/comunidade/index.vue` sempre buscava a pagina 1
+com `pageSize: 30` e nunca expunha controle nenhum. Fechado com um botao
+"Carregar mais publicacoes" que busca a proxima pagina e acumula no cliente;
+qualquer refresh disparado por uma mutacao (criar/editar/excluir/reagir/
+salvar/repostar/comentar) ou troca de aba/secao **sempre volta para uma
+pagina 1 fresca** -- decisao deliberada e simples (uma publicacao nova entra
+no topo; manter uma "pagina 3" desatualizada apos uma mutacao seria mais
+confuso que reiniciar), documentada em comentario no proprio arquivo. Um
+botao "Atualizar feed" tambem foi adicionado ao lado das abas, cobrindo o
+item "refresh" do brief com uma acao explicita alem do refresh automatico
+que ja existia apos toda mutacao.
+
+### Validacao e autorizacao (auditoria, sem mudanca de codigo)
+
+Investigacao confirmou que o backend ja era a autoridade real, nao a UI:
+
+- limite de conteudo (2-10000 caracteres em post, 2-2000 em comentario),
+  palavras bloqueadas, dominios bloqueados/permitidos, limite horario e
+  cooldown entre posts -- tudo em `validateText()`
+  (`community.service.ts`), aplicado tanto na criacao quanto na edicao;
+- `updateOwnPost`/`removeOwnPost` verificam `post.authorId !== user.id` e
+  retornam 404 (nao apenas ocultam um botao na UI) -- confirmado por E2E
+  dedicado com uma segunda conta tentando editar/excluir o post da primeira;
+- `postType()` restringe a um allowlist fechado de tipos implementados;
+  `ARTICLE` exige titulo;
+- renderizacao de conteudo: nenhum componente Community usa `v-html` ou
+  `innerHTML` -- confirmado por busca no diretorio inteiro. Todo texto de
+  post/comentario passa por interpolacao padrao do Vue (`{{ }}`), que
+  escapa HTML automaticamente. Isso vale inclusive para `ARTICLE`, cujo
+  editor (`UEditor`, `content-type="markdown"`) grava markdown como texto
+  puro -- exibido literalmente, nunca convertido para HTML renderizado (sem
+  pipeline de markdown-to-HTML, logo sem superficie de XSS por ai; como
+  efeito colateral, artigos aparecem com a sintaxe markdown visivel em vez de
+  formatada -- limitacao de UX conhecida, nao de seguranca, registrada aqui
+  e nao corrigida nesta etapa por ser fora do escopo de "feed e posts reais");
+  media de post passa pelo pipeline real da Etapa 8 (Sharp reencode, sem
+  SVG/HTML arbitrario);
+- limite de tamanho do textarea no composer (`maxlength="10000"`) ja
+  espelhava exatamente o limite do backend -- nenhuma mudanca necessaria.
+
+Nenhum destes pontos exigiu mudanca de codigo -- a auditoria confirmou que a
+protecao real ja existia no backend antes desta etapa; o trabalho aqui foi
+verificar e documentar, nao implementar.
+
+### E2E (novo: `apps/api/test/community-post.e2e-spec.ts`)
+
+Mesmo padrao de banco descartavel e isolado das etapas anteriores
+(`disposable-mysql.ts`). 15 casos, **15/15 PASS**:
+
+registra/loga 2 contas reais; rejeita criacao sem autenticacao (401); rejeita
+post sem conteudo e sem midia (400); rejeita conteudo abaixo do minimo e
+acima do limite de 10000 caracteres (400 nos dois); rejeita ARTICLE sem
+titulo (400); cria um post real e confirma que o feed o exibe; abre o post
+pelo novo endpoint de permalink (visualizar); retorna 404 para id
+inexistente; **usuario B tentando editar o post de A -- 404, autorizacao do
+backend, nao so botao oculto**; usuario B tentando excluir o post de A --
+404; edita o proprio post, recarrega de forma independente (nao a resposta
+do PATCH) e confirma persistencia real; exclui o proprio post e confirma
+remocao tanto no feed quanto no permalink; posts `PRIVATE` ficam ocultos do
+permalink para visitante anonimo mas visiveis para o autor e ocultos para
+outro usuario autenticado; pagina o feed com `page`/`pageSize` e confirma que
+paginas diferentes retornam conjuntos distintos de ids.
+
+Nota tecnica: o cooldown real entre posts (30s por padrao,
+`CommunityPolicy.postCooldownSeconds`) e relaxado apenas no banco descartavel
+deste teste (via `PrismaService` direto no `beforeAll`) para permitir criar
+varios posts em sequencia sem esperar -- os defaults de producao (30s / 10
+por hora) nao sao tocados.
+
+Combinado com as suites das etapas anteriores: `npm run api:test:e2e` ->
+**31/31 PASS**. Nenhum container Docker deixado para tras.
+
+### QA visual (navegador real)
+
+Servidor de API (porta 3333) e Nuxt dev (porta 3000) ja estavam ativos no
+ambiente local -- confirmados via HTTP antes de usar, reaproveitados em vez
+de subir uma segunda instancia. Navegado `/comunidade` sem sessao: feed vazio
+honesto ("Ainda nao ha publicacoes..."), right rail mostrando o novo estado
+"nada aqui e inventado" (nao mais anuncios/eventos fabricados), botao
+"Atualizar feed" presente, zero erros no console. Testado tambem em viewport
+mobile (375px) -- layout responsivo intacto, right rail ocultado como
+esperado, sem erros novos no console.
+
+**Fluxo autenticado (criar/editar/excluir post, abrir permalink, paginar) nao
+foi validado clicando no navegador nesta etapa** -- o cadastro de uma conta
+de teste exige resolver um captcha na tela `/registrar`, e contornar/
+resolver captcha esta expressamente fora do que este agente pode fazer.
+Esses fluxos foram validados via os 15 testes E2E HTTP acima (que exercitam
+exatamente os mesmos endpoints que os cliques no navegador chamariam, com a
+vantagem de provar a autorizacao no nivel do backend, nao apenas o que a UI
+permite clicar). Registrado como lacuna de QA visual para uma etapa futura
+com uma conta de teste ja provisionada.
+
 ## Catalogo de mocks/fallbacks (Etapa 5)
 
 Auditoria de 2026-08-08 (Etapa C1) ja apontava mocks em prosa (itens 3-4 de
@@ -701,27 +866,25 @@ Nenhum mock foi removido nesta etapa (fora de escopo -- ver Etapa 5, brief).
 | Item | Definido em | Consumido em | Classificacao | Motivo |
 |---|---|---|---|---|
 | `communityProfileMock` | `stage-one.mock.ts` | `pages/comunidade/index.vue` (identidade no rail esquerdo, mesclado com `user.value` real); base de `communitySocialProfileMock` | `BLOCKER_BETA` | Checklist HIGH: "Substituir profile/user rail mock por dados reais ou estado vazio honesto" |
-| `communityAdsMock` | `stage-one.mock.ts` | `CommunityRightRail.vue` (2 anuncios desktop); `pages/comunidade/index.vue` (anuncio mobile) | `BLOCKER_BETA` | Checklist HIGH: "Substituir anuncios/right rail mock por conteudo administrativo ou ocultar blocos" -- anuncio fabricado exibido a usuario real |
-| `communityEventsMock` | `stage-one.mock.ts` | `CommunityRightRail.vue` (bloco de eventos) | `BLOCKER_BETA` | Mesmo rail que `communityAdsMock`; eventos inventados apresentados como reais |
-| `communityTrendingMock` | `stage-one.mock.ts` | `CommunityRightRail.vue` (topicos em alta) | `BLOCKER_BETA` | Mesmo rail; hashtags fixas, nunca refletem atividade real |
-| `communitySuggestionsMock` | `stage-one.mock.ts` | `CommunityRightRail.vue` (sugestoes de seguir) | `BLOCKER_BETA` | Mesmo rail; perfis sugeridos nao existem |
+| ~~`communityAdsMock`~~ | ~~`stage-one.mock.ts`~~ | ~~`CommunityRightRail.vue` (2 anuncios desktop); `pages/comunidade/index.vue` (anuncio mobile)~~ | **`RESOLVED` (Etapa 9)** | `stage-one.mock.ts` e `CommunityAdCard.vue` deletados. Right rail mostra estado honesto de indisponivel -- ver "Feed e Posts (Etapa 9)". Anuncios reais continuam `MISSING` (sem schema/endpoint), nao mais fabricados. |
+| ~~`communityEventsMock`~~ | ~~`stage-one.mock.ts`~~ | ~~`CommunityRightRail.vue` (bloco de eventos)~~ | **`RESOLVED` (Etapa 9)** | Mesmo fix acima. |
+| ~~`communityTrendingMock`~~ | ~~`stage-one.mock.ts`~~ | ~~`CommunityRightRail.vue` (topicos em alta)~~ | **`RESOLVED` (Etapa 9)** | Mesmo fix acima. |
+| ~~`communitySuggestionsMock`~~ | ~~`stage-one.mock.ts`~~ | ~~`CommunityRightRail.vue` (sugestoes de seguir)~~ | **`RESOLVED` (Etapa 9)** | Mesmo fix acima. |
 | ~~`communityPostsMock`~~ | ~~`stage-one.mock.ts`~~ | ~~Alimentava `communitySocialProfileMock`~~ | **`RESOLVED` (Etapa 7)** | Removido -- `stage-two.mock.ts` foi deletado (ficou 100% orfao). `entries`/`media` do perfil agora vem somente de `communityPosts` reais. |
 | ~~`communitySocialProfileMock` / `profileForUsername()`~~ | ~~`stage-two.mock.ts`~~ | ~~`pages/comunidade/[username].vue`~~ | **`RESOLVED` (Etapa 7)** | O fallback silencioso foi removido. `pages/comunidade/[username].vue` agora usa `useAsyncData` + `GET /community/profiles/:username` puro, com estados `loading`/`error`/`not-found`/`success` explicitos -- ver "Perfil (Etapa 7)" abaixo. |
 | `usernamePolicy` | `~~stage-two.mock.ts~~` → `features/community/username-policy.ts` (Etapa 7) | `CommunityProfileEditor.vue` | `DEV_ONLY` → movido | Nunca foi dado fabricado. Realocado para fora do diretorio de mocks nesta etapa, encerrando a classificacao `DEV_ONLY` (o "so misclassificado de arquivo" que a motivava deixou de existir). |
 | `CommunityPlaceholderView` (Explorar, Perfil por query, Guilds, Eventos, Quests, Conquistas) | `components/community/CommunityPlaceholderView.vue` | `pages/comunidade/index.vue` (roteamento por `section` query) | `TEMPORARY_SAFE` | Sem alteracao nesta etapa -- fora de escopo (perfil, nao navegacao de secoes). Estado "ainda nao implementado" honesto, nao fabrica conteudo. |
 
-Resumo original (Etapa 5): 6 `BLOCKER_BETA`, 1 `DEV_ONLY`, 1 `TEMPORARY_SAFE`. **Atualizacao Etapa 7**: os 2 itens `BLOCKER_BETA` da cadeia de *perfil* (`communityPostsMock` via `stage-two.mock.ts`, `communitySocialProfileMock`/`profileForUsername()`) foram **resolvidos** -- `stage-two.mock.ts` foi deletado do repositorio. Os 4 itens `BLOCKER_BETA` restantes (`communityProfileMock` do rail-esquerdo/home, `communityAdsMock`, `communityEventsMock`, `communityTrendingMock`, `communitySuggestionsMock` -- ver nota¹) permanecem **fora do escopo desta etapa** (rail direito/ads e identidade resumida da home, nao a pagina de perfil) e continuam pendentes para uma etapa futura.
-
-¹ Nota: `communityProfileMock` em si (o registro original do rail esquerdo) tambem foi removido nesta etapa -- `pages/comunidade/index.vue` agora busca o proprio perfil via `GET /community/profiles/:username` (real) quando ha sessao, e mostra um convite de login honesto quando nao ha. Isso deixa `stage-one.mock.ts` com apenas os 4 exports de rail direito (`communityAdsMock`/`communityEventsMock`/`communityTrendingMock`/`communitySuggestionsMock`), que continuam `BLOCKER_BETA` e fora do escopo desta etapa.
+Resumo original (Etapa 5): 6 `BLOCKER_BETA`, 1 `DEV_ONLY`, 1 `TEMPORARY_SAFE`. **Atualizacao Etapa 7**: os 2 itens `BLOCKER_BETA` da cadeia de *perfil* (`communityPostsMock` via `stage-two.mock.ts`, `communitySocialProfileMock`/`profileForUsername()`) foram **resolvidos** -- `stage-two.mock.ts` foi deletado do repositorio. `communityProfileMock` em si (registro do rail esquerdo) tambem foi removido na Etapa 7 -- `pages/comunidade/index.vue` busca o proprio perfil via API real quando ha sessao, convite de login honesto quando nao ha. **Atualizacao Etapa 9**: os 4 itens `BLOCKER_BETA` restantes (`communityAdsMock`, `communityEventsMock`, `communityTrendingMock`, `communitySuggestionsMock`) foram **resolvidos** -- `stage-one.mock.ts` e `features/community/data/` deletados por inteiro do repositorio, `CommunityAdCard.vue` deletado. **Nenhum mock relacionado a feed/posts/right-rail permanece no codigo.** Anuncios/eventos/trending/sugestoes reais continuam `MISSING` na matriz funcional (dominio nao construido), mas isso agora e um estado vazio honesto, nao mais dado fabricado.
 
 ## Bugs/riscos conhecidos
 
 1. Worktree Community esta sujo e nao commitado; nao perder nem misturar com correcoes. **(Etapa 5: commitado, preservado -- ver commit 2302263.)**
 2. Schema e services esperam tres migrations locais ainda nao homologadas. **(Etapa 6: homologadas em ambiente descartavel, APPROVED_FOR_PRODUCTION; ainda nao aplicadas em nenhum ambiente real.)**
 3. ~~Perfil pode parecer funcional quando API falha porque cai silenciosamente no mock.~~ **(RESOLVIDO na Etapa 7: fallback removido, estados loading/erro/nao-encontrado explicitos.)**
-4. ~~Home usa `communityProfileMock` para usuario/rail~~ **(RESOLVIDO na Etapa 7: rail proprio agora busca dado real; convite de login quando sem sessao.)** `communityAdsMock` continua em uso -- fora do escopo da Etapa 7 (nao e dado de perfil).
-5. Secoes secundarias ainda sao placeholders. (Inalterado -- fora do escopo da Etapa 7.)
-6. Erros de feed sao genericos; nao ha retry explicito. (Inalterado -- feed nao e perfil, fora do escopo da Etapa 7.)
+4. ~~Home usa `communityProfileMock` para usuario/rail~~ **(RESOLVIDO na Etapa 7: rail proprio agora busca dado real; convite de login quando sem sessao.)** ~~`communityAdsMock` continua em uso~~ **(RESOLVIDO na Etapa 9: right rail inteiro sem mock, estado honesto de indisponivel.)**
+5. Secoes secundarias (Explorar/Guilds/Eventos/Quests/Conquistas) ainda sao placeholders honestos. (Inalterado -- fora do escopo desta linha de etapas de feed/posts/perfil/midia.)
+6. ~~Erros de feed sao genericos; nao ha retry explicito.~~ **(PARCIALMENTE RESOLVIDO na Etapa 9: botao "Atualizar feed" explicito adicionado; a mensagem de erro em si continua generica, sem botao "Tentar novamente" dedicado como o perfil tem -- ver `feedError` em `pages/comunidade/index.vue`.)**
 7. Nao ha notificacao persistida para follow, mention, comment ou achievement. (Inalterado.)
 8. ~~Sem testes unitarios/E2E~~ **(Etapa 7: primeiro E2E do repositorio -- `apps/api/test/community-profile.e2e-spec.ts`, Jest+Supertest, cobre o fluxo de perfil. Demais modulos ainda sem cobertura.)**
 9. Nao houve QA visual em browser com API e banco nesta auditoria. (Inalterado -- ver "Perfil (Etapa 7)" abaixo para o que foi validado via API/E2E em vez de QA visual manual.)
@@ -731,6 +894,9 @@ Resumo original (Etapa 5): 6 `BLOCKER_BETA`, 1 `DEV_ONLY`, 1 `TEMPORARY_SAFE`. *
 12. ~~`removeOwnPost` nao desanexava `CommunityMedia` ao excluir um post.~~ **(RESOLVIDO na Etapa 8: mesma logica de desanexar que `updateOwnPost` ja tinha, agora tambem na exclusao.)**
 13. Upload multi-arquivo parcialmente falho deixa `CommunityMedia` orfa (sem post, sem endpoint de exclusao avulsa ainda). **(Identificado na Etapa 8 -- nao e falha de seguranca, e desperdicio de storage. Ver "Midia (Etapa 8)" acima.)**
 14. Storage de midia Community e filesystem local e o script de deploy cPanel real (`scripts/package-cpanel-deploy.mjs`) nao preserva esse diretorio entre deploys. **(Identificado na Etapa 8 -- blocker de Beta Release, ver "Midia (Etapa 8)" acima e `site-beta-checklist.md`.)**
+15. ~~"Copiar link" de post gerava uma URL que nada no frontend/backend sabia abrir (query param nunca lido, sem endpoint de post isolado).~~ **(RESOLVIDO na Etapa 9: `GET /community/posts/:id` real + modal de permalink no frontend. Ver "Feed e Posts (Etapa 9)" acima.)**
+16. Paginacao real do feed nao migrou de offset para cursor -- aceitavel na escala atual, mas offset (`skip`/`take`) pode produzir saltos/duplicatas sob insercao concorrente de posts enquanto alguem faz "carregar mais". (Identificado na Etapa 9 -- nao corrigido, registrado como melhoria futura caso o volume justifique.)
+17. QA visual autenticado (criar/editar/excluir post, abrir permalink pelo navegador) nao foi feito nesta etapa -- cadastro de conta de teste exige resolver captcha em `/registrar`, fora do que este agente pode fazer. (Identificado na Etapa 9 -- fluxos autenticados validados via E2E HTTP real em vez de clique manual; ver "QA visual" em "Feed e Posts (Etapa 9)" acima.)
 
 ## Ponto exato para continuar
 

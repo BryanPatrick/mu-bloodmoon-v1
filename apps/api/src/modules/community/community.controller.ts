@@ -83,6 +83,17 @@ export class CommunityController {
     return this.community.createPost(payload, user)
   }
 
+  @Get('posts/:id')
+  getPost(@Param('id') id: string) {
+    return this.community.getPost(id)
+  }
+
+  @Get('posts/:id/authenticated')
+  @UseGuards(JwtAuthGuard)
+  getPostAuthenticated(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.community.getPost(id, user)
+  }
+
   @Patch('posts/:id')
   @UseGuards(JwtAuthGuard)
   updatePost(@Param('id') id: string, @Body() payload: CommunityPostPayload, @CurrentUser() user: AuthenticatedUser) {
