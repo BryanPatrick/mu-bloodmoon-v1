@@ -27,10 +27,15 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
   `apps/api/test/community-profile-privacy.e2e-spec.ts`, 10/10 PASS (tiers
   PUBLIC/FOLLOWERS/PRIVATE reais, dono sempre ve o proprio perfil, bloqueio
   oculta o perfil, exposicao de dados internos auditada e corrigida, reposts no
-  perfil, follow/unfollow via endpoint de relacionamento). Combinado:
-  `npm run api:test:e2e` 63/63 PASS. Denuncia continua sem E2E -- ver Etapa 12+.
-  QA visual autenticado em navegador (clicar criar/editar/excluir) continua
-  pendente -- bloqueado por captcha no cadastro, ver
+  perfil, follow/unfollow via endpoint de relacionamento). Etapa 12: escopo de
+  **denuncia/moderacao/sancoes/auditoria** coberto --
+  `apps/api/test/community-moderation.e2e-spec.ts`, 17/17 PASS (fluxo completo
+  denuncia -> fila -> acao -> resolucao; usuario comum barrado de endpoint
+  administrativo com 401/403; auditoria real sem secrets; sancoes WARNING/
+  POST_BLOCK/restore homologadas; evidencia de upload malicioso integrada com
+  a Etapa 8). Combinado: `npm run api:test:e2e` 80/80 PASS. QA visual
+  autenticado em navegador (clicar criar/editar/excluir) continua pendente --
+  bloqueado por captcha no cadastro, ver
   community-current-state.md#feed-e-posts-etapa-9.)
 - [x] Remover o fallback silencioso de perfil mockado no caminho de usuario real. (Etapa 7: `stage-two.mock.ts` deletado; `pages/comunidade/[username].vue` usa somente dado real, com estados loading/error/not-found explicitos.)
 - [x] Garantir que falha de API nao seja exibida como conteudo inventado. (Etapa 7, escopo perfil: erro real -> estado de erro real, nunca dado inventado. Demais telas Community fora do escopo desta etapa.)
@@ -54,7 +59,11 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
 - [ ] Implementar recuperacao de senha real com token curto, expiração e invalidacao.
 - [ ] Revisar armazenamento de access/refresh token no browser e protecao XSS.
 - [ ] Validar rate limit para login, cadastro, recuperacao, posts, comentarios e upload.
-- [ ] Testar matriz PLAYER/ADMIN/SUPER_ADMIN e overrides de permissao no backend.
+- [ ] Testar matriz PLAYER/ADMIN/SUPER_ADMIN e overrides de permissao no backend. (Etapa 12,
+  escopo Community apenas: confirmado que PLAYER recebe 401/403 real em endpoint administrativo
+  (E2E); confirmado que `role: 'ADMIN'` sozinho NAO concede `admin.community.*` automaticamente
+  -- so `SUPER_ADMIN` (wildcard) ou overrides explicitos em `AccountPermission`. Matriz completa
+  para os demais modulos (loja, marketplace, suporte, etc.) continua sem E2E dedicado.)
 - [ ] Confirmar segredo/`.env` apenas no ambiente e executar secret scan antes do beta.
 
 ### Loja e marketplace
@@ -104,7 +113,11 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
   "atividade" e semanticamente ambigua o bastante para nao merecer enforcement adivinhado.
   Reavaliar quando esses dados existirem de fato.)
 - [ ] Implementar notificacoes persistidas para mencoes, comentarios, follow e conquistas.
-- [ ] QA de moderacao, revisoes, soft delete e historico administrativo.
+- [x] QA de moderacao, revisoes, soft delete e historico administrativo. (Etapa 12: fluxo completo
+  homologado via E2E real -- denuncia, fila, acao do moderador (post/comment/reaction/user),
+  revisao administrativa (`CommunityPostRevision` criada em edicao admin), soft delete
+  (HIDE/REMOVE nunca apagam a linha), trilha de auditoria real (`AuditEvent`) com verificacao
+  explicita de ausencia de secrets. Nao inventado -- sistema ja existia, so nao tinha E2E.)
 
 ### Paginas publicas e dados mock
 
@@ -142,7 +155,13 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
 - [ ] Implementar paginas reais de Quests e Conquistas.
 - [ ] Implementar eventos sociais.
 - [ ] Definir dominio de Guilds (entidade, membros, cargos e pagina).
-- [ ] Implementar mute e colecoes de salvos.
+- [ ] Implementar mute (silenciar sem bloquear) e colecoes de salvos. (Etapa 12: confirmado que
+  nao existe nenhum tipo de sancao "mute" nem "ban" permanente dedicado na moderacao
+  administrativa -- mapeado, nao inventado. O mais proximo hoje e `SOCIAL_SUSPENSION` com
+  `expiresAt` distante. Documentar necessidade real antes de construir um sistema novo.)
+- [ ] Permitir remocao administrativa de uma unica imagem dentro de uma galeria de post, sem
+  remover o post inteiro. (Etapa 12: hoje a unica ferramenta e ocultar/remover o post completo --
+  cobre o caso pratico de moderacao, mas nao e granular.)
 - [ ] Definir ciclo de limpeza de midia temporaria/orfa. (Etapa 8: caso concreto identificado --
   upload multi-arquivo parcialmente falho deixa `CommunityMedia` sem post associado, sem
   endpoint de exclusao avulsa ainda. Nao e risco de seguranca, e desperdicio de storage.)

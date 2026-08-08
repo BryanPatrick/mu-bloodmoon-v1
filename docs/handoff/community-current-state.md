@@ -128,8 +128,8 @@ Status geral: `PARTIAL`, com base backend relevante e integracao final pendente.
 | Upload de imagem | `DONE` | Etapa 8: pipeline real ligado a avatar/capa/posts (zero base64/mock); rate limit (10/60s); erro de validacao (400) separado de falha de infraestrutura (500); E2E cobre valido/tipo invalido/arquivo grande/corrompido/sem-auth/falha de storage. Storage continua local -- ver "Midia (Etapa 8)" abaixo para o blocker de producao. |
 | Upload de GIF | DONE backend | Valida e reprocessa GIF; conversao para video nao existe. |
 | Galeria | DONE backend | 2 a 6 assets; E2E cobre post com midia (ver "Midia (Etapa 8)"); QA visual em navegador ainda pendente. |
-| Denuncia | DONE backend | Endpoint e workflow administrativo. |
-| Moderacao | DONE backend/admin | Post/comment/reaction/user/report; precisa E2E por permissao. |
+| Denuncia | `DONE` | Etapa 12: fluxo completo homologado -- usuario denuncia (com motivo obrigatorio) -> registro -> fila administrativa (`GET /admin/community/reports`) -> acao do moderador -> resolucao. Duplicata abusiva e auto-denuncia ja bloqueadas (confirmado, pre-existente). E2E cobre o fluxo ponta a ponta com 2 contas reais. |
+| Moderacao | `DONE` | Etapa 12: post/comment/reaction/user (incluindo avatar/capa/bio) homologados via E2E real -- acao de moderador aplicada, efeito confirmado (post oculto some do feed publico), autorizacao backend confirmada (nao so UI). "Media" moderada indiretamente via hide/remove do post que a contem, ou via `AVATAR_REMOVAL`/`COVER_REMOVAL` para foto de perfil -- nao existe remocao de uma imagem isolada dentro de uma galeria ainda (nao construido, ver riscos). |
 | Conquistas | PARTIAL | CRUD/grants/admin e exibicao de perfil; dados reais dependem do banco. |
 | Quests | PARTIAL | Listar/participar/admin/progresso/recompensa; home dedicada ausente. |
 | Badges | PARTIAL | Admin/grants existem; exibicao social final incompleta. Etapa 11: exposicao publica auditada e corrigida (campos internos de admin removidos do payload). |
@@ -1132,6 +1132,152 @@ editor) continua bloqueado por captcha no cadastro, mesma limitacao
 registrada nas Etapas 9-10 -- coberto pelos 10 E2E acima em vez de clique
 manual.
 
+## Moderacao e Abuse Safety (Etapa 12)
+
+Objetivo: garantir que conteudo real de usuario possa ser moderado.
+**Nenhum sistema paralelo foi criado** -- a auditoria encontrou um sistema
+de moderacao ja maduro e abrangente (`community-admin.service.ts`,
+768 linhas, construido em etapas anteriores nao documentadas
+individualmente); o trabalho real desta etapa foi homologar (confirmar via
+E2E real), encontrar 3 bugs pequenos e corrigi-los, e documentar o que
+existe.
+
+### Inventario real (o que ja existia, confirmado por leitura + E2E)
+
+- **Denuncias**: `CommunityReport` (reporterId, reportedUserId, post/comment,
+  reason, description, evidence, priority, status, assigneeId, decision,
+  internalNotes, dueAt, resolvedBy/resolvedAt). Fluxo completo: `POST
+  /community/reports` (usuario) -> fila (`GET /admin/community/reports`,
+  ordenada por prioridade) -> `PATCH /admin/community/reports/:id`
+  (moderador decide: ASSIGNED/INVESTIGATING/WAITING_FOR_USER/RESOLVED/
+  REJECTED/ESCALATED/REOPENED). Duplicata abusiva **ja bloqueada antes desta
+  etapa** (rejeita nova denuncia do mesmo usuario para o mesmo conteudo
+  enquanto uma anterior segue aberta); auto-denuncia tambem **ja bloqueada**.
+- **Moderacao de conteudo**: `postAction`/`commentAction`/`reactionAction`
+  em `community-admin.service.ts` -- HIDE/RESTORE/REMOVE/ARCHIVE para posts
+  (mais PIN/UNPIN/FEATURE/UNFEATURE/LIMIT_REACH/RESTORE_REACH/EDIT
+  administrativo, que cria uma `CommunityPostRevision` antes de sobrescrever),
+  HIDE/RESTORE/REMOVE para comentarios, REMOVE para reacoes. Todas exigem
+  justificativa (`reason`, minimo 3-4 caracteres) e sao auditadas.
+- **Sancoes de usuario** (`CommunityModerationType`, 10 tipos): `WARNING`
+  (incrementa contador), `SOCIAL_SUSPENSION`, `POST_BLOCK`, `COMMENT_BLOCK`,
+  `MESSAGE_LIMIT`, `REACH_LIMIT` (todos com `expiresAt`, default 7 dias se
+  nao informado), `AVATAR_REMOVAL`/`COVER_REMOVAL`/`BIO_REMOVAL` (moderacao
+  de "perfil" no sentido do brief), `USERNAME_CHANGE` (forcado, com historico
+  em `CommunityUsernameHistory`). `restoreUser` limpa todas as suspensoes/
+  bloqueios temporizados de uma vez e marca as `CommunityModerationAction`
+  correspondentes como restauradas (`restoredAt`/`restoredBy`). **Mute como
+  sancao de usuario nao existe** (o enum `MUTE` em `CommunitySocialRelation`
+  e para bloqueio *entre usuarios*, nao para silenciar via moderacao -- ver
+  Etapa 11). Ban permanente tambem nao existe como tipo dedicado -- a
+  ferramenta mais proxima e `SOCIAL_SUSPENSION` com `expiresAt` distante ou
+  a suspensao de conta no nivel de `Account.status` (fora do escopo
+  Community). Nao inventado nesta etapa -- documentado como o que
+  realisticamente existe.
+- **Auditoria**: `AuditService`/`AuditEvent` (modulo compartilhado,
+  `apps/api/src/modules/audit/`) -- actor (id/username/role), action,
+  targetType/targetId/targetUserId, before/after data, reason, result,
+  ip/userAgent/session/correlationId, timestamp (`createdAt`). **Redacao de
+  segredos e dados pessoais ja embutida** (`apps/api/src/common/
+  sensitive-data.ts`): `redactSensitiveText` mascara Bearer tokens, JWTs,
+  connection strings, query params de token/secret/senha; `toSafeJson` com
+  `maskPersonalData: true` mascara email/telefone/documento/IP e redige
+  totalmente qualquer chave que pareca senha/token/segredo/credential. Toda
+  acao administrativa relevante tambem gera um `AdminWorkLog` (trabalho
+  administrativo rastreavel). Confirmado por E2E que nenhuma acao de
+  moderacao desta etapa vazou `passwordHash`/`personalIdHash`/token no
+  registro de auditoria.
+
+### 3 bugs reais encontrados e corrigidos
+
+1. **Contador de erros do dashboard administrativo undercounted uploads
+   maliciosos.** `dashboard()` contava `SystemError` com `module: 'community'`
+   (match exato) -- mas `MediaService` registra falhas de upload (arquivo
+   corrompido, spoofed, falha de storage) com `module: 'community.media'`.
+   Todo upload rejeitado/malicioso ficava **invisivel no widget de erros do
+   dashboard**, mesmo com o registro de evidencia (`SystemError`) sendo
+   criado corretamente. Corrigido trocando para `module: { startsWith:
+   'community' }`. Confirmado por E2E que dispara um upload corrompido real
+   e verifica o contador do dashboard antes/depois.
+2 e 3. **Mojibake** (`Username invÃ¡lido.`, `jÃ¡ estÃ¡`) em
+   `community-admin.service.ts#moderateUser` -- mesmo padrao de bug ja
+   corrigido em `community.service.ts` na Etapa 7 (bytes UTF-8 mal
+   interpretados), mas essa ocorrencia especifica nunca tinha sido varrida.
+   Corrigido para `inválido`/`já está`.
+
+### Upload malicioso -- integracao com a Etapa 8
+
+Confirmado (nao alterado): quando um upload e rejeitado por conteudo
+corrompido/spoofed, **os bytes do arquivo nunca sao gravados em disco** --
+`MediaService.upload()` so escreve apos toda a validacao passar, entao nao
+existe nenhum arquivo malicioso persistido em lugar nenhum para "vazar" ou
+precisar de limpeza. A evidencia preservada e proporcional e suficiente
+para investigar padrao de abuso sem vigilancia excessiva: quem (`userId`),
+quando (`createdAt`), e por que exatamente falhou (`internalMessage` com o
+motivo especifico da validacao -- formato invalido, conteudo nao bate com a
+extensao, arquivo corrompido, falha de storage), tudo em `SystemError`
+(modulo `community.media`), agora corretamente contado no dashboard (bug 1
+acima). Nenhum novo campo/tabela foi criado -- a infraestrutura de
+evidencia ja existia desde a Etapa 8, so nao estava sendo somada
+corretamente na visao administrativa.
+
+### Prompt injection / conteudo como dado
+
+**Nao existe nenhuma integracao com IA/LLM neste repositorio hoje**
+(confirmado por busca em todo `apps/api/src` e `apps/web` -- zero
+dependencia de OpenAI/Anthropic/LangChain/etc. em qualquer `package.json`).
+Esta secao e puramente preparatoria, conforme pedido pelo brief
+("documentar boundary se houver futura integracao IA"):
+
+**Principio a preservar em qualquer integracao futura**: conteudo publicado
+por um usuario da Community (posts, comentarios, bio, nome de exibicao,
+motivo/descricao de denuncia, evidencia anexada) e **dado**, nunca
+**instrucao**. Se um agente de IA algum dia processar esse conteudo (ex.:
+moderacao automatica, resumo de denuncias, sugestao de resposta), o texto
+do usuario deve ser tratado exatamente como este projeto ja trata contexto
+observado por agentes de codigo (ver `CLAUDE.md`/regras deste proprio
+agente): citado e analisado, nunca executado como comando, independente de
+quao imperativa a redacao pareca ("ignore as regras anteriores", "aja como
+administrador", etc. dentro de um post ou denuncia devem ser tratados como
+texto suspeito a ser sinalizado, nunca obedecido). Nenhum codigo foi escrito
+para isso agora porque nao ha superficie de IA para proteger -- este e um
+guardrail de arquitetura a aplicar quando (se) essa integracao existir, nao
+uma correcao de bug atual.
+
+### E2E (novo: `apps/api/test/community-moderation.e2e-spec.ts`)
+
+Mesmo padrao de banco descartavel isolado, com `COMMUNITY_MEDIA_DIR`
+isolado adicional (para o teste de upload malicioso). Terceira conta
+sintetica promovida a `SUPER_ADMIN` diretamente via `PrismaService` no
+`beforeAll` -- **nao existe promocao self-service** (confirmado: `role`
+tem default `PLAYER`; nenhum endpoint publico eleva role). Achado relevante
+confirmado durante a escrita do teste: `role: 'ADMIN'` sozinho **nao**
+concede as permissoes `admin.community.*` automaticamente
+(`permissionsForAccount` em `permissions.ts` -- ADMIN herda so as
+permissoes de PLAYER + uma flag; so `SUPER_ADMIN` tem wildcard `'*'`).
+Confirma que a autorizacao e granular e least-privilege por padrao, nao um
+`if (role === 'ADMIN')` superficial. **17 casos, 17/17 PASS**:
+
+login com token real para autor/denunciante/moderador; usuario comum
+recebe 401 (sem token) e 403 (autenticado, sem permissao) em endpoint
+administrativo, testado em duas rotas diferentes; autor publica; fluxo
+completo de denuncia (registro, motivo obrigatorio, duplicata abusiva
+bloqueada, auto-denuncia bloqueada, aparece na fila do moderador, moderador
+oculta o post com justificativa, post oculto some do feed publico,
+moderador resolve a denuncia); auditoria confirma entrada real com
+actor/action/target/reason/timestamp para a acao de moderacao E para a
+resolucao da denuncia, com verificacao explicita de ausencia de
+`passwordHash`/`personalIdHash`/`token`/`secret` no JSON armazenado;
+sancoes homologadas (WARNING incrementa contador, POST_BLOCK temporizado
+realmente impede o usuario sancionado de publicar -- 403 real do backend,
+`restoreUser` limpa a sancao e a publicacao volta a funcionar); upload
+malicioso real (bytes corrompidos com extensao/mimetype falsificados) gera
+evidencia tecnica (`SystemError` com `userId`) e e contado no dashboard
+administrativo apos a correcao do bug 1.
+
+Combinado com as cinco suites anteriores: `npm run api:test:e2e` ->
+**80/80 PASS**, estavel. Nenhum container Docker deixado para tras.
+
 ## Catalogo de mocks/fallbacks (Etapa 5)
 
 Auditoria de 2026-08-08 (Etapa C1) ja apontava mocks em prosa (itens 3-4 de
@@ -1183,6 +1329,10 @@ Resumo original (Etapa 5): 6 `BLOCKER_BETA`, 1 `DEV_ONLY`, 1 `TEMPORARY_SAFE`. *
 24. ~~`guildVisibility: 'HIDDEN'` nao tinha efeito real -- `guildName` sempre aparecia.~~ **(RESOLVIDO na Etapa 11: `guildName` removido da resposta quando oculto e o viewer nao e o dono.)**
 25. ~~Aba "Marcações / Collabs" do perfil nunca podia mostrar nada (nenhum codigo produzia esse `kind`) mas exibia o mesmo vazio generico de uma aba legitimamente vazia.~~ **(RESOLVIDO na Etapa 11: aba removida -- nao existe schema/endpoint para marcacoes/colaboracoes, nao inventado.)**
 26. ~~Aba "Compartilhados" (reposts) do perfil nunca mostrava nada apesar de reposts serem uma feature real com dados reais.~~ **(RESOLVIDO na Etapa 11: perfil agora busca e exibe reposts reais.)**
+27. ~~Dashboard administrativo da Community undercounted uploads maliciosos/rejeitados no widget de erros (`module: 'community'` exato nao capturava `module: 'community.media'`).~~ **(RESOLVIDO na Etapa 12: filtro trocado para `startsWith`. Ver "Moderacao e Abuse Safety (Etapa 12)" acima.)**
+28. ~~Mojibake em `community-admin.service.ts#moderateUser` (mensagens de erro de troca de username).~~ **(RESOLVIDO na Etapa 12: nao foi feita ainda uma varredura completa do repositorio -- outras ocorrencias podem existir fora do escopo tocado ate agora, mesma ressalva do item 10.)**
+29. Nao existe remocao administrativa de uma unica imagem dentro de uma galeria de post -- a unica ferramenta e ocultar/remover o post inteiro. (Identificado na Etapa 12 -- nao corrigido, escopo alem do "minimo necessario" pedido pelo brief desta etapa; moderacao de post inteiro ja cobre o caso pratico.)
+30. Nao existe sancao de "mute" (silenciar publicacoes sem bloquear acesso) nem "ban" permanente dedicado como tipos de moderacao administrativa -- o mais proximo e `SOCIAL_SUSPENSION` com `expiresAt` distante. (Identificado na Etapa 12 -- mapeado, nao inventado; documentar necessidade antes de construir, conforme pedido pelo brief.)
 
 ## Ponto exato para continuar
 

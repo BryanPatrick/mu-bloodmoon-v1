@@ -94,7 +94,12 @@ export class CommunityAdminService {
       this.prisma.communityQuest.count({ where: { status: 'ACTIVE' } }),
       this.prisma.operationalEvent.count({ where: { module: 'community', eventType: { contains: 'SPAM' }, occurredAt: { gte: day } } }),
       this.prisma.communityTask.count({ where: { assigneeId: user.id, status: { in: ['PENDING', 'IN_PROGRESS', 'BLOCKED'] } } }),
-      this.prisma.systemError.count({ where: { module: 'community', status: { notIn: ['RESOLVED', 'IGNORED'] } } })
+      // startsWith, not an exact match -- MediaService records upload
+      // failures (rejected/corrupted/spoofed files, storage errors) under
+      // module 'community.media', not 'community'. An exact match here
+      // silently dropped every malicious/failed-upload error from this
+      // count even though the SystemError row itself was created correctly.
+      this.prisma.systemError.count({ where: { module: { startsWith: 'community' }, status: { notIn: ['RESOLVED', 'IGNORED'] } } })
     ])
     return { activeUsers, newPosts, comments, reports, hiddenContent, suspendedUsers, achievementsGranted, activeQuests, spamDetected, tasks, errors }
   }
@@ -310,9 +315,9 @@ export class CommunityAdminService {
     })
     if (type === 'USERNAME_CHANGE') {
       const replacement = required(payload.replacement, 'o novo username', 3).toLowerCase()
-      if (!/^[a-z0-9._-]{3,24}$/.test(replacement)) throw new BadRequestException('Username invÃ¡lido.')
+      if (!/^[a-z0-9._-]{3,24}$/.test(replacement)) throw new BadRequestException('Username inválido.')
       const duplicate = await this.prisma.account.findUnique({ where: { username: replacement }, select: { id: true } })
-      if (duplicate && duplicate.id !== accountId) throw new BadRequestException('Este username jÃ¡ estÃ¡ em uso.')
+      if (duplicate && duplicate.id !== accountId) throw new BadRequestException('Este username já está em uso.')
       const updated = await this.prisma.$transaction(async (tx) => {
         await tx.communityUsernameHistory.create({ data: { accountId, oldUsername: account.username, newUsername: replacement, changedBy: user.id, reason } })
         return tx.account.update({ where: { id: accountId }, data: { username: replacement }, select: { id: true, username: true } })
