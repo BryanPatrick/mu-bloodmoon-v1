@@ -24,6 +24,83 @@ por modulo e a classificacao BLOCKER/HIGH/MEDIUM/LOW. Nenhum BLOCKER foi
 corrigido nesta etapa -- tasks especificas foram criadas no Hub para cada um,
 por instrucao explicita do brief.)
 
+## Gate final de release (Etapa 18): `NO-GO`
+
+Objetivo: determinar se o BloodMoon esta tecnicamente pronto para receber
+usuarios reais e divulgacao publica, revisando Community Gate + Site-wide
+Gate + seguranca + migrations + backups + rollback + API/MySQL/GameBridge/
+fronteira SQL Server + uploads + auth + admin + marketplace + loja +
+launcher + monitoramento + dominio/HTTPS + producao. Regra do brief: nunca
+declarar GO com blocker conhecido. **Nenhum deploy foi executado ou
+sera executado sem autorizacao explicita do operador -- este gate e so
+avaliacao, exatamente como pedido.**
+
+### Confirmacoes exigidas pelo brief
+
+| Confirmar ausencia de... | Status |
+|---|---|
+| BLOCKERS conhecidos | **NAO CONFIRMADO** -- 7 BLOCKERs abertos (6 da Etapa 17 + 1 novo desta etapa, HTTPS). |
+| Mocks em fluxo critico | Confirmado ausente em Community e nos modulos auditados na Etapa 17 (loja/marketplace/auth nao tem mock -- o problema neles e ausencia de implementacao real, nao mock mascarando). Home tem 2 noticias falsas fixas misturadas ao conteudo real (MEDIUM, nao um fluxo critico de transacao). |
+| Credentials expostas | **NAO CONFIRMADO** -- uma credencial real de banco de producao existe em texto plano num arquivo local (`work/cpanel-mysql-production*.env`). Confirmado que **nao esta commitada no Git** (gitignored, `git check-ignore` validado), mas esta em texto plano no disco desta maquina. Valor nao reproduzido em nenhum documento por seguranca. Recomendado migrar para gerenciador de segredos e rotacionar se o arquivo ja circulou. |
+| Migration nao homologada | Parcialmente confirmado ausente -- as 3 migrations pendentes da Community estao homologadas tecnicamente (`APPROVED_FOR_PRODUCTION`, Etapa 6) mas **nunca foram aplicadas em ambiente real**, so em container descartavel. Nenhuma das 17 migrations tem rollback automatizado (`down.sql`) -- a unica recuperacao e restaurar backup completo do banco, nunca testado contra producao. |
+| Operacao comercial nao testada | **NAO CONFIRMADO** -- loja e marketplace confirmados sem nenhum teste automatizado e sem homologacao real (ver BLOCKERs 3 e 4 da Etapa 17). GameBridge nunca processou um job real (worker sempre falha por design). |
+| Rota critica quebrada | **NAO CONFIRMADO** -- 404 confirmado quebrando em erro cru ao vivo contra o build de producao (BLOCKER 5 da Etapa 17). |
+
+### Achado novo desta etapa: HTTPS/TLS nao configurado
+
+Nao existe configuracao real de TLS em lugar nenhum do projeto --
+`deploy/nginx.bloodmoon.conf` (unica config concreta de nginx) tem dominio
+placeholder, escuta so na porta 80, sem nenhum bloco TLS/SSL/certbot.
+`docs/deployment-architecture.md`/`docs/security-model.md` tratam HTTPS
+como requisito escrito, nao como configuracao pronta. Um beta publico
+servindo login/senha/tokens/pagamento sem HTTPS real e um risco serio de
+seguranca -- classificado BLOCKER, task criada no Hub.
+
+### Backups, rollback, monitoramento -- status factual (Documentado vs Implementado)
+
+| Item | Status |
+|---|---|
+| Backup (cPanel/MySQL) | **IMPLEMENTADO** -- `deploy/scripts/cpanel-production-backup.sh` real e executavel (mysqldump, checksum, lockfile, pronto para cron). Retencao local de so 3 dias por padrao; copia externa (`RCLONE_REMOTE`) e opcional e nao confirmada como configurada de fato. |
+| Backup (VPS do jogo) | Script existe mas cobre so o site PHP antigo, invocado manualmente -- sem cron/automacao para o stack novo do BloodMoon nesse caminho. |
+| Rollback de aplicacao (troca de site) | **SO DOCUMENTADO** -- runbook manual escrito (`deploy/GAME_VPS_BACKUP_AND_DEPLOY.md:186-194`), nenhum script automatiza. |
+| Rollback de migration | **SO DOCUMENTADO** -- nenhuma das 17 migrations tem `down.sql`; unica recuperacao e restaurar backup completo do banco (nao por-migration), estrategia nunca executada contra producao. |
+| Seguranca de aplicacao de migration | Parcial -- sequencia de seguranca (backup->migrate->validar->rollback testado) esta documentada como plano em `deployment-architecture.md:138-148,185-192`, mas nunca foi executada de fato. |
+| Dominio/HTTPS | **NENHUM DOS DOIS** -- ver achado acima. |
+| Monitoramento/logging (nivel de app) | **IMPLEMENTADO** -- correlationId, AuditLog real, fingerprinting de erro, retencao configuravel (`docs/observability-and-audit.md`) -- ja confirmado funcional pela Community e pelo painel administrativo (Etapa 17). |
+| Monitoramento/logging (nivel de infra) | **NENHUM DOS DOIS** -- nenhum APM/Sentry/uptime-checker/agregador de log encontrado. `docker-compose.production.yml` tem healthcheck local de container, nao monitoramento de producao real; o alvo de deploy real (cPanel/VPS) nem usa esse compose. |
+
+### Resultado final: `NO-GO`
+
+**Motivo**: existem BLOCKERs conhecidos (regra do brief: nunca declarar GO
+nessa condicao). Nenhum checklist de deploy separado foi gerado, pois o
+brief so pede isso em caso de GO.
+
+**Exatamente o que falta (tasks ja criadas no Hub, nao uma so
+refatoracao)**:
+
+1. `e641176f` -- Recuperacao de senha real (token, expiracao, e-mail).
+2. `20921b4d` -- CAPTCHA real validado no backend + rate limit em
+   login/cadastro.
+3. `88ebaa56` -- Loja: gateway de pagamento real + entrega automatizada
+   (ou pelo menos processo real de entrega).
+4. `fb796d14` -- Marketplace/escrow/GameBridge: worker real + remover
+   endpoints administrativos de desenvolvimento.
+5. `47eadd58` -- Pagina 404 customizada (bug confirmado ao vivo em
+   producao).
+6. `305947d6` -- Cobertura minima de teste automatizado fora de
+   Community (login/cadastro, compra na loja, listagem no marketplace).
+7. `fbd01471` -- HTTPS/TLS real configurado para o dominio de producao
+   (achado novo desta etapa).
+
+**Alem das 7 tasks BLOCKER**, antes de reavaliar GO tambem e necessario
+(sem task dedicada -- ja rastreado nas secoes BLOCKER "Deploy/producao"
+deste documento): aplicar as 3 migrations da Community em producao com
+backup+rollback testado de verdade (nao so documentado), configurar
+retencao/copia externa real de backup, e decidir/priorizar monitoramento
+de infraestrutura (APM/uptime) antes de divulgacao ampla.
+
+Decisao formal `NO-GO` registrada no AI Knowledge Hub.
+
 ## BLOCKER
 
 ### Comunidade
