@@ -18,7 +18,19 @@ O desenvolvimento parou antes da reconciliacao final:
   renderizam placeholder;
 - compila e passa typecheck, mas nao ha E2E com MySQL/storage/autenticacao.
 
-Status geral: `PARTIAL`, com base backend relevante e integracao final pendente.
+Status geral (na auditoria original, Etapa 5): `PARTIAL`, com base backend
+relevante e integracao final pendente.
+
+**Status atual (Etapa 14): `BETA_READY`.** Etapas 6-14 fecharam a
+reconciliacao, homologaram migrations, media, feed/posts, interacoes
+sociais, perfis/privacidade, moderacao, administracao, e agora a jornada
+E2E ponta a ponta completa (`apps/api/test/community-e2e-journey.e2e-spec.ts`,
+novo). `npm run api:test:e2e` combinado: **111/111 PASS**, 8 suites, nenhum
+BLOCKER funcional encontrado na Community. Ver
+"Validacao E2E completa (Etapa 14)" abaixo para o relatorio PASS/FAIL/BLOCKER
+detalhado -- `BETA_READY` cobre especificamente a Community; outras areas do
+site (autenticacao/recuperacao de senha, loja/marketplace, deploy/producao)
+continuam com blockers proprios documentados em `site-beta-checklist.md`.
 
 ## Arquivos relevantes
 
@@ -133,6 +145,7 @@ Status geral: `PARTIAL`, com base backend relevante e integracao final pendente.
 | Conquistas | `PARTIAL` | CRUD/grants/admin e exibicao de perfil; dados reais dependem do banco. Etapa 13: bug real corrigido -- painel admin desativava a conquista a cada edicao, mesmo trocando so a descricao. |
 | Quests | `PARTIAL` | Listar/participar/admin/progresso/recompensa; home dedicada ausente. Etapa 13: mesmo bug de "editar reseta status" corrigido (editar uma quest publicada nao volta mais para DRAFT sozinho). |
 | Painel administrativo (posts/comentarios/reacoes/perfis/moderacao/denuncias/badges/policy/tarefas/analytics) | `DONE` | Etapa 13: homologado ponta a ponta -- filtros, busca, paginacao e todas as acoes confirmadas reais contra o backend (nenhum mock). RBAC de 3 niveis confirmado por E2E: player barrado (401/403), moderador com permissoes granulares reais (nao um `if (role==='ADMIN')` binario -- confirmado que `role: 'ADMIN'` sozinho nao concede nada de Community), admin/super-admin com acesso total. Estados de loading/vazio/erro reais adicionados (antes: nenhum -- uma falha de rede deixava a tela em branco sem aviso). |
+| Validacao E2E ponta a ponta | `DONE` | Etapa 14: jornada real unica homologada (`apps/api/test/community-e2e-journey.e2e-spec.ts`, novo) -- cadastro/login, perfil, edicao, avatar, post, feed, permalink, comentario, reacao, save, repost, perfil de outro usuario, edicao indevida, denuncia, moderacao, administracao, logout/login, persistencia apos nova sessao. 401/403/404/validacao/falha de storage/estados vazios cobertos explicitamente; "API indisponivel" documentado como nao aplicavel (Community nao tem dependencia sincrona externa a simular). Nenhum bug funcional novo encontrado -- etapa de homologacao/organizacao, nao de correcao. Combinado: **111/111 PASS**. |
 | Badges | PARTIAL | Admin/grants existem; exibicao social final incompleta. Etapa 11: exposicao publica auditada e corrigida (campos internos de admin removidos do payload). |
 | Compartilhados (reposts no perfil) | `DONE` | Etapa 11: aba "Compartilhados" tinha zero dado real (kind sempre `'publication'`) apesar de reposts serem uma feature real -- fechado, agora mostra reposts reais com referencia ao post/autor original. |
 | Guilds | MISSING | Guild e string; sem entidade/pagina/membros/cargos. |
@@ -1344,7 +1357,7 @@ de `AccountPermission` (`admin.community.view`/`posts.moderate`/
 `comments.moderate`/`reports.moderate`/`users.moderate`) -- confirma de
 novo (ja visto na Etapa 12) que `role: 'ADMIN'` sozinho nao concede nada de
 Community; a autorizacao real vem das permissoes explicitas, nunca de um
-`if (role === 'ADMIN')` binario. **12 casos novos, 89/89 PASS combinado**:
+`if (role === 'ADMIN')` binario. **9 casos novos, 89/89 PASS combinado**:
 
 - **player**: 401 sem token, 403 autenticado sem permissao, em duas rotas
   administrativas distintas;
@@ -1377,6 +1390,120 @@ continua bloqueado por captcha (mesma limitacao das Etapas 9-12). Toda a
 logica corrigida nesta etapa (estados de loading/erro, o fix de
 isActive/status) foi validada no nivel do contrato via E2E, nao por clique
 manual na UI.
+
+## Validacao E2E completa (Etapa 14)
+
+Objetivo: consolidar a validacao E2E da Community numa jornada real unica,
+ponta a ponta, em vez de apenas testes isolados por feature (Etapas 7-13),
+e cobrir explicitamente as classes de erro que o beta exige (401/403/404/
+validacao/falha de storage/estados vazios). Por instrucao explicita do
+brief, esta etapa **nao adicionou nenhuma feature nova** -- so organizacao
+de teste e, se necessario, correcao do minimo para os testes passarem.
+Nenhuma correcao foi necessaria: nenhum bug funcional novo foi encontrado.
+
+### Suite nova: `apps/api/test/community-e2e-journey.e2e-spec.ts` (22 casos)
+
+Uma unica `describe` conta a jornada de um usuario real, numerada 1-18
+igual ao brief, reaproveitando exatamente as mesmas rotas/servicos ja
+homologados nas Etapas 7-13 (nenhum sistema paralelo):
+
+1. cadastro/login reais (com 401 previo: rota protegida sem token nenhum);
+2. `GET /community/me` logo apos o cadastro -- **estado vazio real**
+   confirmado (`bio`/`avatarUrl` nulos, `displayName` = nome de cadastro),
+   e feed de salvos vazio antes de qualquer save;
+3. `PATCH /community/me` -- edicao persistida em releitura independente;
+4. upload real de midia (pipeline real, mesma usada por posts) + associacao
+   como avatar via `PATCH /community/me`;
+5. criar post -- validacao (400, conteudo vazio) antes do post real;
+6. feed publico mostra o post criado;
+7. permalink real (`GET /community/posts/:id`) -- comentarios comecam
+   vazios (**estado vazio real**, nao um array inventado);
+8. comentario criado e refletido na releitura do post;
+9. reacao (toggle) e contador refletido;
+10. save e post aparece na listagem de salvos (`feed=saved`);
+11. registra um segundo usuario real (B) e reposta o conteudo dele --
+    confirma que repostar o proprio post continua rejeitado (400);
+12. visualizacao publica real do perfil de B (sem vazamento de `email`,
+    mesma garantia da Etapa 11);
+13. **tentativa de edicao indevida**: A tenta editar/excluir o post de B
+    -- rejeitado com 404 (design de ownership-scoped lookup, nao expoe
+    "existe mas nao e seu" -- mesmo comportamento confirmado nas Etapas
+    9/10); A tambem tenta forcar via rota administrativa sem permissao --
+    rejeitado com **403** genuino (RolesGuard);
+14. denuncia real do post de B por A, com motivo;
+15. moderacao: um moderador com `AccountPermission` granular real (nao
+    `role: 'ADMIN'` sozinho -- mesmo achado reafirmado das Etapas 12/13) ve
+    a fila, oculta o post denunciado, resolve a denuncia; post some do
+    feed publico;
+16. administracao: super admin gerencia a policy da Community
+    (`PATCH /admin/community/policy`); o moderador da etapa anterior
+    continua **fora desse escopo** (403) -- reforca a distincao
+    moderacao-vs-administracao ja homologada na Etapa 13;
+17. logout/login: sessao real encerrada (`POST /auth/logout`) invalida o
+    token antigo imediatamente (401 na proxima chamada -- mesmo mecanismo
+    de `sessionVersion` da Etapa 10); novo login gera um token valido;
+18. persistencia apos nova sessao: perfil editado, avatar, post, comentario,
+    reacao e item salvo continuam intactos com o novo token -- prova real
+    de que nada depende de estado em memoria da sessao anterior.
+
+Mais 4 casos dedicados de erro/limite intercalados na jornada:
+validacao de cadastro invalido (username curto), validacao de
+`profileVisibility` invalido, `GET` de post inexistente (404), e uma
+**falha real de storage** (nao mock) reaproveitando o mecanismo ja
+estabelecido pelo `community-media.e2e-spec.ts` -- aponta
+`COMMUNITY_MEDIA_DIR` para dentro de um arquivo (nao diretorio),
+provocando um `ENOTDIR` genuino de filesystem, e confirma 500 real (nao
+400) sem deixar registro orfao.
+
+### "API indisponivel": documentado como nao aplicavel, nao inventado
+
+O brief pede cobertura de "API unavailable quando simulavel". Levantamento
+em toda a suite `apps/api/test/` (nao so Community) nao encontrou nenhum
+padrao existente para simular uma dependencia sincrona fora do ar -- e por
+um motivo real: a Community so depende de banco (Prisma) e filesystem
+local, nenhuma chamada sincrona a um servico externo durante uma
+requisicao. O unico paralelo (GameBridge, usado por marketplace) e uma
+fila assincrona processada por um worker separado, sem momento de
+"dependencia caiu" dentro de uma requisicao para simular. Forcar essa
+cobertura exigiria inventar infraestrutura nova (matar o container MySQL
+descartavel no meio de um teste, por exemplo) que nao existe em nenhum
+outro spec desta suite -- o brief pede explicitamente para nao adicionar
+nada alem do necessario para os testes passarem, entao esta lacuna fica
+documentada como **nao aplicavel**, nao preenchida artificialmente.
+
+### Quality gate completo (Etapa 14)
+
+- `npm run lint`: 53 problemas (1 erro, 52 warnings), **identicos aos da
+  Etapa 13** -- nenhum novo. O 1 erro (`no-useless-assignment` em
+  `admin-tasks.service.ts:363`) e pre-existente, fora do modulo Community,
+  ja sinalizado como task separada.
+- `npm run format:check`: 256 arquivos com divergencia de formatacao --
+  confirmado pre-existente (checado o commit anterior a Etapa 13, o mesmo
+  estado ja existia), espalhado pelo repositorio inteiro (paginas, scripts,
+  docs, docker-compose), nao introduzido por nenhuma etapa da Community.
+  Reformatar em massa esta fora do escopo desta etapa (mudaria centenas de
+  arquivos sem relacao com Community, contra a instrucao explicita de nao
+  adicionar nada alem do necessario).
+- `npm run api:check` (estrutura + `tsc --noEmit`): limpo.
+- `npm run web:build`: build completo, sem erro, `Nitro output checked: 61
+  file(s) patched`.
+- `npm run api:test:e2e` (8 suites, incluindo a nova): **111/111 PASS**
+  (89 das Etapas 7-13 + 22 da jornada nova desta etapa).
+
+### Relatorio PASS/FAIL/BLOCKER
+
+**PASS** -- toda a jornada Community (18 passos), 401/403/404/validacao/
+estado-vazio/falha-de-storage cobertos, `api:check` limpo, `web:build`
+limpo, 111/111 E2E.
+
+**FAIL (pre-existente, fora do escopo Community, nao bloqueante)** -- 1
+erro de lint em `admin-tasks.service.ts` (modulo nao-Community); 256
+arquivos com formatacao divergente em todo o repositorio (nenhum deles
+tocado por nenhuma etapa da Community).
+
+**BLOCKER** -- nenhum encontrado na Community.
+
+**Status da Community: `BETA_READY`.**
 
 ## Catalogo de mocks/fallbacks (Etapa 5)
 

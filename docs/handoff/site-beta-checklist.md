@@ -4,13 +4,20 @@ Baseado na auditoria estatica e nas verificacoes de 2026-08-08. Itens nao foram
 marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
 "o que impede usuarios reais de usar o portal com seguranca?"
 
+**Community: `BETA_READY`** (Etapa 14 -- jornada E2E completa, 111/111 PASS,
+nenhum BLOCKER funcional na Community; ver
+community-current-state.md#validacao-e2e-completa-etapa-14). As demais areas
+do site (autenticacao/recuperacao de senha, loja/marketplace, deploy/producao)
+continuam com blockers proprios abertos abaixo -- `BETA_READY` cobre
+especificamente a Community, nao o site inteiro.
+
 ## BLOCKER
 
 ### Comunidade
 
 - [x] Preservar/revisar o diff local Community antes de qualquer merge. (Etapa 5: auditado via `git status`/`git diff --stat`, catalogado no Hub, nada descartado -- ver docs/handoff/community-current-state.md.)
 - [x] Homologar as tres migrations Community em clone descartavel do MySQL. (Etapa 6: aplicadas em sequencia real em container MariaDB descartavel e isolado, todas classificadas ADDITIVE, todas `APPROVED_FOR_PRODUCTION` -- ver docs/handoff/community-current-state.md#homologacao-das-migrations-etapa-6. Ainda nao aplicadas em nenhum ambiente real; E2E autenticado completo continua pendente, ver item abaixo.)
-- [ ] Executar E2E autenticado de perfil, upload, post, edicao, exclusao, comentario,
+- [x] Executar E2E autenticado de perfil, upload, post, edicao, exclusao, comentario,
   resposta, reacao, save, repost, follow, block e denuncia. (Etapa 7: escopo de
   **perfil** coberto -- `apps/api/test/community-profile.e2e-spec.ts`, 6/6 PASS.
   Etapa 8: escopo de **midia/upload** coberto -- `apps/api/test/community-media.e2e-spec.ts`,
@@ -41,11 +48,25 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
   com acesso total; trilha de auditoria confirmada com o ator/motivo corretos;
   contrato de `isActive`/`status` em conquista validado explicitamente contra
   o bug de despublicacao silenciosa corrigido nesta etapa, ver
-  community-current-state.md#administracao-da-community-etapa-13). Combinado:
-  `npm run api:test:e2e` 89/89 PASS. QA visual autenticado em navegador
-  (clicar criar/editar/excluir, incluindo o painel admin) continua pendente --
-  bloqueado por captcha no cadastro, ver
-  community-current-state.md#feed-e-posts-etapa-9.)
+  community-current-state.md#administracao-da-community-etapa-13). **Etapa 14:
+  jornada E2E ponta a ponta unica** consolidando os 18 passos reais do usuario
+  (cadastro -> login -> perfil -> edicao -> avatar -> post -> feed -> visualizar
+  -> comentario -> reacao -> save -> repost -> perfil de outro usuario -> edicao
+  indevida -> denuncia -> moderacao -> administracao -> logout/login ->
+  persistencia apos nova sessao) --
+  `apps/api/test/community-e2e-journey.e2e-spec.ts`, 22/22 PASS, incluindo
+  401/403/404/validacao/falha-de-storage/estados-vazios explicitos. Nenhum bug
+  funcional novo encontrado -- etapa de homologacao/organizacao, nao de
+  correcao. "API indisponivel" documentado como nao aplicavel (Community nao
+  tem dependencia sincrona externa), ver
+  community-current-state.md#validacao-e2e-completa-etapa-14 para o relatorio
+  PASS/FAIL/BLOCKER completo. Combinado: `npm run api:test:e2e` **111/111
+  PASS**, 8 suites. QA visual autenticado em navegador (clicar criar/editar/
+  excluir, incluindo o painel admin) continua pendente -- bloqueado por
+  captcha no cadastro, ver community-current-state.md#feed-e-posts-etapa-9.
+  **Status da Community: `BETA_READY`** (nenhum BLOCKER funcional encontrado
+  na Community; outras areas do site continuam com blockers proprios, ver
+  secoes abaixo.))
 - [x] Remover o fallback silencioso de perfil mockado no caminho de usuario real. (Etapa 7: `stage-two.mock.ts` deletado; `pages/comunidade/[username].vue` usa somente dado real, com estados loading/error/not-found explicitos.)
 - [x] Garantir que falha de API nao seja exibida como conteudo inventado. (Etapa 7, escopo perfil: erro real -> estado de erro real, nunca dado inventado. Demais telas Community fora do escopo desta etapa.)
 - [x] Corrigir exposicao de dados internos/moderacao no perfil publico da Community. (Etapa 11:
