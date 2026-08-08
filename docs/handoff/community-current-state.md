@@ -130,8 +130,9 @@ Status geral: `PARTIAL`, com base backend relevante e integracao final pendente.
 | Galeria | DONE backend | 2 a 6 assets; E2E cobre post com midia (ver "Midia (Etapa 8)"); QA visual em navegador ainda pendente. |
 | Denuncia | `DONE` | Etapa 12: fluxo completo homologado -- usuario denuncia (com motivo obrigatorio) -> registro -> fila administrativa (`GET /admin/community/reports`) -> acao do moderador -> resolucao. Duplicata abusiva e auto-denuncia ja bloqueadas (confirmado, pre-existente). E2E cobre o fluxo ponta a ponta com 2 contas reais. |
 | Moderacao | `DONE` | Etapa 12: post/comment/reaction/user (incluindo avatar/capa/bio) homologados via E2E real -- acao de moderador aplicada, efeito confirmado (post oculto some do feed publico), autorizacao backend confirmada (nao so UI). "Media" moderada indiretamente via hide/remove do post que a contem, ou via `AVATAR_REMOVAL`/`COVER_REMOVAL` para foto de perfil -- nao existe remocao de uma imagem isolada dentro de uma galeria ainda (nao construido, ver riscos). |
-| Conquistas | PARTIAL | CRUD/grants/admin e exibicao de perfil; dados reais dependem do banco. |
-| Quests | PARTIAL | Listar/participar/admin/progresso/recompensa; home dedicada ausente. |
+| Conquistas | `PARTIAL` | CRUD/grants/admin e exibicao de perfil; dados reais dependem do banco. Etapa 13: bug real corrigido -- painel admin desativava a conquista a cada edicao, mesmo trocando so a descricao. |
+| Quests | `PARTIAL` | Listar/participar/admin/progresso/recompensa; home dedicada ausente. Etapa 13: mesmo bug de "editar reseta status" corrigido (editar uma quest publicada nao volta mais para DRAFT sozinho). |
+| Painel administrativo (posts/comentarios/reacoes/perfis/moderacao/denuncias/badges/policy/tarefas/analytics) | `DONE` | Etapa 13: homologado ponta a ponta -- filtros, busca, paginacao e todas as acoes confirmadas reais contra o backend (nenhum mock). RBAC de 3 niveis confirmado por E2E: player barrado (401/403), moderador com permissoes granulares reais (nao um `if (role==='ADMIN')` binario -- confirmado que `role: 'ADMIN'` sozinho nao concede nada de Community), admin/super-admin com acesso total. Estados de loading/vazio/erro reais adicionados (antes: nenhum -- uma falha de rede deixava a tela em branco sem aviso). |
 | Badges | PARTIAL | Admin/grants existem; exibicao social final incompleta. Etapa 11: exposicao publica auditada e corrigida (campos internos de admin removidos do payload). |
 | Compartilhados (reposts no perfil) | `DONE` | Etapa 11: aba "Compartilhados" tinha zero dado real (kind sempre `'publication'`) apesar de reposts serem uma feature real -- fechado, agora mostra reposts reais com referencia ao post/autor original. |
 | Guilds | MISSING | Guild e string; sem entidade/pagina/membros/cargos. |
@@ -1278,6 +1279,105 @@ administrativo apos a correcao do bug 1.
 Combinado com as cinco suites anteriores: `npm run api:test:e2e` ->
 **80/80 PASS**, estavel. Nenhum container Docker deixado para tras.
 
+## Administracao da Community (Etapa 13)
+
+Objetivo: dar aos administradores ferramentas minimas para operar a
+Community durante o beta. Auditoria do painel real
+(`CommunityAdminManager.vue`, 274 linhas antes desta etapa, consumido por
+`pages/painel/admin/comunidade.vue`) -- **nenhum mock administrativo
+encontrado**: toda aba (dashboard, publicacoes, comentarios, reacoes,
+perfis, moderacao, denuncias, conquistas, quests, badges, regras/spam,
+tarefas, relatorios) ja chamava endpoints reais de
+`useCommunityApi.ts`/`community-admin.service.ts`, todos ja confirmados
+reais nas Etapas 7-12. O trabalho real desta etapa foi auditar o
+componente inteiro, corrigir 2 problemas concretos, e homologar RBAC de
+3 niveis via E2E.
+
+### Bug real encontrado e corrigido: editar catalogo desativava/despublicava silenciosamente
+
+`saveCatalog()` (usado para salvar conquistas, quests e badges tanto ao
+criar quanto ao editar) mandava um valor **hardcoded** de `isActive`/`status`
+em **toda** chamada de salvar, inclusive ao editar um registro ja existente:
+
+- conquistas: sempre `isActive: false` -- editar a descricao de uma
+  conquista ja ativa a desativava sem aviso;
+- quests: sempre `status: 'DRAFT'` -- editar uma quest ja publicada a
+  devolvia para rascunho, potencialmente interrompendo participantes ativos;
+- badges: sempre `isActive: true` -- o inverso, mas o mesmo problema: um
+  badge deliberadamente desativado por um admin voltava a ficar ativo ao
+  ser editado.
+
+O formulario ja carregava o valor real do registro ao iniciar uma edicao
+(`beginCatalogEdit()` faz `Object.assign(catalogForm, row, {...})`, que ja
+inclui `isActive`/`status` reais) -- o bug era `saveCatalog()` ignorar esse
+valor e sobrescrever com a constante de "novo registro" mesmo quando nao
+era um registro novo. Corrigido: a constante so e aplicada quando
+`catalogEditingId` e nulo (criacao real); ao editar, o valor atual do
+formulario (`catalogForm.isActive`/`catalogForm.status`) e enviado como
+esta. Confirmado por E2E direto na API (nao foi possivel renderizar o Vue
+no ambiente de teste, mas o contrato exato que o frontend corrigido agora
+envia foi validado no backend): criar conquista ativa -> editar mantendo
+ativa -> confirma que continua ativa; editar desativando -> confirma que
+o campo e genuinamente respeitado nos dois sentidos.
+
+### Estados loading/empty/error adicionados
+
+`loadCurrent()` (a busca de dados de toda aba, distinta das acoes de
+escrita que ja tinham feedback via `message`/`failed`) **nao tinha nenhum
+tratamento de erro nem indicador de carregamento** -- uma falha de rede ou
+um 500 do backend deixava a tela na ultima lista carregada (ou em branco,
+na primeira visita), sem nenhum aviso. Corrigido com um `try/catch` real
+em `loadCurrent()` (estado `loadError`, reaproveita o banner `message`/
+`failed` ja existente) e um indicador `loading` explicito, aplicados nas 5
+secoes que renderizam `currentPage`/`dashboard`/`analyticsData`
+(dashboard, listagens post/comment/reaction/profile/moderation/report,
+catalogo de conquista/quest/badge, tarefas, relatorios). Em erro, a lista
+e esvaziada explicitamente (`{data:[], total:0, ...}`) em vez de deixar a
+pagina anterior parecendo atual.
+
+### RBAC de 3 niveis homologado (novo: `apps/api/test/community-admin-panel.e2e-spec.ts`)
+
+Achado relevante confirmado ao montar o cenario de teste: para simular um
+"moderador" com permissoes **reais e granulares** (nao um admin completo),
+foi necessario `role: 'ADMIN'` **mais** conceder explicitamente um subconjunto
+de `AccountPermission` (`admin.community.view`/`posts.moderate`/
+`comments.moderate`/`reports.moderate`/`users.moderate`) -- confirma de
+novo (ja visto na Etapa 12) que `role: 'ADMIN'` sozinho nao concede nada de
+Community; a autorizacao real vem das permissoes explicitas, nunca de um
+`if (role === 'ADMIN')` binario. **12 casos novos, 89/89 PASS combinado**:
+
+- **player**: 401 sem token, 403 autenticado sem permissao, em duas rotas
+  administrativas distintas;
+- **moderador** (permissoes escopadas): lista posts com filtro real de
+  status + busca por texto + paginacao (confirma zero resultados para uma
+  busca sem match, nao um erro nem uma lista fantasma); modera post,
+  comentario, denuncia e usuario (todas dentro do escopo concedido);
+  **rejeitado com 403** ao tentar criar conquista, editar regras/spam,
+  criar tarefa administrativa ou ver relatorios -- fora do escopo
+  concedido;
+- **admin/super-admin**: cria e edita conquista confirmando a correcao do
+  bug de desativacao (ver acima); gerencia regras/spam e ve relatorios --
+  exatamente o que o moderador nao podia;
+- **auditoria**: acao de moderador em comentario gera `AuditEvent` real
+  (actor/action/target/reason), complementando post/denuncia ja cobertos
+  na Etapa 12.
+
+Combinado com as seis suites anteriores: `npm run api:test:e2e` ->
+**89/89 PASS**, estavel. Nenhum container Docker deixado para tras.
+
+### QA visual
+
+Build do frontend (`npm run web:build`) confirmado limpo -- pega erros de
+sintaxe de template (`v-if`/`v-else` mal encadeados, por exemplo) que um
+teste de API nao pegaria. Fluxo anonimo em navegador real confirmado sem
+regressao (feed publico renderiza normalmente, zero erro novo no console).
+**QA visual do painel administrativo em si nao foi feito** -- exige uma
+sessao autenticada como ADMIN/SUPER_ADMIN, e o cadastro de conta de teste
+continua bloqueado por captcha (mesma limitacao das Etapas 9-12). Toda a
+logica corrigida nesta etapa (estados de loading/erro, o fix de
+isActive/status) foi validada no nivel do contrato via E2E, nao por clique
+manual na UI.
+
 ## Catalogo de mocks/fallbacks (Etapa 5)
 
 Auditoria de 2026-08-08 (Etapa C1) ja apontava mocks em prosa (itens 3-4 de
@@ -1331,6 +1431,8 @@ Resumo original (Etapa 5): 6 `BLOCKER_BETA`, 1 `DEV_ONLY`, 1 `TEMPORARY_SAFE`. *
 26. ~~Aba "Compartilhados" (reposts) do perfil nunca mostrava nada apesar de reposts serem uma feature real com dados reais.~~ **(RESOLVIDO na Etapa 11: perfil agora busca e exibe reposts reais.)**
 27. ~~Dashboard administrativo da Community undercounted uploads maliciosos/rejeitados no widget de erros (`module: 'community'` exato nao capturava `module: 'community.media'`).~~ **(RESOLVIDO na Etapa 12: filtro trocado para `startsWith`. Ver "Moderacao e Abuse Safety (Etapa 12)" acima.)**
 28. ~~Mojibake em `community-admin.service.ts#moderateUser` (mensagens de erro de troca de username).~~ **(RESOLVIDO na Etapa 12: nao foi feita ainda uma varredura completa do repositorio -- outras ocorrencias podem existir fora do escopo tocado ate agora, mesma ressalva do item 10.)**
+29. ~~Painel admin da Community sempre mandava `isActive:false` (conquistas), `status:'DRAFT'` (quests) ou `isActive:true` (badges) em TODA edicao, inclusive de registros ja publicados/ativos -- editar a descricao de uma conquista ativa a desativava sem aviso; o mesmo para despublicar uma quest ou reativar um badge deliberadamente desligado.~~ **(RESOLVIDO na Etapa 13: esses valores so sao forcados ao criar um registro novo; ao editar, o valor real do formulario -- ja carregado do registro -- e enviado como esta. Ver "Administracao da Community (Etapa 13)" acima.)**
+30. ~~`loadCurrent()` do painel admin nao tinha nenhum tratamento de erro nem indicador de carregamento -- uma falha de rede deixava a tela em branco ou com dados desatualizados, sem nenhum aviso.~~ **(RESOLVIDO na Etapa 13: estados loading/error/empty reais adicionados em todas as 5 secoes que exibem dados carregados.)**
 29. Nao existe remocao administrativa de uma unica imagem dentro de uma galeria de post -- a unica ferramenta e ocultar/remover o post inteiro. (Identificado na Etapa 12 -- nao corrigido, escopo alem do "minimo necessario" pedido pelo brief desta etapa; moderacao de post inteiro ja cobre o caso pratico.)
 30. Nao existe sancao de "mute" (silenciar publicacoes sem bloquear acesso) nem "ban" permanente dedicado como tipos de moderacao administrativa -- o mais proximo e `SOCIAL_SUSPENSION` com `expiresAt` distante. (Identificado na Etapa 12 -- mapeado, nao inventado; documentar necessidade antes de construir, conforme pedido pelo brief.)
 

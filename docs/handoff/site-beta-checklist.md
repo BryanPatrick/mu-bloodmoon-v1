@@ -33,8 +33,17 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
   denuncia -> fila -> acao -> resolucao; usuario comum barrado de endpoint
   administrativo com 401/403; auditoria real sem secrets; sancoes WARNING/
   POST_BLOCK/restore homologadas; evidencia de upload malicioso integrada com
-  a Etapa 8). Combinado: `npm run api:test:e2e` 80/80 PASS. QA visual
-  autenticado em navegador (clicar criar/editar/excluir) continua pendente --
+  a Etapa 8). Etapa 13: escopo de **painel administrativo** coberto --
+  `apps/api/test/community-admin-panel.e2e-spec.ts`, 9/9 PASS (player barrado
+  em toda rota admin; moderador com permissoes granulares reais -- age em
+  posts/comentarios/denuncias/usuarios, mas recebe 403 fora do seu escopo,
+  ex.: catalogo de conquistas, policy, tarefas, analytics; admin/super-admin
+  com acesso total; trilha de auditoria confirmada com o ator/motivo corretos;
+  contrato de `isActive`/`status` em conquista validado explicitamente contra
+  o bug de despublicacao silenciosa corrigido nesta etapa, ver
+  community-current-state.md#administracao-da-community-etapa-13). Combinado:
+  `npm run api:test:e2e` 89/89 PASS. QA visual autenticado em navegador
+  (clicar criar/editar/excluir, incluindo o painel admin) continua pendente --
   bloqueado por captcha no cadastro, ver
   community-current-state.md#feed-e-posts-etapa-9.)
 - [x] Remover o fallback silencioso de perfil mockado no caminho de usuario real. (Etapa 7: `stage-two.mock.ts` deletado; `pages/comunidade/[username].vue` usa somente dado real, com estados loading/error/not-found explicitos.)
@@ -62,8 +71,12 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
 - [ ] Testar matriz PLAYER/ADMIN/SUPER_ADMIN e overrides de permissao no backend. (Etapa 12,
   escopo Community apenas: confirmado que PLAYER recebe 401/403 real em endpoint administrativo
   (E2E); confirmado que `role: 'ADMIN'` sozinho NAO concede `admin.community.*` automaticamente
-  -- so `SUPER_ADMIN` (wildcard) ou overrides explicitos em `AccountPermission`. Matriz completa
-  para os demais modulos (loja, marketplace, suporte, etc.) continua sem E2E dedicado.)
+  -- so `SUPER_ADMIN` (wildcard) ou overrides explicitos em `AccountPermission`. Etapa 13: matriz
+  estendida por E2E a todo o painel administrativo da Community (posts, comentarios, denuncias,
+  usuarios/moderacao, catalogos, policy, tarefas, analytics) -- confirmado que um moderador com
+  overrides granulares reais age exatamente no que foi concedido e recebe 403 em qualquer acao
+  fora do escopo, nao um binario `role === 'ADMIN'`. Matriz completa para os demais modulos (loja,
+  marketplace, suporte, etc.) continua sem E2E dedicado.)
 - [ ] Confirmar segredo/`.env` apenas no ambiente e executar secret scan antes do beta.
 
 ### Loja e marketplace
@@ -118,6 +131,14 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
   revisao administrativa (`CommunityPostRevision` criada em edicao admin), soft delete
   (HIDE/REMOVE nunca apagam a linha), trilha de auditoria real (`AuditEvent`) com verificacao
   explicita de ausencia de secrets. Nao inventado -- sistema ja existia, so nao tinha E2E.)
+- [x] Homologar o painel administrativo da Community ponta a ponta (posts, comentarios, reacoes,
+  perfis/moderacao, denuncias, catalogos de conquista/quest/badge, policy, tarefas, analytics) com
+  filtros, busca, paginacao e nenhuma acao dependendo so de protecao frontend. (Etapa 13: zero
+  mocks confirmados -- todo tab chama a API real. Dois bugs reais corrigidos: (1) salvar edicao de
+  conquista/quest/badge ja publicada sobrescrevia `isActive`/`status` com o default de "novo
+  registro", desativando/despublicando silenciosamente; (2) leitura de dados no painel nao tinha
+  estado de loading/erro, entao falha de rede deixava a tela em branco sem aviso. Ver
+  community-current-state.md#administracao-da-community-etapa-13.)
 
 ### Paginas publicas e dados mock
 

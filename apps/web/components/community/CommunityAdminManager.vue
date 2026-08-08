@@ -18,6 +18,8 @@
     <p v-if="message" class="rounded-md border px-4 py-3 text-xs font-bold" :class="failed ? 'border-red-400/30 bg-red-500/10 text-red-100' : 'border-emerald-400/25 bg-emerald-500/10 text-emerald-100'">{{ message }}</p>
 
     <section v-if="activeTab === 'dashboard'" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-6">
+      <p v-if="loading" class="bm-panel col-span-full rounded-md p-6 text-center text-xs text-white/45">Carregando...</p>
+      <p v-else-if="loadError" class="bm-panel col-span-full rounded-md p-6 text-center text-xs text-red-200">Não foi possível carregar o dashboard. Tente novamente.</p>
       <article v-for="metric in dashboardMetrics" :key="metric.label" class="bm-panel min-h-24 rounded-md p-4">
         <p class="text-[9px] font-black uppercase tracking-[0.18em] text-white/40">{{ metric.label }}</p>
         <strong class="mt-3 block font-display text-3xl">{{ metric.value }}</strong>
@@ -30,7 +32,10 @@
         <select v-model="postVisibility" class="bm-admin-input" @change="page = 1; reload()"><option value="">Todas as visibilidades</option><option v-for="item in ['PUBLIC','FOLLOWERS','PRIVATE']" :key="item">{{ item }}</option></select>
       </div>
       <CommunityToolbar v-model="search" v-model:status="status" :statuses="statusOptions" @reload="reload" />
-      <div class="grid gap-3 xl:grid-cols-2">
+      <p v-if="loading" class="bm-panel rounded-md p-6 text-center text-xs text-white/45">Carregando...</p>
+      <p v-else-if="loadError" class="bm-panel rounded-md p-6 text-center text-xs text-red-200">Não foi possível carregar os dados. Tente novamente.</p>
+      <p v-else-if="!currentPage.data.length" class="bm-panel rounded-md p-6 text-center text-xs text-white/45">Nenhum resultado encontrado.</p>
+      <div v-else class="grid gap-3 xl:grid-cols-2">
         <article v-for="row in currentPage.data" :key="row.id" class="bm-panel rounded-md p-4">
           <template v-if="activeTab === 'posts'">
             <div class="flex flex-wrap justify-between gap-2"><div class="flex gap-2"><span class="bm-status">{{ row.status }}</span><span class="bm-status">{{ row.type }}</span><span class="bm-status">{{ row.visibility }}</span></div><small class="text-white/35">@{{ row.author.username }}</small></div>
@@ -110,6 +115,9 @@
       </form>
       <div class="grid content-start gap-3">
         <CommunityToolbar v-model="search" @reload="reload" />
+        <p v-if="loading" class="bm-panel rounded-md p-6 text-center text-xs text-white/45">Carregando...</p>
+        <p v-else-if="loadError" class="bm-panel rounded-md p-6 text-center text-xs text-red-200">Não foi possível carregar os dados. Tente novamente.</p>
+        <p v-else-if="!currentPage.data.length" class="bm-panel rounded-md p-6 text-center text-xs text-white/45">Nenhum resultado encontrado.</p>
         <article v-for="row in currentPage.data" :key="row.id" class="bm-panel rounded-md p-4">
           <div class="flex items-start justify-between gap-3"><div><h2 class="font-display text-xl">{{ row.name }}</h2><p class="mt-1 text-xs text-white/48">{{ row.description }}</p></div><span class="bm-status">{{ row.status || row.rarity || (row.isActive ? 'ATIVO' : 'INATIVO') }}</span></div>
           <p class="mt-3 text-[10px] text-white/35">{{ row._count?.grants ?? row._count?.participants ?? 0 }} vínculos</p>
@@ -144,6 +152,9 @@
 
     <section v-else-if="activeTab === 'tasks'" class="grid gap-4">
       <div class="flex justify-end"><UButton color="error" @click="createTask">Nova tarefa</UButton></div>
+      <p v-if="loading" class="bm-panel rounded-md p-6 text-center text-xs text-white/45">Carregando...</p>
+      <p v-else-if="loadError" class="bm-panel rounded-md p-6 text-center text-xs text-red-200">Não foi possível carregar os dados. Tente novamente.</p>
+      <p v-else-if="!currentPage.data.length" class="bm-panel rounded-md p-6 text-center text-xs text-white/45">Nenhuma tarefa encontrada.</p>
       <article v-for="row in currentPage.data" :key="row.id" class="bm-panel grid gap-3 rounded-md p-4 xl:grid-cols-[1fr_auto]">
         <div><span class="bm-status">{{ row.status }}</span><h2 class="mt-2 font-display text-xl">{{ row.title }}</h2><p class="mt-1 text-xs text-white/45">{{ row.description }}</p></div>
         <CommunityAction label="Atualizar" @click="editTask(row)" />
@@ -152,6 +163,9 @@
     </section>
 
     <section v-else class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <p v-if="loading" class="bm-panel col-span-full rounded-md p-6 text-center text-xs text-white/45">Carregando...</p>
+      <p v-else-if="loadError" class="bm-panel col-span-full rounded-md p-6 text-center text-xs text-red-200">Não foi possível carregar os relatórios. Tente novamente.</p>
+      <p v-else-if="!analyticsMetrics.length" class="bm-panel col-span-full rounded-md p-6 text-center text-xs text-white/45">Nenhum dado disponível.</p>
       <article v-for="metric in analyticsMetrics" :key="metric.label" class="bm-panel rounded-md p-4"><p class="text-[9px] uppercase tracking-widest text-white/40">{{ metric.label }}</p><strong class="mt-2 block font-display text-3xl">{{ metric.value }}</strong></article>
     </section>
   </div>
@@ -173,6 +187,8 @@ const postVisibility = ref('')
 const page = ref(1)
 const message = ref('')
 const failed = ref(false)
+const loading = ref(false)
+const loadError = ref(false)
 const dashboard = ref<Record<string, number>>({})
 const analyticsData = ref<Record<string, any>>({})
 const currentPage = ref<any>({ data: [], total: 0, page: 1, pageSize: 25, totalPages: 1 })
@@ -207,21 +223,37 @@ const participants = ref<any[]>([])
 const askReason = () => window.prompt('Justificativa obrigatória:')
 const run = async (operation: () => Promise<any>, success = 'Operação concluída.') => { try { failed.value=false; await operation(); message.value=success; await reload() } catch (error:any) { failed.value=true; message.value=error?.data?.message || 'Não foi possível concluir.' } }
 const loadCurrent = async () => {
-  const query = { page: page.value, search: search.value, status: status.value, type: postType.value, visibility: postVisibility.value }
-  if (activeTab.value === 'dashboard') dashboard.value = await api.adminDashboard()
-  else if (activeTab.value === 'posts') currentPage.value = await api.adminPosts(query)
-  else if (activeTab.value === 'comments') currentPage.value = await api.adminComments(query)
-  else if (activeTab.value === 'reactions') currentPage.value = await api.adminReactions(query)
-  else if (activeTab.value === 'profiles' || activeTab.value === 'moderation') currentPage.value = await api.adminUsers(query)
-  else if (activeTab.value === 'reports') currentPage.value = await api.adminReports(query)
-  else if (activeTab.value === 'achievements') currentPage.value = await api.adminAchievements(query)
-  else if (activeTab.value === 'quests') currentPage.value = await api.adminQuests(query)
-  else if (activeTab.value === 'badges') currentPage.value = await api.adminBadges(query)
-  else if (activeTab.value === 'tasks') currentPage.value = await api.adminTasks(query)
-  else if (activeTab.value === 'analytics') analyticsData.value = await api.analytics()
-  else if (activeTab.value === 'policy') {
-    const data:any = await api.policy()
-    Object.assign(policyForm, data, { blockedWords:(data.blockedWords||[]).join('\n'),allowedDomains:(data.allowedDomains||[]).join('\n'),blockedDomains:(data.blockedDomains||[]).join('\n') })
+  loading.value = true
+  loadError.value = false
+  try {
+    const query = { page: page.value, search: search.value, status: status.value, type: postType.value, visibility: postVisibility.value }
+    if (activeTab.value === 'dashboard') dashboard.value = await api.adminDashboard()
+    else if (activeTab.value === 'posts') currentPage.value = await api.adminPosts(query)
+    else if (activeTab.value === 'comments') currentPage.value = await api.adminComments(query)
+    else if (activeTab.value === 'reactions') currentPage.value = await api.adminReactions(query)
+    else if (activeTab.value === 'profiles' || activeTab.value === 'moderation') currentPage.value = await api.adminUsers(query)
+    else if (activeTab.value === 'reports') currentPage.value = await api.adminReports(query)
+    else if (activeTab.value === 'achievements') currentPage.value = await api.adminAchievements(query)
+    else if (activeTab.value === 'quests') currentPage.value = await api.adminQuests(query)
+    else if (activeTab.value === 'badges') currentPage.value = await api.adminBadges(query)
+    else if (activeTab.value === 'tasks') currentPage.value = await api.adminTasks(query)
+    else if (activeTab.value === 'analytics') analyticsData.value = await api.analytics()
+    else if (activeTab.value === 'policy') {
+      const data:any = await api.policy()
+      Object.assign(policyForm, data, { blockedWords:(data.blockedWords||[]).join('\n'),allowedDomains:(data.allowedDomains||[]).join('\n'),blockedDomains:(data.blockedDomains||[]).join('\n') })
+    }
+  } catch (error: any) {
+    // A failed load must never silently leave the last tab's stale rows on
+    // screen looking current, nor fail invisibly (no try/catch here before
+    // meant a rejected fetch just left the page blank with zero feedback).
+    loadError.value = true
+    failed.value = true
+    message.value = error?.data?.message || 'Não foi possível carregar os dados desta área.'
+    if (['posts','comments','reactions','profiles','moderation','reports','achievements','quests','badges','tasks'].includes(activeTab.value)) {
+      currentPage.value = { data: [], total: 0, page: 1, pageSize: 25, totalPages: 1 }
+    }
+  } finally {
+    loading.value = false
   }
 }
 const reload = async () => { await loadCurrent() }
@@ -255,10 +287,20 @@ const restoreUser = (id:string) => { const reason=askReason(); if(reason) run(()
 const reportAction = (id:string,nextStatus:string) => { const reason=askReason(); if(reason) run(() => api.adminReportAction(id,{status:nextStatus,reason})) }
 const resetCatalog = () => { catalogEditingId.value=null; Object.assign(catalogForm,{name:'',description:'',category:'',rarity:'COMMON',points:0,objectiveText:'',rewardText:'',startsAt:'',endsAt:'',imageUrl:'',maxGrants:null,validDays:null}) }
 const beginCatalogEdit = (row:any) => { catalogEditingId.value=row.id; Object.assign(catalogForm,row,{objectiveText:row.objective?.description||'',rewardText:row.reward?.description||'',startsAt:row.startsAt?.slice(0,16)||'',endsAt:row.endsAt?.slice(0,16)||''}) }
+// isActive/status only get the "new record" default when actually creating.
+// beginCatalogEdit() already merges the row's real isActive/status into
+// catalogForm -- hardcoding a fresh value here on every save (the previous
+// behavior) meant editing so much as a typo in an already-published
+// achievement/quest/badge silently unpublished it, with no warning.
 const saveCatalog = async () => {
-  if(activeTab.value==='achievements') await run(() => api.saveAchievement(catalogEditingId.value,{...catalogForm,isActive:false}), 'Conquista salva.')
-  else if(activeTab.value==='quests') await run(() => api.saveQuest(catalogEditingId.value,{...catalogForm,objective:{description:catalogForm.objectiveText},reward:{description:catalogForm.rewardText},status:'DRAFT'}), 'Quest salva.')
-  else await run(() => api.saveBadge(catalogEditingId.value,{...catalogForm,isActive:true}), 'Badge salvo.')
+  const isNew = !catalogEditingId.value
+  if (activeTab.value === 'achievements') {
+    await run(() => api.saveAchievement(catalogEditingId.value, { ...catalogForm, isActive: isNew ? false : Boolean(catalogForm.isActive) }), 'Conquista salva.')
+  } else if (activeTab.value === 'quests') {
+    await run(() => api.saveQuest(catalogEditingId.value, { ...catalogForm, objective: { description: catalogForm.objectiveText }, reward: { description: catalogForm.rewardText }, status: isNew ? 'DRAFT' : catalogForm.status }), 'Quest salva.')
+  } else {
+    await run(() => api.saveBadge(catalogEditingId.value, { ...catalogForm, isActive: isNew ? true : Boolean(catalogForm.isActive) }), 'Badge salvo.')
+  }
   resetCatalog()
 }
 const catalogAction = (id:string,action:string) => { const reason=askReason(); if(!reason)return; const call=activeTab.value==='achievements' ? api.achievementAction(id,action,reason) : api.questAction(id,action,reason); run(() => call) }
