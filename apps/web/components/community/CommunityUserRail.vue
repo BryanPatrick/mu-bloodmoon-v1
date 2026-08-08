@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Bookmark, Flag, ScrollText, Shield, UserRound, UsersRound } from 'lucide-vue-next'
-import type { CommunityProfileMock } from '~/features/community/data/stage-one.mock'
+import type { CommunitySocialProfile } from '~/features/community/types/profile'
 
-defineProps<{ profile: CommunityProfileMock; compact?: boolean }>()
+defineProps<{ profile: Pick<CommunitySocialProfile, 'displayName' | 'username' | 'avatarUrl' | 'mainCharacter' | 'guild' | 'achievements'>; compact?: boolean }>()
 defineEmits<{ close: [] }>()
 
 const shortcuts = [

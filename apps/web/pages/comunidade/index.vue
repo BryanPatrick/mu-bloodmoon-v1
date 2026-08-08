@@ -1,6 +1,6 @@
 <template>
   <div class="community-page">
-    <CommunitySubheader :active-section="activeSection" :profile-username="profile.username" @open-profile="profileDrawerOpen = true" />
+    <CommunitySubheader :active-section="activeSection" :profile-username="profile?.username || user?.username" @open-profile="profileDrawerOpen = true" />
 
     <header class="community-intro">
       <div>
@@ -11,11 +11,17 @@
     </header>
 
     <main class="community-layout">
-      <CommunityUserRail v-if="activeSection === 'home'" :profile="profile" class="community-layout__left" />
+      <div v-if="activeSection === 'home'" class="community-layout__left">
+        <CommunityUserRail v-if="profile" :profile="profile" />
+        <div v-else class="community-signin-prompt">
+          <p>Entre na sua conta para ver seu perfil, personagem principal e conquistas.</p>
+          <NuxtLink to="/login">Entrar</NuxtLink>
+        </div>
+      </div>
 
       <section class="community-layout__center" :class="{ 'is-wide': activeSection !== 'home' }">
         <template v-if="activeSection === 'home' || activeSection === 'salvos'">
-          <button class="community-mobile-profile" type="button" @click="profileDrawerOpen = true">
+          <button v-if="profile" class="community-mobile-profile" type="button" @click="profileDrawerOpen = true">
             <img :src="profile.avatarUrl" :alt="profile.displayName">
             <span><strong>{{ profile.displayName }}</strong><small>{{ profile.mainCharacter.name }} · {{ profile.guild }}</small></span>
             <ChevronRight class="size-4" />
@@ -56,7 +62,7 @@
             <strong>Meu espaço</strong>
             <UButton color="neutral" variant="ghost" square aria-label="Fechar" @click="profileDrawerOpen = false"><X class="size-4" /></UButton>
           </div>
-          <CommunityUserRail :profile="profile" compact @close="profileDrawerOpen = false" />
+          <CommunityUserRail v-if="profile" :profile="profile" compact @close="profileDrawerOpen = false" />
         </div>
       </Transition>
     </Teleport>
@@ -65,8 +71,9 @@
 
 <script setup lang="ts">
 import { ChevronRight, X } from 'lucide-vue-next'
-import { communityAdsMock, communityProfileMock } from '~/features/community/data/stage-one.mock'
+import { communityAdsMock } from '~/features/community/data/stage-one.mock'
 import type { CommunityPostView } from '~/features/community/types/post'
+import { mapProfileResponse } from '~/features/community/map-profile-response'
 
 useHead({ title: 'Community' })
 
@@ -147,11 +154,16 @@ const sectionLabels: Record<string, string> = {
   explorar: 'Explorar', perfil: 'Perfil', guilds: 'Guilds', eventos: 'Eventos', quests: 'Quests', conquistas: 'Conquistas', salvos: 'Salvos'
 }
 const sectionTitle = computed(() => sectionLabels[activeSection.value] || 'Community')
-const profile = computed(() => ({
-  ...communityProfileMock,
-  displayName: user.value?.name || communityProfileMock.displayName,
-  username: user.value?.username || communityProfileMock.username
-}))
+
+// Own-profile summary card (left rail + mobile drawer). Real data only -- no
+// mock fallback. Guests (no session) simply don't get a card; see the
+// sign-in prompt rendered in their place in the template.
+const { data: ownProfileData } = await useAsyncData(
+  'community-own-profile-summary',
+  () => (user.value?.username ? api.publicProfile(user.value.username) : Promise.resolve(null)),
+  { watch: [() => user.value?.username] }
+)
+const profile = computed(() => (ownProfileData.value ? mapProfileResponse(ownProfileData.value) : null))
 
 watch(profileDrawerOpen, (open) => {
   if (import.meta.client) document.body.style.overflow = open ? 'hidden' : ''
@@ -178,6 +190,8 @@ onBeforeUnmount(() => { if (import.meta.client) document.body.style.overflow = '
 .community-feed-state { display: grid; min-height: 170px; place-items: center; border: 1px dashed var(--bm-border); border-radius: 10px; background: var(--bm-surface-strong); padding: 24px; color: var(--bm-muted); font-size: 0.72rem; text-align: center; }
 .community-feed-state.is-error { color: var(--bm-red); }
 .community-mobile-profile, .community-mobile-ad { display: none; }
+.community-signin-prompt { display: grid; gap: 10px; border: 1px dashed var(--bm-border); border-radius: 10px; background: var(--bm-surface-strong); padding: 20px 16px; text-align: center; color: var(--bm-muted); font-size: 0.72rem; }
+.community-signin-prompt a { color: var(--bm-wine); font-weight: 800; }
 .community-drawer-backdrop { position: fixed; z-index: 80; inset: 0; background: rgb(16 16 16 / 0.48); backdrop-filter: blur(2px); }
 .community-drawer { position: fixed; z-index: 90; top: 0; bottom: 0; left: 0; width: min(330px, 90vw); overflow-y: auto; background: var(--bm-surface-soft); box-shadow: 22px 0 55px rgb(16 16 16 / 0.2); }
 .community-drawer__head { position: sticky; z-index: 2; top: 0; display: flex; min-height: 54px; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--bm-border); background: var(--bm-surface-soft); padding: 8px 14px; color: var(--bm-heading); font-family: Cinzel, serif; }

@@ -21,6 +21,7 @@
     "api:check": "npm --workspace @blood-moon/api run check",
     "api:build": "npm --workspace @blood-moon/api run build",
     "api:dev": "npm --workspace @blood-moon/api run dev",
+    "api:test:e2e": "npm --workspace @blood-moon/api run test:e2e",
     "launcher:build": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-launcher.ps1",
     "launcher:publish": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-launcher.ps1 -Publish",
     "launcher:preview": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-launcher.ps1 -Preview",

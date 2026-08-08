@@ -11,9 +11,12 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
 - [x] Preservar/revisar o diff local Community antes de qualquer merge. (Etapa 5: auditado via `git status`/`git diff --stat`, catalogado no Hub, nada descartado -- ver docs/handoff/community-current-state.md.)
 - [x] Homologar as tres migrations Community em clone descartavel do MySQL. (Etapa 6: aplicadas em sequencia real em container MariaDB descartavel e isolado, todas classificadas ADDITIVE, todas `APPROVED_FOR_PRODUCTION` -- ver docs/handoff/community-current-state.md#homologacao-das-migrations-etapa-6. Ainda nao aplicadas em nenhum ambiente real; E2E autenticado completo continua pendente, ver item abaixo.)
 - [ ] Executar E2E autenticado de perfil, upload, post, edicao, exclusao, comentario,
-  resposta, reacao, save, repost, follow, block e denuncia.
-- [ ] Remover o fallback silencioso de perfil mockado no caminho de usuario real.
-- [ ] Garantir que falha de API nao seja exibida como conteudo inventado.
+  resposta, reacao, save, repost, follow, block e denuncia. (Etapa 7: escopo de
+  **perfil** coberto -- `apps/api/test/community-profile.e2e-spec.ts`, 6/6 PASS.
+  upload/post/comentario/reacao/save/repost/follow/block/denuncia continuam sem
+  E2E -- ver Etapa 8+.)
+- [x] Remover o fallback silencioso de perfil mockado no caminho de usuario real. (Etapa 7: `stage-two.mock.ts` deletado; `pages/comunidade/[username].vue` usa somente dado real, com estados loading/error/not-found explicitos.)
+- [x] Garantir que falha de API nao seja exibida como conteudo inventado. (Etapa 7, escopo perfil: erro real -> estado de erro real, nunca dado inventado. Demais telas Community fora do escopo desta etapa.)
 
 ### Autenticacao e seguranca
 
@@ -43,7 +46,7 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
 
 ### Comunidade
 
-- [ ] Substituir profile/user rail mock por dados reais ou estado vazio honesto.
+- [x] Substituir profile/user rail mock por dados reais ou estado vazio honesto. (Etapa 7: `pages/comunidade/index.vue` busca o proprio perfil real quando ha sessao; mostra convite de login honesto quando nao ha. `communityAdsMock`/eventos/trending/sugestoes do rail direito continuam mock -- fora do escopo, ver item HIGH "Substituir anuncios/right rail mock".)
 - [ ] Substituir anuncios/right rail mock por conteudo administrativo ou ocultar blocos.
 - [ ] Adicionar paginacao/infinite loading visivel ao feed.
 - [ ] Ligar hover card e follow/unfollow em todos os locais de username.

@@ -11,7 +11,8 @@
     "worker:marketplace-expirations": "node scripts/process-marketplace-expirations.mjs",
     "db:seed:test": "node --env-file-if-exists=.env scripts/seed-test-accounts.mjs",
     "check:security:integration": "node scripts/check-auth-integration.mjs",
-    "start": "node dist/apps/api/src/main.js"
+    "start": "node dist/apps/api/src/main.js",
+    "test:e2e": "jest --config ./test/jest-e2e.json --runInBand"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -37,9 +38,15 @@
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
+    "@nestjs/testing": "^10.4.22",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.0.0",
     "@types/qrcode": "^1.5.6",
+    "@types/supertest": "^7.2.1",
+    "jest": "^30.4.2",
     "prisma": "^5.0.0",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.12",
     "typescript": "^5.0.0"
   }
 }

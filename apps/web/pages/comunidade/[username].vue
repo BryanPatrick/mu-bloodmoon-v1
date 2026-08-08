@@ -1,16 +1,118 @@
-<template><div class="community-profile-page"><CommunitySubheader active-section="perfil" :profile-username="profile.username" /><main><CommunityProfileHeader :profile="profile" :own-profile="ownProfile" @edit="editorOpen=true" /><CommunityProfileTabs :profile="profile" /></main><CommunityProfileEditor v-if="editorOpen" :profile="profile" @close="editorOpen=false" @save="saveProfile" /></div></template>
+<template>
+  <div class="community-profile-page">
+    <CommunitySubheader active-section="perfil" :profile-username="username" />
+
+    <main>
+      <div v-if="pending" class="community-profile-state">Carregando perfil...</div>
+
+      <div v-else-if="notFound" class="community-profile-state">
+        <p>Este perfil não existe ou não está disponível publicamente.</p>
+        <NuxtLink to="/comunidade" class="community-profile-state__link">Voltar para a Community</NuxtLink>
+      </div>
+
+      <div v-else-if="loadError" class="community-profile-state is-error">
+        <p>Não foi possível carregar este perfil agora.</p>
+        <UButton color="error" variant="soft" size="sm" @click="refresh()">Tentar novamente</UButton>
+      </div>
+
+      <template v-else-if="profile">
+        <CommunityProfileHeader :profile="profile" :own-profile="ownProfile" @edit="editorOpen = true" />
+        <CommunityProfileTabs :profile="profile" />
+      </template>
+    </main>
+
+    <CommunityProfileEditor
+      v-if="editorOpen && profile"
+      :profile="profile"
+      :saving="saving"
+      :error="saveError"
+      @close="closeEditor"
+      @save="saveProfile"
+    />
+  </div>
+</template>
+
 <script setup lang="ts">
-import {profileForUsername,type CommunitySocialProfile} from '~/features/community/data/stage-two.mock'
-const route=useRoute(),api=useCommunityApi(),{user,loadSession}=useAuth();const editorOpen=ref(false);const username=computed(()=>String(route.params.username||'').toLowerCase());const profile=ref<CommunitySocialProfile>(profileForUsername(username.value));const ownProfile=computed(()=>Boolean(user.value?.username&&user.value.username.toLowerCase()===username.value));useHead(()=>({title:`${profile.value.displayName} | Community`}));
-const achievementRarity=(rarity:string)=>({COMMON:'Comum',RARE:'Raro',EPIC:'Épico',LEGENDARY:'Lendário'}[rarity]||'Comum') as CommunitySocialProfile['achievements'][number]['rarity']
-const mediaUrl=(media:unknown)=>{if(typeof media==='string')return media;if(media&&typeof media==='object'){const item=media as Record<string,unknown>;return String(item.url||item.src||item.imageUrl||'')}return ''}
-const mergeApiProfile=(value:any)=>{if(!value)return
-  const achievements=value.achievementGrants?.map((grant:any)=>({id:grant.achievement.id,name:grant.achievement.name,description:grant.achievement.description,rarity:achievementRarity(grant.achievement.rarity),earnedAt:new Date(grant.grantedAt).toLocaleDateString('pt-BR'),playerPercentage:'—',icon:'trophy' as const}))||[]
-  const entries=value.communityPosts?.map((post:any)=>({id:post.id,kind:'publication' as const,title:post.title||'Publicação',content:post.content,createdAt:new Date(post.createdAt).toLocaleDateString('pt-BR')}))||[]
-  const media=value.communityPosts?.flatMap((post:any)=>(Array.isArray(post.media)?post.media:[]).map((item:any,index:number)=>({id:`${post.id}-${index}`,imageUrl:mediaUrl(item),alt:post.title||'Mídia da publicação'})).filter((item:any)=>item.imageUrl))||[]
-  profile.value={...profile.value,displayName:value.communityProfile?.displayName||value.name||profile.value.displayName,username:value.username||profile.value.username,avatarUrl:value.communityProfile?.avatarUrl||profile.value.avatarUrl,coverUrl:value.communityProfile?.coverUrl||profile.value.coverUrl,bio:value.communityProfile?.bio||profile.value.bio,mainCharacter:{name:value.communityProfile?.mainCharacterName||profile.value.mainCharacter.name,className:value.communityProfile?.mainCharacterClass||profile.value.mainCharacter.className},guild:value.communityProfile?.guildName||profile.value.guild,stats:value.stats||profile.value.stats,achievements:achievements.length?achievements:profile.value.achievements,entries:entries.length?entries:profile.value.entries,media:media.length?media:profile.value.media,privacy:{profile:value.communityProfile?.profileVisibility||profile.value.privacy.profile,characters:value.communityProfile?.charactersVisibility||profile.value.privacy.characters,equipment:value.communityProfile?.equipmentVisibility||profile.value.privacy.equipment,statistics:value.communityProfile?.statisticsVisibility||profile.value.privacy.statistics,guild:value.communityProfile?.guildVisibility||profile.value.privacy.guild,activity:value.communityProfile?.activityVisibility||profile.value.privacy.activity}}
+import type { CommunitySocialProfile } from '~/features/community/types/profile'
+import { mapProfileResponse } from '~/features/community/map-profile-response'
+
+const route = useRoute()
+const api = useCommunityApi()
+const { user, loadSession } = useAuth()
+const toast = useToast()
+
+const editorOpen = ref(false)
+const saving = ref(false)
+const saveError = ref<string | null>(null)
+
+const username = computed(() => String(route.params.username || '').toLowerCase())
+const ownProfile = computed(() => Boolean(user.value?.username && user.value.username.toLowerCase() === username.value))
+
+const { data: profileData, pending, error, refresh } = await useAsyncData(
+  () => `community-profile-${username.value}`,
+  () => api.publicProfile(username.value),
+  { watch: [username] }
+)
+
+const profile = computed(() => (profileData.value ? mapProfileResponse(profileData.value) : null))
+const errorStatus = computed(() => {
+  const err = error.value as any
+  return err?.response?.status || err?.statusCode || err?.status
+})
+const notFound = computed(() => errorStatus.value === 404)
+const loadError = computed(() => Boolean(error.value) && !notFound.value)
+
+useHead(() => ({ title: profile.value ? `${profile.value.displayName} | Community` : 'Perfil | Community' }))
+
+const closeEditor = () => {
+  if (saving.value) return
+  editorOpen.value = false
+  saveError.value = null
 }
-const saveProfile=async(value:CommunitySocialProfile)=>{profile.value=value;editorOpen.value=false;if(!ownProfile.value)return;await api.updateProfile({displayName:value.displayName,bio:value.bio,avatarUrl:value.avatarUrl,coverUrl:value.coverUrl,mainCharacterName:value.mainCharacter.name,mainCharacterClass:value.mainCharacter.className,guildName:value.guild,profileVisibility:value.privacy.profile,charactersVisibility:value.privacy.characters,equipmentVisibility:value.privacy.equipment,statisticsVisibility:value.privacy.statistics,guildVisibility:value.privacy.guild,activityVisibility:value.privacy.activity})}
-onMounted(async()=>{await loadSession();try{mergeApiProfile(await api.publicProfile(username.value))}catch{/* API offline: mantém a composição visual da primeira versão. */}})
+
+const saveProfile = async (value: CommunitySocialProfile) => {
+  if (!ownProfile.value || saving.value) return
+  saving.value = true
+  saveError.value = null
+  try {
+    await api.updateProfile({
+      displayName: value.displayName,
+      bio: value.bio,
+      avatarUrl: value.avatarUrl,
+      coverUrl: value.coverUrl,
+      mainCharacterName: value.mainCharacter.name,
+      mainCharacterClass: value.mainCharacter.className,
+      guildName: value.guild,
+      profileVisibility: value.privacy.profile,
+      charactersVisibility: value.privacy.characters,
+      equipmentVisibility: value.privacy.equipment,
+      statisticsVisibility: value.privacy.statistics,
+      guildVisibility: value.privacy.guild,
+      activityVisibility: value.privacy.activity
+    })
+    // Re-fetch from the server rather than trusting the submitted form as the
+    // new truth -- confirms what was actually persisted, catches any
+    // server-side normalization (trim/slice/defaults) the form doesn't know about.
+    await refresh()
+    editorOpen.value = false
+    toast.add({ title: 'Perfil atualizado', color: 'success' })
+  } catch (err: any) {
+    saveError.value = err?.data?.message || err?.message || 'Não foi possível salvar o perfil. Tente novamente.'
+  } finally {
+    saving.value = false
+  }
+}
+
+onMounted(() => { loadSession() })
 </script>
-<style scoped>.community-profile-page{min-height:100vh;background:var(--bm-page-bg);color:var(--bm-text)}.community-profile-page main{display:grid;width:min(100% - 32px,1180px);margin-inline:auto;gap:16px;padding-block:20px 58px}@media(max-width:767px){.community-profile-page main{width:100%;padding:56px 10px 38px}}</style>
+
+<style scoped>
+.community-profile-page { min-height: 100vh; background: var(--bm-page-bg); color: var(--bm-text); }
+.community-profile-page main { display: grid; width: min(100% - 32px, 1180px); margin-inline: auto; gap: 16px; padding-block: 20px 58px; }
+.community-profile-state { display: grid; min-height: 220px; place-items: center; gap: 12px; border: 1px dashed var(--bm-border); border-radius: 10px; background: var(--bm-surface-strong); padding: 32px; text-align: center; color: var(--bm-muted); font-size: 0.78rem; }
+.community-profile-state.is-error { color: var(--bm-red); }
+.community-profile-state__link { color: var(--bm-wine); font-weight: 800; }
+@media (max-width: 767px) {
+  .community-profile-page main { width: 100%; padding: 56px 10px 38px; }
+}
+</style>

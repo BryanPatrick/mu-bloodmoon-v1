@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Crown, Shield, Star, Swords, Trophy } from 'lucide-vue-next'
-import type { CommunityAchievementMock } from '~/features/community/data/stage-one.mock'
+import type { CommunityAchievement } from '~/features/community/types/profile'
 
-const props = defineProps<{ achievement: CommunityAchievementMock }>()
+const props = defineProps<{ achievement: CommunityAchievement }>()
 
 const achievementIcons = { crown: Crown, shield: Shield, star: Star, swords: Swords, trophy: Trophy }
 const icon = computed(() => achievementIcons[props.achievement.icon])

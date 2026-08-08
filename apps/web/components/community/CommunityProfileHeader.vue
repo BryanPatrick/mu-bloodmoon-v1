@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Ban, Camera, Check, MoreHorizontal, Pencil, Share2, UserMinus, UserPlus } from 'lucide-vue-next'
-import type { CommunitySocialProfile } from '~/features/community/data/stage-two.mock'
+import type { CommunitySocialProfile } from '~/features/community/types/profile'
 
 const props = defineProps<{ profile: CommunitySocialProfile; ownProfile?: boolean }>()
 const emit = defineEmits<{ edit: [] }>()

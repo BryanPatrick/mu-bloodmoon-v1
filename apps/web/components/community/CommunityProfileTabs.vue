@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { FileText, Image, Repeat2, Tags } from 'lucide-vue-next'
-import type { CommunitySocialProfile } from '~/features/community/data/stage-two.mock'
+import type { CommunitySocialProfile } from '~/features/community/types/profile'
 
 const props = defineProps<{ profile: CommunitySocialProfile }>()
 const active = ref<'media' | 'publications' | 'shared' | 'mentions'>('media')

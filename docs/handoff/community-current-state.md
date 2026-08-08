@@ -118,8 +118,8 @@ Status geral: `PARTIAL`, com base backend relevante e integracao final pendente.
 | Repost interno | DONE | Toggle persistido. |
 | Copiar link | DONE | Cliente copia URL; deep-link do post nao e destacado automaticamente. |
 | Hashtags/mencoes | PARTIAL | Campos e parsing/contratos existem; busca/notificacao nao. |
-| Perfil publico | PARTIAL | API real mesclada sobre mock. |
-| Editar perfil | PARTIAL | Endpoint/UI existem; editor visual precisa homologacao. |
+| Perfil publico | `DONE` | Etapa 7: sem mock/fallback. `GET /community/profiles/:username` real, mapeado direto para a UI; loading/erro/nao-encontrado honestos. Ver "Perfil (Etapa 7)" abaixo. |
+| Editar perfil | `DONE` | Etapa 7: `PATCH /community/me` com validacao real (tipo, enum, URL) no backend; UI sem atualizacao otimista -- so fecha e reflete apos confirmacao do servidor; erro exibido inline se a API falhar. |
 | Follow/unfollow | DONE backend | Endpoints/composable existem; UI ampla ainda incompleta. |
 | Block/unblock | DONE backend | Endpoints e relacao persistida; UX final incompleta. |
 | Mute | MISSING | Enum preparado, sem fluxo publico identificado. |
@@ -435,6 +435,108 @@ Pendencias de homologacao:
 - privacidade efetiva de cada campo do perfil;
 - moderacao de midia e remocao fisica segura.
 
+## Perfil (Etapa 7)
+
+Fluxo completo, sem mock/fallback, do perfil Community:
+
+```
+UI (pages/comunidade/[username].vue, CommunityProfileHeader/Tabs/Editor)
+  v
+composable (useCommunityApi -- publicProfile/updateProfile/followProfile/...)
+  v
+API (CommunityController: GET /community/profiles/:username, PATCH /community/me, ...)
+  v
+service (CommunityService: publicProfile/updateProfile/follow/...)
+  v
+Prisma (CommunityProfile, Account, CommunityAchievementGrant, CommunityPost)
+  v
+MySQL
+```
+
+### O que mudou
+
+- **Mocks removidos**: `pages/comunidade/[username].vue` nao inicializa mais com
+  `profileForUsername()` nem mantem a composicao mock em caso de falha da API.
+  `apps/web/features/community/data/stage-two.mock.ts` foi **deletado**
+  (ficou 100% orfao). `stage-one.mock.ts` perdeu `communityProfileMock`/
+  `CommunityProfileMock`/`communityPostsMock`/`CommunityPostMock` (idem,
+  orfaos); mantem apenas os 4 exports do rail direito, que continuam em uso
+  fora do escopo desta etapa.
+- **Tipos realocados**: `CommunitySocialProfile` e afins saíram de um arquivo
+  chamado "mock" para `apps/web/features/community/types/profile.ts` (tipos
+  reais, nao dados). `usernamePolicy` (logica real, nunca foi mock) saiu para
+  `apps/web/features/community/username-policy.ts`.
+- **Mapeamento compartilhado**: `apps/web/features/community/map-profile-response.ts`
+  centraliza a conversao da resposta real da API para a forma de exibicao --
+  usado tanto pela pagina de perfil quanto pelo card de "meu perfil" no rail
+  da home (`pages/comunidade/index.vue`), evitando duas implementacoes
+  divergentes do mesmo mapeamento.
+- **Estados reais**: a pagina de perfil agora tem `loading` (via
+  `useAsyncData`/`pending`), `error` (com botao "Tentar novamente"),
+  `not-found` (404 real da API -- perfil inexistente ou privado) e `success`.
+  Nenhum estado mostra dado inventado.
+- **Salvar sem fingir sucesso**: o editor so fecha e a UI so reflete a mudanca
+  **depois** que `PATCH /community/me` responde com sucesso, e o valor exibido
+  vem de um refetch real (`refresh()`), nao do formulario local -- captura
+  qualquer normalizacao que o servidor aplique (trim, defaults). Em erro, a
+  mensagem e exibida inline no editor (`saving`/`error` props novos em
+  `CommunityProfileEditor.vue`) e nada e alterado na tela.
+- **Proprio perfil vs. perfil de terceiro**: `ownProfile` compara
+  `user.value.username` com o username da rota (inalterado, ja existia).
+  Estrutural, nao apenas visual: **nao existe endpoint** para editar o perfil
+  de outra pessoa -- `PATCH /community/me` sempre opera sobre o id da conta
+  extraido do JWT, nunca sobre um parametro/body. Provado no E2E abaixo.
+- **Validacao de entrada real no backend** (`community.service.ts`,
+  `updateProfile`): campos de texto agora sao checados como `string` antes de
+  `.trim()` (evita erro 500 bruto com payload malformado, retorna 400 limpo);
+  os 6 campos de visibilidade (`profileVisibility`, `charactersVisibility`,
+  etc.) agora sao validados contra a lista de valores permitidos -- antes
+  aceitavam **qualquer string**, ja que as colunas sao `VARCHAR(20)` no MySQL
+  (nao um ENUM), sem checagem nenhuma. `avatarUrl`/`coverUrl` agora exigem
+  `http(s)://` valido quando informados.
+- **2 correcoes triviais e seguras**: mojibake corrigido em 3 mensagens de
+  erro de `follow`/`unfollow` (bytes UTF-8 mal interpretados, nao um problema
+  de terminal). `vue/attributes-order` (0 ocorrencias novas -- ja resolvido na
+  Etapa 5).
+
+### Achado de seguranca (nao um bug -- documentado para referencia futura)
+
+Antes desta etapa, `updateProfile` aceitava qualquer valor de string para os 6
+campos de visibilidade, porque `CommunityProfile.profileVisibility` e as
+demais colunas sao `VARCHAR(20)` sem `CHECK`/`ENUM` no banco (ver Etapa 6).
+Nenhuma exploracao real disso foi encontrada (o frontend so envia os valores
+do `<select>`), mas um cliente HTTP direto podia gravar qualquer string.
+Corrigido nesta etapa com uma allowlist explicita no service, no mesmo estilo
+ja usado por `postType()`/`visibility()` no mesmo arquivo.
+
+### E2E minimo (primeiro do repositorio)
+
+`apps/api/test/community-profile.e2e-spec.ts` -- Jest + Supertest, escolhido
+sobre Playwright/E2E de navegador por ser o padrao oficial do proprio NestJS
+(`nest new` gera exatamente esse par) e por nao exigir subir simultaneamente
+API + web + navegador + banco quando nada disso existe ainda no repositorio
+("nao criar arquitetura exagerada" -- brief desta etapa). Cobre o fluxo real
+via HTTP, contra um container MariaDB **descartavel e isolado** (mesmo padrao
+da Etapa 6 -- nunca `bloodmoon-mysql`, nunca producao), criado e destruido
+pelo proprio teste:
+
+1. Registra e loga 2 contas reais (`POST /auth/register` + `POST /auth/login`).
+2. Login -> abre o proprio perfil -> edita `displayName`/`bio` -> persiste ->
+   recarrega (`GET` independente) -> confirma que o dado real foi gravado.
+3. Abre o perfil de outra pessoa -> tenta editar -> confirma que a conta B
+   so consegue alterar o **proprio** perfil, nunca o da conta A (e confirma
+   que a propria alteracao de B funcionou, descartando "o endpoint so esta
+   quebrado" como explicacao alternativa).
+4. Rejeita `profileVisibility` invalido (400) -- valida a correcao acima.
+5. Rejeita atualizacao sem autenticacao (401).
+6. Retorna 404 para perfil inexistente.
+
+Rodar: `npm run api:test:e2e` (exige Docker). Resultado: **6/6 PASS**.
+
+Fora do escopo: QA visual manual em navegador (a validacao aqui e via HTTP
+real, nao pixel-a-pixel); testes de outros modulos Community (feed, posts,
+midia -- sem cobertura ainda).
+
 ## Catalogo de mocks/fallbacks (Etapa 5)
 
 Auditoria de 2026-08-08 (Etapa C1) ja apontava mocks em prosa (itens 3-4 de
@@ -450,26 +552,28 @@ Nenhum mock foi removido nesta etapa (fora de escopo -- ver Etapa 5, brief).
 | `communityEventsMock` | `stage-one.mock.ts` | `CommunityRightRail.vue` (bloco de eventos) | `BLOCKER_BETA` | Mesmo rail que `communityAdsMock`; eventos inventados apresentados como reais |
 | `communityTrendingMock` | `stage-one.mock.ts` | `CommunityRightRail.vue` (topicos em alta) | `BLOCKER_BETA` | Mesmo rail; hashtags fixas, nunca refletem atividade real |
 | `communitySuggestionsMock` | `stage-one.mock.ts` | `CommunityRightRail.vue` (sugestoes de seguir) | `BLOCKER_BETA` | Mesmo rail; perfis sugeridos nao existem |
-| `communityPostsMock` | `stage-one.mock.ts` | Uso interno apenas -- alimenta a atividade de `communitySocialProfileMock` em `stage-two.mock.ts` | `BLOCKER_BETA` | Nao tem tela propria, mas acaba renderizado via `profileForUsername()` quando a API falha -- mesma cadeia do item abaixo |
-| `communitySocialProfileMock` / `profileForUsername()` | `stage-two.mock.ts` | `pages/comunidade/[username].vue` (perfil publico) | `BLOCKER_BETA` | Checklist BLOCKER: "Remover o fallback silencioso de perfil mockado" + "Garantir que falha de API nao seja exibida como conteudo inventado" -- risco 3 de "Bugs/riscos conhecidos" abaixo |
-| `usernamePolicy` | `stage-two.mock.ts` | `CommunityProfileEditor.vue` (regras de validacao de username) | `DEV_ONLY` | Nao e dado fabricado -- e logica de validacao real, apenas coabitando o arquivo de mock por conveniencia. Seguro para o beta como esta; mover para um arquivo proprio e limpeza cosmetica, nao um blocker |
-| `CommunityPlaceholderView` (Explorar, Perfil por query, Guilds, Eventos, Quests, Conquistas) | `components/community/CommunityPlaceholderView.vue` | `pages/comunidade/index.vue` (roteamento por `section` query) | `TEMPORARY_SAFE` | Estado "ainda nao implementado" honesto -- nao fabrica conteudo, apenas informa ausencia. Alinhado aos itens MEDIUM do checklist (implementar essas paginas depois), nao e um blocker de integridade |
+| ~~`communityPostsMock`~~ | ~~`stage-one.mock.ts`~~ | ~~Alimentava `communitySocialProfileMock`~~ | **`RESOLVED` (Etapa 7)** | Removido -- `stage-two.mock.ts` foi deletado (ficou 100% orfao). `entries`/`media` do perfil agora vem somente de `communityPosts` reais. |
+| ~~`communitySocialProfileMock` / `profileForUsername()`~~ | ~~`stage-two.mock.ts`~~ | ~~`pages/comunidade/[username].vue`~~ | **`RESOLVED` (Etapa 7)** | O fallback silencioso foi removido. `pages/comunidade/[username].vue` agora usa `useAsyncData` + `GET /community/profiles/:username` puro, com estados `loading`/`error`/`not-found`/`success` explicitos -- ver "Perfil (Etapa 7)" abaixo. |
+| `usernamePolicy` | `~~stage-two.mock.ts~~` → `features/community/username-policy.ts` (Etapa 7) | `CommunityProfileEditor.vue` | `DEV_ONLY` → movido | Nunca foi dado fabricado. Realocado para fora do diretorio de mocks nesta etapa, encerrando a classificacao `DEV_ONLY` (o "so misclassificado de arquivo" que a motivava deixou de existir). |
+| `CommunityPlaceholderView` (Explorar, Perfil por query, Guilds, Eventos, Quests, Conquistas) | `components/community/CommunityPlaceholderView.vue` | `pages/comunidade/index.vue` (roteamento por `section` query) | `TEMPORARY_SAFE` | Sem alteracao nesta etapa -- fora de escopo (perfil, nao navegacao de secoes). Estado "ainda nao implementado" honesto, nao fabrica conteudo. |
 
-Resumo: **6 pontos `BLOCKER_BETA`** (todos alimentados por `stage-one.mock.ts`/`stage-two.mock.ts`, todos no caminho de usuario real -- rail esquerdo, rail direito, perfil publico), **1 `DEV_ONLY`** (`usernamePolicy`, seguro, so misclassificado de arquivo), **1 `TEMPORARY_SAFE`** (placeholders honestos de secoes ainda nao construidas). Nenhum item `UNKNOWN` -- todo consumidor de mock foi rastreado ate sua tela/componente exato via `grep` exaustivo no escopo Community; nenhuma leitura estatica ficou sem explicacao.
+Resumo original (Etapa 5): 6 `BLOCKER_BETA`, 1 `DEV_ONLY`, 1 `TEMPORARY_SAFE`. **Atualizacao Etapa 7**: os 2 itens `BLOCKER_BETA` da cadeia de *perfil* (`communityPostsMock` via `stage-two.mock.ts`, `communitySocialProfileMock`/`profileForUsername()`) foram **resolvidos** -- `stage-two.mock.ts` foi deletado do repositorio. Os 4 itens `BLOCKER_BETA` restantes (`communityProfileMock` do rail-esquerdo/home, `communityAdsMock`, `communityEventsMock`, `communityTrendingMock`, `communitySuggestionsMock` -- ver nota¹) permanecem **fora do escopo desta etapa** (rail direito/ads e identidade resumida da home, nao a pagina de perfil) e continuam pendentes para uma etapa futura.
+
+¹ Nota: `communityProfileMock` em si (o registro original do rail esquerdo) tambem foi removido nesta etapa -- `pages/comunidade/index.vue` agora busca o proprio perfil via `GET /community/profiles/:username` (real) quando ha sessao, e mostra um convite de login honesto quando nao ha. Isso deixa `stage-one.mock.ts` com apenas os 4 exports de rail direito (`communityAdsMock`/`communityEventsMock`/`communityTrendingMock`/`communitySuggestionsMock`), que continuam `BLOCKER_BETA` e fora do escopo desta etapa.
 
 ## Bugs/riscos conhecidos
 
-1. Worktree Community esta sujo e nao commitado; nao perder nem misturar com correcoes.
-2. Schema e services esperam tres migrations locais ainda nao homologadas.
-3. Perfil pode parecer funcional quando API falha porque cai silenciosamente no mock.
-4. Home usa `communityProfileMock` para usuario/rail e `communityAdsMock` para publicidade.
-5. Secoes secundarias ainda sao placeholders.
-6. Erros de feed sao genericos; nao ha retry explicito.
-7. Nao ha notificacao persistida para follow, mention, comment ou achievement.
-8. Sem testes unitarios/E2E; somente checks estruturais/typecheck/build.
-9. Nao houve QA visual em browser com API e banco nesta auditoria.
+1. Worktree Community esta sujo e nao commitado; nao perder nem misturar com correcoes. **(Etapa 5: commitado, preservado -- ver commit 2302263.)**
+2. Schema e services esperam tres migrations locais ainda nao homologadas. **(Etapa 6: homologadas em ambiente descartavel, APPROVED_FOR_PRODUCTION; ainda nao aplicadas em nenhum ambiente real.)**
+3. ~~Perfil pode parecer funcional quando API falha porque cai silenciosamente no mock.~~ **(RESOLVIDO na Etapa 7: fallback removido, estados loading/erro/nao-encontrado explicitos.)**
+4. ~~Home usa `communityProfileMock` para usuario/rail~~ **(RESOLVIDO na Etapa 7: rail proprio agora busca dado real; convite de login quando sem sessao.)** `communityAdsMock` continua em uso -- fora do escopo da Etapa 7 (nao e dado de perfil).
+5. Secoes secundarias ainda sao placeholders. (Inalterado -- fora do escopo da Etapa 7.)
+6. Erros de feed sao genericos; nao ha retry explicito. (Inalterado -- feed nao e perfil, fora do escopo da Etapa 7.)
+7. Nao ha notificacao persistida para follow, mention, comment ou achievement. (Inalterado.)
+8. ~~Sem testes unitarios/E2E~~ **(Etapa 7: primeiro E2E do repositorio -- `apps/api/test/community-profile.e2e-spec.ts`, Jest+Supertest, cobre o fluxo de perfil. Demais modulos ainda sem cobertura.)**
+9. Nao houve QA visual em browser com API e banco nesta auditoria. (Inalterado -- ver "Perfil (Etapa 7)" abaixo para o que foi validado via API/E2E em vez de QA visual manual.)
 10. Algumas strings apareceram com mojibake no terminal PowerShell; confirmar encoding
-    visual em browser antes de alterar arquivos.
+    visual em browser antes de alterar arquivos. **(Etapa 7: as 3 ocorrencias reais em `community.service.ts` -- `follow`/`unfollow` -- foram corrigidas. Nao foi feita uma varredura completa do repositorio; outras ocorrencias podem existir fora do escopo tocado nesta etapa.)**
 
 ## Ponto exato para continuar
 

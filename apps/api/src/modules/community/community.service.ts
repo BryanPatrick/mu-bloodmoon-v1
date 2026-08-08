@@ -305,33 +305,76 @@ export class CommunityService {
     })
   }
 
+  private optionalText(value: unknown, label: string, maxLength: number): string | undefined {
+    if (value === undefined) return undefined
+    if (typeof value !== 'string') throw new BadRequestException(`${label} deve ser um texto.`)
+    return value.trim().slice(0, maxLength)
+  }
+
+  private enumField<T extends string>(value: unknown, allowed: readonly T[], label: string): T | undefined {
+    if (value === undefined) return undefined
+    if (typeof value !== 'string' || !allowed.includes(value as T)) {
+      throw new BadRequestException(`${label} inválido.`)
+    }
+    return value as T
+  }
+
+  private optionalUrl(value: unknown, label: string, maxLength: number): string | undefined {
+    const text = this.optionalText(value, label, maxLength)
+    if (!text) return text
+    try {
+      const url = new URL(text)
+      if (url.protocol !== 'http:' && url.protocol !== 'https:') throw new Error('protocol')
+    } catch {
+      throw new BadRequestException(`${label} deve ser uma URL http(s) válida.`)
+    }
+    return text
+  }
+
   async updateProfile(payload: CommunityProfilePayload, user: AuthenticatedUser) {
     await this.profile(user.id, user.name || user.username)
+    const displayName = this.optionalText(payload.displayName, 'Nome público', 100)
+    const bio = this.optionalText(payload.bio, 'Bio', 2000)
+    const avatarUrl = this.optionalUrl(payload.avatarUrl, 'URL do avatar', 512)
+    const coverUrl = this.optionalUrl(payload.coverUrl, 'URL da capa', 512)
+    const mainCharacterName = this.optionalText(payload.mainCharacterName, 'Personagem principal', 100)
+    const mainCharacterClass = this.optionalText(payload.mainCharacterClass, 'Classe', 100)
+    const guildName = this.optionalText(payload.guildName, 'Guild', 100)
+    const profileVisibility = this.enumField(payload.profileVisibility, ['PUBLIC', 'FOLLOWERS', 'PRIVATE'] as const, 'Visibilidade do perfil')
+    const charactersVisibility = this.enumField(payload.charactersVisibility, ['ALL', 'MAIN_ONLY', 'HIDDEN'] as const, 'Visibilidade dos personagens')
+    const equipmentVisibility = this.enumField(payload.equipmentVisibility, ['VISIBLE', 'HIDDEN'] as const, 'Visibilidade dos equipamentos')
+    const statisticsVisibility = this.enumField(payload.statisticsVisibility, ['PRIVATE', 'SELECTIVE', 'PUBLIC'] as const, 'Visibilidade das estatísticas')
+    const guildVisibility = this.enumField(payload.guildVisibility, ['VISIBLE', 'HIDDEN'] as const, 'Visibilidade da guild')
+    const activityVisibility = this.enumField(payload.activityVisibility, ['VISIBLE', 'HIDDEN'] as const, 'Visibilidade da atividade')
+    if (payload.featuredAchievementIds !== undefined && !Array.isArray(payload.featuredAchievementIds)) {
+      throw new BadRequestException('Conquistas em destaque devem ser uma lista.')
+    }
+
     return this.prisma.communityProfile.update({
       where: { accountId: user.id },
       data: {
-        ...(payload.displayName ? { displayName: payload.displayName.trim().slice(0, 100) } : {}),
-        ...(payload.bio !== undefined ? { bio: payload.bio.trim().slice(0, 2000) || null } : {}),
-        ...(payload.avatarUrl !== undefined ? { avatarUrl: payload.avatarUrl.trim().slice(0, 512) || null } : {}),
-        ...(payload.coverUrl !== undefined ? { coverUrl: payload.coverUrl.trim().slice(0, 512) || null } : {}),
-        ...(payload.mainCharacterName !== undefined ? { mainCharacterName: payload.mainCharacterName.trim().slice(0, 100) || null } : {}),
-        ...(payload.mainCharacterClass !== undefined ? { mainCharacterClass: payload.mainCharacterClass.trim().slice(0, 100) || null } : {}),
-        ...(payload.guildName !== undefined ? { guildName: payload.guildName.trim().slice(0, 100) || null } : {}),
+        ...(displayName ? { displayName } : {}),
+        ...(bio !== undefined ? { bio: bio || null } : {}),
+        ...(avatarUrl !== undefined ? { avatarUrl: avatarUrl || null } : {}),
+        ...(coverUrl !== undefined ? { coverUrl: coverUrl || null } : {}),
+        ...(mainCharacterName !== undefined ? { mainCharacterName: mainCharacterName || null } : {}),
+        ...(mainCharacterClass !== undefined ? { mainCharacterClass: mainCharacterClass || null } : {}),
+        ...(guildName !== undefined ? { guildName: guildName || null } : {}),
         ...(payload.featuredAchievementIds !== undefined ? { featuredAchievementIds: json(payload.featuredAchievementIds.slice(0, 5)) } : {}),
-        ...(payload.profileVisibility ? { profileVisibility: payload.profileVisibility, isPublic: payload.profileVisibility !== 'PRIVATE' } : {}),
-        ...(payload.charactersVisibility ? { charactersVisibility: payload.charactersVisibility } : {}),
-        ...(payload.equipmentVisibility ? { equipmentVisibility: payload.equipmentVisibility } : {}),
-        ...(payload.statisticsVisibility ? { statisticsVisibility: payload.statisticsVisibility } : {}),
-        ...(payload.guildVisibility ? { guildVisibility: payload.guildVisibility } : {}),
-        ...(payload.activityVisibility ? { activityVisibility: payload.activityVisibility } : {})
+        ...(profileVisibility ? { profileVisibility, isPublic: profileVisibility !== 'PRIVATE' } : {}),
+        ...(charactersVisibility ? { charactersVisibility } : {}),
+        ...(equipmentVisibility ? { equipmentVisibility } : {}),
+        ...(statisticsVisibility ? { statisticsVisibility } : {}),
+        ...(guildVisibility ? { guildVisibility } : {}),
+        ...(activityVisibility ? { activityVisibility } : {})
       }
     })
   }
 
   async follow(username: string, user: AuthenticatedUser) {
     const target = await this.prisma.account.findUnique({ where: { username }, select: { id: true } })
-    if (!target) throw new NotFoundException('Perfil social nÃ£o encontrado.')
-    if (target.id === user.id) throw new BadRequestException('VocÃª nÃ£o pode seguir o prÃ³prio perfil.')
+    if (!target) throw new NotFoundException('Perfil social não encontrado.')
+    if (target.id === user.id) throw new BadRequestException('Você não pode seguir o próprio perfil.')
     const block = await this.prisma.communitySocialRelation.findFirst({
       where: { type: 'BLOCK', OR: [{ actorId: user.id, targetId: target.id }, { actorId: target.id, targetId: user.id }] }
     })
@@ -345,7 +388,7 @@ export class CommunityService {
 
   async unfollow(username: string, user: AuthenticatedUser) {
     const target = await this.prisma.account.findUnique({ where: { username }, select: { id: true } })
-    if (!target) throw new NotFoundException('Perfil social nÃ£o encontrado.')
+    if (!target) throw new NotFoundException('Perfil social não encontrado.')
     await this.prisma.communityFollow.deleteMany({ where: { followerId: user.id, followingId: target.id } })
     return { following: false }
   }

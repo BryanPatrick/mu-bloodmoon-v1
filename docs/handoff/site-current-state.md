@@ -99,7 +99,7 @@ sensivel com o MU passa por jobs idempotentes e auditados.
 | `/roadmap/[slug]` | PARTIAL | Detalhe via Roadmap API. |
 | `/recarga` | PARTIAL | Intencao de recarga existe; confirmacao de pagamento real nao foi validada. |
 | `/comunidade` | PARTIAL | Feed/posts/interacoes reais misturados com rails e perfil mockados. Ver documento dedicado. |
-| `/comunidade/[username]` | PARTIAL | Perfil consulta API, mas inicializa e completa lacunas com mock. |
+| `/comunidade/[username]` | READY | Etapa 7: dados 100% reais, sem mock/fallback; estados loading/erro/nao-encontrado explicitos. Coberto por E2E (`community-profile.e2e-spec.ts`). Ainda requer QA visual manual em navegador. |
 | `/comunidade/perfil/[username]` | READY | Alias que redireciona ao perfil canonico. |
 
 ### Painel do jogador
@@ -248,7 +248,7 @@ desktop/tablet/mobile com API+banco nesta etapa; portanto comportamento runtime 
 
 Alta relevancia:
 
-- `stage-one.mock.ts` e `stage-two.mock.ts` alimentam perfil, anuncios e rails Community.
+- ~~`stage-one.mock.ts` e `stage-two.mock.ts` alimentam perfil, anuncios e rails Community.~~ **(Etapa 7: `stage-two.mock.ts` deletado; `stage-one.mock.ts` mantem somente os 4 exports do rail direito de anuncios -- perfil e identidade da home agora sao 100% reais.)**
 - `/recuperar-conta` registra apenas solicitacao de teste.
 - `/painel/notificacoes` nao e uma caixa pessoal real.
 - textos ficticios permanecem em `useLocale.ts`, `data/site.ts` e preview HTML.
@@ -268,10 +268,12 @@ integracao e fidelidade de dados.
 | `npm run web:build` | PASS | Build SSR/Nitro concluido; avisos de sourcemap, deprecacao e chunks grandes. |
 | `npm run data:check-equipment` | PASS | 613 equipamentos, 1.031 variantes, 132 sets, zero vazamento acima da Season 6. |
 | `npm run lint` (Etapa 5) | FAIL (1 erro) | ESLint 10 flat config + eslint-plugin-vue + typescript-eslint, cobrindo apps/web/apps/api/packages/shared. 1075 problemas brutos -> 56 apos configurar 3 falsos-positivos conhecidos (no-undef de auto-import Nuxt, ternario-como-statement, catch vazio intencional). O 1 erro restante e uma atribuicao morta inofensiva em `admin-tasks.service.ts:363` (nao-Community, nao corrigida nesta etapa); 55 warnings sao `unused-vars` pre-existentes (baseline, nao corrigidos em massa). **Escopo Community isolado: 0 erros, 0 warnings** apos correcao trivial de ordem de atributos. Ver docs/handoff/community-current-state.md. |
-| `npm run format:check` (Etapa 5) | FAIL (261 arquivos) | Prettier 3 configurado (`.prettierrc.json`/`.prettierignore`); repositorio nunca foi formatado antes desta etapa. Nao formatado em massa por instrucao explicita -- apenas os 2 arquivos criados/editados nesta etapa (`eslint.config.mjs`, `package.json`) estao em conformidade. |
+| `npm run format:check` (Etapa 5) | FAIL (261 arquivos) | Prettier 3 configurado (`.prettierrc.json`/`.prettierignore`); repositorio nunca foi formatado antes desta etapa. Nao formatado em massa por instrucao explicita -- apenas os arquivos novos de cada etapa estao em conformidade. |
+| `npm run lint` (Etapa 7) | FAIL (mesmo 1 erro pre-existente) | Sem regressao -- mesmo erro nao-Community ja conhecido (`admin-tasks.service.ts:363`). Arquivos tocados nesta etapa (perfil, backend de perfil, testes E2E) lintam limpos. |
+| `npm run web:build` (Etapa 7) | PASS | Rebuild apos remocao dos mocks de perfil e novos arquivos de tipos/mapeamento -- sem erro. |
+| `npm run api:test:e2e` (Etapa 7) | PASS (6/6) | Primeiro E2E do repositorio -- Jest + Supertest contra container MariaDB descartavel. Ver "Perfil (Etapa 7)" em docs/handoff/community-current-state.md. |
 | testes unitarios | NOT_CONFIGURED | Nao ha script/suite identificada. |
-| testes E2E | NOT_CONFIGURED | Nao ha suite identificada. |
-| banco/migrations | NOT_EXECUTED | Proibido aplicar nesta auditoria/etapa -- ver "Migrations pendentes (Etapa 5)" em docs/handoff/community-current-state.md. |
+| banco/migrations | NOT_EXECUTED | Proibido aplicar nesta auditoria/etapa -- ver "Migrations pendentes (Etapa 5)"/"Homologacao das migrations (Etapa 6)" em docs/handoff/community-current-state.md. |
 | smoke de producao | NOT_EXECUTED | Proibido alterar/testar producao nesta etapa. |
 
 ## Producao e deploy documentados
