@@ -32,6 +32,12 @@ export class CommunityController {
     return this.community.publicProfile(username)
   }
 
+  @Get('profiles/:username/authenticated')
+  @UseGuards(JwtAuthGuard)
+  profileAuthenticated(@Param('username') username: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.community.publicProfile(username, user)
+  }
+
   @Get('profiles/:username/relationship')
   @UseGuards(JwtAuthGuard)
   relationship(@Param('username') username: string, @CurrentUser() user: AuthenticatedUser) {

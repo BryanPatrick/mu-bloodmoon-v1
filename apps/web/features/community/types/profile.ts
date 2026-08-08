@@ -27,7 +27,7 @@ export type CommunityProfileMedia = { id: string; imageUrl: string; alt: string 
 
 export type CommunityProfileEntry = {
   id: string
-  kind: 'publication' | 'repost' | 'tagged' | 'collaboration'
+  kind: 'publication' | 'repost'
   title: string
   content: string
   createdAt: string

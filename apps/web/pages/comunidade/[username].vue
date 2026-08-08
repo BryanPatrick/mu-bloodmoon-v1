@@ -38,7 +38,7 @@ import { mapProfileResponse } from '~/features/community/map-profile-response'
 
 const route = useRoute()
 const api = useCommunityApi()
-const { user, loadSession } = useAuth()
+const { user, accessToken, loadSession } = useAuth()
 const toast = useToast()
 
 const editorOpen = ref(false)
@@ -50,8 +50,8 @@ const ownProfile = computed(() => Boolean(user.value?.username && user.value.use
 
 const { data: profileData, pending, error, refresh } = await useAsyncData(
   () => `community-profile-${username.value}`,
-  () => api.publicProfile(username.value),
-  { watch: [username] }
+  () => api.publicProfile(username.value, Boolean(accessToken.value)),
+  { watch: [username, accessToken] }
 )
 
 const profile = computed(() => (profileData.value ? mapProfileResponse(profileData.value) : null))

@@ -29,7 +29,8 @@ export const useCommunityApi = () => {
 
   return {
     feed: (value: Query = {}, authenticated = false) => request<CommunityPage>(authenticated ? '/community/feed/authenticated' : '/community/feed', query(value)),
-    publicProfile: (username: string) => request(`/community/profiles/${encodeURIComponent(username)}`),
+    publicProfile: (username: string, authenticated = false) =>
+      request(`/community/profiles/${encodeURIComponent(username)}${authenticated ? '/authenticated' : ''}`),
     followProfile: (username: string) => request(`/community/profiles/${encodeURIComponent(username)}/follow`, { method: 'POST' }),
     unfollowProfile: (username: string) => request(`/community/profiles/${encodeURIComponent(username)}/follow`, { method: 'DELETE' }),
     profileRelationship: (username: string) => request<{ ownProfile: boolean; following: boolean; blocked: boolean; blockedBy: boolean }>(`/community/profiles/${encodeURIComponent(username)}/relationship`),

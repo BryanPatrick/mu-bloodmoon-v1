@@ -119,12 +119,12 @@ Status geral: `PARTIAL`, com base backend relevante e integracao final pendente.
 | Repost interno | `DONE` | Etapa 10: repost/undo confirmados; referencia ao post original preservada (nao cria post novo); bloqueios reais confirmados (nao repostar proprio post, nao repostar post nao-publico mesmo quando visivel); race de double-click corrigida. |
 | Copiar link | `DONE` | Etapa 9: o link gerado (`/comunidade?post=<id>`) agora abre um modal real com a publicacao (antes: query param nunca lido, link nao fazia nada). |
 | Hashtags/mencoes | PARTIAL | Campos e parsing/contratos existem; busca/notificacao nao. |
-| Perfil publico | `DONE` | Etapa 7: sem mock/fallback. `GET /community/profiles/:username` real, mapeado direto para a UI; loading/erro/nao-encontrado honestos. Ver "Perfil (Etapa 7)" abaixo. |
+| Perfil publico | `DONE` | Etapa 7: sem mock/fallback. Etapa 11: `profileVisibility` (PUBLIC/FOLLOWERS/PRIVATE) agora realmente aplicada -- antes FOLLOWERS era decorativo e um dono podia ficar trancado do proprio perfil PRIVATE. Ver "Perfis e Relacionamentos (Etapa 11)" abaixo. |
 | Editar perfil | `DONE` | Etapa 7: `PATCH /community/me` com validacao real (tipo, enum, URL) no backend; UI sem atualizacao otimista -- so fecha e reflete apos confirmacao do servidor; erro exibido inline se a API falhar. |
-| Follow/unfollow | DONE backend | Endpoints/composable existem; UI ampla ainda incompleta. |
-| Block/unblock | DONE backend | Endpoints e relacao persistida; UX final incompleta. |
-| Mute | MISSING | Enum preparado, sem fluxo publico identificado. |
-| Hover card | PARTIAL | Componente existe; confirmar uso em todos os usernames. |
+| Follow/unfollow | `DONE` | Etapa 11: confirmado real e funcional (botao no header do perfil, nao um placeholder); E2E cobre follow/unfollow refletindo no endpoint de relacionamento. |
+| Block/unblock | `DONE` | Etapa 11: confirmado real; bloqueio agora tambem oculta a pagina de perfil (antes so ocultava posts no feed) e remove follow em ambas direcoes -- E2E cobre. |
+| Mute | MISSING | Enum preparado, sem fluxo publico identificado. Nao inventado nesta etapa. |
+| Hover card | `DONE` | Etapa 11: confirmado com link real "Ver perfil" navegando para `/comunidade/:username`. |
 | Upload de imagem | `DONE` | Etapa 8: pipeline real ligado a avatar/capa/posts (zero base64/mock); rate limit (10/60s); erro de validacao (400) separado de falha de infraestrutura (500); E2E cobre valido/tipo invalido/arquivo grande/corrompido/sem-auth/falha de storage. Storage continua local -- ver "Midia (Etapa 8)" abaixo para o blocker de producao. |
 | Upload de GIF | DONE backend | Valida e reprocessa GIF; conversao para video nao existe. |
 | Galeria | DONE backend | 2 a 6 assets; E2E cobre post com midia (ver "Midia (Etapa 8)"); QA visual em navegador ainda pendente. |
@@ -132,7 +132,8 @@ Status geral: `PARTIAL`, com base backend relevante e integracao final pendente.
 | Moderacao | DONE backend/admin | Post/comment/reaction/user/report; precisa E2E por permissao. |
 | Conquistas | PARTIAL | CRUD/grants/admin e exibicao de perfil; dados reais dependem do banco. |
 | Quests | PARTIAL | Listar/participar/admin/progresso/recompensa; home dedicada ausente. |
-| Badges | PARTIAL | Admin/grants existem; exibicao social final incompleta. |
+| Badges | PARTIAL | Admin/grants existem; exibicao social final incompleta. Etapa 11: exposicao publica auditada e corrigida (campos internos de admin removidos do payload). |
+| Compartilhados (reposts no perfil) | `DONE` | Etapa 11: aba "Compartilhados" tinha zero dado real (kind sempre `'publication'`) apesar de reposts serem uma feature real -- fechado, agora mostra reposts reais com referencia ao post/autor original. |
 | Guilds | MISSING | Guild e string; sem entidade/pagina/membros/cargos. |
 | Eventos sociais | MISSING | Navegacao e placeholder, sem dominio dedicado. |
 | Notificacoes sociais | MISSING | Sem entidade/inbox/preferencias. |
@@ -984,6 +985,153 @@ Nenhum dado real de jogador foi usado -- as duas contas (`e2esocial_a_*`/
 `e2esocial_b_*`) sao sinteticas, criadas e descartadas junto com o banco
 descartavel do teste.
 
+## Perfis e Relacionamentos (Etapa 11)
+
+Objetivo: auditar quais relacoes sociais realmente existem (nao inventar
+follow/friend alem do que ja existe), validar o que ja funciona, eliminar
+mocks/UI morta restantes e validar privacidade real. **Relacoes que
+realmente existem no schema**: `CommunityFollow` (seguir, assimetrico -- nao
+ha "amizade" mutua), `CommunitySocialRelation` com `type: BLOCK` (bloqueio
+mutuo-efetivo) e `type: MUTE` (enum preparado, **sem nenhum endpoint ou UI**
+-- confirmado por busca no codigo inteiro, permanece `MISSING`, nao
+inventado). Nao existe conceito de "amigo"/"friend" em nenhum lugar do
+schema ou da API.
+
+### 3 bugs reais de privacidade encontrados e corrigidos
+
+Auditoria de `publicProfile()` (`community.service.ts`) revelou que a
+funcionalidade de privacidade, embora pareca completa na UI (o editor de
+perfil ja expunha 6 selects de visibilidade desde a Etapa 6/7), tinha
+**metade dela nunca de fato aplicada no backend**:
+
+1. **`profileVisibility: 'FOLLOWERS'` era decorativo.** O unico gate real
+   era `isPublic === false` (que so vira `false` quando `profileVisibility
+   === 'PRIVATE'` -- ver `updateProfile()`, `isPublic: profileVisibility
+   !== 'PRIVATE'`). Ou seja, `FOLLOWERS` e `PUBLIC` eram **indistinguiveis**
+   para qualquer visitante -- selecionar "Seguidores" no editor nao
+   restringia nada. Corrigido: `publicProfile()` agora recebe o viewer
+   (rota autenticada nova, ver abaixo) e checa `CommunityFollow` real
+   quando `profileVisibility === 'FOLLOWERS'`.
+2. **Dono podia ficar trancado do proprio perfil.** `publicProfile()` nunca
+   distinguia "o proprio dono esta vendo" de "outra pessoa esta vendo" --
+   se um usuario configurasse o proprio perfil como `PRIVATE` ou
+   `FOLLOWERS`, a pagina `/comunidade/[username]` (que sempre chama
+   `publicProfile()`, mesmo para o proprio usuario) comecava a retornar 404
+   para ele mesmo. Corrigido: `isOwner` sempre ve o proprio perfil por
+   inteiro, independente da visibilidade configurada.
+3. **Bloqueio nao ocultava a pagina de perfil, so os posts.** `accessiblePost`
+   ja excluia autores bloqueados do feed, mas `publicProfile()` nunca
+   verificava bloqueio -- uma conta bloqueada podia abrir a pagina de
+   perfil diretamente (incluindo os posts publicos embutidos nela) mesmo
+   sendo bloqueada. Corrigido: mesma checagem de bloqueio mutuo do
+   `accessiblePost`, aplicada tambem ao perfil.
+
+Como `publicProfile()` e uma rota publica (sem guard), identidade do
+visitante so existe se ele estiver autenticado -- mesmo padrao ja usado
+desde a Etapa 9/10 (feed/posts/comentarios): `GET
+/community/profiles/:username` continua publica (so ve `PUBLIC`); `GET
+/community/profiles/:username/authenticated` (JWT) resolve
+FOLLOWERS/PRIVATE/bloqueio/dono corretamente. Frontend atualizado para
+chamar a rota autenticada quando ha sessao
+(`useCommunityApi.publicProfile(username, authenticated)`), tanto na pagina
+de perfil (`[username].vue`) quanto no card de perfil proprio da home
+(`index.vue`, que agora sempre usa `authenticated: true` pois so busca o
+proprio usuario).
+
+### Exposicao de dados desnecessarios corrigida
+
+`publicProfile()` usava `communityProfile: true` / `include: { achievement:
+true }` / `include: { badge: true }` -- includes cegos que devolviam a
+linha inteira do banco. Confirmado por leitura do schema que isso vazava,
+**para qualquer visitante de qualquer perfil publico, incluindo anonimo**:
+
+- de `CommunityProfile`: `socialSuspendedUntil`, `postBlockedUntil`,
+  `commentBlockedUntil`, `messagesLimitedUntil`, `reachLimitedUntil`,
+  `warningCount` -- estado de moderacao interno, nunca deveria ser publico;
+- de `CommunityAchievementGrant`/`CommunityBadgeGrant`: `grantedBy`
+  (identificador do admin que concedeu) e `reason` (justificativa interna
+  de moderacao/concessao);
+- de `CommunityAchievement`/`CommunityBadge` (aninhado): `createdBy`,
+  `updatedBy`, `condition` (logica interna de desbloqueio da conquista).
+
+Nenhum destes campos e usado pelo frontend (`map-profile-response.ts`
+confirmado antes de cortar). Corrigido trocando os `include` cegos por
+`select` explicito (`publicAccountSelect()`) limitado exatamente ao que a
+UI renderiza -- assim adicionar uma coluna nova a qualquer um desses
+models no futuro nao vaza automaticamente, e preciso decidir explicitamente
+incluir. `email`/`role`/hash de senha etc. do proprio `Account` **nunca
+estiveram no select** (confirmado, nao era um bug -- so os 4 campos citados
+precisavam de correcao).
+
+**`guildVisibility: HIDDEN` tambem era decorativo** (mesmo padrao do bug 1
+acima, so que para `guildName` em vez do perfil inteiro) -- corrigido:
+`guildName` e removido da resposta quando `guildVisibility === 'HIDDEN'` e
+o viewer nao e o dono. `characters`/`equipment`/`statistics`/`activity`
+Visibility permanecem **intencionalmente nao aplicados** -- nao existe
+nenhum dado de personagem/equipamento/estatistica por tras desses campos
+neste endpoint ainda (nada a proteger), e "activity" e ambigua o bastante
+(posts? ultima atividade?) para nao merecer uma decisao de enforcement
+adivinhada. Documentado, nao inventado.
+
+### UI morta removida: aba "Marcações / Collabs"
+
+`CommunityProfileTabs.vue` tinha uma 4a aba ("Marcações / Collabs") que
+filtrava `entries` por `kind: 'tagged' | 'collaboration'` -- **nenhum
+codigo em todo o repositorio jamais produzia uma entry desses dois tipos**;
+o campo `kind` em `map-profile-response.ts` era hardcoded para
+`'publication'` em todo post. A aba estruturalmente nunca poderia mostrar
+nada, mas exibia o mesmo estado vazio generico de uma aba legitimamente
+vazia -- indistinguivel de "voce nao tem nada aqui" vs. "esta funcionalidade
+nao existe". Removida (nao existe schema/endpoint para marcacoes ou
+colaboracoes -- nao inventado). A aba "Compartilhados" ficou ao lado, agora
+corrigida (proximo item).
+
+### Gap real fechado: reposts nunca apareciam no perfil
+
+Diferente de "Marcações/Collabs", **reposts sao uma feature real**
+(`CommunityRepost`, `toggleRepost`, ja auditados na Etapa 10) -- so nunca
+foram ligados ao perfil. `publicProfile()` agora busca os reposts reais da
+conta (limitados a posts ainda `PUBLISHED`/`PUBLIC`, um repost nunca aponta
+para o proprio post do usuario -- `toggleRepost` ja bloqueia isso) e
+`map-profile-response.ts` produz entries `kind: 'repost'` com o
+autor/conteudo do post original preservados (nao fabrica um post novo).
+
+### E2E (novo: `apps/api/test/community-profile-privacy.e2e-spec.ts`)
+
+Mesmo padrao de banco descartavel isolado. Achievement/badge de teste
+criados diretamente via `PrismaService` (nao pela API admin -- evita
+provisionar uma conta ADMIN so para testar exposicao de campo). **10 casos,
+10/10 PASS**:
+
+perfil PUBLIC visivel anonimo e autenticado; ausencia confirmada de
+`email`, dos 6 campos de moderacao do `CommunityProfile`, e de
+`grantedBy`/`reason`/`condition`/`createdBy` em achievement/badge grants;
+rejeita `profileVisibility` invalida (400); FOLLOWERS oculto de anonimo e
+nao-seguidor, visivel para seguidor, sempre visivel para o dono mesmo sem
+seguir a si mesmo; PRIVATE oculto de todos incluindo seguidor existente,
+visivel so ao dono; `guildVisibility: HIDDEN` remove `guildName` para
+nao-donos mas preserva para o dono; reposts aparecem no perfil de quem
+repostou, referenciando post/autor originais; bloqueio oculta o perfil do
+bloqueado mas nao de visitante anonimo (confirma tambem, como efeito
+colateral real do `block()` ja existente, que bloquear remove follow em
+ambas direcoes); follow/unfollow refletem corretamente no endpoint de
+relacionamento.
+
+Combinado com as quatro suites anteriores: `npm run api:test:e2e` ->
+**63/63 PASS**, estavel em 2 execucoes seguidas. Nenhum container Docker
+deixado para tras.
+
+### QA visual
+
+Anonimo em navegador: `/comunidade/bryan` (conta real do ambiente de dev,
+nao um usuario sintetico) retorna o estado honesto de "nao encontrado" sem
+erro de console -- confirma que o novo formato de resposta nao quebra o
+frontend mesmo para uma conta ja existente antes desta etapa. Fluxo
+autenticado (ver o proprio perfil apos login, alternar visibilidade pelo
+editor) continua bloqueado por captcha no cadastro, mesma limitacao
+registrada nas Etapas 9-10 -- coberto pelos 10 E2E acima em vez de clique
+manual.
+
 ## Catalogo de mocks/fallbacks (Etapa 5)
 
 Auditoria de 2026-08-08 (Etapa C1) ja apontava mocks em prosa (itens 3-4 de
@@ -1028,6 +1176,13 @@ Resumo original (Etapa 5): 6 `BLOCKER_BETA`, 1 `DEV_ONLY`, 1 `TEMPORARY_SAFE`. *
 17. QA visual autenticado (criar/editar/excluir post, abrir permalink pelo navegador) nao foi feito nesta etapa -- cadastro de conta de teste exige resolver captcha em `/registrar`, fora do que este agente pode fazer. (Identificado na Etapa 9 -- fluxos autenticados validados via E2E HTTP real em vez de clique manual; ver "QA visual" em "Feed e Posts (Etapa 9)" acima. Mesma limitacao confirmada na Etapa 10.)
 18. ~~`_count.comments` (post e perfil publico) contava comentarios com `status: REMOVED` -- excluir um comentario nunca diminuia o numero exibido.~~ **(RESOLVIDO na Etapa 10: contagem filtrada por `status: 'PUBLISHED'`. So foi encontrado escrevendo o E2E de exclusao de comentario com reload independente. Ver "Interacoes Sociais (Etapa 10)" acima.)**
 19. ~~`JwtAuthGuard` convertia QUALQUER erro nao previsto (inclusive falha transitoria de escrita no `UPDATE AccountSession.lastSeenAt`) em 401 "Invalid bearer token"~~ **(RESOLVIDO na Etapa 10: duas requisicoes concorrentes autenticadas da mesma sessao podiam colidir nesse UPDATE (MySQL 1020) e a segunda perdia a sessao por engano -- afetava qualquer endpoint autenticado da API, nao so Community. Corrigido isolando o UPDATE em seu proprio try/catch que absorve a falha. So foi encontrado escrevendo o teste de concorrencia desta etapa. Ver "Interacoes Sociais (Etapa 10)" acima.)**
+20. ~~`profileVisibility: 'FOLLOWERS'` nao tinha nenhum efeito real -- perfil se comportava como PUBLIC para qualquer visitante.~~ **(RESOLVIDO na Etapa 11: `publicProfile()` agora checa `CommunityFollow` real via rota autenticada. Ver "Perfis e Relacionamentos (Etapa 11)" acima.)**
+21. ~~Dono podia ficar trancado do proprio perfil ao configura-lo como PRIVATE ou FOLLOWERS.~~ **(RESOLVIDO na Etapa 11: dono sempre ve o proprio perfil, independente da visibilidade configurada.)**
+22. ~~Bloqueio nao ocultava a pagina de perfil, so os posts no feed.~~ **(RESOLVIDO na Etapa 11: mesma checagem de bloqueio mutuo aplicada tambem a `publicProfile()`.)**
+23. ~~`publicProfile()` vazava campos de moderacao internos (`socialSuspendedUntil`, `postBlockedUntil`, `warningCount`, etc.) e de admin (`grantedBy`, `reason` em achievement/badge grants) para qualquer visitante.~~ **(RESOLVIDO na Etapa 11: `include` cego trocado por `select` explicito limitado ao que a UI renderiza.)**
+24. ~~`guildVisibility: 'HIDDEN'` nao tinha efeito real -- `guildName` sempre aparecia.~~ **(RESOLVIDO na Etapa 11: `guildName` removido da resposta quando oculto e o viewer nao e o dono.)**
+25. ~~Aba "Marcações / Collabs" do perfil nunca podia mostrar nada (nenhum codigo produzia esse `kind`) mas exibia o mesmo vazio generico de uma aba legitimamente vazia.~~ **(RESOLVIDO na Etapa 11: aba removida -- nao existe schema/endpoint para marcacoes/colaboracoes, nao inventado.)**
+26. ~~Aba "Compartilhados" (reposts) do perfil nunca mostrava nada apesar de reposts serem uma feature real com dados reais.~~ **(RESOLVIDO na Etapa 11: perfil agora busca e exibe reposts reais.)**
 
 ## Ponto exato para continuar
 

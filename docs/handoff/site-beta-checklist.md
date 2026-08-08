@@ -22,13 +22,24 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
   visibilidade PRIVATE). Etapa 10: escopo de **comentario/reacao/save/repost**
   coberto -- `apps/api/test/community-social.e2e-spec.ts`, 22/22 PASS (ownership,
   paginacao de comentarios, contadores, concorrencia/double-click, referencia do
-  repost ao original, isolamento de "salvos" por conta). Combinado:
-  `npm run api:test:e2e` 53/53 PASS. follow/block/denuncia continuam sem E2E --
-  ver Etapa 11+. QA visual autenticado em navegador (clicar criar/editar/excluir)
-  continua pendente -- bloqueado por captcha no cadastro, ver
+  repost ao original, isolamento de "salvos" por conta). Etapa 11: escopo de
+  **perfil/privacidade/follow/block** coberto --
+  `apps/api/test/community-profile-privacy.e2e-spec.ts`, 10/10 PASS (tiers
+  PUBLIC/FOLLOWERS/PRIVATE reais, dono sempre ve o proprio perfil, bloqueio
+  oculta o perfil, exposicao de dados internos auditada e corrigida, reposts no
+  perfil, follow/unfollow via endpoint de relacionamento). Combinado:
+  `npm run api:test:e2e` 63/63 PASS. Denuncia continua sem E2E -- ver Etapa 12+.
+  QA visual autenticado em navegador (clicar criar/editar/excluir) continua
+  pendente -- bloqueado por captcha no cadastro, ver
   community-current-state.md#feed-e-posts-etapa-9.)
 - [x] Remover o fallback silencioso de perfil mockado no caminho de usuario real. (Etapa 7: `stage-two.mock.ts` deletado; `pages/comunidade/[username].vue` usa somente dado real, com estados loading/error/not-found explicitos.)
 - [x] Garantir que falha de API nao seja exibida como conteudo inventado. (Etapa 7, escopo perfil: erro real -> estado de erro real, nunca dado inventado. Demais telas Community fora do escopo desta etapa.)
+- [x] Corrigir exposicao de dados internos/moderacao no perfil publico da Community. (Etapa 11:
+  `publicProfile()` vazava `socialSuspendedUntil`/`postBlockedUntil`/`warningCount`/etc. do
+  `CommunityProfile` e `grantedBy`/`reason` de achievement/badge grants (identificador de admin +
+  justificativa interna) para QUALQUER visitante, incluindo anonimo. Corrigido trocando `include`
+  cego por `select` explicito. `email`/senha/role nunca estiveram expostos -- confirmado, nao era
+  parte do bug. Ver community-current-state.md#perfis-e-relacionamentos-etapa-11.)
 
 ### Autenticacao e seguranca
 
@@ -81,8 +92,17 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
 - [x] Adicionar paginacao/infinite loading visivel ao feed. (Etapa 9: botao "Carregar mais
   publicacoes" sobre o page/pageSize offset ja existente no backend; qualquer mutacao reseta
   para pagina 1 fresca. Nao migrado para cursor -- ver MEDIUM abaixo.)
-- [ ] Ligar hover card e follow/unfollow em todos os locais de username.
-- [ ] Validar privacidade de perfil/personagem/equipamento/stats/guild/atividade.
+- [ ] Ligar hover card e follow/unfollow em todos os locais de username. (Etapa 11: confirmado
+  real e funcional em `CommunityProfileHeader.vue`/`CommunityProfileHoverCard.vue` -- nao um
+  placeholder. Auditoria exaustiva de todo local que renderiza um username no app nao foi feita
+  nesta etapa; item permanece aberto por precaucao.)
+- [x] Validar privacidade de perfil/personagem/equipamento/stats/guild/atividade. (Etapa 11:
+  `profile` (PUBLIC/FOLLOWERS/PRIVATE) e `guild` (VISIBLE/HIDDEN) tinham enforcement real
+  ausente/parcial -- corrigidos, ver community-current-state.md#perfis-e-relacionamentos-etapa-11.
+  `personagem`/`equipamento`/`estatisticas`/`atividade` deliberadamente NAO aplicados -- nenhum
+  dado de personagem/equipamento/estatistica existe neste endpoint ainda para proteger, e
+  "atividade" e semanticamente ambigua o bastante para nao merecer enforcement adivinhado.
+  Reavaliar quando esses dados existirem de fato.)
 - [ ] Implementar notificacoes persistidas para mencoes, comentarios, follow e conquistas.
 - [ ] QA de moderacao, revisoes, soft delete e historico administrativo.
 

@@ -203,7 +203,7 @@ const sectionTitle = computed(() => sectionLabels[activeSection.value] || 'Commu
 // sign-in prompt rendered in their place in the template.
 const { data: ownProfileData } = await useAsyncData(
   'community-own-profile-summary',
-  () => (user.value?.username ? api.publicProfile(user.value.username) : Promise.resolve(null)),
+  () => (user.value?.username ? api.publicProfile(user.value.username, true) : Promise.resolve(null)),
   { watch: [() => user.value?.username] }
 )
 const profile = computed(() => (ownProfileData.value ? mapProfileResponse(ownProfileData.value) : null))

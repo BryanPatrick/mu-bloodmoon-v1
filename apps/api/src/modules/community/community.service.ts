@@ -316,40 +316,116 @@ export class CommunityService {
     return { data, total, page, pageSize, totalPages: Math.max(1, Math.ceil(total / pageSize)) }
   }
 
-  async publicProfile(username: string) {
-    const account = await this.prisma.account.findUnique({
-      where: { username },
-      select: {
-        id: true,
-        username: true,
-        name: true,
-        createdAt: true,
-        communityProfile: true,
-        achievementGrants: {
-          where: { revokedAt: null, achievement: { isActive: true } },
-          include: { achievement: true }
-        },
-        badgeGrants: {
-          where: { removedAt: null },
-          include: { badge: true }
-        },
-        communityPosts: {
-          where: { status: 'PUBLISHED', visibility: 'PUBLIC' },
-          orderBy: { createdAt: 'desc' },
-          take: 20,
-          include: { _count: { select: { comments: { where: { status: 'PUBLISHED' } }, reactions: true } } }
+  // Only what the profile page actually renders (see map-profile-response.ts
+  // on the frontend) -- CommunityProfile itself also carries moderation
+  // state (socialSuspendedUntil, postBlockedUntil, warningCount, ...) that
+  // must never reach a public viewer, and achievement/badge grants carry
+  // admin bookkeeping (grantedBy, internal reason) nobody outside the admin
+  // panel needs. `select`, not `include`, so adding a column to those models
+  // later doesn't silently start leaking it here.
+  private publicAccountSelect() {
+    return {
+      id: true,
+      username: true,
+      name: true,
+      createdAt: true,
+      communityProfile: {
+        select: {
+          displayName: true, bio: true, avatarUrl: true, coverUrl: true, isPublic: true,
+          mainCharacterName: true, mainCharacterClass: true, guildName: true, featuredAchievementIds: true,
+          profileVisibility: true, charactersVisibility: true, equipmentVisibility: true,
+          statisticsVisibility: true, guildVisibility: true, activityVisibility: true
         }
+      },
+      achievementGrants: {
+        where: { revokedAt: null, achievement: { isActive: true } },
+        select: { grantedAt: true, achievement: { select: { id: true, name: true, description: true, rarity: true, imageUrl: true, points: true } } }
+      },
+      badgeGrants: {
+        where: { removedAt: null },
+        select: { grantedAt: true, expiresAt: true, badge: { select: { id: true, name: true, description: true, imageUrl: true } } }
+      },
+      communityPosts: {
+        where: { status: 'PUBLISHED', visibility: 'PUBLIC' },
+        orderBy: { createdAt: 'desc' as const },
+        take: 20,
+        include: { _count: { select: { comments: { where: { status: 'PUBLISHED' as const } }, reactions: true } } }
       }
-    })
-    if (!account || account.communityProfile?.isPublic === false) {
-      throw new NotFoundException('Perfil social não encontrado.')
+    } satisfies Prisma.AccountSelect
+  }
+
+  // Public profile viewing has two access modes -- see getPost()/postComments()
+  // for the same pattern. Anonymous callers pass no `user` and can only ever
+  // see PUBLIC profiles; authenticated callers additionally see FOLLOWERS
+  // profiles they actually follow, and always see their own profile in full
+  // regardless of its visibility setting (a user must never be locked out of
+  // their own profile by their own privacy choice).
+  async publicProfile(username: string, user?: AuthenticatedUser) {
+    const account = await this.prisma.account.findUnique({ where: { username }, select: this.publicAccountSelect() })
+    if (!account) throw new NotFoundException('Perfil social não encontrado.')
+    const isOwner = user?.id === account.id
+    if (!isOwner) {
+      const profile = account.communityProfile
+      // isPublic is kept in sync with profileVisibility on every update
+      // (updateProfile below: isPublic = profileVisibility !== 'PRIVATE'),
+      // so it alone already correctly gates PRIVATE. What it does NOT do is
+      // distinguish PUBLIC from FOLLOWERS -- both leave isPublic true. That
+      // distinction has to be checked here explicitly, or "Seguidores" in
+      // the privacy editor is a setting that does nothing.
+      if (profile?.isPublic === false) throw new NotFoundException('Perfil social não encontrado.')
+      if (profile?.profileVisibility === 'FOLLOWERS') {
+        const follows = user
+          ? await this.prisma.communityFollow.findUnique({ where: { followerId_followingId: { followerId: user.id, followingId: account.id } }, select: { followerId: true } })
+          : null
+        if (!follows) throw new NotFoundException('Perfil social não encontrado.')
+      }
+      // Block already hides posts from each other (accessiblePost/feed
+      // exclude blocked authors) -- but nothing previously stopped a blocked
+      // viewer from opening the profile page directly. Same rule, same
+      // 404-not-403 (existence isn't revealed either), applied here.
+      if (user) {
+        const blocked = await this.prisma.communitySocialRelation.findFirst({
+          where: { type: 'BLOCK', OR: [{ actorId: user.id, targetId: account.id }, { actorId: account.id, targetId: user.id }] },
+          select: { id: true }
+        })
+        if (blocked) throw new NotFoundException('Perfil social não encontrado.')
+      }
+      // guildVisibility: HIDDEN is a real, user-set preference with real
+      // data behind it (guildName) -- unlike characters/equipment/statistics/
+      // activity visibility, which are prepared for data this endpoint
+      // doesn't return yet and are intentionally left unenforced rather than
+      // guessing at semantics that don't exist.
+      if (profile && profile.guildVisibility === 'HIDDEN') {
+        account.communityProfile = { ...profile, guildName: null }
+      }
     }
-    const [followers, following, posts] = await Promise.all([
+    const [followers, following, posts, reposts] = await Promise.all([
       this.prisma.communityFollow.count({ where: { followingId: account.id } }),
       this.prisma.communityFollow.count({ where: { followerId: account.id } }),
-      this.prisma.communityPost.count({ where: { authorId: account.id, status: 'PUBLISHED', visibility: 'PUBLIC' } })
+      this.prisma.communityPost.count({ where: { authorId: account.id, status: 'PUBLISHED', visibility: 'PUBLIC' } }),
+      // "Compartilhados" tab (CommunityProfileTabs.vue) has real data behind
+      // it -- CommunityRepost rows -- unlike the "Marcações/Collabs" tab,
+      // which had none and was removed rather than wired to fake data. A
+      // repost can never point to this account's own post (toggleRepost
+      // blocks that), and a filter on the underlying post's current
+      // status/visibility keeps this from showing something since removed
+      // or made non-public.
+      this.prisma.communityRepost.findMany({
+        where: { accountId: account.id, post: { status: 'PUBLISHED', visibility: 'PUBLIC' } },
+        orderBy: { createdAt: 'desc' },
+        take: 20,
+        select: {
+          createdAt: true,
+          post: {
+            select: {
+              id: true, title: true, content: true, createdAt: true,
+              author: { select: { username: true } }
+            }
+          }
+        }
+      })
     ])
-    return { ...account, stats: { followers, following, posts } }
+    return { ...account, reposts, stats: { followers, following, posts } }
   }
 
   async relationship(username: string, user: AuthenticatedUser) {

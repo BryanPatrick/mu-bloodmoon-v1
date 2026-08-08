@@ -45,13 +45,24 @@ export const mapProfileResponse = (value: any): CommunitySocialProfile => {
     })
   )
   const posts = value.communityPosts || []
-  const entries = posts.map((post: any) => ({
+  const publications = posts.map((post: any) => ({
     id: post.id,
     kind: 'publication' as const,
     title: post.title || 'Publicação',
     content: post.content,
     createdAt: new Date(post.createdAt).toLocaleDateString('pt-BR')
   }))
+  const reposts = (value.reposts || []).map((repost: any) => ({
+    id: `repost-${repost.post.id}`,
+    kind: 'repost' as const,
+    title: repost.post.title || 'Publicação',
+    content: repost.post.content,
+    createdAt: new Date(repost.createdAt).toLocaleDateString('pt-BR'),
+    // Template renders this as "@{{author}}" (CommunityProfileTabs.vue) --
+    // a real username, not the display name, so the "@" prefix is accurate.
+    author: repost.post.author?.username
+  }))
+  const entries = [...publications, ...reposts]
   const media = posts.flatMap((post: any) =>
     (Array.isArray(post.media) ? post.media : [])
       .map((item: any, index: number) => ({
