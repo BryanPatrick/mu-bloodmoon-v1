@@ -116,6 +116,17 @@ export class CommunityController {
     return this.community.createComment(id, payload, user)
   }
 
+  @Get('posts/:id/comments')
+  postComments(@Param('id') id: string, @Query() query: CommunityQuery) {
+    return this.community.postComments(id, query)
+  }
+
+  @Get('posts/:id/comments/authenticated')
+  @UseGuards(JwtAuthGuard)
+  postCommentsAuthenticated(@Param('id') id: string, @Query() query: CommunityQuery, @CurrentUser() user: AuthenticatedUser) {
+    return this.community.postComments(id, query, user)
+  }
+
   @Delete('comments/:id')
   @UseGuards(JwtAuthGuard)
   removeComment(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {

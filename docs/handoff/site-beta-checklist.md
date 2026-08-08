@@ -19,16 +19,27 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
   `apps/api/test/community-post.e2e-spec.ts`, 15/15 PASS (criar, visualizar via
   permalink, editar proprio, excluir proprio, permissao entre usuarios distintos
   em editar E excluir, validacao de conteudo, ARTICLE sem titulo, paginacao,
-  visibilidade PRIVATE). Combinado: `npm run api:test:e2e` 31/31 PASS.
-  comentario/reacao/save/repost/follow/block/denuncia continuam sem E2E -- ver Etapa 10+.
-  QA visual autenticado em navegador (clicar criar/editar/excluir) continua pendente --
-  bloqueado por captcha no cadastro, ver community-current-state.md#feed-e-posts-etapa-9.)
+  visibilidade PRIVATE). Etapa 10: escopo de **comentario/reacao/save/repost**
+  coberto -- `apps/api/test/community-social.e2e-spec.ts`, 22/22 PASS (ownership,
+  paginacao de comentarios, contadores, concorrencia/double-click, referencia do
+  repost ao original, isolamento de "salvos" por conta). Combinado:
+  `npm run api:test:e2e` 53/53 PASS. follow/block/denuncia continuam sem E2E --
+  ver Etapa 11+. QA visual autenticado em navegador (clicar criar/editar/excluir)
+  continua pendente -- bloqueado por captcha no cadastro, ver
+  community-current-state.md#feed-e-posts-etapa-9.)
 - [x] Remover o fallback silencioso de perfil mockado no caminho de usuario real. (Etapa 7: `stage-two.mock.ts` deletado; `pages/comunidade/[username].vue` usa somente dado real, com estados loading/error/not-found explicitos.)
 - [x] Garantir que falha de API nao seja exibida como conteudo inventado. (Etapa 7, escopo perfil: erro real -> estado de erro real, nunca dado inventado. Demais telas Community fora do escopo desta etapa.)
 
 ### Autenticacao e seguranca
 
 - [ ] E2E de cadastro, login, refresh, logout, sessao unica e 2FA com banco de teste.
+- [x] Corrigir race de concorrencia no `JwtAuthGuard` que podia causar 401 falso ("sessao invalida")
+  em requisicoes autenticadas simultaneas legitimas (ex.: duplo-clique). (Etapa 10: encontrado
+  escrevendo o teste de concorrencia de reacoes/saves/reposts da Community -- o guard fazia um
+  `UPDATE AccountSession.lastSeenAt` em toda requisicao e tratava QUALQUER erro dai como token
+  invalido; duas requisicoes concorrentes da mesma sessao podiam colidir nesse UPDATE (MySQL 1020)
+  e a perdedora era deslogada por engano. Afeta toda a API, nao so Community. Corrigido isolando
+  esse UPDATE em seu proprio try/catch -- ver community-current-state.md#interacoes-sociais-etapa-10.)
 - [ ] Implementar recuperacao de senha real com token curto, expiração e invalidacao.
 - [ ] Revisar armazenamento de access/refresh token no browser e protecao XSS.
 - [ ] Validar rate limit para login, cadastro, recuperacao, posts, comentarios e upload.

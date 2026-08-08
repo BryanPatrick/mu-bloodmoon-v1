@@ -172,6 +172,20 @@ export class CommunityService {
     return value
   }
 
+  // Shared by postInclude() (first page, embedded in feed/getPost) and
+  // postComments() (dedicated paginated endpoint, pages 2+) -- same
+  // author/reactions/replies shape either way.
+  private commentInclude() {
+    return {
+      author: { select: { id: true, username: true, name: true, communityProfile: true } },
+      reactions: { select: { type: true, accountId: true } },
+      replies: {
+        where: { status: 'PUBLISHED' }, orderBy: { createdAt: 'asc' }, take: 5,
+        include: { author: { select: { id: true, username: true, name: true, communityProfile: true } }, reactions: { select: { type: true, accountId: true } } }
+      }
+    } satisfies Prisma.CommunityCommentInclude
+  }
+
   // Shared by feed() (many posts) and getPost() (one post, permalink view) --
   // same author/comments/reactions/counts shape either way, so a viewer
   // opening a shared link sees exactly what the feed would have shown them.
@@ -180,19 +194,17 @@ export class CommunityService {
       author: { select: { id: true, username: true, name: true, communityProfile: true } },
       comments: {
         where: { status: 'PUBLISHED', parentId: null }, orderBy: { createdAt: 'asc' }, take: 5,
-        include: {
-          author: { select: { id: true, username: true, name: true, communityProfile: true } },
-          reactions: { select: { type: true, accountId: true } },
-          replies: {
-            where: { status: 'PUBLISHED' }, orderBy: { createdAt: 'asc' }, take: 5,
-            include: { author: { select: { id: true, username: true, name: true, communityProfile: true } }, reactions: { select: { type: true, accountId: true } } }
-          }
-        }
+        include: this.commentInclude()
       },
       reactions: { select: { type: true, accountId: true } },
       saves: user ? { where: { accountId: user.id }, select: { id: true } } : false,
       reposts: user ? { where: { accountId: user.id }, select: { id: true } } : false,
-      _count: { select: { comments: true, reactions: true, saves: true, reposts: true } }
+      // comments/removeOwnComment soft-deletes (status: REMOVED), it never
+      // deletes the row -- an unfiltered relation count would keep counting
+      // a comment the author already removed. reactions/saves/reposts have
+      // no status field (toggle does a real row delete), so those counts
+      // don't need the same filter.
+      _count: { select: { comments: { where: { status: 'PUBLISHED' } }, reactions: true, saves: true, reposts: true } }
     } satisfies Prisma.CommunityPostInclude
   }
 
@@ -281,6 +293,29 @@ export class CommunityService {
     return { ...post, ...this.postContext(post, user, followedIds) }
   }
 
+  // Posts embed only the first 5 top-level comments (postInclude above) --
+  // this is the "load more comments" endpoint for everything past that,
+  // same visibility/block rules as getPost so a hidden post's comments
+  // can't be paginated into by guessing a postId.
+  async postComments(postId: string, query: CommunityQuery, user?: AuthenticatedUser) {
+    if (user) {
+      await this.accessiblePost(postId, user)
+    } else {
+      const guarded = await this.prisma.communityPost.findFirst({
+        where: { id: postId, status: 'PUBLISHED', visibility: 'PUBLIC' },
+        select: { id: true, author: { select: { communityProfile: { select: { isPublic: true } } } } }
+      })
+      if (!guarded || guarded.author.communityProfile?.isPublic === false) throw new NotFoundException('Publicação não encontrada.')
+    }
+    const { page, pageSize, skip } = pageValues(query)
+    const where: Prisma.CommunityCommentWhereInput = { postId, status: 'PUBLISHED', parentId: null }
+    const [data, total] = await Promise.all([
+      this.prisma.communityComment.findMany({ where, orderBy: { createdAt: 'asc' }, skip, take: pageSize, include: this.commentInclude() }),
+      this.prisma.communityComment.count({ where })
+    ])
+    return { data, total, page, pageSize, totalPages: Math.max(1, Math.ceil(total / pageSize)) }
+  }
+
   async publicProfile(username: string) {
     const account = await this.prisma.account.findUnique({
       where: { username },
@@ -302,7 +337,7 @@ export class CommunityService {
           where: { status: 'PUBLISHED', visibility: 'PUBLIC' },
           orderBy: { createdAt: 'desc' },
           take: 20,
-          include: { _count: { select: { comments: true, reactions: true } } }
+          include: { _count: { select: { comments: { where: { status: 'PUBLISHED' } }, reactions: true } } }
         }
       }
     })
@@ -568,6 +603,17 @@ export class CommunityService {
     })
   }
 
+  // Toggle create is a classic double-click race: two near-simultaneous
+  // requests can both see "not saved yet" and both attempt create(). The
+  // DB's unique constraint (accountId+postId[+type]) already guarantees no
+  // duplicate row is ever written -- but without this catch, the request
+  // that loses the race got a raw 500 for doing nothing wrong. Since the
+  // loser's desired end state (active/saved/reposted = true) was already
+  // achieved by the winner, P2002 here means success, not conflict.
+  private isDuplicateKeyError(error: unknown): boolean {
+    return typeof error === 'object' && error !== null && (error as { code?: string }).code === 'P2002'
+  }
+
   async toggleReaction(payload: CommunityReactionPayload, user: AuthenticatedUser) {
     if (Boolean(payload.postId) === Boolean(payload.commentId)) {
       throw new BadRequestException('Informe uma publicação ou comentário.')
@@ -585,9 +631,13 @@ export class CommunityService {
       await this.prisma.communityReaction.delete({ where: { id: existing.id } })
       return { active: false }
     }
-    await this.prisma.communityReaction.create({
-      data: { accountId: user.id, postId: payload.postId || null, commentId: payload.commentId || null, type }
-    })
+    try {
+      await this.prisma.communityReaction.create({
+        data: { accountId: user.id, postId: payload.postId || null, commentId: payload.commentId || null, type }
+      })
+    } catch (error) {
+      if (!this.isDuplicateKeyError(error)) throw error
+    }
     return { active: true }
   }
 
@@ -598,7 +648,11 @@ export class CommunityService {
       await this.prisma.communityPostSave.delete({ where: { id: existing.id } })
       return { saved: false }
     }
-    await this.prisma.communityPostSave.create({ data: { accountId: user.id, postId } })
+    try {
+      await this.prisma.communityPostSave.create({ data: { accountId: user.id, postId } })
+    } catch (error) {
+      if (!this.isDuplicateKeyError(error)) throw error
+    }
     return { saved: true }
   }
 
@@ -611,7 +665,12 @@ export class CommunityService {
       await this.prisma.communityRepost.delete({ where: { id: existing.id } })
       return { reposted: false }
     }
-    await this.prisma.communityRepost.create({ data: { accountId: user.id, postId } })
+    try {
+      await this.prisma.communityRepost.create({ data: { accountId: user.id, postId } })
+    } catch (error) {
+      if (!this.isDuplicateKeyError(error)) throw error
+      return { reposted: true }
+    }
     await this.observability.recordOperationalEvent({ module: 'community', eventType: 'COMMUNITY_POST_REPOSTED', entityType: 'CommunityPost', entityId: postId, actorUserId: user.id, targetUserId: post.authorId, description: 'Publicação compartilhada internamente.' })
     return { reposted: true }
   }

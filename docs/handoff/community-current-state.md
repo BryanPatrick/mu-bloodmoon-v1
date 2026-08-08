@@ -113,10 +113,10 @@ Status geral: `PARTIAL`, com base backend relevante e integracao final pendente.
 | Visualizar post | `DONE` | Etapa 9: `GET /community/posts/:id` (+ `/authenticated`) real, com as mesmas regras de visibilidade/bloqueio do feed -- fecha o link morto do "Copiar link" (ver linha abaixo). |
 | Editar post | DONE | Proprio autor; cria revisao; permissao verificada no backend (E2E prova que outro usuario recebe 404, nao so que o botao fica oculto). |
 | Excluir post | DONE | Soft delete/auditoria preservada; mesma prova de permissao via E2E. |
-| Comentarios | DONE | Criar/editar/excluir e um nivel de resposta. |
-| Reacoes | DONE | Toggle generico para post/comentario. |
-| Salvos | DONE | Toggle + feed salvo; colecoes futuras apenas no schema. |
-| Repost interno | DONE | Toggle persistido. |
+| Comentarios | `DONE` | Etapa 10: criar/editar/excluir com ownership real (E2E prova 404 entre contas distintas); paginacao real via `GET /community/posts/:id/comments` (+`/authenticated`) alem dos 5 primeiros embutidos no post; contador corrigido (nao contava mais comentarios removidos, ver "Interacoes Sociais (Etapa 10)"). |
+| Reacoes | `DONE` | Etapa 10: toggle add/remove confirmado; race de double-click auditada e corrigida (nao duplica linha, nao derruba a requisicao). |
+| Salvos | `DONE` | Etapa 10: save/unsave confirmados; listagem privada (`feed=saved`) confirmada isolada por conta (E2E prova que a lista de A nao vaza para B); race de double-click corrigida. |
+| Repost interno | `DONE` | Etapa 10: repost/undo confirmados; referencia ao post original preservada (nao cria post novo); bloqueios reais confirmados (nao repostar proprio post, nao repostar post nao-publico mesmo quando visivel); race de double-click corrigida. |
 | Copiar link | `DONE` | Etapa 9: o link gerado (`/comunidade?post=<id>`) agora abre um modal real com a publicacao (antes: query param nunca lido, link nao fazia nada). |
 | Hashtags/mencoes | PARTIAL | Campos e parsing/contratos existem; busca/notificacao nao. |
 | Perfil publico | `DONE` | Etapa 7: sem mock/fallback. `GET /community/profiles/:username` real, mapeado direto para a UI; loading/erro/nao-encontrado honestos. Ver "Perfil (Etapa 7)" abaixo. |
@@ -855,6 +855,135 @@ vantagem de provar a autorizacao no nivel do backend, nao apenas o que a UI
 permite clicar). Registrado como lacuna de QA visual para uma etapa futura
 com uma conta de teste ja provisionada.
 
+## Interacoes Sociais (Etapa 10)
+
+Objetivo: validar ponta a ponta comentarios, reacoes, salvos e reposts sobre
+dados reais, incluindo concorrencia (double-click) e contadores. Diferente
+das Etapas 8-9, aqui a maior parte do trabalho foi **auditoria que encontrou
+bugs reais**, nao construcao de feature nova.
+
+### COMMENTS
+
+Create/edit/delete/ownership ja eram reais (`createComment`/
+`updateOwnComment`/`removeOwnComment` em `community.service.ts`, existentes
+desde etapas anteriores) -- confirmado por E2E, incluindo 404 real quando a
+conta B tenta editar/excluir um comentario da conta A. Paginacao **nao
+existia**: o post so embutia os primeiros 5 comentarios de nivel superior
+(`postInclude()`, `take: 5`), sem forma de ver o resto. Fechado com
+`GET /community/posts/:id/comments` (+`/authenticated`), reaproveitando um
+novo `commentInclude()` privado compartilhado com `postInclude()` para nao
+duplicar o include grande do Prisma. Frontend: `CommunityPostCard.vue` ganhou
+"Carregar mais comentarios", com `normalizeComment` extraido para
+`features/community/map-post-response.ts` (compartilhado com
+`normalizePost`, antes duplicado em `pages/comunidade/index.vue`).
+
+**Bug real encontrado e corrigido**: `_count.comments` (usado em
+`postInclude()` e em `publicProfile()`) contava **todos** os comentarios do
+post, incluindo os com `status: 'REMOVED'` (soft delete) -- ou seja, excluir
+um comentario nunca diminuia o contador exibido. Corrigido filtrando a
+contagem por `status: 'PUBLISHED'` (`_count: { select: { comments: { where:
+{ status: 'PUBLISHED' } }, ... } }` -- suportado desde Prisma 4.16, projeto
+usa `^5.0.0`). `reactions`/`saves`/`reposts` nao tinham o mesmo problema
+porque esses toggles fazem `delete()` real na linha (sem status/soft
+delete), confirmado por leitura do schema antes de assumir que o mesmo bug
+existiria ali.
+
+### REACTIONS / SAVES / REPOSTS
+
+`toggleReaction`/`toggleSave`/`toggleRepost` (todos pre-existentes) ja tinham
+protecao real contra duplicacao no nivel do banco -- `@@unique([accountId,
+postId, type])` em `CommunityReaction`, `@@unique([accountId, postId])` em
+`CommunityPostSave`/`CommunityRepost` -- confirmado por leitura do
+`schema.prisma` antes de qualquer mudanca. Contadores nunca sao calculados
+no cliente: sempre vem de `_count` do servidor, refeito apos cada acao via
+`runSocial()` no frontend -- confirmado que nenhum componente Community
+incrementa/decrementa contador localmente (busca no diretorio inteiro).
+Repost corretamente nao cria um post novo (nao ha "quote" nem duplicacao de
+conteudo) -- apenas uma linha de junction table referenciando o post
+original; `toggleRepost` ja bloqueava repostar o proprio post e postar
+conteudo nao-`PUBLIC`.
+
+### Bug real encontrado e corrigido: race de double-click causava 401 falso em QUALQUER endpoint autenticado
+
+Ao escrever o teste de concorrencia (duas requisicoes simultaneas do mesmo
+usuario), a segunda requisicao ocasionalmente falhava com **401 "Invalid
+bearer token"** -- apesar do token ser genuinamente valido. Investigado
+com logging temporario no `JwtAuthGuard` (removido depois): o erro real era
+`PrismaClientUnknownRequestError` / MySQL `1020 "Record has changed since
+last read in table 'AccountSession'"` -- duas requisicoes concorrentes da
+mesma sessao colidindo no `UPDATE AccountSession SET lastSeenAt = NOW()`
+que o guard executa em **toda** requisicao autenticada para rastrear
+atividade. O `catch` do guard era largo demais: qualquer excecao nao
+prevista virava "token invalido", inclusive uma falha transitoria de
+escrita numa coluna puramente informativa. **Isso nao e um bug de Community
+-- e um bug no `JwtAuthGuard` compartilhado por toda a API**, que qualquer
+duplo-clique em qualquer acao autenticada (nao so reacao/save/repost) podia
+disparar. Corrigido isolando esse `UPDATE` em seu proprio `try/catch` que
+absorve a falha (perder um "last seen" e inofensivo; invalidar uma sessao
+valida por isso nao e). `apps/api/src/modules/auth/jwt-auth.guard.ts`.
+
+### CONCORRENCIA
+
+Com os dois bugs acima corrigidos, testado explicitamente via `Promise.all`
+disparando duas requisicoes simultaneas para o mesmo toggle (reacao, save,
+repost): nenhuma crasha, nenhuma cria uma segunda linha (constraint unique
++ `catch` de `P2002` adicionado nesta etapa em `toggleReaction`/
+`toggleSave`/`toggleRepost` -- o "perdedor" da corrida trata a violacao de
+unicidade como sucesso idempotente, nao como erro). Uma observacao
+documentada, nao um bug: como esses tres endpoints sao **toggles reais**
+(nao "set true"), o resultado exato de duas chamadas simultaneas depende de
+como elas se intercalam -- ambas podem "ganhar" a criacao (contagem final
+1) ou uma pode terminar antes da outra comecar e ser desfeita por ela
+(contagem final 0). As duas saidas sao seguras (sem duplicata, sem crash);
+so uma contagem >1 ou um erro 500 seriam bugs. Os testes E2E verificam essa
+invariante real, nao um numero fixo.
+
+### PERMISSOES
+
+`community-admin.controller.ts` confirmado com autorizacao real de
+producao: `@UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)` +
+`@Roles('ADMIN', 'SUPER_ADMIN')` no controller inteiro, mais
+`@RequirePermissions(...)` granular por acao (`adminCommunityPostsModerate`,
+`adminCommunityCommentsModerate`, etc.) -- nao um controle superficial.
+Usuario comum (A) nunca altera conteudo de outro (B): confirmado por E2E
+para post e para comentario (edit/delete cross-account -> 404 nos dois
+casos).
+
+### E2E (novo: `apps/api/test/community-social.e2e-spec.ts`)
+
+Mesmo padrao de banco descartavel e isolado das etapas anteriores, com o
+mesmo relaxamento de cooldown do `CommunityPolicy` (via `PrismaService`
+direto, so no banco descartavel) usado na Etapa 9 para permitir criar varios
+comentarios em sequencia para o teste de paginacao. **22 casos, 22/22 PASS**,
+seguindo o fluxo minimo pedido pelo brief -- dois usuarios sinteticos (A
+autor, B interage), post -> comentario -> reacao -> save -> repost ->
+reload -- mais:
+
+- comentario: criar, editar (com reload independente confirmando
+  persistencia), 404 ao editar/excluir de outra conta, resposta de segundo
+  nivel rejeitada, paginacao (paginas 1 e 2 sem sobreposicao de ids),
+  excluir com contador corrigido corretamente decrementando;
+- reacao: adicionar, alternar (remover no segundo clique), corrida
+  concorrente segura;
+- save: salvar, listar (feed `saved` isola por conta -- A nunca ve o que
+  so B salvou), remover, corrida concorrente segura;
+- repost: bloqueia repostar o proprio post, bloqueia repostar post
+  nao-`PUBLIC` mesmo quando visivel ao usuario (FOLLOWERS + B segue A),
+  repostar preserva autor/conteudo do original, desfazer, corrida
+  concorrente segura;
+- fluxo completo: post -> comentario -> reacao -> save -> repost -> reload
+  autenticado confirma `_count` e `viewer` (saved/reposted/reactions)
+  corretos numa unica leitura fresca, nao nas respostas das mutacoes.
+
+Combinado com as tres suites anteriores: `npm run api:test:e2e` ->
+**53/53 PASS**, estavel em execucoes repetidas (rodado duas vezes seguidas
+apos as correcoes para confirmar que a race do guard nao voltava a
+aparecer). Nenhum container Docker deixado para tras.
+
+Nenhum dado real de jogador foi usado -- as duas contas (`e2esocial_a_*`/
+`e2esocial_b_*`) sao sinteticas, criadas e descartadas junto com o banco
+descartavel do teste.
+
 ## Catalogo de mocks/fallbacks (Etapa 5)
 
 Auditoria de 2026-08-08 (Etapa C1) ja apontava mocks em prosa (itens 3-4 de
@@ -896,7 +1025,9 @@ Resumo original (Etapa 5): 6 `BLOCKER_BETA`, 1 `DEV_ONLY`, 1 `TEMPORARY_SAFE`. *
 14. Storage de midia Community e filesystem local e o script de deploy cPanel real (`scripts/package-cpanel-deploy.mjs`) nao preserva esse diretorio entre deploys. **(Identificado na Etapa 8 -- blocker de Beta Release, ver "Midia (Etapa 8)" acima e `site-beta-checklist.md`.)**
 15. ~~"Copiar link" de post gerava uma URL que nada no frontend/backend sabia abrir (query param nunca lido, sem endpoint de post isolado).~~ **(RESOLVIDO na Etapa 9: `GET /community/posts/:id` real + modal de permalink no frontend. Ver "Feed e Posts (Etapa 9)" acima.)**
 16. Paginacao real do feed nao migrou de offset para cursor -- aceitavel na escala atual, mas offset (`skip`/`take`) pode produzir saltos/duplicatas sob insercao concorrente de posts enquanto alguem faz "carregar mais". (Identificado na Etapa 9 -- nao corrigido, registrado como melhoria futura caso o volume justifique.)
-17. QA visual autenticado (criar/editar/excluir post, abrir permalink pelo navegador) nao foi feito nesta etapa -- cadastro de conta de teste exige resolver captcha em `/registrar`, fora do que este agente pode fazer. (Identificado na Etapa 9 -- fluxos autenticados validados via E2E HTTP real em vez de clique manual; ver "QA visual" em "Feed e Posts (Etapa 9)" acima.)
+17. QA visual autenticado (criar/editar/excluir post, abrir permalink pelo navegador) nao foi feito nesta etapa -- cadastro de conta de teste exige resolver captcha em `/registrar`, fora do que este agente pode fazer. (Identificado na Etapa 9 -- fluxos autenticados validados via E2E HTTP real em vez de clique manual; ver "QA visual" em "Feed e Posts (Etapa 9)" acima. Mesma limitacao confirmada na Etapa 10.)
+18. ~~`_count.comments` (post e perfil publico) contava comentarios com `status: REMOVED` -- excluir um comentario nunca diminuia o numero exibido.~~ **(RESOLVIDO na Etapa 10: contagem filtrada por `status: 'PUBLISHED'`. So foi encontrado escrevendo o E2E de exclusao de comentario com reload independente. Ver "Interacoes Sociais (Etapa 10)" acima.)**
+19. ~~`JwtAuthGuard` convertia QUALQUER erro nao previsto (inclusive falha transitoria de escrita no `UPDATE AccountSession.lastSeenAt`) em 401 "Invalid bearer token"~~ **(RESOLVIDO na Etapa 10: duas requisicoes concorrentes autenticadas da mesma sessao podiam colidir nesse UPDATE (MySQL 1020) e a segunda perdia a sessao por engano -- afetava qualquer endpoint autenticado da API, nao so Community. Corrigido isolando o UPDATE em seu proprio try/catch que absorve a falha. So foi encontrado escrevendo o teste de concorrencia desta etapa. Ver "Interacoes Sociais (Etapa 10)" acima.)**
 
 ## Ponto exato para continuar
 

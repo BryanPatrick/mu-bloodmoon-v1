@@ -2,6 +2,7 @@
 import { Bookmark, Copy, Edit3, Gem, Heart, Medal, MessageCircle, MoreHorizontal, Repeat2, Share2, Trash2, Trophy, Zap } from 'lucide-vue-next'
 import type { CommunityCommentView, CommunityPostView, CommunityReactionType } from '~/features/community/types/post'
 import { resolveMediaUrl as mediaUrl } from '~/features/community/map-profile-response'
+import { normalizeComment } from '~/features/community/map-post-response'
 
 const props = defineProps<{ post: CommunityPostView, own?: boolean, currentUserId?: string | null }>()
 const emit = defineEmits<{
@@ -16,10 +17,34 @@ const emit = defineEmits<{
   removeComment: [comment: CommunityCommentView]
   reactComment: [comment: CommunityCommentView, type: CommunityReactionType]
 }>()
+const api = useCommunityApi()
+const { accessToken } = useAuth()
 const commentsOpen = ref(false)
 const commentText = ref('')
 const replyingTo = ref<CommunityCommentView | null>(null)
 const editingComment = ref<CommunityCommentView | null>(null)
+
+// Posts only ever embed the first 5 top-level comments (see postInclude in
+// community.service.ts) -- extraComments holds pages 2+ fetched on demand,
+// reset whenever the post's own comment list changes (a new comment was
+// just posted/removed and refetched from the server).
+const extraComments = ref<CommunityCommentView[]>([])
+const commentsPage = ref(1)
+const loadingMoreComments = ref(false)
+watch(() => props.post.commentItems, () => { extraComments.value = []; commentsPage.value = 1 })
+const visibleComments = computed(() => [...props.post.commentItems, ...extraComments.value])
+const hasMoreComments = computed(() => visibleComments.value.length < props.post.comments)
+const loadMoreComments = async () => {
+  if (loadingMoreComments.value || !hasMoreComments.value) return
+  loadingMoreComments.value = true
+  try {
+    const next = (await api.postComments(props.post.id, commentsPage.value + 1, Boolean(accessToken.value))) as { data: unknown[] }
+    extraComments.value = [...extraComments.value, ...next.data.map(normalizeComment)]
+    commentsPage.value += 1
+  } finally {
+    loadingMoreComments.value = false
+  }
+}
 
 const typeLabels: Record<CommunityPostView['type'], string> = { TEXT: 'Texto', IMAGE: 'Foto', GALLERY: 'Galeria', GIF: 'GIF', ARTICLE: 'Artigo' }
 const labelNames: Record<string, string> = { FOLLOWING: 'Seguindo', TRENDING: 'Em alta', SPONSORED: 'Patrocinado', OFFICIAL: 'Oficial', ACHIEVEMENT: 'Conquista', MARKETPLACE: 'Marketplace', EVENT: 'Evento', GUIDE: 'Guia' }
@@ -94,8 +119,8 @@ const cancelCommentMode = () => { replyingTo.value = null; editingComment.value 
         </div>
         <div class="flex gap-2"><UInput v-model="commentText" class="flex-1" :placeholder="editingComment ? 'Atualize seu comentário' : 'Escreva um comentário'" /><UButton type="submit" color="error">Enviar</UButton></div>
       </form>
-      <div v-if="!post.commentItems.length" class="community-comments__empty">Nenhum comentário ainda.</div>
-      <div v-for="comment in post.commentItems" :key="comment.id" class="community-comment">
+      <div v-if="!visibleComments.length" class="community-comments__empty">Nenhum comentário ainda.</div>
+      <div v-for="comment in visibleComments" :key="comment.id" class="community-comment">
         <img :src="comment.author.avatarUrl || '/favicon.png'" :alt="comment.author.name">
         <div><strong>{{ comment.author.name }}</strong><p>{{ comment.content }} <small v-if="comment.edited">· Editado</small></p>
           <div class="community-comment__actions">
@@ -111,11 +136,12 @@ const cancelCommentMode = () => { replyingTo.value = null; editingComment.value 
           </div>
         </div>
       </div>
+      <button v-if="hasMoreComments" class="community-comments__more" type="button" :disabled="loadingMoreComments" @click="loadMoreComments">{{ loadingMoreComments ? 'Carregando...' : 'Carregar mais comentários' }}</button>
     </section>
   </article>
 </template>
 
 <style scoped>
-.community-post{overflow:hidden;border:1px solid var(--bm-border);border-radius:10px;background:var(--bm-surface-strong);box-shadow:var(--shadow-panel)}.community-post__header{display:flex;align-items:center;gap:10px;padding:14px 16px}.community-post__header>img{width:38px;height:38px;flex:none;border:1px solid var(--bm-border);border-radius:50%;object-fit:cover}.community-post__header strong{display:block;overflow:hidden;color:var(--bm-text);font-size:.76rem;text-overflow:ellipsis;white-space:nowrap}.community-post__header p{color:var(--bm-muted);font-size:.64rem}.community-badge,.community-post__labels span{flex:none;border:1px solid var(--bm-border);border-radius:4px;padding:3px 6px;color:var(--bm-muted);font-size:.56rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.community-post__labels{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px}.community-post__body{padding:2px 16px 16px}.community-post__meta{margin-bottom:5px;color:var(--bm-red)!important;font-size:.62rem!important;font-weight:900;text-transform:uppercase}.community-post__body h2{margin-bottom:5px;color:var(--bm-heading);font-family:Cinzel,serif;font-size:1rem;font-weight:800}.community-post__content{white-space:pre-wrap;color:var(--bm-muted);font-size:.76rem;line-height:1.62}.community-post__tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;color:var(--bm-wine);font-size:.66rem;font-weight:800}.community-post__media{display:grid;gap:2px;background:var(--bm-border)}.community-post__media img{width:100%;height:min(430px,58vw);object-fit:cover}.community-post__media.count-2,.community-post__media.count-3,.community-post__media.count-4{grid-template-columns:repeat(2,1fr)}.community-post__media.count-2 img,.community-post__media.count-3 img,.community-post__media.count-4 img{height:240px}.community-post__footer{display:flex;align-items:center;gap:4px;border-top:1px solid var(--bm-border);padding:8px 12px}.community-post__footer button{display:inline-flex;min-width:34px;height:34px;align-items:center;justify-content:center;gap:6px;border-radius:6px;padding-inline:9px;color:var(--bm-muted);font-size:.66rem;font-weight:800}.community-post__footer button:hover,.community-post__footer button.is-active{background:var(--bm-surface);color:var(--bm-wine)}.community-comments{display:grid;gap:12px;border-top:1px solid var(--bm-border);padding:12px 16px}.community-comment-form{display:grid;gap:6px}.community-comment-context{display:flex;justify-content:space-between;color:var(--bm-muted);font-size:.62rem}.community-comment-context button{color:var(--bm-red);font-weight:800}.community-comments__empty{padding:10px;color:var(--bm-muted);font-size:.66rem;text-align:center}.community-comment{display:grid;grid-template-columns:28px 1fr;gap:8px}.community-comment img{width:28px;height:28px;border-radius:50%;object-fit:cover}.community-comment strong{color:var(--bm-heading);font-size:.68rem}.community-comment p{color:var(--bm-text);font-size:.7rem;line-height:1.5}.community-comment small{color:var(--bm-muted)}.community-comment__actions{display:flex;gap:10px;margin-top:3px}.community-comment__actions button{color:var(--bm-muted);font-size:.58rem;font-weight:800}.community-comment.is-reply{margin-top:10px;border-left:1px solid var(--bm-border);padding-left:10px}
+.community-post{overflow:hidden;border:1px solid var(--bm-border);border-radius:10px;background:var(--bm-surface-strong);box-shadow:var(--shadow-panel)}.community-post__header{display:flex;align-items:center;gap:10px;padding:14px 16px}.community-post__header>img{width:38px;height:38px;flex:none;border:1px solid var(--bm-border);border-radius:50%;object-fit:cover}.community-post__header strong{display:block;overflow:hidden;color:var(--bm-text);font-size:.76rem;text-overflow:ellipsis;white-space:nowrap}.community-post__header p{color:var(--bm-muted);font-size:.64rem}.community-badge,.community-post__labels span{flex:none;border:1px solid var(--bm-border);border-radius:4px;padding:3px 6px;color:var(--bm-muted);font-size:.56rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.community-post__labels{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px}.community-post__body{padding:2px 16px 16px}.community-post__meta{margin-bottom:5px;color:var(--bm-red)!important;font-size:.62rem!important;font-weight:900;text-transform:uppercase}.community-post__body h2{margin-bottom:5px;color:var(--bm-heading);font-family:Cinzel,serif;font-size:1rem;font-weight:800}.community-post__content{white-space:pre-wrap;color:var(--bm-muted);font-size:.76rem;line-height:1.62}.community-post__tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;color:var(--bm-wine);font-size:.66rem;font-weight:800}.community-post__media{display:grid;gap:2px;background:var(--bm-border)}.community-post__media img{width:100%;height:min(430px,58vw);object-fit:cover}.community-post__media.count-2,.community-post__media.count-3,.community-post__media.count-4{grid-template-columns:repeat(2,1fr)}.community-post__media.count-2 img,.community-post__media.count-3 img,.community-post__media.count-4 img{height:240px}.community-post__footer{display:flex;align-items:center;gap:4px;border-top:1px solid var(--bm-border);padding:8px 12px}.community-post__footer button{display:inline-flex;min-width:34px;height:34px;align-items:center;justify-content:center;gap:6px;border-radius:6px;padding-inline:9px;color:var(--bm-muted);font-size:.66rem;font-weight:800}.community-post__footer button:hover,.community-post__footer button.is-active{background:var(--bm-surface);color:var(--bm-wine)}.community-comments{display:grid;gap:12px;border-top:1px solid var(--bm-border);padding:12px 16px}.community-comment-form{display:grid;gap:6px}.community-comment-context{display:flex;justify-content:space-between;color:var(--bm-muted);font-size:.62rem}.community-comment-context button{color:var(--bm-red);font-weight:800}.community-comments__empty{padding:10px;color:var(--bm-muted);font-size:.66rem;text-align:center}.community-comments__more{justify-self:center;color:var(--bm-wine);font-size:.66rem;font-weight:800}.community-comments__more:disabled{opacity:.6}.community-comment{display:grid;grid-template-columns:28px 1fr;gap:8px}.community-comment img{width:28px;height:28px;border-radius:50%;object-fit:cover}.community-comment strong{color:var(--bm-heading);font-size:.68rem}.community-comment p{color:var(--bm-text);font-size:.7rem;line-height:1.5}.community-comment small{color:var(--bm-muted)}.community-comment__actions{display:flex;gap:10px;margin-top:3px}.community-comment__actions button{color:var(--bm-muted);font-size:.58rem;font-weight:800}.community-comment.is-reply{margin-top:10px;border-left:1px solid var(--bm-border);padding-left:10px}
 @media(max-width:479px){.community-post__header{align-items:flex-start;padding:12px}.community-post__labels{display:none}.community-post__body{padding-inline:12px}.community-post__media.count-2 img,.community-post__media.count-3 img,.community-post__media.count-4 img{height:160px}.community-post__footer{gap:0;padding-inline:6px}.community-comments{padding-inline:12px}}
 </style>

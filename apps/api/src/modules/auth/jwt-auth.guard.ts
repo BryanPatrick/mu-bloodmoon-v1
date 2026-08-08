@@ -49,7 +49,16 @@ export class JwtAuthGuard implements CanActivate {
         throw new UnauthorizedException('Session is no longer active')
       }
 
-      await this.prisma.accountSession.update({ where: { id: session.id }, data: { lastSeenAt: new Date() } })
+      try {
+        await this.prisma.accountSession.update({ where: { id: session.id }, data: { lastSeenAt: new Date() } })
+      } catch {
+        // Best-effort activity tracking only. Two concurrent requests on the
+        // same session (a double-click, or two tabs) can race this UPDATE
+        // and hit MySQL 1020 "Record has changed since last read" -- the
+        // session itself was already verified valid above, so a transient
+        // write conflict here must never turn a legitimate request into a
+        // 401. Losing one lastSeenAt tick is harmless.
+      }
 
       request.user = {
         id: account.id,

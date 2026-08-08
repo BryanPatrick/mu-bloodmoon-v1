@@ -44,6 +44,8 @@ export const useCommunityApi = () => {
     updatePost: (id: string, body: unknown) => request(`/community/posts/${id}`, { method: 'PATCH', body }),
     removePost: (id: string) => request(`/community/posts/${id}`, { method: 'DELETE' }),
     comment: (id: string, body: unknown) => request(`/community/posts/${id}/comments`, { method: 'POST', body }),
+    postComments: (id: string, page: number, authenticated = false) =>
+      request<CommunityPage>(authenticated ? `/community/posts/${id}/comments/authenticated` : `/community/posts/${id}/comments`, query({ page, pageSize: 10 })),
     updateComment: (id: string, body: unknown) => request(`/community/comments/${id}`, { method: 'PATCH', body }),
     removeComment: (id: string) => request(`/community/comments/${id}`, { method: 'DELETE' }),
     react: (body: unknown) => request('/community/reactions', { method: 'POST', body }),
