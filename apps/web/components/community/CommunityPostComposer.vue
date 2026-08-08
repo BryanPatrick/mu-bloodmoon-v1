@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { FileText, Images, Image as ImageIcon, Plus, Save, Send, Smile, Video, X } from 'lucide-vue-next'
 import type { CommunityPostType, CommunityPostView, CommunityPostVisibility } from '~/features/community/types/post'
+import { resolveMediaUrl as mediaUrl } from '~/features/community/map-profile-response'
 
 const props = defineProps<{ editingPost?: CommunityPostView | null }>()
 const emit = defineEmits<{ saved: [post: Record<string, any>], cancelEdit: [] }>()
@@ -30,12 +31,6 @@ const visibilityItems = [
 const accept = computed(() => type.value === 'GIF' ? 'image/gif' : 'image/jpeg,image/png,image/webp')
 const multiple = computed(() => type.value === 'GALLERY')
 const allPreviews = computed(() => [...existingMedia.value.map((item) => mediaUrl(item.url)), ...previews.value])
-
-const mediaUrl = (url: string) => {
-  if (/^https?:\/\//.test(url)) return url
-  const base = useRuntimeConfig().public.apiBase.replace(/\/api\/?$/, '')
-  return `${base}${url}`
-}
 
 const releasePreviews = () => {
   previews.value.forEach((url) => URL.revokeObjectURL(url))
@@ -89,7 +84,22 @@ const save = async () => {
   saving.value = true
   try {
     const uploaded = []
-    for (const file of files.value) uploaded.push(await api.uploadPostMedia(file))
+    // Post creation only ever runs after every file finishes uploading --
+    // if any upload fails, we stop before createPost/updatePost is called,
+    // so no post is ever shown as published with missing/broken media.
+    // (Already-succeeded files in this batch stay as unattached CommunityMedia
+    // rows -- there's no delete endpoint yet to roll those back; see
+    // docs/handoff/community-current-state.md for the known limitation.)
+    for (const [index, file] of files.value.entries()) {
+      try {
+        uploaded.push(await api.uploadPostMedia(file))
+      } catch (uploadError: any) {
+        throw new Error(
+          `Falha ao enviar "${file.name}" (arquivo ${index + 1} de ${files.value.length}): ${uploadError?.data?.message || uploadError?.message || 'erro desconhecido'}`,
+          { cause: uploadError }
+        )
+      }
+    }
     const body = {
       type: type.value, visibility: visibility.value, status: status.value,
       title: title.value || undefined, content: content.value,

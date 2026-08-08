@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Ban, Camera, Check, MoreHorizontal, Pencil, Share2, UserMinus, UserPlus } from 'lucide-vue-next'
 import type { CommunitySocialProfile } from '~/features/community/types/profile'
+import { resolveMediaUrl } from '~/features/community/map-profile-response'
 
 const props = defineProps<{ profile: CommunitySocialProfile; ownProfile?: boolean }>()
 const emit = defineEmits<{ edit: [] }>()
@@ -56,10 +57,10 @@ onMounted(async () => {
 
 <template>
   <header class="community-profile-head">
-    <div class="community-profile-head__cover" :style="{ backgroundImage: `url(${profile.coverUrl})` }" />
+    <div class="community-profile-head__cover" :style="profile.coverUrl ? { backgroundImage: `url(${resolveMediaUrl(profile.coverUrl)})` } : undefined" />
     <div class="community-profile-head__grid">
       <section class="community-profile-head__identity">
-        <div class="community-profile-head__avatar"><img :src="profile.avatarUrl" :alt="profile.displayName"><button v-if="ownProfile" type="button" aria-label="Alterar foto" @click="emit('edit')"><Camera class="size-4" /></button></div>
+        <div class="community-profile-head__avatar"><img v-if="profile.avatarUrl" :src="resolveMediaUrl(profile.avatarUrl)" :alt="profile.displayName"><div v-else class="community-profile-head__avatar-placeholder" aria-hidden="true">{{ (profile.displayName || profile.username || '?').charAt(0).toUpperCase() }}</div><button v-if="ownProfile" type="button" aria-label="Alterar foto" @click="emit('edit')"><Camera class="size-4" /></button></div>
         <div class="community-profile-head__facts"><span>Personagem principal</span><strong>{{ profile.mainCharacter.name }}</strong><small>{{ profile.mainCharacter.className }} · {{ profile.guild }}</small></div>
       </section>
 
@@ -82,7 +83,8 @@ onMounted(async () => {
 .community-profile-head { position: relative; overflow: hidden; border: 1px solid var(--bm-border); border-radius: 10px; background: var(--bm-surface-strong); box-shadow: var(--shadow-panel); }
 .community-profile-head__cover { height: 150px; background-position: center 42%; background-size: cover; opacity: .42; }.community-profile-head__cover::after { content: ''; display: block; height: 100%; background: linear-gradient(180deg, transparent, var(--bm-surface-strong)); }
 .community-profile-head__grid { display: grid; grid-template-columns: 270px minmax(0,1fr); gap: 28px; margin-top: -52px; padding: 0 26px 26px; }
-.community-profile-head__identity { position: relative; z-index: 1; }.community-profile-head__avatar { position: relative; width: 150px; height: 150px; margin-inline: auto; }.community-profile-head__avatar img { width: 100%; height: 100%; border: 5px solid var(--bm-surface-strong); border-radius: 50%; object-fit: cover; }.community-profile-head__avatar button { position: absolute; right: 7px; bottom: 7px; display: grid; width: 34px; height: 34px; place-items: center; border: 3px solid var(--bm-surface-strong); border-radius: 50%; background: var(--bm-red); color: white; }
+.community-profile-head__identity { position: relative; z-index: 1; }.community-profile-head__avatar { position: relative; width: 150px; height: 150px; margin-inline: auto; }.community-profile-head__avatar img { width: 100%; height: 100%; border: 5px solid var(--bm-surface-strong); border-radius: 50%; object-fit: cover; }
+.community-profile-head__avatar-placeholder { display: grid; width: 100%; height: 100%; place-items: center; border: 5px solid var(--bm-surface-strong); border-radius: 50%; background: var(--bm-surface); color: var(--bm-muted); font-family: Cinzel, serif; font-size: 2.4rem; font-weight: 800; }.community-profile-head__avatar button { position: absolute; right: 7px; bottom: 7px; display: grid; width: 34px; height: 34px; place-items: center; border: 3px solid var(--bm-surface-strong); border-radius: 50%; background: var(--bm-red); color: white; }
 .community-profile-head__facts { margin-top: 14px; border-top: 1px solid var(--bm-border); padding-top: 13px; text-align: center; }.community-profile-head__facts span,.community-profile-head__facts small { display: block; color: var(--bm-muted); font-size: .62rem; }.community-profile-head__facts span { font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }.community-profile-head__facts strong { display: block; margin-top: 5px; color: var(--bm-heading); font-family: Cinzel,serif; font-size: .9rem; }
 .community-profile-head__details { position: relative; z-index: 1; padding-top: 62px; }.community-profile-head__stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); border-bottom: 1px solid var(--bm-border); padding-bottom: 15px; }.community-profile-head__stats div { text-align: center; }.community-profile-head__stats div + div { border-left: 1px solid var(--bm-border); }.community-profile-head__stats strong,.community-profile-head__stats span { display: block; }.community-profile-head__stats strong { color: var(--bm-heading); font-family: Cinzel,serif; font-size: 1rem; }.community-profile-head__stats span { color: var(--bm-muted); font-size: .62rem; }
 .community-profile-head__achievements { display: flex; min-height: 62px; align-items: center; gap: 18px; border-bottom: 1px solid var(--bm-border); }.community-profile-head__achievements > div:first-child strong,.community-profile-head__achievements > div:first-child span { display:block; }.community-profile-head__achievements > div:first-child strong { color: var(--bm-wine); font-family:Cinzel,serif; }.community-profile-head__achievements > div:first-child span { color:var(--bm-muted); font-size:.6rem; }.community-profile-head__badges { display:flex; gap:6px; }

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common'
 import type { CommunityPostType, Prisma } from '@prisma/client'
 import { createHash, randomUUID } from 'node:crypto'
 import { mkdir, writeFile } from 'node:fs/promises'
@@ -32,8 +32,14 @@ export class MediaService {
       if (!['jpg', 'png', 'webp', 'gif'].includes(inputExtension)) {
         throw new BadRequestException('Formato nao permitido. Use JPG, PNG, WebP ou GIF.')
       }
-      const source = sharp(file.buffer, { animated: true, limitInputPixels: MAX_PIXELS })
-      const metadata = await source.metadata()
+      // Sharp throwing here means the bytes aren't a real, parseable image no
+      // matter what the filename/Content-Type claimed -- a corrupted or
+      // fabricated file is a validation failure (400), not a server fault.
+      const metadata = await sharp(file.buffer, { animated: true, limitInputPixels: MAX_PIXELS })
+        .metadata()
+        .catch(() => {
+          throw new BadRequestException('O arquivo esta corrompido ou nao e uma imagem valida.')
+        })
       const format = metadata.format as keyof typeof FORMAT_TO_EXTENSION
       const detectedExtension = FORMAT_TO_EXTENSION[format]
       const width = metadata.width || 0
@@ -46,9 +52,15 @@ export class MediaService {
       }
 
       const isGif = detectedExtension === 'gif'
-      const processed = isGif
-        ? await sharp(file.buffer, { animated: true, limitInputPixels: MAX_PIXELS }).gif({ effort: 5 }).toBuffer()
-        : await sharp(file.buffer, { limitInputPixels: MAX_PIXELS }).rotate().resize({ width: 2048, height: 2048, fit: 'inside', withoutEnlargement: true }).webp({ quality: 86 }).toBuffer()
+      // Same reasoning as the metadata() call above: a file whose header
+      // passes format/dimension checks but fails full pixel decode here is
+      // still a bad-input case (400), not an infrastructure fault.
+      const processed = await (isGif
+        ? sharp(file.buffer, { animated: true, limitInputPixels: MAX_PIXELS }).gif({ effort: 5 }).toBuffer()
+        : sharp(file.buffer, { limitInputPixels: MAX_PIXELS }).rotate().resize({ width: 2048, height: 2048, fit: 'inside', withoutEnlargement: true }).webp({ quality: 86 }).toBuffer()
+      ).catch(() => {
+        throw new BadRequestException('Nao foi possivel processar o conteudo desta imagem.')
+      })
       const outputExtension = isGif ? 'gif' : 'webp'
       const outputMime = MIME_BY_EXTENSION[outputExtension]
       const outputMetadata = await sharp(processed, { animated: isGif }).metadata()
@@ -56,7 +68,8 @@ export class MediaService {
       const storagePath = join(this.directory(), filename)
       await mkdir(this.directory(), { recursive: true })
       await writeFile(storagePath, processed)
-      return this.prisma.communityMedia.create({
+      const sha256 = createHash('sha256').update(processed).digest('hex')
+      const media = await this.prisma.communityMedia.create({
         data: {
           ownerId: user.id,
           kind: isGif ? 'GIF' : 'IMAGE',
@@ -69,10 +82,26 @@ export class MediaService {
           sizeBytes: processed.byteLength,
           width: outputMetadata.width || width,
           height: outputMetadata.height || height,
-          sha256: createHash('sha256').update(processed).digest('hex')
+          sha256
         },
         select: { id: true, kind: true, url: true, mimeType: true, sizeBytes: true, width: true, height: true }
       })
+      // Provenance: who uploaded, when (event creation time), the request's
+      // correlation id (picked up automatically from CorrelationMiddleware),
+      // and the content hash already on the row itself. No new column/table --
+      // this reuses the audit trail every other module already writes to.
+      // Not full moderation tooling (no admin surface reads this yet), but the
+      // trail exists for when one is built.
+      await this.observability.recordOperationalEvent({
+        module: 'community.media',
+        eventType: 'COMMUNITY_MEDIA_UPLOADED',
+        entityType: 'CommunityMedia',
+        entityId: media.id,
+        actorUserId: user.id,
+        description: `Midia enviada (${media.kind}, ${media.sizeBytes} bytes).`,
+        data: { sha256, mimeType: media.mimeType, width: media.width, height: media.height }
+      })
+      return media
     } catch (error) {
       await this.observability.recordSystemError({
         module: 'community.media', severity: error instanceof BadRequestException ? 'WARNING' : 'ERROR',
@@ -80,8 +109,16 @@ export class MediaService {
         internalMessage: error instanceof Error ? error.message : String(error), stackTrace: error instanceof Error ? error.stack : undefined,
         userId: user.id
       })
+      // A BadRequestException here is always a validation decision this
+      // service made deliberately (bad format, mismatched content, invalid
+      // dimensions) -- pass it through as-is. Anything else (a filesystem
+      // write failure, a permissions problem, disk full) is an infrastructure
+      // fault, not something the caller did wrong -- surfacing it as 400
+      // would incorrectly tell the user their file was invalid. No
+      // CommunityMedia row is created in this path either way (the DB insert
+      // only runs after the file write succeeds).
       if (error instanceof BadRequestException) throw error
-      throw new BadRequestException('Nao foi possivel processar esta imagem.')
+      throw new InternalServerErrorException('Nao foi possivel salvar a midia no momento.')
     }
   }
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Bookmark, Copy, Edit3, Gem, Heart, Medal, MessageCircle, MoreHorizontal, Repeat2, Share2, Trash2, Trophy, Zap } from 'lucide-vue-next'
 import type { CommunityCommentView, CommunityPostView, CommunityReactionType } from '~/features/community/types/post'
+import { resolveMediaUrl as mediaUrl } from '~/features/community/map-profile-response'
 
 const props = defineProps<{ post: CommunityPostView, own?: boolean, currentUserId?: string | null }>()
 const emit = defineEmits<{
@@ -15,7 +16,6 @@ const emit = defineEmits<{
   removeComment: [comment: CommunityCommentView]
   reactComment: [comment: CommunityCommentView, type: CommunityReactionType]
 }>()
-const config = useRuntimeConfig()
 const commentsOpen = ref(false)
 const commentText = ref('')
 const replyingTo = ref<CommunityCommentView | null>(null)
@@ -28,7 +28,6 @@ const reactionOptions: Array<{ type: CommunityReactionType, label: string, icon:
   { type: 'POWER', label: 'Poder', icon: Zap }, { type: 'RARE', label: 'Raro', icon: Gem }, { type: 'VICTORY', label: 'Vitória', icon: Trophy }
 ]
 const createdLabel = computed(() => new Intl.DateTimeFormat('pt-BR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(props.post.createdAt)))
-const mediaUrl = (url: string) => /^https?:\/\//.test(url) ? url : `${config.public.apiBase.replace(/\/api\/?$/, '')}${url}`
 const reactionMenu = (target: CommunityPostView | CommunityCommentView, comment = false) => [reactionOptions.map((item) => ({
   label: item.label, icon: item.icon,
   onSelect: () => comment ? emit('reactComment', target as CommunityCommentView, item.type) : emit('react', target as CommunityPostView, item.type)

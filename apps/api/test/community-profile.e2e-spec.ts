@@ -1,4 +1,5 @@
 import { execSync } from 'node:child_process'
+import { startDisposableDatabase, stopDisposableDatabase } from './support/disposable-mysql'
 
 // A dedicated, disposable MariaDB container -- never the shared dev database
 // (bloodmoon-mysql), never production. Created in beforeAll, destroyed in
@@ -7,57 +8,20 @@ import { execSync } from 'node:child_process'
 // never the one in apps/api/.env (dotenv does not overwrite an already-set
 // env var).
 const CONTAINER = 'bloodmoon-e2e-community-profile'
-const DB_NAME = 'bloodmoon_e2e'
-const DB_USER = 'validator'
-const DB_PASSWORD = 'validator_pw'
-const DB_ROOT_PASSWORD = 'validator_root_pw'
-
-let port = ''
-
-const sh = (command: string, options: Parameters<typeof execSync>[1] = {}) =>
-  execSync(command, { stdio: 'pipe', ...options }).toString()
-
-const waitForDatabase = async () => {
-  for (let attempt = 0; attempt < 30; attempt++) {
-    try {
-      sh(`docker exec ${CONTAINER} mariadb -u${DB_USER} -p${DB_PASSWORD} ${DB_NAME} -e "SELECT 1"`)
-      return
-    } catch {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-    }
-  }
-  throw new Error('Disposable e2e database did not become ready in time')
-}
 
 beforeAll(async () => {
-  try {
-    sh(`docker rm -f ${CONTAINER}`)
-  } catch {
-    /* fine if it didn't already exist */
-  }
-  sh(
-    `docker run -d --name ${CONTAINER} ` +
-      `-e MARIADB_DATABASE=${DB_NAME} -e MARIADB_USER=${DB_USER} -e MARIADB_PASSWORD=${DB_PASSWORD} ` +
-      `-e MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD} -p 0:3306 mariadb:11`
-  )
-  const portOutput = sh(`docker port ${CONTAINER} 3306/tcp`)
-  port = portOutput.trim().split(':').pop()!.trim()
-  await waitForDatabase()
+  const database = await startDisposableDatabase(CONTAINER)
 
-  process.env.DATABASE_URL = `mysql://${DB_USER}:${DB_PASSWORD}@localhost:${port}/${DB_NAME}`
+  process.env.DATABASE_URL = database.databaseUrl
   process.env.JWT_ACCESS_SECRET ||= 'e2e-test-access-secret-not-for-production-use'
   process.env.JWT_REFRESH_SECRET ||= 'e2e-test-refresh-secret-not-for-production-use'
   process.env.TWO_FACTOR_ENCRYPTION_KEY ||= 'e2e-test-two-factor-key-at-least-32-characters'
 
-  sh('npx prisma migrate deploy', { cwd: __dirname + '/..', env: process.env })
+  execSync('npx prisma migrate deploy', { cwd: __dirname + '/..', env: process.env, stdio: 'pipe' })
 }, 120000)
 
 afterAll(() => {
-  try {
-    sh(`docker rm -f ${CONTAINER}`)
-  } catch {
-    /* best effort cleanup */
-  }
+  stopDisposableDatabase(CONTAINER)
 })
 
 // bcrypt (cost 12, used by /auth/register and /auth/login) is legitimately

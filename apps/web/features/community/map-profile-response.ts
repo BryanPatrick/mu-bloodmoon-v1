@@ -14,6 +14,19 @@ const mediaUrl = (media: unknown) => {
   return ''
 }
 
+/** Resolves a CommunityMedia URL (relative, e.g. `/api/media/community/xxx.webp`)
+ * to an absolute one the browser can load. Real uploads are always stored and
+ * returned as API-relative paths; already-absolute URLs pass through
+ * unchanged. Shared so post cards, the profile header (avatar/cover) and the
+ * editor preview all resolve the exact same way. */
+export const resolveMediaUrl = (url: string) => {
+  if (!url) return ''
+  if (/^https?:\/\//.test(url)) return url
+  const config = useRuntimeConfig()
+  const base = String(config.public.apiBase || '').replace(/\/api\/?$/, '')
+  return `${base}${url}`
+}
+
 /** Maps a real `GET /community/profiles/:username` response onto the display
  * shape shared by the profile page and the home rail's own-profile card. No
  * mock/fallback data -- fields the account hasn't set render empty, never

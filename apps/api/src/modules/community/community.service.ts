@@ -322,11 +322,17 @@ export class CommunityService {
   private optionalUrl(value: unknown, label: string, maxLength: number): string | undefined {
     const text = this.optionalText(value, label, maxLength)
     if (!text) return text
+    // Accepts either an absolute http(s) URL, or a same-origin relative path
+    // (`/...`) -- MediaService.publicUrl() returns the latter, e.g.
+    // `/api/media/community/<uuid>.webp`, which is exactly what the real
+    // avatar/cover upload pipeline sends back. Rejecting relative paths here
+    // would reject our own upload endpoint's response.
+    if (text.startsWith('/')) return text
     try {
       const url = new URL(text)
       if (url.protocol !== 'http:' && url.protocol !== 'https:') throw new Error('protocol')
     } catch {
-      throw new BadRequestException(`${label} deve ser uma URL http(s) válida.`)
+      throw new BadRequestException(`${label} deve ser uma URL http(s) válida ou um caminho relativo iniciado por "/".`)
     }
     return text
   }
@@ -478,10 +484,19 @@ export class CommunityService {
   async removeOwnPost(id: string, user: AuthenticatedUser) {
     const post = await this.prisma.communityPost.findUnique({ where: { id } })
     if (!post || post.authorId !== user.id) throw new NotFoundException('Publicação não encontrada.')
-    const removed = await this.prisma.communityPost.update({
-      where: { id },
-      data: { status: 'REMOVED', removedBy: user.id, removedAt: new Date(), deletionReason: 'Removida pelo autor.' }
-    })
+    const [removed] = await this.prisma.$transaction([
+      this.prisma.communityPost.update({
+        where: { id },
+        data: { status: 'REMOVED', removedBy: user.id, removedAt: new Date(), deletionReason: 'Removida pelo autor.' }
+      }),
+      // Same detach-on-removal the media gets on an edit that drops it
+      // (updateOwnPost, above) -- otherwise CommunityMedia rows stay
+      // ATTACHED to a post that no longer exists in the feed, forever.
+      this.prisma.communityMedia.updateMany({
+        where: { postId: id },
+        data: { postId: null, status: 'REMOVED', removedAt: new Date() }
+      })
+    ])
     await this.observability.recordOperationalEvent({ module: 'community', eventType: 'COMMUNITY_POST_REMOVED_BY_AUTHOR', entityType: 'CommunityPost', entityId: id, actorUserId: user.id, description: 'Publicacao removida pelo autor.' })
     return removed
   }

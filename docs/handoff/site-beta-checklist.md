@@ -13,8 +13,10 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
 - [ ] Executar E2E autenticado de perfil, upload, post, edicao, exclusao, comentario,
   resposta, reacao, save, repost, follow, block e denuncia. (Etapa 7: escopo de
   **perfil** coberto -- `apps/api/test/community-profile.e2e-spec.ts`, 6/6 PASS.
-  upload/post/comentario/reacao/save/repost/follow/block/denuncia continuam sem
-  E2E -- ver Etapa 8+.)
+  Etapa 8: escopo de **midia/upload** coberto -- `apps/api/test/community-media.e2e-spec.ts`,
+  10/10 PASS (valido, tipo invalido, arquivo grande, corrompido, sem-auth, avatar,
+  post com midia, falha de storage). Combinado: `npm run api:test:e2e` 16/16 PASS.
+  comentario/reacao/save/repost/follow/block/denuncia continuam sem E2E -- ver Etapa 9+.)
 - [x] Remover o fallback silencioso de perfil mockado no caminho de usuario real. (Etapa 7: `stage-two.mock.ts` deletado; `pages/comunidade/[username].vue` usa somente dado real, com estados loading/error/not-found explicitos.)
 - [x] Garantir que falha de API nao seja exibida como conteudo inventado. (Etapa 7, escopo perfil: erro real -> estado de erro real, nunca dado inventado. Demais telas Community fora do escopo desta etapa.)
 
@@ -38,7 +40,13 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
 
 - [ ] Backup restauravel do MySQL, storage e build antes da liberacao.
 - [ ] Aplicar migrations somente apos backup e teste de rollback.
-- [ ] Configurar storage persistente/backup para midia Community.
+- [ ] Configurar storage persistente/backup para midia Community. (Etapa 8: confirmado como
+  blocker real, nao teorico -- `scripts/package-cpanel-deploy.mjs`, o pipeline de deploy
+  de producao efetivamente usado por este projeto, nao gerencia/preserva
+  `COMMUNITY_MEDIA_DIR` entre deploys; redeploy de rotina arrisca apagar midia de usuario
+  em silencio. Recomendacao registrada, nao implementada -- ver
+  docs/handoff/community-current-state.md#midia-etapa-8. Migrar storage exige escopo e
+  aprovacao explicitos em etapa futura.)
 - [ ] Smoke test HTTPS de web, API, banco, uploads, downloads e jobs.
 - [ ] Configurar logs/alertas para falha de banco, entrega, escrow e storage.
 
@@ -91,7 +99,9 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
 - [ ] Implementar eventos sociais.
 - [ ] Definir dominio de Guilds (entidade, membros, cargos e pagina).
 - [ ] Implementar mute e colecoes de salvos.
-- [ ] Definir ciclo de limpeza de midia temporaria/orfa.
+- [ ] Definir ciclo de limpeza de midia temporaria/orfa. (Etapa 8: caso concreto identificado --
+  upload multi-arquivo parcialmente falho deixa `CommunityMedia` sem post associado, sem
+  endpoint de exclusao avulsa ainda. Nao e risco de seguranca, e desperdicio de storage.)
 - [ ] Converter GIF pesado para formato de video quando apropriado.
 
 ### Loja/marketplace/roadmap

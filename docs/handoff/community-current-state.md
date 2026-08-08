@@ -124,9 +124,9 @@ Status geral: `PARTIAL`, com base backend relevante e integracao final pendente.
 | Block/unblock | DONE backend | Endpoints e relacao persistida; UX final incompleta. |
 | Mute | MISSING | Enum preparado, sem fluxo publico identificado. |
 | Hover card | PARTIAL | Componente existe; confirmar uso em todos os usernames. |
-| Upload de imagem | DONE backend | Validacao/reprocessamento/storage local; E2E nao executado. |
+| Upload de imagem | `DONE` | Etapa 8: pipeline real ligado a avatar/capa/posts (zero base64/mock); rate limit (10/60s); erro de validacao (400) separado de falha de infraestrutura (500); E2E cobre valido/tipo invalido/arquivo grande/corrompido/sem-auth/falha de storage. Storage continua local -- ver "Midia (Etapa 8)" abaixo para o blocker de producao. |
 | Upload de GIF | DONE backend | Valida e reprocessa GIF; conversao para video nao existe. |
-| Galeria | DONE backend | 2 a 6 assets; UI precisa E2E. |
+| Galeria | DONE backend | 2 a 6 assets; E2E cobre post com midia (ver "Midia (Etapa 8)"); QA visual em navegador ainda pendente. |
 | Denuncia | DONE backend | Endpoint e workflow administrativo. |
 | Moderacao | DONE backend/admin | Post/comment/reaction/user/report; precisa E2E por permissao. |
 | Conquistas | PARTIAL | CRUD/grants/admin e exibicao de perfil; dados reais dependem do banco. |
@@ -406,15 +406,26 @@ repositorio separado -- ver `docs/protocols/destructive-actions.md` la).
 - calcula SHA-256;
 - registra owner/status/path no banco;
 - so permite anexar asset da propria conta em estado permitido;
-- registra falhas em SystemError.
+- registra falhas em SystemError;
+- **(Etapa 8)** rate limit de 10 uploads/60s por cliente (`ThrottlerGuard`,
+  escopado ao `MediaModule`, nao API-wide);
+- **(Etapa 8)** provenance basica: cada upload gera um `SystemOperationalEvent`
+  (`COMMUNITY_MEDIA_UPLOADED`) com uploader, correlation id (via
+  `CorrelationMiddleware`, automatico), timestamp e SHA-256 -- reaproveita a
+  trilha de auditoria que os outros modulos ja escrevem, sem coluna/tabela nova.
 
 Pendencias:
 
-- storage e filesystem local, sem objeto remoto/CDN;
-- nao foi verificada limpeza de assets temporarios/orfaos;
+- storage e filesystem local, sem objeto remoto/CDN -- **blocker de Beta
+  Release, ver "Midia (Etapa 8)" abaixo**;
+- limpeza de assets orfaos por falha parcial de upload multi-arquivo
+  **identificada nesta etapa** (ver "Midia (Etapa 8)" abaixo) -- ainda sem
+  ciclo de limpeza automatico;
 - URL e servida pela propria API; proxy/cache/backup precisam homologacao;
 - GIF pesado ainda nao converte para WebM/MP4;
-- nao aceitar SVG arbitrario esta corretamente preservado.
+- nao aceitar SVG arbitrario esta corretamente preservado;
+- moderacao de conteudo (revisar/remover midia reportada) ainda nao tem
+  superficie admin -- o evento de provenance existe, mas nada o le ainda.
 
 ## Autenticacao, autorizacao e moderacao
 
@@ -537,6 +548,148 @@ Fora do escopo: QA visual manual em navegador (a validacao aqui e via HTTP
 real, nao pixel-a-pixel); testes de outros modulos Community (feed, posts,
 midia -- sem cobertura ainda).
 
+## Midia (Etapa 8)
+
+Objetivo da etapa: tornar imagem/midia da Community real, segura e pronta
+para beta -- **sem** assumir que "existe R2 no Knowledge Hub" implica migrar
+o storage da Community para la (instrucao explicita do brief; Knowledge Hub e
+um repositorio/infra separado do BloodMoon).
+
+### Inventario (ponto de partida)
+
+Antes de qualquer mudanca, o pipeline existente (`MediaService`, herdado das
+etapas anteriores) ja era solido: upload autenticado via `POST
+/community/media`, limite de 8 MB no `FileInterceptor`, validacao por bytes
+reais com Sharp (nao confia em extensao/Content-Type do cliente), filename
+gerado no servidor (`randomUUID()`, nunca o nome enviado pelo usuario -- sem
+path traversal possivel), allowlist fechada (JPG/PNG/WebP/GIF, SVG
+deliberadamente fora), reencode que descarta qualquer payload/metadata
+embutido no arquivo original, `CommunityMedia` com owner/status/hash no
+banco, e `resolveForPost`/`snapshot` com checagem de propriedade e limite de
+quantidade por tipo de post. Os gaps reais encontrados (nao especulativos --
+cada um comprovado por teste ou leitura direta do codigo) foram os listados
+abaixo.
+
+### O que foi corrigido nesta etapa
+
+- **Seguranca -- rate limiting**: `POST /community/media` nao tinha nenhum
+  limite de taxa (Sharp + escrita em disco e o endpoint mais caro da API).
+  Adicionado `@nestjs/throttler` (`^5.2.0`, unica versao com
+  `reflect-metadata@^0.2.0` compativel com o stack atual -- verificado via
+  `npm view` antes de instalar, mesma disciplina da Etapa 7 para
+  `@nestjs/testing`), escopado ao `MediaModule` (10 uploads/60s), nao
+  aplicado a API inteira -- fora de escopo desta etapa.
+- **Perfil -- pipeline real, zero base64/mock**: `CommunityProfileEditor.vue`
+  antes tinha `<input type="url">` puro para `avatarUrl`/`coverUrl` (o
+  usuario colava uma URL manualmente, nenhum upload real). Reescrito para
+  usar `useCommunityApi().uploadMedia()` (mesmo endpoint de posts) com
+  preview, estado de loading e erro inline por campo; o formulario so grava
+  a URL real devolvida pelo servidor, nunca um valor fabricado.
+- **Posts -- falha sem estado fantasma**: `CommunityPostComposer.vue` agora
+  captura falha de upload por arquivo individual (com nome do arquivo e
+  indice no lote na mensagem de erro) e **interrompe antes de criar/editar o
+  post** -- o post so e criado depois que todos os uploads do lote terminam
+  com sucesso. Ghost-post tambem foi coberto no backend: `resolveForPost`
+  ja rejeitava `mediaIds` inexistente ou de outra conta (400), confirmado
+  agora por E2E dedicado.
+- **Bug corrigido (Etapa 7 → Etapa 8)**: `community.service.ts#optionalUrl`
+  exigia `http(s)://` valido, mas `MediaService.publicUrl()` sempre devolveu
+  caminho relativo (`/api/media/community/<uuid>.webp`) -- ou seja, o
+  upload real de avatar/capa desta propria etapa era **rejeitado pela
+  validacao de perfil da etapa anterior** (`PATCH /community/me` retornava
+  400). So foi encontrado porque o E2E exercitou upload + perfil juntos, nao
+  cada modulo isolado. Corrigido com `if (text.startsWith('/')) return
+  text` antes do `new URL()`. Frontend ganhou `resolveMediaUrl()`
+  (`apps/web/features/community/map-profile-response.ts`), compartilhado por
+  post card, composer e header de perfil, para resolver esse mesmo caminho
+  relativo em URL absoluta na hora de exibir.
+- **`removeOwnPost` nao desanexava midia**: `updateOwnPost` ja desanexava
+  `CommunityMedia` quando um post editado perdia sua imagem, mas
+  `removeOwnPost` (excluir o post inteiro) nao fazia o mesmo -- linhas de
+  `CommunityMedia` ficavam `ATTACHED` a um post `REMOVED` para sempre.
+  Corrigido: exclusao de post agora tambem executa
+  `communityMedia.updateMany({ postId: null, status: 'REMOVED' })` na mesma
+  transacao.
+- **400 vs. 500 confundidos**: antes, qualquer erro dentro de
+  `MediaService.upload` (incluindo falha real de disco/permissao) virava
+  400 (`BadRequestException`) genericamente. Corrigido para separar por
+  origem: falha de validacao do arquivo (formato invalido, dimensao invalida,
+  Sharp nao consegue decodificar) continua 400; falha de infraestrutura
+  (escrita em disco falha, `mkdir` falha) agora e `InternalServerErrorException`
+  (500) -- nao dizer ao usuario "seu arquivo esta invalido" quando o problema
+  foi do servidor. Coberto por E2E dedicado (bloqueia o diretorio de destino
+  com um arquivo para forcar `ENOTDIR` real, nao simulado).
+
+### Limitacao conhecida, nao corrigida nesta etapa
+
+Upload multi-arquivo parcialmente falho (ex.: 3 de 5 imagens de uma galeria
+sobem com sucesso, a 4a falha) deixa as `CommunityMedia` ja enviadas com
+`status: 'READY'` e sem post associado -- nao ha endpoint de exclusao de
+midia avulsa ainda para o composer fazer rollback dessas linhas. Nao e um
+bug de seguranca (o asset pertence ao proprio usuario, nao fica exposto a
+terceiros nem conta como post publicado), mas e desperdicio de storage.
+Registrado como candidato ao "ciclo de limpeza de midia temporaria/orfa" ja
+listado no checklist de beta (MEDIUM).
+
+### Storage local -- avaliacao e blocker de Beta Release
+
+O brief pediu avaliacao concreta, nao migracao automatica. Achado real
+(nao teorico): o deploy de producao usado por este projeto e via cPanel
+(`scripts/package-cpanel-deploy.mjs`, confirmado como o pipeline real e
+atual -- ver nota de descarte do plano VPS+Docker+PostgreSQL desatualizado em
+`docs/deployment-architecture.md`). Esse script empacota o build da API/web
+para upload manual/automatizado ao cPanel, mas **nao gerencia, preserva nem
+faz backup do diretorio `COMMUNITY_MEDIA_DIR`** (`storage/community-media/`
+por padrao). Isso significa que um redeploy de rotina para producao tem risco
+real de apagar silenciosamente toda midia de usuario ja enviada (avatar,
+capa, imagens de post) -- nao e uma preocupacao generica de "disco local e
+ruim", e um gap concreto e verificavel no script de deploy que este projeto
+realmente usa.
+
+**Recomendacao** (nao implementada nesta etapa -- fora do escopo autorizado):
+antes do beta, ou (a) o script de deploy cPanel passa a preservar
+explicitamente `storage/community-media/` entre deploys (rsync/skip
+overwrite), ou (b) migrar para armazenamento de objeto remoto (R2, S3
+compativel, ou equivalente) com URL publica estavel -- decisao de
+arquitetura que exige escopo e aprovacao explicitos, per a propria instrucao
+do brief desta etapa. **Registrado como blocker de Beta Release** em
+`docs/handoff/site-beta-checklist.md` (bloco Deploy/producao).
+
+### E2E (novo: `apps/api/test/community-media.e2e-spec.ts`)
+
+Mesmo padrao de banco descartavel e isolado da Etapa 7 (`disposable-mysql.ts`,
+extraido nesta etapa para `apps/api/test/support/` e compartilhado pelos dois
+specs), mais um `COMMUNITY_MEDIA_DIR` isolado em `os.tmpdir()` (criado no
+`beforeAll`, removido no `afterAll` -- nunca escreve no storage real de
+dev/producao). 10 casos, **10/10 PASS**:
+
+1. registra e loga uma conta real;
+2. rejeita upload sem autenticacao (401);
+3. upload valido -- 201, `kind`/`mimeType`/formato da URL confirmados
+   (reencode real para WebP);
+4. rejeita tipo de arquivo nao permitido (`.txt`, 400);
+5. rejeita arquivo acima de 8 MB (4xx);
+6. rejeita arquivo corrompido -- extensao/Content-Type validos, bytes
+   invalidos (400);
+7. retorna 500 (nao 400) quando o proprio storage falha, e nao cria linha de
+   `CommunityMedia` (simulado forcando `ENOTDIR` real no diretorio de
+   destino);
+8. avatar: upload real -> `PATCH /community/me` -> `GET` do perfil confirma
+   a URL relativa persistida (prova o bug do `optionalUrl` corrigido acima);
+9. post com midia: upload real -> criar post -> `GET` do perfil confirma o
+   post com a midia anexada corretamente;
+10. falha de upload nao cria post fantasma: `mediaIds` inexistente rejeitado
+    (400), nenhum post criado.
+
+Combinado com `community-profile.e2e-spec.ts` (Etapa 7, 6/6, revalidado
+apos o fix do `optionalUrl`): `npm run api:test:e2e` -> **16/16 PASS**.
+Nenhum container Docker deixado para tras em nenhuma execucao (`docker ps -a
+--filter name=bloodmoon-e2e` vazio ao final).
+
+Fora do escopo: QA visual manual em navegador; testes de outros modulos
+Community alem de perfil/midia (feed, comentarios, reacoes, follow/block,
+denuncia -- ainda sem E2E).
+
 ## Catalogo de mocks/fallbacks (Etapa 5)
 
 Auditoria de 2026-08-08 (Etapa C1) ja apontava mocks em prosa (itens 3-4 de
@@ -574,6 +727,10 @@ Resumo original (Etapa 5): 6 `BLOCKER_BETA`, 1 `DEV_ONLY`, 1 `TEMPORARY_SAFE`. *
 9. Nao houve QA visual em browser com API e banco nesta auditoria. (Inalterado -- ver "Perfil (Etapa 7)" abaixo para o que foi validado via API/E2E em vez de QA visual manual.)
 10. Algumas strings apareceram com mojibake no terminal PowerShell; confirmar encoding
     visual em browser antes de alterar arquivos. **(Etapa 7: as 3 ocorrencias reais em `community.service.ts` -- `follow`/`unfollow` -- foram corrigidas. Nao foi feita uma varredura completa do repositorio; outras ocorrencias podem existir fora do escopo tocado nesta etapa.)**
+11. ~~`optionalUrl` (perfil, Etapa 7) rejeitava a URL relativa que o upload real (Etapa 8) sempre devolve.~~ **(RESOLVIDO na Etapa 8: aceita caminho relativo iniciado por `/`, alem de `http(s)://` absoluto. So foi encontrado por E2E cruzando upload real + perfil real.)**
+12. ~~`removeOwnPost` nao desanexava `CommunityMedia` ao excluir um post.~~ **(RESOLVIDO na Etapa 8: mesma logica de desanexar que `updateOwnPost` ja tinha, agora tambem na exclusao.)**
+13. Upload multi-arquivo parcialmente falho deixa `CommunityMedia` orfa (sem post, sem endpoint de exclusao avulsa ainda). **(Identificado na Etapa 8 -- nao e falha de seguranca, e desperdicio de storage. Ver "Midia (Etapa 8)" acima.)**
+14. Storage de midia Community e filesystem local e o script de deploy cPanel real (`scripts/package-cpanel-deploy.mjs`) nao preserva esse diretorio entre deploys. **(Identificado na Etapa 8 -- blocker de Beta Release, ver "Midia (Etapa 8)" acima e `site-beta-checklist.md`.)**
 
 ## Ponto exato para continuar
 

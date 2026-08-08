@@ -18,6 +18,14 @@ export const useCommunityApi = () => {
     }
   })
   const query = (value: Query = {}) => ({ query: Object.fromEntries(Object.entries(value).filter(([, item]) => item !== undefined && item !== '')) })
+  // Same endpoint for post attachments, avatar and cover -- the pipeline
+  // (real byte validation, re-encode, server-generated filename) doesn't
+  // care what the caller intends to do with the resulting media id/url.
+  const uploadMedia = (file: File) => {
+    const body = new FormData()
+    body.append('file', file)
+    return request<{ id: string, kind: 'IMAGE' | 'GIF', url: string, mimeType: string, width: number, height: number }>('/community/media', { method: 'POST', body })
+  }
 
   return {
     feed: (value: Query = {}, authenticated = false) => request<CommunityPage>(authenticated ? '/community/feed/authenticated' : '/community/feed', query(value)),
@@ -30,11 +38,8 @@ export const useCommunityApi = () => {
     myProfile: () => request('/community/me'),
     updateProfile: (body: unknown) => request('/community/me', { method: 'PATCH', body }),
     createPost: (body: unknown) => request('/community/posts', { method: 'POST', body }),
-    uploadPostMedia: (file: File) => {
-      const body = new FormData()
-      body.append('file', file)
-      return request<{ id: string, kind: 'IMAGE' | 'GIF', url: string, mimeType: string, width: number, height: number }>('/community/media', { method: 'POST', body })
-    },
+    uploadMedia,
+    uploadPostMedia: uploadMedia,
     updatePost: (id: string, body: unknown) => request(`/community/posts/${id}`, { method: 'PATCH', body }),
     removePost: (id: string) => request(`/community/posts/${id}`, { method: 'DELETE' }),
     comment: (id: string, body: unknown) => request(`/community/posts/${id}/comments`, { method: 'POST', body }),
