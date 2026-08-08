@@ -315,29 +315,15 @@
     </template>
 
     <template v-else>
-      <PageHero wide :kicker="categoryTitle" :title="topicTitle" description="Pagina modular com conteudo ficticio, pronta para receber imagens, tabelas e dados vindos do servidor." />
-      <section class="bm-guide-container grid gap-6 py-14 lg:grid-cols-[1fr_340px]">
-        <article class="bm-panel rounded-md p-6">
-          <h2 class="font-display text-3xl font-bold text-white">{{ topicTitle }}</h2>
-          <p class="mt-5 text-sm leading-7 text-zinc-300">
-            Este guia apresenta uma visao inicial sobre {{ topicTitle.toLowerCase() }} no universo Blood Moon. O conteudo foi estruturado para crescer com descricoes, requisitos, bonus, estrategias, imagens ilustrativas e detalhes de obtencao.
-          </p>
-          <div class="mt-8 grid gap-4 sm:grid-cols-2">
-            <div v-for="block in blocks" :key="block" class="rounded-md border border-white/10 bg-white/[0.04] p-5">
-              <h3 class="font-bold text-moon">{{ block }}</h3>
-              <p class="mt-3 text-sm leading-7 text-zinc-400">Informacao ficticia para demonstracao, preparada para futura integracao administrativa.</p>
-            </div>
+      <PageHero wide :kicker="categoryTitle" :title="topicTitle" description="Conteúdo da Wiki Blood Moon." />
+      <section class="bm-guide-container py-14">
+        <article class="bm-panel grid min-h-64 place-items-center rounded-md p-8 text-center">
+          <div>
+            <p class="bm-kicker">Conteúdo não publicado</p>
+            <h2 class="mt-2 font-display text-3xl font-bold text-white">{{ topicTitle }}</h2>
+            <p class="mt-4 text-sm leading-7 text-zinc-400">A administração ainda não publicou informações verificadas para este tópico.</p>
           </div>
         </article>
-        <aside class="bm-panel rounded-md p-6">
-          <h3 class="font-display text-2xl font-bold text-white">Resumo</h3>
-          <ul class="mt-5 grid gap-3 text-sm text-zinc-300">
-            <li>Categoria: {{ categoryTitle }}</li>
-            <li>Conteudo: {{ topicTitle }}</li>
-            <li>Status: Mock inicial</li>
-            <li>Fonte futura: API ou CMS</li>
-          </ul>
-        </aside>
       </section>
     </template>
   </div>
@@ -382,7 +368,6 @@ const categorySlug = computed(() => String(route.params.category))
 const topicSlug = computed(() => String(route.params.topic))
 const categoryTitle = computed(() => pretty(categorySlug.value))
 const topicTitle = computed(() => pretty(topicSlug.value))
-const blocks = ['Descricao', 'Pontos fortes', 'Pontos fracos', 'Builds', 'Equipamentos', 'Dicas']
 const characterCategorySlugs = ['personagens', 'personajes', 'characters']
 const futureCharacterSlugs = ['grow-lancer', 'rune-mage', 'slayer', 'gun-crusher', 'white-wizard', 'mage']
 const isAdmin = computed(() => user.value?.role === 'admin' || user.value?.role === 'super-admin')

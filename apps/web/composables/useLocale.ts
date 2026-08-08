@@ -20,13 +20,7 @@ export const localeOptions: Array<{ code: LocaleCode; label: string; short: stri
   { code: 'it-IT', label: 'Italiano', short: 'IT' }
 ]
 
-const baseRankingRows = [
-  { pos: 1, name: 'Arkhon', class: 'Blade Master', score: '182 Resets', guild: 'Eclipse' },
-  { pos: 2, name: 'Nyxara', class: 'Grand Master', score: '174 Resets', guild: 'Blood Pact' },
-  { pos: 3, name: 'Velkan', class: 'Duel Master', score: '168 Resets', guild: 'Noctis' },
-  { pos: 4, name: 'Seraph', class: 'High Elf', score: '159 Resets', guild: 'Moonfall' },
-  { pos: 5, name: 'Kael', class: 'Lord Emperor', score: '151 Resets', guild: 'Abyssal' }
-]
+const baseRankingRows: Array<{ pos: number; name: string; class: string; score: string; guild: string }> = []
 
 const nav = {
   pt: [
@@ -109,12 +103,12 @@ const ptCommon = {
   hall: 'Hall da Lua',
   guideLibrary: 'Biblioteca Blood Moon',
   modularContent: 'Conteúdo modular pronto para evolução com dados reais.',
-  footerText: 'Portal oficial fictício do Blood Moon, preparado para notícias, rankings, guias e integrações futuras.',
+  footerText: 'Portal oficial do Blood Moon com informações do servidor, notícias, rankings e Wiki.',
   navigation: 'Navegação',
   social: 'Social',
   server: 'Servidor',
   contact: 'Contato',
-  copyright: '© 2026 Blood Moon. Projeto demonstrativo para servidor Mu Online.'
+  copyright: '© 2026 Blood Moon MU Online. Todos os direitos reservados.'
   ,
   downloadsKicker: 'Instalação',
   downloadsDescription: 'Cliente completo, patch, launcher e ferramentas extras com requisitos preparados para publicação oficial.',
@@ -146,14 +140,7 @@ const dictionaries: Record<LocaleCode, LocaleDictionary> = {
     common: ptCommon,
     nav: nav.pt,
     rankingTypes: ['Level', 'Reset', 'Master Reset', 'PvP', 'Guilds', 'Eventos'],
-    stats: [
-      { label: 'XP', value: '999x' },
-      { label: 'Drop', value: '80%' },
-      { label: 'Reset', value: 'Habilitado' },
-      { label: 'Master Reset', value: 'Habilitado' },
-      { label: 'Castle Siege', value: 'Ativo' },
-      { label: 'Eventos', value: 'Automáticos' }
-    ],
+    stats: [{ label: 'Versão', value: 'Season 6' }],
     news: [
       {
         tag: 'Evento',
@@ -186,17 +173,10 @@ const dictionaries: Record<LocaleCode, LocaleDictionary> = {
     ]
   },
   'pt-PT': {
-    common: { ...ptCommon, register: 'Registar', createAccount: 'Criar conta', footerText: 'Portal oficial fictício do Blood Moon, preparado para notícias, rankings, guias e integrações futuras.' },
+    common: { ...ptCommon, register: 'Registar', createAccount: 'Criar conta', footerText: 'Portal oficial do Blood Moon com informações do servidor, notícias, rankings e Wiki.' },
     nav: nav.pt,
     rankingTypes: ['Level', 'Reset', 'Master Reset', 'PvP', 'Guilds', 'Eventos'],
-    stats: [
-      { label: 'XP', value: '999x' },
-      { label: 'Drop', value: '80%' },
-      { label: 'Reset', value: 'Ativado' },
-      { label: 'Master Reset', value: 'Ativado' },
-      { label: 'Castle Siege', value: 'Ativo' },
-      { label: 'Eventos', value: 'Automáticos' }
-    ],
+    stats: [{ label: 'Versão', value: 'Season 6' }],
     news: [
       {
         tag: 'Evento',
@@ -256,23 +236,16 @@ const dictionaries: Record<LocaleCode, LocaleDictionary> = {
       hall: 'Salón de la Luna',
       guideLibrary: 'Biblioteca Blood Moon',
       modularContent: 'Contenido modular listo para evolucionar con datos reales.',
-      footerText: 'Portal oficial ficticio de Blood Moon, preparado para noticias, rankings, guías e integraciones futuras.',
+      footerText: 'Portal oficial de Blood Moon con información del servidor, noticias, rankings y Wiki.',
       navigation: 'Navegación',
       social: 'Social',
       server: 'Servidor',
       contact: 'Contacto',
-      copyright: '© 2026 Blood Moon. Proyecto demostrativo para servidor Mu Online.'
+      copyright: '© 2026 Blood Moon MU Online. Todos los derechos reservados.'
     },
     nav: nav.es,
     rankingTypes: ['Nivel', 'Reset', 'Master Reset', 'PvP', 'Clanes', 'Eventos'],
-    stats: [
-      { label: 'XP', value: '999x' },
-      { label: 'Drop', value: '80%' },
-      { label: 'Reset', value: 'Activado' },
-      { label: 'Master Reset', value: 'Activado' },
-      { label: 'Castle Siege', value: 'Activo' },
-      { label: 'Eventos', value: 'Automáticos' }
-    ],
+    stats: [{ label: 'Versión', value: 'Season 6' }],
     news: [
       { tag: 'Evento', title: 'La Noche de la Luna Rubra empieza este sábado', date: '04 Jun 2026', excerpt: 'Monstruos especiales invaden mapas clásicos con drops temporales y bonus de experiencia.' },
       { tag: 'Actualización', title: 'Balance inicial de clases liberado', date: '02 Jun 2026', excerpt: 'Ajustes ficticios de daño, defensa y progresión hacen más competitivo el inicio de temporada.' },
@@ -325,12 +298,12 @@ function makeEnglish(region: 'US' | 'UK'): LocaleDictionary {
       hall: 'Moon Hall',
       guideLibrary: 'Blood Moon Library',
       modularContent: 'Modular content ready to evolve with real data.',
-      footerText: 'Fictional official Blood Moon portal, prepared for news, rankings, guides, and future integrations.',
+      footerText: 'Official Blood Moon portal for server information, news, rankings, and the Wiki.',
       navigation: 'Navigation',
       social: 'Social',
       server: 'Server',
       contact: 'Contact',
-      copyright: '© 2026 Blood Moon. Demo project for a Mu Online server.'
+      copyright: '© 2026 Blood Moon MU Online. All rights reserved.'
       ,
       downloadsKicker: 'Installation',
       downloadsDescription: 'Full client, patch, launcher, and extra tools with requirements prepared for official publishing.',
@@ -358,14 +331,7 @@ function makeEnglish(region: 'US' | 'UK'): LocaleDictionary {
     },
     nav: nav.en,
     rankingTypes: ['Level', 'Reset', 'Master Reset', 'PvP', 'Guilds', 'Events'],
-    stats: [
-      { label: 'XP', value: '999x' },
-      { label: 'Drop', value: '80%' },
-      { label: 'Reset', value: 'Enabled' },
-      { label: 'Master Reset', value: 'Enabled' },
-      { label: 'Castle Siege', value: 'Active' },
-      { label: 'Events', value: 'Automatic' }
-    ],
+    stats: [{ label: 'Version', value: 'Season 6' }],
     news: [
       { tag: 'Event', title: 'Night of the Crimson Moon begins this Saturday', date: region === 'US' ? 'Jun 04, 2026' : '04 Jun 2026', excerpt: 'Special monsters invade classic maps with temporary drops and experience bonuses.' },
       { tag: 'Update', title: 'Initial class balancing released', date: region === 'US' ? 'Jun 02, 2026' : '02 Jun 2026', excerpt: 'Fictional damage, defence, and progression adjustments make the season start more competitive.' },
@@ -403,14 +369,7 @@ function makeEuropean(locale: 'fr' | 'de' | 'it'): LocaleDictionary {
     },
     nav: labels.nav,
     rankingTypes: makeEnglish('UK').rankingTypes,
-    stats: [
-      { label: 'XP', value: '999x' },
-      { label: 'Drop', value: '80%' },
-      { label: 'Reset', value: labels.enabled },
-      { label: 'Master Reset', value: labels.enabled },
-      { label: 'Castle Siege', value: labels.active },
-      { label: 'Events', value: labels.automatic }
-    ],
+    stats: [{ label: 'Version', value: 'Season 6' }],
     news: makeEnglish('UK').news,
     guideCategories: makeEnglish('UK').guideCategories
   }

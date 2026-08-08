@@ -55,6 +55,16 @@ export class CommunityAdminController {
     return this.admin.commentAction(id, payload, user)
   }
 
+  @Get('reactions')
+  @RequirePermissions(permissionKeys.adminCommunityView)
+  reactions(@Query() query: CommunityQuery) { return this.admin.reactions(query) }
+
+  @Post('reactions/:id/actions')
+  @RequirePermissions(permissionKeys.adminCommunityCommentsModerate)
+  reactionAction(@Param('id') id: string, @Body() payload: CommunityAdminActionPayload, @CurrentUser() user: AuthenticatedUser) {
+    return this.admin.reactionAction(id, payload, user)
+  }
+
   @Get('users')
   @RequirePermissions(permissionKeys.adminCommunityView)
   users(@Query() query: CommunityQuery) { return this.admin.users(query) }

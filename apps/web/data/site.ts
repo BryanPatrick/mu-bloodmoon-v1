@@ -51,12 +51,7 @@ export const guideCategories = [
 ]
 
 export const serverStats = [
-  { label: 'XP', value: '999x' },
-  { label: 'Drop', value: '80%' },
-  { label: 'Reset', value: 'Habilitado' },
-  { label: 'Master Reset', value: 'Habilitado' },
-  { label: 'Castle Siege', value: 'Ativo' },
-  { label: 'Eventos', value: 'Automáticos' }
+  { label: 'Versão', value: 'Season 6' }
 ]
 
 export const news = [
@@ -80,10 +75,5 @@ export const news = [
   }
 ]
 
-export const rankingRows = [
-  { pos: 1, name: 'Arkhon', class: 'Blade Master', score: '182 Resets', guild: 'Eclipse' },
-  { pos: 2, name: 'Nyxara', class: 'Grand Master', score: '174 Resets', guild: 'Blood Pact' },
-  { pos: 3, name: 'Velkan', class: 'Duel Master', score: '168 Resets', guild: 'Noctis' },
-  { pos: 4, name: 'Seraph', class: 'High Elf', score: '159 Resets', guild: 'Moonfall' },
-  { pos: 5, name: 'Kael', class: 'Lord Emperor', score: '151 Resets', guild: 'Abyssal' }
+export const rankingRows: Array<{ pos: number; name: string; class: string; score: string; guild: string }> = [
 ]

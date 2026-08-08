@@ -97,7 +97,7 @@ const isAccountOpen = ref(false)
 const links = [
   { label: 'Home', to: '/', icon: CircleUserRound },
   { label: 'Notícias', to: '/noticias', icon: Newspaper },
-  { label: 'Guias', to: '/wiki', icon: BookOpen },
+  { label: 'Wiki', to: '/wiki', icon: BookOpen },
   { label: 'Ranking', to: '/rankings', icon: Trophy },
   { label: 'Downloads', to: '/downloads', icon: Download },
   { label: 'Roadmap', to: '/roadmap', icon: Compass },
@@ -107,23 +107,10 @@ const links = [
   { label: 'Sobre', to: '/about', icon: Info }
 ]
 const mobileItems = links
-const dropdowns: Record<string, Array<{ label: string; description: string; to: string }>> = {
-  '/noticias': [
-    { label: 'Todas as noticias', description: 'Eventos, atualizacoes e avisos do servidor.', to: '/noticias' },
-    { label: 'Eventos', description: 'Novidades e bonificacoes da temporada.', to: '/noticias?categoria=eventos' },
-    { label: 'Atualizacoes', description: 'Balanceamentos e melhorias recentes.', to: '/noticias?categoria=atualizacoes' }
-  ],
-  '/rankings': [
-    { label: 'Ranking geral', description: 'Visao completa do competitivo.', to: '/rankings' },
-    { label: 'Reset', description: 'A corrida principal da temporada.', to: '/rankings?tipo=reset' },
-    { label: 'PvP', description: 'Desempenho em combate.', to: '/rankings?tipo=pvp' }
-  ],
-}
 const navMenuItems = computed(() => links.map((link) => ({
   label: link.label,
-  to: dropdowns[link.to] ? undefined : link.to,
-  active: link.to === '/' ? route.path === '/' : route.path.startsWith(link.to),
-  children: dropdowns[link.to]?.map((child) => ({ ...child, onSelect: closeMenus }))
+  to: link.to,
+  active: link.to === '/' ? route.path === '/' : route.path.startsWith(link.to)
 })))
 const navMenuUi = {
   list: 'items-center gap-1 bg-transparent',

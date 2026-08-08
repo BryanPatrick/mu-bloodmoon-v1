@@ -24,12 +24,16 @@
       </article>
     </section>
 
-    <section v-else-if="['posts', 'comments', 'users', 'reports'].includes(activeTab)" class="grid gap-4">
-      <CommunityToolbar v-model="search" :statuses="statusOptions" v-model:status="status" @reload="reload" />
+    <section v-else-if="['posts', 'comments', 'reactions', 'profiles', 'moderation', 'reports'].includes(activeTab)" class="grid gap-4">
+      <div v-if="activeTab === 'posts'" class="grid gap-2 sm:grid-cols-2">
+        <select v-model="postType" class="bm-admin-input" @change="page = 1; reload()"><option value="">Todos os tipos</option><option v-for="item in ['TEXT','IMAGE','GALLERY','GIF','ARTICLE']" :key="item">{{ item }}</option></select>
+        <select v-model="postVisibility" class="bm-admin-input" @change="page = 1; reload()"><option value="">Todas as visibilidades</option><option v-for="item in ['PUBLIC','FOLLOWERS','PRIVATE']" :key="item">{{ item }}</option></select>
+      </div>
+      <CommunityToolbar v-model="search" v-model:status="status" :statuses="statusOptions" @reload="reload" />
       <div class="grid gap-3 xl:grid-cols-2">
         <article v-for="row in currentPage.data" :key="row.id" class="bm-panel rounded-md p-4">
           <template v-if="activeTab === 'posts'">
-            <div class="flex justify-between gap-3"><span class="bm-status">{{ row.status }}</span><small class="text-white/35">@{{ row.author.username }}</small></div>
+            <div class="flex flex-wrap justify-between gap-2"><div class="flex gap-2"><span class="bm-status">{{ row.status }}</span><span class="bm-status">{{ row.type }}</span><span class="bm-status">{{ row.visibility }}</span></div><small class="text-white/35">@{{ row.author.username }}</small></div>
             <h2 class="mt-3 font-display text-xl">{{ row.title || 'Publicação sem título' }}</h2>
             <p class="mt-2 line-clamp-4 text-xs leading-5 text-white/58">{{ row.content }}</p>
             <p class="mt-3 text-[10px] text-white/35">{{ row._count.comments }} comentários · {{ row._count.reactions }} reações · {{ row._count.reports }} denúncias · {{ row._count.revisions }} revisões</p>
@@ -38,6 +42,7 @@
               <CommunityAction label="Fixar" @click="contentAction(row.id, 'PIN')" /><CommunityAction label="Destacar" @click="contentAction(row.id, 'FEATURE')" />
               <CommunityAction label="Limitar" @click="contentAction(row.id, 'LIMIT_REACH')" /><CommunityAction danger label="Remover" @click="contentAction(row.id, 'REMOVE')" />
               <CommunityAction label="Editar" @click="editPost(row)" />
+              <CommunityAction label="Histórico" @click="showPostHistory(row.id)" />
             </div>
           </template>
           <template v-else-if="activeTab === 'comments'">
@@ -46,18 +51,21 @@
             <p class="mt-3 text-[10px] text-white/35">{{ row._count.reports }} denúncias · {{ row._count.reactions }} reações</p>
             <div v-if="canComments" class="mt-4 grid grid-cols-3 gap-2"><CommunityAction label="Ocultar" @click="commentAction(row.id, 'HIDE')" /><CommunityAction label="Restaurar" @click="commentAction(row.id, 'RESTORE')" /><CommunityAction danger label="Remover" @click="commentAction(row.id, 'REMOVE')" /></div>
           </template>
-          <template v-else-if="activeTab === 'users'">
+          <template v-else-if="activeTab === 'profiles' || activeTab === 'moderation'">
             <div class="flex items-center justify-between gap-3"><div><h2 class="font-display text-xl">{{ row.displayName }}</h2><p class="text-[10px] text-white/35">@{{ row.account.username }}</p></div><span class="bm-status">{{ row.warningCount }} avisos</span></div>
             <p class="mt-3 text-xs text-white/50">{{ row.bio || 'Sem biografia.' }}</p>
+            <div class="mt-3 flex flex-wrap gap-2 text-[10px] text-white/40"><span>{{ row.account._count?.reportedCommunity || 0 }} denúncias</span><span>·</span><span>{{ row._count?.moderationActions || 0 }} ações no histórico</span><NuxtLink class="ml-auto font-black text-ember" :to="`/comunidade/${row.account.username}`">Ver perfil</NuxtLink></div>
+            <details v-if="row.moderationActions?.length" class="mt-3 rounded-md border border-white/8 p-3"><summary class="cursor-pointer text-[10px] font-black uppercase tracking-wider text-white/45">Histórico recente</summary><p v-for="action in row.moderationActions" :key="action.id" class="mt-2 text-[10px] text-white/45">{{ action.type }} · {{ action.reason }}</p></details>
             <div v-if="canUsers" class="mt-4 grid grid-cols-3 gap-2">
               <CommunityAction label="Advertir" @click="moderate(row.accountId, 'WARNING')" /><CommunityAction label="Suspender social" @click="moderate(row.accountId, 'SOCIAL_SUSPENSION')" />
               <CommunityAction label="Bloquear posts" @click="moderate(row.accountId, 'POST_BLOCK')" /><CommunityAction label="Bloquear comentários" @click="moderate(row.accountId, 'COMMENT_BLOCK')" />
               <CommunityAction label="Limitar mensagens" @click="moderate(row.accountId, 'MESSAGE_LIMIT')" /><CommunityAction label="Limitar alcance" @click="moderate(row.accountId, 'REACH_LIMIT')" />
               <CommunityAction label="Remover avatar" @click="moderate(row.accountId, 'AVATAR_REMOVAL')" /><CommunityAction label="Remover capa" @click="moderate(row.accountId, 'COVER_REMOVAL')" />
+              <CommunityAction label="Remover bio" @click="moderate(row.accountId, 'BIO_REMOVAL')" /><CommunityAction label="Moderar username" @click="moderate(row.accountId, 'USERNAME_CHANGE')" />
               <CommunityAction label="Restaurar acesso" @click="restoreUser(row.accountId)" />
             </div>
           </template>
-          <template v-else>
+          <template v-else-if="activeTab === 'reports'">
             <div class="flex justify-between gap-3"><span class="bm-status">{{ row.status }}</span><span class="bm-status">{{ row.priority }}</span></div>
             <h2 class="mt-3 font-display text-xl">{{ row.reason }}</h2>
             <p class="mt-2 text-xs text-white/55">{{ row.description || row.post?.content || row.comment?.content }}</p>
@@ -67,6 +75,11 @@
               <CommunityAction label="Escalar" @click="reportAction(row.id, 'ESCALATED')" /><CommunityAction label="Resolver" @click="reportAction(row.id, 'RESOLVED')" />
               <CommunityAction label="Rejeitar" @click="reportAction(row.id, 'REJECTED')" /><CommunityAction label="Reabrir" @click="reportAction(row.id, 'REOPENED')" />
             </div>
+          </template>
+          <template v-else>
+            <div class="flex items-center justify-between gap-3"><div><span class="bm-status">{{ row.type }}</span><p class="mt-2 text-xs text-white/55">@{{ row.account.username }}</p></div><small class="text-white/35">{{ new Date(row.createdAt).toLocaleString('pt-BR') }}</small></div>
+            <p class="mt-3 line-clamp-3 text-xs text-white/45">{{ row.post?.title || row.post?.content || row.comment?.content || 'Conteúdo indisponível' }}</p>
+            <div v-if="canComments" class="mt-4"><CommunityAction danger label="Remover reação" @click="reactionAction(row.id)" /></div>
           </template>
         </article>
       </div>
@@ -124,7 +137,7 @@
       <form class="grid gap-3" @submit.prevent="savePolicy">
         <textarea v-model="policyForm.blockedWords" class="bm-admin-input min-h-24 py-3" placeholder="Palavras bloqueadas" />
         <div class="grid gap-3 sm:grid-cols-2"><textarea v-model="policyForm.allowedDomains" class="bm-admin-input min-h-20 py-3" placeholder="Domínios permitidos" /><textarea v-model="policyForm.blockedDomains" class="bm-admin-input min-h-20 py-3" placeholder="Domínios proibidos" /></div>
-        <div class="grid grid-cols-2 gap-3"><label class="text-[10px] text-white/45">Posts/h<input v-model.number="policyForm.maxPostsPerHour" class="bm-admin-input mt-1" type="number"></label><label class="text-[10px] text-white/45">Comentários/h<input v-model.number="policyForm.maxCommentsPerHour" class="bm-admin-input mt-1" type="number"></label><label class="text-[10px] text-white/45">Cooldown post<input v-model.number="policyForm.postCooldownSeconds" class="bm-admin-input mt-1" type="number"></label><label class="text-[10px] text-white/45">Cooldown comentário<input v-model.number="policyForm.commentCooldownSeconds" class="bm-admin-input mt-1" type="number"></label></div>
+        <div class="grid grid-cols-2 gap-3"><label class="text-[10px] text-white/45">Posts/h<input v-model.number="policyForm.maxPostsPerHour" class="bm-admin-input mt-1" type="number"></label><label class="text-[10px] text-white/45">Comentários/h<input v-model.number="policyForm.maxCommentsPerHour" class="bm-admin-input mt-1" type="number"></label><label class="text-[10px] text-white/45">Cooldown post<input v-model.number="policyForm.postCooldownSeconds" class="bm-admin-input mt-1" type="number"></label><label class="text-[10px] text-white/45">Cooldown comentário<input v-model.number="policyForm.commentCooldownSeconds" class="bm-admin-input mt-1" type="number"></label><label class="text-[10px] text-white/45">Cooldown de username (dias)<input v-model.number="policyForm.usernameCooldownDays" class="bm-admin-input mt-1" min="1" type="number"></label></div>
         <UButton type="submit" color="error">Salvar regras</UButton>
       </form>
     </section>
@@ -145,16 +158,18 @@
 </template>
 
 <script setup lang="ts">
-import { Award, BarChart3, BadgeCheck, BookOpenCheck, FileWarning, Flag, LayoutDashboard, MessageCircle, ScrollText, Settings, Users } from 'lucide-vue-next'
+import { Award, BarChart3, BadgeCheck, BookOpenCheck, FileWarning, Flag, LayoutDashboard, MessageCircle, ScrollText, Settings, Smile, Users } from 'lucide-vue-next'
 import { permissions } from '~/data/security'
 
 const api = useCommunityApi()
 const route = useRoute()
 const router = useRouter()
 const { hasPermission } = useAuth()
-const activeTab = ref(String(route.query.tab || 'dashboard'))
+const activeTab = ref(String(route.query.tab || 'dashboard') === 'users' ? 'profiles' : String(route.query.tab || 'dashboard'))
 const search = ref('')
 const status = ref('')
+const postType = ref('')
+const postVisibility = ref('')
 const page = ref(1)
 const message = ref('')
 const failed = ref(false)
@@ -173,30 +188,31 @@ const canTasks = computed(() => hasPermission(permissions.adminCommunityTasksMan
 const canAnalytics = computed(() => hasPermission(permissions.adminCommunityReportsView))
 const tabs = [
   { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, show: true }, { key: 'posts', label: 'Publicações', icon: ScrollText, show: true },
-  { key: 'comments', label: 'Comentários', icon: MessageCircle, show: true }, { key: 'users', label: 'Usuários sociais', icon: Users, show: true },
+  { key: 'comments', label: 'Comentários', icon: MessageCircle, show: true }, { key: 'reactions', label: 'Reações', icon: Smile, show: true }, { key: 'profiles', label: 'Perfis', icon: Users, show: true }, { key: 'moderation', label: 'Moderação', icon: Users, show: canUsers },
   { key: 'reports', label: 'Denúncias', icon: Flag, show: true }, { key: 'achievements', label: 'Conquistas', icon: Award, show: canAchievements },
   { key: 'quests', label: 'Quests', icon: BookOpenCheck, show: canQuests }, { key: 'badges', label: 'Badges', icon: BadgeCheck, show: canBadges },
   { key: 'policy', label: 'Regras e spam', icon: Settings, show: canPolicy }, { key: 'tasks', label: 'Tarefas', icon: FileWarning, show: canTasks },
   { key: 'analytics', label: 'Relatórios', icon: BarChart3, show: canAnalytics }
 ]
 const visibleTabs = computed(() => tabs.filter((tab) => typeof tab.show === 'boolean' ? tab.show : tab.show.value))
-const statusOptions = computed(() => activeTab.value === 'posts' || activeTab.value === 'comments' ? ['PUBLISHED','HIDDEN','REMOVED'] : activeTab.value === 'reports' ? ['NEW','ASSIGNED','INVESTIGATING','WAITING_FOR_USER','RESOLVED','REJECTED','ESCALATED','REOPENED'] : [])
+const statusOptions = computed(() => activeTab.value === 'posts' ? ['DRAFT','PUBLISHED','HIDDEN','REMOVED','ARCHIVED'] : activeTab.value === 'comments' ? ['PUBLISHED','HIDDEN','REMOVED'] : activeTab.value === 'reports' ? ['NEW','ASSIGNED','INVESTIGATING','WAITING_FOR_USER','RESOLVED','REJECTED','ESCALATED','REOPENED'] : [])
 const dashboardMetrics = computed(() => Object.entries(dashboard.value).map(([label, value]) => ({ label: ({ activeUsers:'Usuários ativos',newPosts:'Novos posts',comments:'Comentários',reports:'Denúncias',hiddenContent:'Conteúdo oculto',suspendedUsers:'Suspensos sociais',achievementsGranted:'Conquistas',activeQuests:'Quests ativas',spamDetected:'Spam detectado',tasks:'Minhas tarefas',errors:'Erros' } as any)[label] || label, value })))
 const analyticsMetrics = computed(() => Object.entries(analyticsData.value).filter(([, value]) => typeof value === 'number').map(([label,value]) => ({ label, value })))
 const catalogEditingId = ref<string|null>(null)
 const catalogForm = reactive<any>({ name:'',description:'',category:'',rarity:'COMMON',points:0,objectiveText:'',rewardText:'',startsAt:'',endsAt:'',imageUrl:'',maxGrants:null,validDays:null })
 const catalogTitle = computed(() => activeTab.value === 'achievements' ? 'Conquista' : activeTab.value === 'quests' ? 'Quest do site' : 'Badge')
-const policyForm = reactive<any>({ blockedWords:'',allowedDomains:'',blockedDomains:'',maxPostsPerHour:10,maxCommentsPerHour:40,postCooldownSeconds:30,commentCooldownSeconds:10 })
+const policyForm = reactive<any>({ blockedWords:'',allowedDomains:'',blockedDomains:'',maxPostsPerHour:10,maxCommentsPerHour:40,postCooldownSeconds:30,commentCooldownSeconds:10,usernameCooldownDays:30 })
 const selectedQuest = ref<any>(null)
 const participants = ref<any[]>([])
 const askReason = () => window.prompt('Justificativa obrigatória:')
 const run = async (operation: () => Promise<any>, success = 'Operação concluída.') => { try { failed.value=false; await operation(); message.value=success; await reload() } catch (error:any) { failed.value=true; message.value=error?.data?.message || 'Não foi possível concluir.' } }
 const loadCurrent = async () => {
-  const query = { page: page.value, search: search.value, status: status.value }
+  const query = { page: page.value, search: search.value, status: status.value, type: postType.value, visibility: postVisibility.value }
   if (activeTab.value === 'dashboard') dashboard.value = await api.adminDashboard()
   else if (activeTab.value === 'posts') currentPage.value = await api.adminPosts(query)
   else if (activeTab.value === 'comments') currentPage.value = await api.adminComments(query)
-  else if (activeTab.value === 'users') currentPage.value = await api.adminUsers(query)
+  else if (activeTab.value === 'reactions') currentPage.value = await api.adminReactions(query)
+  else if (activeTab.value === 'profiles' || activeTab.value === 'moderation') currentPage.value = await api.adminUsers(query)
   else if (activeTab.value === 'reports') currentPage.value = await api.adminReports(query)
   else if (activeTab.value === 'achievements') currentPage.value = await api.adminAchievements(query)
   else if (activeTab.value === 'quests') currentPage.value = await api.adminQuests(query)
@@ -213,7 +229,7 @@ const selectTab = async (key:string) => { activeTab.value=key; page.value=1; sea
 watch(
   () => route.query.tab,
   async (value) => {
-    const next = String(value || 'dashboard')
+    const next = String(value || 'dashboard') === 'users' ? 'profiles' : String(value || 'dashboard')
     if (activeTab.value === next) return
     activeTab.value = next
     page.value = 1
@@ -226,8 +242,15 @@ watch(
 const changePage = async (value:number) => { page.value=value; await loadCurrent() }
 const contentAction = (id:string,action:string) => { const reason=askReason(); if(reason) run(() => api.adminPostAction(id,{action,reason})) }
 const commentAction = (id:string,action:string) => { const reason=askReason(); if(reason) run(() => api.adminCommentAction(id,{action,reason})) }
+const reactionAction = (id:string) => { const reason=askReason(); if(reason) run(() => api.adminReactionAction(id,{action:'REMOVE',reason})) }
 const editPost = (row:any) => { const content=window.prompt('Novo conteúdo:',row.content); const reason=askReason(); if(content&&reason) run(() => api.adminPostAction(row.id,{action:'EDIT',content,title:row.title,reason})) }
-const moderate = (id:string,type:string) => { const reason=askReason(); if(!reason)return; const expiresAt=['SOCIAL_SUSPENSION','POST_BLOCK','COMMENT_BLOCK','MESSAGE_LIMIT','REACH_LIMIT'].includes(type) ? window.prompt('Expira em (ISO, opcional):') : undefined; run(() => api.adminModerateUser(id,{type,reason,expiresAt})) }
+const showPostHistory = async (id:string) => {
+  try {
+    const post:any = await api.adminPostHistory(id)
+    window.alert(`Revisões: ${post.revisions?.length || 0}\nDenúncias: ${post.reports?.length || 0}\nÚltima edição: ${post.editedAt ? new Date(post.editedAt).toLocaleString('pt-BR') : 'não editada'}`)
+  } catch (error:any) { failed.value=true; message.value=error?.data?.message || 'Não foi possível abrir o histórico.' }
+}
+const moderate = (id:string,type:string) => { const reason=askReason(); if(!reason)return; const expiresAt=['SOCIAL_SUSPENSION','POST_BLOCK','COMMENT_BLOCK','MESSAGE_LIMIT','REACH_LIMIT'].includes(type) ? window.prompt('Expira em (ISO, opcional):') : undefined; const replacement=type==='USERNAME_CHANGE' ? window.prompt('Novo username (3 a 24 caracteres):') : undefined; if(type==='USERNAME_CHANGE'&&!replacement)return; run(() => api.adminModerateUser(id,{type,reason,expiresAt,replacement})) }
 const restoreUser = (id:string) => { const reason=askReason(); if(reason) run(() => api.adminRestoreUser(id,reason)) }
 const reportAction = (id:string,nextStatus:string) => { const reason=askReason(); if(reason) run(() => api.adminReportAction(id,{status:nextStatus,reason})) }
 const resetCatalog = () => { catalogEditingId.value=null; Object.assign(catalogForm,{name:'',description:'',category:'',rarity:'COMMON',points:0,objectiveText:'',rewardText:'',startsAt:'',endsAt:'',imageUrl:'',maxGrants:null,validDays:null}) }

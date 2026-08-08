@@ -1,14 +1,19 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
-import type { Prisma } from '@prisma/client'
+import type { CommunityPostType, CommunityPostVisibility, Prisma } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
 import { ObservabilityService } from '../observability/observability.service'
+import { MediaService } from '../media/media.service'
 import type {
   CommunityCommentPayload,
   CommunityPostPayload,
+  CommunityProfilePayload,
   CommunityQuery,
+  CommunityReactionPayload,
   CommunityReportPayload
 } from './community.contract'
+
+const reactionTypes = ['LIKE', 'HONOR', 'POWER', 'RARE', 'VICTORY'] as const
 
 const pageValues = (query: CommunityQuery) => {
   const page = Math.max(1, Number(query.page) || 1)
@@ -23,7 +28,8 @@ const json = (value: unknown): Prisma.InputJsonValue =>
 export class CommunityService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly observability: ObservabilityService
+    private readonly observability: ObservabilityService,
+    private readonly mediaService: MediaService
   ) {}
 
   private async profile(accountId: string, fallbackName: string) {
@@ -47,6 +53,28 @@ export class CommunityService {
     return profile
   }
 
+  private async accessiblePost(postId: string, user: AuthenticatedUser) {
+    const post = await this.prisma.communityPost.findFirst({
+      where: { id: postId, status: 'PUBLISHED' },
+      select: { id: true, authorId: true, visibility: true, author: { select: { communityProfile: { select: { isPublic: true } } } } }
+    })
+    if (!post) throw new NotFoundException('Publicação não encontrada.')
+    if (post.authorId === user.id) return post
+    const [blocked, follows] = await Promise.all([
+      this.prisma.communitySocialRelation.findFirst({
+        where: { type: 'BLOCK', OR: [{ actorId: user.id, targetId: post.authorId }, { actorId: post.authorId, targetId: user.id }] },
+        select: { id: true }
+      }),
+      post.visibility === 'FOLLOWERS'
+        ? this.prisma.communityFollow.findUnique({ where: { followerId_followingId: { followerId: user.id, followingId: post.authorId } }, select: { followerId: true } })
+        : Promise.resolve(null)
+    ])
+    if (blocked || post.author.communityProfile?.isPublic === false || post.visibility === 'PRIVATE' || (post.visibility === 'FOLLOWERS' && !follows)) {
+      throw new NotFoundException('Publicação não encontrada.')
+    }
+    return post
+  }
+
   private domains(value: unknown) {
     return Array.isArray(value)
       ? value.map((item) => String(item).trim().toLowerCase()).filter(Boolean)
@@ -65,48 +93,23 @@ export class CommunityService {
     return domain === normalized || domain.endsWith(`.${normalized}`)
   }
 
-  private async validateMedia(media: unknown, accountId: string) {
-    if (media === undefined) return undefined
-    if (!Array.isArray(media) || media.length > 6) {
-      await this.observability.recordSystemError({
-        module: 'community',
-        severity: 'WARNING',
-        errorCode: 'COMMUNITY_MEDIA_INVALID',
-        publicMessage: 'A mídia enviada é inválida.',
-        internalMessage: 'Community media must be an array with at most six entries.',
-        userId: accountId
-      })
-      throw new BadRequestException('Envie no máximo seis mídias válidas.')
-    }
-    const policy = await this.prisma.communityPolicy.findUnique({ where: { id: 'default' } })
-    const allowed = this.domains(policy?.allowedDomains)
-    const blocked = this.domains(policy?.blockedDomains)
-    for (const item of media) {
-      const url = typeof item === 'string'
-        ? item
-        : item && typeof item === 'object' && 'url' in item ? String((item as { url?: unknown }).url || '') : ''
-      let domain = ''
-      try {
-        const parsed = new URL(url)
-        if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error('protocol')
-        domain = parsed.hostname.toLowerCase().replace(/^www\./, '')
-      } catch {
-        await this.observability.recordSystemError({
-          module: 'community',
-          severity: 'WARNING',
-          errorCode: 'COMMUNITY_MEDIA_URL_INVALID',
-          publicMessage: 'A URL da mídia é inválida.',
-          internalMessage: 'Community media URL validation failed.',
-          userId: accountId
-        })
-        throw new BadRequestException('Uma das mídias possui URL inválida.')
-      }
-      if (blocked.some((rule) => this.domainMatches(domain, rule)) ||
-          (allowed.length && !allowed.some((rule) => this.domainMatches(domain, rule)))) {
-        throw new BadRequestException('O domínio de uma das mídias não é permitido.')
-      }
-    }
-    return json(media)
+  private postType(value?: CommunityPostType): CommunityPostType {
+    const implemented: CommunityPostType[] = ['TEXT', 'IMAGE', 'GALLERY', 'GIF', 'ARTICLE']
+    const type = value || 'TEXT'
+    if (!implemented.includes(type)) throw new BadRequestException('Este tipo de publicacao esta preparado, mas ainda nao foi liberado.')
+    return type
+  }
+
+  private visibility(value?: CommunityPostVisibility): CommunityPostVisibility {
+    const allowed: CommunityPostVisibility[] = ['PUBLIC', 'FOLLOWERS', 'PRIVATE']
+    if (value && !allowed.includes(value)) throw new BadRequestException('Visibilidade invalida.')
+    return value || 'PUBLIC'
+  }
+
+  private metadata(content: string) {
+    const tags = [...new Set([...content.matchAll(/#([\p{L}\p{N}_-]{2,50})/gu)].map((match) => match[1].toLowerCase()))]
+    const mentions = [...new Set([...content.matchAll(/@([a-z0-9._-]{3,24})/gi)].map((match) => match[1].toLowerCase()))]
+    return { tags: json(tags), mentions: json(mentions) }
   }
 
   private async validateText(text: string, action: 'post' | 'comment', accountId: string, enforceRateLimit = true) {
@@ -169,13 +172,35 @@ export class CommunityService {
     return value
   }
 
-  async feed(query: CommunityQuery) {
+  async feed(query: CommunityQuery, user?: AuthenticatedUser) {
     const { page, pageSize, skip } = pageValues(query)
     const search = query.search?.trim()
+    const feed = query.feed || (query.sort === 'recent' ? 'recent' : 'for-you')
+    const [following, blocked, blockedBy, saved] = user ? await Promise.all([
+      this.prisma.communityFollow.findMany({ where: { followerId: user.id }, select: { followingId: true } }),
+      this.prisma.communitySocialRelation.findMany({ where: { actorId: user.id, type: 'BLOCK' }, select: { targetId: true } }),
+      this.prisma.communitySocialRelation.findMany({ where: { targetId: user.id, type: 'BLOCK' }, select: { actorId: true } }),
+      feed === 'saved' ? this.prisma.communityPostSave.findMany({ where: { accountId: user.id }, select: { postId: true } }) : Promise.resolve([])
+    ]) : [[], [], [], []]
+    const followedIds = following.map((item) => item.followingId)
+    const excludedAuthorIds = [...new Set([...blocked.map((item) => item.targetId), ...blockedBy.map((item) => item.actorId)])]
+    if ((feed === 'following' || feed === 'saved') && !user) throw new ForbiddenException('Entre na sua conta para acessar este feed.')
+    const authorFilters: Prisma.StringFilter[] = []
+    if (excludedAuthorIds.length) authorFilters.push({ notIn: excludedAuthorIds })
+    if (feed === 'following') authorFilters.push({ in: followedIds })
     const where: Prisma.CommunityPostWhereInput = {
       status: 'PUBLISHED',
+      ...(user ? {
+        OR: [
+          { visibility: 'PUBLIC' },
+          { authorId: user.id },
+          ...(followedIds.length ? [{ visibility: 'FOLLOWERS' as const, authorId: { in: followedIds } }] : [])
+        ]
+      } : { visibility: 'PUBLIC' }),
       author: { communityProfile: { isPublic: true } },
-      ...(search ? { OR: [{ title: { contains: search } }, { content: { contains: search } }] } : {})
+      ...(authorFilters.length ? { AND: authorFilters.map((authorId) => ({ authorId })) } : {}),
+      ...(feed === 'saved' ? { id: { in: saved.map((item) => item.postId) } } : {}),
+      ...(search ? { AND: [{ OR: [{ title: { contains: search } }, { content: { contains: search } }] }] } : {})
     }
     const [data, total] = await Promise.all([
       this.prisma.communityPost.findMany({
@@ -183,21 +208,45 @@ export class CommunityService {
         include: {
           author: { select: { id: true, username: true, name: true, communityProfile: true } },
           comments: {
-            where: { status: 'PUBLISHED' },
-            orderBy: { createdAt: 'asc' },
-            take: 5,
-            include: { author: { select: { username: true, name: true, communityProfile: true } } }
+            where: { status: 'PUBLISHED', parentId: null }, orderBy: { createdAt: 'asc' }, take: 5,
+            include: {
+              author: { select: { id: true, username: true, name: true, communityProfile: true } },
+              reactions: { select: { type: true, accountId: true } },
+              replies: {
+                where: { status: 'PUBLISHED' }, orderBy: { createdAt: 'asc' }, take: 5,
+                include: { author: { select: { id: true, username: true, name: true, communityProfile: true } }, reactions: { select: { type: true, accountId: true } } }
+              }
+            }
           },
           reactions: { select: { type: true, accountId: true } },
-          _count: { select: { comments: true, reactions: true } }
+          saves: user ? { where: { accountId: user.id }, select: { id: true } } : false,
+          reposts: user ? { where: { accountId: user.id }, select: { id: true } } : false,
+          _count: { select: { comments: true, reactions: true, saves: true, reposts: true } }
         },
-        orderBy: [{ isPinned: 'desc' }, { isFeatured: 'desc' }, { createdAt: 'desc' }],
+        orderBy: feed === 'recent' || feed === 'following' || feed === 'saved'
+          ? [{ createdAt: 'desc' }]
+          : [{ isPinned: 'desc' }, { isFeatured: 'desc' }, { official: 'desc' }, { createdAt: 'desc' }],
         skip,
         take: pageSize
       }),
       this.prisma.communityPost.count({ where })
     ])
-    return { data, total, page, pageSize, totalPages: Math.max(1, Math.ceil(total / pageSize)) }
+    const withContext = data.map((post) => ({
+      ...post,
+      viewer: {
+        saved: Boolean(user && post.saves?.length),
+        reposted: Boolean(user && post.reposts?.length),
+        reactions: user ? post.reactions.filter((reaction) => reaction.accountId === user.id).map((reaction) => reaction.type) : []
+      },
+      labels: [
+        ...(followedIds.includes(post.authorId) ? ['FOLLOWING'] : []),
+        ...(post.isFeatured ? ['TRENDING'] : []),
+        ...(post.sponsored ? ['SPONSORED'] : []),
+        ...(post.official ? ['OFFICIAL'] : []),
+        ...(['ACHIEVEMENT', 'MARKETPLACE', 'EVENT', 'GUIDE'].includes(post.sourceType || '') ? [post.sourceType] : [])
+      ]
+    }))
+    return { data: withContext, total, page, pageSize, totalPages: Math.max(1, Math.ceil(total / pageSize)) }
   }
 
   async publicProfile(username: string) {
@@ -218,7 +267,7 @@ export class CommunityService {
           include: { badge: true }
         },
         communityPosts: {
-          where: { status: 'PUBLISHED' },
+          where: { status: 'PUBLISHED', visibility: 'PUBLIC' },
           orderBy: { createdAt: 'desc' },
           take: 20,
           include: { _count: { select: { comments: true, reactions: true } } }
@@ -228,7 +277,24 @@ export class CommunityService {
     if (!account || account.communityProfile?.isPublic === false) {
       throw new NotFoundException('Perfil social não encontrado.')
     }
-    return account
+    const [followers, following, posts] = await Promise.all([
+      this.prisma.communityFollow.count({ where: { followingId: account.id } }),
+      this.prisma.communityFollow.count({ where: { followerId: account.id } }),
+      this.prisma.communityPost.count({ where: { authorId: account.id, status: 'PUBLISHED', visibility: 'PUBLIC' } })
+    ])
+    return { ...account, stats: { followers, following, posts } }
+  }
+
+  async relationship(username: string, user: AuthenticatedUser) {
+    const target = await this.prisma.account.findUnique({ where: { username }, select: { id: true } })
+    if (!target) throw new NotFoundException('Perfil social nao encontrado.')
+    if (target.id === user.id) return { ownProfile: true, following: false, blocked: false, blockedBy: false }
+    const [following, blocked, blockedBy] = await Promise.all([
+      this.prisma.communityFollow.findUnique({ where: { followerId_followingId: { followerId: user.id, followingId: target.id } }, select: { followerId: true } }),
+      this.prisma.communitySocialRelation.findUnique({ where: { actorId_targetId_type: { actorId: user.id, targetId: target.id, type: 'BLOCK' } }, select: { id: true } }),
+      this.prisma.communitySocialRelation.findUnique({ where: { actorId_targetId_type: { actorId: target.id, targetId: user.id, type: 'BLOCK' } }, select: { id: true } })
+    ])
+    return { ownProfile: false, following: Boolean(following), blocked: Boolean(blocked), blockedBy: Boolean(blockedBy) }
   }
 
   async myProfile(user: AuthenticatedUser) {
@@ -239,7 +305,7 @@ export class CommunityService {
     })
   }
 
-  async updateProfile(payload: { displayName?: string, bio?: string, avatarUrl?: string, coverUrl?: string, isPublic?: boolean }, user: AuthenticatedUser) {
+  async updateProfile(payload: CommunityProfilePayload, user: AuthenticatedUser) {
     await this.profile(user.id, user.name || user.username)
     return this.prisma.communityProfile.update({
       where: { accountId: user.id },
@@ -248,50 +314,119 @@ export class CommunityService {
         ...(payload.bio !== undefined ? { bio: payload.bio.trim().slice(0, 2000) || null } : {}),
         ...(payload.avatarUrl !== undefined ? { avatarUrl: payload.avatarUrl.trim().slice(0, 512) || null } : {}),
         ...(payload.coverUrl !== undefined ? { coverUrl: payload.coverUrl.trim().slice(0, 512) || null } : {}),
-        ...(payload.isPublic !== undefined ? { isPublic: payload.isPublic } : {})
+        ...(payload.mainCharacterName !== undefined ? { mainCharacterName: payload.mainCharacterName.trim().slice(0, 100) || null } : {}),
+        ...(payload.mainCharacterClass !== undefined ? { mainCharacterClass: payload.mainCharacterClass.trim().slice(0, 100) || null } : {}),
+        ...(payload.guildName !== undefined ? { guildName: payload.guildName.trim().slice(0, 100) || null } : {}),
+        ...(payload.featuredAchievementIds !== undefined ? { featuredAchievementIds: json(payload.featuredAchievementIds.slice(0, 5)) } : {}),
+        ...(payload.profileVisibility ? { profileVisibility: payload.profileVisibility, isPublic: payload.profileVisibility !== 'PRIVATE' } : {}),
+        ...(payload.charactersVisibility ? { charactersVisibility: payload.charactersVisibility } : {}),
+        ...(payload.equipmentVisibility ? { equipmentVisibility: payload.equipmentVisibility } : {}),
+        ...(payload.statisticsVisibility ? { statisticsVisibility: payload.statisticsVisibility } : {}),
+        ...(payload.guildVisibility ? { guildVisibility: payload.guildVisibility } : {}),
+        ...(payload.activityVisibility ? { activityVisibility: payload.activityVisibility } : {})
       }
     })
   }
 
+  async follow(username: string, user: AuthenticatedUser) {
+    const target = await this.prisma.account.findUnique({ where: { username }, select: { id: true } })
+    if (!target) throw new NotFoundException('Perfil social nÃ£o encontrado.')
+    if (target.id === user.id) throw new BadRequestException('VocÃª nÃ£o pode seguir o prÃ³prio perfil.')
+    const block = await this.prisma.communitySocialRelation.findFirst({
+      where: { type: 'BLOCK', OR: [{ actorId: user.id, targetId: target.id }, { actorId: target.id, targetId: user.id }] }
+    })
+    if (block) throw new ForbiddenException('Esta conexao social esta bloqueada.')
+    await this.prisma.communityFollow.upsert({
+      where: { followerId_followingId: { followerId: user.id, followingId: target.id } },
+      create: { followerId: user.id, followingId: target.id }, update: {}
+    })
+    return { following: true }
+  }
+
+  async unfollow(username: string, user: AuthenticatedUser) {
+    const target = await this.prisma.account.findUnique({ where: { username }, select: { id: true } })
+    if (!target) throw new NotFoundException('Perfil social nÃ£o encontrado.')
+    await this.prisma.communityFollow.deleteMany({ where: { followerId: user.id, followingId: target.id } })
+    return { following: false }
+  }
+
+  async block(username: string, user: AuthenticatedUser) {
+    const target = await this.prisma.account.findUnique({ where: { username }, select: { id: true } })
+    if (!target) throw new NotFoundException('Perfil social nao encontrado.')
+    if (target.id === user.id) throw new BadRequestException('Voce nao pode bloquear o proprio perfil.')
+    await this.prisma.$transaction([
+      this.prisma.communityFollow.deleteMany({ where: { OR: [{ followerId: user.id, followingId: target.id }, { followerId: target.id, followingId: user.id }] } }),
+      this.prisma.communitySocialRelation.upsert({
+        where: { actorId_targetId_type: { actorId: user.id, targetId: target.id, type: 'BLOCK' } },
+        create: { actorId: user.id, targetId: target.id, type: 'BLOCK' }, update: {}
+      })
+    ])
+    return { blocked: true }
+  }
+
+  async unblock(username: string, user: AuthenticatedUser) {
+    const target = await this.prisma.account.findUnique({ where: { username }, select: { id: true } })
+    if (!target) throw new NotFoundException('Perfil social nao encontrado.')
+    await this.prisma.communitySocialRelation.deleteMany({ where: { actorId: user.id, targetId: target.id, type: 'BLOCK' } })
+    return { blocked: false }
+  }
+
   async createPost(payload: CommunityPostPayload, user: AuthenticatedUser) {
     await this.assertSocialAccess(user, 'post')
-    const content = await this.validateText(payload.content || '', 'post', user.id)
-    const media = await this.validateMedia(payload.media, user.id)
-    return this.prisma.communityPost.create({
-      data: {
-        authorId: user.id,
-        title: payload.title?.trim().slice(0, 191) || null,
-        content,
-        media,
-        publishedAt: new Date()
-      }
+    const type = this.postType(payload.type)
+    const visibility = this.visibility(payload.visibility)
+    const assets = await this.mediaService.resolveForPost(payload.mediaIds, user.id, type)
+    const rawContent = (payload.content || '').trim()
+    if (!rawContent && !assets.length) throw new BadRequestException('Escreva algo ou selecione uma midia.')
+    const content = rawContent ? await this.validateText(rawContent, 'post', user.id) : ''
+    const title = payload.title?.trim().slice(0, 191) || null
+    if (type === 'ARTICLE' && (!title || title.length < 3)) throw new BadRequestException('Informe um titulo para o artigo.')
+    const status = payload.status === 'DRAFT' ? 'DRAFT' : 'PUBLISHED'
+    const post = await this.prisma.$transaction(async (tx) => {
+      const created = await tx.communityPost.create({
+        data: {
+          authorId: user.id, title, content, type, visibility, status,
+          media: this.mediaService.snapshot(assets), ...this.metadata(content),
+          publishedAt: status === 'PUBLISHED' ? new Date() : null
+        }
+      })
+      if (assets.length) await tx.communityMedia.updateMany({ where: { id: { in: assets.map((asset) => asset.id) } }, data: { postId: created.id, status: 'ATTACHED' } })
+      return created
     })
+    await this.observability.recordOperationalEvent({ module: 'community', eventType: 'COMMUNITY_POST_CREATED', entityType: 'CommunityPost', entityId: post.id, actorUserId: user.id, description: 'Publicacao criada na comunidade.', data: { type, visibility, status } })
+    return post
   }
 
   async updateOwnPost(id: string, payload: CommunityPostPayload, user: AuthenticatedUser) {
     const post = await this.prisma.communityPost.findUnique({ where: { id } })
     if (!post || post.authorId !== user.id) throw new NotFoundException('Publicação não encontrada.')
-    if (post.status !== 'PUBLISHED') throw new BadRequestException('Esta publicação não pode ser editada.')
-    const content = payload.content ? await this.validateText(payload.content, 'post', user.id, false) : post.content
-    const media = await this.validateMedia(payload.media, user.id)
+    if (!['DRAFT', 'PUBLISHED'].includes(post.status)) throw new BadRequestException('Esta publicação não pode ser editada.')
+    const type = this.postType(payload.type || post.type)
+    const visibility = this.visibility(payload.visibility || post.visibility)
+    const status = payload.status === 'DRAFT' ? 'DRAFT' : 'PUBLISHED'
+    const content = payload.content !== undefined ? (payload.content.trim() ? await this.validateText(payload.content, 'post', user.id, false) : '') : post.content
+    const assets = payload.mediaIds !== undefined ? await this.mediaService.resolveForPost(payload.mediaIds, user.id, type) : null
+    if (!content && !(assets?.length || (Array.isArray(post.media) && post.media.length))) throw new BadRequestException('Escreva algo ou selecione uma midia.')
     return this.prisma.$transaction(async (tx) => {
       await tx.communityPostRevision.create({
         data: {
-          postId: id,
-          title: post.title,
-          content: post.content,
-          media: post.media || undefined,
-          editedBy: user.id,
-          editorRole: user.role,
+          postId: id, title: post.title, content: post.content, type: post.type, visibility: post.visibility,
+          media: post.media || undefined, tags: post.tags || undefined, mentions: post.mentions || undefined,
+          editedBy: user.id, editorRole: user.role,
           reason: 'Edição realizada pelo autor.'
         }
       })
+      if (assets) {
+        await tx.communityMedia.updateMany({ where: { postId: id }, data: { postId: null, status: 'REMOVED', removedAt: new Date() } })
+        if (assets.length) await tx.communityMedia.updateMany({ where: { id: { in: assets.map((asset) => asset.id) } }, data: { postId: id, status: 'ATTACHED', removedAt: null } })
+      }
       return tx.communityPost.update({
         where: { id },
         data: {
           title: payload.title?.trim().slice(0, 191) ?? post.title,
-          content,
-          ...(media !== undefined ? { media } : {})
+          content, type, visibility, status, edited: true, editedAt: new Date(), ...this.metadata(content),
+          publishedAt: status === 'PUBLISHED' ? (post.publishedAt || new Date()) : null,
+          ...(assets ? { media: this.mediaService.snapshot(assets) } : {})
         }
       })
     })
@@ -300,23 +435,37 @@ export class CommunityService {
   async removeOwnPost(id: string, user: AuthenticatedUser) {
     const post = await this.prisma.communityPost.findUnique({ where: { id } })
     if (!post || post.authorId !== user.id) throw new NotFoundException('Publicação não encontrada.')
-    return this.prisma.communityPost.update({
+    const removed = await this.prisma.communityPost.update({
       where: { id },
       data: { status: 'REMOVED', removedBy: user.id, removedAt: new Date(), deletionReason: 'Removida pelo autor.' }
     })
+    await this.observability.recordOperationalEvent({ module: 'community', eventType: 'COMMUNITY_POST_REMOVED_BY_AUTHOR', entityType: 'CommunityPost', entityId: id, actorUserId: user.id, description: 'Publicacao removida pelo autor.' })
+    return removed
   }
 
   async createComment(postId: string, payload: CommunityCommentPayload, user: AuthenticatedUser) {
     await this.assertSocialAccess(user, 'comment')
-    const post = await this.prisma.communityPost.findFirst({ where: { id: postId, status: 'PUBLISHED' } })
-    if (!post) throw new NotFoundException('Publicação não encontrada.')
+    await this.accessiblePost(postId, user)
     const content = await this.validateText(payload.content || '', 'comment', user.id)
     if (payload.parentId) {
       const parent = await this.prisma.communityComment.findFirst({ where: { id: payload.parentId, postId } })
       if (!parent) throw new BadRequestException('Comentário pai inválido.')
+      if (parent.parentId) throw new BadRequestException('Respostas podem ter apenas um nível.')
     }
     return this.prisma.communityComment.create({
       data: { postId, authorId: user.id, parentId: payload.parentId || null, content }
+    })
+  }
+
+  async updateOwnComment(id: string, payload: CommunityCommentPayload, user: AuthenticatedUser) {
+    const comment = await this.prisma.communityComment.findUnique({ where: { id } })
+    if (!comment || comment.authorId !== user.id || comment.status !== 'PUBLISHED') throw new NotFoundException('Comentário não encontrado.')
+    const content = await this.validateText(payload.content || '', 'comment', user.id, false)
+    return this.prisma.$transaction(async (tx) => {
+      await tx.communityCommentRevision.create({
+        data: { commentId: id, content: comment.content, editedBy: user.id, editorRole: user.role, reason: 'Edição realizada pelo autor.' }
+      })
+      return tx.communityComment.update({ where: { id }, data: { content, edited: true, editedAt: new Date() } })
     })
   }
 
@@ -329,11 +478,15 @@ export class CommunityService {
     })
   }
 
-  async toggleReaction(payload: { postId?: string, commentId?: string, type?: string }, user: AuthenticatedUser) {
+  async toggleReaction(payload: CommunityReactionPayload, user: AuthenticatedUser) {
     if (Boolean(payload.postId) === Boolean(payload.commentId)) {
       throw new BadRequestException('Informe uma publicação ou comentário.')
     }
-    const type = (payload.type || 'LIKE').toUpperCase().slice(0, 40)
+    const type = (payload.type || 'LIKE').toUpperCase()
+    if (!reactionTypes.includes(type as typeof reactionTypes[number])) throw new BadRequestException('Reação inválida.')
+    const postId = payload.postId || (await this.prisma.communityComment.findUnique({ where: { id: payload.commentId as string }, select: { postId: true } }))?.postId
+    if (!postId) throw new NotFoundException('Conteúdo não encontrado.')
+    await this.accessiblePost(postId, user)
     const where = payload.postId
       ? { accountId_postId_type: { accountId: user.id, postId: payload.postId, type } }
       : { accountId_commentId_type: { accountId: user.id, commentId: payload.commentId as string, type } }
@@ -346,6 +499,31 @@ export class CommunityService {
       data: { accountId: user.id, postId: payload.postId || null, commentId: payload.commentId || null, type }
     })
     return { active: true }
+  }
+
+  async toggleSave(postId: string, user: AuthenticatedUser) {
+    await this.accessiblePost(postId, user)
+    const existing = await this.prisma.communityPostSave.findUnique({ where: { accountId_postId: { accountId: user.id, postId } } })
+    if (existing) {
+      await this.prisma.communityPostSave.delete({ where: { id: existing.id } })
+      return { saved: false }
+    }
+    await this.prisma.communityPostSave.create({ data: { accountId: user.id, postId } })
+    return { saved: true }
+  }
+
+  async toggleRepost(postId: string, user: AuthenticatedUser) {
+    const post = await this.accessiblePost(postId, user)
+    if (post.visibility !== 'PUBLIC') throw new BadRequestException('Somente publicações públicas podem ser repostadas.')
+    if (post.authorId === user.id) throw new BadRequestException('Não é necessário repostar sua própria publicação.')
+    const existing = await this.prisma.communityRepost.findUnique({ where: { accountId_postId: { accountId: user.id, postId } } })
+    if (existing) {
+      await this.prisma.communityRepost.delete({ where: { id: existing.id } })
+      return { reposted: false }
+    }
+    await this.prisma.communityRepost.create({ data: { accountId: user.id, postId } })
+    await this.observability.recordOperationalEvent({ module: 'community', eventType: 'COMMUNITY_POST_REPOSTED', entityType: 'CommunityPost', entityId: postId, actorUserId: user.id, targetUserId: post.authorId, description: 'Publicação compartilhada internamente.' })
+    return { reposted: true }
   }
 
   async report(payload: CommunityReportPayload, user: AuthenticatedUser) {

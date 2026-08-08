@@ -1,5 +1,7 @@
 import 'reflect-metadata'
 import helmet from 'helmet'
+import express from 'express'
+import { join, resolve } from 'node:path'
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { SafeExceptionFilter } from './common/safe-exception.filter'
@@ -18,6 +20,10 @@ async function bootstrap() {
     credentials: true
   })
   app.use(helmet())
+  const mediaDirectory = resolve(process.env.COMMUNITY_MEDIA_DIR || join(process.cwd(), 'storage', 'community-media'))
+  app.use(`${globalPrefix ? `/${globalPrefix}` : ''}/media/community`, express.static(mediaDirectory, {
+    dotfiles: 'deny', index: false, fallthrough: false, maxAge: '7d'
+  }))
   app.useGlobalFilters(app.get(SafeExceptionFilter))
   if (globalPrefix) {
     app.setGlobalPrefix(globalPrefix)

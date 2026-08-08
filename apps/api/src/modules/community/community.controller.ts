@@ -5,7 +5,9 @@ import type { AuthenticatedUser } from '../auth/auth.types'
 import type {
   CommunityCommentPayload,
   CommunityPostPayload,
+  CommunityProfilePayload,
   CommunityQuery,
+  CommunityReactionPayload,
   CommunityReportPayload
 } from './community.contract'
 import { CommunityService } from './community.service'
@@ -19,9 +21,21 @@ export class CommunityController {
     return this.community.feed(query)
   }
 
+  @Get('feed/authenticated')
+  @UseGuards(JwtAuthGuard)
+  authenticatedFeed(@Query() query: CommunityQuery, @CurrentUser() user: AuthenticatedUser) {
+    return this.community.feed(query, user)
+  }
+
   @Get('profiles/:username')
   profile(@Param('username') username: string) {
     return this.community.publicProfile(username)
+  }
+
+  @Get('profiles/:username/relationship')
+  @UseGuards(JwtAuthGuard)
+  relationship(@Param('username') username: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.community.relationship(username, user)
   }
 
   @Get('me')
@@ -33,10 +47,34 @@ export class CommunityController {
   @Patch('me')
   @UseGuards(JwtAuthGuard)
   updateProfile(
-    @Body() payload: { displayName?: string, bio?: string, avatarUrl?: string, coverUrl?: string, isPublic?: boolean },
+    @Body() payload: CommunityProfilePayload,
     @CurrentUser() user: AuthenticatedUser
   ) {
     return this.community.updateProfile(payload, user)
+  }
+
+  @Post('profiles/:username/follow')
+  @UseGuards(JwtAuthGuard)
+  follow(@Param('username') username: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.community.follow(username, user)
+  }
+
+  @Delete('profiles/:username/follow')
+  @UseGuards(JwtAuthGuard)
+  unfollow(@Param('username') username: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.community.unfollow(username, user)
+  }
+
+  @Post('profiles/:username/block')
+  @UseGuards(JwtAuthGuard)
+  block(@Param('username') username: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.community.block(username, user)
+  }
+
+  @Delete('profiles/:username/block')
+  @UseGuards(JwtAuthGuard)
+  unblock(@Param('username') username: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.community.unblock(username, user)
   }
 
   @Post('posts')
@@ -73,10 +111,28 @@ export class CommunityController {
     return this.community.removeOwnComment(id, user)
   }
 
+  @Patch('comments/:id')
+  @UseGuards(JwtAuthGuard)
+  updateComment(@Param('id') id: string, @Body() payload: CommunityCommentPayload, @CurrentUser() user: AuthenticatedUser) {
+    return this.community.updateOwnComment(id, payload, user)
+  }
+
   @Post('reactions')
   @UseGuards(JwtAuthGuard)
-  react(@Body() payload: { postId?: string, commentId?: string, type?: string }, @CurrentUser() user: AuthenticatedUser) {
+  react(@Body() payload: CommunityReactionPayload, @CurrentUser() user: AuthenticatedUser) {
     return this.community.toggleReaction(payload, user)
+  }
+
+  @Post('posts/:id/save')
+  @UseGuards(JwtAuthGuard)
+  save(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.community.toggleSave(id, user)
+  }
+
+  @Post('posts/:id/repost')
+  @UseGuards(JwtAuthGuard)
+  repost(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.community.toggleRepost(id, user)
   }
 
   @Post('reports')

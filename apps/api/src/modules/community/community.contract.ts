@@ -1,6 +1,8 @@
 import type {
   CommunityAchievementRarity,
   CommunityModerationType,
+  CommunityPostType,
+  CommunityPostVisibility,
   CommunityQuestStatus,
   CommunityReportPriority,
   CommunityReportStatus,
@@ -15,17 +17,29 @@ export type CommunityQuery = {
   authorId?: string
   assigneeId?: string
   sort?: 'recent' | 'relevant'
+  type?: CommunityPostType
+  visibility?: CommunityPostVisibility
+  feed?: 'for-you' | 'following' | 'recent' | 'saved'
 }
 
 export type CommunityPostPayload = {
+  type?: CommunityPostType
+  visibility?: CommunityPostVisibility
+  status?: 'DRAFT' | 'PUBLISHED'
   title?: string
   content?: string
-  media?: unknown[]
+  mediaIds?: string[]
 }
 
 export type CommunityCommentPayload = {
   content?: string
   parentId?: string
+}
+
+export type CommunityReactionPayload = {
+  postId?: string
+  commentId?: string
+  type?: 'LIKE' | 'HONOR' | 'POWER' | 'RARE' | 'VICTORY'
 }
 
 export type CommunityReportPayload = {
@@ -55,6 +69,24 @@ export type CommunityModerationPayload = {
   reason?: string
   expiresAt?: string
   evidence?: unknown[]
+  replacement?: string
+}
+
+export type CommunityProfilePayload = {
+  displayName?: string
+  bio?: string
+  avatarUrl?: string
+  coverUrl?: string
+  mainCharacterName?: string
+  mainCharacterClass?: string
+  guildName?: string
+  featuredAchievementIds?: string[]
+  profileVisibility?: 'PUBLIC' | 'FOLLOWERS' | 'PRIVATE'
+  charactersVisibility?: 'ALL' | 'MAIN_ONLY' | 'HIDDEN'
+  equipmentVisibility?: 'VISIBLE' | 'HIDDEN'
+  statisticsVisibility?: 'PRIVATE' | 'SELECTIVE' | 'PUBLIC'
+  guildVisibility?: 'VISIBLE' | 'HIDDEN'
+  activityVisibility?: 'VISIBLE' | 'HIDDEN'
 }
 
 export type CommunityAchievementPayload = {
@@ -114,6 +146,7 @@ export type CommunityPolicyPayload = {
   maxCommentsPerHour?: number
   postCooldownSeconds?: number
   commentCooldownSeconds?: number
+  usernameCooldownDays?: number
 }
 
 export type CommunityTaskPayload = {

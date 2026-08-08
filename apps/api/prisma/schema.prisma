@@ -219,6 +219,46 @@ enum CommunityPostStatus {
   ARCHIVED
 }
 
+enum CommunityPostType {
+  TEXT
+  IMAGE
+  GALLERY
+  GIF
+  ARTICLE
+  ITEM
+  ACHIEVEMENT
+  EVENT
+  MARKETPLACE
+  GUILD
+  LFG
+  POLL
+  AUTOMATED_GAME_EVENT
+}
+
+enum CommunityPostVisibility {
+  PUBLIC
+  FOLLOWERS
+  PRIVATE
+}
+
+enum CommunityMediaKind {
+  IMAGE
+  GIF
+}
+
+enum CommunityMediaStatus {
+  TEMPORARY
+  READY
+  ATTACHED
+  REMOVED
+  REJECTED
+}
+
+enum CommunitySocialRelationType {
+  BLOCK
+  MUTE
+}
+
 enum CommunityReportStatus {
   NEW
   ASSIGNED
@@ -245,6 +285,8 @@ enum CommunityModerationType {
   MESSAGE_LIMIT
   AVATAR_REMOVAL
   COVER_REMOVAL
+  BIO_REMOVAL
+  USERNAME_CHANGE
   REACH_LIMIT
 }
 
@@ -1732,6 +1774,16 @@ model CommunityProfile {
   avatarUrl            String?                     @db.VarChar(512)
   coverUrl             String?                     @db.VarChar(512)
   isPublic             Boolean                     @default(true)
+  mainCharacterName    String?                     @db.VarChar(100)
+  mainCharacterClass   String?                     @db.VarChar(100)
+  guildName            String?                     @db.VarChar(100)
+  featuredAchievementIds Json?
+  profileVisibility    String                      @default("PUBLIC") @db.VarChar(20)
+  charactersVisibility String                      @default("MAIN_ONLY") @db.VarChar(20)
+  equipmentVisibility  String                      @default("VISIBLE") @db.VarChar(20)
+  statisticsVisibility String                      @default("PRIVATE") @db.VarChar(20)
+  guildVisibility      String                      @default("VISIBLE") @db.VarChar(20)
+  activityVisibility   String                      @default("VISIBLE") @db.VarChar(20)
   socialSuspendedUntil DateTime?
   postBlockedUntil     DateTime?
   commentBlockedUntil  DateTime?
@@ -1747,13 +1799,47 @@ model CommunityProfile {
   @@index([socialSuspendedUntil])
 }
 
+model CommunityFollow {
+  id          String   @id @default(uuid())
+  followerId  String   @db.VarChar(191)
+  followingId String   @db.VarChar(191)
+  createdAt   DateTime @default(now())
+
+  @@unique([followerId, followingId])
+  @@index([followingId, createdAt])
+  @@index([followerId, createdAt])
+}
+
+model CommunityUsernameHistory {
+  id          String   @id @default(uuid())
+  accountId   String   @db.VarChar(191)
+  oldUsername String   @db.VarChar(191)
+  newUsername String   @db.VarChar(191)
+  changedBy   String   @db.VarChar(191)
+  reason      String   @db.Text
+  createdAt   DateTime @default(now())
+
+  @@index([accountId, createdAt])
+  @@index([newUsername])
+}
+
 model CommunityPost {
   id                 String                  @id @default(uuid())
   authorId           String
   title              String?                 @db.VarChar(191)
   content            String                  @db.LongText
+  type               CommunityPostType       @default(TEXT)
+  visibility         CommunityPostVisibility @default(PUBLIC)
   media              Json?
+  tags               Json?
+  mentions           Json?
   status             CommunityPostStatus     @default(PUBLISHED)
+  edited             Boolean                 @default(false)
+  editedAt            DateTime?
+  sponsored          Boolean                 @default(false)
+  official           Boolean                 @default(false)
+  sourceType         String?                 @db.VarChar(80)
+  sourceId           String?                 @db.VarChar(191)
   isPinned           Boolean                 @default(false)
   isFeatured         Boolean                 @default(false)
   reachLimited       Boolean                 @default(false)
@@ -1773,23 +1859,57 @@ model CommunityPost {
   reactions          CommunityReaction[]
   reports            CommunityReport[]
   revisions          CommunityPostRevision[]
+  mediaAssets        CommunityMedia[]
+  saves              CommunityPostSave[]
+  reposts            CommunityRepost[]
 
   @@index([status, publishedAt])
   @@index([authorId, createdAt])
   @@index([isPinned, isFeatured, createdAt])
+  @@index([type, visibility, status, createdAt])
+  @@index([sourceType, sourceId])
+}
+
+model CommunityMedia {
+  id           String               @id @default(uuid())
+  ownerId      String
+  postId       String?
+  kind         CommunityMediaKind
+  status       CommunityMediaStatus @default(TEMPORARY)
+  url          String               @db.VarChar(512)
+  storagePath  String               @db.VarChar(512)
+  originalName String               @db.VarChar(255)
+  mimeType     String               @db.VarChar(100)
+  extension    String               @db.VarChar(12)
+  sizeBytes    Int
+  width        Int
+  height       Int
+  sha256       String               @db.VarChar(64)
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  removedAt    DateTime?
+  post         CommunityPost?       @relation(fields: [postId], references: [id], onDelete: SetNull)
+
+  @@index([ownerId, status, createdAt])
+  @@index([postId])
+  @@index([sha256])
 }
 
 model CommunityPostRevision {
-  id         String        @id @default(uuid())
+  id         String                  @id @default(uuid())
   postId     String
-  title      String?       @db.VarChar(191)
-  content    String        @db.LongText
+  title      String?                 @db.VarChar(191)
+  content    String                  @db.LongText
+  type       CommunityPostType
+  visibility CommunityPostVisibility
   media      Json?
-  editedBy   String        @db.VarChar(191)
-  editorRole String        @db.VarChar(40)
-  reason     String        @db.Text
-  createdAt  DateTime      @default(now())
-  post       CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tags       Json?
+  mentions   Json?
+  editedBy   String                  @db.VarChar(191)
+  editorRole String                  @db.VarChar(40)
+  reason     String                  @db.Text
+  createdAt  DateTime                @default(now())
+  post       CommunityPost           @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@index([postId, createdAt])
 }
@@ -1806,6 +1926,8 @@ model CommunityComment {
   removedBy String?             @db.VarChar(191)
   removedAt DateTime?
   reason    String?             @db.Text
+  edited    Boolean             @default(false)
+  editedAt  DateTime?
   createdAt DateTime            @default(now())
   updatedAt DateTime            @updatedAt
   post      CommunityPost       @relation(fields: [postId], references: [id], onDelete: Cascade)
@@ -1814,10 +1936,24 @@ model CommunityComment {
   replies   CommunityComment[]  @relation("CommunityCommentReplies")
   reactions CommunityReaction[]
   reports   CommunityReport[]
+  revisions CommunityCommentRevision[]
 
   @@index([postId, status, createdAt])
   @@index([authorId, createdAt])
   @@index([parentId])
+}
+
+model CommunityCommentRevision {
+  id         String           @id @default(uuid())
+  commentId  String
+  content    String           @db.Text
+  editedBy   String           @db.VarChar(191)
+  editorRole String           @db.VarChar(40)
+  reason     String           @db.Text
+  createdAt  DateTime         @default(now())
+  comment    CommunityComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@index([commentId, createdAt])
 }
 
 model CommunityReaction {
@@ -1835,6 +1971,45 @@ model CommunityReaction {
   @@unique([accountId, commentId, type])
   @@index([postId, type])
   @@index([commentId, type])
+}
+
+model CommunityPostSave {
+  id           String        @id @default(uuid())
+  accountId    String        @db.VarChar(191)
+  postId       String
+  collectionId String?       @db.VarChar(191)
+  createdAt    DateTime      @default(now())
+  post         CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([accountId, postId])
+  @@index([accountId, createdAt])
+  @@index([accountId, collectionId, createdAt])
+  @@index([postId])
+}
+
+model CommunityRepost {
+  id        String        @id @default(uuid())
+  accountId String        @db.VarChar(191)
+  postId    String
+  comment   String?       @db.VarChar(500)
+  createdAt DateTime      @default(now())
+  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([accountId, postId])
+  @@index([accountId, createdAt])
+  @@index([postId, createdAt])
+}
+
+model CommunitySocialRelation {
+  id        String                      @id @default(uuid())
+  actorId   String                      @db.VarChar(191)
+  targetId  String                      @db.VarChar(191)
+  type      CommunitySocialRelationType
+  createdAt DateTime                    @default(now())
+
+  @@unique([actorId, targetId, type])
+  @@index([actorId, type, createdAt])
+  @@index([targetId, type, createdAt])
 }
 
 model CommunityReport {
@@ -2008,6 +2183,7 @@ model CommunityPolicy {
   maxCommentsPerHour     Int      @default(40)
   postCooldownSeconds    Int      @default(30)
   commentCooldownSeconds Int      @default(10)
+  usernameCooldownDays   Int      @default(30)
   updatedBy              String?  @db.VarChar(191)
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt

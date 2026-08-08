@@ -107,6 +107,8 @@ export class CommunityAdminService {
     const where: Prisma.CommunityPostWhereInput = {
       ...(status ? { status } : {}),
       ...(query.authorId ? { authorId: query.authorId } : {}),
+      ...(query.type ? { type: query.type } : {}),
+      ...(query.visibility ? { visibility: query.visibility } : {}),
       ...(search ? { OR: [{ title: { contains: search } }, { content: { contains: search } }, { author: { username: { contains: search } } }] } : {})
     }
     const [data, total] = await Promise.all([
@@ -152,7 +154,11 @@ export class CommunityAdminService {
             postId: id,
             title: before.title,
             content: before.content,
+            type: before.type,
+            visibility: before.visibility,
             media: before.media || undefined,
+            tags: before.tags || undefined,
+            mentions: before.mentions || undefined,
             editedBy: user.id,
             editorRole: user.role,
             reason
@@ -165,7 +171,9 @@ export class CommunityAdminService {
             content,
             administrativeEdit: true,
             administrativeNote: reason,
-            editedBy: user.id
+            editedBy: user.id,
+            edited: true,
+            editedAt: new Date()
           }
         })
       })
@@ -230,6 +238,37 @@ export class CommunityAdminService {
     return after
   }
 
+  async reactions(query: CommunityQuery) {
+    const { page, pageSize, skip } = pageValues(query)
+    const search = query.search?.trim()
+    const where: Prisma.CommunityReactionWhereInput = {
+      ...(search ? { OR: [{ type: { contains: search } }, { account: { username: { contains: search } } }] } : {})
+    }
+    const [data, total] = await Promise.all([
+      this.prisma.communityReaction.findMany({
+        where,
+        include: {
+          account: { select: { id: true, username: true, name: true } },
+          post: { select: { id: true, title: true, content: true } },
+          comment: { select: { id: true, content: true } }
+        },
+        orderBy: { createdAt: 'desc' }, skip, take: pageSize
+      }),
+      this.prisma.communityReaction.count({ where })
+    ])
+    return { data, total, page, pageSize, totalPages: Math.max(1, Math.ceil(total / pageSize)) }
+  }
+
+  async reactionAction(id: string, payload: CommunityAdminActionPayload, user: AuthenticatedUser) {
+    const reason = required(payload.reason, 'a justificativa', 4)
+    if (payload.action?.toUpperCase() !== 'REMOVE') throw new BadRequestException('Ação inválida.')
+    const before = await this.prisma.communityReaction.findUnique({ where: { id } })
+    if (!before) throw new NotFoundException('Reação não encontrada.')
+    await this.prisma.communityReaction.delete({ where: { id } })
+    await this.audited(user, 'admin.community.reaction.remove', 'CommunityReaction', id, reason, before, { removed: true }, before.accountId, payload.evidence)
+    return { removed: true }
+  }
+
   async users(query: CommunityQuery) {
     const { page, pageSize, skip } = pageValues(query)
     const search = query.search?.trim()
@@ -240,7 +279,7 @@ export class CommunityAdminService {
       this.prisma.communityProfile.findMany({
         where,
         include: {
-          account: { select: { id: true, username: true, name: true, status: true } },
+          account: { select: { id: true, username: true, name: true, status: true, _count: { select: { reportedCommunity: true } } } },
           moderationActions: { orderBy: { createdAt: 'desc' }, take: 10 },
           _count: { select: { moderationActions: true } }
         },
@@ -254,7 +293,7 @@ export class CommunityAdminService {
   async moderateUser(accountId: string, payload: CommunityModerationPayload, user: AuthenticatedUser) {
     const reason = required(payload.reason, 'a justificativa', 4)
     const type = payload.type as CommunityModerationType
-    if (!type || !['WARNING', 'SOCIAL_SUSPENSION', 'POST_BLOCK', 'COMMENT_BLOCK', 'MESSAGE_LIMIT', 'AVATAR_REMOVAL', 'COVER_REMOVAL', 'REACH_LIMIT'].includes(type)) {
+    if (!type || !['WARNING', 'SOCIAL_SUSPENSION', 'POST_BLOCK', 'COMMENT_BLOCK', 'MESSAGE_LIMIT', 'AVATAR_REMOVAL', 'COVER_REMOVAL', 'BIO_REMOVAL', 'USERNAME_CHANGE', 'REACH_LIMIT'].includes(type)) {
       throw new BadRequestException('Tipo de moderação inválido.')
     }
     const account = await this.prisma.account.findUnique({ where: { id: accountId }, include: { communityProfile: true } })
@@ -269,6 +308,18 @@ export class CommunityAdminService {
       create: { accountId, displayName: account.name || account.username },
       update: {}
     })
+    if (type === 'USERNAME_CHANGE') {
+      const replacement = required(payload.replacement, 'o novo username', 3).toLowerCase()
+      if (!/^[a-z0-9._-]{3,24}$/.test(replacement)) throw new BadRequestException('Username invÃ¡lido.')
+      const duplicate = await this.prisma.account.findUnique({ where: { username: replacement }, select: { id: true } })
+      if (duplicate && duplicate.id !== accountId) throw new BadRequestException('Este username jÃ¡ estÃ¡ em uso.')
+      const updated = await this.prisma.$transaction(async (tx) => {
+        await tx.communityUsernameHistory.create({ data: { accountId, oldUsername: account.username, newUsername: replacement, changedBy: user.id, reason } })
+        return tx.account.update({ where: { id: accountId }, data: { username: replacement }, select: { id: true, username: true } })
+      })
+      await this.audited(user, 'admin.community.profile.username_change', 'CommunityProfile', profile.id, reason, { username: account.username }, updated, accountId, payload.evidence)
+      return updated
+    }
     const update: Prisma.CommunityProfileUpdateInput =
       type === 'WARNING' ? { warningCount: { increment: 1 } }
       : type === 'SOCIAL_SUSPENSION' ? { socialSuspendedUntil: expiresAt }
@@ -277,7 +328,8 @@ export class CommunityAdminService {
       : type === 'MESSAGE_LIMIT' ? { messagesLimitedUntil: expiresAt }
       : type === 'REACH_LIMIT' ? { reachLimitedUntil: expiresAt }
       : type === 'AVATAR_REMOVAL' ? { avatarUrl: null }
-      : { coverUrl: null }
+      : type === 'COVER_REMOVAL' ? { coverUrl: null }
+      : { bio: null }
     const after = await this.prisma.$transaction(async (tx) => {
       const result = await tx.communityProfile.update({ where: { id: profile.id }, data: update })
       await tx.communityModerationAction.create({
@@ -624,6 +676,7 @@ export class CommunityAdminService {
         maxCommentsPerHour: Math.max(1, Number(payload.maxCommentsPerHour) || before.maxCommentsPerHour),
         postCooldownSeconds: Math.max(0, Number(payload.postCooldownSeconds) || 0),
         commentCooldownSeconds: Math.max(0, Number(payload.commentCooldownSeconds) || 0),
+        usernameCooldownDays: Math.max(1, Number(payload.usernameCooldownDays) || before.usernameCooldownDays),
         updatedBy: user.id
       }
     })

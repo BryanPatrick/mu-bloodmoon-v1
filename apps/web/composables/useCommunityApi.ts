@@ -20,16 +20,29 @@ export const useCommunityApi = () => {
   const query = (value: Query = {}) => ({ query: Object.fromEntries(Object.entries(value).filter(([, item]) => item !== undefined && item !== '')) })
 
   return {
-    feed: (value: Query = {}) => request<CommunityPage>('/community/feed', query(value)),
+    feed: (value: Query = {}, authenticated = false) => request<CommunityPage>(authenticated ? '/community/feed/authenticated' : '/community/feed', query(value)),
     publicProfile: (username: string) => request(`/community/profiles/${encodeURIComponent(username)}`),
+    followProfile: (username: string) => request(`/community/profiles/${encodeURIComponent(username)}/follow`, { method: 'POST' }),
+    unfollowProfile: (username: string) => request(`/community/profiles/${encodeURIComponent(username)}/follow`, { method: 'DELETE' }),
+    profileRelationship: (username: string) => request<{ ownProfile: boolean; following: boolean; blocked: boolean; blockedBy: boolean }>(`/community/profiles/${encodeURIComponent(username)}/relationship`),
+    blockProfile: (username: string) => request(`/community/profiles/${encodeURIComponent(username)}/block`, { method: 'POST' }),
+    unblockProfile: (username: string) => request(`/community/profiles/${encodeURIComponent(username)}/block`, { method: 'DELETE' }),
     myProfile: () => request('/community/me'),
     updateProfile: (body: unknown) => request('/community/me', { method: 'PATCH', body }),
     createPost: (body: unknown) => request('/community/posts', { method: 'POST', body }),
+    uploadPostMedia: (file: File) => {
+      const body = new FormData()
+      body.append('file', file)
+      return request<{ id: string, kind: 'IMAGE' | 'GIF', url: string, mimeType: string, width: number, height: number }>('/community/media', { method: 'POST', body })
+    },
     updatePost: (id: string, body: unknown) => request(`/community/posts/${id}`, { method: 'PATCH', body }),
     removePost: (id: string) => request(`/community/posts/${id}`, { method: 'DELETE' }),
     comment: (id: string, body: unknown) => request(`/community/posts/${id}/comments`, { method: 'POST', body }),
+    updateComment: (id: string, body: unknown) => request(`/community/comments/${id}`, { method: 'PATCH', body }),
     removeComment: (id: string) => request(`/community/comments/${id}`, { method: 'DELETE' }),
     react: (body: unknown) => request('/community/reactions', { method: 'POST', body }),
+    toggleSave: (id: string) => request(`/community/posts/${id}/save`, { method: 'POST' }),
+    toggleRepost: (id: string) => request(`/community/posts/${id}/repost`, { method: 'POST' }),
     report: (body: unknown) => request('/community/reports', { method: 'POST', body }),
     quests: () => request<any[]>('/community/quests'),
     joinQuest: (id: string) => request(`/community/quests/${id}/join`, { method: 'POST' }),
@@ -40,6 +53,8 @@ export const useCommunityApi = () => {
     adminPostAction: (id: string, body: unknown) => request(`/admin/community/posts/${id}/actions`, { method: 'POST', body }),
     adminComments: (value: Query = {}) => request<CommunityPage>('/admin/community/comments', query(value)),
     adminCommentAction: (id: string, body: unknown) => request(`/admin/community/comments/${id}/actions`, { method: 'POST', body }),
+    adminReactions: (value: Query = {}) => request<CommunityPage>('/admin/community/reactions', query(value)),
+    adminReactionAction: (id: string, body: unknown) => request(`/admin/community/reactions/${id}/actions`, { method: 'POST', body }),
     adminUsers: (value: Query = {}) => request<CommunityPage>('/admin/community/users', query(value)),
     adminModerateUser: (id: string, body: unknown) => request(`/admin/community/users/${id}/moderation`, { method: 'POST', body }),
     adminRestoreUser: (id: string, reason: string) => request(`/admin/community/users/${id}/restore`, { method: 'POST', body: { reason } }),

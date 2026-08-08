@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common'
 import { AuditModule } from '../audit/audit.module'
 import { AuthModule } from '../auth/auth.module'
+import { MediaModule } from '../media/media.module'
 import { CommunityAdminController } from './community-admin.controller'
 import { CommunityAdminService } from './community-admin.service'
 import { CommunityController } from './community.controller'
 import { CommunityService } from './community.service'
 
 @Module({
-  imports: [AuthModule, AuditModule],
+  imports: [AuthModule, AuditModule, MediaModule],
   controllers: [CommunityController, CommunityAdminController],
   providers: [CommunityService, CommunityAdminService]
 })

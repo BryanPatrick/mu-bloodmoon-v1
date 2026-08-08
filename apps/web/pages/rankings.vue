@@ -9,7 +9,8 @@
       </div>
       <div class="bm-panel overflow-x-auto rounded-md p-4">
         <h2 class="bm-heading mb-5 font-display text-2xl font-bold">{{ t('rankingOf') }} {{ active }}</h2>
-        <RankingTable :rows="store.rankingRows" />
+        <RankingTable v-if="store.rankingRows.length" :rows="store.rankingRows" />
+        <p v-else class="py-12 text-center text-sm font-bold text-white/45">O ranking ainda não possui dados sincronizados pelo servidor.</p>
       </div>
     </section>
   </div>

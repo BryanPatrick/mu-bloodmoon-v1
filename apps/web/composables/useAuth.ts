@@ -131,6 +131,7 @@ export const useAuth = () => {
 
   const isLoggedIn = computed(() => Boolean(user.value))
   const isAdmin = computed(() => roleHasPermission(user.value?.role, permissions.adminDashboardView))
+  const accessToken = computed(() => session.value?.accessToken || '')
 
   const recordAudit = (event: Omit<AuditEvent, 'id' | 'createdAt' | 'user' | 'role'> & { user?: string, role?: UserRole | 'guest' }) => {
     if (!import.meta.client) {
@@ -402,6 +403,7 @@ export const useAuth = () => {
   return {
     user,
     session,
+    accessToken,
     isLoggedIn,
     isAdmin,
     loadSession,

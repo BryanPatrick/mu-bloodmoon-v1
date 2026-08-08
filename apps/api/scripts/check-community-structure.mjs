@@ -13,7 +13,8 @@ const permissions = read('src/modules/auth/permissions.ts')
 
 for (const model of [
   'CommunityProfile', 'CommunityPost', 'CommunityPostRevision', 'CommunityComment',
-  'CommunityReaction', 'CommunityReport', 'CommunityModerationAction',
+  'CommunityCommentRevision', 'CommunityReaction', 'CommunityPostSave',
+  'CommunityRepost', 'CommunitySocialRelation', 'CommunityReport', 'CommunityModerationAction',
   'CommunityAchievement', 'CommunityAchievementGrant', 'CommunityQuest',
   'CommunityQuestParticipant', 'CommunityBadge', 'CommunityBadgeGrant',
   'CommunityPolicy', 'CommunityTask'
@@ -21,11 +22,11 @@ for (const model of [
   if (!schema.includes(`model ${model}`)) failures.push(`Missing Prisma model ${model}`)
 }
 
-for (const route of ['feed', 'profiles/:username', 'posts', 'reports', 'quests']) {
+for (const route of ['feed', 'profiles/:username', 'relationship', 'follow', 'block', 'posts', 'comments', 'reactions', 'save', 'repost', 'reports', 'quests']) {
   if (!controller.includes(route)) failures.push(`Missing public community route ${route}`)
 }
 
-for (const route of ['dashboard', 'posts', 'comments', 'users', 'reports', 'achievements', 'quests', 'badges', 'policy', 'tasks', 'analytics']) {
+for (const route of ['dashboard', 'posts', 'comments', 'reactions', 'users', 'reports', 'achievements', 'quests', 'badges', 'policy', 'tasks', 'analytics']) {
   if (!adminController.includes(route)) failures.push(`Missing community admin route ${route}`)
 }
 
@@ -42,6 +43,9 @@ for (const permission of [
 
 if (!service.includes('COMMUNITY_SPAM_RATE_LIMIT')) failures.push('Hourly anti-spam enforcement is missing')
 if (!service.includes('COMMUNITY_SPAM_BLOCKED_LINK')) failures.push('Domain moderation enforcement is missing')
+if (!service.includes('Respostas podem ter apenas um nível.')) failures.push('One-level comment reply enforcement is missing')
+if (!service.includes("const reactionTypes = ['LIKE', 'HONOR', 'POWER', 'RARE', 'VICTORY']")) failures.push('Expected community reactions are missing')
+if (!service.includes("feed === 'following'") || !service.includes("feed === 'saved'")) failures.push('Following or saved feed is missing')
 if (!adminController.includes('PermissionsGuard')) failures.push('Community admin controller lacks granular permission guard')
 
 if (failures.length) {
