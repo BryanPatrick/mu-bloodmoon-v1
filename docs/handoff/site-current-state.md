@@ -267,10 +267,11 @@ integracao e fidelidade de dados.
 | `npm run api:check` | PASS | Checks estruturais + `tsc --noEmit`. |
 | `npm run web:build` | PASS | Build SSR/Nitro concluido; avisos de sourcemap, deprecacao e chunks grandes. |
 | `npm run data:check-equipment` | PASS | 613 equipamentos, 1.031 variantes, 132 sets, zero vazamento acima da Season 6. |
-| lint frontend | NOT_CONFIGURED | Nao ha script dedicado. |
+| `npm run lint` (Etapa 5) | FAIL (1 erro) | ESLint 10 flat config + eslint-plugin-vue + typescript-eslint, cobrindo apps/web/apps/api/packages/shared. 1075 problemas brutos -> 56 apos configurar 3 falsos-positivos conhecidos (no-undef de auto-import Nuxt, ternario-como-statement, catch vazio intencional). O 1 erro restante e uma atribuicao morta inofensiva em `admin-tasks.service.ts:363` (nao-Community, nao corrigida nesta etapa); 55 warnings sao `unused-vars` pre-existentes (baseline, nao corrigidos em massa). **Escopo Community isolado: 0 erros, 0 warnings** apos correcao trivial de ordem de atributos. Ver docs/handoff/community-current-state.md. |
+| `npm run format:check` (Etapa 5) | FAIL (261 arquivos) | Prettier 3 configurado (`.prettierrc.json`/`.prettierignore`); repositorio nunca foi formatado antes desta etapa. Nao formatado em massa por instrucao explicita -- apenas os 2 arquivos criados/editados nesta etapa (`eslint.config.mjs`, `package.json`) estao em conformidade. |
 | testes unitarios | NOT_CONFIGURED | Nao ha script/suite identificada. |
 | testes E2E | NOT_CONFIGURED | Nao ha suite identificada. |
-| banco/migrations | NOT_EXECUTED | Proibido aplicar nesta auditoria. |
+| banco/migrations | NOT_EXECUTED | Proibido aplicar nesta auditoria/etapa -- ver "Migrations pendentes (Etapa 5)" em docs/handoff/community-current-state.md. |
 | smoke de producao | NOT_EXECUTED | Proibido alterar/testar producao nesta etapa. |
 
 ## Producao e deploy documentados

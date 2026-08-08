@@ -214,6 +214,79 @@ identificado, por leitura estatica, endpoint esperado pelo composable sem contro
 Observacao: `CommunityTask` coexiste com `AdminTask`, criando sobreposicao de
 responsabilidade que deve ser decidida depois do beta, nao refatorada agora.
 
+## Migrations pendentes (Etapa 5)
+
+Tres migrations Prisma existem no worktree local (`apps/api/prisma/migrations/`)
+mas **nao foram aplicadas** -- nem nesta etapa, nem na auditoria anterior. A
+ultima migration realmente aplicada ao schema e `20260730110000_season6_scope_cleanup`;
+as tres abaixo vem depois dela, nessa ordem, e cada uma depende da anterior
+(historico linear do Prisma -- nao podem ser reordenadas nem aplicadas isoladamente).
+
+### 1. `20260802130000_community_social_profiles`
+
+- **Depende de**: `20260730110000_season6_scope_cleanup` (baseline atual).
+- **Models afetados**: `CommunityProfile` (10 colunas novas: personagem/guild em
+  destaque, `featuredAchievementIds`, e 6 flags de visibilidade granular --
+  `profileVisibility`/`charactersVisibility`/`equipmentVisibility`/
+  `statisticsVisibility`/`guildVisibility`/`activityVisibility`, todas com
+  `DEFAULT` seguro); `CommunityModerationAction` (amplia o `ENUM` de `type`,
+  adiciona `USERNAME_CHANGE`/`REACH_LIMIT` e outros); `CommunityPolicy`
+  (`usernameCooldownDays INT DEFAULT 30`); cria `CommunityFollow` e
+  `CommunityUsernameHistory` (tabelas novas, sem FK declarada no SQL bruto --
+  a integridade referencial com `Account` fica a cargo da camada de aplicacao).
+- **Risco aparente**: baixo-medio. Todas as colunas novas tem `DEFAULT`
+  (nenhuma exige backfill manual); a mudanca de maior atencao e o `ENUM`
+  ampliado de `CommunityModerationAction.type` -- expandir um ENUM MySQL via
+  `MODIFY COLUMN` e uma operacao que reescreve a definicao da coluna e deve
+  ser testada contra o volume real de linhas antes de produzir.
+- **Necessidade de teste**: validar em clone descartavel que o `MODIFY COLUMN`
+  do ENUM preserva os valores existentes; confirmar que `CommunityFollow`/
+  `CommunityUsernameHistory` realmente aplicam integridade referencial no
+  service layer (Prisma), ja que o SQL bruto nao tem `FOREIGN KEY` para essas
+  duas tabelas.
+
+### 2. `20260802170000_community_posts_stage_three`
+
+- **Depende de**: migration 1 (mesma cadeia linear).
+- **Models afetados**: `CommunityPost` (adiciona `type` ENUM de 13 valores
+  com `DEFAULT 'TEXT'`, `visibility` ENUM com `DEFAULT 'PUBLIC'`, `tags`/
+  `mentions` JSON, `edited`/`editedAt`, `sponsored`/`official`,
+  `sourceType`/`sourceId` -- os dois ultimos sem FK declarada, mesma
+  observacao de integridade via aplicacao); `CommunityPostRevision` (replica
+  `type`/`visibility`/`tags`/`mentions`); cria `CommunityMedia` (tabela nova,
+  com FK real: `postId` -> `CommunityPost.id` `ON DELETE SET NULL`) e dois
+  indices compostos em `CommunityPost`.
+- **Risco aparente**: baixo. Todas as colunas novas tem `DEFAULT`; unico
+  ponto de atencao e o mesmo padrao de `sourceType`/`sourceId` sem FK (fonte
+  polimorfica, decisao deliberada igual ao `entity_type`/`entity_id` do
+  proprio Knowledge Hub -- nao e um erro, mas exige validacao na aplicacao).
+- **Necessidade de teste**: confirmar que `MediaService` (ver "Midia e
+  seguranca" abaixo) grava `postId` corretamente e que o `ON DELETE SET NULL`
+  se comporta como esperado quando um post e apagado com midia anexada.
+
+### 3. `20260802190000_community_social_interactions`
+
+- **Depende de**: migration 2 (mesma cadeia linear).
+- **Models afetados**: cria `CommunityCommentRevision` (FK real para
+  `CommunityComment.id`, `ON DELETE CASCADE`); `CommunityComment` ganha
+  `edited`/`editedAt`; cria `CommunityPostSave` (FK real para
+  `CommunityPost.id`, `ON DELETE CASCADE`, unique por `accountId`+`postId`);
+  cria `CommunityRepost` (mesma forma, unique por `accountId`+`postId`); cria
+  `CommunitySocialRelation` (`BLOCK`/`MUTE`, unique por
+  `actorId`+`targetId`+`type`, sem FK declarada para `Account` -- mesma
+  observacao de integridade via aplicacao).
+- **Risco aparente**: baixo. Estrutura toda nova (nenhum `ALTER` de dado
+  existente critico alem de duas colunas nullable em `CommunityComment`);
+  maior superficie das tres migrations, mas a mais "aditiva pura".
+- **Necessidade de teste**: validar os `UNIQUE INDEX` compostos de
+  `CommunityPostSave`/`CommunityRepost`/`CommunitySocialRelation` sob
+  concorrencia (double-click de save/repost/block e um risco classico de
+  unique-constraint-violation tratado ou nao pelo service).
+
+**Nenhuma das tres foi aplicada em nenhum ambiente nesta etapa** -- homologacao
+completa (clone descartavel do MySQL, teste de rollback) fica para a Etapa 6,
+conforme o proprio handoff da Etapa C1 ja registrava.
+
 ## Midia e seguranca
 
 `MediaService`:
@@ -256,6 +329,28 @@ Pendencias de homologacao:
 - bloqueio/follow concorrente;
 - privacidade efetiva de cada campo do perfil;
 - moderacao de midia e remocao fisica segura.
+
+## Catalogo de mocks/fallbacks (Etapa 5)
+
+Auditoria de 2026-08-08 (Etapa C1) ja apontava mocks em prosa (itens 3-4 de
+"Bugs/riscos conhecidos" abaixo). Esta tabela e o inventario exato -- toda
+constante exportada de `stage-one.mock.ts`/`stage-two.mock.ts` e onde cada uma
+e efetivamente renderizada -- classificado por severidade para o beta.
+Nenhum mock foi removido nesta etapa (fora de escopo -- ver Etapa 5, brief).
+
+| Item | Definido em | Consumido em | Classificacao | Motivo |
+|---|---|---|---|---|
+| `communityProfileMock` | `stage-one.mock.ts` | `pages/comunidade/index.vue` (identidade no rail esquerdo, mesclado com `user.value` real); base de `communitySocialProfileMock` | `BLOCKER_BETA` | Checklist HIGH: "Substituir profile/user rail mock por dados reais ou estado vazio honesto" |
+| `communityAdsMock` | `stage-one.mock.ts` | `CommunityRightRail.vue` (2 anuncios desktop); `pages/comunidade/index.vue` (anuncio mobile) | `BLOCKER_BETA` | Checklist HIGH: "Substituir anuncios/right rail mock por conteudo administrativo ou ocultar blocos" -- anuncio fabricado exibido a usuario real |
+| `communityEventsMock` | `stage-one.mock.ts` | `CommunityRightRail.vue` (bloco de eventos) | `BLOCKER_BETA` | Mesmo rail que `communityAdsMock`; eventos inventados apresentados como reais |
+| `communityTrendingMock` | `stage-one.mock.ts` | `CommunityRightRail.vue` (topicos em alta) | `BLOCKER_BETA` | Mesmo rail; hashtags fixas, nunca refletem atividade real |
+| `communitySuggestionsMock` | `stage-one.mock.ts` | `CommunityRightRail.vue` (sugestoes de seguir) | `BLOCKER_BETA` | Mesmo rail; perfis sugeridos nao existem |
+| `communityPostsMock` | `stage-one.mock.ts` | Uso interno apenas -- alimenta a atividade de `communitySocialProfileMock` em `stage-two.mock.ts` | `BLOCKER_BETA` | Nao tem tela propria, mas acaba renderizado via `profileForUsername()` quando a API falha -- mesma cadeia do item abaixo |
+| `communitySocialProfileMock` / `profileForUsername()` | `stage-two.mock.ts` | `pages/comunidade/[username].vue` (perfil publico) | `BLOCKER_BETA` | Checklist BLOCKER: "Remover o fallback silencioso de perfil mockado" + "Garantir que falha de API nao seja exibida como conteudo inventado" -- risco 3 de "Bugs/riscos conhecidos" abaixo |
+| `usernamePolicy` | `stage-two.mock.ts` | `CommunityProfileEditor.vue` (regras de validacao de username) | `DEV_ONLY` | Nao e dado fabricado -- e logica de validacao real, apenas coabitando o arquivo de mock por conveniencia. Seguro para o beta como esta; mover para um arquivo proprio e limpeza cosmetica, nao um blocker |
+| `CommunityPlaceholderView` (Explorar, Perfil por query, Guilds, Eventos, Quests, Conquistas) | `components/community/CommunityPlaceholderView.vue` | `pages/comunidade/index.vue` (roteamento por `section` query) | `TEMPORARY_SAFE` | Estado "ainda nao implementado" honesto -- nao fabrica conteudo, apenas informa ausencia. Alinhado aos itens MEDIUM do checklist (implementar essas paginas depois), nao e um blocker de integridade |
+
+Resumo: **6 pontos `BLOCKER_BETA`** (todos alimentados por `stage-one.mock.ts`/`stage-two.mock.ts`, todos no caminho de usuario real -- rail esquerdo, rail direito, perfil publico), **1 `DEV_ONLY`** (`usernamePolicy`, seguro, so misclassificado de arquivo), **1 `TEMPORARY_SAFE`** (placeholders honestos de secoes ainda nao construidas). Nenhum item `UNKNOWN` -- todo consumidor de mock foi rastreado ate sua tela/componente exato via `grep` exaustivo no escopo Community; nenhuma leitura estatica ficou sem explicacao.
 
 ## Bugs/riscos conhecidos
 

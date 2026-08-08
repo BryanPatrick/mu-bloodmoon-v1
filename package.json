@@ -34,7 +34,11 @@
     "web-source:catalog": "node scripts/catalog-web-source-backup.mjs",
     "web-source:normalize": "node scripts/normalize-web-source-catalog.mjs",
     "deploy:cpanel:package": "npm run api:build && npm run web:build && node scripts/package-cpanel-deploy.mjs",
-    "check": "npm run data:check-equipment && npm run api:check && npm run web:build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run lint && npm run format:check && npm run data:check-equipment && npm run api:check && npm run web:build",
     "postinstall": "nuxt prepare apps/web"
   },
   "dependencies": {
@@ -47,6 +51,14 @@
     "vue-router": "^4.4.5"
   },
   "devDependencies": {
-    "@iconify-json/lucide": "^1.2.114"
+    "@eslint/js": "^10.0.1",
+    "@iconify-json/lucide": "^1.2.114",
+    "eslint": "^10.8.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-vue": "^10.10.0",
+    "globals": "^17.9.0",
+    "prettier": "^3.9.6",
+    "typescript-eslint": "^8.66.0",
+    "vue-eslint-parser": "^10.4.1"
   }
 }

@@ -1,0 +1,32 @@
+# Generated / build output
+node_modules
+.nuxt
+.output
+dist
+coverage
+apps/api/dist
+apps/launcher/bin
+apps/launcher/obj
+apps/launcher-updater/bin
+apps/launcher-updater/obj
+
+# Local/dev-only, not source
+.tmp
+.npm-cache
+work
+*.local
+
+# Data/migrations/backups -- generated or structurally rigid, not hand-formatted
+apps/api/prisma/migrations
+package-lock.json
+apps/api/storage
+
+# External harvested research data and the generated equipment/Wiki knowledge
+# catalog -- not hand-authored source, and some harvested HTML is malformed
+# enough that Prettier's HTML parser can't even read it.
+references
+knowledge
+
+# Lockfiles and env
+.env
+.env.*

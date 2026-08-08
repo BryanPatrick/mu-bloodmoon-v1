@@ -8,7 +8,7 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
 
 ### Comunidade
 
-- [ ] Preservar/revisar o diff local Community antes de qualquer merge.
+- [x] Preservar/revisar o diff local Community antes de qualquer merge. (Etapa 5: auditado via `git status`/`git diff --stat`, catalogado no Hub, nada descartado -- ver docs/handoff/community-current-state.md.)
 - [ ] Homologar as tres migrations Community em clone descartavel do MySQL.
 - [ ] Executar E2E autenticado de perfil, upload, post, edicao, exclusao, comentario,
   resposta, reacao, save, repost, follow, block e denuncia.
@@ -133,7 +133,7 @@ marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
 - [ ] Dividir `apps/web/pages/wiki.vue` em modulos menores depois da estabilizacao.
 - [ ] Decidir se `CommunityTask` sera adaptado ou migrado para `AdminTask`.
 - [ ] Atualizar/remover documentos historicos que contradizem o codigo atual.
-- [ ] Adicionar lint frontend.
+- [x] Adicionar lint frontend. (Etapa 5: ESLint 10 flat config cobrindo apps/web/apps/api/packages/shared -- `npm run lint`.)
 - [ ] Adicionar testes unitarios para services criticos.
 
 ## Ordem pratica recomendada
