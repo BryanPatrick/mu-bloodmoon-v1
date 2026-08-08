@@ -38,11 +38,11 @@
       <div v-else class="grid gap-3 xl:grid-cols-2">
         <article v-for="row in currentPage.data" :key="row.id" class="bm-panel rounded-md p-4">
           <template v-if="activeTab === 'posts'">
-            <div class="flex flex-wrap justify-between gap-2"><div class="flex gap-2"><span class="bm-status">{{ row.status }}</span><span class="bm-status">{{ row.type }}</span><span class="bm-status">{{ row.visibility }}</span></div><small class="text-white/35">@{{ row.author.username }}</small></div>
+            <div class="flex flex-wrap justify-between gap-2"><div class="flex gap-2"><span class="bm-status">{{ row.status }}</span><span class="bm-status">{{ row.type }}</span><span class="bm-status">{{ row.visibility }}</span></div><small class="max-w-40 truncate text-white/35">@{{ row.author.username }}</small></div>
             <h2 class="mt-3 font-display text-xl">{{ row.title || 'Publicação sem título' }}</h2>
             <p class="mt-2 line-clamp-4 text-xs leading-5 text-white/58">{{ row.content }}</p>
             <p class="mt-3 text-[10px] text-white/35">{{ row._count.comments }} comentários · {{ row._count.reactions }} reações · {{ row._count.reports }} denúncias · {{ row._count.revisions }} revisões</p>
-            <div v-if="canPosts" class="mt-4 grid grid-cols-3 gap-2">
+            <div v-if="canPosts" class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
               <CommunityAction label="Ocultar" @click="contentAction(row.id, 'HIDE')" /><CommunityAction label="Restaurar" @click="contentAction(row.id, 'RESTORE')" />
               <CommunityAction label="Fixar" @click="contentAction(row.id, 'PIN')" /><CommunityAction label="Destacar" @click="contentAction(row.id, 'FEATURE')" />
               <CommunityAction label="Limitar" @click="contentAction(row.id, 'LIMIT_REACH')" /><CommunityAction danger label="Remover" @click="contentAction(row.id, 'REMOVE')" />
@@ -51,17 +51,17 @@
             </div>
           </template>
           <template v-else-if="activeTab === 'comments'">
-            <div class="flex justify-between gap-3"><span class="bm-status">{{ row.status }}</span><small class="text-white/35">@{{ row.author.username }}</small></div>
+            <div class="flex justify-between gap-3"><span class="bm-status">{{ row.status }}</span><small class="max-w-40 truncate text-white/35">@{{ row.author.username }}</small></div>
             <p class="mt-3 text-sm leading-6 text-white/65">{{ row.content }}</p>
             <p class="mt-3 text-[10px] text-white/35">{{ row._count.reports }} denúncias · {{ row._count.reactions }} reações</p>
-            <div v-if="canComments" class="mt-4 grid grid-cols-3 gap-2"><CommunityAction label="Ocultar" @click="commentAction(row.id, 'HIDE')" /><CommunityAction label="Restaurar" @click="commentAction(row.id, 'RESTORE')" /><CommunityAction danger label="Remover" @click="commentAction(row.id, 'REMOVE')" /></div>
+            <div v-if="canComments" class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3"><CommunityAction label="Ocultar" @click="commentAction(row.id, 'HIDE')" /><CommunityAction label="Restaurar" @click="commentAction(row.id, 'RESTORE')" /><CommunityAction danger label="Remover" @click="commentAction(row.id, 'REMOVE')" /></div>
           </template>
           <template v-else-if="activeTab === 'profiles' || activeTab === 'moderation'">
-            <div class="flex items-center justify-between gap-3"><div><h2 class="font-display text-xl">{{ row.displayName }}</h2><p class="text-[10px] text-white/35">@{{ row.account.username }}</p></div><span class="bm-status">{{ row.warningCount }} avisos</span></div>
+            <div class="flex items-center justify-between gap-3"><div class="min-w-0 flex-1"><h2 class="truncate font-display text-xl">{{ row.displayName }}</h2><p class="truncate text-[10px] text-white/35">@{{ row.account.username }}</p></div><span class="shrink-0 bm-status">{{ row.warningCount }} avisos</span></div>
             <p class="mt-3 text-xs text-white/50">{{ row.bio || 'Sem biografia.' }}</p>
             <div class="mt-3 flex flex-wrap gap-2 text-[10px] text-white/40"><span>{{ row.account._count?.reportedCommunity || 0 }} denúncias</span><span>·</span><span>{{ row._count?.moderationActions || 0 }} ações no histórico</span><NuxtLink class="ml-auto font-black text-ember" :to="`/comunidade/${row.account.username}`">Ver perfil</NuxtLink></div>
             <details v-if="row.moderationActions?.length" class="mt-3 rounded-md border border-white/8 p-3"><summary class="cursor-pointer text-[10px] font-black uppercase tracking-wider text-white/45">Histórico recente</summary><p v-for="action in row.moderationActions" :key="action.id" class="mt-2 text-[10px] text-white/45">{{ action.type }} · {{ action.reason }}</p></details>
-            <div v-if="canUsers" class="mt-4 grid grid-cols-3 gap-2">
+            <div v-if="canUsers" class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
               <CommunityAction label="Advertir" @click="moderate(row.accountId, 'WARNING')" /><CommunityAction label="Suspender social" @click="moderate(row.accountId, 'SOCIAL_SUSPENSION')" />
               <CommunityAction label="Bloquear posts" @click="moderate(row.accountId, 'POST_BLOCK')" /><CommunityAction label="Bloquear comentários" @click="moderate(row.accountId, 'COMMENT_BLOCK')" />
               <CommunityAction label="Limitar mensagens" @click="moderate(row.accountId, 'MESSAGE_LIMIT')" /><CommunityAction label="Limitar alcance" @click="moderate(row.accountId, 'REACH_LIMIT')" />
@@ -75,14 +75,14 @@
             <h2 class="mt-3 font-display text-xl">{{ row.reason }}</h2>
             <p class="mt-2 text-xs text-white/55">{{ row.description || row.post?.content || row.comment?.content }}</p>
             <p class="mt-3 text-[10px] text-white/35">Denunciante: {{ row.reporter.username }} · Alvo: {{ row.reportedUser?.username || '-' }}</p>
-            <div v-if="canReports" class="mt-4 grid grid-cols-3 gap-2">
+            <div v-if="canReports" class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
               <CommunityAction label="Atribuir a mim" @click="reportAction(row.id, 'ASSIGNED')" /><CommunityAction label="Investigar" @click="reportAction(row.id, 'INVESTIGATING')" />
               <CommunityAction label="Escalar" @click="reportAction(row.id, 'ESCALATED')" /><CommunityAction label="Resolver" @click="reportAction(row.id, 'RESOLVED')" />
               <CommunityAction label="Rejeitar" @click="reportAction(row.id, 'REJECTED')" /><CommunityAction label="Reabrir" @click="reportAction(row.id, 'REOPENED')" />
             </div>
           </template>
           <template v-else>
-            <div class="flex items-center justify-between gap-3"><div><span class="bm-status">{{ row.type }}</span><p class="mt-2 text-xs text-white/55">@{{ row.account.username }}</p></div><small class="text-white/35">{{ new Date(row.createdAt).toLocaleString('pt-BR') }}</small></div>
+            <div class="flex items-center justify-between gap-3"><div class="min-w-0"><span class="bm-status">{{ row.type }}</span><p class="mt-2 truncate text-xs text-white/55">@{{ row.account.username }}</p></div><small class="shrink-0 text-white/35">{{ new Date(row.createdAt).toLocaleString('pt-BR') }}</small></div>
             <p class="mt-3 line-clamp-3 text-xs text-white/45">{{ row.post?.title || row.post?.content || row.comment?.content || 'Conteúdo indisponível' }}</p>
             <div v-if="canComments" class="mt-4"><CommunityAction danger label="Remover reação" @click="reactionAction(row.id)" /></div>
           </template>
@@ -110,8 +110,8 @@
           <input v-model="catalogForm.imageUrl" class="bm-admin-input" placeholder="URL da imagem">
           <div class="grid grid-cols-2 gap-2"><input v-model.number="catalogForm.maxGrants" class="bm-admin-input" type="number" placeholder="Limite"><input v-model.number="catalogForm.validDays" class="bm-admin-input" type="number" placeholder="Validade (dias)"></div>
         </template>
-        <UButton type="submit" color="error">{{ catalogEditingId ? 'Salvar alterações' : 'Criar' }}</UButton>
-        <UButton v-if="catalogEditingId" color="neutral" variant="soft" @click="resetCatalog">Cancelar edição</UButton>
+        <UButton type="submit" color="error" :loading="busy" :disabled="busy">{{ catalogEditingId ? 'Salvar alterações' : 'Criar' }}</UButton>
+        <UButton v-if="catalogEditingId" color="neutral" variant="soft" :disabled="busy" @click="resetCatalog">Cancelar edição</UButton>
       </form>
       <div class="grid content-start gap-3">
         <CommunityToolbar v-model="search" @reload="reload" />
@@ -146,12 +146,12 @@
         <textarea v-model="policyForm.blockedWords" class="bm-admin-input min-h-24 py-3" placeholder="Palavras bloqueadas" />
         <div class="grid gap-3 sm:grid-cols-2"><textarea v-model="policyForm.allowedDomains" class="bm-admin-input min-h-20 py-3" placeholder="Domínios permitidos" /><textarea v-model="policyForm.blockedDomains" class="bm-admin-input min-h-20 py-3" placeholder="Domínios proibidos" /></div>
         <div class="grid grid-cols-2 gap-3"><label class="text-[10px] text-white/45">Posts/h<input v-model.number="policyForm.maxPostsPerHour" class="bm-admin-input mt-1" type="number"></label><label class="text-[10px] text-white/45">Comentários/h<input v-model.number="policyForm.maxCommentsPerHour" class="bm-admin-input mt-1" type="number"></label><label class="text-[10px] text-white/45">Cooldown post<input v-model.number="policyForm.postCooldownSeconds" class="bm-admin-input mt-1" type="number"></label><label class="text-[10px] text-white/45">Cooldown comentário<input v-model.number="policyForm.commentCooldownSeconds" class="bm-admin-input mt-1" type="number"></label><label class="text-[10px] text-white/45">Cooldown de username (dias)<input v-model.number="policyForm.usernameCooldownDays" class="bm-admin-input mt-1" min="1" type="number"></label></div>
-        <UButton type="submit" color="error">Salvar regras</UButton>
+        <UButton type="submit" color="error" :loading="busy" :disabled="busy">Salvar regras</UButton>
       </form>
     </section>
 
     <section v-else-if="activeTab === 'tasks'" class="grid gap-4">
-      <div class="flex justify-end"><UButton color="error" @click="createTask">Nova tarefa</UButton></div>
+      <div class="flex justify-end"><UButton color="error" :loading="busy" :disabled="busy" @click="createTask">Nova tarefa</UButton></div>
       <p v-if="loading" class="bm-panel rounded-md p-6 text-center text-xs text-white/45">Carregando...</p>
       <p v-else-if="loadError" class="bm-panel rounded-md p-6 text-center text-xs text-red-200">Não foi possível carregar os dados. Tente novamente.</p>
       <p v-else-if="!currentPage.data.length" class="bm-panel rounded-md p-6 text-center text-xs text-white/45">Nenhuma tarefa encontrada.</p>
@@ -189,6 +189,11 @@ const message = ref('')
 const failed = ref(false)
 const loading = ref(false)
 const loadError = ref(false)
+// One panel-wide busy flag, set for the duration of any run()-backed
+// mutation -- disables every CommunityAction button (via inject, see that
+// component) so a fast double-click can't fire the same admin action twice.
+const busy = ref(false)
+provide('communityAdminBusy', busy)
 const dashboard = ref<Record<string, number>>({})
 const analyticsData = ref<Record<string, any>>({})
 const currentPage = ref<any>({ data: [], total: 0, page: 1, pageSize: 25, totalPages: 1 })
@@ -221,7 +226,7 @@ const policyForm = reactive<any>({ blockedWords:'',allowedDomains:'',blockedDoma
 const selectedQuest = ref<any>(null)
 const participants = ref<any[]>([])
 const askReason = () => window.prompt('Justificativa obrigatória:')
-const run = async (operation: () => Promise<any>, success = 'Operação concluída.') => { try { failed.value=false; await operation(); message.value=success; await reload() } catch (error:any) { failed.value=true; message.value=error?.data?.message || 'Não foi possível concluir.' } }
+const run = async (operation: () => Promise<any>, success = 'Operação concluída.') => { busy.value=true; try { failed.value=false; await operation(); message.value=success; await reload() } catch (error:any) { failed.value=true; message.value=error?.data?.message || 'Não foi possível concluir.' } finally { busy.value=false } }
 const loadCurrent = async () => {
   loading.value = true
   loadError.value = false

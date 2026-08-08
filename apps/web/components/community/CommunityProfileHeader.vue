@@ -28,6 +28,8 @@ const toggleFollow = async () => {
     if (following.value) await api.unfollowProfile(props.profile.username)
     else await api.followProfile(props.profile.username)
     following.value = !following.value
+  } catch (error: any) {
+    toast.add({ title: 'Não foi possível concluir', description: error?.data?.message || error?.message, color: 'error' })
   } finally { followingBusy.value = false }
 }
 const blockProfile = async () => {
@@ -53,6 +55,12 @@ onMounted(async () => {
     // Visitantes sem sessao continuam vendo o perfil publico normalmente.
   }
 })
+// A dead/broken avatarUrl (non-empty but 404s) falls back to the same
+// initials placeholder used for "no avatar set" -- avatarBroken resets
+// whenever the profile itself changes (e.g. navigating between profiles).
+const avatarBroken = ref(false)
+watch(() => props.profile.avatarUrl, () => { avatarBroken.value = false })
+const onAvatarError = () => { avatarBroken.value = true }
 </script>
 
 <template>
@@ -60,14 +68,14 @@ onMounted(async () => {
     <div class="community-profile-head__cover" :style="profile.coverUrl ? { backgroundImage: `url(${resolveMediaUrl(profile.coverUrl)})` } : undefined" />
     <div class="community-profile-head__grid">
       <section class="community-profile-head__identity">
-        <div class="community-profile-head__avatar"><img v-if="profile.avatarUrl" :src="resolveMediaUrl(profile.avatarUrl)" :alt="profile.displayName"><div v-else class="community-profile-head__avatar-placeholder" aria-hidden="true">{{ (profile.displayName || profile.username || '?').charAt(0).toUpperCase() }}</div><button v-if="ownProfile" type="button" aria-label="Alterar foto" @click="emit('edit')"><Camera class="size-4" /></button></div>
+        <div class="community-profile-head__avatar"><img v-if="profile.avatarUrl && !avatarBroken" :src="resolveMediaUrl(profile.avatarUrl)" :alt="profile.displayName" @error="onAvatarError"><div v-else class="community-profile-head__avatar-placeholder" aria-hidden="true">{{ (profile.displayName || profile.username || '?').charAt(0).toUpperCase() }}</div><button v-if="ownProfile" type="button" aria-label="Alterar foto" @click="emit('edit')"><Camera class="size-4" /></button></div>
         <div class="community-profile-head__facts"><span>Personagem principal</span><strong>{{ profile.mainCharacter.name }}</strong><small>{{ profile.mainCharacter.className }} · {{ profile.guild }}</small></div>
       </section>
 
       <section class="community-profile-head__details">
         <dl class="community-profile-head__stats"><div><strong>{{ profile.stats.posts }}</strong><span>publicações</span></div><div><strong>{{ profile.stats.followers }}</strong><span>seguidores</span></div><div><strong>{{ profile.stats.following }}</strong><span>seguindo</span></div></dl>
         <div class="community-profile-head__achievements"><div><strong>{{ profile.achievements.length }}</strong><span>conquistas</span></div><div class="community-profile-head__badges"><CommunityAchievementPopover v-for="achievement in profile.achievements.slice(0, 5)" :key="achievement.id" :achievement="achievement" /></div></div>
-        <div class="community-profile-head__bio"><h1>{{ profile.displayName }}</h1><p>@{{ profile.username }}</p><div>{{ profile.bio }}</div></div>
+        <div class="community-profile-head__bio"><h1 class="community-profile-head__name">{{ profile.displayName }}</h1><p class="community-profile-head__username">@{{ profile.username }}</p><div>{{ profile.bio }}</div></div>
         <div class="community-profile-head__actions">
           <UButton v-if="ownProfile" color="error" size="sm" @click="emit('edit')"><Pencil class="size-4" />Editar perfil</UButton>
           <UButton v-else color="error" size="sm" :loading="followingBusy" :disabled="blocked || blockedBy" @click="toggleFollow"><UserMinus v-if="following" class="size-4" /><UserPlus v-else class="size-4" />{{ blocked ? 'Perfil bloqueado' : blockedBy ? 'Indisponível' : following ? 'Deixar de seguir' : 'Seguir' }}</UButton>
@@ -88,6 +96,6 @@ onMounted(async () => {
 .community-profile-head__facts { margin-top: 14px; border-top: 1px solid var(--bm-border); padding-top: 13px; text-align: center; }.community-profile-head__facts span,.community-profile-head__facts small { display: block; color: var(--bm-muted); font-size: .62rem; }.community-profile-head__facts span { font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }.community-profile-head__facts strong { display: block; margin-top: 5px; color: var(--bm-heading); font-family: Cinzel,serif; font-size: .9rem; }
 .community-profile-head__details { position: relative; z-index: 1; padding-top: 62px; }.community-profile-head__stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); border-bottom: 1px solid var(--bm-border); padding-bottom: 15px; }.community-profile-head__stats div { text-align: center; }.community-profile-head__stats div + div { border-left: 1px solid var(--bm-border); }.community-profile-head__stats strong,.community-profile-head__stats span { display: block; }.community-profile-head__stats strong { color: var(--bm-heading); font-family: Cinzel,serif; font-size: 1rem; }.community-profile-head__stats span { color: var(--bm-muted); font-size: .62rem; }
 .community-profile-head__achievements { display: flex; min-height: 62px; align-items: center; gap: 18px; border-bottom: 1px solid var(--bm-border); }.community-profile-head__achievements > div:first-child strong,.community-profile-head__achievements > div:first-child span { display:block; }.community-profile-head__achievements > div:first-child strong { color: var(--bm-wine); font-family:Cinzel,serif; }.community-profile-head__achievements > div:first-child span { color:var(--bm-muted); font-size:.6rem; }.community-profile-head__badges { display:flex; gap:6px; }
-.community-profile-head__bio { padding-top: 16px; }.community-profile-head__bio h1 { color:var(--bm-heading); font-family:Cinzel,serif; font-size:1.45rem; }.community-profile-head__bio > p { color:var(--bm-red); font-size:.68rem; font-weight:800; }.community-profile-head__bio > div { max-width: 650px; margin-top:9px; color:var(--bm-muted); font-size:.74rem; line-height:1.65; }.community-profile-head__actions { display:flex; gap:7px; margin-top:15px; }
+.community-profile-head__bio { padding-top: 16px; }.community-profile-head__bio h1 { color:var(--bm-heading); font-family:Cinzel,serif; font-size:1.45rem; }.community-profile-head__name,.community-profile-head__username { overflow: hidden; max-width: 100%; text-overflow: ellipsis; white-space: nowrap; }.community-profile-head__bio > p { color:var(--bm-red); font-size:.68rem; font-weight:800; }.community-profile-head__bio > div { max-width: 650px; margin-top:9px; color:var(--bm-muted); font-size:.74rem; line-height:1.65; }.community-profile-head__actions { display:flex; gap:7px; margin-top:15px; }
 @media(max-width:767px){.community-profile-head__cover{height:110px}.community-profile-head__grid{grid-template-columns:1fr;gap:10px;margin-top:-46px;padding:0 14px 18px}.community-profile-head__avatar{width:108px;height:108px}.community-profile-head__facts{margin-top:8px}.community-profile-head__details{padding-top:0}.community-profile-head__achievements{justify-content:center}.community-profile-head__bio{text-align:center}.community-profile-head__actions{justify-content:center}.community-profile-head__stats{margin-top:5px}}
 </style>

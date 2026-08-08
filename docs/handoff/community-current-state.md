@@ -136,7 +136,7 @@ continuam com blockers proprios documentados em `site-beta-checklist.md`.
 | Follow/unfollow | `DONE` | Etapa 11: confirmado real e funcional (botao no header do perfil, nao um placeholder); E2E cobre follow/unfollow refletindo no endpoint de relacionamento. |
 | Block/unblock | `DONE` | Etapa 11: confirmado real; bloqueio agora tambem oculta a pagina de perfil (antes so ocultava posts no feed) e remove follow em ambas direcoes -- E2E cobre. |
 | Mute | MISSING | Enum preparado, sem fluxo publico identificado. Nao inventado nesta etapa. |
-| Hover card | `DONE` | Etapa 11: confirmado com link real "Ver perfil" navegando para `/comunidade/:username`. |
+| Hover card | `DONE` | Etapa 11: confirmado com link real "Ver perfil" navegando para `/comunidade/:username`. Etapa 15: bug real corrigido -- botao "Seguir" era decorativo (so alternava um ref local, nunca chamava a API); agora busca o relacionamento real e segue/deixa de seguir de verdade, com erro tratado via toast. |
 | Upload de imagem | `DONE` | Etapa 8: pipeline real ligado a avatar/capa/posts (zero base64/mock); rate limit (10/60s); erro de validacao (400) separado de falha de infraestrutura (500); E2E cobre valido/tipo invalido/arquivo grande/corrompido/sem-auth/falha de storage. Storage continua local -- ver "Midia (Etapa 8)" abaixo para o blocker de producao. |
 | Upload de GIF | DONE backend | Valida e reprocessa GIF; conversao para video nao existe. |
 | Galeria | DONE backend | 2 a 6 assets; E2E cobre post com midia (ver "Midia (Etapa 8)"); QA visual em navegador ainda pendente. |
@@ -1505,6 +1505,124 @@ tocado por nenhuma etapa da Community).
 
 **Status da Community: `BETA_READY`.**
 
+## UX e responsividade (Etapa 15)
+
+Objetivo: revisar visual e funcionalmente feed/post/perfil/comentarios/
+midia/modais/forms/admin-moderacao em desktop/tablet/mobile, e os estados
+loading/skeleton/empty/error/toast/confirmation/disabled/focus/keyboard/
+overflow/texto-longo/username-longo/imagem-quebrada/rede-lenta. Sem
+redesenho de identidade visual, sem micro-otimizacao prematura -- so
+correcoes reais e concretas do que a auditoria encontrou.
+
+### Bug real encontrado e corrigido: botao "Seguir" do hover card era decorativo
+
+`CommunityProfileHoverCard.vue` (usado em todo lugar que renderiza um nome
+de usuario -- posts, comentarios) tinha um botao "Seguir"/"Seguindo" que
+**nunca chamava a API real** -- era um `ref` local alternado no clique
+(`following.value = !following.value`), sem `api.followProfile`/
+`unfollowProfile`. Um usuario clicando "Seguir" no hover card via o rotulo
+mudar e acreditava ter seguido o perfil, mas nada era persistido no
+backend -- distinto de `CommunityProfileHeader.vue`, cujo follow/unfollow
+ja era real (homologado na Etapa 11). Corrigido: o hover card agora busca o
+estado real de relacionamento (`api.profileRelationship`, carregado sob
+demanda so quando o popover realmente abre -- evita N+1 num feed com
+dezenas de cards) e chama `followProfile`/`unfollowProfile` de verdade, com
+erro tratado e reportado via toast, mesma disciplina do header.
+
+### Gaps de UX corrigidos (por categoria do brief)
+
+- **Disabled/double-submit**: botao de comentar (`CommunityPostCard.vue`)
+  nao tinha nenhum estado ocupado -- um clique duplo/duplo-Enter podia
+  disparar dois comentarios antes do primeiro resolver; corrigido com um
+  guard local. Reacao/save/repost no rodape do post idem -- adicionado um
+  guard de curta duracao (limpo quando o post e recarregado apos a mutacao,
+  ou por um timeout de seguranca se a mutacao falhar). No painel
+  administrativo, **nenhum dos ~30 botoes de acao tinha estado de
+  loading/disabled** -- qualquer moderacao/edicao de catalogo podia ser
+  disparada duas vezes por um clique rapido; corrigido com uma flag `busy`
+  unica no painel (via `provide`/`inject`, sem precisar editar cada um dos
+  30 pontos de uso) que desabilita toda acao enquanto uma mutacao esta em
+  andamento.
+- **Toast/feedback**: `toggleFollow` do header (`CommunityProfileHeader.vue`)
+  nao tinha `catch` nem toast de erro -- uma falha de rede virava uma
+  rejeicao nao tratada, silenciosa. Corrigido com o mesmo padrao ja usado
+  pelo bloqueio/desbloqueio no mesmo arquivo.
+- **Erro silencioso**: "carregar mais comentarios" (`CommunityPostCard.vue`)
+  tinha `finally` mas nenhum `catch` -- uma falha de rede virava uma
+  rejeicao nao tratada e nenhuma mensagem visivel. Corrigido com mensagem
+  de erro real.
+- **Estado vazio faltando**: a aba "Midia" do perfil (`CommunityProfileTabs.vue`)
+  era a unica das 3 abas sem mensagem de vazio -- um perfil sem midia
+  renderizava uma grade silenciosamente vazia. Corrigida para o mesmo
+  padrao das outras abas.
+- **Estado enganoso durante loading**: o card de perfil proprio (rail
+  esquerdo/drawer mobile, `pages/comunidade/index.vue`) mostrava o convite
+  "Entre na sua conta" durante a breve janela em que o resumo do perfil
+  ainda estava carregando -- mesmo para um usuario ja autenticado. Corrigido
+  trocando a condicao de `v-else` para `v-else-if="!accessToken"`.
+- **Foco/teclado**: os 3 dialogos customizados via `Teleport` (editor de
+  perfil, drawer "Meu espaco", modal de visualizar post) nao tinham
+  nenhum tratamento de teclado -- `aria-modal="true"` sem suporte a Escape
+  e um gap real de acessibilidade/UX para quem nao usa mouse. Corrigido com
+  `Escape` fechando cada um (respeitando os mesmos guards de "nao fechar
+  durante salvamento/upload" que os botoes de fechar ja tinham).
+- **Overflow/username longo**: nenhum lugar que renderiza um username tinha
+  `text-overflow`/`truncate` -- cabecalho de perfil, rail lateral, hover
+  card, byline do post (`@username · data`), e algumas colunas do painel
+  admin. Corrigido em todos com `overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap` (ou a classe `truncate` do Tailwind no painel admin,
+  com `min-w-0`/`shrink-0` ajustados onde necessario para o truncamento
+  funcionar dentro de flex).
+- **Imagem quebrada**: nenhum `<img>` de avatar/midia da Community tinha
+  `@error`/fallback -- uma URL nao-vazia mas morta (404) caia no icone
+  padrao quebrado do navegador. Corrigido com um handler `@error` que troca
+  para `/favicon.png` (mesmo fallback ja usado para avatar vazio em varios
+  lugares) em post cards, comentarios/respostas, rail lateral, hover card,
+  previas do editor de perfil e grade de midia do perfil; no cabecalho de
+  perfil, especificamente, o fallback e o placeholder de iniciais que ja
+  existia para "sem avatar" (mais consistente visualmente que o favicon
+  num circulo de 150px).
+- **Mobile no painel admin**: as grades fixas de botoes de acao
+  (`grid-cols-3`) nao tinham variante responsiva -- 3 colunas fixas em tela
+  estreita ficavam com alvos de toque pequenos. Corrigido para
+  `grid-cols-2 sm:grid-cols-3`.
+
+### O que foi revisado e deliberadamente NAO alterado
+
+- **Confirmacao nativa (`window.confirm`/`window.prompt`)**: usada em toda
+  parte para exclusao/moderacao/justificativa. Substituir por um dialogo
+  estilizado proprio tocaria dezenas de pontos de chamada e e, na pratica,
+  um redesenho da interacao -- fora do que o brief autoriza ("nao
+  redesenhar identidade visual inteira"). Documentado como gap conhecido,
+  nao corrigido.
+- **Lazy-loading de imagens / `<NuxtImg>`**: nenhum `<img>` da Community usa
+  `loading="lazy"` hoje. Sem medicao real de impacto (LCP/CLS) que
+  justifique a mudanca agora, isso e micro-otimizacao prematura por
+  definicao do proprio brief -- fica registrado como candidato futuro, nao
+  como bug.
+- **Paginacao/queries**: confirmado que o feed e as listas administrativas
+  continuam no padrao paginado (`load more`/paginacao real) das Etapas 9/13,
+  sem regressao para renderizacao nao-paginada. Nenhum N+1 novo encontrado
+  alem do que ja foi corrigido acima (hover card).
+- **Consistencia de framework CSS** (Tailwind no painel admin vs. CSS
+  customico com variaveis `--bm-*` no resto da Community): decisao de
+  arquitetura pre-existente, fora do escopo de uma etapa de polish.
+
+### QA (Etapa 15 -- primeira vez com navegador real nesta sessao)
+
+Diferente das etapas anteriores (sempre bloqueadas por captcha no cadastro
+para qualquer fluxo autenticado), esta etapa conseguiu efetivamente abrir
+`npm run --workspace apps/web dev` num navegador real e navegar
+`/comunidade` anonimamente em desktop (1280x800) e mobile (375x812): zero
+erro de console em ambos, feed renderizando o estado vazio real (nao um
+erro, nao um mock), subheader/drawer mobile funcionando. Fluxo autenticado
+(perfil proprio, hover cards, painel admin) continua nao verificavel
+visualmente pela mesma razao das etapas anteriores -- compensado por
+`npm run web:build` limpo (pega erro de sintaxe de template em qualquer um
+dos 9 arquivos tocados) e pela logica corrigida ser simples o suficiente
+para revisar com confianca por leitura de codigo (guards de estado local,
+handlers de evento, CSS de truncamento).
+
 ## Catalogo de mocks/fallbacks (Etapa 5)
 
 Auditoria de 2026-08-08 (Etapa C1) ja apontava mocks em prosa (itens 3-4 de
@@ -1560,6 +1678,7 @@ Resumo original (Etapa 5): 6 `BLOCKER_BETA`, 1 `DEV_ONLY`, 1 `TEMPORARY_SAFE`. *
 28. ~~Mojibake em `community-admin.service.ts#moderateUser` (mensagens de erro de troca de username).~~ **(RESOLVIDO na Etapa 12: nao foi feita ainda uma varredura completa do repositorio -- outras ocorrencias podem existir fora do escopo tocado ate agora, mesma ressalva do item 10.)**
 29. ~~Painel admin da Community sempre mandava `isActive:false` (conquistas), `status:'DRAFT'` (quests) ou `isActive:true` (badges) em TODA edicao, inclusive de registros ja publicados/ativos -- editar a descricao de uma conquista ativa a desativava sem aviso; o mesmo para despublicar uma quest ou reativar um badge deliberadamente desligado.~~ **(RESOLVIDO na Etapa 13: esses valores so sao forcados ao criar um registro novo; ao editar, o valor real do formulario -- ja carregado do registro -- e enviado como esta. Ver "Administracao da Community (Etapa 13)" acima.)**
 30. ~~`loadCurrent()` do painel admin nao tinha nenhum tratamento de erro nem indicador de carregamento -- uma falha de rede deixava a tela em branco ou com dados desatualizados, sem nenhum aviso.~~ **(RESOLVIDO na Etapa 13: estados loading/error/empty reais adicionados em todas as 5 secoes que exibem dados carregados.)**
+31. ~~O botao "Seguir" do `CommunityProfileHoverCard.vue` era decorativo -- alternava um `ref` local (`following.value = !following.value`) sem nunca chamar `api.followProfile`/`unfollowProfile`; o usuario via o rotulo mudar para "Seguindo" acreditando ter seguido o perfil, mas nada era persistido.~~ **(RESOLVIDO na Etapa 15: hover card agora busca o relacionamento real sob demanda e chama a API de verdade, com erro tratado via toast. Ver "UX e responsividade (Etapa 15)" acima.)**
 29. Nao existe remocao administrativa de uma unica imagem dentro de uma galeria de post -- a unica ferramenta e ocultar/remover o post inteiro. (Identificado na Etapa 12 -- nao corrigido, escopo alem do "minimo necessario" pedido pelo brief desta etapa; moderacao de post inteiro ja cobre o caso pratico.)
 30. Nao existe sancao de "mute" (silenciar publicacoes sem bloquear acesso) nem "ban" permanente dedicado como tipos de moderacao administrativa -- o mais proximo e `SOCIAL_SUSPENSION` com `expiresAt` distante. (Identificado na Etapa 12 -- mapeado, nao inventado; documentar necessidade antes de construir, conforme pedido pelo brief.)
 

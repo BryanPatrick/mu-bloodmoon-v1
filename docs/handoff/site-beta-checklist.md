@@ -160,6 +160,21 @@ especificamente a Community, nao o site inteiro.
   registro", desativando/despublicando silenciosamente; (2) leitura de dados no painel nao tinha
   estado de loading/erro, entao falha de rede deixava a tela em branco sem aviso. Ver
   community-current-state.md#administracao-da-community-etapa-13.)
+- [x] Revisar UX/responsividade da Community (feed, post, perfil, comentarios, midia, modais,
+  forms, admin/moderacao) em desktop/tablet/mobile, e estados loading/empty/error/toast/
+  confirmation/disabled/focus/keyboard/overflow/username-longo/imagem-quebrada. (Etapa 15: 1 bug
+  real corrigido -- botao "Seguir" do hover card era decorativo, nunca chamava a API. Gaps de UX
+  corrigidos: double-submit sem guard (comentar, reagir, salvar, repostar, e todas as ~30 acoes do
+  painel admin), toast/catch faltando em follow/unfollow e "carregar mais comentarios", estado
+  vazio faltando na aba Midia do perfil, flash enganoso do card de perfil proprio durante loading,
+  Escape-to-close ausente nos 3 dialogos customizados, truncamento ausente para username longo em
+  todo lugar que renderiza um, fallback ausente para imagem quebrada em todo avatar/midia, grade de
+  acoes do painel fixa em 3 colunas sem reflow mobile. Confirmacao nativa (`window.confirm`/
+  `prompt`), lazy-loading de imagens e consistencia de framework CSS revisados e deliberadamente
+  NAO alterados -- fora do escopo de polish sem redesenho/micro-otimizacao prematura. QA com
+  navegador real (primeira vez nesta sessao) em desktop e mobile no fluxo anonimo, zero erro de
+  console; fluxo autenticado continua nao verificavel visualmente (captcha). Ver
+  community-current-state.md#ux-e-responsividade-etapa-15.)
 
 ### Paginas publicas e dados mock
 
@@ -186,8 +201,13 @@ especificamente a Community, nao o site inteiro.
 ### Mobile
 
 - [ ] QA visual em 360, 390, 768, 1024 e desktop para Home, Wiki, Community,
-  Marketplace, login e painel.
-- [ ] Testar drawers, header, composer, modais e tabelas com teclado/touch.
+  Marketplace, login e painel. (Etapa 15: escopo **Community** revisado -- responsividade
+  existente confirmada por auditoria de codigo + navegador real em desktop/mobile no fluxo
+  anonimo; gaps de mobile corrigidos (grade de acoes do painel admin). Home/Wiki/Marketplace/
+  login/painel de conta continuam pendentes.)
+- [ ] Testar drawers, header, composer, modais e tabelas com teclado/touch. (Etapa 15: escopo
+  **Community** -- Escape-to-close adicionado aos 3 dialogos customizados (editor de perfil,
+  drawer "Meu espaço", modal de post); demais paginas do site continuam pendentes.)
 
 ## MEDIUM
 
@@ -239,7 +259,9 @@ especificamente a Community, nao o site inteiro.
 
 ### Erros e observabilidade
 
-- [ ] Evitar `catch` que transforma indisponibilidade em lista vazia sem feedback.
+- [ ] Evitar `catch` que transforma indisponibilidade em lista vazia sem feedback. (Etapa 15: 1
+  caso real corrigido na Community -- "carregar mais comentarios" tinha `finally` sem `catch`,
+  falha virava rejeicao nao tratada e silenciosa; demais areas do site nao auditadas nesta etapa.)
 - [ ] Incluir correlationId nas mensagens operacionais de suporte quando seguro.
 - [ ] Testar agrupamento, atribuicao, resolucao e reabertura de SystemError.
 - [ ] Definir retencao real para auditoria/comercial/financeiro.

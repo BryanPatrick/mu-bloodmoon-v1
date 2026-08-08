@@ -13,16 +13,21 @@
     <main class="community-layout">
       <div v-if="activeSection === 'home'" class="community-layout__left">
         <CommunityUserRail v-if="profile" :profile="profile" />
-        <div v-else class="community-signin-prompt">
+        <div v-else-if="!accessToken" class="community-signin-prompt">
           <p>Entre na sua conta para ver seu perfil, personagem principal e conquistas.</p>
           <NuxtLink to="/login">Entrar</NuxtLink>
         </div>
+        <!-- Logged in but community-own-profile-summary is still pending:
+             render nothing rather than the sign-in prompt above, which was
+             misleadingly flashing for a real, already-authenticated user
+             for the brief window before their profile summary resolves. -->
+
       </div>
 
       <section class="community-layout__center" :class="{ 'is-wide': activeSection !== 'home' }">
         <template v-if="activeSection === 'home' || activeSection === 'salvos'">
           <button v-if="profile" class="community-mobile-profile" type="button" @click="profileDrawerOpen = true">
-            <img :src="profile.avatarUrl" :alt="profile.displayName">
+            <img :src="profile.avatarUrl || '/favicon.png'" :alt="profile.displayName" @error="onImgError">
             <span><strong>{{ profile.displayName }}</strong><small>{{ profile.mainCharacter.name }} · {{ profile.guild }}</small></span>
             <ChevronRight class="size-4" />
           </button>
@@ -168,6 +173,7 @@ const repostPost = (post: CommunityPostView) => runSocial(() => api.toggleRepost
 const commentPost = (post: CommunityPostView, content: string, parentId?: string) => runSocial(() => api.comment(post.id, { content, parentId }), parentId ? 'Resposta publicada' : 'Comentário publicado')
 const updateComment = (comment: any, content: string) => runSocial(() => api.updateComment(comment.id, { content }), 'Comentário atualizado')
 const removeComment = (comment: any) => { if (confirm('Excluir este comentário?')) runSocial(() => api.removeComment(comment.id), 'Comentário removido') }
+const onImgError = (event: Event) => { (event.target as HTMLImageElement).src = '/favicon.png' }
 const copyPostLink = async (post: CommunityPostView) => {
   const url = `${window.location.origin}/comunidade?post=${post.id}`
   await navigator.clipboard.writeText(url); toast.add({ title: 'Link copiado', color: 'success' })
@@ -212,7 +218,19 @@ watch(profileDrawerOpen, (open) => {
   if (import.meta.client) document.body.style.overflow = open ? 'hidden' : ''
 })
 watch([activeFeedTab, activeSection, accessToken], () => refreshFeedRequest())
-onBeforeUnmount(() => { if (import.meta.client) document.body.style.overflow = '' })
+
+// Keyboard basics for the two custom Teleport dialogs above (profile drawer,
+// post-view modal) -- neither is a UModal, so nothing handles Escape-to-close
+// for them otherwise.
+const onKeydown = (event: KeyboardEvent) => {
+  if (event.key !== 'Escape') return
+  if (viewingPostId.value) closePostView()
+  else if (profileDrawerOpen.value) profileDrawerOpen.value = false
+}
+onMounted(() => { if (import.meta.client) document.addEventListener('keydown', onKeydown) })
+onBeforeUnmount(() => {
+  if (import.meta.client) { document.body.style.overflow = ''; document.removeEventListener('keydown', onKeydown) }
+})
 </script>
 
 <style scoped>
@@ -254,7 +272,7 @@ onBeforeUnmount(() => { if (import.meta.client) document.body.style.overflow = '
   .community-layout { grid-template-columns: minmax(0, 1fr) minmax(260px, 300px); max-width: 1050px; }
   .community-layout__left { display: none; }.community-layout__right { grid-column: 2; }.community-layout__center { grid-column: 1; grid-row: 1; }
   .community-mobile-profile { display: flex; min-height: 54px; align-items: center; gap: 10px; border: 1px solid var(--bm-border); border-radius: 9px; background: var(--bm-surface-soft); padding: 8px 12px; text-align: left; }
-  .community-mobile-profile img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }.community-mobile-profile span { min-width: 0; flex: 1; }.community-mobile-profile strong, .community-mobile-profile small { display: block; }.community-mobile-profile strong { color: var(--bm-heading); font-size: 0.74rem; }.community-mobile-profile small { margin-top: 2px; color: var(--bm-muted); font-size: 0.62rem; }
+  .community-mobile-profile img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }.community-mobile-profile span { min-width: 0; flex: 1; }.community-mobile-profile strong, .community-mobile-profile small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.community-mobile-profile strong { color: var(--bm-heading); font-size: 0.74rem; }.community-mobile-profile small { margin-top: 2px; color: var(--bm-muted); font-size: 0.62rem; }
 }
 @media (max-width: 899px) { .community-layout { grid-template-columns: minmax(0, 1fr); max-width: 700px; }.community-layout__right { display: none !important; } }
 @media (max-width: 767px) {

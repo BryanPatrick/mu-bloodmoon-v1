@@ -50,6 +50,16 @@ const handleFile = async (kind: 'avatar' | 'cover', event: Event) => {
     uploading.value = false
   }
 }
+const onImgError = (event: Event) => { (event.target as HTMLImageElement).src = '/favicon.png' }
+
+// Keyboard basics for this custom Teleport dialog (not a UModal, so nothing
+// handles this for free): Escape closes it, same guard as the visible close
+// button (never while a save/upload is genuinely in flight).
+const onKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' && !props.saving && !avatarUploading.value && !coverUploading.value) emit('close')
+}
+onMounted(() => document.addEventListener('keydown', onKeydown))
+onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
 </script>
 <template>
   <Teleport to="body">
@@ -75,7 +85,7 @@ const handleFile = async (kind: 'avatar' | 'cover', event: Event) => {
             <label>
               Avatar
               <div class="community-editor__media">
-                <img v-if="form.avatarUrl" :src="resolveMediaUrl(form.avatarUrl)" alt="Pre-visualizacao do avatar" class="community-editor__avatar-preview">
+                <img v-if="form.avatarUrl" :src="resolveMediaUrl(form.avatarUrl)" alt="Pre-visualizacao do avatar" class="community-editor__avatar-preview" @error="onImgError">
                 <div v-else class="community-editor__avatar-preview community-editor__avatar-preview--empty" aria-hidden="true">?</div>
                 <UButton type="button" color="neutral" variant="soft" size="sm" :loading="avatarUploading" :disabled="avatarUploading" @click="pickAndUpload('avatar')"><Upload class="size-4" />{{ avatarUploading ? 'Enviando...' : 'Enviar imagem' }}</UButton>
               </div>
@@ -86,7 +96,7 @@ const handleFile = async (kind: 'avatar' | 'cover', event: Event) => {
             <label>
               Capa
               <div class="community-editor__media">
-                <img v-if="form.coverUrl" :src="resolveMediaUrl(form.coverUrl)" alt="Pre-visualizacao da capa" class="community-editor__cover-preview">
+                <img v-if="form.coverUrl" :src="resolveMediaUrl(form.coverUrl)" alt="Pre-visualizacao da capa" class="community-editor__cover-preview" @error="onImgError">
                 <div v-else class="community-editor__cover-preview community-editor__cover-preview--empty" aria-hidden="true" />
                 <UButton type="button" color="neutral" variant="soft" size="sm" :loading="coverUploading" :disabled="coverUploading" @click="pickAndUpload('cover')"><Upload class="size-4" />{{ coverUploading ? 'Enviando...' : 'Enviar imagem' }}</UButton>
               </div>

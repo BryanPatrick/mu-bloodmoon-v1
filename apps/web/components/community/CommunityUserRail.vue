@@ -4,6 +4,7 @@ import type { CommunitySocialProfile } from '~/features/community/types/profile'
 
 defineProps<{ profile: Pick<CommunitySocialProfile, 'displayName' | 'username' | 'avatarUrl' | 'mainCharacter' | 'guild' | 'achievements'>; compact?: boolean }>()
 defineEmits<{ close: [] }>()
+const onImgError = (event: Event) => { (event.target as HTMLImageElement).src = '/favicon.png' }
 
 const shortcuts = [
   { label: 'Meu perfil', icon: UserRound, section: 'perfil' },
@@ -18,11 +19,11 @@ const shortcuts = [
   <aside class="community-user-rail" :class="{ 'is-compact': compact }">
     <div class="community-user-rail__profile">
       <div class="community-avatar">
-        <img :src="profile.avatarUrl" :alt="profile.displayName">
+        <img :src="profile.avatarUrl || '/favicon.png'" :alt="profile.displayName" @error="onImgError">
         <UTooltip text="Alterar avatar"><button type="button" aria-label="Alterar avatar">+</button></UTooltip>
       </div>
-      <h2>{{ profile.displayName }}</h2>
-      <p>@{{ profile.username }}</p>
+      <h2 class="community-user-rail__name">{{ profile.displayName }}</h2>
+      <p class="community-user-rail__username">@{{ profile.username }}</p>
     </div>
 
     <dl class="community-user-rail__facts">
@@ -54,6 +55,7 @@ const shortcuts = [
 .community-avatar button { position: absolute; right: -2px; bottom: 1px; display: grid; width: 24px; height: 24px; place-items: center; border: 2px solid var(--bm-surface-soft); border-radius: 50%; background: var(--bm-red); color: white; font-weight: 900; }
 .community-user-rail h2 { margin-top: 12px; color: var(--bm-heading); font-family: Cinzel, serif; font-size: 1rem; font-weight: 800; }
 .community-user-rail__profile p { color: var(--bm-muted); font-size: 0.7rem; }
+.community-user-rail__name, .community-user-rail__username { overflow: hidden; max-width: 100%; text-overflow: ellipsis; white-space: nowrap; }
 .community-user-rail__facts { display: grid; gap: 14px; padding: 18px; }
 .community-user-rail__facts div + div { border-top: 1px solid var(--bm-border); padding-top: 14px; }
 .community-user-rail dt, .community-label { display: flex; align-items: center; gap: 6px; color: var(--bm-muted); font-size: 0.62rem; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; }
