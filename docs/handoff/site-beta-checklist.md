@@ -1,4 +1,4 @@
-# BloodMoon - checklist para beta aberto
+﻿# BloodMoon - checklist para beta aberto
 
 Baseado na auditoria estatica e nas verificacoes de 2026-08-08. Itens nao foram
 marcados como concluidos sem evidencia runtime. Prioridade responde primeiro a:
@@ -245,13 +245,13 @@ Decisao formal `NO-GO` registrada no AI Knowledge Hub.
 
 ### Site inteiro (Etapa 17)
 
-- [ ] **BLOCKER:** Corrigir paginas 404 quebrando em erro cru de producao. Confirmado ao vivo,
-  contra o build de producao real (nao dev server): nao existe `apps/web/error.vue` nem rota
-  catch-all; um navegador real navegando para uma URL inexistente recebe HTTP 500 (nao 404) e
-  renderiza a pagina de erro padrao **nao customizada** do Nuxt ("500" / "undefined" / "This page
-  is temporarily unavailable"). `curl` sem `Accept: text/html` recebe corretamente 404 -- o bug e
-  especificamente na renderizacao para navegador. Afeta todo link quebrado/URL digitada
-  errada/bookmark antigo -- o trafego mais comum de qualquer site publico. Reproduzido 2x.
+- [x] **BLOCKER (Etapa 19.4):** Corrigir paginas 404 quebrando em erro cru de producao. A causa
+  secundaria era o payload reducer do Pinia 2.3.1 chamando `hasOwnProperty` em um objeto sem
+  prototipo durante a renderizacao de erro. `pinia`/`@pinia/nuxt` foram atualizados para as linhas
+  compativeis atuais e `apps/web/error.vue` agora trata 403/404/500 sem expor stack ou mensagem
+  interna. Validado no build SSR: rota HTML inexistente retorna HTTP 404 real, `noindex`, identidade
+  Blood Moon e retorno seguro para a Home; o contrato JSON continua 404. Cobertura adicionada em
+  `apps/web/test/error-presentation.test.mjs` e `apps/api/test/error-handling.e2e-spec.ts`.
 - [ ] **BLOCKER:** Adicionar teste automatizado minimo (E2E ou unitario) para pelo menos os fluxos
   criticos fora de Community: login/cadastro, compra na loja, criacao de listagem no marketplace.
   Confirmado: `apps/api/src` nao tem nenhum `*.spec.ts`; `apps/api/test/` so tem specs de

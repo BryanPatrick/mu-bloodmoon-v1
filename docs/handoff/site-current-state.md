@@ -1,4 +1,4 @@
-# BloodMoon portal - estado atual do site
+﻿# BloodMoon portal - estado atual do site
 
 Data da auditoria original: 2026-08-08 (Etapa 5, estatica, sem runtime).
 Data da revalidacao: 2026-08-08 (Etapa 17, pente-fino pre-beta com codigo
@@ -579,6 +579,26 @@ nao o dev server):
   pagina nao encontrada" com volta para a Home.** Reproduzido de forma
   consistente em duas URLs diferentes.
 
+### Etapa 19.4: error pages e contrato global corrigidos
+
+O blocker acima foi corrigido sem rota catch-all. O Nuxt continua sendo a autoridade para resolver
+rotas e preservar o status HTTP, enquanto `apps/web/error.vue` fornece a superficie visual comum.
+
+- 404 HTML agora retorna HTTP 404 e a pagina Blood Moon, com `robots=noindex,nofollow` e acao para
+  voltar a Home.
+- 403 e 500 usam mensagens publicas distintas; o 500 oferece retry e mostra apenas um
+  `requestId` validado quando esse identificador estiver explicitamente em `error.data`.
+- stack, causa e mensagem interna nunca sao renderizadas pela pagina.
+- a API preserva 403/404, mascara 500 e inclui o mesmo `requestId` usado por observabilidade.
+- Pinia foi atualizado de 2.3.1 para 4.0.2 e `@pinia/nuxt` de 0.9.0 para 1.0.1. A versao antiga
+  causava o segundo erro durante a serializacao SSR (`obj.hasOwnProperty is not a function`), que
+  transformava o 404 HTML em `500 undefined`.
+- testes: 3 casos do normalizador frontend e 4 casos E2E do contrato global da API.
+
+Validacao SSR local de producao: Home 200; rota inexistente com `Accept: text/html` 404; a mesma
+rota com `Accept: application/json` 404. O blocker 5 da classificacao abaixo deve ser considerado
+resolvido por esta secao historicamente posterior.
+
 ### Classificacao final (BLOCKER / HIGH / MEDIUM / LOW)
 
 **BLOCKER** (bloqueiam o beta ate serem tratados; uma task especifica foi
@@ -594,8 +614,8 @@ criada no Hub para cada um):
 4. Marketplace/Escrow/GameBridge sem homologacao real -- worker sempre
    falha por design, nenhuma conexao ao banco do jogo existe, endpoints
    administrativos "de desenvolvimento" inseguros continuam vivos.
-5. Paginas inexistentes (404) quebram em uma tela de erro crua/sem marca
-   ("500 undefined") em vez de um 404 real, confirmado em producao.
+5. **RESOLVIDO NA ETAPA 19.4:** paginas inexistentes agora retornam 404 real com a pagina de erro
+   Blood Moon; o antigo `500 undefined` era causado pela serializacao SSR do Pinia 2.3.1.
 6. Nenhum teste automatizado (E2E ou unitario) cobre auth, cadastro,
    recuperacao, 2FA, loja, recarga, marketplace, escrow, GameBridge, wiki,
    rankings, suporte, painel administrativo ou observabilidade -- so

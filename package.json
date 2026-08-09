@@ -16,6 +16,7 @@
     "web:build": "nuxt build apps/web && node scripts/patch-nitro-output.mjs",
     "web:generate": "nuxt generate apps/web",
     "web:preview": "nuxt preview apps/web/.output",
+    "web:test:error": "node --test apps/web/test/error-presentation.test.mjs",
     "dev:full": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-dev.ps1",
     "dev:full:import": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-dev.ps1 -ImportData",
     "api:check": "npm --workspace @blood-moon/api run check",
@@ -44,10 +45,10 @@
   },
   "dependencies": {
     "@nuxt/ui": "^4.0.0",
-    "@pinia/nuxt": "^0.9.0",
+    "@pinia/nuxt": "^1.0.1",
     "lucide-vue-next": "^0.468.0",
     "nuxt": "^4.4.8",
-    "pinia": "^2.2.6",
+    "pinia": "^4.0.2",
     "vue": "^3.5.13",
     "vue-router": "^4.4.5"
   },
