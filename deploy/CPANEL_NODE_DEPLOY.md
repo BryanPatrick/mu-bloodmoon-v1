@@ -66,7 +66,7 @@ Variaveis:
 
 ```env
 NODE_ENV=production
-DATABASE_URL=mysql://mubloodxz_bmapi:SENHA_DO_ARQUIVO_WORK@localhost:3306/mubloodxz_bloodmoon
+DATABASE_URL=mysql://mubloodxz_bmapi:troque-pela-senha-real-do-mysql-de-producao@localhost:3306/mubloodxz_bloodmoon
 JWT_ACCESS_SECRET=troque-por-um-segredo-longo
 JWT_REFRESH_SECRET=troque-por-outro-segredo-longo
 TWO_FACTOR_ENCRYPTION_KEY=troque-por-uma-terceira-chave-aleatoria
@@ -76,6 +76,14 @@ API_GLOBAL_PREFIX=api
 ```
 
 Importante: a API usa MySQL/MariaDB neste deploy para ficar compativel com o cPanel atual.
+
+**Seguranca (Etapa 19.1):** esta linha continha uma senha real de producao em
+texto plano ate esta correcao -- ja estava commitada e publicada em
+`origin/main` (repositorio publico). A senha antiga deve ser tratada como
+comprometida e rotacionada via o painel do cPanel assim que possivel; a
+nova senha deve ser configurada apenas na variavel de ambiente do app Node
+no cPanel, nunca escrita de volta neste arquivo ou em qualquer outro
+arquivo versionado.
 
 ## Site Nuxt
 
