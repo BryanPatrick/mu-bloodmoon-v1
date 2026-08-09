@@ -19,6 +19,21 @@ PLAYER/SUPER_ADMIN, suporte, APIs publicas, Home, Wiki, Roadmap, Downloads e
 escrow e GameBridge continuam fora por serem fluxos comerciais ainda nao
 homologados. Matriz completa em `docs/testing/beta-test-baseline.md`.
 
+**Estrategia de desativacao segura para comercio (Etapa 19.7):** auditoria
+tecnica completa de Loja/Marketplace/Escrow/GameBridge produziu Plan A
+(homologar) e Plan B (desativar com seguranca e reversibilidade) para cada
+feature, sem tomar a decisao de produto -- ver
+`docs/handoff/beta-commerce-strategy.md`. Achado principal: qualquer jogador
+autenticado ja pode hoje debitar moeda real em um pedido de marketplace que
+nunca completa (GameBridgeJob nunca e processado com sucesso), recuperavel
+so pelos mesmos endpoints administrativos "de desenvolvimento" que os docs
+do projeto ja pedem para remover antes de producao. Loja tem risco financeiro
+menor (nenhum gateway de pagamento real existe ainda) mas entrega 100%
+manual. O mesmo bug de rota do Roadmap (Etapa 19.4) foi confirmado e
+corrigido em `/loja/:slug`; a rota equivalente em
+`painel/admin/marketplace/escrow.vue` foi confirmada mas nao corrigida por
+ser codigo morto sem nenhum link no app.
+
 **Site inteiro: `SITE_BETA_BLOCKED`** (Etapa 17 -- pente-fino completo,
 6 agentes de auditoria de codigo em paralelo + QA ao vivo em navegador real
 contra o build de producao + quality gate. 6 BLOCKERs confirmados: recuperacao
@@ -267,6 +282,14 @@ Decisao formal `NO-GO` registrada no AI Knowledge Hub.
   exatamente o que `docs/marketplace-game-bridge.md:101-103` e `docs/payment-and-escrow-flow.md:
   49-56` ja dizem que precisa ser removido antes de producao. Ver
   site-current-state.md#auditoria-site-wide-etapa-17.
+- [ ] **Etapa 19.7 (auditoria, nao resolve os BLOCKERs acima):** nenhum destes
+  BLOCKERs foi homologado nem nenhuma feature foi desativada. Produzido
+  `docs/handoff/beta-commerce-strategy.md` com Plan A (homologar) e Plan B
+  (desativar com seguranca via `SiteSetting`, ja exposto publicamente em
+  `GET /content/settings` mas ainda nao lido por nenhum endpoint de comercio)
+  para Loja e para Marketplace/Escrow/GameBridge, decisao a cargo do
+  operador. `/loja/:slug` tinha o mesmo bug de rota do Roadmap (Etapa 19.4)
+  -- corrigido nesta etapa.
 
 ### Site inteiro (Etapa 17)
 
