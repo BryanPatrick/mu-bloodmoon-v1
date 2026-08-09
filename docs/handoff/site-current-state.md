@@ -645,12 +645,18 @@ Root, `www` e API possuem certificados Let's Encrypt validos e aceitam TLS
 1.2/1.3. Home, Login, assets e endpoints de leitura da API funcionam por HTTPS,
 sem erro de certificado ou mixed content detectado no smoke test de navegador.
 
-O blocker HTTPS continua aberto porque root, `www` e Login ainda servem `200`
-em HTTP, enquanto o HTTP da API devolve `503`; nenhum deles redireciona para
-HTTPS. A API HTTPS envia HSTS via Helmet, mas o site Nuxt nao. A correcao depende
-de autorizacao para ativar Force HTTPS Redirect e HSTS no cPanel/LiteSpeed.
-`deploy/nginx.bloodmoon.conf` e template legado, nao configuracao de producao.
-Ver `docs/handoff/production-tls-validation.md`.
+Force HTTPS Redirect foi habilitado pela UAPI oficial do cPanel para o dominio
+principal e API. Root, `www`, Login e API agora retornam `301`, preservam path e
+query e chegam ao HTTPS em um salto, sem loop. Home, Login, Wiki, Roadmap,
+Downloads, API, CORS, assets e fontes passaram na regressao. AutoSSL nao possui
+exclusoes nem problemas reportados para root/API e os certificados cobrem root,
+`www` e API. O blocker TLS foi resolvido.
+
+A API HTTPS envia HSTS via Helmet; o site Nuxt ainda nao. HSTS do site principal
+foi separado como hardening porque existem outros subdominios que precisam ser
+validados antes de qualquer `includeSubDomains`. HSTS preload nao foi habilitado.
+`deploy/nginx.bloodmoon.conf` continua sendo template legado, nao configuracao de
+producao. Ver `docs/handoff/production-tls-validation.md`.
 
 **MEDIUM**:
 

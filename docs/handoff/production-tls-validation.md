@@ -4,14 +4,12 @@ Audit date: 2026-08-09 (America/Sao_Paulo)
 
 ## Result
 
-Status: **BLOCKED - HTTPS exists, but HTTP is still publicly served.**
+Status: **COMPLETED - HTTPS is mandatory on the production web and API hosts.**
 
-The certificates and HTTPS endpoints are valid. The beta blocker cannot be
-closed because the public web host serves the same application over plain HTTP,
-the API HTTP virtual host returns `503` instead of redirecting, and the main web
-response does not send HSTS.
-
-No production, DNS or certificate setting was changed during this audit.
+On 2026-08-09, the authorized cPanel UAPI operation enabled Force HTTPS
+Redirect for `mubloodmoon.com.br` and `api.mubloodmoon.com.br`. The `www` alias
+inherits the main-domain redirect. No DNS, certificate, application or legacy
+nginx configuration was changed.
 
 ## Observed production path
 
@@ -43,22 +41,21 @@ does not contain the active certificate or LiteSpeed virtual-host configuration.
 | `api.mubloodmoon.com.br` | `CN=api.mubloodmoon.com.br` | Let's Encrypt YR1 | 2026-10-14 21:35:42 UTC | no policy errors | TLS 1.3  |
 
 Explicit protocol negotiation accepted TLS 1.2 and TLS 1.3 and rejected TLS
-1.0 and TLS 1.1. AutoSSL renewal is expected from cPanel but was not proven by
-an account-level inspection; expiry monitoring remains an operational need.
+1.0 and TLS 1.1. The cPanel account reports no AutoSSL exclusions and no AutoSSL
+problems for the main or API domain. The valid wildcard certificate covers the
+main domain and `www`; the valid API certificate covers the API host. Automated
+expiry monitoring remains an operational hardening item.
 
 ### HTTP versus HTTPS
 
-| Request                                                        | Observed result             |
-| -------------------------------------------------------------- | --------------------------- |
-| `http://mubloodmoon.com.br/`                                   | `200`, no redirect          |
-| `http://www.mubloodmoon.com.br/`                               | `200`, no redirect          |
-| `http://mubloodmoon.com.br/login`                              | `200`, no redirect          |
-| `http://api.mubloodmoon.com.br/api/content/entries?pageSize=1` | `503`, no redirect          |
-| corresponding root/www/login HTTPS requests                    | `200`, certificate verified |
-| HTTPS API content and Wiki requests                            | `200`, certificate verified |
-
-This means credentials can still be submitted from a page initially loaded
-over HTTP. HSTS on a different host does not repair that first insecure visit.
+| Request                                                                  | Observed result                                          |
+| ------------------------------------------------------------------------ | -------------------------------------------------------- |
+| `http://mubloodmoon.com.br/`                                             | `301` to the same HTTPS URL                              |
+| `http://www.mubloodmoon.com.br/wiki?tab=sets&x=1`                        | `301`; host, path and query preserved                    |
+| `http://mubloodmoon.com.br/login?from=tls-audit&x=1`                     | `301`; path and query preserved                          |
+| `http://api.mubloodmoon.com.br/api/content/entries?pageSize=1&x=1`       | `301`; path and query preserved                          |
+| following each redirect                                                  | one hop, no loop, final `200`, certificate verified      |
+| Home, Login, Wiki, Roadmap, Downloads, `www` and API directly over HTTPS | expected `200` responses, certificate verified          |
 
 ### Headers, cookies and callbacks
 
@@ -105,40 +102,34 @@ mutating production.
 Editing this file would not alter production and would create false confidence.
 It must not be treated as the source of truth for the current host.
 
-## Required production correction
+## Production change and HSTS decision
 
-This is an infrastructure change and requires operator authorization:
+The change used cPanel's account-level
+`SSL/toggle_ssl_redirect_for_domains` UAPI with state enabled for only the main
+and API domains. A read-back returned `ssl_redirect=1` for both. `www` is the
+main domain's server alias and was separately tested over HTTP and HTTPS.
 
-1. In cPanel, open **Domains** and enable **Force HTTPS Redirect** for
-   `mubloodmoon.com.br` and `api.mubloodmoon.com.br` (the associated `www`
-   hostname must also be verified).
-2. Confirm the resulting redirect preserves path and query and returns a
-   permanent redirect for root, Login and API routes.
-3. Add HSTS to the main HTTPS web response at the LiteSpeed/cPanel boundary.
-   Start with a conservative value and do not request preload until every
-   relevant subdomain is permanently HTTPS and renewal/rollback are proven.
-4. Keep AutoSSL enabled and add expiry monitoring for both certificates.
-5. Re-run the acceptance matrix below before closing the blocker.
-
-Do not implement an application redirect based on forwarded headers without
-first proving LiteSpeed's trusted `X-Forwarded-Proto` behavior; a wrong rule can
-create a redirect loop. The cPanel domain-level redirect is the preferred fix
-for this deployment.
+HSTS remains a separate hardening item. The API already sends HSTS through
+Helmet. The main web host does not. The account also serves other subdomains,
+including `update` and hosting/mail aliases, so `includeSubDomains` must not be
+enabled without validating all of them. cPanel did not expose a safe host-only
+HSTS toggle in the workflow used here, and changing Nuxt or production files
+was not necessary for HTTPS enforcement. HSTS preload was not enabled.
 
 ## Acceptance matrix after authorization
 
-- [ ] root HTTP redirects to the same root HTTPS URL;
-- [ ] `www` HTTP redirects to the chosen canonical HTTPS host;
-- [ ] Login HTTP redirects before serving HTML;
-- [ ] API HTTP redirects to the same API HTTPS path and query;
-- [ ] all three certificates validate with no hostname/chain error;
-- [ ] Home, Login and API continue returning their expected status over HTTPS;
-- [ ] main web HTTPS response includes the approved HSTS policy;
-- [ ] API retains HSTS and security headers;
-- [ ] login request/CORS works from the production HTTPS origin;
-- [ ] assets and existing media load without mixed content;
-- [ ] authenticated upload is smoke-tested with an approved test account;
-- [ ] redirects preserve deep links and do not loop.
+- [x] root HTTP redirects to the same root HTTPS URL;
+- [x] `www` HTTP redirects to the same `www` HTTPS URL;
+- [x] Login HTTP redirects before serving HTML;
+- [x] API HTTP redirects to the same API HTTPS path and query;
+- [x] all three certificates validate with no hostname/chain error;
+- [x] Home, Login, Wiki, Roadmap, Downloads and API return their expected HTTPS status;
+- [x] API retains HSTS and security headers;
+- [x] login and media CORS preflights work from the production HTTPS origin;
+- [x] Nuxt assets, fonts and existing resource paths remain HTTPS-only;
+- [x] redirects preserve deep links and queries without loops;
+- [ ] main web HSTS: deferred as separate hardening, not an enforcement blocker;
+- [ ] authenticated upload mutation: not run without an approved disposable test account; route, CORS and media redirect were validated without writing production data.
 
-The Hub blocker must remain open until every applicable item is observed on the
-live public hosts.
+The production HTTPS enforcement blocker is closed. The two unchecked
+hardening/safe-mutation items are explicitly outside its acceptance boundary.

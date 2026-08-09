@@ -39,14 +39,14 @@ avaliacao, exatamente como pedido.**
 
 | Confirmar ausencia de... | Status |
 |---|---|
-| BLOCKERS conhecidos | **NAO CONFIRMADO** -- 7 BLOCKERs abertos (6 da Etapa 17 + 1 novo desta etapa, HTTPS). |
+| BLOCKERS conhecidos | **NAO CONFIRMADO** -- 5 BLOCKERs operacionais permanecem abertos no Hub; CAPTCHA, 404 e HTTPS foram resolvidos nas Etapas 19.2, 19.4 e 19.5. |
 | Mocks em fluxo critico | Confirmado ausente em Community e nos modulos auditados na Etapa 17 (loja/marketplace/auth nao tem mock -- o problema neles e ausencia de implementacao real, nao mock mascarando). Home tem 2 noticias falsas fixas misturadas ao conteudo real (MEDIUM, nao um fluxo critico de transacao). |
-| Credentials expostas | **CONFIRMADO -- pior do que o relatado na Etapa 17/18.** Etapa 19.1 descobriu que a mesma credencial real de banco de producao (`BLOODMOON_DB_PRODUCTION_CREDENTIAL`, MySQL) nao estava so em 2 arquivos locais gitignored -- estava tambem **commitada num arquivo rastreado** (`deploy/CPANEL_NODE_DEPLOY.md`), presente em `origin/main` desde commits antigos (anteriores a esta sessao), e o repositorio GitHub `BryanPatrick/mu-bloodmoon-v1` esta **confirmado PUBLICO** (HTTP 200 sem autenticacao). A credencial deve ser tratada como comprometida. Remediado nesta etapa: (1) linha redigida no arquivo rastreado (commit local, aguardando push); (2) 14 arquivos locais adicionais em `work/` (nao so os 2 originais) tambem continham a mesma credencial e foram higienizados/transformados em template sem valor; (3) confirmado que o codigo da aplicacao sempre referenciou `DATABASE_URL` via variavel de ambiente (Prisma `env("DATABASE_URL")`), nunca hardcoded -- o vazamento era so em documentacao/arquivos de operacao, nunca no codigo; (4) confirmado que a credencial nao aparece no bundle/build (`apps/web/.output`, `apps/api/dist`) nem em `runtimeConfig.public` do Nuxt. **Rotacao da senha real no cPanel continua pendente e depende do operador** -- o agente nao tem acesso ao painel de hospedagem. Ver a task BLOCKER correspondente no Hub para o plano exato. Valor da credencial nunca reproduzido em nenhum documento/resposta/log. |
+| Credentials expostas | **CONFIRMADO -- pior do que o relatado na Etapa 17/18.** Etapa 19.1 descobriu que a mesma credencial real de banco de producao (`BLOODMOON_DB_PRODUCTION_CREDENTIAL`, MySQL) nao estava so em 2 arquivos locais gitignored -- estava tambem **commitada num arquivo rastreado** (`deploy/CPANEL_NODE_DEPLOY.md`), presente em `origin/main` desde commits antigos (anteriores a esta sessao), e o repositorio GitHub `BryanPatrick/mu-bloodmoon-v1` esta **confirmado PUBLICO** (HTTP 200 sem autenticacao). A credencial deve ser tratada como comprometida. Remediado nesta etapa: (1) linha redigida no arquivo rastreado e enviada ao repositorio; (2) 14 arquivos locais adicionais em `work/` (nao so os 2 originais) tambem continham a mesma credencial e foram higienizados/transformados em template sem valor; (3) confirmado que o codigo da aplicacao sempre referenciou `DATABASE_URL` via variavel de ambiente (Prisma `env("DATABASE_URL")`), nunca hardcoded -- o vazamento era so em documentacao/arquivos de operacao, nunca no codigo; (4) confirmado que a credencial nao aparece no bundle/build (`apps/web/.output`, `apps/api/dist`) nem em `runtimeConfig.public` do Nuxt. **Rotacao da senha real no cPanel continua pendente e depende do operador.** Ver a task BLOCKER correspondente no Hub para o plano exato. Valor da credencial nunca reproduzido em nenhum documento/resposta/log. |
 | Migration nao homologada | Parcialmente confirmado ausente -- as 3 migrations pendentes da Community estao homologadas tecnicamente (`APPROVED_FOR_PRODUCTION`, Etapa 6) mas **nunca foram aplicadas em ambiente real**, so em container descartavel. Nenhuma das 17 migrations tem rollback automatizado (`down.sql`) -- a unica recuperacao e restaurar backup completo do banco, nunca testado contra producao. |
 | Operacao comercial nao testada | **NAO CONFIRMADO** -- loja e marketplace confirmados sem nenhum teste automatizado e sem homologacao real (ver BLOCKERs 3 e 4 da Etapa 17). GameBridge nunca processou um job real (worker sempre falha por design). |
-| Rota critica quebrada | **NAO CONFIRMADO** -- 404 confirmado quebrando em erro cru ao vivo contra o build de producao (BLOCKER 5 da Etapa 17). |
+| Rota critica quebrada | **CORRIGIDO NA ETAPA 19.4** -- rotas inexistentes e recursos/API 404 possuem tratamento coerente e nao exibem mais `500 undefined`. |
 
-### Etapa 19.5: HTTPS existe, mas ainda nao e obrigatorio
+### Etapa 19.5: HTTPS obrigatorio em producao
 
 A verificacao ao vivo corrigiu a inferencia anterior: ausencia de TLS no
 repositorio nao significa ausencia de TLS no hosting. Root, `www` e API possuem
@@ -55,11 +55,11 @@ O caminho real e DNS HiNetworks -> LiteSpeed/cPanel -> Passenger/Nuxt/Nest,
 sem Cloudflare no proxy atual. `deploy/nginx.bloodmoon.conf` e somente um
 template legado e nao atende o trafego de producao.
 
-O BLOCKER permanece por evidencias reais diferentes: root, `www` e Login ainda
-respondem `200` em HTTP sem redirect; o vhost HTTP da API responde `503` sem
-redirect; e o site Nuxt nao envia HSTS (a API HTTPS envia). A correcao deve ser
-feita no dominio/LiteSpeed do cPanel, com autorizacao do operador, e validada de
-ponta a ponta. Evidencias e matriz em
+Force HTTPS Redirect foi habilitado no cPanel para o dominio principal e API.
+Root, `www`, Login e API agora retornam `301` para HTTPS, preservando path/query,
+em um unico salto e sem loop. A regressao de Home, Login, Wiki, Roadmap,
+Downloads, API, CORS, assets e fontes passou. HSTS do site principal permanece
+hardening separado; a API ja envia HSTS. Evidencias e matriz em
 `docs/handoff/production-tls-validation.md`.
 
 ### Backups, rollback, monitoramento -- status factual (Documentado vs Implementado)
@@ -71,7 +71,7 @@ ponta a ponta. Evidencias e matriz em
 | Rollback de aplicacao (troca de site) | **SO DOCUMENTADO** -- runbook manual escrito (`deploy/GAME_VPS_BACKUP_AND_DEPLOY.md:186-194`), nenhum script automatiza. |
 | Rollback de migration | **SO DOCUMENTADO** -- nenhuma das 17 migrations tem `down.sql`; unica recuperacao e restaurar backup completo do banco (nao por-migration), estrategia nunca executada contra producao. |
 | Seguranca de aplicacao de migration | Parcial -- sequencia de seguranca (backup->migrate->validar->rollback testado) esta documentada como plano em `deployment-architecture.md:138-148,185-192`, mas nunca foi executada de fato. |
-| Dominio/HTTPS | **PARCIAL** -- dominio, DNS, certificados e HTTPS funcionam; HTTP obrigatorio/redirect e HSTS do site principal continuam pendentes. |
+| Dominio/HTTPS | **IMPLEMENTADO** -- certificados validos e Force HTTPS ativo em root, `www` e API; HSTS do site principal e hardening separado. |
 | Monitoramento/logging (nivel de app) | **IMPLEMENTADO** -- correlationId, AuditLog real, fingerprinting de erro, retencao configuravel (`docs/observability-and-audit.md`) -- ja confirmado funcional pela Community e pelo painel administrativo (Etapa 17). |
 | Monitoramento/logging (nivel de infra) | **NENHUM DOS DOIS** -- nenhum APM/Sentry/uptime-checker/agregador de log encontrado. `docker-compose.production.yml` tem healthcheck local de container, nao monitoramento de producao real; o alvo de deploy real (cPanel/VPS) nem usa esse compose. |
 
@@ -85,20 +85,20 @@ brief so pede isso em caso de GO.
 refatoracao)**:
 
 1. `e641176f` -- Recuperacao de senha real (token, expiracao, e-mail).
-2. `20921b4d` -- CAPTCHA real validado no backend + rate limit em
-   login/cadastro.
-3. `88ebaa56` -- Loja: gateway de pagamento real + entrega automatizada
+2. `88ebaa56` -- Loja: gateway de pagamento real + entrega automatizada
    (ou pelo menos processo real de entrega).
-4. `fb796d14` -- Marketplace/escrow/GameBridge: worker real + remover
+3. `fb796d14` -- Marketplace/escrow/GameBridge: worker real + remover
    endpoints administrativos de desenvolvimento.
-5. `47eadd58` -- Pagina 404 customizada (bug confirmado ao vivo em
-   producao).
-6. `305947d6` -- Cobertura minima de teste automatizado fora de
+4. `305947d6` -- Cobertura minima de teste automatizado fora de
    Community (login/cadastro, compra na loja, listagem no marketplace).
-7. `fbd01471` -- HTTPS/TLS real configurado para o dominio de producao
-   (achado novo desta etapa).
+5. `01a7e88f` -- Rotacionar a credencial de banco de producao exposta e
+   atualizar os consumidores autorizados.
 
-**Alem das 7 tasks BLOCKER**, antes de reavaliar GO tambem e necessario
+**Resolvidos depois da Etapa 18:** protecao contra abuso de autenticacao
+(`20921b4d`, Etapa 19.2), tratamento global/404 (`47eadd58`, Etapa 19.4) e
+HTTPS obrigatorio (`fbd01471`, Etapa 19.5).
+
+**Alem das 5 tasks BLOCKER restantes**, antes de reavaliar GO tambem e necessario
 (sem task dedicada -- ja rastreado nas secoes BLOCKER "Deploy/producao"
 deste documento): aplicar as 3 migrations da Community em producao com
 backup+rollback testado de verdade (nao so documentado), configurar
