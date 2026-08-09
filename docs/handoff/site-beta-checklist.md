@@ -46,15 +46,21 @@ avaliacao, exatamente como pedido.**
 | Operacao comercial nao testada | **NAO CONFIRMADO** -- loja e marketplace confirmados sem nenhum teste automatizado e sem homologacao real (ver BLOCKERs 3 e 4 da Etapa 17). GameBridge nunca processou um job real (worker sempre falha por design). |
 | Rota critica quebrada | **NAO CONFIRMADO** -- 404 confirmado quebrando em erro cru ao vivo contra o build de producao (BLOCKER 5 da Etapa 17). |
 
-### Achado novo desta etapa: HTTPS/TLS nao configurado
+### Etapa 19.5: HTTPS existe, mas ainda nao e obrigatorio
 
-Nao existe configuracao real de TLS em lugar nenhum do projeto --
-`deploy/nginx.bloodmoon.conf` (unica config concreta de nginx) tem dominio
-placeholder, escuta so na porta 80, sem nenhum bloco TLS/SSL/certbot.
-`docs/deployment-architecture.md`/`docs/security-model.md` tratam HTTPS
-como requisito escrito, nao como configuracao pronta. Um beta publico
-servindo login/senha/tokens/pagamento sem HTTPS real e um risco serio de
-seguranca -- classificado BLOCKER, task criada no Hub.
+A verificacao ao vivo corrigiu a inferencia anterior: ausencia de TLS no
+repositorio nao significa ausencia de TLS no hosting. Root, `www` e API possuem
+certificados Let's Encrypt validos, negociam TLS 1.2/1.3 e respondem por HTTPS.
+O caminho real e DNS HiNetworks -> LiteSpeed/cPanel -> Passenger/Nuxt/Nest,
+sem Cloudflare no proxy atual. `deploy/nginx.bloodmoon.conf` e somente um
+template legado e nao atende o trafego de producao.
+
+O BLOCKER permanece por evidencias reais diferentes: root, `www` e Login ainda
+respondem `200` em HTTP sem redirect; o vhost HTTP da API responde `503` sem
+redirect; e o site Nuxt nao envia HSTS (a API HTTPS envia). A correcao deve ser
+feita no dominio/LiteSpeed do cPanel, com autorizacao do operador, e validada de
+ponta a ponta. Evidencias e matriz em
+`docs/handoff/production-tls-validation.md`.
 
 ### Backups, rollback, monitoramento -- status factual (Documentado vs Implementado)
 
@@ -65,7 +71,7 @@ seguranca -- classificado BLOCKER, task criada no Hub.
 | Rollback de aplicacao (troca de site) | **SO DOCUMENTADO** -- runbook manual escrito (`deploy/GAME_VPS_BACKUP_AND_DEPLOY.md:186-194`), nenhum script automatiza. |
 | Rollback de migration | **SO DOCUMENTADO** -- nenhuma das 17 migrations tem `down.sql`; unica recuperacao e restaurar backup completo do banco (nao por-migration), estrategia nunca executada contra producao. |
 | Seguranca de aplicacao de migration | Parcial -- sequencia de seguranca (backup->migrate->validar->rollback testado) esta documentada como plano em `deployment-architecture.md:138-148,185-192`, mas nunca foi executada de fato. |
-| Dominio/HTTPS | **NENHUM DOS DOIS** -- ver achado acima. |
+| Dominio/HTTPS | **PARCIAL** -- dominio, DNS, certificados e HTTPS funcionam; HTTP obrigatorio/redirect e HSTS do site principal continuam pendentes. |
 | Monitoramento/logging (nivel de app) | **IMPLEMENTADO** -- correlationId, AuditLog real, fingerprinting de erro, retencao configuravel (`docs/observability-and-audit.md`) -- ja confirmado funcional pela Community e pelo painel administrativo (Etapa 17). |
 | Monitoramento/logging (nivel de infra) | **NENHUM DOS DOIS** -- nenhum APM/Sentry/uptime-checker/agregador de log encontrado. `docker-compose.production.yml` tem healthcheck local de container, nao monitoramento de producao real; o alvo de deploy real (cPanel/VPS) nem usa esse compose. |
 

@@ -636,6 +636,22 @@ criada no Hub para cada um):
 - Credencial de producao real em texto plano num arquivo local
   (nao versionado no Git, mas presente no disco).
 
+### Etapa 19.5 - validacao HTTPS/TLS de producao
+
+O trajeto real foi validado ao vivo em 2026-08-09: DNS HiNetworks aponta root e
+API diretamente para `190.102.41.133`; LiteSpeed/cPanel termina TLS e encaminha
+para as aplicacoes Passenger Nuxt/Nest. Nao ha Cloudflare no proxy observado.
+Root, `www` e API possuem certificados Let's Encrypt validos e aceitam TLS
+1.2/1.3. Home, Login, assets e endpoints de leitura da API funcionam por HTTPS,
+sem erro de certificado ou mixed content detectado no smoke test de navegador.
+
+O blocker HTTPS continua aberto porque root, `www` e Login ainda servem `200`
+em HTTP, enquanto o HTTP da API devolve `503`; nenhum deles redireciona para
+HTTPS. A API HTTPS envia HSTS via Helmet, mas o site Nuxt nao. A correcao depende
+de autorizacao para ativar Force HTTPS Redirect e HSTS no cPanel/LiteSpeed.
+`deploy/nginx.bloodmoon.conf` e template legado, nao configuracao de producao.
+Ver `docs/handoff/production-tls-validation.md`.
+
 **MEDIUM**:
 
 - Home mistura 2 noticias falsas fixas com noticias reais sem nenhuma
@@ -647,7 +663,8 @@ criada no Hub para cada um):
 - Exportacao CSV do painel de observabilidade nao neutraliza injecao de
   formula (diferente da exportacao de relatorios, que ja neutraliza).
 - CORS libera `localhost`/`127.0.0.1` mesmo em producao.
-- Headers de seguranca (`helmet()`) sem nenhuma customizacao de CSP/HSTS.
+- Headers da API usam a politica padrao do Helmet e incluem CSP/HSTS; o site
+  Nuxt continua sem HSTS e sem os headers equivalentes no hosting.
 - Chunks de build duplicados (~668KB + ~376KB) por import duplicado do
   mesmo JSON de equipamentos em dois modulos quase-identicos.
 - Fila de suporte administrativa sem filtro de status na UI.
