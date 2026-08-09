@@ -23,6 +23,10 @@ type HttpRequest = {
 
 const PUBLIC_ERROR_CODES = new Set([
   'TWO_FACTOR_REQUIRED',
+  'TOKEN_INVALID',
+  'TOKEN_EXPIRED',
+  'TOKEN_USED',
+  'PASSWORD_INVALID',
 ])
 
 @Catch()

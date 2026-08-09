@@ -85,6 +85,10 @@ brief so pede isso em caso de GO.
 refatoracao)**:
 
 1. `e641176f` -- Recuperacao de senha real (token, expiracao, e-mail).
+   **Etapa 19.3**: token/backend/frontend/E2E implementados; falta so
+   aprovacao de um provedor de e-mail pelo operador (ver
+   `docs/handoff/auth-recovery-provider-blocker.md`). Task continua
+   `blocked` no Hub por esse motivo.
 2. `88ebaa56` -- Loja: gateway de pagamento real + entrega automatizada
    (ou pelo menos processo real de entrega).
 3. `fb796d14` -- Marketplace/escrow/GameBridge: worker real + remover
@@ -184,11 +188,18 @@ Decisao formal `NO-GO` registrada no AI Knowledge Hub.
   invalido; duas requisicoes concorrentes da mesma sessao podiam colidir nesse UPDATE (MySQL 1020)
   e a perdedora era deslogada por engano. Afeta toda a API, nao so Community. Corrigido isolando
   esse UPDATE em seu proprio try/catch -- ver community-current-state.md#interacoes-sociais-etapa-10.)
-- [ ] **BLOCKER (Etapa 17):** Implementar recuperacao de senha real com token curto, expiração e
-  invalidacao. Confirmado 100% ausente -- `recuperar-conta.vue:63-72` e sincrono, nunca chama a
-  API, sempre mostra sucesso falso se o e-mail nao estiver vazio. Nao ha rota no backend, nao ha
-  model de token, nao ha infraestrutura de e-mail/SMTP em `apps/api` (grep zero resultados). Ver
-  site-current-state.md#auditoria-site-wide-etapa-17.
+- [ ] **BLOCKER (Etapa 17), parcialmente resolvido na Etapa 19.3, ainda BLOCKED:** Implementar
+  recuperacao de senha real com token curto, expiração e invalidacao. Estado original: confirmado
+  100% ausente -- `recuperar-conta.vue:63-72` era sincrono, nunca chamava a API, sempre mostrava
+  sucesso falso se o e-mail nao estivesse vazio; nao havia rota no backend, model de token nem
+  infraestrutura de e-mail/SMTP em `apps/api`. **Etapa 19.3**: implementado o modelo
+  `PasswordResetToken` (hash SHA-256, single-use, expira em 30min), os endpoints
+  `POST /auth/password-recovery/request` e `/reset` (protegidos pelo `AuthAbuseGuard`/politica
+  `recovery`), invalidacao de sessoes ativas no reset, as telas `/recuperar-conta` e
+  `/redefinir-senha` reais, e `apps/api/test/password-recovery.e2e-spec.ts` (10 cenarios). Continua
+  BLOCKED apenas porque nao existe provedor de e-mail aprovado -- `MailTransportService` recusa o
+  envio real (`ServiceUnavailableException`) fora de bypass estrito de teste. Ver
+  `docs/handoff/auth-recovery-provider-blocker.md` e site-current-state.md#auditoria-site-wide-etapa-17.
 - [ ] Revisar armazenamento de access/refresh token no browser e protecao XSS. (Etapa 17: confirmado
   que ambos os tokens ficam em `localStorage` -- `useAuth.ts:70,97-101,155-174` -- nao em cookie
   httpOnly. Nenhum vetor de XSS confirmado nesta etapa, mas a exposicao factual existe caso um

@@ -10,6 +10,7 @@ import { TwoFactorService } from './two-factor.service'
 import { AuthAbuseGuard } from './auth-abuse.guard'
 import { AuthRateLimitService } from './auth-rate-limit.service'
 import { CaptchaService } from './captcha.service'
+import { MailTransportService } from './mail-transport.service'
 
 const accessSecret =
   process.env.JWT_ACCESS_SECRET ||
@@ -38,6 +39,7 @@ if (process.env.NODE_ENV === 'production' && accessSecret === refreshSecret) {
     AuthAbuseGuard,
     AuthRateLimitService,
     CaptchaService,
+    MailTransportService,
     JwtAuthGuard,
     RolesGuard,
     PermissionsGuard

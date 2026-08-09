@@ -67,3 +67,21 @@ export type RegisterResponse = {
 export type ChangePasswordResponse = {
   ok: true
 }
+
+export type PasswordRecoveryRequestRequest = {
+  email: string
+  captchaToken: string
+}
+
+export type PasswordRecoveryRequestResponse = {
+  ok: true
+}
+
+export type PasswordRecoveryResetRequest = {
+  token: string
+  newPassword: string
+}
+
+export type PasswordRecoveryResetResponse = {
+  ok: true
+}

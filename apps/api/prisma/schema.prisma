@@ -557,6 +557,7 @@ model Account {
   moderationActions    AccountModeration[]         @relation("ModerationTarget")
   moderationIssued     AccountModeration[]         @relation("ModerationActor")
   sessions             AccountSession[]
+  passwordResetTokens  PasswordResetToken[]
   adminTasksAssigned   AdminTask[]                 @relation("AdminTaskAssignee")
   adminTasksAssignedBy AdminTask[]                 @relation("AdminTaskAssigner")
   adminTasksCreated    AdminTask[]                 @relation("AdminTaskCreator")
@@ -814,6 +815,21 @@ model AccountSession {
 
   @@index([accountId, createdAt])
   @@index([accountId, revokedAt])
+  @@index([expiresAt])
+}
+
+model PasswordResetToken {
+  id           String    @id @default(uuid())
+  accountId    String
+  tokenHash    String    @unique @db.VarChar(191)
+  createdAt    DateTime  @default(now())
+  expiresAt    DateTime
+  consumedAt   DateTime?
+  requestIp    String?   @db.VarChar(80)
+  requestAgent String?   @db.VarChar(255)
+  account      Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId, createdAt])
   @@index([expiresAt])
 }
 

@@ -30,6 +30,17 @@ type LoginResult = {
   requiresTwoFactor?: boolean
 }
 
+type PasswordRecoveryRequestResult = {
+  ok: boolean
+  message: string
+}
+
+type PasswordRecoveryResetResult = {
+  ok: boolean
+  message: string
+  code?: string
+}
+
 type ApiLoginResponse = {
   accessToken: string
   refreshToken: string
@@ -352,6 +363,82 @@ export const useAuth = () => {
     return loginWithApi(username, password, totpCode, captchaToken)
   }
 
+  const requestPasswordRecovery = async (
+    email: string,
+    captchaToken: string
+  ): Promise<PasswordRecoveryRequestResult> => {
+    const config = useRuntimeConfig()
+    const apiBase = String(config.public.apiBase || 'http://localhost:3333/api').replace(/\/$/, '')
+
+    try {
+      await $fetch(`${apiBase}/auth/password-recovery/request`, {
+        method: 'POST',
+        body: { email, captchaToken }
+      })
+      return {
+        ok: true,
+        message: 'Se este e-mail estiver cadastrado, enviaremos um link de redefinicao de senha.'
+      }
+    } catch (error) {
+      const failure = error as {
+        status?: number
+        statusCode?: number
+        response?: { status?: number }
+      }
+      const status = failure.response?.status || failure.statusCode || failure.status
+      return {
+        ok: false,
+        message:
+          status === 429
+            ? 'Muitas tentativas. Aguarde alguns minutos e tente novamente.'
+            : status === 400
+              ? 'A verificacao de seguranca expirou ou nao foi validada.'
+              : 'Nao foi possivel acessar a API. Tente novamente em instantes.'
+      }
+    }
+  }
+
+  const resetPassword = async (
+    token: string,
+    newPassword: string
+  ): Promise<PasswordRecoveryResetResult> => {
+    const config = useRuntimeConfig()
+    const apiBase = String(config.public.apiBase || 'http://localhost:3333/api').replace(/\/$/, '')
+
+    try {
+      await $fetch(`${apiBase}/auth/password-recovery/reset`, {
+        method: 'POST',
+        body: { token, newPassword }
+      })
+      return { ok: true, message: 'Senha redefinida com sucesso.' }
+    } catch (error) {
+      const failure = error as {
+        status?: number
+        statusCode?: number
+        response?: { status?: number }
+        data?: { code?: string }
+      }
+      const status = failure.response?.status || failure.statusCode || failure.status
+      const code = failure.data?.code
+      return {
+        ok: false,
+        code,
+        message:
+          code === 'TOKEN_EXPIRED'
+            ? 'Este link de redefinicao expirou.'
+            : code === 'TOKEN_USED'
+              ? 'Este link ja foi utilizado.'
+              : code === 'TOKEN_INVALID'
+                ? 'Este link de redefinicao e invalido.'
+                : code === 'PASSWORD_INVALID'
+                  ? 'A nova senha deve ter entre 8 e 72 caracteres.'
+                  : status === 429
+                    ? 'Muitas tentativas. Aguarde alguns minutos e tente novamente.'
+                    : 'Nao foi possivel acessar a API. Tente novamente em instantes.'
+      }
+    }
+  }
+
   const logout = async () => {
     const previousUser = user.value
     const accessToken = session.value?.accessToken
@@ -415,6 +502,8 @@ export const useAuth = () => {
     loadSession,
     loginWithCredentials,
     refreshSession,
+    requestPasswordRecovery,
+    resetPassword,
     logout,
     hasPermission,
     requirePermission,

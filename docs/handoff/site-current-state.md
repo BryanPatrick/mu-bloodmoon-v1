@@ -97,7 +97,7 @@ sensivel com o MU passa por jobs idempotentes e auditados.
 | `/downloads` | READY | Links externos de launcher/cliente existem; patch e extras permanecem `Em breve`. |
 | `/login` | PARTIAL | Login JWT, refresh e 2FA ligados a API; falta smoke/E2E com banco real nesta auditoria. |
 | `/registrar` | PARTIAL | Cadastro chama API; falta validar fluxo completo e e-mail real. |
-| `/recuperar-conta` | PLACEHOLDER | Apenas valida localmente e exibe mensagem de teste; nao envia recuperacao. |
+| `/recuperar-conta` | BLOCKED | Backend real (token hash, expira, single-use, invalida sessoes) e UI IDLE/LOADING/SUCCESS/ERROR implementados (Etapa 19.3); envio de e-mail so funciona com provedor de e-mail aprovado, que ainda nao existe -- ver `docs/handoff/auth-recovery-provider-blocker.md`. |
 | `/noticias` | PARTIAL | Lista via Content API; qualidade depende do conteudo publicado. |
 | `/rankings` | PARTIAL | UI existe, mas dados dependem do store/sincronizacao do servidor; vazio e tratado. |
 | `/guias` | PARTIAL | Indice de guias existe; coexistencia com `/wiki` precisa decisao de produto. |
@@ -166,7 +166,7 @@ API e banco em execucao.
 |---|---|---|
 | Autenticacao | PARTIAL | JWT/refresh, sessoes unicas, 2FA e permissoes existem; token ainda e persistido em localStorage. |
 | Cadastro | PARTIAL | Endpoint e tela existem; e-mail/ativacao real precisam validacao. |
-| Recuperacao | PLACEHOLDER | Sem envio/consumo de token de recuperacao. |
+| Recuperacao | BLOCKED | Modelo `PasswordResetToken`, endpoints `/auth/password-recovery/request` e `/reset`, invalidacao de sessao e E2E existem (Etapa 19.3); bloqueado apenas pela ausencia de provedor de e-mail aprovado. |
 | Conteudo/noticias | PARTIAL | Content API e CMS existem; ha fallbacks/textos ficticios no frontend. |
 | Wiki/equipamentos | PARTIAL | 613 equipamentos e 1.031 variantes passam no verificador; UI e payloads sao grandes. |
 | Ranking | PARTIAL | Sem prova de sincronizacao online nesta auditoria. |
@@ -260,7 +260,7 @@ desktop/tablet/mobile com API+banco nesta etapa; portanto comportamento runtime 
 Alta relevancia:
 
 - ~~`stage-one.mock.ts` e `stage-two.mock.ts` alimentam perfil, anuncios e rails Community.~~ **(Etapa 7: `stage-two.mock.ts` deletado; `stage-one.mock.ts` mantem somente os 4 exports do rail direito de anuncios -- perfil e identidade da home agora sao 100% reais.)**
-- `/recuperar-conta` registra apenas solicitacao de teste.
+- ~~`/recuperar-conta` registra apenas solicitacao de teste.~~ **(Etapa 19.3: fluxo real de backend/frontend implementado; entrega de e-mail continua BLOCKED por falta de provedor aprovado -- ver `docs/handoff/auth-recovery-provider-blocker.md`.)**
 - `/painel/notificacoes` nao e uma caixa pessoal real.
 - textos ficticios permanecem em `useLocale.ts`, `data/site.ts` e preview HTML.
 - `implementationRoadmap.ts` contem descricao antiga sobre login/cadastro e nao deve
@@ -366,6 +366,17 @@ em vez de uma refatoracao unica.
   tem `forgot-password`/`reset-password`), nao ha model de token no
   schema, e **nao existe nenhuma infraestrutura de e-mail/SMTP em todo o
   `apps/api`** (grep por `nodemailer|smtp|sendMail` retorna zero).
+  **(Atualizado na Etapa 19.3)**: o stub foi substituido por um fluxo real
+  -- model `PasswordResetToken` (hash SHA-256, single-use, expira em 30min),
+  endpoints `POST /auth/password-recovery/request` e `/reset` protegidos
+  pelo `AuthAbuseGuard`/politica `recovery` (Turnstile + rate limit), reset
+  invalida sessoes ativas via o mesmo padrao `sessionVersion` do
+  `changePassword`, e as paginas `/recuperar-conta` e `/redefinir-senha`
+  cobrem os estados IDLE/LOADING/SUCCESS/ERROR. **Continua sem
+  infraestrutura de e-mail real**: `MailTransportService` recusa o envio
+  (`ServiceUnavailableException`) fora de um bypass estritamente de teste;
+  a task permanece BLOCKED ate um operador aprovar um provedor -- ver
+  `docs/handoff/auth-recovery-provider-blocker.md`.
 - **2FA**: real e completo (setup/verify/disable via `two-factor.service.ts`,
   segredo cifrado AES-256-GCM em repouso, aplicado obrigatoriamente no
   login se ativado). Nenhum bypass encontrado.
@@ -604,8 +615,11 @@ resolvido por esta secao historicamente posterior.
 **BLOCKER** (bloqueiam o beta ate serem tratados; uma task especifica foi
 criada no Hub para cada um):
 
-1. Recuperacao de senha inexistente (so mensagem falsa de sucesso, zero
-   backend, zero e-mail).
+1. **PARCIALMENTE RESOLVIDO NA ETAPA 19.3, AINDA BLOCKED:** backend e
+   frontend reais existem (token hash, single-use, expira, invalida
+   sessoes, endpoints, telas, testes E2E); falta apenas um provedor de
+   e-mail aprovado pelo operador para o fluxo funcionar ponta a ponta --
+   ver `docs/handoff/auth-recovery-provider-blocker.md`.
 2. CAPTCHA de cadastro decorativo/contornavel + zero rate limit em
    login/cadastro no backend -- cadastro em massa e credential-stuffing
    sao possiveis hoje sem nenhuma barreira real.

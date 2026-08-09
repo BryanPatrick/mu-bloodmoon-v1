@@ -2,6 +2,8 @@ import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common'
 import type {
   ChangePasswordRequest,
   LoginRequest,
+  PasswordRecoveryRequestRequest,
+  PasswordRecoveryResetRequest,
   RefreshRequest,
   RegisterRequest,
   TwoFactorDisableRequest,
@@ -42,6 +44,42 @@ export class AuthController {
   @UseGuards(AuthAbuseGuard)
   register(@Body() payload: RegisterRequest) {
     return this.authService.register(payload)
+  }
+
+  @Post('password-recovery/request')
+  @AuthAbuseProtection({ policy: 'recovery', captchaAction: 'recovery', subjectField: 'email' })
+  @UseGuards(AuthAbuseGuard)
+  requestPasswordRecovery(
+    @Body() payload: PasswordRecoveryRequestRequest,
+    @Req()
+    request: {
+      ip?: string
+      socket: { remoteAddress?: string }
+      get(name: string): string | undefined
+    }
+  ) {
+    return this.authService.requestPasswordRecovery(payload, {
+      ip: request.ip || request.socket.remoteAddress || null,
+      device: request.get('user-agent')?.slice(0, 240) || null
+    })
+  }
+
+  @Post('password-recovery/reset')
+  @AuthAbuseProtection({ policy: 'recovery' })
+  @UseGuards(AuthAbuseGuard)
+  resetPassword(
+    @Body() payload: PasswordRecoveryResetRequest,
+    @Req()
+    request: {
+      ip?: string
+      socket: { remoteAddress?: string }
+      get(name: string): string | undefined
+    }
+  ) {
+    return this.authService.resetPassword(payload, {
+      ip: request.ip || request.socket.remoteAddress || null,
+      device: request.get('user-agent')?.slice(0, 240) || null
+    })
   }
 
   @Post('refresh')

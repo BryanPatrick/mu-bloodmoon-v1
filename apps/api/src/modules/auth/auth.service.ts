@@ -7,7 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt'
 import type { Account, AccountCurrency, AccountPermission } from '@prisma/client'
 import * as bcrypt from 'bcryptjs'
-import { createHash, randomUUID } from 'node:crypto'
+import { createHash, randomBytes, randomUUID } from 'node:crypto'
 import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import type {
@@ -15,6 +15,10 @@ import type {
   ChangePasswordResponse,
   LoginRequest,
   LoginResponse,
+  PasswordRecoveryRequestRequest,
+  PasswordRecoveryRequestResponse,
+  PasswordRecoveryResetRequest,
+  PasswordRecoveryResetResponse,
   RefreshRequest,
   RegisterRequest,
   RegisterResponse,
@@ -24,6 +28,7 @@ import type {
   TwoFactorVerifyRequest
 } from './auth.contract'
 import type { AccessTokenPayload, AuthenticatedUser } from './auth.types'
+import { MailTransportService } from './mail-transport.service'
 import { permissionsForAccount } from './permissions'
 import { TwoFactorService } from './two-factor.service'
 
@@ -33,7 +38,8 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwt: JwtService,
     private readonly audit: AuditService,
-    private readonly twoFactor: TwoFactorService
+    private readonly twoFactor: TwoFactorService,
+    private readonly mailTransport: MailTransportService
   ) {}
 
   async login(
@@ -312,6 +318,135 @@ export class AuthService {
     return { ok: true }
   }
 
+  async requestPasswordRecovery(
+    payload: PasswordRecoveryRequestRequest,
+    context: { ip: string | null; device: string | null }
+  ): Promise<PasswordRecoveryRequestResponse> {
+    const email = payload.email?.trim().toLowerCase()
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      throw new BadRequestException('Invalid email')
+    }
+
+    const account = await this.prisma.account.findFirst({ where: { email } })
+
+    if (account && account.status === 'ACTIVE') {
+      const plainToken = randomBytes(32).toString('hex')
+      const tokenHash = createHash('sha256').update(plainToken).digest('hex')
+      const expiresAt = new Date(Date.now() + this.passwordResetTtlMs())
+
+      await this.prisma.$transaction([
+        this.prisma.passwordResetToken.updateMany({
+          where: { accountId: account.id, consumedAt: null },
+          data: { consumedAt: new Date() }
+        }),
+        this.prisma.passwordResetToken.create({
+          data: {
+            accountId: account.id,
+            tokenHash,
+            expiresAt,
+            requestIp: context.ip,
+            requestAgent: context.device
+          }
+        })
+      ])
+
+      const resetUrl = `${this.webPublicUrl()}/redefinir-senha?token=${plainToken}`
+
+      try {
+        await this.mailTransport.send({
+          to: account.email,
+          subject: 'Redefinicao de senha - BloodMoon',
+          text: `Recebemos uma solicitacao para redefinir a senha da sua conta. Se foi voce, use o link abaixo em ate ${this.passwordResetTtlMinutes()} minutos:\n\n${resetUrl}\n\nSe nao foi voce, ignore este e-mail.`
+        })
+        await this.audit.record({
+          actorId: account.id,
+          actorUsername: account.username,
+          action: 'auth.password_recovery.requested',
+          targetType: 'Account',
+          targetId: account.id,
+          ipAddress: context.ip,
+          userAgent: context.device
+        })
+      } catch {
+        await this.audit.record({
+          actorId: account.id,
+          actorUsername: account.username,
+          action: 'auth.password_recovery.email_failed',
+          targetType: 'Account',
+          targetId: account.id,
+          result: 'FAILURE',
+          severity: 'error',
+          ipAddress: context.ip,
+          userAgent: context.device
+        })
+      }
+    }
+
+    return { ok: true }
+  }
+
+  async resetPassword(
+    payload: PasswordRecoveryResetRequest,
+    context: { ip: string | null; device: string | null }
+  ): Promise<PasswordRecoveryResetResponse> {
+    const token = payload.token?.trim()
+    const newPassword = payload.newPassword || ''
+
+    if (!token) throw new BadRequestException({ code: 'TOKEN_INVALID', message: 'Link invalido' })
+    if (newPassword.length < 8 || newPassword.length > 72) {
+      throw new BadRequestException({ code: 'PASSWORD_INVALID', message: 'Invalid password' })
+    }
+
+    const tokenHash = createHash('sha256').update(token).digest('hex')
+    const record = await this.prisma.passwordResetToken.findUnique({ where: { tokenHash } })
+
+    if (!record) {
+      throw new BadRequestException({ code: 'TOKEN_INVALID', message: 'Link invalido' })
+    }
+    if (record.consumedAt) {
+      throw new BadRequestException({ code: 'TOKEN_USED', message: 'Link ja utilizado' })
+    }
+    if (record.expiresAt <= new Date()) {
+      throw new BadRequestException({ code: 'TOKEN_EXPIRED', message: 'Link expirado' })
+    }
+
+    const account = await this.prisma.account.findUnique({ where: { id: record.accountId } })
+    if (!account || account.status !== 'ACTIVE') {
+      throw new BadRequestException({ code: 'TOKEN_INVALID', message: 'Link invalido' })
+    }
+
+    await this.prisma.$transaction([
+      this.prisma.account.update({
+        where: { id: account.id },
+        data: {
+          passwordHash: await bcrypt.hash(newPassword, 12),
+          sessionVersion: { increment: 1 }
+        }
+      }),
+      this.prisma.accountSession.updateMany({
+        where: { accountId: account.id, revokedAt: null },
+        data: { revokedAt: new Date(), revokeReason: 'Senha redefinida via recuperacao de conta' }
+      }),
+      this.prisma.passwordResetToken.updateMany({
+        where: { accountId: account.id, consumedAt: null },
+        data: { consumedAt: new Date() }
+      })
+    ])
+
+    await this.audit.record({
+      actorId: account.id,
+      actorUsername: account.username,
+      action: 'auth.password_recovery.reset',
+      targetType: 'Account',
+      targetId: account.id,
+      severity: 'warning',
+      ipAddress: context.ip,
+      userAgent: context.device
+    })
+
+    return { ok: true }
+  }
+
   async logout(user: AuthenticatedUser) {
     const account = await this.prisma.$transaction(async (tx) => {
       if (user.sessionId) {
@@ -499,5 +634,23 @@ export class AuthService {
     const fallbackHours = role === 'PLAYER' ? 24 : 8
     const hours = Number(process.env.SESSION_TTL_HOURS || fallbackHours)
     return Math.max(1, Number.isFinite(hours) ? hours : fallbackHours) * 60 * 60 * 1000
+  }
+
+  private passwordResetTtlMinutes() {
+    const minutes = Number(process.env.AUTH_PASSWORD_RESET_TTL_MINUTES || 30)
+    return Math.max(1, Number.isFinite(minutes) ? minutes : 30)
+  }
+
+  private passwordResetTtlMs() {
+    return this.passwordResetTtlMinutes() * 60 * 1000
+  }
+
+  private webPublicUrl() {
+    const configured = process.env.WEB_PUBLIC_URL?.trim()
+    if (configured) return configured.replace(/\/$/, '')
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('WEB_PUBLIC_URL is required in production')
+    }
+    return 'http://localhost:3000'
   }
 }
