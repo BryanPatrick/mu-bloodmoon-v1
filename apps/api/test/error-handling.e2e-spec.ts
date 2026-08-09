@@ -1,4 +1,12 @@
-import { Controller, ForbiddenException, Get, NotFoundException } from '@nestjs/common'
+import {
+  Controller,
+  ForbiddenException,
+  Get,
+  HttpException,
+  NotFoundException,
+  ServiceUnavailableException,
+  UnauthorizedException
+} from '@nestjs/common'
 import type { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import type { NextFunction, Request, Response } from 'express'
@@ -17,6 +25,21 @@ class ErrorContractController {
   @Get('forbidden')
   forbidden() {
     throw new ForbiddenException('Acesso nao autorizado.')
+  }
+
+  @Get('unauthenticated')
+  unauthenticated() {
+    throw new UnauthorizedException('Autenticacao necessaria.')
+  }
+
+  @Get('rate-limited')
+  rateLimited() {
+    throw new HttpException('Muitas tentativas. Aguarde e tente novamente.', 429)
+  }
+
+  @Get('unavailable')
+  unavailable() {
+    throw new ServiceUnavailableException('Servico temporariamente indisponivel.')
   }
 
   @Get('failure')
@@ -90,6 +113,51 @@ describe('Global API error contract', () => {
       message: 'Acesso nao autorizado.',
       requestId
     })
+  })
+
+  it('preserves unauthenticated responses', async () => {
+    const response = await (await client()).get('/api/error-contract/unauthenticated')
+
+    expect(response.status).toBe(401)
+    expect(response.body).toEqual({
+      statusCode: 401,
+      message: 'Autenticacao necessaria.',
+      requestId
+    })
+    expect(recordSystemError).not.toHaveBeenCalled()
+  })
+
+  it('preserves rate-limited responses', async () => {
+    const response = await (await client()).get('/api/error-contract/rate-limited')
+
+    expect(response.status).toBe(429)
+    expect(response.body).toEqual({
+      statusCode: 429,
+      message: 'Muitas tentativas. Aguarde e tente novamente.',
+      requestId
+    })
+    expect(recordSystemError).not.toHaveBeenCalled()
+  })
+
+  it('masks service-unavailable responses the same way as any other 5xx and records the correlation id', async () => {
+    const consoleError = jest.spyOn(console, 'error').mockImplementation(() => undefined)
+    const response = await (await client()).get('/api/error-contract/unavailable')
+    consoleError.mockRestore()
+
+    expect(response.status).toBe(503)
+    expect(response.body).toEqual({
+      statusCode: 503,
+      message: 'Nao foi possivel concluir a solicitacao.',
+      requestId
+    })
+    expect(JSON.stringify(response.body)).not.toContain('temporariamente indisponivel')
+    expect(recordSystemError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        correlationId: requestId,
+        publicMessage: 'Nao foi possivel concluir a solicitacao.',
+        requestPath: '/api/error-contract/unavailable'
+      })
+    )
   })
 
   it('masks controlled API failures and records their correlation id', async () => {
