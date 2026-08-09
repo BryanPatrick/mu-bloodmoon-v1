@@ -4,13 +4,20 @@ This document catalogs the **existing, designer-approved** visual identity of
 BloodMoon. It does not invent a new identity. Where the project already has a
 document for something, this file points at it instead of duplicating it:
 
+- **The most specific, authoritative source found so far**: the Figma UI
+  Specification & Developer Handoff v1.5, transcribed in
+  [`figma-handoff-v1.5.md`](./figma-handoff-v1.5.md) — exact color tokens,
+  grid, typography, and per-page (Home/Marketplace/Wiki) Figma node specs.
+  It was shared directly by the operator, not found in the repository during
+  the original audit — read it first if you need precise values.
 - **Target UI direction, component classes, migration order**: already fully
   documented in [`docs/design-system.md`](../design-system.md) ("liquid
   glass / glassmorphism", `bm-liquid-*` classes, `bm-panel`/`bm-glass`
   explicitly marked as "old, still accepted during transition"). Read that
   file first — this document does not repeat it.
 - **Before/after screenshots of the v1.5 UI transition**: already captured in
-  [`docs/design-history/`](../design-history/README.md).
+  [`docs/design-history/`](../design-history/README.md) — the same "v1.5"
+  as the handoff above, for the same three pages.
 - **In-game item/equipment art harvesting**: already documented in
   `references/game-assets/README.md` — unrelated to UI/branding, not
   repeated here.
@@ -93,9 +100,15 @@ Read from `apps/web/assets/css/main.css` (the file actually loaded by
   blood-red accent scale (`--color-blood-50`…`900`, centered on
   `--color-ember`/`--color-blood-500: #bf0202`), `--color-moon: #f5f2ec`,
   `--color-iron: #756d67`, `--color-void: #101010`, heading color
-  `--bm-heading: #460608` (deep wine).
+  `--bm-heading: #460608` (deep wine). This is the same color family as the
+  Figma handoff's tokens (Background/Primary Wine/Action Red/Dark/Surface)
+  but not an exact hex match to any of them — see the reconciliation table
+  in `figma-handoff-v1.5.md` for the value-by-value comparison.
 - **Type**: display/heading font `Cinzel` (serif, gothic-adjacent, matches
-  the logo's carved-stone letterforms), body font `Manifold`/`Inter`.
+  the logo's carved-stone letterforms), body font `Manifold`/`Inter`. The
+  Figma handoff confirms `Manifold` is the intended body font and `Inter`
+  was only used for the handoff document itself — not a live-site
+  recommendation.
 - **Shadows**: `--shadow-glow` (soft red glow) and `--shadow-panel` (deep,
   soft drop shadow) — both consistent with "premium, readable" direction in
   `design-system.md`.

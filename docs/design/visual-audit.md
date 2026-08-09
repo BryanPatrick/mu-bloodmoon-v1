@@ -95,7 +95,11 @@ far can be fixed with classes that already exist in `main.css`.
   instead of `bm-liquid-*`, or pages that are heavily raw-Tailwind
   (`roadmap/index.vue`, `roadmap/[slug].vue`, `recarga.vue` — root
   `bg-black`/`bg-void` + `text-white`, no `bm-*` classes at all) are
-  consistent with "not migrated yet," not accidental. **Caveat**: even
+  consistent with "not migrated yet," not accidental — and this is now
+  independently confirmed by the Figma handoff transcribed in
+  [`figma-handoff-v1.5.md`](./figma-handoff-v1.5.md): its entire specified
+  direction is the unified light/editorial system, with nothing describing
+  a secondary dark theme for content pages. **Caveat**: even
   where `bm-liquid-*` classes are already in use, `main.css`'s actual CSS
   for them doesn't yet implement real blur/translucency (`backdrop-filter`
   only appears once in the whole file, on `.bm-site-header`) — so "migrated"
@@ -108,6 +112,14 @@ far can be fixed with classes that already exist in `main.css`.
   tokens. Visually correct today, but a duplicated source of truth — if the
   palette ever changes, these two files won't pick it up automatically.
   Classified POLISH, not urgent.
+- **Ornamental decorators are specified but not built.** The Figma handoff
+  (§5) calls out recurring dashed-corner card frames and small diamond (◊)
+  section dividers as a shared, SVG-exported component category. Checked
+  directly: no such component exists in `apps/web/components`, `main.css`
+  has no corner-cut `clip-path` rule, and the literal `◊` character doesn't
+  appear anywhere in `pages`/`components`. Classified DESIGNER_REQUIREMENT —
+  needs the real SVG assets from the designer before it can be built, not a
+  fixable-from-a-screenshot gap.
 
 ## Full per-page classification
 

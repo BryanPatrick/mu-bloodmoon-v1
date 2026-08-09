@@ -29,10 +29,17 @@ request list for art that's missing):
   (equipment tooltip crop references, relevant to the Wiki/equipment system,
   not to this etapa's branding/achievements scope).
 
-**If a designer asset-request list exists, it is not in this repository.**
-The operator should confirm whether one exists outside the repo (e.g. in a
-task tracker, a shared drive, or a chat thread) before this gap is treated
-as "nothing was ever requested."
+**Update**: exactly this kind of material was found shortly after, but
+outside the repository as predicted above — the operator shared a Figma
+"UI Specification & Developer Handoff v1.5" directly in chat. It's now
+transcribed in [`figma-handoff-v1.5.md`](./figma-handoff-v1.5.md), and its
+§8 ("Pendências antes do handoff final") is the closest real match to a
+designer request list found so far — though it's Figma-file-side
+pendencies (componentize header/footer, standardize spacing/radii, resolve
+naming) rather than a list of missing image assets. **Recommendation still
+stands**: get the actual Figma file (or an export) checked into the repo —
+this transcription is one step removed from the source and was only
+possible because the operator happened to share it in this session.
 
 ## What exists — production assets (`apps/web/public/`)
 
@@ -74,6 +81,12 @@ referenced from where it should be), not gaps of **low quality**.
    section. Not urgent for beta by itself, but relevant if the operator
    wants achievement-icon containers (or any icon containers) to use a glass
    treatment matching this reference.
+4. **Ornamental decorators (dashed-corner card frames, ◊ dividers) specified
+   in the Figma handoff have no implementation.** Checked directly: no
+   decorator component, no corner-cut CSS, no `◊` usage anywhere in
+   `apps/web`. See `visual-audit.md` and `figma-handoff-v1.5.md` §5/§7 —
+   these need the real SVG assets from the designer, not something to
+   improvise.
 
 ## Confirmed non-gaps (checked, found fine)
 
