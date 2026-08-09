@@ -85,3 +85,7 @@ Novos testes do beta devem ser deterministas, isolados de producao e adicionados
 ao script de dominio correspondente. Uma falha conhecida nao deve ser escondida
 com retry automatico; deve ser corrigida ou registrada explicitamente como
 blocker tecnico.
+
+Arquivos novos e modificados tambem devem passar por `npm run quality:changed`.
+A politica e a divida historica controlada estao documentadas em
+`docs/testing/incremental-quality-gate.md`.

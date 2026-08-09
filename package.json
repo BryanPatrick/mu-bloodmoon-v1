@@ -43,6 +43,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "quality:changed": "node scripts/quality-changed.mjs",
     "check": "npm run lint && npm run format:check && npm run data:check-equipment && npm run api:check && npm run web:build",
     "postinstall": "nuxt prepare apps/web"
   },

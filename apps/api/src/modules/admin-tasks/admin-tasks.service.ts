@@ -360,7 +360,7 @@ export class AdminTasksService {
       throw new BadRequestException('Informe uma justificativa para esta ação.')
     }
 
-    let status = before.status
+    let status: AdminTaskStatus
     const data: Prisma.AdminTaskUncheckedUpdateInput = {}
     if (action === 'ASSIGN' || action === 'TRANSFER') {
       if (!payload.assignedTo) throw new BadRequestException('Selecione o responsável.')
