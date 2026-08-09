@@ -8,7 +8,15 @@ import { SafeExceptionFilter } from './common/safe-exception.filter'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
-  const webUrls = (process.env.WEB_PUBLIC_URLS || process.env.WEB_PUBLIC_URL || 'http://localhost:3000')
+  const trustProxyHops = Number(process.env.TRUST_PROXY_HOPS || 0)
+  if (Number.isInteger(trustProxyHops) && trustProxyHops > 0) {
+    app.getHttpAdapter().getInstance().set('trust proxy', trustProxyHops)
+  }
+  const webUrls = (
+    process.env.WEB_PUBLIC_URLS ||
+    process.env.WEB_PUBLIC_URL ||
+    'http://localhost:3000'
+  )
     .split(',')
     .map((url) => url.trim())
     .filter(Boolean)
@@ -20,17 +28,27 @@ async function bootstrap() {
     credentials: true
   })
   app.use(helmet())
-  const mediaDirectory = resolve(process.env.COMMUNITY_MEDIA_DIR || join(process.cwd(), 'storage', 'community-media'))
-  app.use(`${globalPrefix ? `/${globalPrefix}` : ''}/media/community`, express.static(mediaDirectory, {
-    dotfiles: 'deny', index: false, fallthrough: false, maxAge: '7d'
-  }))
+  const mediaDirectory = resolve(
+    process.env.COMMUNITY_MEDIA_DIR || join(process.cwd(), 'storage', 'community-media')
+  )
+  app.use(
+    `${globalPrefix ? `/${globalPrefix}` : ''}/media/community`,
+    express.static(mediaDirectory, {
+      dotfiles: 'deny',
+      index: false,
+      fallthrough: false,
+      maxAge: '7d'
+    })
+  )
   app.useGlobalFilters(app.get(SafeExceptionFilter))
   if (globalPrefix) {
     app.setGlobalPrefix(globalPrefix)
   }
 
   await app.listen(port)
-  console.log(`Blood Moon API listening on http://localhost:${port}${globalPrefix ? `/${globalPrefix}` : ''}`)
+  console.log(
+    `Blood Moon API listening on http://localhost:${port}${globalPrefix ? `/${globalPrefix}` : ''}`
+  )
 }
 
 void bootstrap()

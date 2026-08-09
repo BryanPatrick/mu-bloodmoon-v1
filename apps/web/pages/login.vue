@@ -9,14 +9,14 @@
           class="bm-liquid-field px-4 py-3 text-sm outline-none transition focus:border-cyan-200/80"
           :placeholder="t('emailOrUser')"
           autocomplete="username"
-        >
+        />
         <input
           v-model="password"
           class="bm-liquid-field px-4 py-3 text-sm outline-none transition focus:border-cyan-200/80"
           :placeholder="t('password')"
           autocomplete="current-password"
           type="password"
-        >
+        />
         <input
           v-if="requiresTwoFactor"
           v-model="totpCode"
@@ -25,19 +25,35 @@
           autocomplete="one-time-code"
           inputmode="numeric"
           maxlength="6"
-        >
+        />
 
-        <p v-if="message" class="rounded-md border px-4 py-3 text-sm font-bold" :class="messageClass">
+        <TurnstileWidget ref="captchaWidget" action="login" @token="captchaToken = $event" />
+
+        <p
+          v-if="message"
+          class="rounded-md border px-4 py-3 text-sm font-bold"
+          :class="messageClass"
+        >
           {{ message }}
         </p>
 
-        <button class="bm-liquid-primary px-5 py-3 text-sm font-bold transition hover:scale-[1.01] disabled:cursor-wait disabled:opacity-60" :disabled="isSubmitting" type="submit">
+        <button
+          class="bm-liquid-primary px-5 py-3 text-sm font-bold transition hover:scale-[1.01] disabled:cursor-wait disabled:opacity-60"
+          :disabled="isSubmitting"
+          type="submit"
+        >
           {{ isSubmitting ? 'Entrando...' : t('enter') }}
         </button>
 
-        <div class="flex flex-col gap-2 text-sm font-bold sm:flex-row sm:items-center sm:justify-between">
-          <NuxtLink class="text-white/65 transition hover:text-white" to="/recuperar-conta">Recuperar conta</NuxtLink>
-          <NuxtLink class="text-blood-200 transition hover:text-white" to="/registrar">Criar conta</NuxtLink>
+        <div
+          class="flex flex-col gap-2 text-sm font-bold sm:flex-row sm:items-center sm:justify-between"
+        >
+          <NuxtLink class="text-white/65 transition hover:text-white" to="/recuperar-conta"
+            >Recuperar conta</NuxtLink
+          >
+          <NuxtLink class="text-blood-200 transition hover:text-white" to="/registrar"
+            >Criar conta</NuxtLink
+          >
         </div>
       </form>
     </div>
@@ -58,6 +74,8 @@ const requiresTwoFactor = ref(false)
 const message = ref('')
 const isSuccess = ref(false)
 const isSubmitting = ref(false)
+const captchaToken = ref('')
+const captchaWidget = ref<{ reset(): void } | null>(null)
 
 const messageClass = computed(() =>
   isSuccess.value
@@ -70,9 +88,20 @@ const submitLogin = async () => {
     return
   }
 
+  if (!captchaToken.value) {
+    isSuccess.value = false
+    message.value = 'Conclua a verificacao de seguranca.'
+    return
+  }
+
   isSubmitting.value = true
   try {
-    const result = await loginWithCredentials(username.value, password.value, totpCode.value)
+    const result = await loginWithCredentials(
+      username.value,
+      password.value,
+      totpCode.value,
+      captchaToken.value
+    )
     isSuccess.value = result.ok
     message.value = result.message
     requiresTwoFactor.value = Boolean(result.requiresTwoFactor)
@@ -80,6 +109,8 @@ const submitLogin = async () => {
     if (result.ok) {
       const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/'
       await router.push(redirect)
+    } else {
+      captchaWidget.value?.reset()
     }
   } finally {
     isSubmitting.value = false

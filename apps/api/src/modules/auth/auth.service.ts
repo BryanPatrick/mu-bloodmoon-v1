@@ -1,8 +1,13 @@
-import { BadRequestException, ConflictException, Injectable, UnauthorizedException } from '@nestjs/common'
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  UnauthorizedException
+} from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import type { Account, AccountCurrency, AccountPermission } from '@prisma/client'
 import * as bcrypt from 'bcryptjs'
-import { randomUUID } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
 import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import type {
@@ -31,7 +36,10 @@ export class AuthService {
     private readonly twoFactor: TwoFactorService
   ) {}
 
-  async login(payload: LoginRequest, context: { ip: string | null; device: string | null }): Promise<LoginResponse> {
+  async login(
+    payload: LoginRequest,
+    context: { ip: string | null; device: string | null }
+  ): Promise<LoginResponse> {
     const login = payload.username?.trim().toLowerCase()
     if (!login || !payload.password) {
       throw new BadRequestException('Informe usuario ou e-mail e senha')
@@ -39,16 +47,19 @@ export class AuthService {
 
     const account = await this.prisma.account.findFirst({
       where: {
-        OR: [
-          { username: login },
-          { email: login }
-        ]
+        OR: [{ username: login }, { email: login }]
       },
       include: { currencies: true, permissions: true }
     })
 
     if (!account || account.status !== 'ACTIVE') {
-      await this.recordFailedLogin(login, account?.id, account?.username, account ? 'inactive-account' : 'unknown-account', context)
+      await this.recordFailedLogin(
+        login,
+        account?.id,
+        account?.username,
+        account ? 'inactive-account' : 'unknown-account',
+        context
+      )
       throw new UnauthorizedException('Invalid credentials')
     }
 
@@ -60,9 +71,18 @@ export class AuthService {
 
     if (account.twoFactorEnabled) {
       const secret = account.twoFactorSecret ? this.twoFactor.decrypt(account.twoFactorSecret) : ''
-      if (!secret || !await this.twoFactor.isValid(secret, payload.totpCode)) {
-        await this.recordFailedLogin(login, account.id, account.username, 'two-factor-required-or-invalid', context)
-        throw new UnauthorizedException({ code: 'TWO_FACTOR_REQUIRED', message: 'Informe o codigo de autenticacao' })
+      if (!secret || !(await this.twoFactor.isValid(secret, payload.totpCode))) {
+        await this.recordFailedLogin(
+          login,
+          account.id,
+          account.username,
+          'two-factor-required-or-invalid',
+          context
+        )
+        throw new UnauthorizedException({
+          code: 'TWO_FACTOR_REQUIRED',
+          message: 'Informe o codigo de autenticacao'
+        })
       }
     }
 
@@ -126,13 +146,25 @@ export class AuthService {
         where: { id: token.sub },
         include: { currencies: true, permissions: true }
       })
-      const session = token.sid ? await this.prisma.accountSession.findUnique({ where: { id: token.sid } }) : null
-      if (!account || account.status !== 'ACTIVE' || account.sessionVersion !== token.sessionVersion
-        || !session || session.accountId !== account.id || session.revokedAt || session.expiresAt <= new Date()) {
+      const session = token.sid
+        ? await this.prisma.accountSession.findUnique({ where: { id: token.sid } })
+        : null
+      if (
+        !account ||
+        account.status !== 'ACTIVE' ||
+        account.sessionVersion !== token.sessionVersion ||
+        !session ||
+        session.accountId !== account.id ||
+        session.revokedAt ||
+        session.expiresAt <= new Date()
+      ) {
         throw new UnauthorizedException('Session is no longer active')
       }
 
-      await this.prisma.accountSession.update({ where: { id: session.id }, data: { lastSeenAt: new Date() } })
+      await this.prisma.accountSession.update({
+        where: { id: session.id },
+        data: { lastSeenAt: new Date() }
+      })
 
       return {
         accessToken: await this.signAccessToken(account, session.id),
@@ -170,20 +202,11 @@ export class AuthService {
 
     const existing = await this.prisma.account.findFirst({
       where: {
-        OR: [
-          { username },
-          { email }
-        ]
+        OR: [{ username }, { email }]
       }
     })
 
-    if (existing?.username === username) {
-      throw new ConflictException('Username already exists')
-    }
-
-    if (existing?.email === email) {
-      throw new ConflictException('Email already exists')
-    }
+    if (existing) throw new ConflictException('Account cannot be created with these details')
 
     const account = await this.prisma.account.create({
       data: {
@@ -223,7 +246,10 @@ export class AuthService {
     }
   }
 
-  async changePassword(payload: ChangePasswordRequest, user: AuthenticatedUser): Promise<ChangePasswordResponse> {
+  async changePassword(
+    payload: ChangePasswordRequest,
+    user: AuthenticatedUser
+  ): Promise<ChangePasswordResponse> {
     const currentPassword = payload.currentPassword || ''
     const personalId = payload.personalId?.trim()
     const newPassword = payload.newPassword || ''
@@ -314,83 +340,147 @@ export class AuthService {
 
   async setupTwoFactor(payload: TwoFactorSetupRequest, user: AuthenticatedUser) {
     const account = await this.prisma.account.findUnique({ where: { id: user.id } })
-    if (!account || !await bcrypt.compare(payload.currentPassword || '', account.passwordHash)) {
+    if (!account || !(await bcrypt.compare(payload.currentPassword || '', account.passwordHash))) {
       throw new UnauthorizedException('Senha atual invalida')
     }
-    if (account.twoFactorEnabled) throw new BadRequestException('A autenticacao em duas etapas ja esta ativa')
+    if (account.twoFactorEnabled)
+      throw new BadRequestException('A autenticacao em duas etapas ja esta ativa')
     const secret = this.twoFactor.generateSecret()
     const uri = this.twoFactor.uri(account.username, secret)
-    await this.prisma.account.update({ where: { id: account.id }, data: { twoFactorPending: this.twoFactor.encrypt(secret) } })
-    await this.audit.record({ actorId: account.id, actorUsername: account.username, action: 'auth.2fa.setup.started', targetType: 'Account', targetId: account.id })
+    await this.prisma.account.update({
+      where: { id: account.id },
+      data: { twoFactorPending: this.twoFactor.encrypt(secret) }
+    })
+    await this.audit.record({
+      actorId: account.id,
+      actorUsername: account.username,
+      action: 'auth.2fa.setup.started',
+      targetType: 'Account',
+      targetId: account.id
+    })
     return { secret, uri, qrCode: await this.twoFactor.qrCode(uri) }
   }
 
   async verifyTwoFactor(payload: TwoFactorVerifyRequest, user: AuthenticatedUser) {
     const account = await this.prisma.account.findUnique({ where: { id: user.id } })
-    if (!account?.twoFactorPending) throw new BadRequestException('Inicie a configuracao do 2FA primeiro')
+    if (!account?.twoFactorPending)
+      throw new BadRequestException('Inicie a configuracao do 2FA primeiro')
     const secret = this.twoFactor.decrypt(account.twoFactorPending)
-    if (!await this.twoFactor.isValid(secret, payload.code)) throw new BadRequestException('Codigo de autenticacao invalido')
+    if (!(await this.twoFactor.isValid(secret, payload.code)))
+      throw new BadRequestException('Codigo de autenticacao invalido')
     await this.prisma.account.update({
       where: { id: account.id },
-      data: { twoFactorEnabled: true, twoFactorSecret: account.twoFactorPending, twoFactorPending: null }
+      data: {
+        twoFactorEnabled: true,
+        twoFactorSecret: account.twoFactorPending,
+        twoFactorPending: null
+      }
     })
-    await this.audit.record({ actorId: account.id, actorUsername: account.username, action: 'auth.2fa.enabled', targetType: 'Account', targetId: account.id, severity: 'warning' })
+    await this.audit.record({
+      actorId: account.id,
+      actorUsername: account.username,
+      action: 'auth.2fa.enabled',
+      targetType: 'Account',
+      targetId: account.id,
+      severity: 'warning'
+    })
     return { ok: true }
   }
 
   async disableTwoFactor(payload: TwoFactorDisableRequest, user: AuthenticatedUser) {
     const account = await this.prisma.account.findUnique({ where: { id: user.id } })
-    if (!account?.twoFactorEnabled || !account.twoFactorSecret) throw new BadRequestException('A autenticacao em duas etapas nao esta ativa')
-    if (!await bcrypt.compare(payload.currentPassword || '', account.passwordHash)) throw new UnauthorizedException('Senha atual invalida')
+    if (!account?.twoFactorEnabled || !account.twoFactorSecret)
+      throw new BadRequestException('A autenticacao em duas etapas nao esta ativa')
+    if (!(await bcrypt.compare(payload.currentPassword || '', account.passwordHash)))
+      throw new UnauthorizedException('Senha atual invalida')
     const secret = this.twoFactor.decrypt(account.twoFactorSecret)
-    if (!await this.twoFactor.isValid(secret, payload.code)) throw new BadRequestException('Codigo de autenticacao invalido')
+    if (!(await this.twoFactor.isValid(secret, payload.code)))
+      throw new BadRequestException('Codigo de autenticacao invalido')
     await this.prisma.$transaction([
-      this.prisma.account.update({ where: { id: account.id }, data: { twoFactorEnabled: false, twoFactorSecret: null, twoFactorPending: null, sessionVersion: { increment: 1 } } }),
-      this.prisma.accountSession.updateMany({ where: { accountId: account.id, revokedAt: null }, data: { revokedAt: new Date(), revokeReason: '2FA desativado' } })
+      this.prisma.account.update({
+        where: { id: account.id },
+        data: {
+          twoFactorEnabled: false,
+          twoFactorSecret: null,
+          twoFactorPending: null,
+          sessionVersion: { increment: 1 }
+        }
+      }),
+      this.prisma.accountSession.updateMany({
+        where: { accountId: account.id, revokedAt: null },
+        data: { revokedAt: new Date(), revokeReason: '2FA desativado' }
+      })
     ])
-    await this.audit.record({ actorId: account.id, actorUsername: account.username, action: 'auth.2fa.disabled', targetType: 'Account', targetId: account.id, severity: 'warning' })
+    await this.audit.record({
+      actorId: account.id,
+      actorUsername: account.username,
+      action: 'auth.2fa.disabled',
+      targetType: 'Account',
+      targetId: account.id,
+      severity: 'warning'
+    })
     return { ok: true }
   }
 
-  private recordFailedLogin(attemptedUsername: string, actorId?: string, actorUsername?: string, reason = 'invalid-credentials', context?: { ip: string | null; device: string | null }) {
+  private recordFailedLogin(
+    attemptedUsername: string,
+    actorId?: string,
+    actorUsername?: string,
+    reason = 'invalid-credentials',
+    context?: { ip: string | null; device: string | null }
+  ) {
     return this.audit.record({
       actorId: actorId || null,
-      actorUsername: actorUsername || attemptedUsername || 'unknown',
-      action: 'auth.login.failed',
+      actorUsername: actorUsername || 'anonymous',
+      action: 'auth.login_failed',
       targetType: 'Account',
       targetId: actorId || null,
       severity: 'warning',
-      metadata: { attemptedUsername, reason, result: 'denied', ip: context?.ip || null, device: context?.device || null }
+      metadata: {
+        identifierHash: createHash('sha256').update(attemptedUsername).digest('hex').slice(0, 16),
+        reason,
+        result: 'denied'
+      },
+      ipAddress: context?.ip || null,
+      userAgent: context?.device || null
     })
   }
 
   private async signAccessToken(account: Account, sessionId: string) {
-    return this.jwt.signAsync({
-      sub: account.id,
-      username: account.username,
-      role: account.role,
-      sessionVersion: account.sessionVersion,
-      sid: sessionId
-    }, {
-      expiresIn: process.env.JWT_ACCESS_TTL || '15m'
-    })
+    return this.jwt.signAsync(
+      {
+        sub: account.id,
+        username: account.username,
+        role: account.role,
+        sessionVersion: account.sessionVersion,
+        sid: sessionId
+      },
+      {
+        expiresIn: process.env.JWT_ACCESS_TTL || '15m'
+      }
+    )
   }
 
   private async signRefreshToken(account: Account, sessionId: string) {
-    return this.jwt.signAsync({
-      sub: account.id,
-      username: account.username,
-      role: account.role,
-      sessionVersion: account.sessionVersion,
-      sid: sessionId,
-      type: 'refresh'
-    }, {
-      secret: process.env.JWT_REFRESH_SECRET || 'dev-refresh-secret-change-me',
-      expiresIn: process.env.JWT_REFRESH_TTL || '7d'
-    })
+    return this.jwt.signAsync(
+      {
+        sub: account.id,
+        username: account.username,
+        role: account.role,
+        sessionVersion: account.sessionVersion,
+        sid: sessionId,
+        type: 'refresh'
+      },
+      {
+        secret: process.env.JWT_REFRESH_SECRET || 'dev-refresh-secret-change-me',
+        expiresIn: process.env.JWT_REFRESH_TTL || '7d'
+      }
+    )
   }
 
-  private toSessionUser(account: Account & { currencies?: AccountCurrency[], permissions?: AccountPermission[] }): SessionUser {
+  private toSessionUser(
+    account: Account & { currencies?: AccountCurrency[]; permissions?: AccountPermission[] }
+  ): SessionUser {
     return {
       id: account.id,
       username: account.username,

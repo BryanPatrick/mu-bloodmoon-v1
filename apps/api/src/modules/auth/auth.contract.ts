@@ -2,6 +2,7 @@ export type LoginRequest = {
   username: string
   password: string
   totpCode?: string
+  captchaToken: string
 }
 
 export type RefreshRequest = {
@@ -15,6 +16,7 @@ export type RegisterRequest = {
   personalId: string
   email: string
   reference?: string
+  captchaToken: string
 }
 
 export type ChangePasswordRequest = {

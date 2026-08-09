@@ -3,7 +3,8 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3333/api'
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3333/api',
+      turnstileSiteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || ''
     }
   },
   components: [
@@ -20,10 +21,7 @@ export default defineNuxtConfig({
       exclude: ['lucide-vue-next']
     }
   },
-  modules: [
-    '@nuxt/ui',
-    '@pinia/nuxt'
-  ],
+  modules: ['@nuxt/ui', '@pinia/nuxt'],
   fonts: {
     providers: {
       bunny: false,
@@ -37,9 +35,7 @@ export default defineNuxtConfig({
       { name: 'Inter', provider: 'none' }
     ]
   },
-  css: [
-    '~/assets/css/main.css'
-  ],
+  css: ['~/assets/css/main.css'],
   app: {
     head: {
       titleTemplate: '%s | Blood Moon',
