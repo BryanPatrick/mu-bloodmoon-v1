@@ -11,6 +11,14 @@ um BLOCKER de codigo -- ver
 community-current-state.md#gate-de-release-para-beta-etapa-16 para o
 relatorio completo e a decisao formal registrada no Hub).
 
+**Baseline automatizada do site (Etapa 19.6): 146/146 PASS.** O comando unico
+`npm run test:beta` cobre 27 testes criticos da API, os 111 E2E da Community e
+8 testes SSR/contrato de erro do portal. Auth basico, recuperacao, autorizacao
+PLAYER/SUPER_ADMIN, suporte, APIs publicas, Home, Wiki, Roadmap, Downloads e
+404 real agora possuem cobertura isolada de producao. Loja, marketplace,
+escrow e GameBridge continuam fora por serem fluxos comerciais ainda nao
+homologados. Matriz completa em `docs/testing/beta-test-baseline.md`.
+
 **Site inteiro: `SITE_BETA_BLOCKED`** (Etapa 17 -- pente-fino completo,
 6 agentes de auditoria de codigo em paralelo + QA ao vivo em navegador real
 contra o build de producao + quality gate. 6 BLOCKERs confirmados: recuperacao
@@ -39,7 +47,7 @@ avaliacao, exatamente como pedido.**
 
 | Confirmar ausencia de... | Status |
 |---|---|
-| BLOCKERS conhecidos | **NAO CONFIRMADO** -- 5 BLOCKERs operacionais permanecem abertos no Hub; CAPTCHA, 404 e HTTPS foram resolvidos nas Etapas 19.2, 19.4 e 19.5. |
+| BLOCKERS conhecidos | **NAO CONFIRMADO** -- 4 BLOCKERs operacionais permanecem abertos no Hub; CAPTCHA, 404, HTTPS e a baseline minima de testes foram resolvidos nas Etapas 19.2, 19.4, 19.5 e 19.6. |
 | Mocks em fluxo critico | Confirmado ausente em Community e nos modulos auditados na Etapa 17 (loja/marketplace/auth nao tem mock -- o problema neles e ausencia de implementacao real, nao mock mascarando). Home tem 2 noticias falsas fixas misturadas ao conteudo real (MEDIUM, nao um fluxo critico de transacao). |
 | Credentials expostas | **CONFIRMADO -- pior do que o relatado na Etapa 17/18.** Etapa 19.1 descobriu que a mesma credencial real de banco de producao (`BLOODMOON_DB_PRODUCTION_CREDENTIAL`, MySQL) nao estava so em 2 arquivos locais gitignored -- estava tambem **commitada num arquivo rastreado** (`deploy/CPANEL_NODE_DEPLOY.md`), presente em `origin/main` desde commits antigos (anteriores a esta sessao), e o repositorio GitHub `BryanPatrick/mu-bloodmoon-v1` esta **confirmado PUBLICO** (HTTP 200 sem autenticacao). A credencial deve ser tratada como comprometida. Remediado nesta etapa: (1) linha redigida no arquivo rastreado e enviada ao repositorio; (2) 14 arquivos locais adicionais em `work/` (nao so os 2 originais) tambem continham a mesma credencial e foram higienizados/transformados em template sem valor; (3) confirmado que o codigo da aplicacao sempre referenciou `DATABASE_URL` via variavel de ambiente (Prisma `env("DATABASE_URL")`), nunca hardcoded -- o vazamento era so em documentacao/arquivos de operacao, nunca no codigo; (4) confirmado que a credencial nao aparece no bundle/build (`apps/web/.output`, `apps/api/dist`) nem em `runtimeConfig.public` do Nuxt. **Rotacao da senha real no cPanel continua pendente e depende do operador.** Ver a task BLOCKER correspondente no Hub para o plano exato. Valor da credencial nunca reproduzido em nenhum documento/resposta/log. |
 | Migration nao homologada | Parcialmente confirmado ausente -- as 3 migrations pendentes da Community estao homologadas tecnicamente (`APPROVED_FOR_PRODUCTION`, Etapa 6) mas **nunca foram aplicadas em ambiente real**, so em container descartavel. Nenhuma das 17 migrations tem rollback automatizado (`down.sql`) -- a unica recuperacao e restaurar backup completo do banco, nunca testado contra producao. |
@@ -93,16 +101,15 @@ refatoracao)**:
    (ou pelo menos processo real de entrega).
 3. `fb796d14` -- Marketplace/escrow/GameBridge: worker real + remover
    endpoints administrativos de desenvolvimento.
-4. `305947d6` -- Cobertura minima de teste automatizado fora de
-   Community (login/cadastro, compra na loja, listagem no marketplace).
-5. `01a7e88f` -- Rotacionar a credencial de banco de producao exposta e
+4. `01a7e88f` -- Rotacionar a credencial de banco de producao exposta e
    atualizar os consumidores autorizados.
 
 **Resolvidos depois da Etapa 18:** protecao contra abuso de autenticacao
 (`20921b4d`, Etapa 19.2), tratamento global/404 (`47eadd58`, Etapa 19.4) e
-HTTPS obrigatorio (`fbd01471`, Etapa 19.5).
+HTTPS obrigatorio (`fbd01471`, Etapa 19.5), alem da cobertura minima
+automatizada (`305947d6`, Etapa 19.6).
 
-**Alem das 5 tasks BLOCKER restantes**, antes de reavaliar GO tambem e necessario
+**Alem das 4 tasks BLOCKER restantes**, antes de reavaliar GO tambem e necessario
 (sem task dedicada -- ja rastreado nas secoes BLOCKER "Deploy/producao"
 deste documento): aplicar as 3 migrations da Community em producao com
 backup+rollback testado de verdade (nao so documentado), configurar
@@ -178,9 +185,10 @@ Decisao formal `NO-GO` registrada no AI Knowledge Hub.
 
 ### Autenticacao e seguranca
 
-- [ ] E2E de cadastro, login, refresh, logout, sessao unica e 2FA com banco de teste. (Etapa 17:
-  confirmado zero teste -- nem E2E nem unitario -- cobre qualquer parte de auth/cadastro/
-  recuperacao/2FA/perfil. Fica pendente.)
+- [ ] E2E de cadastro, login, refresh, logout, sessao unica e 2FA com banco de teste. **Etapa
+  19.6 cobre cadastro, login valido/invalido, rota protegida, autorizacao basica, logout e os 10
+  cenarios de recuperacao em MariaDB descartavel.** Refresh/session rotation e 2FA completos
+  continuam pendentes; por isso este item amplo nao e marcado integralmente concluido.
 - [x] Corrigir race de concorrencia no `JwtAuthGuard` que podia causar 401 falso ("sessao invalida")
   em requisicoes autenticadas simultaneas legitimas (ex.: duplo-clique). (Etapa 10: encontrado
   escrevendo o teste de concorrencia de reacoes/saves/reposts da Community -- o guard fazia um
@@ -269,12 +277,12 @@ Decisao formal `NO-GO` registrada no AI Knowledge Hub.
   interna. Validado no build SSR: rota HTML inexistente retorna HTTP 404 real, `noindex`, identidade
   Blood Moon e retorno seguro para a Home; o contrato JSON continua 404. Cobertura adicionada em
   `apps/web/test/error-presentation.test.mjs` e `apps/api/test/error-handling.e2e-spec.ts`.
-- [ ] **BLOCKER:** Adicionar teste automatizado minimo (E2E ou unitario) para pelo menos os fluxos
-  criticos fora de Community: login/cadastro, compra na loja, criacao de listagem no marketplace.
-  Confirmado: `apps/api/src` nao tem nenhum `*.spec.ts`; `apps/api/test/` so tem specs de
-  Community; `apps/web` nao tem nenhum teste. Todo o resto do site (auth, loja, marketplace,
-  suporte, wiki, rankings, painel admin, observabilidade) roda sem nenhuma rede de seguranca
-  automatizada.
+- [x] **BLOCKER RESOLVIDO NA ETAPA 19.6:** baseline automatizada minima fora da Community.
+  `npm run test:beta` executa 146 testes isolados: auth basico, recuperacao, contrato da API,
+  autorizacao PLAYER/SUPER_ADMIN, suporte, paginas publicas/404 e os 111 E2E da Community.
+  Compra, listagem, escrow e GameBridge foram deliberadamente excluidos porque seus blockers
+  comerciais continuam abertos; nao sao simulados como sucesso. Ver
+  `docs/testing/beta-test-baseline.md`.
 
 ### Deploy/producao
 

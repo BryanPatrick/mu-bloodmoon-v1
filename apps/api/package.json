@@ -12,7 +12,10 @@
     "db:seed:test": "node --env-file-if-exists=.env scripts/seed-test-accounts.mjs",
     "check:security:integration": "node scripts/check-auth-integration.mjs",
     "start": "node dist/apps/api/src/main.js",
-    "test:e2e": "jest --config ./test/jest-e2e.json --runInBand"
+    "test:e2e": "jest --config ./test/jest-e2e.json --runInBand",
+    "test:beta:critical": "jest --config ./test/jest-e2e.json --runInBand --testPathPatterns=\"(portal-critical|password-recovery|error-handling)\\.e2e-spec\\.ts$\"",
+    "test:beta:community": "jest --config ./test/jest-e2e.json --runInBand --testPathPatterns=\"community-.*\\.e2e-spec\\.ts$\"",
+    "test:beta": "npm run test:beta:critical && npm run test:beta:community"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

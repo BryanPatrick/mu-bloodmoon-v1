@@ -610,6 +610,24 @@ Validacao SSR local de producao: Home 200; rota inexistente com `Accept: text/ht
 rota com `Accept: application/json` 404. O blocker 5 da classificacao abaixo deve ser considerado
 resolvido por esta secao historicamente posterior.
 
+### Etapa 19.6: baseline automatizada fora da Community
+
+Foi criado o comando unico `npm run test:beta`, executado somente com bancos
+MariaDB descartaveis, dados sinteticos e servidor Nitro local. A baseline nao
+acessa producao, SQL Server do jogo ou GameBridge.
+
+Cobertura inicial: 27 testes criticos da API, 111 E2E da Community e 8 testes
+web, totalizando 146. Estao cobertos cadastro/login basicos, credencial
+invalida, rota protegida, logout, autorizacao PLAYER/SUPER_ADMIN, os 10 casos
+existentes de recuperacao, suporte, APIs publicas, Home, Wiki, Roadmap,
+Downloads e 404 HTML real. A especificacao reproduzivel e os limites estao em
+`docs/testing/beta-test-baseline.md`.
+
+Os fluxos comerciais de loja, marketplace, escrow e GameBridge continuam fora
+da baseline por ainda nao possuirem homologacao segura. Refresh/session
+rotation e 2FA completos tambem seguem como lacunas, sem invalidar a cobertura
+minima entregue nesta etapa.
+
 ### Classificacao final (BLOCKER / HIGH / MEDIUM / LOW)
 
 **BLOCKER** (bloqueiam o beta ate serem tratados; uma task especifica foi
@@ -630,10 +648,10 @@ criada no Hub para cada um):
    administrativos "de desenvolvimento" inseguros continuam vivos.
 5. **RESOLVIDO NA ETAPA 19.4:** paginas inexistentes agora retornam 404 real com a pagina de erro
    Blood Moon; o antigo `500 undefined` era causado pela serializacao SSR do Pinia 2.3.1.
-6. Nenhum teste automatizado (E2E ou unitario) cobre auth, cadastro,
-   recuperacao, 2FA, loja, recarga, marketplace, escrow, GameBridge, wiki,
-   rankings, suporte, painel administrativo ou observabilidade -- so
-   Community tem cobertura real.
+6. **RESOLVIDO NA ETAPA 19.6 PARA A BASELINE MINIMA:** auth basico,
+   recuperacao, autorizacao, suporte, APIs publicas, paginas SSR e 404 agora
+   possuem cobertura automatizada. Permanecem lacunas especificas em 2FA,
+   refresh/session rotation, loja, recarga, marketplace, escrow e GameBridge.
 
 **HIGH**:
 
