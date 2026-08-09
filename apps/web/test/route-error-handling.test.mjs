@@ -102,3 +102,25 @@ test('an unknown roadmap slug renders the real 404 page instead of falling back 
   assert.match(html, /Pagina nao encontrada/)
   assert.doesNotMatch(html, /Buscar iniciativa/)
 })
+
+test('the loja listing still renders after moving it into pages/loja/index.vue', async () => {
+  const response = await fetch(`${baseUrl}/loja`, { headers: { accept: 'text/html' } })
+  const html = await response.text()
+
+  assert.equal(response.status, 200)
+  assert.match(html, /Buscar na loja/)
+})
+
+test('a loja product route renders the detail page shell, not the listing, for any slug', async () => {
+  const response = await fetch(`${baseUrl}/loja/etapa-19-7-slug-that-does-not-exist`, {
+    headers: { accept: 'text/html' }
+  })
+  const html = await response.text()
+
+  // pages/loja/[slug].vue fetches the product client-side in onMounted() and
+  // throws createError(404) there, so SSR still returns 200 with an empty
+  // detail shell -- this test only proves the routing fix (index.vue vs the
+  // old flat loja.vue) made [slug].vue render at all, not the not-found UX.
+  assert.equal(response.status, 200)
+  assert.doesNotMatch(html, /Buscar na loja/)
+})
