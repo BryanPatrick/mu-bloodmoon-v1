@@ -104,9 +104,45 @@
               <button class="bm-button-glass rounded-md px-4 py-3 text-sm font-black" type="button" @click="setRechargeStatus(recharge.id, 'Paga')">
                 Aprovar
               </button>
-              <button class="rounded-md border border-blood-500/40 bg-blood-900/30 px-4 py-3 text-sm font-black text-blood-100" type="button" @click="setRechargeStatus(recharge.id, 'Cancelada')">
+              <button class="rounded-md border border-blood-500/40 bg-blood-900/30 px-4 py-3 text-sm font-black text-blood-100" type="button" @click="cancelRecharge(recharge.id)">
                 Cancelar
               </button>
+              <button class="rounded-md border border-white/10 bg-white/5 px-4 py-3 text-sm font-black text-white/75 sm:col-span-2" type="button" @click="toggleRechargeDetail(recharge.id)">
+                {{ expandedRechargeId === recharge.id ? 'Ocultar detalhes' : 'Detalhes (Mercado Pago)' }}
+              </button>
+            </div>
+          </div>
+
+          <div v-if="expandedRechargeId === recharge.id" class="mt-4 border-t border-white/10 pt-4">
+            <p v-if="rechargeDetailLoading" class="text-sm font-bold text-white/55">Carregando detalhes...</p>
+            <div v-else-if="rechargeDetail" class="grid gap-3">
+              <div class="grid gap-2 text-xs font-bold text-white/70 sm:grid-cols-2">
+                <span>Provider: <strong class="text-white">{{ rechargeDetail.provider }}</strong></span>
+                <span>Order Mercado Pago: <strong class="text-white">{{ rechargeDetail.externalOrderId || '-' }}</strong></span>
+                <span>Correlation ID: <strong class="text-white">{{ rechargeDetail.correlationId || '-' }}</strong></span>
+                <span>Metodo: <strong class="text-white">{{ rechargeDetail.paymentMethod || '-' }}</strong></span>
+                <span>Status provider: <strong class="text-white">{{ rechargeDetail.externalStatus || '-' }} / {{ rechargeDetail.externalStatusDetail || '-' }}</strong></span>
+                <span>Ultimo webhook: <strong class="text-white">{{ rechargeDetail.lastWebhookAt ? formatDate(rechargeDetail.lastWebhookAt) : '-' }}</strong></span>
+                <span v-if="rechargeDetail.failureReason">Motivo da falha: <strong class="text-white">{{ rechargeDetail.failureReason }}</strong></span>
+                <span v-if="rechargeDetail.manualReviewReason">Motivo (analise): <strong class="text-white">{{ rechargeDetail.manualReviewReason }}</strong></span>
+                <span v-if="rechargeDetail.refundReason">Motivo (estorno): <strong class="text-white">{{ rechargeDetail.refundReason }}</strong></span>
+              </div>
+
+              <button class="w-fit rounded-md border border-white/10 bg-white/5 px-4 py-2 text-xs font-black text-white/75" type="button" :disabled="resyncing" @click="resyncRecharge(recharge.id)">
+                {{ resyncing ? 'Ressincronizando...' : 'Ressincronizar com Mercado Pago' }}
+              </button>
+
+              <div v-if="rechargeDetail.timeline.length" class="grid gap-2">
+                <p class="text-[11px] font-black uppercase tracking-[0.2em] text-white/45">Timeline de webhooks</p>
+                <div v-for="event in rechargeDetail.timeline" :key="event.id" class="flex flex-wrap items-center gap-2 rounded-md bg-black/25 px-3 py-2 text-xs font-bold text-white/65">
+                  <span class="text-white">{{ event.topic }}</span>
+                  <span>{{ event.status }}</span>
+                  <span>{{ event.signatureValid ? 'assinatura valida' : 'assinatura invalida' }}</span>
+                  <span>{{ formatDate(event.receivedAt) }}</span>
+                  <span v-if="event.processingError" class="text-blood-100">{{ event.processingError }}</span>
+                </div>
+              </div>
+              <p v-else class="text-xs font-bold text-white/45">Nenhum webhook recebido ainda.</p>
             </div>
           </div>
         </article>
@@ -121,9 +157,14 @@
 
 <script setup lang="ts">
 import { permissions } from '~/data/security'
-import type { CommercePurchase, CommerceRecharge } from '~/composables/useCommerceApi'
+import type { CommercePurchase, CommerceRecharge, RechargeDetail } from '~/composables/useCommerceApi'
 
 type FinancialStatus = CommercePurchase['status'] | CommerceRecharge['status']
+
+const expandedRechargeId = ref('')
+const rechargeDetail = ref<RechargeDetail | null>(null)
+const rechargeDetailLoading = ref(false)
+const resyncing = ref(false)
 
 const { hasPermission, loadSession, recordAudit } = useAuth()
 const commerceApi = useCommerceApi()
@@ -143,7 +184,18 @@ onMounted(async () => {
   await loadFinancialQueues()
 })
 
-const statuses = ['Preparada', 'Concluida', 'Cancelada', 'Paga']
+const statuses = [
+  'Preparada',
+  'Concluida',
+  'Cancelada',
+  'Paga',
+  'Aguardando pagamento',
+  'Processando',
+  'Falhou',
+  'Em analise',
+  'Estorno em andamento',
+  'Estornada'
+]
 
 const loadFinancialQueues = async () => {
   try {
@@ -218,9 +270,9 @@ const setPurchaseStatus = async (purchaseId: string, status: CommercePurchase['s
   }
 }
 
-const setRechargeStatus = async (rechargeId: string, status: CommerceRecharge['status']) => {
+const setRechargeStatus = async (rechargeId: string, status: CommerceRecharge['status'], reason?: string) => {
   try {
-    await commerceApi.updateRechargeStatus(rechargeId, status)
+    await commerceApi.updateRechargeStatus(rechargeId, status, reason)
     await loadFinancialQueues()
     isSuccess.value = true
     message.value = `Recarga marcada como ${status}.`
@@ -240,10 +292,53 @@ const setRechargeStatus = async (rechargeId: string, status: CommerceRecharge['s
   }
 }
 
+const cancelRecharge = (rechargeId: string) => {
+  const reason = window.prompt('Motivo do cancelamento:')
+  if (!reason?.trim()) return
+  return setRechargeStatus(rechargeId, 'Cancelada', reason.trim())
+}
+
+const toggleRechargeDetail = async (rechargeId: string) => {
+  if (expandedRechargeId.value === rechargeId) {
+    expandedRechargeId.value = ''
+    rechargeDetail.value = null
+    return
+  }
+  expandedRechargeId.value = rechargeId
+  rechargeDetail.value = null
+  rechargeDetailLoading.value = true
+  try {
+    rechargeDetail.value = await commerceApi.getRechargeDetail(rechargeId)
+  } catch (error) {
+    isSuccess.value = false
+    message.value = error instanceof Error ? error.message : 'Nao foi possivel carregar os detalhes da recarga.'
+  } finally {
+    rechargeDetailLoading.value = false
+  }
+}
+
+const resyncRecharge = async (rechargeId: string) => {
+  resyncing.value = true
+  try {
+    await commerceApi.resyncRecharge(rechargeId)
+    await loadFinancialQueues()
+    rechargeDetail.value = await commerceApi.getRechargeDetail(rechargeId)
+    isSuccess.value = true
+    message.value = 'Recarga ressincronizada com o Mercado Pago.'
+  } catch (error) {
+    isSuccess.value = false
+    message.value = error instanceof Error ? error.message : 'Nao foi possivel ressincronizar com o Mercado Pago.'
+  } finally {
+    resyncing.value = false
+  }
+}
+
 const statusClass = (status: FinancialStatus) => ({
-  'bg-ember/15 text-ember': status === 'Preparada',
+  'bg-ember/15 text-ember': status === 'Preparada' || status === 'Aguardando pagamento' || status === 'Processando',
   'bg-emerald-500/15 text-emerald-100': status === 'Concluida' || status === 'Paga',
-  'bg-blood-700/25 text-blood-100': status === 'Cancelada'
+  'bg-blood-700/25 text-blood-100': status === 'Cancelada' || status === 'Falhou',
+  'bg-amber-500/15 text-amber-100': status === 'Em analise' || status === 'Estorno em andamento',
+  'bg-white/10 text-white/70': status === 'Estornada'
 })
 
 const messageClass = computed(() =>

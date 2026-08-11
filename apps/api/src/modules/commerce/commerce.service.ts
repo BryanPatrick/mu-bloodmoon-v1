@@ -1,9 +1,10 @@
-﻿import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+﻿import { BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import type {
   Account,
   CurrencyCode,
   Prisma,
   PurchaseIntentStatus,
+  RechargeIntent,
   RechargeIntentStatus,
   RechargePackage,
   ShopProduct,
@@ -14,18 +15,42 @@ import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
 import { ObservabilityService } from '../observability/observability.service'
+import { PAYMENT_PROVIDER, type PaymentProvider } from '../payments/payment-provider.interface'
+import { PaymentWebhookEventService } from '../payments/payment-webhook-event.service'
+import { mapMercadoPagoOrderStatus } from '../payments/mercadopago.status-map'
 import type {
   CommerceQuery,
   CreatePurchaseIntentPayload,
   CreateRechargeIntentPayload,
+  MercadoPagoWebhookInput,
   RechargePackagePayload,
   ShopProductPayload,
   UpdatePurchaseStatusPayload,
   UpdateRechargeStatusPayload
 } from './commerce.contract'
 
+const rechargeTransitions: Record<RechargeIntentStatus, RechargeIntentStatus[]> = {
+  PREPARED: ['PENDING', 'PROCESSING', 'PAID', 'FAILED', 'CANCELLED', 'MANUAL_REVIEW'],
+  PENDING: ['PROCESSING', 'PAID', 'FAILED', 'CANCELLED', 'MANUAL_REVIEW'],
+  PROCESSING: ['PAID', 'FAILED', 'CANCELLED', 'MANUAL_REVIEW'],
+  PAID: ['REFUND_PENDING', 'REFUNDED', 'CANCELLED'],
+  MANUAL_REVIEW: ['PAID', 'FAILED', 'CANCELLED', 'REFUND_PENDING'],
+  REFUND_PENDING: ['REFUNDED', 'MANUAL_REVIEW'],
+  FAILED: ['CANCELLED'],
+  CANCELLED: [],
+  REFUNDED: []
+}
+
 const defaultPageSize = 50
 const maxPageSize = 100
+
+// RechargePackage.price is a free-text BRL string ("39,90" or "39.90").
+// Mercado Pago's Orders API wants a plain decimal string ("39.90").
+export function parseBrlPrice(price: string): number {
+  const normalized = price.trim().replace(/\./g, '').replace(',', '.')
+  const parsed = Number(normalized.replace(/[^\d.-]/g, ''))
+  return Number.isFinite(parsed) ? parsed : 0
+}
 
 const seedProducts: ShopProductPayload[] = [
   {
@@ -201,7 +226,9 @@ export class CommerceService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
-    private readonly observability: ObservabilityService
+    private readonly observability: ObservabilityService,
+    @Inject(PAYMENT_PROVIDER) private readonly paymentProvider: PaymentProvider,
+    private readonly webhookEvents: PaymentWebhookEventService
   ) {}
 
   async ensureSeeded() {
@@ -598,7 +625,8 @@ export class CommerceService {
         currency: pack.currency,
         amount: pack.amount,
         bonus: pack.bonus,
-        price: pack.price
+        price: pack.price,
+        correlationId: randomUUID()
       },
       include: {
         package: true,
@@ -612,6 +640,7 @@ export class CommerceService {
       action: 'recharge.payment.intent',
       targetType: 'RechargeIntent',
       targetId: recharge.id,
+      correlationId: recharge.correlationId,
       metadata: { currency: pack.currency, amount: pack.amount, bonus: pack.bonus }
     })
     await this.observability.recordOperationalEvent({
@@ -620,11 +649,316 @@ export class CommerceService {
       entityType: 'RechargeIntent',
       entityId: recharge.id,
       actorUserId: user.id,
+      correlationId: recharge.correlationId,
       description: `Intencao de recarga ${recharge.id} criada.`,
       data: { currency: pack.currency, amount: pack.amount, bonus: pack.bonus }
     })
 
     return this.mapRecharge(recharge)
+  }
+
+  // Starts (or safely re-runs) the Mercado Pago checkout for an existing
+  // recharge intent. Always calls the provider with the SAME
+  // paymentIdempotencyKey once one exists -- Mercado Pago itself guarantees
+  // an idempotent replay returns the original order (including the Pix QR
+  // code) rather than creating a duplicate charge, so a double-click or a
+  // page refresh is safe without any extra short-circuit logic here.
+  async createRechargeCheckout(id: string, user: AuthenticatedUser) {
+    const recharge = await this.prisma.rechargeIntent.findUnique({ where: { id }, include: { account: true, package: true } })
+    if (!recharge) {
+      throw new NotFoundException(`Recharge not found: ${id}`)
+    }
+    if (recharge.accountId !== user.id) {
+      throw new ForbiddenException('Access denied')
+    }
+    const payableStatuses: RechargeIntentStatus[] = ['PREPARED', 'PENDING', 'PROCESSING']
+    if (!payableStatuses.includes(recharge.status)) {
+      throw new BadRequestException('Esta recarga nao pode mais ser paga -- inicie uma nova.')
+    }
+
+    const externalReference = recharge.externalReference || recharge.correlationId || randomUUID()
+    const paymentIdempotencyKey = recharge.paymentIdempotencyKey || externalReference
+    const amountBRL = parseBrlPrice(recharge.price)
+
+    let order: Awaited<ReturnType<PaymentProvider['createOrder']>>
+    try {
+      order = await this.paymentProvider.createOrder({
+        correlationId: recharge.correlationId || externalReference,
+        externalReference,
+        idempotencyKey: paymentIdempotencyKey,
+        amountBRL,
+        description: `Recarga Blood Moon -- ${recharge.package.key}`,
+        payerEmail: recharge.account.email
+      })
+    } catch (error) {
+      await this.observability.recordOperationalEvent({
+        module: 'store',
+        eventType: 'PAYMENT_CHECKOUT_FAILED',
+        entityType: 'RechargeIntent',
+        entityId: recharge.id,
+        actorUserId: user.id,
+        correlationId: recharge.correlationId,
+        description: `Falha ao criar checkout Mercado Pago para recarga ${recharge.id}.`,
+        data: { error: error instanceof Error ? error.message : 'unknown' }
+      })
+      throw error
+    }
+
+    const mapped = mapMercadoPagoOrderStatus(order.status, order.statusDetail)
+    const updated = await this.prisma.rechargeIntent.updateMany({
+      where: { id, status: { in: ['PREPARED', 'PENDING', 'PROCESSING'] } },
+      data: {
+        externalReference,
+        paymentIdempotencyKey,
+        externalOrderId: order.externalOrderId,
+        externalStatus: order.status,
+        externalStatusDetail: order.statusDetail,
+        paymentMethod: order.paymentMethod,
+        status: mapped.status === 'PAID' ? recharge.status : mapped.status
+      }
+    })
+    if (updated.count === 0) {
+      throw new BadRequestException('Esta recarga ja foi processada.')
+    }
+
+    await this.audit.record({
+      actorId: user.id,
+      actorUsername: user.username,
+      action: 'recharge.checkout.created',
+      targetType: 'RechargeIntent',
+      targetId: recharge.id,
+      correlationId: recharge.correlationId,
+      metadata: { externalOrderId: order.externalOrderId, externalReference }
+    })
+    await this.observability.recordOperationalEvent({
+      module: 'store',
+      eventType: 'PAYMENT_ORDER_CREATED',
+      entityType: 'RechargeIntent',
+      entityId: recharge.id,
+      actorUserId: user.id,
+      correlationId: recharge.correlationId,
+      description: `Order Mercado Pago ${order.externalOrderId} criada para recarga ${recharge.id}.`,
+      data: { externalOrderId: order.externalOrderId }
+    })
+
+    return {
+      id: recharge.id,
+      status: mapped.status === 'PAID' ? recharge.status : mapped.status,
+      externalOrderId: order.externalOrderId,
+      paymentMethod: order.paymentMethod,
+      qrCode: order.qrCode,
+      qrCodeBase64: order.qrCodeBase64,
+      ticketUrl: order.ticketUrl
+    }
+  }
+
+  async getRechargeForAccount(id: string, user: AuthenticatedUser) {
+    const recharge = await this.prisma.rechargeIntent.findUnique({ where: { id }, include: { account: true, package: true } })
+    if (!recharge || recharge.accountId !== user.id) {
+      throw new NotFoundException(`Recharge not found: ${id}`)
+    }
+    return this.mapRecharge(recharge)
+  }
+
+  async getRechargeDetail(id: string) {
+    const recharge = await this.prisma.rechargeIntent.findUnique({
+      where: { id },
+      include: {
+        account: true,
+        package: true,
+        webhookEvents: { orderBy: { receivedAt: 'desc' } }
+      }
+    })
+    if (!recharge) {
+      throw new NotFoundException(`Recharge not found: ${id}`)
+    }
+    return {
+      ...this.mapRecharge(recharge),
+      provider: recharge.provider,
+      correlationId: recharge.correlationId,
+      externalReference: recharge.externalReference,
+      externalOrderId: recharge.externalOrderId,
+      externalStatus: recharge.externalStatus,
+      externalStatusDetail: recharge.externalStatusDetail,
+      paymentMethod: recharge.paymentMethod,
+      failureReason: recharge.failureReason,
+      manualReviewReason: recharge.manualReviewReason,
+      refundReason: recharge.refundReason,
+      approvedAt: recharge.approvedAt?.toISOString() || null,
+      refundedAt: recharge.refundedAt?.toISOString() || null,
+      lastWebhookAt: recharge.lastWebhookAt?.toISOString() || null,
+      timeline: recharge.webhookEvents.map((event) => ({
+        id: event.id,
+        topic: event.topic,
+        status: event.status,
+        signatureValid: event.signatureValid,
+        receivedAt: event.receivedAt.toISOString(),
+        processedAt: event.processedAt?.toISOString() || null,
+        processingError: event.processingError
+      }))
+    }
+  }
+
+  // Admin "force re-sync" button -- runs the exact same reconciliation logic
+  // as a real webhook, just triggered manually instead of by a notification.
+  async resyncRechargeFromProvider(id: string, user: AuthenticatedUser) {
+    const recharge = await this.prisma.rechargeIntent.findUnique({ where: { id } })
+    if (!recharge) {
+      throw new NotFoundException(`Recharge not found: ${id}`)
+    }
+    if (!recharge.externalOrderId) {
+      throw new BadRequestException('Esta recarga ainda nao tem uma order no Mercado Pago.')
+    }
+    const order = await this.paymentProvider.getOrder(recharge.externalOrderId)
+    return this.reconcileWithProvider(order, recharge, { source: 'admin', actorId: user.id, actorUsername: user.username })
+  }
+
+  // Mercado Pago webhook entrypoint. Signature is verified first; the
+  // webhook body's own status is never trusted -- the order is always
+  // re-queried directly from Mercado Pago before any state transition.
+  async handleMercadoPagoWebhook(input: MercadoPagoWebhookInput) {
+    const valid = this.paymentProvider.validateWebhookSignature({
+      signatureHeader: input.signature,
+      requestId: input.requestId,
+      dataId: input.dataId
+    })
+
+    const claim = await this.webhookEvents.recordAndClaim({
+      provider: 'mercadopago',
+      topic: input.body?.type || 'unknown',
+      eventId: input.body?.data?.id ? `${input.body.data.id}:${input.requestId || 'no-request-id'}` : randomUUID(),
+      externalOrderId: input.dataId,
+      signatureValid: valid,
+      signatureHeader: input.signature,
+      rawPayload: input.body
+    })
+
+    if (claim.outcome === 'duplicate-processed') {
+      return { received: true, duplicate: true }
+    }
+
+    if (!valid) {
+      await this.webhookEvents.markFailed(claim.eventId, 'invalid_signature')
+      await this.observability.recordOperationalEvent({
+        module: 'store',
+        severity: 'CRITICAL',
+        eventType: 'PAYMENT_WEBHOOK_INVALID_SIGNATURE',
+        entityType: 'PaymentWebhookEvent',
+        entityId: claim.eventId,
+        description: 'Webhook Mercado Pago recebido com assinatura invalida.',
+        data: { dataId: input.dataId }
+      })
+      return { received: true, valid: false }
+    }
+
+    const dataId = input.dataId || input.body?.data?.id
+    if (!dataId) {
+      await this.webhookEvents.markFailed(claim.eventId, 'missing_data_id')
+      return { received: true }
+    }
+
+    let order: Awaited<ReturnType<PaymentProvider['getOrder']>>
+    try {
+      order = await this.paymentProvider.getOrder(dataId)
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        // The order will never start existing -- retrying via a redelivery
+        // would never help, so acknowledge with 200 instead of asking
+        // Mercado Pago to keep retrying forever.
+        await this.webhookEvents.markIgnored(claim.eventId, 'mercadopago_order_not_found')
+        await this.observability.recordOperationalEvent({
+          module: 'store',
+          severity: 'CRITICAL',
+          eventType: 'PAYMENT_WEBHOOK_ORDER_NOT_FOUND',
+          entityType: 'PaymentWebhookEvent',
+          entityId: claim.eventId,
+          description: `Webhook Mercado Pago referencia uma order inexistente: ${dataId}.`,
+          data: { dataId }
+        })
+        return { received: true }
+      }
+      // A transient failure (timeout, provider unavailable) -- worth a 5xx
+      // so Mercado Pago retries the delivery later.
+      await this.webhookEvents.markFailed(claim.eventId, error instanceof Error ? error.message : 'get_order_failed')
+      throw error
+    }
+
+    const recharge = order.externalReference
+      ? await this.prisma.rechargeIntent.findUnique({ where: { externalReference: order.externalReference } })
+      : null
+
+    if (!recharge) {
+      await this.webhookEvents.markFailed(claim.eventId, 'recharge_not_found')
+      await this.observability.recordOperationalEvent({
+        module: 'store',
+        severity: 'CRITICAL',
+        eventType: 'PAYMENT_WEBHOOK_UNMATCHED_ORDER',
+        entityType: 'PaymentWebhookEvent',
+        entityId: claim.eventId,
+        description: `Webhook Mercado Pago referencia uma order sem RechargeIntent correspondente: ${order.externalOrderId}.`,
+        data: { externalOrderId: order.externalOrderId, externalReference: order.externalReference }
+      })
+      return { received: true }
+    }
+
+    try {
+      await this.reconcileWithProvider(order, recharge, { source: 'webhook' })
+      await this.webhookEvents.markProcessed(claim.eventId, recharge.id)
+    } catch (error) {
+      await this.webhookEvents.markFailed(claim.eventId, error instanceof Error ? error.message : 'reconcile_failed')
+      throw error
+    }
+
+    return { received: true }
+  }
+
+  // Shared by the webhook path and the admin manual re-sync button. Always
+  // works from an order already fetched directly from Mercado Pago -- never
+  // from a webhook body's own fields.
+  private async reconcileWithProvider(
+    order: Awaited<ReturnType<PaymentProvider['getOrder']>>,
+    recharge: RechargeIntent,
+    actor: { source: 'admin' | 'webhook'; actorId?: string; actorUsername?: string }
+  ) {
+    if (recharge.externalOrderId && order.externalOrderId !== recharge.externalOrderId) {
+      return this.transitionRechargeStatus(recharge.id, 'MANUAL_REVIEW', {
+        ...actor,
+        reason: 'external_order_id_mismatch',
+        extra: { externalStatus: order.status, externalStatusDetail: order.statusDetail }
+      })
+    }
+
+    const expectedAmount = parseBrlPrice(recharge.price)
+    const amountMatches = Math.abs(order.totalAmountBRL - expectedAmount) < 0.01
+    if (!amountMatches) {
+      await this.observability.recordOperationalEvent({
+        module: 'store',
+        severity: 'CRITICAL',
+        eventType: 'PAYMENT_AMOUNT_MISMATCH',
+        entityType: 'RechargeIntent',
+        entityId: recharge.id,
+        correlationId: recharge.correlationId,
+        description: `Divergencia de valor na recarga ${recharge.id}: esperado ${expectedAmount}, recebido ${order.totalAmountBRL}.`,
+        data: { expected: expectedAmount, received: order.totalAmountBRL }
+      })
+      return this.transitionRechargeStatus(recharge.id, 'MANUAL_REVIEW', {
+        ...actor,
+        reason: 'amount_mismatch',
+        extra: { externalStatus: order.status, externalStatusDetail: order.statusDetail }
+      })
+    }
+
+    const mapped = mapMercadoPagoOrderStatus(order.status, order.statusDetail)
+    return this.transitionRechargeStatus(recharge.id, mapped.status, {
+      ...actor,
+      reason: mapped.failureReason,
+      extra: {
+        paymentMethod: order.paymentMethod,
+        externalStatus: order.status,
+        externalStatusDetail: order.statusDetail,
+        lastWebhookAt: actor.source === 'webhook' ? new Date() : undefined
+      }
+    })
   }
 
   async listPurchases() {
@@ -715,53 +1049,126 @@ export class CommerceService {
   }
 
   async updateRechargeStatus(id: string, payload: UpdateRechargeStatusPayload, user: AuthenticatedUser) {
-    return this.prisma.$transaction(async (tx) => {
-      const recharge = await tx.rechargeIntent.findUnique({ where: { id }, include: { account: true, package: true } })
-      if (!recharge) {
-        throw new NotFoundException(`Recharge not found: ${id}`)
-      }
-
-      const amount = recharge.amount + recharge.bonus
-      if (payload.status === 'PAID' && recharge.status !== 'PAID') {
-        await this.creditCurrency(tx, recharge.accountId, recharge.currency, amount)
-      }
-
-      if (recharge.status === 'PAID' && payload.status === 'CANCELLED') {
-        await this.debitCurrency(tx, recharge.account, recharge.currency, amount)
-      }
-
-      const updated = await tx.rechargeIntent.update({
-        where: { id },
-        data: { status: payload.status },
-        include: { account: true, package: true }
-      })
-
-      await this.audit.record({
-        actorId: user.id,
-        actorUsername: user.username,
-        action: 'admin.finance.recharge.status',
-        targetType: 'RechargeIntent',
-        targetId: id,
-        metadata: { previousStatus: recharge.status, nextStatus: payload.status, username: updated.account.username }
-      })
-      await this.observability.recordOperationalEvent({
-        module: 'store',
-        eventType:
-          payload.status === 'PAID'
-            ? 'PAYMENT_CONFIRMED'
-            : payload.status === 'CANCELLED'
-              ? 'PAYMENT_CANCELLED'
-              : 'PAYMENT_STATUS_CHANGED',
-        entityType: 'RechargeIntent',
-        entityId: id,
-        actorUserId: user.id,
-        targetUserId: recharge.accountId,
-        description: `Recarga ${id} alterada de ${recharge.status} para ${payload.status}.`,
-        data: { previousStatus: recharge.status, nextStatus: payload.status, amount }
-      })
-
-      return this.mapRecharge(updated)
+    if (['CANCELLED', 'REFUNDED', 'MANUAL_REVIEW'].includes(payload.status) && !payload.reason?.trim()) {
+      throw new BadRequestException('Informe um motivo para esta alteracao de status.')
+    }
+    return this.transitionRechargeStatus(id, payload.status, {
+      source: 'admin',
+      actorId: user.id,
+      actorUsername: user.username,
+      reason: payload.reason
     })
+  }
+
+  // Shared by the admin manual-override path (updateRechargeStatus) and the
+  // webhook/resync reconciliation path (reconcileWithProvider) -- this is
+  // the one place that actually credits/debits AccountCurrency for a
+  // recharge, so both paths get the same double-credit guard for free.
+  private async transitionRechargeStatus(
+    id: string,
+    nextStatus: RechargeIntentStatus,
+    options: {
+      source: 'admin' | 'webhook'
+      actorId?: string
+      actorUsername?: string
+      reason?: string
+      extra?: Partial<{
+        externalStatus: string
+        externalStatusDetail: string
+        paymentMethod: string
+        lastWebhookAt: Date | undefined
+      }>
+    }
+  ) {
+    return this.prisma.$transaction(
+      async (tx) => {
+        const recharge = await tx.rechargeIntent.findUnique({ where: { id }, include: { account: true, package: true } })
+        if (!recharge) {
+          throw new NotFoundException(`Recharge not found: ${id}`)
+        }
+        if (recharge.status === nextStatus) {
+          return this.mapRecharge(recharge)
+        }
+        if (!rechargeTransitions[recharge.status].includes(nextStatus)) {
+          throw new BadRequestException(`Transicao invalida: ${recharge.status} -> ${nextStatus}`)
+        }
+
+        const amount = recharge.amount + recharge.bonus
+        let refundClawbackFailed = false
+
+        if (nextStatus === 'PAID' && recharge.status !== 'PAID') {
+          await this.creditCurrency(tx, recharge.accountId, recharge.currency, amount)
+        }
+
+        if (recharge.status === 'PAID' && nextStatus === 'CANCELLED') {
+          await this.debitCurrency(tx, recharge.account, recharge.currency, amount)
+        }
+
+        if (recharge.status === 'PAID' && nextStatus === 'REFUNDED') {
+          // The player may have already spent the credited WCoin in-game.
+          // Never let that silently corrupt the transition -- fall back to
+          // REFUND_PENDING and raise a CRITICAL alert for a human instead.
+          try {
+            await this.debitCurrency(tx, recharge.account, recharge.currency, amount)
+          } catch {
+            refundClawbackFailed = true
+          }
+        }
+
+        const effectiveStatus = refundClawbackFailed ? 'REFUND_PENDING' : nextStatus
+        const updated = await tx.rechargeIntent.update({
+          where: { id },
+          data: {
+            status: effectiveStatus,
+            ...options.extra,
+            ...(effectiveStatus === 'PAID' ? { approvedAt: new Date() } : {}),
+            ...(effectiveStatus === 'REFUNDED' ? { refundedAt: new Date() } : {}),
+            ...(effectiveStatus === 'MANUAL_REVIEW' ? { manualReviewReason: options.reason } : {}),
+            ...(effectiveStatus === 'REFUND_PENDING'
+              ? { refundReason: refundClawbackFailed ? 'insufficient_balance_for_clawback' : options.reason }
+              : {}),
+            ...(effectiveStatus === 'FAILED' ? { failureReason: options.reason } : {})
+          },
+          include: { account: true, package: true }
+        })
+
+        const action = options.source === 'admin' ? 'admin.finance.recharge.status' : 'recharge.webhook.status'
+        await this.audit.record({
+          actorId: options.actorId,
+          actorUsername: options.actorUsername,
+          action,
+          targetType: 'RechargeIntent',
+          targetId: id,
+          correlationId: recharge.correlationId,
+          reason: options.reason,
+          severity: refundClawbackFailed ? 'critical' : 'info',
+          metadata: { previousStatus: recharge.status, nextStatus: effectiveStatus, username: updated.account.username }
+        })
+        await this.observability.recordOperationalEvent({
+          module: 'store',
+          severity: refundClawbackFailed ? 'CRITICAL' : undefined,
+          eventType: refundClawbackFailed
+            ? 'PAYMENT_REFUND_CLAWBACK_FAILED'
+            : effectiveStatus === 'PAID'
+              ? 'PAYMENT_CONFIRMED'
+              : effectiveStatus === 'CANCELLED'
+                ? 'PAYMENT_CANCELLED'
+                : effectiveStatus === 'REFUNDED'
+                  ? 'PAYMENT_REFUNDED'
+                  : 'PAYMENT_STATUS_CHANGED',
+          entityType: 'RechargeIntent',
+          entityId: id,
+          actorUserId: options.actorId,
+          targetUserId: recharge.accountId,
+          correlationId: recharge.correlationId,
+          description: `Recarga ${id} alterada de ${recharge.status} para ${effectiveStatus}.`,
+          data: { previousStatus: recharge.status, nextStatus: effectiveStatus, amount }
+        })
+
+        return this.mapRecharge(updated)
+      },
+      { isolationLevel: 'Serializable' }
+    )
   }
 
   private async creditCurrency(tx: Prisma.TransactionClient, accountId: string, currency: CurrencyCode, amount: number) {

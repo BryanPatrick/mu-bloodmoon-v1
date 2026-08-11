@@ -3,7 +3,16 @@ import type { CurrencyCode, RechargePack, ShopProduct } from '~/data/management'
 type ApiCurrencyCode = 'WCOIN' | 'GOBLIN_POINT' | 'HUNT_POINT'
 type ApiProductStatus = 'ACTIVE' | 'DRAFT' | 'ARCHIVED'
 type ApiPurchaseStatus = 'PREPARED' | 'COMPLETED' | 'CANCELLED'
-type ApiRechargeStatus = 'PREPARED' | 'PAID' | 'CANCELLED'
+type ApiRechargeStatus =
+  | 'PREPARED'
+  | 'PENDING'
+  | 'PROCESSING'
+  | 'PAID'
+  | 'FAILED'
+  | 'CANCELLED'
+  | 'MANUAL_REVIEW'
+  | 'REFUND_PENDING'
+  | 'REFUNDED'
 
 type ApiList<T> = {
   data: T[]
@@ -48,6 +57,17 @@ export type CommercePurchase = {
   createdAt: string
 }
 
+export type CommerceRechargeStatus =
+  | 'Preparada'
+  | 'Aguardando pagamento'
+  | 'Processando'
+  | 'Paga'
+  | 'Falhou'
+  | 'Cancelada'
+  | 'Em analise'
+  | 'Estorno em andamento'
+  | 'Estornada'
+
 export type CommerceRecharge = {
   id: string
   username: string
@@ -56,8 +76,43 @@ export type CommerceRecharge = {
   amount: number
   bonus: number
   price: string
-  status: 'Preparada' | 'Paga' | 'Cancelada'
+  status: CommerceRechargeStatus
   createdAt: string
+}
+
+export type RechargeCheckout = {
+  id: string
+  status: CommerceRechargeStatus
+  externalOrderId: string
+  paymentMethod?: string
+  qrCode?: string
+  qrCodeBase64?: string
+  ticketUrl?: string
+}
+
+export type RechargeDetail = CommerceRecharge & {
+  provider: string
+  correlationId: string | null
+  externalReference: string | null
+  externalOrderId: string | null
+  externalStatus: string | null
+  externalStatusDetail: string | null
+  paymentMethod: string | null
+  failureReason: string | null
+  manualReviewReason: string | null
+  refundReason: string | null
+  approvedAt: string | null
+  refundedAt: string | null
+  lastWebhookAt: string | null
+  timeline: Array<{
+    id: string
+    topic: string
+    status: string
+    signatureValid: boolean
+    receivedAt: string
+    processedAt: string | null
+    processingError: string | null
+  }>
 }
 
 const currencyFromApi: Record<ApiCurrencyCode, CurrencyCode> = {
@@ -95,16 +150,28 @@ const purchaseStatusToApi: Record<CommercePurchase['status'], ApiPurchaseStatus>
   Cancelada: 'CANCELLED'
 }
 
-const rechargeStatusFromApi: Record<ApiRechargeStatus, CommerceRecharge['status']> = {
+const rechargeStatusFromApi: Record<ApiRechargeStatus, CommerceRechargeStatus> = {
   PREPARED: 'Preparada',
+  PENDING: 'Aguardando pagamento',
+  PROCESSING: 'Processando',
   PAID: 'Paga',
-  CANCELLED: 'Cancelada'
+  FAILED: 'Falhou',
+  CANCELLED: 'Cancelada',
+  MANUAL_REVIEW: 'Em analise',
+  REFUND_PENDING: 'Estorno em andamento',
+  REFUNDED: 'Estornada'
 }
 
-const rechargeStatusToApi: Record<CommerceRecharge['status'], ApiRechargeStatus> = {
+const rechargeStatusToApi: Record<CommerceRechargeStatus, ApiRechargeStatus> = {
   Preparada: 'PREPARED',
+  'Aguardando pagamento': 'PENDING',
+  Processando: 'PROCESSING',
   Paga: 'PAID',
-  Cancelada: 'CANCELLED'
+  Falhou: 'FAILED',
+  Cancelada: 'CANCELLED',
+  'Em analise': 'MANUAL_REVIEW',
+  'Estorno em andamento': 'REFUND_PENDING',
+  Estornada: 'REFUNDED'
 }
 
 const authStorageKey = 'blood-moon-auth'
@@ -192,6 +259,26 @@ export const useCommerceApi = () => {
     deleteRechargePackage: async (id: string) => mapRechargePackage(await send<ApiRechargePackage>('DELETE', `/admin/recharge/packages/${id}`)),
     createPurchaseIntent: (productId: string) => send<CommercePurchase>('POST', '/shop/purchases', { productId }),
     createRechargeIntent: (packageId: string) => send<CommerceRecharge>('POST', '/recharge/intents', { packageId }),
+    createRechargeCheckout: async (id: string) => {
+      const result = await send<Omit<RechargeCheckout, 'status'> & { status: ApiRechargeStatus }>(
+        'POST',
+        `/recharge/intents/${id}/checkout`
+      )
+      return { ...result, status: rechargeStatusFromApi[result.status] }
+    },
+    getRechargeStatus: async (id: string) => {
+      const row = await get<Omit<CommerceRecharge, 'currency' | 'status'> & { currency: ApiCurrencyCode, status: ApiRechargeStatus }>(
+        `/recharge/intents/${id}`
+      )
+      return { ...row, currency: currencyFromApi[row.currency], status: rechargeStatusFromApi[row.status] }
+    },
+    getRechargeDetail: async (id: string) => {
+      const row = await get<Omit<RechargeDetail, 'currency' | 'status'> & { currency: ApiCurrencyCode, status: ApiRechargeStatus }>(
+        `/admin/finance/recharges/${id}`
+      )
+      return { ...row, currency: currencyFromApi[row.currency], status: rechargeStatusFromApi[row.status] }
+    },
+    resyncRecharge: (id: string) => send('POST', `/admin/finance/recharges/${id}/resync`),
     listAccountPurchases: async () => {
       const rows = await get<Array<Omit<CommercePurchase, 'currency' | 'status'> & { currency: ApiCurrencyCode, status: ApiPurchaseStatus }>>('/account/purchases')
       return rows.map((row) => ({ ...row, currency: currencyFromApi[row.currency], status: purchaseStatusFromApi[row.status] }))
@@ -220,7 +307,7 @@ export const useCommerceApi = () => {
     },
     updatePurchaseStatus: (id: string, status: CommercePurchase['status']) =>
       send('PATCH', `/admin/finance/purchases/${id}/status`, { status: purchaseStatusToApi[status] }),
-    updateRechargeStatus: (id: string, status: CommerceRecharge['status']) =>
-      send('PATCH', `/admin/finance/recharges/${id}/status`, { status: rechargeStatusToApi[status] })
+    updateRechargeStatus: (id: string, status: CommerceRechargeStatus, reason?: string) =>
+      send('PATCH', `/admin/finance/recharges/${id}/status`, { status: rechargeStatusToApi[status], reason })
   }
 }

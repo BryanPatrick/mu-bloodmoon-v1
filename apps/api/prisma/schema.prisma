@@ -146,8 +146,14 @@ enum StoreDeliveryTarget {
 
 enum RechargeIntentStatus {
   PREPARED
+  PENDING
+  PROCESSING
   PAID
+  FAILED
   CANCELLED
+  MANUAL_REVIEW
+  REFUND_PENDING
+  REFUNDED
 }
 
 enum CharacterRuntimeStatus {
@@ -1593,22 +1599,68 @@ model StoreProductTest {
 }
 
 model RechargeIntent {
-  id        String               @id @default(uuid())
-  accountId String
-  packageId String
-  currency  CurrencyCode
-  amount    Int
-  bonus     Int                  @default(0)
-  price     String
-  status    RechargeIntentStatus @default(PREPARED)
-  createdAt DateTime             @default(now())
-  updatedAt DateTime             @updatedAt
-  account   Account              @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  package   RechargePackage      @relation(fields: [packageId], references: [id])
+  id                    String                 @id @default(uuid())
+  accountId             String
+  packageId             String
+  currency              CurrencyCode
+  amount                Int
+  bonus                 Int                    @default(0)
+  price                 String
+  status                RechargeIntentStatus   @default(PREPARED)
+  provider              String                 @default("mercadopago") @db.VarChar(40)
+  // Audit-chain id for the whole Blood Moon operation. Kept deliberately
+  // separate from externalReference/paymentIdempotencyKey below -- their
+  // values coincide today but they are different concepts (see those
+  // fields' comments) so retries/refunds/other providers don't need a
+  // schema change later.
+  correlationId         String?                @unique @db.VarChar(80)
+  // Value sent to the payment provider as external_reference and matched
+  // back against on webhook receipt.
+  externalReference     String?                @unique @db.VarChar(191)
+  // Value sent as X-Idempotency-Key for the create-order call specifically.
+  paymentIdempotencyKey String?                @unique @db.VarChar(191)
+  externalOrderId       String?                @db.VarChar(191)
+  externalStatus        String?                @db.VarChar(80)
+  externalStatusDetail  String?                @db.VarChar(191)
+  paymentMethod         String?                @db.VarChar(60)
+  failureReason         String?                @db.VarChar(191)
+  manualReviewReason    String?                @db.Text
+  refundReason          String?                @db.Text
+  lastWebhookAt         DateTime?
+  approvedAt            DateTime?
+  refundedAt            DateTime?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  account               Account                @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  package               RechargePackage        @relation(fields: [packageId], references: [id])
+  webhookEvents         PaymentWebhookEvent[]
 
   @@index([accountId])
   @@index([packageId])
   @@index([status])
+  @@index([externalOrderId])
+}
+
+model PaymentWebhookEvent {
+  id               String          @id @default(uuid())
+  provider         String          @db.VarChar(40)
+  topic            String          @db.VarChar(80)
+  eventId          String          @db.VarChar(191)
+  externalOrderId  String?         @db.VarChar(191)
+  rechargeIntentId String?
+  signatureValid   Boolean
+  signatureHeader  String?         @db.Text
+  status           String          @default("RECEIVED") @db.VarChar(40)
+  rawPayload       Json
+  processingError  String?         @db.Text
+  receivedAt       DateTime        @default(now())
+  processedAt      DateTime?
+  rechargeIntent   RechargeIntent? @relation(fields: [rechargeIntentId], references: [id], onDelete: SetNull)
+
+  @@unique([provider, topic, eventId])
+  @@index([externalOrderId])
+  @@index([rechargeIntentId])
+  @@index([status, receivedAt])
 }
 
 model PlayerMarketListing {

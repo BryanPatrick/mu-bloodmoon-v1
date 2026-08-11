@@ -68,6 +68,18 @@ export class CommerceController {
     return this.commerceService.createRechargeIntent(payload, user)
   }
 
+  @Post('recharge/intents/:id/checkout')
+  @UseGuards(JwtAuthGuard)
+  createRechargeCheckout(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.commerceService.createRechargeCheckout(id, user)
+  }
+
+  @Get('recharge/intents/:id')
+  @UseGuards(JwtAuthGuard)
+  rechargeIntent(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.commerceService.getRechargeForAccount(id, user)
+  }
+
   @Get('account/purchases')
   @UseGuards(JwtAuthGuard)
   accountPurchases(@CurrentUser() user: AuthenticatedUser) {
@@ -383,5 +395,21 @@ export class CommerceController {
   @RequirePermissions(permissionKeys.adminOrdersOperate)
   updateRechargeStatus(@Param('id') id: string, @Body() payload: UpdateRechargeStatusPayload, @CurrentUser() user: AuthenticatedUser) {
     return this.commerceService.updateRechargeStatus(id, payload, user)
+  }
+
+  @Get('admin/finance/recharges/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  @RequirePermissions(permissionKeys.adminFinancialReportsView)
+  rechargeDetail(@Param('id') id: string) {
+    return this.commerceService.getRechargeDetail(id)
+  }
+
+  @Post('admin/finance/recharges/:id/resync')
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  @RequirePermissions(permissionKeys.adminOrdersOperate)
+  resyncRecharge(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.commerceService.resyncRechargeFromProvider(id, user)
   }
 }

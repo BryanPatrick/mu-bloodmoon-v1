@@ -165,4 +165,12 @@ export type UpdatePurchaseStatusPayload = {
 
 export type UpdateRechargeStatusPayload = {
   status: RechargeIntentStatus
+  reason?: string
+}
+
+export type MercadoPagoWebhookInput = {
+  signature: string | undefined
+  requestId: string | undefined
+  dataId: string | undefined
+  body: { action: string; type: string; data: { id: string } }
 }
