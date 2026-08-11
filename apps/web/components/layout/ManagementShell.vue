@@ -97,7 +97,7 @@
 <script setup lang="ts">
 import {
   Activity, BarChart3, Bell, ChevronDown, FileSearch, LayoutDashboard, Map, PackageCheck,
-  ListTodo, MessageCircle, PanelLeftClose, PanelLeftOpen, Settings, ShoppingBag,
+  ListTodo, MessageCircle, PanelLeftClose, PanelLeftOpen, Settings, Shield, ShoppingBag,
   Store, TicketCheck, UserCog, Users
 } from 'lucide-vue-next'
 import { permissions, type Permission, type UserRole } from '~/data/security'
@@ -205,6 +205,27 @@ const administrativeItems: MenuItem[] = [
     ]
   },
   {
+    label: 'Guildas',
+    to: '/painel/admin/guildas',
+    icon: Shield,
+    children: [
+      { label: 'Guildas', to: '/painel/admin/guildas?tab=guilds', permission: permissions.adminGuildsView },
+      { label: 'Níveis', to: '/painel/admin/guildas?tab=levels', permission: permissions.adminGuildsLevelsManage },
+      { label: 'Regras de XP', to: '/painel/admin/guildas?tab=xp-rules', permission: permissions.adminGuildsXpRulesManage },
+      { label: 'Membros', to: '/painel/admin/guildas?tab=members', permission: permissions.adminGuildsView },
+      { label: 'Papéis', to: '/painel/admin/guildas?tab=roles', permission: permissions.adminGuildsView },
+      { label: 'Tesouraria', to: '/painel/admin/guildas?tab=treasury', permission: permissions.adminGuildsView },
+      { label: 'Cofre', to: '/painel/admin/guildas?tab=vault', permission: permissions.adminGuildsView },
+      { label: 'Solicitações', to: '/painel/admin/guildas?tab=requests', permission: permissions.adminGuildsView },
+      { label: 'Projetos', to: '/painel/admin/guildas?tab=projects', permission: permissions.adminGuildsView },
+      { label: 'Relatórios', to: '/painel/admin/guildas?tab=reports', permission: permissions.adminGuildsReportsView },
+      { label: 'Guias', to: '/painel/admin/guildas?tab=guides', permission: permissions.adminGuildsView },
+      { label: 'Eventos', to: '/painel/admin/guildas?tab=events', permission: permissions.adminGuildsView },
+      { label: 'Alianças', to: '/painel/admin/guildas?tab=alliances', permission: permissions.adminGuildsView },
+      { label: 'Auditoria', to: '/painel/admin/guildas?tab=audit', permission: permissions.adminGuildsView }
+    ]
+  },
+  {
     label: 'Monitoramento',
     to: '/painel/admin/erros',
     icon: Activity,
@@ -262,6 +283,7 @@ const playerItems: MenuItem[] = [
   { label: 'Marketplace', to: '/painel/marketplace', icon: ShoppingBag },
   { label: 'Comunidade', to: '/comunidade', icon: MessageCircle },
   { label: 'Meu perfil social', to: '/comunidade?painel=perfil', icon: UserCog },
+  { label: 'Guildas', to: '/guilds', icon: Shield },
   { label: 'Minhas compras', to: '/painel/compras', icon: PackageCheck },
   { label: 'Meus anúncios', to: '/painel/marketplace?visao=meus-anuncios', icon: ShoppingBag },
   { label: 'Notificações', to: '/painel/notificacoes', icon: Bell },

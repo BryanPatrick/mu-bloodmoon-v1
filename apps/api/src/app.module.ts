@@ -1,3 +1,4 @@
+import './common/bigint-json'
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common'
 import type { NestModule } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
@@ -24,6 +25,7 @@ import { ObservabilityModule } from './modules/observability/observability.modul
 import { RoadmapModule } from './modules/roadmap/roadmap.module'
 import { AdminTasksModule } from './modules/admin-tasks/admin-tasks.module'
 import { AdminReportsModule } from './modules/admin-reports/admin-reports.module'
+import { GuildsModule } from './modules/guilds/guilds.module'
 
 export const apiModules = [
   'auth',
@@ -44,7 +46,8 @@ export const apiModules = [
   'observability',
   'roadmap',
   'admin-tasks',
-  'admin-reports'
+  'admin-reports',
+  'guilds'
 ] as const
 
 export type ApiModuleName = typeof apiModules[number]
@@ -75,7 +78,8 @@ export type ApiModuleName = typeof apiModules[number]
     LauncherModule,
     RoadmapModule,
     AdminTasksModule,
-    AdminReportsModule
+    AdminReportsModule,
+    GuildsModule
   ]
 })
 export class AppModule implements NestModule {

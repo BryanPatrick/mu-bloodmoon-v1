@@ -74,12 +74,18 @@ export const permissions = {
   adminFinanceManage: 'admin.finance.manage',
   adminRechargeManage: 'admin.recharge.manage',
   adminSystemManage: 'admin.system.manage',
+  adminGuildsView: 'admin.guilds.view',
+  adminGuildsModerate: 'admin.guilds.moderate',
+  adminGuildsLevelsManage: 'admin.guilds.levels.manage',
+  adminGuildsXpRulesManage: 'admin.guilds.xp-rules.manage',
+  adminGuildsReportsView: 'admin.guilds.reports.view',
   accountManage: 'account.manage',
   charactersManage: 'characters.manage',
   shopAccess: 'shop.access',
   marketplaceAccess: 'marketplace.access',
   communityAccess: 'community.access',
   rechargeAccess: 'recharge.access',
+  guildsAccess: 'guilds.access',
   guidesFutureView: 'guides.future.view'
 } as const
 
@@ -98,7 +104,8 @@ const playerPermissions: Permission[] = [
   permissions.shopAccess,
   permissions.marketplaceAccess,
   permissions.communityAccess,
-  permissions.rechargeAccess
+  permissions.rechargeAccess,
+  permissions.guildsAccess
 ]
 
 export const rolePermissions: Record<UserRole, Permission[] | ['*']> = {

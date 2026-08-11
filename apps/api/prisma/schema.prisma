@@ -544,6 +544,8 @@ model Account {
   purchases            PurchaseIntent[]
   recharges            RechargeIntent[]
   characters           AccountCharacter[]
+  guildsFounded        Guild[]                     @relation("GuildFounder")
+  guildMemberships     GuildMember[]               @relation("GuildMemberAccount")
   marketListings       PlayerMarketListing[]       @relation("MarketplaceSeller")
   marketOrders         PlayerMarketOrder[]         @relation("MarketplaceBuyer")
   marketplaceReports   MarketplaceReport[]         @relation("MarketplaceReporter")
@@ -899,23 +901,24 @@ model AccountCurrency {
 }
 
 model AccountCharacter {
-  id             String                 @id @default(uuid())
-  accountId      String
-  key            String                 @unique
-  name           String                 @unique
-  className      String
-  level          Int                    @default(1)
-  reset          Int                    @default(0)
-  masterReset    Int                    @default(0)
-  map            String                 @default("Lorencia")
-  guild          String                 @default("-")
-  pkStatus       String                 @default("Commoner")
-  status         CharacterRuntimeStatus @default(OFFLINE)
-  metadata       Json?
-  createdAt      DateTime               @default(now())
-  updatedAt      DateTime               @updatedAt
-  account        Account                @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  marketListings PlayerMarketListing[]
+  id              String                 @id @default(uuid())
+  accountId       String
+  key             String                 @unique
+  name            String                 @unique
+  className       String
+  level           Int                    @default(1)
+  reset           Int                    @default(0)
+  masterReset     Int                    @default(0)
+  map             String                 @default("Lorencia")
+  guild           String                 @default("-")
+  pkStatus        String                 @default("Commoner")
+  status          CharacterRuntimeStatus @default(OFFLINE)
+  metadata        Json?
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  account         Account                @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  marketListings  PlayerMarketListing[]
+  guildMembership GuildMember?
 
   @@index([accountId])
   @@index([className])
@@ -1599,40 +1602,40 @@ model StoreProductTest {
 }
 
 model RechargeIntent {
-  id                    String                 @id @default(uuid())
+  id                    String                @id @default(uuid())
   accountId             String
   packageId             String
   currency              CurrencyCode
   amount                Int
-  bonus                 Int                    @default(0)
+  bonus                 Int                   @default(0)
   price                 String
-  status                RechargeIntentStatus   @default(PREPARED)
-  provider              String                 @default("mercadopago") @db.VarChar(40)
+  status                RechargeIntentStatus  @default(PREPARED)
+  provider              String                @default("mercadopago") @db.VarChar(40)
   // Audit-chain id for the whole Blood Moon operation. Kept deliberately
   // separate from externalReference/paymentIdempotencyKey below -- their
   // values coincide today but they are different concepts (see those
   // fields' comments) so retries/refunds/other providers don't need a
   // schema change later.
-  correlationId         String?                @unique @db.VarChar(80)
+  correlationId         String?               @unique @db.VarChar(80)
   // Value sent to the payment provider as external_reference and matched
   // back against on webhook receipt.
-  externalReference     String?                @unique @db.VarChar(191)
+  externalReference     String?               @unique @db.VarChar(191)
   // Value sent as X-Idempotency-Key for the create-order call specifically.
-  paymentIdempotencyKey String?                @unique @db.VarChar(191)
-  externalOrderId       String?                @db.VarChar(191)
-  externalStatus        String?                @db.VarChar(80)
-  externalStatusDetail  String?                @db.VarChar(191)
-  paymentMethod         String?                @db.VarChar(60)
-  failureReason         String?                @db.VarChar(191)
-  manualReviewReason    String?                @db.Text
-  refundReason          String?                @db.Text
+  paymentIdempotencyKey String?               @unique @db.VarChar(191)
+  externalOrderId       String?               @db.VarChar(191)
+  externalStatus        String?               @db.VarChar(80)
+  externalStatusDetail  String?               @db.VarChar(191)
+  paymentMethod         String?               @db.VarChar(60)
+  failureReason         String?               @db.VarChar(191)
+  manualReviewReason    String?               @db.Text
+  refundReason          String?               @db.Text
   lastWebhookAt         DateTime?
   approvedAt            DateTime?
   refundedAt            DateTime?
-  createdAt             DateTime               @default(now())
-  updatedAt             DateTime               @updatedAt
-  account               Account                @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  package               RechargePackage        @relation(fields: [packageId], references: [id])
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  account               Account               @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  package               RechargePackage       @relation(fields: [packageId], references: [id])
   webhookEvents         PaymentWebhookEvent[]
 
   @@index([accountId])
@@ -1835,33 +1838,33 @@ model MarketplaceEconomyConfig {
 }
 
 model CommunityProfile {
-  id                   String                      @id @default(uuid())
-  accountId            String                      @unique
-  displayName          String                      @db.VarChar(100)
-  bio                  String?                     @db.Text
-  avatarUrl            String?                     @db.VarChar(512)
-  coverUrl             String?                     @db.VarChar(512)
-  isPublic             Boolean                     @default(true)
-  mainCharacterName    String?                     @db.VarChar(100)
-  mainCharacterClass   String?                     @db.VarChar(100)
-  guildName            String?                     @db.VarChar(100)
+  id                     String                      @id @default(uuid())
+  accountId              String                      @unique
+  displayName            String                      @db.VarChar(100)
+  bio                    String?                     @db.Text
+  avatarUrl              String?                     @db.VarChar(512)
+  coverUrl               String?                     @db.VarChar(512)
+  isPublic               Boolean                     @default(true)
+  mainCharacterName      String?                     @db.VarChar(100)
+  mainCharacterClass     String?                     @db.VarChar(100)
+  guildName              String?                     @db.VarChar(100)
   featuredAchievementIds Json?
-  profileVisibility    String                      @default("PUBLIC") @db.VarChar(20)
-  charactersVisibility String                      @default("MAIN_ONLY") @db.VarChar(20)
-  equipmentVisibility  String                      @default("VISIBLE") @db.VarChar(20)
-  statisticsVisibility String                      @default("PRIVATE") @db.VarChar(20)
-  guildVisibility      String                      @default("VISIBLE") @db.VarChar(20)
-  activityVisibility   String                      @default("VISIBLE") @db.VarChar(20)
-  socialSuspendedUntil DateTime?
-  postBlockedUntil     DateTime?
-  commentBlockedUntil  DateTime?
-  messagesLimitedUntil DateTime?
-  reachLimitedUntil    DateTime?
-  warningCount         Int                         @default(0)
-  createdAt            DateTime                    @default(now())
-  updatedAt            DateTime                    @updatedAt
-  account              Account                     @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  moderationActions    CommunityModerationAction[]
+  profileVisibility      String                      @default("PUBLIC") @db.VarChar(20)
+  charactersVisibility   String                      @default("MAIN_ONLY") @db.VarChar(20)
+  equipmentVisibility    String                      @default("VISIBLE") @db.VarChar(20)
+  statisticsVisibility   String                      @default("PRIVATE") @db.VarChar(20)
+  guildVisibility        String                      @default("VISIBLE") @db.VarChar(20)
+  activityVisibility     String                      @default("VISIBLE") @db.VarChar(20)
+  socialSuspendedUntil   DateTime?
+  postBlockedUntil       DateTime?
+  commentBlockedUntil    DateTime?
+  messagesLimitedUntil   DateTime?
+  reachLimitedUntil      DateTime?
+  warningCount           Int                         @default(0)
+  createdAt              DateTime                    @default(now())
+  updatedAt              DateTime                    @updatedAt
+  account                Account                     @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  moderationActions      CommunityModerationAction[]
 
   @@index([displayName])
   @@index([socialSuspendedUntil])
@@ -1903,7 +1906,7 @@ model CommunityPost {
   mentions           Json?
   status             CommunityPostStatus     @default(PUBLISHED)
   edited             Boolean                 @default(false)
-  editedAt            DateTime?
+  editedAt           DateTime?
   sponsored          Boolean                 @default(false)
   official           Boolean                 @default(false)
   sourceType         String?                 @db.VarChar(80)
@@ -1983,25 +1986,25 @@ model CommunityPostRevision {
 }
 
 model CommunityComment {
-  id        String              @id @default(uuid())
+  id        String                     @id @default(uuid())
   postId    String
   authorId  String
   parentId  String?
-  content   String              @db.Text
-  status    CommunityPostStatus @default(PUBLISHED)
-  hiddenBy  String?             @db.VarChar(191)
+  content   String                     @db.Text
+  status    CommunityPostStatus        @default(PUBLISHED)
+  hiddenBy  String?                    @db.VarChar(191)
   hiddenAt  DateTime?
-  removedBy String?             @db.VarChar(191)
+  removedBy String?                    @db.VarChar(191)
   removedAt DateTime?
-  reason    String?             @db.Text
-  edited    Boolean             @default(false)
+  reason    String?                    @db.Text
+  edited    Boolean                    @default(false)
   editedAt  DateTime?
-  createdAt DateTime            @default(now())
-  updatedAt DateTime            @updatedAt
-  post      CommunityPost       @relation(fields: [postId], references: [id], onDelete: Cascade)
-  author    Account             @relation("CommunityCommentAuthor", fields: [authorId], references: [id], onDelete: Cascade)
-  parent    CommunityComment?   @relation("CommunityCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
-  replies   CommunityComment[]  @relation("CommunityCommentReplies")
+  createdAt DateTime                   @default(now())
+  updatedAt DateTime                   @updatedAt
+  post      CommunityPost              @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author    Account                    @relation("CommunityCommentAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  parent    CommunityComment?          @relation("CommunityCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   CommunityComment[]         @relation("CommunityCommentReplies")
   reactions CommunityReaction[]
   reports   CommunityReport[]
   revisions CommunityCommentRevision[]
@@ -2305,4 +2308,442 @@ model GameBridgeJob {
   @@index([operation])
   @@index([status])
   @@index([availableAt])
+}
+
+// ---- Guilds ----
+// Greenfield domain (Etapa "Guilds MVP"). See docs/handoff/guilds-mvp.md for
+// the full tier breakdown. Three-way XP/contribution split is intentional
+// and must never be collapsed: GuildMember.memberXp (personal progression),
+// GuildMember.contributionScore (reputational contribution), Guild.guildXp
+// (organization progression). A deposit into GuildTreasuryBalance never
+// grants guildXp -- only a future, irreversible GuildXpConversionRule
+// execution would (none runs yet; active defaults to false). Depositing may
+// later grant memberXp/contributionScore once an audited, antifarm
+// contribution policy exists -- not implemented this round either.
+
+enum GuildSource {
+  PORTAL
+  GAME
+  IMPORTED
+}
+
+enum GuildSyncStatus {
+  NOT_LINKED
+  PENDING
+  LINKED
+  ERROR
+}
+
+enum GuildStatus {
+  ACTIVE
+  DISBANDED
+  SUSPENDED
+}
+
+enum GuildRecruitmentStatus {
+  OPEN
+  APPROVAL_REQUIRED
+  INVITE_ONLY
+  CLOSED
+}
+
+enum GuildFocusTag {
+  PVP
+  PVE
+  CASTLE_SIEGE
+  BOSS
+  FARM
+  EVENTS
+  CASUAL
+  COMPETITIVE
+}
+
+enum GuildJoinRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+  EXPIRED
+}
+
+enum GuildRequestType {
+  ITEM
+  JEWEL
+  ZEN
+  WCOIN
+  GOBLIN_POINT
+  HUNT_POINT
+  INVESTMENT
+  EQUIPMENT
+  LOOKING_FOR_ITEM
+  OTHER
+}
+
+enum GuildRequestStatus {
+  DRAFT
+  OPEN
+  IN_PROGRESS
+  FULFILLED
+  CANCELLED
+  EXPIRED
+}
+
+enum GuildProjectStatus {
+  PLANNING
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+enum GuildMovementType {
+  DONATION
+  ALLOCATION
+  LOAN
+  REWARD
+  EVENT
+  SALE
+  PROJECT
+  OTHER
+}
+
+enum GuildApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum GuildMediaKind {
+  EMBLEM
+  BANNER
+}
+
+enum GuildMediaStatus {
+  READY
+  REMOVED
+}
+
+model Guild {
+  id                 String                 @id @default(uuid())
+  slug               String                 @unique @db.VarChar(60)
+  name               String                 @db.VarChar(100)
+  tag                String                 @db.VarChar(10)
+  description        String?                @db.Text
+  emblemUrl          String?                @db.VarChar(512)
+  bannerUrl          String?                @db.VarChar(512)
+  recruitment        GuildRecruitmentStatus @default(APPROVAL_REQUIRED)
+  guildLevel         Int                    @default(1)
+  guildXp            Int                    @default(0)
+  // Denormalized convenience pointer to the current LEADER's GuildMember.id,
+  // kept in sync by the service layer -- deliberately not a Prisma relation
+  // (Guild <-> GuildMember already has one FK direction via
+  // GuildMember.guildId; a second one back here would be a relation cycle
+  // for a value that's fully derivable from GuildMember.roleKey anyway).
+  leaderMemberId     String?
+  // Nullable: a GAME/IMPORTED-sourced guild may have no portal founder until
+  // claimed (future "Reivindicar perfil da Guild" flow, flow C).
+  foundedByAccountId String?
+  status             GuildStatus            @default(ACTIVE)
+  // Game guild sync is NOT implemented yet -- these fields are schema-only
+  // future-proofing so a real sync bridge can be added later without a
+  // migration. Every guild created this round is source: PORTAL,
+  // syncStatus: NOT_LINKED. See the module header comment above.
+  source             GuildSource            @default(PORTAL)
+  gameGuildId        String?                @db.VarChar(100)
+  gameGuildName      String?                @db.VarChar(100)
+  gameGuildTag       String?                @db.VarChar(10)
+  syncStatus         GuildSyncStatus        @default(NOT_LINKED)
+  lastSyncedAt       DateTime?
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+  foundedByAccount   Account?               @relation("GuildFounder", fields: [foundedByAccountId], references: [id], onDelete: SetNull)
+  members            GuildMember[]
+  joinRequests       GuildJoinRequest[]
+  focusTags          GuildFocusAssignment[]
+  requests           GuildRequest[]
+  projects           GuildProject[]
+  media              GuildMedia[]
+  treasury           GuildTreasury?
+  vault              GuildVault?
+
+  @@index([status])
+  @@index([recruitment])
+  @@index([source, syncStatus])
+}
+
+model GuildMember {
+  id                String           @id @default(uuid())
+  guildId           String
+  // Membership is per-character, not per-account -- an Account can hold
+  // several AccountCharacters, and each character may belong to at most one
+  // guild at a time (characterId is globally unique here, not just unique
+  // per guild). Never assume the whole Account belongs to one guild.
+  characterId       String           @unique
+  accountId         String
+  // Free-text, not a Prisma enum -- a per-guild custom role/permission
+  // system is a documented future admin feature ("Guild Roles"); an enum
+  // would need a migration per vocabulary change. MVP vocabulary is
+  // enforced in the service layer only: LEADER | OFFICER | TREASURER |
+  // MEMBER | RECRUIT.
+  roleKey           String           @default("MEMBER") @db.VarChar(20)
+  // Personal progression of this member within the guild -- separate axis
+  // from contributionScore and from Guild.guildXp. See module header.
+  memberXp          Int              @default(0)
+  // Historical/reputational contribution -- separate axis from memberXp.
+  contributionScore Int              @default(0)
+  joinedAt          DateTime         @default(now())
+  invitedBy         String?
+  removedAt         DateTime?
+  removedBy         String?
+  removedReason     String?          @db.Text
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  guild             Guild            @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  character         AccountCharacter @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  account           Account          @relation("GuildMemberAccount", fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([guildId, roleKey])
+  @@index([accountId])
+  @@index([removedAt])
+}
+
+model GuildJoinRequest {
+  id           String                 @id @default(uuid())
+  guildId      String
+  characterId  String
+  accountId    String
+  message      String?                @db.Text
+  status       GuildJoinRequestStatus @default(PENDING)
+  decidedBy    String?
+  decidedAt    DateTime?
+  decisionNote String?                @db.Text
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+  guild        Guild                  @relation(fields: [guildId], references: [id], onDelete: Cascade)
+
+  // Not @@unique -- a character can rejoin after leaving/being kicked
+  // (guilds.service.ts join()/leave()), which would create a second row
+  // whose (guildId, characterId, status='APPROVED'/'REJECTED') repeats an
+  // earlier decided request. MySQL has no partial/filtered unique index, so
+  // "at most one live PENDING request per character per guild" is enforced
+  // in the service layer (check-then-write in join()) instead of the DB.
+  @@index([guildId, characterId, status])
+  @@index([accountId])
+  @@index([status])
+}
+
+model GuildFocusAssignment {
+  id        String        @id @default(uuid())
+  guildId   String
+  tag       GuildFocusTag
+  createdAt DateTime      @default(now())
+  guild     Guild         @relation(fields: [guildId], references: [id], onDelete: Cascade)
+
+  @@unique([guildId, tag])
+}
+
+// Admin-managed catalog, not per-guild -- one row per level.
+model GuildLevelConfig {
+  id         String   @id @default(uuid())
+  level      Int      @unique
+  // Placeholder round numbers this round, explicitly not balanced.
+  xpRequired Int
+  title      String   @db.VarChar(100)
+  perks      Json?
+  active     Boolean  @default(true)
+  createdBy  String
+  updatedBy  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([active])
+}
+
+// Admin-managed catalog. Nothing ever executes a conversion this round --
+// active defaults to false so nothing looks live in a demo. When a future
+// round wires execution, it must destroy amountRequired of resourceKey from
+// GuildTreasuryBalance (irreversible, audited) in exchange for a fixed
+// guildXpGranted -- never derive Guild XP from a live/gross balance.
+model GuildXpConversionRule {
+  id             String   @id @default(uuid())
+  resourceType   String   @db.VarChar(40)
+  resourceKey    String   @db.VarChar(60)
+  amountRequired BigInt
+  guildXpGranted Int
+  active         Boolean  @default(false)
+  seasonId       String?  @db.VarChar(60)
+  perGuildLimit  Int?
+  perMemberLimit Int?
+  createdBy      String
+  updatedBy      String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([active])
+  @@index([resourceKey])
+}
+
+model GuildRequest {
+  id                   String             @id @default(uuid())
+  guildId              String
+  createdByAccountId   String
+  createdByCharacterId String?
+  type                 GuildRequestType
+  title                String             @db.VarChar(191)
+  description          String?            @db.Text
+  quantity             Int?
+  status               GuildRequestStatus @default(DRAFT)
+  // Server-populated for LOOKING_FOR_ITEM: Blood Moon does not guarantee
+  // loan repayment between players.
+  disclaimer           String?            @db.Text
+  cancelledAt          DateTime?
+  cancelledBy          String?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  guild                Guild              @relation(fields: [guildId], references: [id], onDelete: Cascade)
+
+  @@index([guildId, status])
+  @@index([createdByAccountId])
+  @@index([type])
+}
+
+model GuildProject {
+  id                 String             @id @default(uuid())
+  guildId            String
+  title              String             @db.VarChar(191)
+  description        String?            @db.Text
+  goal               String?            @db.Text
+  ownerAccountId     String
+  contributors       Json?
+  requiredResources  Json?
+  availableResources Json?
+  relatedPlayers     Json?
+  status             GuildProjectStatus @default(PLANNING)
+  deadline           DateTime?
+  impact             String?            @db.Text
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  guild              Guild              @relation(fields: [guildId], references: [id], onDelete: Cascade)
+
+  @@index([guildId, status])
+  @@index([ownerAccountId])
+}
+
+model GuildMedia {
+  id                  String           @id @default(uuid())
+  guildId             String
+  uploadedByAccountId String
+  kind                GuildMediaKind
+  status              GuildMediaStatus @default(READY)
+  url                 String           @db.VarChar(512)
+  storagePath         String           @db.VarChar(512)
+  originalName        String           @db.VarChar(255)
+  mimeType            String           @db.VarChar(100)
+  extension           String           @db.VarChar(10)
+  sizeBytes           Int
+  width               Int
+  height              Int
+  sha256              String           @db.VarChar(64)
+  removedAt           DateTime?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  guild               Guild            @relation(fields: [guildId], references: [id], onDelete: Cascade)
+
+  @@index([guildId, kind])
+}
+
+// ---- Guilds: Tier B (real model, zero reachable write endpoint this round) ----
+
+model GuildTreasury {
+  id        String                 @id @default(uuid())
+  guildId   String                 @unique
+  createdAt DateTime               @default(now())
+  guild     Guild                  @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  balances  GuildTreasuryBalance[]
+}
+
+// Normalized, not a Json blob -- the resource catalog is genuinely
+// open-ended (currencies, jewels, materials, seasonal resources, future
+// Alliance transfers). resourceType/resourceKey are free text on purpose:
+// the seed rows created at guild-creation (ZEN, WCOIN, GOBLIN_POINT,
+// HUNT_POINT, JEWEL_BLESS, JEWEL_SOUL, JEWEL_CHAOS) are a minimal demo seed,
+// not a definitive catalog -- more keys (Life/Creation/Harmony/Guardian/
+// Gemstone jewels, materials, seasonal currencies, ...) must be addable with
+// zero schema change. No endpoint ever updates availableAmount/
+// reservedAmount this round; a deposit never grants guildXp (see module
+// header) and reservedAmount stays 0 until a future project/request hold.
+model GuildTreasuryBalance {
+  id              String        @id @default(uuid())
+  guildTreasuryId String
+  resourceType    String        @db.VarChar(40)
+  resourceKey     String        @db.VarChar(60)
+  availableAmount BigInt        @default(0)
+  reservedAmount  BigInt        @default(0)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  treasury        GuildTreasury @relation(fields: [guildTreasuryId], references: [id], onDelete: Cascade)
+
+  @@unique([guildTreasuryId, resourceKey])
+}
+
+model GuildVault {
+  id        String           @id @default(uuid())
+  guildId   String           @unique
+  createdAt DateTime         @default(now())
+  guild     Guild            @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  items     GuildVaultItem[]
+}
+
+model GuildVaultItem {
+  id           String     @id @default(uuid())
+  guildVaultId String
+  itemRef      String     @db.VarChar(191)
+  quantity     Int        @default(1)
+  metadata     Json?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  vault        GuildVault @relation(fields: [guildVaultId], references: [id], onDelete: Cascade)
+
+  @@index([guildVaultId])
+}
+
+// The only conceptual path anything will ever move resources/items through
+// in a future round -- no direct balance mutation is ever modeled, closing
+// off the deposit->withdraw->deposit (or guild A->B->A) double-credit shape.
+// Deliberately NOT wired into Guild's relation graph (no `guild Guild
+// @relation` field, plain guildId scalar only) -- only reachable by raw
+// guildId, so it stays structurally obvious nothing in the service touches
+// these rows yet. No endpoint creates or reads these this round.
+model GuildMovement {
+  id                   String                  @id @default(uuid())
+  guildId              String
+  type                 GuildMovementType
+  status               GuildApprovalStatus     @default(PENDING)
+  resourceKey          String                  @db.VarChar(60)
+  amount               BigInt
+  requestedByAccountId String
+  reason               String?                 @db.Text
+  beforeBalance        Json?
+  afterBalance         Json?
+  correlationId        String?                 @db.VarChar(80)
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+  approvals            GuildMovementApproval[]
+
+  @@index([guildId, status])
+  @@index([resourceKey])
+}
+
+model GuildMovementApproval {
+  id                String              @id @default(uuid())
+  guildMovementId   String
+  approverAccountId String
+  status            GuildApprovalStatus @default(PENDING)
+  note              String?             @db.Text
+  decidedAt         DateTime?
+  createdAt         DateTime            @default(now())
+  movement          GuildMovement       @relation(fields: [guildMovementId], references: [id], onDelete: Cascade)
+
+  @@index([guildMovementId])
 }

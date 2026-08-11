@@ -5,6 +5,7 @@ import { join, resolve } from 'node:path'
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { SafeExceptionFilter } from './common/safe-exception.filter'
+import './common/bigint-json'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -34,6 +35,18 @@ async function bootstrap() {
   app.use(
     `${globalPrefix ? `/${globalPrefix}` : ''}/media/community`,
     express.static(mediaDirectory, {
+      dotfiles: 'deny',
+      index: false,
+      fallthrough: false,
+      maxAge: '7d'
+    })
+  )
+  const guildMediaDirectory = resolve(
+    process.env.GUILD_MEDIA_DIR || join(process.cwd(), 'storage', 'guild-media')
+  )
+  app.use(
+    `${globalPrefix ? `/${globalPrefix}` : ''}/media/guild`,
+    express.static(guildMediaDirectory, {
       dotfiles: 'deny',
       index: false,
       fallthrough: false,

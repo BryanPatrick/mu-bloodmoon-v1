@@ -5,7 +5,7 @@
   "type": "commonjs",
   "scripts": {
     "build": "nest build",
-    "check": "node scripts/check-api-structure.mjs && node scripts/check-security-structure.mjs && node scripts/check-observability-structure.mjs && node scripts/check-roadmap-structure.mjs && node scripts/check-store-structure.mjs && node scripts/check-marketplace-structure.mjs && node scripts/check-community-structure.mjs && node scripts/check-admin-tasks-structure.mjs && node scripts/check-admin-reports-structure.mjs && tsc -p tsconfig.json --noEmit",
+    "check": "node scripts/check-api-structure.mjs && node scripts/check-security-structure.mjs && node scripts/check-observability-structure.mjs && node scripts/check-roadmap-structure.mjs && node scripts/check-store-structure.mjs && node scripts/check-marketplace-structure.mjs && node scripts/check-community-structure.mjs && node scripts/check-admin-tasks-structure.mjs && node scripts/check-admin-reports-structure.mjs && node scripts/check-guilds-structure.mjs && tsc -p tsconfig.json --noEmit",
     "dev": "npm run build && node dist/apps/api/src/main.js",
     "worker:game-bridge": "node scripts/process-game-bridge-jobs.mjs",
     "worker:marketplace-expirations": "node scripts/process-marketplace-expirations.mjs",
