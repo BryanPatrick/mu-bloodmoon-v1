@@ -22,15 +22,34 @@
             <ChevronDown class="size-4" :class="{ 'rotate-180': isAccountOpen }" />
           </button>
           <div v-if="isAccountOpen" class="bm-nav-dropdown absolute right-0 top-full mt-2 w-80 p-2">
-            <NuxtLink v-for="item in accountLinks" :key="item.to" :to="item.to" class="bm-nav-link flex items-center gap-3 px-3 py-3 text-sm font-bold" @click="closeMenus">
+            <NuxtLink
+              v-for="item in accountLinks"
+              :key="item.to"
+              :to="item.to"
+              class="bm-nav-link flex items-center gap-3 px-3 py-3 text-sm font-bold"
+              @click="closeMenus"
+            >
               <component :is="item.icon" class="size-4 text-blood-600" />
               {{ item.label }}
             </NuxtLink>
             <div class="my-2 border-t border-black/10" />
-            <NuxtLink v-for="currency in accountCurrencies" :key="currency.label" to="/recarga" class="bm-currency-row" @click="closeMenus">
-              <span>{{ currency.label }}</span><strong>{{ currency.value.toLocaleString('pt-BR') }}</strong>
+            <NuxtLink
+              v-for="currency in accountCurrencies"
+              :key="currency.label"
+              to="/recarga"
+              class="bm-currency-row"
+              @click="closeMenus"
+            >
+              <span>{{ currency.label }}</span
+              ><strong>{{ currency.value.toLocaleString('pt-BR') }}</strong>
             </NuxtLink>
-            <button class="bm-nav-link mt-1 w-full px-3 py-3 text-left text-sm font-bold" type="button" @click="logoutAndClose">Sair</button>
+            <button
+              class="bm-nav-link mt-1 w-full px-3 py-3 text-left text-sm font-bold"
+              type="button"
+              @click="logoutAndClose"
+            >
+              Sair
+            </button>
           </div>
         </div>
 
@@ -40,7 +59,14 @@
         </template>
       </div>
 
-      <button class="bm-menu-trigger xl:hidden" type="button" :aria-expanded="isMobileOpen" aria-controls="mobile-navigation" aria-label="Abrir menu" @click="isMobileOpen = !isMobileOpen">
+      <button
+        class="bm-menu-trigger xl:hidden"
+        type="button"
+        :aria-expanded="isMobileOpen"
+        aria-controls="mobile-navigation"
+        aria-label="Abrir menu"
+        @click="isMobileOpen = !isMobileOpen"
+      >
         <Menu v-if="!isMobileOpen" class="size-5" />
         <X v-else class="size-5" />
       </button>
@@ -50,7 +76,14 @@
       <div v-if="isMobileOpen" id="mobile-navigation" class="bm-mobile-drawer xl:hidden">
         <div class="bm-mobile-drawer-head">
           <span class="bm-kicker">Navegacao</span>
-          <button class="bm-icon-button" type="button" aria-label="Fechar menu" @click="isMobileOpen = false"><X class="size-5" /></button>
+          <button
+            class="bm-icon-button"
+            type="button"
+            aria-label="Fechar menu"
+            @click="isMobileOpen = false"
+          >
+            <X class="size-5" />
+          </button>
         </div>
         <nav class="grid gap-1" aria-label="Navegacao mobile">
           <div v-for="item in mobileItems" :key="item.label">
@@ -61,28 +94,76 @@
         </nav>
         <div class="mt-auto grid gap-3 border-t border-black/10 pt-5">
           <label class="bm-field-label" for="mobile-language">Idioma</label>
-          <select id="mobile-language" class="bm-input" :value="locale" @change="chooseLocale(($event.target as HTMLSelectElement).value as LocaleCode)">
-            <option v-for="option in localeOptions" :key="option.code" :value="option.code">{{ option.label }}</option>
+          <select
+            id="mobile-language"
+            class="bm-input"
+            :value="locale"
+            @change="chooseLocale(($event.target as HTMLSelectElement).value as LocaleCode)"
+          >
+            <option v-for="option in localeOptions" :key="option.code" :value="option.code">
+              {{ option.label }}
+            </option>
           </select>
           <template v-if="isLoggedIn && user">
-            <NuxtLink v-for="item in accountLinks" :key="item.to" :to="item.to" class="bm-mobile-link" @click="closeMenus">
+            <NuxtLink
+              v-for="item in accountLinks"
+              :key="item.to"
+              :to="item.to"
+              class="bm-mobile-link"
+              @click="closeMenus"
+            >
               <component :is="item.icon" class="size-4" />{{ item.label }}
             </NuxtLink>
-            <button class="bm-button bm-button-secondary w-full" type="button" @click="logoutAndClose">Sair</button>
+            <button
+              class="bm-button bm-button-secondary w-full"
+              type="button"
+              @click="logoutAndClose"
+            >
+              Sair
+            </button>
           </template>
           <div v-else class="grid grid-cols-2 gap-2">
-            <NuxtLink to="/login" class="bm-button bm-button-secondary" @click="closeMenus">Entrar</NuxtLink>
-            <NuxtLink to="/registrar" class="bm-button bm-button-primary" @click="closeMenus">Criar conta</NuxtLink>
+            <NuxtLink to="/login" class="bm-button bm-button-secondary" @click="closeMenus"
+              >Entrar</NuxtLink
+            >
+            <NuxtLink to="/registrar" class="bm-button bm-button-primary" @click="closeMenus"
+              >Criar conta</NuxtLink
+            >
           </div>
         </div>
       </div>
     </Transition>
-    <Transition name="fade"><button v-if="isMobileOpen" class="bm-drawer-backdrop xl:hidden" type="button" aria-label="Fechar menu" @click="isMobileOpen = false" /></Transition>
+    <Transition name="fade"
+      ><button
+        v-if="isMobileOpen"
+        class="bm-drawer-backdrop xl:hidden"
+        type="button"
+        aria-label="Fechar menu"
+        @click="isMobileOpen = false"
+    /></Transition>
   </header>
 </template>
 
 <script setup lang="ts">
-import { BookOpen, ChevronDown, CircleUserRound, Compass, Download, Info, LayoutDashboard, Menu, MessageCircle, Newspaper, ShoppingBag, ShoppingBasket, Store, Trophy, UserCog, Users, UsersRound, X } from 'lucide-vue-next'
+import {
+  BookOpen,
+  ChevronDown,
+  CircleUserRound,
+  Compass,
+  Download,
+  Info,
+  LayoutDashboard,
+  Menu,
+  MessageCircle,
+  Newspaper,
+  ShoppingBag,
+  ShoppingBasket,
+  Trophy,
+  UserCog,
+  Users,
+  UsersRound,
+  X
+} from 'lucide-vue-next'
 import { permissions } from '~/data/security'
 
 const route = useRoute()
@@ -101,17 +182,18 @@ const links = [
   { label: 'Ranking', to: '/rankings', icon: Trophy },
   { label: 'Downloads', to: '/downloads', icon: Download },
   { label: 'Roadmap', to: '/roadmap', icon: Compass },
-  { label: 'Loja', to: '/loja', icon: Store },
   { label: 'Marketplace', to: '/marketplace', icon: ShoppingBasket },
   { label: 'Comunidade', to: '/comunidade', icon: UsersRound },
   { label: 'Sobre', to: '/about', icon: Info }
 ]
 const mobileItems = links
-const navMenuItems = computed(() => links.map((link) => ({
-  label: link.label,
-  to: link.to,
-  active: link.to === '/' ? route.path === '/' : route.path.startsWith(link.to)
-})))
+const navMenuItems = computed(() =>
+  links.map((link) => ({
+    label: link.label,
+    to: link.to,
+    active: link.to === '/' ? route.path === '/' : route.path.startsWith(link.to)
+  }))
+)
 const navMenuUi = {
   list: 'items-center gap-1 bg-transparent',
   link: 'bm-nav-link px-3 py-2 text-[13px] font-bold',
@@ -123,20 +205,47 @@ const navMenuUi = {
   childLinkDescription: 'mt-1 text-xs leading-5 text-stone-500'
 }
 const accountLinks = computed(() => [
-  ...(hasPermission(permissions.adminDashboardView) ? [{ label: 'Painel administrativo', to: '/painel', icon: LayoutDashboard }] : []),
+  ...(hasPermission(permissions.adminDashboardView)
+    ? [{ label: 'Painel administrativo', to: '/painel', icon: LayoutDashboard }]
+    : []),
   { label: 'Personagens', to: '/painel/personagens', icon: Users },
   { label: 'Minha conta', to: '/painel/conta', icon: UserCog },
   { label: 'Loja', to: '/painel/loja', icon: ShoppingBag }
 ])
 const accountCurrencies = computed(() => user.value?.currencies || [])
 type LocaleCode = 'pt-BR' | 'pt-PT' | 'es-ES' | 'en-US' | 'en-GB' | 'fr-FR' | 'de-DE' | 'it-IT'
-const toggleLanguageMenu = () => { isLanguageOpen.value = !isLanguageOpen.value; isAccountOpen.value = false }
-const toggleAccountMenu = () => { isAccountOpen.value = !isAccountOpen.value; isLanguageOpen.value = false }
-const closeMenus = () => { isLanguageOpen.value = false; isAccountOpen.value = false; isMobileOpen.value = false }
-const chooseLocale = (code: LocaleCode) => { setLocale(code); closeMenus() }
-const logoutAndClose = () => { logout(); closeMenus(); router.push('/') }
-const closeOutside = (event: MouseEvent) => { if (!headerRef.value?.contains(event.target as Node)) closeMenus() }
-onMounted(() => { loadSession(); document.addEventListener('click', closeOutside) })
+const toggleLanguageMenu = () => {
+  isLanguageOpen.value = !isLanguageOpen.value
+  isAccountOpen.value = false
+}
+const toggleAccountMenu = () => {
+  isAccountOpen.value = !isAccountOpen.value
+  isLanguageOpen.value = false
+}
+const closeMenus = () => {
+  isLanguageOpen.value = false
+  isAccountOpen.value = false
+  isMobileOpen.value = false
+}
+const chooseLocale = (code: LocaleCode) => {
+  setLocale(code)
+  closeMenus()
+}
+const logoutAndClose = () => {
+  logout()
+  closeMenus()
+  router.push('/')
+}
+const closeOutside = (event: MouseEvent) => {
+  if (!headerRef.value?.contains(event.target as Node)) closeMenus()
+}
+onMounted(() => {
+  loadSession()
+  document.addEventListener('click', closeOutside)
+})
 onBeforeUnmount(() => document.removeEventListener('click', closeOutside))
-watch(() => route.fullPath, () => closeMenus())
+watch(
+  () => route.fullPath,
+  () => closeMenus()
+)
 </script>

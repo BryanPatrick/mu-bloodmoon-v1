@@ -1,26 +1,26 @@
 <template>
-  <section class="market-filters" aria-label="Filtros do mercado de jogadores">
-    <header><BloodMoonIcon name="systems" /><strong>Filtros</strong></header>
+  <section class="store-filters" aria-label="Filtros da Loja Oficial">
+    <header><BloodMoonIcon name="systems" /><strong>Filtros da loja</strong></header>
     <div class="filter-section">
-      <label for="market-category"><BloodMoonIcon name="items" /> Categoria</label
+      <label for="official-category"><BloodMoonIcon name="items" /> Categoria</label
       ><select
-        id="market-category"
+        id="official-category"
         :value="category"
-        class="market-control"
+        class="store-control"
         @change="applyFilter('category', $event)"
       >
         <option value="">Todas as categorias</option>
-        <option v-for="option in categories" :key="option.value" :value="option.value">
-          {{ option.value }} ({{ option.count }})
+        <option v-for="option in categories" :key="option.id" :value="option.name">
+          {{ option.name }}
         </option>
       </select>
     </div>
     <div class="filter-section">
-      <label for="market-currency"><BloodMoonIcon name="xp" /> Moeda</label
+      <label for="official-currency"><BloodMoonIcon name="xp" /> Moeda</label
       ><select
-        id="market-currency"
+        id="official-currency"
         :value="currency"
-        class="market-control"
+        class="store-control"
         @change="applyFilter('currency', $event)"
       >
         <option value="">Todas as moedas</option>
@@ -30,15 +30,15 @@
       </select>
     </div>
     <div class="filter-section">
-      <label for="market-sort"><BloodMoonIcon name="progress" /> Ordenar</label
+      <label for="official-sort"><BloodMoonIcon name="progress" /> Ordenar</label
       ><select
-        id="market-sort"
+        id="official-sort"
         :value="sort"
-        class="market-control"
+        class="store-control"
         @change="applyFilter('sort', $event)"
       >
-        <option value="newest">Mais recentes</option>
-        <option value="oldest">Mais antigos</option>
+        <option value="featured">Destaques primeiro</option>
+        <option value="nameAsc">Nome (A-Z)</option>
         <option value="priceAsc">Menor preço</option>
         <option value="priceDesc">Maior preço</option>
       </select>
@@ -51,20 +51,18 @@
 
 <script setup lang="ts">
 import { RotateCcw } from 'lucide-vue-next'
+import type { StoreCategory } from '~/composables/useStoreApi'
 const props = defineProps<{
   search: string
   category: string
   currency: string
   sort: string
-  view: 'grid' | 'list'
-  categories: Array<{ value: string; count: number }>
+  categories: StoreCategory[]
 }>()
 const emit = defineEmits<{
-  'update:search': [value: string]
   'update:category': [value: string]
   'update:currency': [value: string]
   'update:sort': [value: string]
-  'update:view': [value: 'grid' | 'list']
   clear: []
   applied: []
 }>()
@@ -80,16 +78,16 @@ const clearFilters = () => {
   emit('applied')
 }
 const hasFilters = computed(() =>
-  Boolean(props.search || props.category || props.currency || props.sort !== 'newest')
+  Boolean(props.search || props.category || props.currency || props.sort !== 'featured')
 )
 </script>
 
 <style scoped>
-.market-filters {
+.store-filters {
   border: 1px solid #d5ccc3;
   background: #faf7f2;
 }
-.market-filters header {
+.store-filters header {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -98,7 +96,7 @@ const hasFilters = computed(() =>
   color: #540809;
   text-transform: uppercase;
 }
-.market-filters header strong {
+.store-filters header strong {
   font-family: Cinzel, serif;
   font-size: 15px;
 }
@@ -116,7 +114,7 @@ const hasFilters = computed(() =>
   font-weight: 900;
   text-transform: uppercase;
 }
-.market-control {
+.store-control {
   width: 100%;
   height: 38px;
   border: 1px solid #cfc5bc;
@@ -126,7 +124,7 @@ const hasFilters = computed(() =>
   color: #27211e;
   font-size: 11px;
 }
-.market-control:focus {
+.store-control:focus {
   border-color: #73090b;
 }
 .clear-button {

@@ -61,7 +61,14 @@ after(async () => {
   ])
 })
 
-for (const path of ['/', '/wiki', '/roadmap', '/downloads']) {
+for (const path of [
+  '/',
+  '/wiki',
+  '/roadmap',
+  '/downloads',
+  '/marketplace',
+  '/marketplace?mercado=oficial'
+]) {
   test(`renders public page ${path}`, async () => {
     const response = await fetch(`${baseUrl}${path}`)
     const html = await response.text()
@@ -70,6 +77,12 @@ for (const path of ['/', '/wiki', '/roadmap', '/downloads']) {
     assert.ok(html.length > 500, `${path} returned unexpectedly short HTML`)
   })
 }
+
+test('redirects the legacy store index to the official marketplace context', async () => {
+  const response = await fetch(`${baseUrl}/loja`, { redirect: 'manual' })
+  assert.equal(response.status, 301)
+  assert.equal(response.headers.get('location'), '/marketplace?mercado=oficial')
+})
 
 test('returns a real 404 page for an unknown route', async () => {
   const response = await fetch(`${baseUrl}/baseline-route-that-does-not-exist`, {

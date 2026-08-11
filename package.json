@@ -17,7 +17,7 @@
     "web:generate": "nuxt generate apps/web",
     "web:preview": "nuxt preview apps/web/.output",
     "web:test:error": "node --test apps/web/test/error-presentation.test.mjs",
-    "web:test:smoke": "node --test apps/web/test/error-presentation.test.mjs apps/web/test/public-pages-smoke.test.mjs",
+    "web:test:smoke": "node --test apps/web/test/commercial-experience.test.mjs apps/web/test/error-presentation.test.mjs apps/web/test/public-pages-smoke.test.mjs",
     "dev:full": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-dev.ps1",
     "dev:full:import": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-dev.ps1 -ImportData",
     "api:check": "npm --workspace @blood-moon/api run check",

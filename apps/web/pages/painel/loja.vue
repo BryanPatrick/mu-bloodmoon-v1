@@ -1,5 +1,5 @@
 <template><div /></template>
 
 <script setup lang="ts">
-await navigateTo('/loja', { replace: true })
+await navigateTo('/marketplace?mercado=oficial', { replace: true })
 </script>
