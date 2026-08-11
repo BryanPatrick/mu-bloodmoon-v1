@@ -64,6 +64,7 @@ after(async () => {
 for (const path of [
   '/',
   '/wiki',
+  '/gazeta',
   '/roadmap',
   '/downloads',
   '/marketplace',

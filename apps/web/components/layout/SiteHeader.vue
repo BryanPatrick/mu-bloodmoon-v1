@@ -156,6 +156,7 @@ import {
   Menu,
   MessageCircle,
   Newspaper,
+  ScrollText,
   ShoppingBag,
   ShoppingBasket,
   Trophy,
@@ -178,6 +179,7 @@ const isAccountOpen = ref(false)
 const links = [
   { label: 'Home', to: '/', icon: CircleUserRound },
   { label: 'Notícias', to: '/noticias', icon: Newspaper },
+  { label: 'Gazeta', to: '/gazeta', icon: ScrollText },
   { label: 'Wiki', to: '/wiki', icon: BookOpen },
   { label: 'Ranking', to: '/rankings', icon: Trophy },
   { label: 'Downloads', to: '/downloads', icon: Download },

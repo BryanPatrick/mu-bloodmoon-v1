@@ -46,6 +46,7 @@ const groups = [
       { label: 'Downloads', to: '/downloads' },
       { label: 'Rankings', to: '/rankings' },
       { label: 'Notícias', to: '/noticias' },
+      { label: 'Gazeta', to: '/gazeta' },
       { label: 'Roadmap', to: '/roadmap' }
     ]
   },
