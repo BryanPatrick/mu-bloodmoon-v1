@@ -49,7 +49,7 @@ export default defineNuxtConfig({
         },
         { property: 'og:site_name', content: 'Blood Moon' },
         { property: 'og:type', content: 'website' },
-        { name: 'theme-color', content: '#f5f2ec' }
+        { name: 'theme-color', content: '#f3f0ea' }
       ],
       link: [
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },

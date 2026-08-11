@@ -96,14 +96,15 @@ is listed as an open question in `visual-audit.md`.
 Read from `apps/web/assets/css/main.css` (the file actually loaded by
 `nuxt.config.ts`):
 
-- **Palette**: a light "parchment" background (`--bm-page-bg: #f5f2ec`), a
+- **Palette**: a light "parchment" background (`--bm-page-bg: #f3f0ea`), a
   blood-red accent scale (`--color-blood-50`…`900`, centered on
-  `--color-ember`/`--color-blood-500: #bf0202`), `--color-moon: #f5f2ec`,
-  `--color-iron: #756d67`, `--color-void: #101010`, heading color
-  `--bm-heading: #460608` (deep wine). This is the same color family as the
-  Figma handoff's tokens (Background/Primary Wine/Action Red/Dark/Surface)
-  but not an exact hex match to any of them — see the reconciliation table
-  in `figma-handoff-v1.5.md` for the value-by-value comparison.
+  `--color-ember`/`--color-blood-500: #9f0202`), `--color-moon: #f3f0ea`,
+  `--color-iron: #756d67`, `--color-void: #110e10`, heading color
+  `--bm-heading: #540809` (deep wine). These now match the Figma handoff's
+  tokens (Background/Primary Wine/Action Red/Dark/Surface) exactly — see
+  the reconciliation table in `figma-handoff-v1.5.md`, updated after the
+  operator asked for the values to be snapped to spec rather than left
+  "same family, not identical."
 - **Type**: display/heading font `Cinzel` (serif, gothic-adjacent, matches
   the logo's carved-stone letterforms), body font `Manifold`/`Inter`. The
   Figma handoff confirms `Manifold` is the intended body font and `Inter`

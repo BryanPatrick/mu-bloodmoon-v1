@@ -25,7 +25,7 @@ apart from things that need a real design pass.
    every `/painel` and `/painel/admin/*` page — sets `text-white` on its
    root `<main>`. Nothing in its ancestor chain sets a dark background, so
    the actual page background is the global `body { background:
-var(--bm-page-bg) }` = `#f5f2ec` (cream) from `main.css`.
+var(--bm-page-bg) }` = `#f3f0ea` (cream) from `main.css`.
 2. `main.css` has a deliberate rescue mechanism: any `text-white`/
    `border-white`/`bg-white` **inside** `.bm-panel`, `.bm-glass`,
    `.bm-liquid-shell`, `.bm-liquid-card`, `.bm-dashboard-shell`, or
@@ -107,11 +107,15 @@ far can be fixed with classes that already exist in `main.css`.
   either. This is a design-system implementation gap, not something to
   patch page-by-page.
 - **`home/index.vue` and `marketplace.vue`** duplicate the brand palette as
-  literal hex values in scoped `<style>` blocks (`background:#f5f2ec`, the
-  same `#bf0202`/`#460608` reds, etc.) instead of using `var(--bm-*)`
+  literal hex values in scoped `<style>` blocks (`background:#f3f0ea`, the
+  same `#9f0202`/`#540809` reds, etc.) instead of using `var(--bm-*)`
   tokens. Visually correct today, but a duplicated source of truth — if the
   palette ever changes, these two files won't pick it up automatically.
-  Classified POLISH, not urgent.
+  Classified POLISH, not urgent. (A later follow-up snapped both the
+  `main.css` tokens and every one of these literal duplicates to match the
+  Figma handoff exactly — see `figma-handoff-v1.5.md`'s reconciliation
+  table — but the duplication itself, as an architectural pattern, is
+  unchanged.)
 - **Ornamental decorators are specified but not built.** The Figma handoff
   (§5) calls out recurring dashed-corner card frames and small diamond (◊)
   section dividers as a shared, SVG-exported component category. Checked

@@ -199,21 +199,29 @@ document), so treat it accordingly.
 Comparing this spec's tokens against `apps/web/assets/css/main.css` (the
 file the site actually loads):
 
-| Spec token   | Spec hex            | Closest implemented token    | Implemented hex | Match?                     |
-| ------------ | ------------------- | ---------------------------- | --------------- | -------------------------- |
-| Background   | `#F3F0EA`           | `--bm-page-bg`               | `#f5f2ec`       | Same family, not identical |
-| Primary Wine | `#540809`           | `--bm-heading` / `--bm-wine` | `#460608`       | Same family, not identical |
-| Action Red   | `#9F0202`           | `--color-ember` / `--bm-red` | `#bf0202`       | Same family, not identical |
-| Dark         | `#110E10`           | `--color-void` / `--bm-dark` | `#101010`       | Very close                 |
-| Surface      | `#E3E0DF` (approx.) | `--bm-surface`               | `#ebe6df`       | Same family, not identical |
+| Spec token   | Spec hex            | Closest implemented token    | Implemented hex | Match? |
+| ------------ | ------------------- | ---------------------------- | --------------- | ------ |
+| Background   | `#F3F0EA`           | `--bm-page-bg`               | `#f3f0ea`       | Exact  |
+| Primary Wine | `#540809`           | `--bm-heading` / `--bm-wine` | `#540809`       | Exact  |
+| Action Red   | `#9F0202`           | `--color-ember` / `--bm-red` | `#9f0202`       | Exact  |
+| Dark         | `#110E10`           | `--color-void` / `--bm-dark` | `#110e10`       | Exact  |
+| Surface      | `#E3E0DF` (approx.) | `--bm-surface`               | `#e3e0df`       | Exact  |
 
-**Read on this**: every token is in the same color family and clearly
-derived from this direction — this is not a mismatch of intent, it's drift
-in exact values during implementation (or during this transcription's OCR
-uncertainty — see caveat at the top). Worth the operator deciding whether
-to snap `main.css`'s tokens to the exact spec values once the real Figma
-file/export is available, or to treat the current implementation as the
-now-canonical version and update the Figma file to match instead.
+**Update (operator follow-up after Etapa 19.8)**: the operator confirmed
+there is no original Figma file beyond what was shared in chat, and asked
+for the implementation to snap exactly to these spec values rather than
+leave the "same family, not identical" drift open. Done: `main.css`'s
+`@theme` and `:root` blocks now use the exact spec hex values above, and
+every duplicated literal copy of the old values (found via a repo-wide
+grep, not just `main.css`) was updated too — `pages/index.vue`,
+`pages/marketplace.vue`, `pages/wiki.vue`,
+`components/marketplace/MarketplaceFilters.vue`,
+`components/marketplace/MarketplaceItemCard.vue`, and the `theme-color`
+meta tag in `nuxt.config.ts`. Decorative ornaments (diamond dividers,
+cut-corner card frames) and an alternate horizontal logo lockup were
+explored in the same follow-up but explicitly not kept — the operator
+scoped this pass down to color tokens only. The ornaments remain the open
+DESIGNER_REQUIREMENT documented in `visual-audit.md`.
 
 **Connection to `docs/design-history/`**: that directory (already found in
 Etapa 19.8) captures before/after screenshots explicitly labeled "Blood
@@ -225,7 +233,8 @@ looks different at first glance from both this handoff's parchment-hero
 mockup and the screenshot the operator shared directly. **Verified by
 loading the live built site** (`apps/web/.output`, `/wiki` route) rather
 than guessing from screenshots: the current implementation renders on
-`#f5f2ec` (`body` background, matching `--bm-page-bg` exactly), with the
+`#f3f0ea` (`body` background, matching `--bm-page-bg` exactly, and now
+exactly matching this spec's Background token too), with the
 "PESQUISE NO WIKI" hero, the six category cards (Personagens/Itens/Mapas/
 Progresso/Sistemas/Guias), and the "PESQUISAS POPULARES" tag row — i.e. it
 matches the operator's shared screenshot and is consistent with this

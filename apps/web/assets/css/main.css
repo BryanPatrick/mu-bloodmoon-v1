@@ -11,32 +11,32 @@
   --color-blood-200: #f4b8b2;
   --color-blood-300: #e98279;
   --color-blood-400: #d9473c;
-  --color-blood-500: #bf0202;
+  --color-blood-500: #9f0202;
   --color-blood-600: #9f0507;
   --color-blood-700: #73090b;
-  --color-blood-900: #460608;
-  --color-moon: #f5f2ec;
-  --color-ember: #bf0202;
+  --color-blood-900: #540809;
+  --color-moon: #f3f0ea;
+  --color-ember: #9f0202;
   --color-iron: #756d67;
-  --color-void: #101010;
+  --color-void: #110e10;
   --shadow-glow: 0 10px 28px rgb(70 6 8 / 0.16);
   --shadow-panel: 0 16px 42px rgb(40 24 20 / 0.09);
 }
 
 :root {
   color-scheme: light;
-  --bm-page-bg: #f5f2ec;
-  --bm-surface: #ebe6df;
+  --bm-page-bg: #f3f0ea;
+  --bm-surface: #e3e0df;
   --bm-surface-soft: #f8f5f0;
   --bm-surface-strong: #ffffff;
   --bm-border: #d8d1c8;
   --bm-border-strong: #b9ada2;
   --bm-text: #101010;
   --bm-muted: #6e6761;
-  --bm-heading: #460608;
-  --bm-wine: #460608;
-  --bm-red: #bf0202;
-  --bm-dark: #101010;
+  --bm-heading: #540809;
+  --bm-wine: #540809;
+  --bm-red: #9f0202;
+  --bm-dark: #110e10;
   --bm-header-height: 87px;
 }
 
@@ -329,7 +329,7 @@ textarea {
 
 .bm-site-header {
   border-radius: 0;
-  background: rgb(245 242 236 / 0.96);
+  background: rgb(243 240 234 / 0.96);
   box-shadow: 0 1px 0 var(--bm-border);
   backdrop-filter: blur(14px);
 }
@@ -357,7 +357,7 @@ textarea {
 
 .bm-site-header {
   border-bottom: 1px solid var(--bm-border);
-  background: #f5f2ec;
+  background: #f3f0ea;
   box-shadow: none;
 }
 
