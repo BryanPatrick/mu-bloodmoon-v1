@@ -22,7 +22,8 @@ const adminRoutePermissions: Array<[string, Permission]> = [
   ['/painel/admin/erros', permissions.adminErrorsView],
   ['/painel/admin/alertas', permissions.adminAlertsView],
   ['/painel/admin/retencao', permissions.adminRetentionManage],
-  ['/painel/admin/sistema', permissions.adminServerSettingsManage]
+  ['/painel/admin/sistema', permissions.adminServerSettingsManage],
+  ['/painel/admin/guildas', permissions.adminGuildsView]
 ]
 
 export default defineNuxtRouteMiddleware((to) => {
