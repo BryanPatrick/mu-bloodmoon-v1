@@ -2,11 +2,12 @@
 
 ## Status
 
-Etapa 19.3 implemented the complete backend and frontend recovery flow. The
-feature remains blocked end-to-end because the BloodMoon runtime still has no
-outbound email provider or transport configured. The flow cannot be
-production-ready until a provider is selected and its sender identity is
-verified.
+The cPanel SMTP service was approved as the initial provider on 2026-08-11.
+`MailTransportService` now supports authenticated SMTP through deployment-only
+environment variables and enforces TLS 1.2 or newer. A dedicated sender was
+created outside Git and passed SMTP authentication, delivery and local mailbox
+receipt checks. The blocker remains open until the release is deployed and the
+complete recovery flow is exercised with a real user mailbox.
 
 ## Audit result (pre-implementation, Etapa 19.3 baseline)
 
@@ -37,10 +38,10 @@ verified.
   the same `sessionVersion` + `AccountSession.updateMany` transaction used by
   `changePassword`.
 - `MailTransportService` (`apps/api/src/modules/auth/mail-transport.service.ts`):
-  a minimal transport interface with **no simulated delivery**. Outside a
-  strict test-only bypass (`NODE_ENV=test` and `AUTH_MAIL_TEST_BYPASS=1`), it
-  throws `ServiceUnavailableException` instead of pretending an email was
-  sent. This is the reason the feature stays blocked without a real provider.
+  authenticated SMTP using `SMTP_*` deployment variables, TLS certificate
+  verification and fail-closed behavior. A strict test-only bypass
+  (`NODE_ENV=test` and `AUTH_MAIL_TEST_BYPASS=1`) remains provider-independent
+  and cannot activate in production.
 - `/recuperar-conta` (request) and `/redefinir-senha` (reset) pages with real
   IDLE/LOADING/SUCCESS/ERROR states, reusing `TurnstileWidget` and the
   `login.vue` UX conventions.
@@ -53,39 +54,29 @@ verified.
   `TOKEN_EXPIRED`, `TOKEN_USED`, `PASSWORD_INVALID` so the frontend can show a
   specific state without the filter silently stripping the `code` field.
 
-## Required operator decision
+## Approved provider and transport
 
-Choose one outbound transactional-email option before implementation:
+- provider: cPanel SMTP on the BloodMoon domain;
+- preferred transport: port 465 with implicit TLS;
+- alternative transport: port 587 only with required STARTTLS;
+- certificate: valid for the mail hostname at validation time;
+- DNS: SPF, DKIM and DMARC records were present at validation time;
+- sender credentials: stored outside Git and destined for the cPanel Node
+  application environment only.
 
-1. Existing cPanel SMTP mailbox, if the hosting account can provide a verified
-   sender and reliable outbound SMTP credentials.
-2. A transactional-email provider using HTTPS API or SMTP, such as Resend,
-   Postmark or Amazon SES.
+Do not commit credentials or SMTP passwords. The ignored operational copy must
+be removed after the values have been installed and verified in production.
 
-The decision must provide:
+## Remaining release steps
 
-- provider name and transport type;
-- verified sender domain and sender address;
-- production secret stored only in the deployment environment;
-- SPF, DKIM and DMARC configuration or an explicit rollout plan;
-- public web base URL used to build the reset link;
-- expected delivery environment for development and automated tests.
-
-Do not commit credentials, provider tokens or SMTP passwords.
-
-## Remaining implementation after approval
-
-Everything provider-independent is already implemented (see "What Etapa 19.3
-implemented" above). The only remaining step is provider-specific:
-
-1. Implement a concrete `MailTransport` for the approved provider (SMTP client
-   or HTTPS API call) and wire it in `AuthModule` in place of
-   `MailTransportService`'s current fail-closed behavior, using only secrets
-   from the deployment environment (never committed).
-2. Set `WEB_PUBLIC_URL` and the provider's environment variables in the real
-   deployment environment (cPanel Node app env panel), not in a tracked file.
-3. Run one real, manual end-to-end delivery test against the approved sender
-   before declaring the task complete.
+1. Install the `SMTP_*` values and `WEB_PUBLIC_URL` in the cPanel Node
+   application environment.
+2. Deploy the API version containing the SMTP transport and the reset-token
+   migration.
+3. Run the real end-to-end request, delivery, reset, single-use, expiration and
+   old-password rejection checks against a controlled user mailbox.
+4. Remove the ignored local operational credential copy after production is
+   confirmed.
 
 ## Completion rule
 

@@ -13,9 +13,9 @@ beforeAll(async () => {
   process.env.TURNSTILE_SECRET_KEY = 'e2e-turnstile-secret'
   process.env.AUTH_CAPTCHA_TEST_BYPASS = '0'
   process.env.AUTH_RATE_LOGIN_IP_LIMIT = '3'
-  process.env.AUTH_RATE_LOGIN_IP_WINDOW_MS = '80'
+  process.env.AUTH_RATE_LOGIN_IP_WINDOW_MS = '5000'
   process.env.AUTH_RATE_LOGIN_SUBJECT_LIMIT = '3'
-  process.env.AUTH_RATE_LOGIN_SUBJECT_WINDOW_MS = '80'
+  process.env.AUTH_RATE_LOGIN_SUBJECT_WINDOW_MS = '5000'
   process.env.AUTH_RATE_REGISTER_IP_LIMIT = '3'
   process.env.AUTH_RATE_REGISTER_IP_WINDOW_MS = '80'
   process.env.AUTH_RATE_REGISTER_SUBJECT_LIMIT = '3'
@@ -177,6 +177,6 @@ describe('Auth abuse protection', () => {
     expect(limiter.consume('login', '127.0.0.1', 'window-user', start + 1).allowed).toBe(true)
     expect(limiter.consume('login', '127.0.0.1', 'window-user', start + 2).allowed).toBe(true)
     expect(limiter.consume('login', '127.0.0.1', 'window-user', start + 3).allowed).toBe(false)
-    expect(limiter.consume('login', '127.0.0.1', 'window-user', start + 81).allowed).toBe(true)
+    expect(limiter.consume('login', '127.0.0.1', 'window-user', start + 5001).allowed).toBe(true)
   })
 })
