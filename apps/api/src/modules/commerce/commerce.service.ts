@@ -1,4 +1,4 @@
-﻿import { BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common'
+﻿import { BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common'
 import type {
   Account,
   CurrencyCode,
@@ -613,6 +613,7 @@ export class CommerceService {
   }
 
   async createRechargeIntent(payload: CreateRechargeIntentPayload, user: AuthenticatedUser) {
+    this.assertRealMoneyPaymentsEnabled()
     const pack = await this.prisma.rechargePackage.findUnique({ where: { id: payload.packageId } })
     if (!pack || !pack.active) {
       throw new NotFoundException('Recharge package not available')
@@ -664,6 +665,7 @@ export class CommerceService {
   // code) rather than creating a duplicate charge, so a double-click or a
   // page refresh is safe without any extra short-circuit logic here.
   async createRechargeCheckout(id: string, user: AuthenticatedUser) {
+    this.assertRealMoneyPaymentsEnabled()
     const recharge = await this.prisma.rechargeIntent.findUnique({ where: { id }, include: { account: true, package: true } })
     if (!recharge) {
       throw new NotFoundException(`Recharge not found: ${id}`)
@@ -758,6 +760,15 @@ export class CommerceService {
       throw new NotFoundException(`Recharge not found: ${id}`)
     }
     return this.mapRecharge(recharge)
+  }
+
+  private assertRealMoneyPaymentsEnabled(): void {
+    if (process.env.REAL_MONEY_PAYMENTS_ENABLED !== 'true') {
+      throw new ServiceUnavailableException({
+        code: 'PAYMENTS_DISABLED',
+        message: 'Recargas pagas estao temporariamente indisponiveis nesta versao de avaliacao.'
+      })
+    }
   }
 
   async getRechargeDetail(id: string) {

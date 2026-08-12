@@ -6,7 +6,9 @@
           <p class="bm-kicker">Moedas</p>
           <h1 class="mt-2 font-display text-4xl font-black uppercase">Recarga de moedas</h1>
           <p class="mt-3 max-w-2xl text-sm font-semibold leading-7 text-white/68">
-            Escolha uma moeda e um pacote. O pagamento e feito via Pix (Mercado Pago, ambiente de teste).
+            {{ paymentsEnabled
+              ? 'Escolha uma moeda e um pacote. O pagamento e feito via Pix.'
+              : 'Os pacotes podem ser consultados, mas recargas pagas estao indisponiveis nesta versao de avaliacao.' }}
           </p>
 
           <div class="mt-8 grid gap-4 sm:grid-cols-3">
@@ -62,8 +64,8 @@
                 <span>R$ {{ selectedPack.price }}</span>
               </div>
             </div>
-            <button class="mt-5 w-full rounded-md bg-blood-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-blood-500 disabled:cursor-not-allowed disabled:opacity-50" type="button" :disabled="!selectedPack || creatingCheckout" @click="continuePayment">
-              {{ creatingCheckout ? 'Gerando pagamento...' : 'Pagar com Pix' }}
+            <button class="mt-5 w-full rounded-md bg-blood-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-blood-500 disabled:cursor-not-allowed disabled:opacity-50" type="button" :disabled="!paymentsEnabled || !selectedPack || creatingCheckout" @click="continuePayment">
+              {{ !paymentsEnabled ? 'Recargas indisponiveis' : creatingCheckout ? 'Gerando pagamento...' : 'Pagar com Pix' }}
             </button>
           </template>
 
@@ -111,6 +113,8 @@ import type { RechargeCheckout } from '~/composables/useCommerceApi'
 useSeoMeta({ title: 'Recarga de moedas' })
 
 const { loadSession, recordAudit, user } = useAuth()
+const config = useRuntimeConfig()
+const paymentsEnabled = computed(() => config.public.realMoneyPaymentsEnabled === true)
 const commerceApi = useCommerceApi()
 const packs = ref<RechargePack[]>([])
 const currencies = computed(() => Array.from(new Set(packs.value.map((pack) => pack.currency))))

@@ -33,6 +33,18 @@ Cron recomendado, diariamente as 03:17:
 
 Por padrao, a conexao MySQL e lida do arquivo protegido do Node.js Selector. Se o provedor mudar, crie `~/.bloodmoon-backup.env` com permissao `600` e defina `DATABASE_URL`.
 
+As midias de usuario devem ficar fora das raizes substituidas pelo deploy. No
+cPanel, configure a API com caminhos persistentes, por exemplo:
+
+```env
+COMMUNITY_MEDIA_DIR=/home/USUARIO/bloodmoon-storage/community-media
+GUILD_MEDIA_DIR=/home/USUARIO/bloodmoon-storage/guild-media
+```
+
+O caminho `~/bloodmoon-storage` ja faz parte da lista padrao protegida pelo
+script. `~/bmapi/storage` tambem permanece coberto para recuperar arquivos de
+instalacoes anteriores que ainda usem o fallback da aplicacao.
+
 ## Retencao e copia externa
 
 A conta conserva tres dias localmente por padrao. Para um backup realmente resistente a perda da hospedagem, configure um destino externo:

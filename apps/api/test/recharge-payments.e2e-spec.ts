@@ -61,6 +61,7 @@ beforeAll(async () => {
   process.env.MERCADO_PAGO_ACCESS_TOKEN = 'TEST-e2e-access-token'
   process.env.MERCADO_PAGO_WEBHOOK_SECRET = WEBHOOK_SECRET
   process.env.MERCADO_PAGO_API_BASE_URL = 'https://mercadopago.invalid'
+  process.env.REAL_MONEY_PAYMENTS_ENABLED = 'true'
 
   global.fetch = jest.fn(async (input: string | URL | Request, init?: RequestInit) => {
     const url = typeof input === 'string' ? input : input.toString()
@@ -443,5 +444,19 @@ describe('Mercado Pago recharge payments', () => {
     const intentRes = await (await request()).post('/api/recharge/intents').set('Authorization', `Bearer ${token}`).send({ packageId })
     const res = await (await request()).post(`/api/recharge/intents/${intentRes.body.id}/checkout`).set('Authorization', `Bearer ${otherToken}`)
     expect(res.status).toBe(403)
+  })
+
+  it('fails closed when real-money payments are disabled, even through the API', async () => {
+    process.env.REAL_MONEY_PAYMENTS_ENABLED = 'false'
+    const countBefore = await prisma.rechargeIntent.count()
+    const res = await (await request())
+      .post('/api/recharge/intents')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ packageId })
+
+    expect(res.status).toBe(503)
+    expect(res.body.message).toContain('temporariamente indisponiveis')
+    expect(await prisma.rechargeIntent.count()).toBe(countBefore)
+    process.env.REAL_MONEY_PAYMENTS_ENABLED = 'true'
   })
 })

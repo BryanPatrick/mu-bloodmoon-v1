@@ -28,6 +28,7 @@ export class MercadoPagoProvider implements PaymentProvider {
   }
 
   async createOrder(input: CreateOrderInput): Promise<CreateOrderResult> {
+    this.requireEnabled()
     const accessToken = this.requireAccessToken()
 
     const body: MercadoPagoCreateOrderRequest = {
@@ -72,6 +73,7 @@ export class MercadoPagoProvider implements PaymentProvider {
   }
 
   async getOrder(externalOrderId: string): Promise<OrderStatusResult> {
+    this.requireEnabled()
     const accessToken = this.requireAccessToken()
 
     const response = await this.request(`/v1/orders/${encodeURIComponent(externalOrderId)}`, {
@@ -97,6 +99,7 @@ export class MercadoPagoProvider implements PaymentProvider {
   }
 
   async cancelOrder(externalOrderId: string): Promise<void> {
+    this.requireEnabled()
     const accessToken = this.requireAccessToken()
     await this.request(`/v1/orders/${encodeURIComponent(externalOrderId)}/cancel`, {
       method: 'POST',
@@ -118,6 +121,14 @@ export class MercadoPagoProvider implements PaymentProvider {
     throw new ServiceUnavailableException(
       'Real refunds are not implemented yet -- see the payments delivery doc.'
     )
+  }
+
+  private requireEnabled(): void {
+    if (!this.config.enabled) {
+      throw new ServiceUnavailableException(
+        'Recargas pagas estao temporariamente indisponiveis nesta versao de avaliacao.'
+      )
+    }
   }
 
   private requireAccessToken(): string {

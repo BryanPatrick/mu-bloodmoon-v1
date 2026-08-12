@@ -8,7 +8,7 @@ BACKUP_ROOT="${BACKUP_ROOT:-$HOME_DIR/backups/bloodmoon}"
 LOCAL_RETENTION_DAYS="${LOCAL_RETENTION_DAYS:-3}"
 NODE_SELECTOR_FILE="${NODE_SELECTOR_FILE:-$HOME_DIR/.cl.selector/node-selector.json}"
 NODE_APP_KEY="${NODE_APP_KEY:-bmapi}"
-BACKUP_PATHS="${BACKUP_PATHS:-$HOME_DIR/bmapi/public:$HOME_DIR/bmweb/storage:$HOME_DIR/public_html/uploads}"
+BACKUP_PATHS="${BACKUP_PATHS:-$HOME_DIR/bloodmoon-storage:$HOME_DIR/bmapi/storage:$HOME_DIR/bmapi/public:$HOME_DIR/bmweb/storage:$HOME_DIR/public_html/uploads}"
 RCLONE_REMOTE="${RCLONE_REMOTE:-}"
 BACKUP_ALERT_EMAIL="${BACKUP_ALERT_EMAIL:-}"
 

@@ -27,6 +27,7 @@ const PUBLIC_ERROR_CODES = new Set([
   'TOKEN_EXPIRED',
   'TOKEN_USED',
   'PASSWORD_INVALID',
+  'PAYMENTS_DISABLED',
 ])
 
 @Catch()
@@ -47,7 +48,7 @@ export class SafeExceptionFilter implements ExceptionFilter {
     const sourceMessage = typeof source === 'string' ? source : source && typeof source === 'object' && 'message' in source ? (source as { message?: unknown }).message : null
     const sourceCode = source && typeof source === 'object' && 'code' in source ? (source as { code?: unknown }).code : null
     const code = typeof sourceCode === 'string' && PUBLIC_ERROR_CODES.has(sourceCode) ? sourceCode : undefined
-    const message = status >= 500
+    const message = status >= 500 && !code
       ? 'Nao foi possivel concluir a solicitacao.'
       : Array.isArray(sourceMessage) ? sourceMessage.join('. ') : typeof sourceMessage === 'string' ? sourceMessage : 'Solicitacao invalida.'
 
