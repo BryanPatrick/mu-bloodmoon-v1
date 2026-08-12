@@ -74,12 +74,13 @@ async function main() {
   await mkdir(webStage, { recursive: true })
   await mkdir(apiStage, { recursive: true })
 
-  await cp(webOutput, path.join(webStage, '.output'), { recursive: true })
+  // Nitro may emit Windows junctions. Deployment archives need their contents,
+  // not host-specific links that require elevated permissions to recreate.
+  await cp(webOutput, path.join(webStage, '.output'), { recursive: true, dereference: true })
   // Binaries are uploaded independently so routine web deploys stay small.
-  await rm(
-    path.join(webStage, '.output', 'public', 'downloads', 'BloodMoonLauncher.zip'),
-    { force: true }
-  )
+  await rm(path.join(webStage, '.output', 'public', 'downloads', 'BloodMoonLauncher.zip'), {
+    force: true
+  })
   await patchNuxtServerForCpanel(path.join(webStage, '.output'))
   const webServerPackage = JSON.parse(
     await readFile(path.join(webOutput, 'server', 'package.json'), 'utf8')
@@ -137,25 +138,39 @@ async function main() {
   }
 
   await cp(apiDist, path.join(apiStage, 'dist'), { recursive: true })
-  await cp(path.join(root, 'apps', 'api', 'prisma'), path.join(apiStage, 'prisma'), { recursive: true })
-  await copyIfExists(
-    path.join(root, 'docs', 'catalogs'),
-    path.join(apiStage, 'docs', 'catalogs')
-  )
+  await cp(path.join(root, 'apps', 'api', 'prisma'), path.join(apiStage, 'prisma'), {
+    recursive: true
+  })
+  await copyIfExists(path.join(root, 'docs', 'catalogs'), path.join(apiStage, 'docs', 'catalogs'))
   await copyIfExists(
     path.join(root, 'apps', 'api', 'scripts', 'import-prepared-data.mjs'),
     path.join(apiStage, 'apps', 'api', 'scripts', 'import-prepared-data.mjs')
   )
-  await copyIfExists(path.join(root, 'references', 'web-source-current'), path.join(apiStage, 'references', 'web-source-current'))
-  await copyIfExists(path.join(root, 'references', 'game-data', 'muserver-export'), path.join(apiStage, 'references', 'game-data', 'muserver-export'))
-  await copyIfExists(path.join(root, 'references', 'game-data', 'source-harvest'), path.join(apiStage, 'references', 'game-data', 'source-harvest'))
-  await copyIfExists(path.join(root, 'references', 'game-data', 'equipment-postgres-import-plan.json'), path.join(apiStage, 'references', 'game-data', 'equipment-postgres-import-plan.json'))
-  await copyIfExists(path.join(root, 'references', 'game-data', 'equipment-remap-audit.md'), path.join(apiStage, 'references', 'game-data', 'equipment-remap-audit.md'))
-  await writeFile(path.join(apiStage, 'package.json'), `${JSON.stringify(apiDeployPackage, null, 2)}\n`)
-  await writeFile(
-    path.join(apiStage, 'server.js'),
-    "require('./dist/apps/api/src/main.js')\n"
+  await copyIfExists(
+    path.join(root, 'references', 'web-source-current'),
+    path.join(apiStage, 'references', 'web-source-current')
   )
+  await copyIfExists(
+    path.join(root, 'references', 'game-data', 'muserver-export'),
+    path.join(apiStage, 'references', 'game-data', 'muserver-export')
+  )
+  await copyIfExists(
+    path.join(root, 'references', 'game-data', 'source-harvest'),
+    path.join(apiStage, 'references', 'game-data', 'source-harvest')
+  )
+  await copyIfExists(
+    path.join(root, 'references', 'game-data', 'equipment-postgres-import-plan.json'),
+    path.join(apiStage, 'references', 'game-data', 'equipment-postgres-import-plan.json')
+  )
+  await copyIfExists(
+    path.join(root, 'references', 'game-data', 'equipment-remap-audit.md'),
+    path.join(apiStage, 'references', 'game-data', 'equipment-remap-audit.md')
+  )
+  await writeFile(
+    path.join(apiStage, 'package.json'),
+    `${JSON.stringify(apiDeployPackage, null, 2)}\n`
+  )
+  await writeFile(path.join(apiStage, 'server.js'), "require('./dist/apps/api/src/main.js')\n")
   await writeFile(
     path.join(apiStage, 'README-cpanel.md'),
     [
