@@ -52,7 +52,9 @@ async function patchNuxtServerForCpanel(outputDir) {
 }
 
 function tarGzipDirectory(sourceDir, targetFile) {
-  const result = spawnSync('tar', ['-czf', targetFile, '-C', sourceDir, '.'], { stdio: 'inherit' })
+  const result = spawnSync('tar', ['--force-local', '-czf', targetFile, '-C', sourceDir, '.'], {
+    stdio: 'inherit'
+  })
   if (result.status !== 0) {
     throw new Error(`tar.gz failed for ${sourceDir}`)
   }
