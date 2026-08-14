@@ -19,7 +19,31 @@ export type GmEventDefinitionSummary = {
   category: string
   executionMode: GmEventExecutionMode
   status: GmEventDefinitionStatus
+  createdBy: string
   createdAt: string
+  updatedAt: string
+}
+
+export type GmEventDefinitionListQuery = {
+  status?: GmEventDefinitionStatus
+  category?: string
+  executionMode?: GmEventExecutionMode
+}
+
+export type GmEventDefinitionDetail = GmEventDefinitionSummary & {
+  schedules: GmEventScheduleSummary[]
+}
+
+// Changing status or executionMode is treated as critical (it changes what
+// a GM is even allowed to run) and requires a reason; renaming/describing
+// does not.
+export type GmEventDefinitionUpdatePayload = {
+  name?: string
+  description?: string
+  category?: string
+  executionMode?: GmEventExecutionMode
+  status?: GmEventDefinitionStatus
+  reason?: string
 }
 
 export type GmEventScheduleCreatePayload = {
@@ -27,6 +51,13 @@ export type GmEventScheduleCreatePayload = {
   endsAt?: string
   recurrenceNote?: string
   notes?: string
+}
+
+export type GmEventScheduleUpdatePayload = {
+  startsAt?: string
+  endsAt?: string | null
+  recurrenceNote?: string | null
+  notes?: string | null
 }
 
 export type GmEventScheduleSummary = {
@@ -37,6 +68,14 @@ export type GmEventScheduleSummary = {
   endsAt: string | null
   recurrenceNote: string | null
   notes: string | null
+}
+
+export type GmEventAuditEntry = {
+  id: string
+  action: string
+  actorUsername: string | null
+  reason: string | null
+  createdAt: string
 }
 
 export type GmEventRunListQuery = {

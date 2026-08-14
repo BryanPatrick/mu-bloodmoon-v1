@@ -226,6 +226,12 @@ const administrativeItems: MenuItem[] = [
     ]
   },
   {
+    label: 'Eventos',
+    to: '/painel/admin/eventos',
+    icon: Map,
+    permission: permissions.gmEventsView
+  },
+  {
     label: 'Monitoramento',
     to: '/painel/admin/erros',
     icon: Activity,

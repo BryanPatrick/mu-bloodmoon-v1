@@ -71,6 +71,7 @@ describe('GM events MVP (definitions, agenda, runs, results)', () => {
   let definitionId = ''
   let automatedDefinitionId = ''
   let runId = ''
+  let scheduleId = ''
 
   const request = () => import('supertest').then((module) => module.default(httpServer))
 
@@ -334,5 +335,129 @@ describe('GM events MVP (definitions, agenda, runs, results)', () => {
       .send({ reason: 'Cancelado pelo Super ADM por decisao operacional.' })
     expect(cancelled.status).toBe(200)
     expect(cancelled.body.status).toBe('CANCELLED')
+  })
+
+  it('blocks a GM from every definition-configuration endpoint (get/update/history/schedule update/schedule delete)', async () => {
+    const get = await (await request()).get(`/api/gm/events/definitions/${definitionId}`).set('Authorization', `Bearer ${gmExecutorToken}`)
+    expect(get.status).toBe(200) // viewing a single definition is allowed by gm.events.view
+
+    const update = await (
+      await request()
+    )
+      .patch(`/api/gm/events/definitions/${definitionId}`)
+      .set('Authorization', `Bearer ${gmExecutorToken}`)
+      .send({ name: 'GM tentando renomear' })
+    expect(update.status).toBe(403)
+
+    const history = await (await request()).get(`/api/gm/events/definitions/${definitionId}/history`).set('Authorization', `Bearer ${gmExecutorToken}`)
+    expect(history.status).toBe(403)
+  })
+
+  it('lets SUPER_ADMIN fetch a definition detail with its schedules', async () => {
+    const detail = await (
+      await request()
+    )
+      .get(`/api/gm/events/definitions/${definitionId}`)
+      .set('Authorization', `Bearer ${superAdminToken}`)
+    expect(detail.status).toBe(200)
+    expect(detail.body.id).toBe(definitionId)
+    expect(Array.isArray(detail.body.schedules)).toBe(true)
+    expect(detail.body.schedules.length).toBeGreaterThan(0)
+    scheduleId = detail.body.schedules[0].id
+  })
+
+  it('requires a reason to change status or executionMode, but not for a plain rename', async () => {
+    const withoutReason = await (
+      await request()
+    )
+      .patch(`/api/gm/events/definitions/${definitionId}`)
+      .set('Authorization', `Bearer ${superAdminToken}`)
+      .send({ status: 'INACTIVE' })
+    expect(withoutReason.status).toBe(400)
+
+    const rename = await (
+      await request()
+    )
+      .patch(`/api/gm/events/definitions/${definitionId}`)
+      .set('Authorization', `Bearer ${superAdminToken}`)
+      .send({ name: 'Golden Invasion (renomeado)' })
+    expect(rename.status).toBe(200)
+    expect(rename.body.name).toBe('Golden Invasion (renomeado)')
+    expect(rename.body.status).toBe('ACTIVE')
+
+    const withReason = await (
+      await request()
+    )
+      .patch(`/api/gm/events/definitions/${definitionId}`)
+      .set('Authorization', `Bearer ${superAdminToken}`)
+      .send({ status: 'INACTIVE', reason: 'Suspendendo temporariamente para ajuste de balanceamento' })
+    expect(withReason.status).toBe(200)
+    expect(withReason.body.status).toBe('INACTIVE')
+
+    // Reactivate so it does not interfere with earlier assertions if this file is re-run.
+    const reactivate = await (
+      await request()
+    )
+      .patch(`/api/gm/events/definitions/${definitionId}`)
+      .set('Authorization', `Bearer ${superAdminToken}`)
+      .send({ status: 'ACTIVE', reason: 'Reativando apos ajuste de balanceamento' })
+    expect(reactivate.status).toBe(200)
+  })
+
+  it('records definition and schedule changes in the merged history/audit view', async () => {
+    const history = await (
+      await request()
+    )
+      .get(`/api/gm/events/definitions/${definitionId}/history`)
+      .set('Authorization', `Bearer ${superAdminToken}`)
+    expect(history.status).toBe(200)
+    const actions = history.body.map((entry: { action: string }) => entry.action)
+    expect(actions).toEqual(
+      expect.arrayContaining(['gm.event.definition.created', 'gm.event.definition.updated', 'gm.event.schedule.created'])
+    )
+  })
+
+  it('lets SUPER_ADMIN update a schedule, and blocks deleting one that already has a run recorded against it', async () => {
+    const updated = await (
+      await request()
+    )
+      .patch(`/api/gm/events/definitions/${definitionId}/schedules/${scheduleId}`)
+      .set('Authorization', `Bearer ${superAdminToken}`)
+      .send({ recurrenceNote: 'Semanal, todo domingo' })
+    expect(updated.status).toBe(200)
+    expect(updated.body.recurrenceNote).toBe('Semanal, todo domingo')
+
+    // scheduleId itself has no run referencing it -- deleting it should succeed.
+    const okDelete = await (
+      await request()
+    )
+      .delete(`/api/gm/events/definitions/${definitionId}/schedules/${scheduleId}`)
+      .set('Authorization', `Bearer ${superAdminToken}`)
+    expect(okDelete.status).toBe(200)
+    expect(okDelete.body.ok).toBe(true)
+
+    // A schedule referenced by a run cannot be deleted.
+    const linkedSchedule = await (
+      await request()
+    )
+      .post(`/api/gm/events/definitions/${definitionId}/schedules`)
+      .set('Authorization', `Bearer ${superAdminToken}`)
+      .send({ startsAt: new Date(Date.now() + 7200_000).toISOString() })
+    expect(linkedSchedule.status).toBe(201)
+
+    const linkedRun = await (
+      await request()
+    )
+      .post('/api/gm/events/runs')
+      .set('Authorization', `Bearer ${gmExecutorToken}`)
+      .send({ definitionId, scheduleId: linkedSchedule.body.id })
+    expect(linkedRun.status).toBe(201)
+
+    const blockedDelete = await (
+      await request()
+    )
+      .delete(`/api/gm/events/definitions/${definitionId}/schedules/${linkedSchedule.body.id}`)
+      .set('Authorization', `Bearer ${superAdminToken}`)
+    expect(blockedDelete.status).toBe(400)
   })
 })

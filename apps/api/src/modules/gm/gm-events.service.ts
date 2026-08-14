@@ -4,8 +4,12 @@ import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
 import type {
+  GmEventAuditEntry,
   GmEventDefinitionCreatePayload,
+  GmEventDefinitionDetail,
+  GmEventDefinitionListQuery,
   GmEventDefinitionSummary,
+  GmEventDefinitionUpdatePayload,
   GmEventResultSubmitPayload,
   GmEventResultValidatePayload,
   GmEventRunCancelPayload,
@@ -16,7 +20,8 @@ import type {
   GmEventRunProblemPayload,
   GmEventRunSummary,
   GmEventScheduleCreatePayload,
-  GmEventScheduleSummary
+  GmEventScheduleSummary,
+  GmEventScheduleUpdatePayload
 } from './gm-events.contract'
 
 const defaultPageSize = 20
@@ -49,7 +54,8 @@ export class GmEventsService {
     if (!key || !name || !category) throw new BadRequestException('key, name and category are required')
 
     const definition = await this.prisma.gmEventDefinition.create({
-      data: { key, name, description: payload.description?.trim() || null, category, executionMode: payload.executionMode, createdById: user.id }
+      data: { key, name, description: payload.description?.trim() || null, category, executionMode: payload.executionMode, createdById: user.id },
+      include: { createdBy: { select: { username: true } } }
     })
     await this.audit.record({
       actorId: user.id, actorUsername: user.username, action: 'gm.event.definition.created',
@@ -58,9 +64,95 @@ export class GmEventsService {
     return this.mapDefinition(definition)
   }
 
-  async listDefinitions(): Promise<GmEventDefinitionSummary[]> {
-    const definitions = await this.prisma.gmEventDefinition.findMany({ orderBy: { name: 'asc' } })
+  async listDefinitions(query: GmEventDefinitionListQuery = {}): Promise<GmEventDefinitionSummary[]> {
+    const where: Prisma.GmEventDefinitionWhereInput = {
+      ...(query.status ? { status: query.status } : {}),
+      ...(query.category ? { category: query.category } : {}),
+      ...(query.executionMode ? { executionMode: query.executionMode } : {})
+    }
+    const definitions = await this.prisma.gmEventDefinition.findMany({
+      where,
+      orderBy: { name: 'asc' },
+      include: { createdBy: { select: { username: true } } }
+    })
     return definitions.map(this.mapDefinition)
+  }
+
+  async getDefinition(id: string): Promise<GmEventDefinitionDetail> {
+    const definition = await this.prisma.gmEventDefinition.findUnique({
+      where: { id },
+      include: { createdBy: { select: { username: true } }, schedules: { orderBy: { startsAt: 'asc' } } }
+    })
+    if (!definition) throw new NotFoundException('Event definition not found')
+    return {
+      ...this.mapDefinition(definition),
+      schedules: definition.schedules.map((schedule) => ({
+        id: schedule.id,
+        definitionId: schedule.definitionId,
+        definitionName: definition.name,
+        startsAt: schedule.startsAt.toISOString(),
+        endsAt: schedule.endsAt?.toISOString() || null,
+        recurrenceNote: schedule.recurrenceNote,
+        notes: schedule.notes
+      }))
+    }
+  }
+
+  async updateDefinition(id: string, payload: GmEventDefinitionUpdatePayload, user: AuthenticatedUser): Promise<GmEventDefinitionSummary> {
+    const definition = await this.prisma.gmEventDefinition.findUnique({ where: { id } })
+    if (!definition) throw new NotFoundException('Event definition not found')
+
+    const changesStatusOrMode = (payload.status && payload.status !== definition.status) || (payload.executionMode && payload.executionMode !== definition.executionMode)
+    const reason = payload.reason?.trim()
+    if (changesStatusOrMode && (!reason || reason.length < 5)) {
+      throw new BadRequestException('A justification with at least 5 characters is required to change status or execution mode')
+    }
+
+    const updated = await this.prisma.gmEventDefinition.update({
+      where: { id },
+      data: {
+        ...(payload.name ? { name: payload.name.trim() } : {}),
+        ...(payload.description !== undefined ? { description: payload.description?.trim() || null } : {}),
+        ...(payload.category ? { category: payload.category.trim() } : {}),
+        ...(payload.executionMode ? { executionMode: payload.executionMode } : {}),
+        ...(payload.status ? { status: payload.status } : {})
+      },
+      include: { createdBy: { select: { username: true } } }
+    })
+    await this.audit.record({
+      actorId: user.id, actorUsername: user.username, action: 'gm.event.definition.updated',
+      targetType: 'GmEventDefinition', targetId: id, severity: changesStatusOrMode ? 'warning' : 'info',
+      metadata: {
+        previousStatus: definition.status, nextStatus: updated.status,
+        previousExecutionMode: definition.executionMode, nextExecutionMode: updated.executionMode,
+        reason: reason || null, result: 'success'
+      }
+    })
+    return this.mapDefinition(updated)
+  }
+
+  async definitionHistory(id: string): Promise<GmEventAuditEntry[]> {
+    const definition = await this.prisma.gmEventDefinition.findUnique({ where: { id } })
+    if (!definition) throw new NotFoundException('Event definition not found')
+    const [definitionEvents, scheduleIds] = await Promise.all([
+      this.prisma.auditEvent.findMany({ where: { targetType: 'GmEventDefinition', targetId: id }, orderBy: { createdAt: 'desc' } }),
+      this.prisma.gmEventSchedule.findMany({ where: { definitionId: id }, select: { id: true } })
+    ])
+    const scheduleEvents = scheduleIds.length
+      ? await this.prisma.auditEvent.findMany({
+          where: { targetType: 'GmEventSchedule', targetId: { in: scheduleIds.map((schedule) => schedule.id) } },
+          orderBy: { createdAt: 'desc' }
+        })
+      : []
+    return [...definitionEvents, ...scheduleEvents]
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .map((event) => ({
+        id: event.id,
+        action: event.action,
+        actorUsername: event.actorUsername,
+        reason: typeof event.metadata === 'object' && event.metadata && 'reason' in event.metadata ? String((event.metadata as { reason?: unknown }).reason || '') || null : null,
+        createdAt: event.createdAt.toISOString()
+      }))
   }
 
   async createSchedule(definitionId: string, payload: GmEventScheduleCreatePayload, user: AuthenticatedUser): Promise<GmEventScheduleSummary> {
@@ -85,6 +177,58 @@ export class GmEventsService {
       targetType: 'GmEventSchedule', targetId: schedule.id, metadata: { definitionId, startsAt: payload.startsAt, result: 'success' }
     })
     return { ...schedule, definitionName: definition.name, startsAt: schedule.startsAt.toISOString(), endsAt: schedule.endsAt?.toISOString() || null }
+  }
+
+  async updateSchedule(definitionId: string, scheduleId: string, payload: GmEventScheduleUpdatePayload, user: AuthenticatedUser): Promise<GmEventScheduleSummary> {
+    const schedule = await this.prisma.gmEventSchedule.findUnique({ where: { id: scheduleId }, include: { definition: true } })
+    if (!schedule || schedule.definitionId !== definitionId) throw new NotFoundException('Schedule not found')
+
+    let startsAt: Date | undefined
+    if (payload.startsAt !== undefined) {
+      startsAt = new Date(payload.startsAt)
+      if (Number.isNaN(startsAt.getTime())) throw new BadRequestException('Invalid startsAt')
+    }
+    let endsAt: Date | null | undefined
+    if (payload.endsAt !== undefined) {
+      endsAt = payload.endsAt === null ? null : new Date(payload.endsAt)
+      if (endsAt && Number.isNaN(endsAt.getTime())) throw new BadRequestException('Invalid endsAt')
+    }
+
+    const updated = await this.prisma.gmEventSchedule.update({
+      where: { id: scheduleId },
+      data: {
+        ...(startsAt ? { startsAt } : {}),
+        ...(endsAt !== undefined ? { endsAt } : {}),
+        ...(payload.recurrenceNote !== undefined ? { recurrenceNote: payload.recurrenceNote?.trim() || null } : {}),
+        ...(payload.notes !== undefined ? { notes: payload.notes?.trim() || null } : {})
+      }
+    })
+    await this.audit.record({
+      actorId: user.id, actorUsername: user.username, action: 'gm.event.schedule.updated',
+      targetType: 'GmEventSchedule', targetId: scheduleId, metadata: { definitionId, result: 'success' }
+    })
+    return {
+      ...updated,
+      definitionName: schedule.definition.name,
+      startsAt: updated.startsAt.toISOString(),
+      endsAt: updated.endsAt?.toISOString() || null
+    }
+  }
+
+  async deleteSchedule(definitionId: string, scheduleId: string, user: AuthenticatedUser): Promise<{ ok: true }> {
+    const schedule = await this.prisma.gmEventSchedule.findUnique({ where: { id: scheduleId } })
+    if (!schedule || schedule.definitionId !== definitionId) throw new NotFoundException('Schedule not found')
+    const runsUsingSchedule = await this.prisma.gmEventRun.count({ where: { scheduleId } })
+    if (runsUsingSchedule > 0) {
+      throw new BadRequestException('This schedule already has event runs recorded against it and cannot be deleted')
+    }
+
+    await this.prisma.gmEventSchedule.delete({ where: { id: scheduleId } })
+    await this.audit.record({
+      actorId: user.id, actorUsername: user.username, action: 'gm.event.schedule.deleted',
+      targetType: 'GmEventSchedule', targetId: scheduleId, metadata: { definitionId, result: 'success' }
+    })
+    return { ok: true }
   }
 
   async agenda(): Promise<GmEventScheduleSummary[]> {
@@ -323,7 +467,9 @@ export class GmEventsService {
     category: string
     executionMode: GmEventDefinitionSummary['executionMode']
     status: GmEventDefinitionSummary['status']
+    createdBy: { username: string }
     createdAt: Date
+    updatedAt: Date
   }): GmEventDefinitionSummary => ({
     id: definition.id,
     key: definition.key,
@@ -332,6 +478,8 @@ export class GmEventsService {
     category: definition.category,
     executionMode: definition.executionMode,
     status: definition.status,
-    createdAt: definition.createdAt.toISOString()
+    createdBy: definition.createdBy.username,
+    createdAt: definition.createdAt.toISOString(),
+    updatedAt: definition.updatedAt.toISOString()
   })
 }

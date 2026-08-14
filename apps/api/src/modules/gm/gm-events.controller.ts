@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { CurrentUser } from '../auth/current-user.decorator'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { Roles } from '../auth/roles.decorator'
@@ -10,6 +10,8 @@ import type { AuthenticatedUser } from '../auth/auth.types'
 import { GmEventsService } from './gm-events.service'
 import type {
   GmEventDefinitionCreatePayload,
+  GmEventDefinitionListQuery,
+  GmEventDefinitionUpdatePayload,
   GmEventResultSubmitPayload,
   GmEventResultValidatePayload,
   GmEventRunCancelPayload,
@@ -17,7 +19,8 @@ import type {
   GmEventRunEndPayload,
   GmEventRunListQuery,
   GmEventRunProblemPayload,
-  GmEventScheduleCreatePayload
+  GmEventScheduleCreatePayload,
+  GmEventScheduleUpdatePayload
 } from './gm-events.contract'
 
 // Same base access as GmController (GM/ADMIN/SUPER_ADMIN), but the actions
@@ -34,14 +37,36 @@ export class GmEventsController {
 
   @Get('definitions')
   @RequirePermissions(permissionKeys.gmEventsView)
-  listDefinitions() {
-    return this.events.listDefinitions()
+  listDefinitions(@Query() query: GmEventDefinitionListQuery) {
+    return this.events.listDefinitions(query)
   }
 
   @Post('definitions')
   @Roles('ADMIN', 'SUPER_ADMIN')
   createDefinition(@Body() payload: GmEventDefinitionCreatePayload, @CurrentUser() user: AuthenticatedUser) {
     return this.events.createDefinition(payload, user)
+  }
+
+  @Get('definitions/:id')
+  @RequirePermissions(permissionKeys.gmEventsView)
+  getDefinition(@Param('id') id: string) {
+    return this.events.getDefinition(id)
+  }
+
+  @Patch('definitions/:id')
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  updateDefinition(
+    @Param('id') id: string,
+    @Body() payload: GmEventDefinitionUpdatePayload,
+    @CurrentUser() user: AuthenticatedUser
+  ) {
+    return this.events.updateDefinition(id, payload, user)
+  }
+
+  @Get('definitions/:id/history')
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  definitionHistory(@Param('id') id: string) {
+    return this.events.definitionHistory(id)
   }
 
   @Post('definitions/:id/schedules')
@@ -52,6 +77,27 @@ export class GmEventsController {
     @CurrentUser() user: AuthenticatedUser
   ) {
     return this.events.createSchedule(id, payload, user)
+  }
+
+  @Patch('definitions/:id/schedules/:scheduleId')
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  updateSchedule(
+    @Param('id') id: string,
+    @Param('scheduleId') scheduleId: string,
+    @Body() payload: GmEventScheduleUpdatePayload,
+    @CurrentUser() user: AuthenticatedUser
+  ) {
+    return this.events.updateSchedule(id, scheduleId, payload, user)
+  }
+
+  @Delete('definitions/:id/schedules/:scheduleId')
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  deleteSchedule(
+    @Param('id') id: string,
+    @Param('scheduleId') scheduleId: string,
+    @CurrentUser() user: AuthenticatedUser
+  ) {
+    return this.events.deleteSchedule(id, scheduleId, user)
   }
 
   @Get('agenda')
