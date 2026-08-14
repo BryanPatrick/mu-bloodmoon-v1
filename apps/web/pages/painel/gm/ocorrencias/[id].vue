@@ -8,12 +8,17 @@
           <span class="rounded-sm px-2 py-1 text-[11px] font-black uppercase tracking-[0.14em]" :class="statusClass(occurrence.status)">
             {{ statusLabel(occurrence.status) }}
           </span>
+          <span class="rounded-sm px-2 py-1 text-[11px] font-black uppercase tracking-[0.14em]" :class="priorityClass(occurrence.priority)">
+            {{ priorityLabel(occurrence.priority) }}
+          </span>
+          <span v-if="occurrence.slaStatus === 'OVERDUE'" class="rounded-sm bg-blood-700/30 px-2 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-blood-100">SLA atrasado</span>
+          <span v-else-if="occurrence.slaStatus === 'AT_RISK'" class="rounded-sm bg-amber-500/15 px-2 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-amber-100">SLA em risco</span>
           <span class="text-xs font-bold text-white/45">{{ occurrence.type }}</span>
         </div>
         <p class="mt-4 text-sm font-semibold leading-7">{{ occurrence.description }}</p>
         <div class="mt-4 grid gap-2 text-xs text-white/45 sm:grid-cols-2">
           <span>Criado por {{ occurrence.createdBy }} em {{ formatDate(occurrence.createdAt) }}</span>
-          <span v-if="occurrence.targetType">Alvo: {{ occurrence.targetType }} {{ occurrence.targetId }}</span>
+          <span v-if="occurrence.targetType">Vínculo: {{ occurrence.targetLabel || `${occurrence.targetType} ${occurrence.targetId}` }} ({{ occurrence.targetType }})</span>
           <span v-if="occurrence.assignedTo">Responsável: {{ occurrence.assignedTo }}</span>
           <span v-if="occurrence.resolvedAt">Encerrada em {{ formatDate(occurrence.resolvedAt) }}</span>
         </div>
@@ -34,10 +39,36 @@
           <textarea v-model="noteText" class="min-h-20 rounded-md border border-white/10 bg-black/[0.35] px-4 py-3 text-sm outline-none focus:border-blood-400" placeholder="Adicionar nota operacional"></textarea>
           <button class="bm-liquid-primary w-fit px-5 py-3 text-sm font-black" type="submit">Adicionar nota</button>
         </form>
+
+        <h2 class="mt-6 font-display text-xl font-black uppercase">Linha do tempo</h2>
+        <div class="mt-3 grid gap-2">
+          <div v-for="entry in occurrence.timeline" :key="entry.id" class="rounded-md border border-white/10 bg-black/20 p-3 text-xs">
+            <div class="flex items-center justify-between gap-3">
+              <strong class="text-white/70">{{ entry.action }}</strong>
+              <span class="text-white/45">{{ formatDate(entry.createdAt) }}</span>
+            </div>
+            <p class="mt-1 text-white/45">{{ entry.actor || 'sistema' }}{{ entry.reason ? ` · ${entry.reason}` : '' }}{{ entry.note ? ` · ${entry.note}` : '' }}</p>
+          </div>
+          <p v-if="!occurrence.timeline.length" class="text-sm text-white/45">Nenhum evento registrado ainda.</p>
+        </div>
       </section>
 
       <section class="bm-panel rounded-md p-6">
-        <h2 class="font-display text-xl font-black uppercase">Alterar status</h2>
+        <h2 class="font-display text-xl font-black uppercase">Prioridade</h2>
+        <div class="mt-4 grid grid-cols-2 gap-2">
+          <button
+            v-for="priority in priorities"
+            :key="priority"
+            class="rounded-md border px-4 py-3 text-left text-sm font-black hover:border-ember/50"
+            :class="priority === occurrence.priority ? 'border-ember/50 bg-white/[0.06]' : 'border-white/10 bg-white/[0.04]'"
+            type="button"
+            @click="changePriority(priority)"
+          >
+            {{ priorityLabel(priority) }}
+          </button>
+        </div>
+
+        <h2 class="mt-6 font-display text-xl font-black uppercase">Alterar status</h2>
         <div class="mt-4 grid gap-2">
           <button
             v-for="status in transitionableStatuses"
@@ -60,7 +91,7 @@
 </template>
 
 <script setup lang="ts">
-import type { GmOccurrenceDetail, GmOccurrenceStatus } from '~/composables/useGmApi'
+import type { GmOccurrenceDetail, GmOccurrencePriority, GmOccurrenceStatus } from '~/composables/useGmApi'
 
 const route = useRoute()
 const gmApi = useGmApi()
@@ -79,6 +110,16 @@ const statusClass = (status: GmOccurrenceStatus) => ({
   'bg-cyan-500/15 text-cyan-100': status === 'IN_REVIEW',
   'bg-emerald-500/15 text-emerald-100': status === 'RESOLVED',
   'bg-white/10 text-white/55': status === 'DISMISSED'
+})
+
+const priorities: GmOccurrencePriority[] = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']
+const priorityLabels: Record<GmOccurrencePriority, string> = { LOW: 'Baixa', MEDIUM: 'Média', HIGH: 'Alta', CRITICAL: 'Crítica' }
+const priorityLabel = (priority: GmOccurrencePriority) => priorityLabels[priority] || priority
+const priorityClass = (priority: GmOccurrencePriority) => ({
+  'bg-white/10 text-white/55': priority === 'LOW',
+  'bg-cyan-500/15 text-cyan-100': priority === 'MEDIUM',
+  'bg-amber-500/15 text-amber-100': priority === 'HIGH',
+  'bg-blood-700/30 text-blood-100': priority === 'CRITICAL'
 })
 
 const occurrence = ref<GmOccurrenceDetail | null>(null)
@@ -107,6 +148,16 @@ const submitNote = async () => {
     noteText.value = ''
   } catch {
     statusError.value = 'Não foi possível adicionar a nota.'
+  }
+}
+
+const changePriority = async (priority: GmOccurrencePriority) => {
+  if (!occurrence.value || priority === occurrence.value.priority) return
+  statusError.value = ''
+  try {
+    occurrence.value = await gmApi.updateOccurrence(occurrence.value.id, { priority })
+  } catch {
+    statusError.value = 'Não foi possível atualizar a prioridade.'
   }
 }
 

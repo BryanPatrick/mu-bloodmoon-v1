@@ -1,4 +1,6 @@
 export type GmOccurrenceStatus = 'OPEN' | 'IN_REVIEW' | 'ACTION_REQUIRED' | 'RESOLVED' | 'DISMISSED'
+export type GmOccurrencePriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'
+export type GmOccurrenceSlaStatus = 'ON_TIME' | 'AT_RISK' | 'OVERDUE' | 'CLOSED'
 
 export type GmDashboardSummary = {
   occurrences: {
@@ -29,6 +31,9 @@ export type GmDashboardSummary = {
 
 export type GmOccurrenceListQuery = {
   status?: GmOccurrenceStatus
+  priority?: GmOccurrencePriority
+  assignedToId?: string
+  search?: string
   page?: string
   pageSize?: string
 }
@@ -36,16 +41,29 @@ export type GmOccurrenceListQuery = {
 export type GmOccurrenceSummary = {
   id: string
   type: string
+  priority: GmOccurrencePriority
   description: string
   targetType: string | null
   targetId: string | null
+  targetLabel: string | null
   status: GmOccurrenceStatus
+  slaStatus: GmOccurrenceSlaStatus
   createdBy: string
   assignedTo: string | null
   createdAt: string
   updatedAt: string
   resolvedAt: string | null
   noteCount: number
+}
+
+export type GmOccurrenceTimelineEntry = {
+  id: string
+  kind: 'NOTE' | 'EVENT'
+  action: string
+  actor: string | null
+  note: string | null
+  reason: string | null
+  createdAt: string
 }
 
 export type GmOccurrenceDetail = GmOccurrenceSummary & {
@@ -55,10 +73,12 @@ export type GmOccurrenceDetail = GmOccurrenceSummary & {
     author: string
     createdAt: string
   }>
+  timeline: GmOccurrenceTimelineEntry[]
 }
 
 export type GmOccurrenceCreatePayload = {
   type: string
+  priority?: GmOccurrencePriority
   description: string
   targetType?: string
   targetId?: string
@@ -67,6 +87,7 @@ export type GmOccurrenceCreatePayload = {
 
 export type GmOccurrenceUpdatePayload = {
   status?: GmOccurrenceStatus
+  priority?: GmOccurrencePriority
   assignedToId?: string | null
   reason?: string
 }

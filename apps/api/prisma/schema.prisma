@@ -2785,24 +2785,36 @@ enum GmOccurrenceStatus {
 }
 
 model GmOccurrence {
-  id           String             @id @default(uuid())
-  type         String             @db.VarChar(100)
-  description  String             @db.Text
-  targetType   String?            @db.VarChar(100)
-  targetId     String?            @db.VarChar(191)
-  status       GmOccurrenceStatus @default(OPEN)
+  id           String               @id @default(uuid())
+  type         String               @db.VarChar(100)
+  priority     GmOccurrencePriority @default(MEDIUM)
+  description  String               @db.Text
+  targetType   String?              @db.VarChar(100)
+  targetId     String?              @db.VarChar(191)
+  status       GmOccurrenceStatus   @default(OPEN)
   createdById  String
   assignedToId String?
-  createdAt    DateTime           @default(now())
-  updatedAt    DateTime           @updatedAt
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
   resolvedAt   DateTime?
-  createdBy    Account            @relation("GmOccurrenceCreatedBy", fields: [createdById], references: [id])
-  assignedTo   Account?           @relation("GmOccurrenceAssignedTo", fields: [assignedToId], references: [id])
+  createdBy    Account              @relation("GmOccurrenceCreatedBy", fields: [createdById], references: [id])
+  assignedTo   Account?             @relation("GmOccurrenceAssignedTo", fields: [assignedToId], references: [id])
   notes        GmOccurrenceNote[]
 
   @@index([status, createdAt])
+  @@index([priority, status])
   @@index([targetType, targetId])
   @@index([assignedToId])
+}
+
+// Fixed, small set that drives SLA computation and sort order in the GM UI
+// -- unlike GmOccurrence.type (free text, open-ended categories), the set of
+// priority tiers is deliberately closed, so an enum instead of free text.
+enum GmOccurrencePriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
 }
 
 model GmOccurrenceNote {

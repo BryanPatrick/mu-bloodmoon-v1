@@ -49,6 +49,7 @@ describe('GM operational panel (dashboard, logs, occurrences)', () => {
   let playerToken = ''
   let gmToken = ''
   let occurrenceId = ''
+  let criticalOccurrenceId = ''
 
   const request = () => import('supertest').then((module) => module.default(httpServer))
 
@@ -172,6 +173,105 @@ describe('GM operational panel (dashboard, logs, occurrences)', () => {
     expect(withNote.status).toBe(201)
     expect(withNote.body.notes).toHaveLength(1)
     expect(withNote.body.notes[0].author).toBe(gm.username)
+  })
+
+  it('defaults priority to MEDIUM, and resolves a targetType/targetId link to a friendly label', async () => {
+    const defaulted = await (
+      await request()
+    )
+      .post('/api/gm/occurrences')
+      .set('Authorization', `Bearer ${gmToken}`)
+      .send({ type: 'denuncia', description: 'Sem prioridade informada.' })
+    expect(defaulted.status).toBe(201)
+    expect(defaulted.body.priority).toBe('MEDIUM')
+
+    const playerAccount = await prisma.account.findUniqueOrThrow({ where: { username: player.username } })
+    const critical = await (
+      await request()
+    )
+      .post('/api/gm/occurrences')
+      .set('Authorization', `Bearer ${gmToken}`)
+      .send({
+        type: 'exploit',
+        priority: 'CRITICAL',
+        description: 'Possivel uso de exploit reportado.',
+        targetType: 'Account',
+        targetId: playerAccount.id,
+        assignedToId: playerAccount.id
+      })
+    expect(critical.status).toBe(201)
+    expect(critical.body.priority).toBe('CRITICAL')
+    expect(critical.body.targetLabel).toBe(player.username)
+    expect(critical.body.assignedTo).toBe(player.username)
+    expect(critical.body.slaStatus).toBe('ON_TIME')
+    criticalOccurrenceId = critical.body.id
+  })
+
+  it('filters occurrences by priority, assignedToId and free-text search', async () => {
+    const byPriority = await (
+      await request()
+    )
+      .get('/api/gm/occurrences')
+      .query({ priority: 'CRITICAL' })
+      .set('Authorization', `Bearer ${gmToken}`)
+    expect(byPriority.status).toBe(200)
+    expect(byPriority.body.data.every((item: { priority: string }) => item.priority === 'CRITICAL')).toBe(true)
+    expect(byPriority.body.data.some((item: { id: string }) => item.id === criticalOccurrenceId)).toBe(true)
+
+    const playerAccount = await prisma.account.findUniqueOrThrow({ where: { username: player.username } })
+    const byAssignee = await (
+      await request()
+    )
+      .get('/api/gm/occurrences')
+      .query({ assignedToId: playerAccount.id })
+      .set('Authorization', `Bearer ${gmToken}`)
+    expect(byAssignee.status).toBe(200)
+    expect(byAssignee.body.data.some((item: { id: string }) => item.id === criticalOccurrenceId)).toBe(true)
+
+    const bySearch = await (
+      await request()
+    )
+      .get('/api/gm/occurrences')
+      .query({ search: 'exploit' })
+      .set('Authorization', `Bearer ${gmToken}`)
+    expect(bySearch.status).toBe(200)
+    expect(bySearch.body.data.some((item: { id: string }) => item.id === criticalOccurrenceId)).toBe(true)
+    expect(bySearch.body.data.every((item: { type: string; description: string }) => item.type.includes('exploit') || item.description.toLowerCase().includes('exploit'))).toBe(true)
+  })
+
+  it('lets a GM change priority without a reason, and closes the SLA once resolved', async () => {
+    const changed = await (
+      await request()
+    )
+      .patch(`/api/gm/occurrences/${criticalOccurrenceId}`)
+      .set('Authorization', `Bearer ${gmToken}`)
+      .send({ priority: 'HIGH' })
+    expect(changed.status).toBe(200)
+    expect(changed.body.priority).toBe('HIGH')
+
+    const resolved = await (
+      await request()
+    )
+      .patch(`/api/gm/occurrences/${criticalOccurrenceId}`)
+      .set('Authorization', `Bearer ${gmToken}`)
+      .send({ status: 'RESOLVED', reason: 'Investigado, nao houve exploit real.' })
+    expect(resolved.status).toBe(200)
+    expect(resolved.body.slaStatus).toBe('CLOSED')
+  })
+
+  it('returns a chronological timeline merging notes and status/priority changes', async () => {
+    const detail = await (
+      await request()
+    )
+      .get(`/api/gm/occurrences/${criticalOccurrenceId}`)
+      .set('Authorization', `Bearer ${gmToken}`)
+    expect(detail.status).toBe(200)
+    expect(Array.isArray(detail.body.timeline)).toBe(true)
+    const actions = detail.body.timeline.map((entry: { action: string }) => entry.action)
+    expect(actions).toEqual(expect.arrayContaining(['gm.occurrence.created', 'gm.occurrence.updated']))
+    const timestamps = detail.body.timeline.map((entry: { createdAt: string }) => entry.createdAt)
+    const sorted = [...timestamps].sort()
+    expect(timestamps).toEqual(sorted)
   })
 
   it('requires a reason to resolve or dismiss an occurrence, and none to move it to in-review', async () => {

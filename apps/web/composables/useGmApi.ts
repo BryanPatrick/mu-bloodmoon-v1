@@ -1,4 +1,6 @@
 export type GmOccurrenceStatus = 'OPEN' | 'IN_REVIEW' | 'ACTION_REQUIRED' | 'RESOLVED' | 'DISMISSED'
+export type GmOccurrencePriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'
+export type GmOccurrenceSlaStatus = 'ON_TIME' | 'AT_RISK' | 'OVERDUE' | 'CLOSED'
 
 export type GmDashboardSummary = {
   occurrences: {
@@ -17,10 +19,13 @@ export type GmDashboardSummary = {
 export type GmOccurrenceSummary = {
   id: string
   type: string
+  priority: GmOccurrencePriority
   description: string
   targetType: string | null
   targetId: string | null
+  targetLabel: string | null
   status: GmOccurrenceStatus
+  slaStatus: GmOccurrenceSlaStatus
   createdBy: string
   assignedTo: string | null
   createdAt: string
@@ -29,8 +34,19 @@ export type GmOccurrenceSummary = {
   noteCount: number
 }
 
+export type GmOccurrenceTimelineEntry = {
+  id: string
+  kind: 'NOTE' | 'EVENT'
+  action: string
+  actor: string | null
+  note: string | null
+  reason: string | null
+  createdAt: string
+}
+
 export type GmOccurrenceDetail = GmOccurrenceSummary & {
   notes: Array<{ id: string; note: string; author: string; createdAt: string }>
+  timeline: GmOccurrenceTimelineEntry[]
 }
 
 export type GmLogEntry = {
@@ -71,12 +87,12 @@ export const useGmApi = () => {
     dashboard: () => $fetch<GmDashboardSummary>(`${apiBase.value}/gm/dashboard`, { headers: authHeaders() }),
     logs: (query: { page?: number; pageSize?: number; module?: string } = {}) =>
       $fetch<Paginated<GmLogEntry>>(`${apiBase.value}/gm/logs`, { query: cleanQuery(query), headers: authHeaders() }),
-    listOccurrences: (query: { status?: GmOccurrenceStatus; page?: number; pageSize?: number } = {}) =>
+    listOccurrences: (query: { status?: GmOccurrenceStatus; priority?: GmOccurrencePriority; assignedToId?: string; search?: string; page?: number; pageSize?: number } = {}) =>
       $fetch<Paginated<GmOccurrenceSummary>>(`${apiBase.value}/gm/occurrences`, { query: cleanQuery(query), headers: authHeaders() }),
     getOccurrence: (id: string) => $fetch<GmOccurrenceDetail>(`${apiBase.value}/gm/occurrences/${id}`, { headers: authHeaders() }),
-    createOccurrence: (payload: { type: string; description: string; targetType?: string; targetId?: string }) =>
+    createOccurrence: (payload: { type: string; priority?: GmOccurrencePriority; description: string; targetType?: string; targetId?: string }) =>
       $fetch<GmOccurrenceDetail>(`${apiBase.value}/gm/occurrences`, { method: 'POST', body: payload, headers: authHeaders() }),
-    updateOccurrence: (id: string, payload: { status?: GmOccurrenceStatus; assignedToId?: string | null; reason?: string }) =>
+    updateOccurrence: (id: string, payload: { status?: GmOccurrenceStatus; priority?: GmOccurrencePriority; assignedToId?: string | null; reason?: string }) =>
       $fetch<GmOccurrenceDetail>(`${apiBase.value}/gm/occurrences/${id}`, { method: 'PATCH', body: payload, headers: authHeaders() }),
     addNote: (id: string, note: string) =>
       $fetch<GmOccurrenceDetail>(`${apiBase.value}/gm/occurrences/${id}/notes`, { method: 'POST', body: { note }, headers: authHeaders() })

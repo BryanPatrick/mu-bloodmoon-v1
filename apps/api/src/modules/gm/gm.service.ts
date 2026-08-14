@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
-import type { GmOccurrenceStatus, Prisma } from '@prisma/client'
+import type { GmOccurrencePriority, GmOccurrenceStatus, Prisma } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
@@ -11,13 +11,48 @@ import type {
   GmOccurrenceDetail,
   GmOccurrenceListQuery,
   GmOccurrenceNoteCreatePayload,
+  GmOccurrenceSlaStatus,
   GmOccurrenceSummary,
+  GmOccurrenceTimelineEntry,
   GmOccurrenceUpdatePayload
 } from './gm.contract'
 
 const defaultPageSize = 20
 const maxPageSize = 100
 const occurrenceStatuses: GmOccurrenceStatus[] = ['OPEN', 'IN_REVIEW', 'ACTION_REQUIRED', 'RESOLVED', 'DISMISSED']
+const occurrencePriorities: GmOccurrencePriority[] = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']
+const closingStatuses: GmOccurrenceStatus[] = ['RESOLVED', 'DISMISSED']
+
+// How long an occurrence has, per priority, before it is considered overdue.
+// Configurable since what counts as "urgent" is an operational call, not a
+// code one. AT_RISK starts at 80% of the target.
+function slaHours() {
+  const hours = (name: string, fallback: number) => {
+    const value = Number(process.env[name])
+    return Number.isFinite(value) && value > 0 ? value : fallback
+  }
+  return {
+    CRITICAL: hours('GM_OCCURRENCE_SLA_CRITICAL_HOURS', 4),
+    HIGH: hours('GM_OCCURRENCE_SLA_HIGH_HOURS', 24),
+    MEDIUM: hours('GM_OCCURRENCE_SLA_MEDIUM_HOURS', 72),
+    LOW: hours('GM_OCCURRENCE_SLA_LOW_HOURS', 168)
+  } satisfies Record<GmOccurrencePriority, number>
+}
+
+function computeSlaStatus(status: GmOccurrenceStatus, priority: GmOccurrencePriority, createdAt: Date): GmOccurrenceSlaStatus {
+  if (closingStatuses.includes(status)) return 'CLOSED'
+  const targetHours = slaHours()[priority]
+  const ageHours = (Date.now() - createdAt.getTime()) / 3_600_000
+  if (ageHours >= targetHours) return 'OVERDUE'
+  if (ageHours >= targetHours * 0.8) return 'AT_RISK'
+  return 'ON_TIME'
+}
+
+function extractReason(metadata: unknown): string | null {
+  if (typeof metadata !== 'object' || !metadata || !('reason' in metadata)) return null
+  const reason = (metadata as { reason?: unknown }).reason
+  return typeof reason === 'string' && reason ? reason : null
+}
 // GM's log view is deliberately restricted to game/community/guild-facing
 // modules -- never system/security/finance/commerce, matching "não entregar
 // log bruto irrestrito da infraestrutura".
@@ -108,8 +143,12 @@ export class GmService {
 
   async listOccurrences(query: GmOccurrenceListQuery): Promise<{ data: GmOccurrenceSummary[]; total: number; page: number; pageSize: number }> {
     const { page, pageSize, skip } = pagination(query)
+    const search = query.search?.trim()
     const where: Prisma.GmOccurrenceWhereInput = {
-      ...(query.status && occurrenceStatuses.includes(query.status) ? { status: query.status } : {})
+      ...(query.status && occurrenceStatuses.includes(query.status) ? { status: query.status } : {}),
+      ...(query.priority && occurrencePriorities.includes(query.priority) ? { priority: query.priority } : {}),
+      ...(query.assignedToId ? { assignedToId: query.assignedToId } : {}),
+      ...(search ? { OR: [{ type: { contains: search } }, { description: { contains: search } }] } : {})
     }
     const [items, total] = await Promise.all([
       this.prisma.gmOccurrence.findMany({
@@ -125,7 +164,8 @@ export class GmService {
       }),
       this.prisma.gmOccurrence.count({ where })
     ])
-    return { data: items.map(this.mapOccurrenceSummary), total, page, pageSize }
+    const labels = await this.resolveTargetLabels(items)
+    return { data: items.map((item) => this.mapOccurrenceSummary(item, labels)), total, page, pageSize }
   }
 
   async getOccurrence(id: string): Promise<GmOccurrenceDetail> {
@@ -142,14 +182,40 @@ export class GmService {
       }
     })
     if (!occurrence) throw new NotFoundException('Occurrence not found')
-    return {
-      ...this.mapOccurrenceSummary(occurrence),
-      notes: occurrence.notes.map((note) => ({
+    const [labels, events] = await Promise.all([
+      this.resolveTargetLabels([occurrence]),
+      this.prisma.auditEvent.findMany({ where: { targetType: 'GmOccurrence', targetId: id }, orderBy: { createdAt: 'asc' } })
+    ])
+    const notes = occurrence.notes.map((note) => ({
+      id: note.id,
+      note: note.note,
+      author: note.author.username,
+      createdAt: note.createdAt.toISOString()
+    }))
+    const timeline: GmOccurrenceTimelineEntry[] = [
+      ...notes.map((note): GmOccurrenceTimelineEntry => ({
         id: note.id,
+        kind: 'NOTE',
+        action: 'gm.occurrence.note_added',
+        actor: note.author,
         note: note.note,
-        author: note.author.username,
-        createdAt: note.createdAt.toISOString()
+        reason: null,
+        createdAt: note.createdAt
+      })),
+      ...events.map((event): GmOccurrenceTimelineEntry => ({
+        id: event.id,
+        kind: 'EVENT',
+        action: event.action,
+        actor: event.actorUsername,
+        note: null,
+        reason: extractReason(event.metadata),
+        createdAt: event.createdAt.toISOString()
       }))
+    ].sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+    return {
+      ...this.mapOccurrenceSummary(occurrence, labels),
+      notes,
+      timeline
     }
   }
 
@@ -157,10 +223,14 @@ export class GmService {
     const type = payload.type?.trim()
     const description = payload.description?.trim()
     if (!type || !description) throw new BadRequestException('type and description are required')
+    if (payload.priority && !occurrencePriorities.includes(payload.priority)) {
+      throw new BadRequestException('Invalid priority')
+    }
 
     const occurrence = await this.prisma.gmOccurrence.create({
       data: {
         type,
+        priority: payload.priority || 'MEDIUM',
         description,
         targetType: payload.targetType?.trim() || null,
         targetId: payload.targetId?.trim() || null,
@@ -175,7 +245,7 @@ export class GmService {
       action: 'gm.occurrence.created',
       targetType: 'GmOccurrence',
       targetId: occurrence.id,
-      metadata: { type, targetType: payload.targetType, targetId: payload.targetId, result: 'success' }
+      metadata: { type, priority: occurrence.priority, targetType: payload.targetType, targetId: payload.targetId, result: 'success' }
     })
 
     return this.getOccurrence(occurrence.id)
@@ -185,7 +255,6 @@ export class GmService {
     const occurrence = await this.prisma.gmOccurrence.findUnique({ where: { id } })
     if (!occurrence) throw new NotFoundException('Occurrence not found')
 
-    const closingStatuses: GmOccurrenceStatus[] = ['RESOLVED', 'DISMISSED']
     const reason = payload.reason?.trim()
     if (payload.status && closingStatuses.includes(payload.status) && (!reason || reason.length < 5)) {
       throw new BadRequestException('A justification with at least 5 characters is required to resolve or dismiss an occurrence')
@@ -193,12 +262,16 @@ export class GmService {
     if (payload.status && !occurrenceStatuses.includes(payload.status)) {
       throw new BadRequestException('Invalid status')
     }
+    if (payload.priority && !occurrencePriorities.includes(payload.priority)) {
+      throw new BadRequestException('Invalid priority')
+    }
 
     const updated = await this.prisma.gmOccurrence.update({
       where: { id },
       data: {
         ...(payload.status ? { status: payload.status } : {}),
         ...(payload.status && closingStatuses.includes(payload.status) ? { resolvedAt: new Date() } : {}),
+        ...(payload.priority ? { priority: payload.priority } : {}),
         ...(payload.assignedToId !== undefined ? { assignedToId: payload.assignedToId } : {})
       }
     })
@@ -213,6 +286,8 @@ export class GmService {
       metadata: {
         previousStatus: occurrence.status,
         nextStatus: updated.status,
+        previousPriority: occurrence.priority,
+        nextPriority: updated.priority,
         assignedToId: payload.assignedToId,
         reason: reason || null,
         result: 'success'
@@ -242,26 +317,93 @@ export class GmService {
     return this.getOccurrence(id)
   }
 
-  private mapOccurrenceSummary = (occurrence: {
-    id: string
-    type: string
-    description: string
-    targetType: string | null
-    targetId: string | null
-    status: GmOccurrenceStatus
-    createdAt: Date
-    updatedAt: Date
-    resolvedAt: Date | null
-    createdBy: { username: string }
-    assignedTo: { username: string } | null
-    _count: { notes: number }
-  }): GmOccurrenceSummary => ({
+  // Best-effort: GM.targetType/targetId is free text the GM typed, not a
+  // real foreign key, so an unrecognized type or a stale/typo'd id simply
+  // resolves to no label -- it never blocks listing or viewing occurrences.
+  private async resolveTargetLabels(occurrences: Array<{ targetType: string | null; targetId: string | null }>) {
+    const idsByType = new Map<string, Set<string>>()
+    for (const occurrence of occurrences) {
+      if (!occurrence.targetType || !occurrence.targetId) continue
+      const key = occurrence.targetType.trim().toLowerCase()
+      if (!idsByType.has(key)) idsByType.set(key, new Set())
+      idsByType.get(key)!.add(occurrence.targetId)
+    }
+
+    const labels = new Map<string, string>()
+    const tasks: Array<Promise<void>> = []
+
+    const accountIds = [...(idsByType.get('account') || [])]
+    if (accountIds.length) {
+      tasks.push(
+        this.prisma.account.findMany({ where: { id: { in: accountIds } }, select: { id: true, username: true } }).then((rows) => {
+          for (const row of rows) labels.set(`account:${row.id}`, row.username)
+        })
+      )
+    }
+    const characterIds = [...(idsByType.get('accountcharacter') || []), ...(idsByType.get('character') || [])]
+    if (characterIds.length) {
+      tasks.push(
+        this.prisma.accountCharacter.findMany({ where: { id: { in: characterIds } }, select: { id: true, name: true } }).then((rows) => {
+          for (const row of rows) {
+            labels.set(`accountcharacter:${row.id}`, row.name)
+            labels.set(`character:${row.id}`, row.name)
+          }
+        })
+      )
+    }
+    const guildIds = [...(idsByType.get('guild') || [])]
+    if (guildIds.length) {
+      tasks.push(
+        this.prisma.guild.findMany({ where: { id: { in: guildIds } }, select: { id: true, name: true, tag: true } }).then((rows) => {
+          for (const row of rows) labels.set(`guild:${row.id}`, `${row.name} [${row.tag}]`)
+        })
+      )
+    }
+    const eventRunIds = [...(idsByType.get('gmeventrun') || [])]
+    if (eventRunIds.length) {
+      tasks.push(
+        this.prisma.gmEventRun
+          .findMany({ where: { id: { in: eventRunIds } }, include: { definition: { select: { name: true } } } })
+          .then((rows) => {
+            for (const row of rows) labels.set(`gmeventrun:${row.id}`, row.definition.name)
+          })
+      )
+    }
+
+    await Promise.all(tasks)
+    return labels
+  }
+
+  private mapOccurrenceSummary = (
+    occurrence: {
+      id: string
+      type: string
+      priority: GmOccurrencePriority
+      description: string
+      targetType: string | null
+      targetId: string | null
+      status: GmOccurrenceStatus
+      createdAt: Date
+      updatedAt: Date
+      resolvedAt: Date | null
+      createdBy: { username: string }
+      assignedTo: { username: string } | null
+      _count: { notes: number }
+    },
+    labels: Map<string, string>
+  ): GmOccurrenceSummary => ({
     id: occurrence.id,
     type: occurrence.type,
+    priority: occurrence.priority,
     description: occurrence.description,
     targetType: occurrence.targetType,
     targetId: occurrence.targetId,
+    targetLabel:
+      occurrence.targetType && occurrence.targetId
+        ? labels.get(`${occurrence.targetType.trim().toLowerCase()}:${occurrence.targetId}`) || null
+        : null,
     status: occurrence.status,
+    slaStatus: computeSlaStatus(occurrence.status, occurrence.priority, occurrence.createdAt),
     createdBy: occurrence.createdBy.username,
     assignedTo: occurrence.assignedTo?.username || null,
     createdAt: occurrence.createdAt.toISOString(),
