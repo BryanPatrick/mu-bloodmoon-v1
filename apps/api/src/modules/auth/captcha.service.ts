@@ -8,6 +8,8 @@ type TurnstileResponse = {
   'error-codes'?: string[]
 }
 
+const TURNSTILE_ALWAYS_PASS_TEST_SECRET = '1x0000000000000000000000000000000AA'
+
 @Injectable()
 export class CaptchaService {
   constructor(private readonly audit: AuditService) {}
@@ -53,8 +55,11 @@ export class CaptchaService {
         .split(',')
         .map((hostname) => hostname.trim().toLowerCase())
         .filter(Boolean)
-      const actionMatches = result.action === expectedAction
+      const usesOfficialTestSecret =
+        process.env.NODE_ENV !== 'production' && secret === TURNSTILE_ALWAYS_PASS_TEST_SECRET
+      const actionMatches = usesOfficialTestSecret || result.action === expectedAction
       const hostnameMatches =
+        usesOfficialTestSecret ||
         allowedHosts.length === 0 ||
         Boolean(result.hostname && allowedHosts.includes(result.hostname.toLowerCase()))
 

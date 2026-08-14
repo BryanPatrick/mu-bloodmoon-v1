@@ -124,7 +124,7 @@ try {
       const product = await prisma.shopProduct.upsert({
         where: { key: 'development-test-pack' },
         update: {},
-        create: { key: 'development-test-pack', name: 'Pacote de teste', short: 'TEST', category: 'Desenvolvimento', description: 'Produto ficticio para validar os fluxos locais.', price: 100, currency: 'WCOIN', status: 'ACTIVE' }
+        create: { key: 'development-test-pack', slug: 'development-test-pack', name: 'Pacote de teste', short: 'TEST', category: 'Desenvolvimento', description: 'Produto ficticio para validar os fluxos locais.', price: 100, currency: 'WCOIN', status: 'ACTIVE' }
       })
       const existingPurchase = await prisma.purchaseIntent.findFirst({ where: { accountId: account.id, productId: product.id } })
       if (!existingPurchase) await prisma.purchaseIntent.create({ data: { accountId: account.id, productId: product.id, price: product.price, currency: product.currency, status: 'COMPLETED' } })

@@ -14,7 +14,9 @@
   --color-blood-500: #9f0202;
   --color-blood-600: #9f0507;
   --color-blood-700: #73090b;
+  --color-blood-800: #64090a;
   --color-blood-900: #540809;
+  --color-blood-950: #3d0607;
   --color-moon: #f3f0ea;
   --color-ember: #9f0202;
   --color-iron: #756d67;
@@ -38,6 +40,53 @@
   --bm-red: #9f0202;
   --bm-dark: #110e10;
   --bm-header-height: 87px;
+
+  /* @nuxt/ui theme wiring -- see docs/design-system.md. These are the
+     semantic tokens every Nuxt UI component (UModal, UButton, UInput,
+     USelect, UTextarea, UTable, UTabs, UDropdownMenu...) actually reads;
+     app.config.ts sets the numbered primary/neutral color ramps, this
+     block sets the surface/text/border/radius tokens built on top of
+     them so Nuxt UI stops rendering its default neutral-gray theme. */
+  --ui-radius: 0.375rem;
+  --ui-bg: var(--bm-surface-soft);
+  --ui-bg-muted: var(--bm-surface);
+  --ui-bg-elevated: var(--bm-surface-strong);
+  --ui-bg-accented: var(--bm-surface);
+  --ui-bg-inverted: var(--bm-dark);
+  --ui-border: var(--bm-border);
+  --ui-border-muted: var(--bm-border);
+  --ui-border-accented: var(--bm-border-strong);
+  --ui-border-inverted: var(--bm-dark);
+  --ui-text: var(--bm-text);
+  --ui-text-dimmed: var(--bm-muted);
+  --ui-text-muted: var(--bm-muted);
+  --ui-text-toned: var(--bm-text);
+  --ui-text-highlighted: var(--bm-heading);
+  --ui-text-inverted: #ffffff;
+  --ui-primary: var(--bm-red);
+}
+
+/* Nuxt UI's Modal/Slideover title only sets font-weight (`font-semibold`),
+   so without this it silently falls back to the body font instead of
+   Cinzel -- the one detail the --ui-* token wiring above can't reach,
+   since there's no --ui-font token to redirect. Every dialog title should
+   read like the rest of the site's headings, not just this component. */
+[role='dialog'] .text-highlighted:is(h1, h2, h3) {
+  font-family: Cinzel, Georgia, serif;
+}
+
+/* Nuxt UI's modal/slideover overlay is `bg-elevated/75` -- a light surface
+   tint, since it assumes "elevated" reads as a dimming layer in dark mode
+   but this site has no dark mode. Left alone it renders as a near-white
+   haze that barely dims the page. Every other overlay already built for
+   this site (drawers, mobile nav) uses a dark scrim
+   (rgb(16 16 16 / 0.48)) -- match that here instead of introducing a
+   second, inconsistent overlay treatment. `--ui-bg-elevated` itself stays
+   untouched since dropdowns/popovers legitimately want a light surface.
+*/
+[data-slot='overlay'] {
+  background-color: rgb(16 16 16 / 0.48) !important;
+  backdrop-filter: blur(2px);
 }
 
 html {
@@ -448,6 +497,35 @@ textarea {
   border-bottom: 1px solid var(--bm-border);
   background: linear-gradient(110deg, var(--bm-surface-soft), var(--bm-surface));
   color: var(--bm-text);
+}
+
+/* Shared "photo subheader" treatment: a contextual background image, kept
+   soft/blurred so the parchment palette and text on top stay dominant and
+   legible, instead of a flat gradient. Any large-spacing hero/subheader
+   block can opt into this by adding .bm-hero-photo (position: relative on
+   the block itself) and rendering .bm-hero-photo__bg + .bm-hero-photo__scrim
+   as the first two children. */
+.bm-hero-photo {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.bm-hero-photo__bg {
+  position: absolute;
+  z-index: -2;
+  inset: -14px;
+  background-position: center;
+  background-size: cover;
+  filter: blur(7px) saturate(1.05) brightness(0.94);
+  transform: scale(1.06);
+}
+
+.bm-hero-photo__scrim {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(100deg, rgb(243 240 234 / 0.9), rgb(243 240 234 / 0.74));
 }
 
 .bm-field-label { color: var(--bm-muted); font-size: 0.68rem; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; }

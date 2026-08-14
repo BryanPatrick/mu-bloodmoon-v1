@@ -2,7 +2,9 @@
   <div class="community-page">
     <CommunitySubheader :active-section="activeSection" :profile-username="profile?.username || user?.username" @open-profile="profileDrawerOpen = true" />
 
-    <header class="community-intro">
+    <header class="community-intro bm-hero-photo">
+      <div class="bm-hero-photo__bg" style="background-image: url(/images/hero-elfa-noria.png)" />
+      <div class="bm-hero-photo__scrim" />
       <div>
         <p class="bm-kicker">Blood Moon Community</p>
         <h1>O ponto de encontro dos jogadores</h1>
@@ -10,25 +12,34 @@
       </div>
     </header>
 
-    <main class="community-layout">
-      <div v-if="activeSection === 'home'" class="community-layout__left">
-        <CommunityUserRail v-if="profile" :profile="profile" />
-        <div v-else-if="!accessToken" class="community-signin-prompt">
-          <p>Entre na sua conta para ver seu perfil, personagem principal e conquistas.</p>
-          <NuxtLink to="/login">Entrar</NuxtLink>
+    <main class="community-layout" :class="{ 'is-guest-layout': leftRailView === 'guest-banner' }">
+      <!-- See features/community/left-rail-view.ts for the state table this
+           renders (loading/authenticated/guest x profile pending/loaded/
+           errored). Kept as a single computed instead of an inline v-if
+           chain so the decision logic is unit-testable on its own. -->
+      <div v-if="leftRailView === 'rail' || leftRailView === 'skeleton' || leftRailView === 'load-error'" class="community-layout__left">
+        <CommunityUserRail v-if="leftRailView === 'rail'" :profile="profile" />
+        <div v-else-if="leftRailView === 'skeleton'" class="community-user-rail community-user-rail-skeleton" aria-hidden="true" aria-busy="true">
+          <div class="community-user-rail-skeleton__avatar" />
+          <div class="community-user-rail-skeleton__line" style="width: 60%" />
+          <div class="community-user-rail-skeleton__line" style="width: 40%" />
+          <div class="community-user-rail-skeleton__block" />
         </div>
-        <!-- Logged in but community-own-profile-summary is still pending:
-             render nothing rather than the sign-in prompt above, which was
-             misleadingly flashing for a real, already-authenticated user
-             for the brief window before their profile summary resolves. -->
-
+        <div v-else class="community-signin-prompt">
+          <p>Não foi possível carregar seu perfil da Community agora.</p>
+          <button type="button" @click="refreshOwnProfile()">Tentar novamente</button>
+        </div>
+      </div>
+      <div v-else-if="leftRailView === 'guest-banner'" class="community-signin-banner">
+        <p>Entre na sua conta para ver seu perfil, personagem principal e conquistas.</p>
+        <NuxtLink to="/login">Entrar</NuxtLink>
       </div>
 
       <section class="community-layout__center" :class="{ 'is-wide': activeSection !== 'home' }">
         <template v-if="activeSection === 'home' || activeSection === 'salvos'">
           <button v-if="profile" class="community-mobile-profile" type="button" @click="profileDrawerOpen = true">
             <img :src="profile.avatarUrl || '/favicon.png'" :alt="profile.displayName" @error="onImgError">
-            <span><strong>{{ profile.displayName }}</strong><small>{{ profile.mainCharacter.name }} · {{ profile.guild }}</small></span>
+            <span><strong>{{ profile.displayName }}</strong><small>{{ profile.mainCharacter?.name || 'Não encontrado' }} · {{ profile.guild || 'Sem guild' }}</small></span>
             <ChevronRight class="size-4" />
           </button>
 
@@ -94,11 +105,12 @@ import { ChevronRight, RefreshCw, X } from 'lucide-vue-next'
 import type { CommunityPostView } from '~/features/community/types/post'
 import { mapProfileResponse } from '~/features/community/map-profile-response'
 import { normalizePost } from '~/features/community/map-post-response'
+import { resolveCommunityLeftRailView } from '~/features/community/left-rail-view'
 
 useHead({ title: 'Community' })
 
 const route = useRoute()
-const { user, accessToken } = useAuth()
+const { user, accessToken, authStatus } = useAuth()
 const api = useCommunityApi()
 const toast = useToast()
 const editingPost = ref<CommunityPostView | null>(null)
@@ -207,12 +219,31 @@ const sectionTitle = computed(() => sectionLabels[activeSection.value] || 'Commu
 // Own-profile summary card (left rail + mobile drawer). Real data only -- no
 // mock fallback. Guests (no session) simply don't get a card; see the
 // sign-in prompt rendered in their place in the template.
-const { data: ownProfileData } = await useAsyncData(
+//
+// Why `accessToken` is in the watch list (not just the username): this
+// fetch hits the `/authenticated` variant of the profile endpoint, which
+// needs the `Authorization` header useCommunityApi() attaches from
+// `accessToken.value`. On SSR (and on the very first client tick before
+// hydration finishes reading the session out of localStorage),
+// `accessToken.value` is empty -- only `user` is known that early (it comes
+// from the auth-state cookie; the token itself is deliberately never
+// cookied, see useAuth.ts). A request fired without the token 401s and
+// resolves to null. Watching only `user.value?.username` never notices that
+// -- the username doesn't change once the token shows up a moment later, so
+// without this the fetch would never retry and the rail would stay empty
+// for an authenticated user forever, not just briefly.
+const { data: ownProfileData, pending: profilePending, refresh: refreshOwnProfile } = await useAsyncData(
   'community-own-profile-summary',
   () => (user.value?.username ? api.publicProfile(user.value.username, true) : Promise.resolve(null)),
-  { watch: [() => user.value?.username] }
+  { watch: [() => user.value?.username, accessToken] }
 )
 const profile = computed(() => (ownProfileData.value ? mapProfileResponse(ownProfileData.value) : null))
+const leftRailView = computed(() => resolveCommunityLeftRailView({
+  activeSection: activeSection.value,
+  authStatus: authStatus.value,
+  hasProfile: Boolean(profile.value),
+  profilePending: profilePending.value
+}))
 
 watch(profileDrawerOpen, (open) => {
   if (import.meta.client) document.body.style.overflow = open ? 'hidden' : ''
@@ -235,12 +266,27 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .community-page { min-height: 100vh; background: var(--bm-page-bg); color: var(--bm-text); }
-.community-intro { border-bottom: 1px solid var(--bm-border); background: linear-gradient(100deg, var(--bm-surface-soft), var(--bm-surface)); }
+.community-intro { border-bottom: 1px solid var(--bm-border); background: var(--bm-surface-soft); }
 .community-intro > div { width: min(100% - 32px, 1500px); margin-inline: auto; padding-block: 26px; }
 .community-intro h1 { margin-top: 5px; color: var(--bm-heading); font-family: Cinzel, serif; font-size: clamp(1.45rem, 2.2vw, 2rem); font-weight: 800; }
 .community-intro p:last-child { max-width: 680px; margin-top: 5px; color: var(--bm-muted); font-size: 0.76rem; line-height: 1.6; }
 .community-layout { display: grid; grid-template-columns: minmax(250px, 280px) minmax(480px, 1fr) minmax(270px, 310px); width: min(100% - 32px, 1500px); margin-inline: auto; align-items: start; gap: 18px; padding-block: 20px 56px; }
+/* Guest: no session means no left rail content ever, so don't reserve a
+   dead 250-280px column for it -- collapse to center+right and let the
+   sign-in banner span full width above them instead. */
+.community-layout.is-guest-layout { grid-template-columns: minmax(0, 1fr) minmax(270px, 310px); }
 .community-layout__left, .community-layout__right { position: sticky; top: calc(var(--bm-header-height) + 76px); }
+.community-signin-banner { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid var(--bm-border); border-radius: 10px; background: var(--bm-surface-strong); padding: 14px 18px; color: var(--bm-muted); font-size: 0.76rem; box-shadow: var(--shadow-panel); }
+.community-signin-banner a { border: 1px solid var(--bm-red); border-radius: 7px; padding: 8px 16px; color: var(--bm-red); font-weight: 800; white-space: nowrap; }
+.community-signin-banner a:hover { background: var(--bm-red); color: #fff; }
+.community-user-rail-skeleton { display: grid; gap: 12px; padding: 20px 18px; }
+.community-user-rail-skeleton__avatar, .community-user-rail-skeleton__line, .community-user-rail-skeleton__block { border-radius: 8px; background: linear-gradient(90deg, var(--bm-surface) 25%, var(--bm-surface-strong) 50%, var(--bm-surface) 75%); background-size: 200% 100%; animation: community-skeleton-shimmer 1.4s ease-in-out infinite; }
+.community-user-rail-skeleton__avatar { width: 92px; height: 92px; margin-inline: auto; border-radius: 50%; }
+.community-user-rail-skeleton__line { height: 14px; margin-inline: auto; }
+.community-user-rail-skeleton__block { height: 90px; }
+@keyframes community-skeleton-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.community-signin-prompt button { border: 1px solid var(--bm-border-strong); border-radius: 7px; padding: 8px 14px; color: var(--bm-wine); font-size: 0.72rem; font-weight: 800; }
+.community-signin-prompt button:hover { border-color: var(--bm-red); background: var(--bm-surface); }
 .community-layout__center { min-width: 0; display: grid; align-content: start; gap: 14px; }
 .community-layout__center.is-wide { grid-column: 1 / -1; width: min(100%, 900px); margin-inline: auto; }
 .community-feed-tabs { display: flex; align-items: center; border-bottom: 1px solid var(--bm-border); }

@@ -1,9 +1,9 @@
 <template>
   <div>
-    <PageHero :kicker="t('rankingsKicker')" title="Rankings" :description="t('rankingsDescription')" />
+    <PageHero :kicker="t('rankingsKicker')" title="Rankings" :description="t('rankingsDescription')" image="/images/guide-dark-lord-hero.png" />
     <section class="bm-container py-14">
       <div class="mb-8 flex flex-wrap gap-2">
-        <button v-for="type in store.rankingTypes" :key="type" class="rounded-md border px-4 py-2 text-sm font-bold transition" :class="type === active ? 'border-blood-400 bg-blood-700/30 text-white' : 'border-white/10 text-zinc-300 hover:bg-white/10'" @click="active = type">
+        <button v-for="type in store.rankingTypes" :key="type" class="ranking-filter rounded-md border px-4 py-2 text-sm font-bold transition" :class="{ 'is-active': type === active }" @click="active = type">
           {{ type }}
         </button>
       </div>
@@ -30,3 +30,21 @@ watchEffect(() => {
   }
 })
 </script>
+
+<style scoped>
+.ranking-filter {
+  border-color: var(--bm-border-strong);
+  background: var(--bm-surface-strong);
+  color: var(--bm-text);
+}
+.ranking-filter:hover {
+  border-color: var(--bm-wine);
+  color: var(--bm-wine);
+  background: var(--bm-surface);
+}
+.ranking-filter.is-active {
+  border-color: var(--bm-red);
+  background: var(--bm-red);
+  color: #ffffff;
+}
+</style>

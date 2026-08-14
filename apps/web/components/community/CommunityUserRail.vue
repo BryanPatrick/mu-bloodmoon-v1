@@ -27,15 +27,16 @@ const shortcuts = [
     </div>
 
     <dl class="community-user-rail__facts">
-      <div><dt>Personagem principal</dt><dd>{{ profile.mainCharacter.name }}</dd><small>{{ profile.mainCharacter.className }}</small></div>
-      <div><dt>Guild</dt><dd>{{ profile.guild }}</dd></div>
+      <div><dt>Personagem principal</dt><dd>{{ profile.mainCharacter?.name || 'Não encontrado' }}</dd><small v-if="profile.mainCharacter?.className">{{ profile.mainCharacter.className }}</small></div>
+      <div><dt>Guild</dt><dd>{{ profile.guild || 'Não encontrado' }}</dd></div>
     </dl>
 
     <section class="community-user-rail__section">
       <p class="community-label"><Flag class="size-3.5" /> Conquistas</p>
-      <div class="community-achievements">
+      <div v-if="profile.achievements?.length" class="community-achievements">
         <CommunityAchievementPopover v-for="achievement in profile.achievements" :key="achievement.id" :achievement="achievement" />
       </div>
+      <p v-else class="community-empty-hint">Nenhuma conquista encontrada.</p>
     </section>
 
     <nav class="community-user-rail__section" aria-label="Atalhos da conta">
@@ -50,11 +51,12 @@ const shortcuts = [
 <style scoped>
 .community-user-rail { border: 1px solid var(--bm-border); border-radius: 10px; background: var(--bm-surface-soft); box-shadow: var(--shadow-panel); }
 .community-user-rail__profile { display: grid; justify-items: center; border-bottom: 1px solid var(--bm-border); padding: 24px 18px 18px; text-align: center; }
-.community-avatar { position: relative; width: 72px; height: 72px; }
-.community-avatar img { width: 100%; height: 100%; border: 1px solid var(--bm-border-strong); border-radius: 50%; object-fit: cover; }
-.community-avatar button { position: absolute; right: -2px; bottom: 1px; display: grid; width: 24px; height: 24px; place-items: center; border: 2px solid var(--bm-surface-soft); border-radius: 50%; background: var(--bm-red); color: white; font-weight: 900; }
-.community-user-rail h2 { margin-top: 12px; color: var(--bm-heading); font-family: Cinzel, serif; font-size: 1rem; font-weight: 800; }
-.community-user-rail__profile p { color: var(--bm-muted); font-size: 0.7rem; }
+.community-avatar { position: relative; width: 92px; height: 92px; }
+.community-avatar img { width: 100%; height: 100%; border: 2px solid var(--bm-surface-strong); border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 1px var(--bm-border-strong), var(--shadow-panel); }
+.community-avatar button { position: absolute; right: -2px; bottom: 1px; display: grid; width: 26px; height: 26px; place-items: center; border: 2px solid var(--bm-surface-soft); border-radius: 50%; background: var(--bm-red); color: white; font-weight: 900; }
+.community-user-rail h2 { margin-top: 14px; color: var(--bm-heading); font-family: Cinzel, serif; font-size: 1.15rem; font-weight: 800; }
+.community-user-rail__profile p { margin-top: 2px; color: var(--bm-muted); font-size: 0.74rem; }
+.community-empty-hint { margin-top: 10px; color: var(--bm-muted); font-size: 0.72rem; font-style: italic; }
 .community-user-rail__name, .community-user-rail__username { overflow: hidden; max-width: 100%; text-overflow: ellipsis; white-space: nowrap; }
 .community-user-rail__facts { display: grid; gap: 14px; padding: 18px; }
 .community-user-rail__facts div + div { border-top: 1px solid var(--bm-border); padding-top: 14px; }

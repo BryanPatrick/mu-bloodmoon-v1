@@ -69,7 +69,7 @@ const onAvatarError = () => { avatarBroken.value = true }
     <div class="community-profile-head__grid">
       <section class="community-profile-head__identity">
         <div class="community-profile-head__avatar"><img v-if="profile.avatarUrl && !avatarBroken" :src="resolveMediaUrl(profile.avatarUrl)" :alt="profile.displayName" @error="onAvatarError"><div v-else class="community-profile-head__avatar-placeholder" aria-hidden="true">{{ (profile.displayName || profile.username || '?').charAt(0).toUpperCase() }}</div><button v-if="ownProfile" type="button" aria-label="Alterar foto" @click="emit('edit')"><Camera class="size-4" /></button></div>
-        <div class="community-profile-head__facts"><span>Personagem principal</span><strong>{{ profile.mainCharacter.name }}</strong><small>{{ profile.mainCharacter.className }} · {{ profile.guild }}</small></div>
+        <div class="community-profile-head__facts"><span>Personagem principal</span><strong>{{ profile.mainCharacter?.name || 'Não encontrado' }}</strong><small>{{ profile.mainCharacter?.className || 'Não encontrado' }} · {{ profile.guild || 'Sem guild' }}</small></div>
       </section>
 
       <section class="community-profile-head__details">

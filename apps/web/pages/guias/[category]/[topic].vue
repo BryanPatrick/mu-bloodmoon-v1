@@ -10,8 +10,8 @@
       <section class="bm-guide-container py-14">
         <div class="bm-panel rounded-md p-8 text-center">
           <p class="bm-kicker">Em organizacao</p>
-          <h2 class="mt-3 font-display text-4xl font-black uppercase text-white">Guia bloqueado temporariamente</h2>
-          <p class="mx-auto mt-4 max-w-2xl text-sm font-semibold leading-7 text-zinc-300">
+          <h2 class="bm-heading mt-3 font-display text-4xl font-black uppercase">Guia bloqueado temporariamente</h2>
+          <p class="bm-copy mx-auto mt-4 max-w-2xl font-semibold">
             Nossa versao atual vai ate Rage Fighter. Este atalho fica visivel para indicar conteudo futuro, mas a consulta completa esta liberada somente para administradores.
           </p>
         </div>
@@ -45,11 +45,11 @@
         <aside class="grid content-start gap-4">
           <div class="bm-panel rounded-md p-6">
             <p class="bm-kicker">Estilo</p>
-            <h2 class="mt-2 font-display text-3xl font-bold text-white">{{ characterGuide.styleTitle }}</h2>
-            <p class="mt-4 text-sm leading-7 text-zinc-300">{{ characterGuide.styleDescription }}</p>
+            <h2 class="bm-heading mt-2 font-display text-3xl font-bold">{{ characterGuide.styleTitle }}</h2>
+            <p class="bm-copy mt-4">{{ characterGuide.styleDescription }}</p>
           </div>
           <div class="grid gap-3">
-            <div v-for="trait in characterGuide.traits" :key="trait" class="bm-button-glass rounded-md px-4 py-3 text-sm font-bold text-white">
+            <div v-for="trait in characterGuide.traits" :key="trait" class="guide-trait-pill rounded-md px-4 py-3 text-sm font-bold">
               {{ trait }}
             </div>
           </div>
@@ -57,32 +57,32 @@
 
         <article class="bm-panel rounded-md p-6 sm:p-8">
           <p class="bm-kicker">Origem</p>
-          <h2 class="mt-2 font-display text-4xl font-bold text-white">{{ characterGuide.originTitle }}</h2>
-          <p v-for="paragraph in characterGuide.origin" :key="paragraph" class="mt-5 text-sm leading-8 text-zinc-300 first:mt-5 sm:text-base">
+          <h2 class="bm-heading mt-2 font-display text-4xl font-bold">{{ characterGuide.originTitle }}</h2>
+          <p v-for="paragraph in characterGuide.origin" :key="paragraph" class="bm-copy mt-5 first:mt-5 sm:text-base">
             {{ paragraph }}
           </p>
         </article>
       </section>
 
-      <section class="bg-black/20 py-14">
+      <section class="guide-band py-14">
         <div class="bm-guide-container">
           <div class="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p class="bm-kicker">Kit de combate</p>
-              <h2 class="mt-2 font-display text-4xl font-bold text-white">Habilidades</h2>
+              <h2 class="bm-heading mt-2 font-display text-4xl font-bold">Habilidades</h2>
             </div>
-            <span class="rounded-md border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-zinc-300">
+            <span class="guide-tag px-4 py-2 text-xs font-bold uppercase tracking-[0.2em]">
               {{ characterGuide.combatTags }}
             </span>
           </div>
 
           <div class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <article v-for="skill in characterGuide.skills" :key="skill.name" class="bm-panel group rounded-md p-5 transition hover:-translate-y-1 hover:border-blood-400/60">
-              <div class="grid size-12 place-items-center rounded-md bg-blood-700/30 font-display text-xl font-bold text-ember ring-1 ring-white/10">
+            <article v-for="skill in characterGuide.skills" :key="skill.name" class="bm-panel group rounded-md p-5 transition hover:-translate-y-1 hover:border-[var(--bm-red)]">
+              <div class="grid size-12 place-items-center rounded-md font-display text-xl font-bold" style="background: rgb(159 2 2 / 0.12); color: var(--bm-red);">
                 {{ skill.key }}
               </div>
-              <h3 class="mt-5 font-display text-2xl font-bold text-white">{{ skill.name }}</h3>
-              <p class="mt-3 text-sm leading-7 text-zinc-400">{{ skill.description }}</p>
+              <h3 class="bm-heading mt-5 font-display text-2xl font-bold">{{ skill.name }}</h3>
+              <p class="bm-copy mt-3">{{ skill.description }}</p>
             </article>
           </div>
         </div>
@@ -91,33 +91,33 @@
       <section class="bm-guide-container grid gap-8 py-14 lg:grid-cols-[1fr_380px]">
         <article class="bm-panel rounded-md p-6 sm:p-8">
           <p class="bm-kicker">Como jogar</p>
-          <h2 class="mt-2 font-display text-4xl font-bold text-white">{{ characterGuide.playTitle }}</h2>
+          <h2 class="bm-heading mt-2 font-display text-4xl font-bold">{{ characterGuide.playTitle }}</h2>
           <div class="mt-7 grid gap-5">
-            <div v-for="tip in characterGuide.tips" :key="tip.title" class="rounded-md border border-white/10 bg-white/[0.035] p-5">
-              <h3 class="font-display text-2xl font-bold text-moon">{{ tip.title }}</h3>
-              <p class="mt-3 text-sm leading-7 text-zinc-400">{{ tip.description }}</p>
+            <div v-for="tip in characterGuide.tips" :key="tip.title" class="guide-subcard p-5">
+              <h3 class="bm-heading font-display text-2xl font-bold">{{ tip.title }}</h3>
+              <p class="bm-copy mt-3">{{ tip.description }}</p>
             </div>
           </div>
         </article>
 
         <aside class="bm-panel rounded-md p-6">
           <p class="bm-kicker">Progressao</p>
-          <h2 class="mt-2 font-display text-3xl font-bold text-white">Prioridades</h2>
-          <ol class="mt-6 grid gap-4 text-sm text-zinc-300">
+          <h2 class="bm-heading mt-2 font-display text-3xl font-bold">Prioridades</h2>
+          <ol class="bm-copy mt-6 grid gap-4">
             <li v-for="(priority, index) in characterGuide.priorities" :key="priority" class="grid grid-cols-[auto_1fr] gap-3">
-              <span class="font-display text-xl font-bold text-ember">0{{ index + 1 }}</span>
+              <span class="font-display text-xl font-bold text-[var(--bm-red)]">0{{ index + 1 }}</span>
               <span class="leading-7">{{ priority }}</span>
             </li>
           </ol>
         </aside>
       </section>
 
-      <section v-if="characterGuide.wiki" class="bg-black/20 py-14">
+      <section v-if="characterGuide.wiki" class="guide-band py-14">
         <div class="bm-guide-container">
           <div class="max-w-3xl">
             <p class="bm-kicker">Base tecnica</p>
-            <h2 class="mt-2 font-display text-4xl font-bold text-white">Dados coletados para wiki</h2>
-            <p class="mt-4 text-sm leading-7 text-zinc-400">
+            <h2 class="bm-heading mt-2 font-display text-4xl font-bold">Dados coletados para wiki</h2>
+            <p class="bm-copy mt-4">
               Conteudo bruto organizado a partir das referencias coletadas. Alguns pontos ainda precisam de validacao com a versao e configuracao final do servidor.
             </p>
           </div>
@@ -125,10 +125,10 @@
           <div class="mt-8 grid gap-5 lg:grid-cols-2">
             <article v-for="section in characterGuide.wiki.sections" :key="section.title" class="bm-panel rounded-md p-5">
               <p class="bm-kicker">{{ section.kicker }}</p>
-              <h3 class="mt-2 font-display text-2xl font-bold text-white">{{ section.title }}</h3>
-              <p v-if="section.description" class="mt-3 text-sm leading-7 text-zinc-400">{{ section.description }}</p>
+              <h3 class="bm-heading mt-2 font-display text-2xl font-bold">{{ section.title }}</h3>
+              <p v-if="section.description" class="bm-copy mt-3">{{ section.description }}</p>
               <div v-if="section.items?.length" class="mt-5 grid gap-2">
-                <div v-for="item in section.items" :key="item" class="rounded-md border border-white/10 bg-white/[0.035] px-3 py-2 text-sm leading-6 text-zinc-300">
+                <div v-for="item in section.items" :key="item" class="guide-chip px-3 py-2 text-sm leading-6">
                   {{ item }}
                 </div>
               </div>
@@ -137,11 +137,11 @@
 
           <div v-if="characterGuide.wiki.formulas?.length" class="mt-10">
             <p class="bm-kicker">Formulas</p>
-            <h3 class="mt-2 font-display text-3xl font-bold text-white">Crescimento e combate</h3>
+            <h3 class="bm-heading mt-2 font-display text-3xl font-bold">Crescimento e combate</h3>
             <div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               <article v-for="group in characterGuide.wiki.formulas" :key="group.title" class="bm-panel rounded-md p-5">
-                <h4 class="font-display text-xl font-bold text-moon">{{ group.title }}</h4>
-                <ul class="mt-4 grid gap-2 text-sm leading-6 text-zinc-300">
+                <h4 class="bm-heading font-display text-xl font-bold">{{ group.title }}</h4>
+                <ul class="bm-copy mt-4 grid gap-2">
                   <li v-for="formula in group.items" :key="formula">{{ formula }}</li>
                 </ul>
               </article>
@@ -150,13 +150,13 @@
 
           <div v-if="characterGuide.wiki.equipment?.length" class="mt-10">
             <p class="bm-kicker">Equipamentos</p>
-            <h3 class="mt-2 font-display text-3xl font-bold text-white">Itens catalogados</h3>
+            <h3 class="bm-heading mt-2 font-display text-3xl font-bold">Itens catalogados</h3>
             <div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               <article v-for="group in characterGuide.wiki.equipment" :key="group.title" class="bm-panel rounded-md p-5">
-                <h4 class="font-display text-xl font-bold text-moon">{{ group.title }}</h4>
-                <p v-if="group.description" class="mt-3 text-sm leading-7 text-zinc-400">{{ group.description }}</p>
+                <h4 class="bm-heading font-display text-xl font-bold">{{ group.title }}</h4>
+                <p v-if="group.description" class="bm-copy mt-3">{{ group.description }}</p>
                 <div class="mt-4 flex flex-wrap gap-2">
-                  <span v-for="item in group.items" :key="item" class="rounded-md border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-bold text-zinc-300">
+                  <span v-for="item in group.items" :key="item" class="guide-chip px-3 py-1.5 text-xs font-bold">
                     {{ item }}
                   </span>
                 </div>
@@ -164,10 +164,10 @@
             </div>
           </div>
 
-          <div v-if="characterGuide.wiki.notes?.length" class="mt-10 rounded-md border border-ember/25 bg-ember/10 p-5">
+          <div v-if="characterGuide.wiki.notes?.length" class="guide-callout mt-10 rounded-md p-5">
             <p class="bm-kicker">Validacao</p>
-            <h3 class="mt-2 font-display text-2xl font-bold text-white">Pontos para revisar antes de publicar</h3>
-            <ul class="mt-4 grid gap-2 text-sm leading-6 text-zinc-300">
+            <h3 class="bm-heading mt-2 font-display text-2xl font-bold">Pontos para revisar antes de publicar</h3>
+            <ul class="bm-copy mt-4 grid gap-2">
               <li v-for="note in characterGuide.wiki.notes" :key="note">{{ note }}</li>
             </ul>
           </div>
@@ -185,25 +185,25 @@
 
       <section class="bm-guide-container py-14">
         <article class="bm-panel rounded-md p-5 sm:p-6">
-          <div class="flex flex-col gap-4 border-b border-white/10 pb-5 xl:flex-row xl:items-end xl:justify-between">
+          <div class="guide-divider flex flex-col gap-4 pb-5 xl:flex-row xl:items-end xl:justify-between">
             <div>
               <p class="bm-kicker">Catalogo de sets</p>
-              <h2 class="mt-2 font-display text-3xl font-bold text-white">Sets catalogados</h2>
-              <p class="mt-3 max-w-3xl text-sm leading-7 text-zinc-400">
+              <h2 class="bm-heading mt-2 font-display text-3xl font-bold">Sets catalogados</h2>
+              <p class="bm-copy mt-3 max-w-3xl">
                 Os cards abaixo juntam as pecas que ja temos imagem e tambem mostram os sets que ainda estao apenas como referencia, para facilitar a proxima etapa de coleta e otimizacao.
               </p>
             </div>
-            <div class="grid grid-cols-3 gap-2 text-center text-xs font-black uppercase tracking-[0.14em] text-zinc-300">
-              <div class="rounded-md border border-white/10 bg-white/[0.04] px-3 py-2">
-                <span class="block font-display text-xl text-white">{{ setGuideStats.total }}</span>
+            <div class="guide-stat-grid grid grid-cols-3 gap-2 text-center text-xs font-black uppercase tracking-[0.14em]">
+              <div class="guide-stat px-3 py-2">
+                <span class="bm-heading block font-display text-xl">{{ setGuideStats.total }}</span>
                 Sets
               </div>
-              <div class="rounded-md border border-white/10 bg-white/[0.04] px-3 py-2">
-                <span class="block font-display text-xl text-white">{{ setGuideStats.withImage }}</span>
+              <div class="guide-stat px-3 py-2">
+                <span class="bm-heading block font-display text-xl">{{ setGuideStats.withImage }}</span>
                 Imagens
               </div>
-              <div class="rounded-md border border-white/10 bg-white/[0.04] px-3 py-2">
-                <span class="block font-display text-xl text-white">{{ setGuideStats.missingImage }}</span>
+              <div class="guide-stat px-3 py-2">
+                <span class="bm-heading block font-display text-xl">{{ setGuideStats.missingImage }}</span>
                 Pendentes
               </div>
             </div>
@@ -212,22 +212,22 @@
           <div class="mt-5 grid gap-3 xl:grid-cols-[1fr_180px_180px_180px]">
             <input
               v-model="setSearch"
-              class="h-11 rounded-md border border-white/10 bg-white/10 px-4 text-sm font-bold text-white outline-none transition placeholder:text-white/45 focus:border-blood-400/70"
+              class="guide-field h-11 px-4 text-sm font-bold outline-none transition"
               placeholder="Buscar set, classe, peca..."
               type="search"
             >
-            <select v-model="setClassFilter" class="h-11 rounded-md border border-white/10 bg-white/10 px-3 text-sm font-bold text-white outline-none focus:border-blood-400/70">
-              <option class="bg-zinc-950 text-white" value="Todos">Todas classes</option>
-              <option v-for="className in setClassOptions" :key="className" class="bg-zinc-950 text-white" :value="className">{{ className }}</option>
+            <select v-model="setClassFilter" class="guide-field h-11 px-3 text-sm font-bold outline-none">
+              <option value="Todos">Todas classes</option>
+              <option v-for="className in setClassOptions" :key="className" :value="className">{{ className }}</option>
             </select>
-            <select v-model="setImageFilter" class="h-11 rounded-md border border-white/10 bg-white/10 px-3 text-sm font-bold text-white outline-none focus:border-blood-400/70">
-              <option class="bg-zinc-950 text-white" value="Todos">Todas imagens</option>
-              <option class="bg-zinc-950 text-white" value="Com imagem">Com imagem</option>
-              <option class="bg-zinc-950 text-white" value="Sem imagem">Sem imagem</option>
+            <select v-model="setImageFilter" class="guide-field h-11 px-3 text-sm font-bold outline-none">
+              <option value="Todos">Todas imagens</option>
+              <option value="Com imagem">Com imagem</option>
+              <option value="Sem imagem">Sem imagem</option>
             </select>
-            <select v-model="setCompatibilityFilter" class="h-11 rounded-md border border-white/10 bg-white/10 px-3 text-sm font-bold text-white outline-none focus:border-blood-400/70">
-              <option class="bg-zinc-950 text-white" value="Todos">Todas versoes</option>
-              <option v-for="compatibility in setCompatibilityOptions" :key="compatibility" class="bg-zinc-950 text-white" :value="compatibility">{{ compatibility }}</option>
+            <select v-model="setCompatibilityFilter" class="guide-field h-11 px-3 text-sm font-bold outline-none">
+              <option value="Todos">Todas versoes</option>
+              <option v-for="compatibility in setCompatibilityOptions" :key="compatibility" :value="compatibility">{{ compatibility }}</option>
             </select>
           </div>
 
@@ -235,9 +235,9 @@
             <article
               v-for="set in paginatedSetCards"
               :key="set.key"
-              class="overflow-hidden rounded-md border border-white/10 bg-white/[0.04] shadow-soft"
+              class="guide-set-card overflow-hidden rounded-md"
             >
-              <div class="relative aspect-[4/3] overflow-hidden bg-black/35">
+              <div class="guide-set-card__image relative aspect-[4/3] overflow-hidden">
                 <img
                   v-if="set.image"
                   :src="set.image"
@@ -246,33 +246,33 @@
                   decoding="async"
                   loading="lazy"
                 >
-                <div v-else class="grid h-full place-items-center bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.12),rgba(255,255,255,0.03)_38%,rgba(0,0,0,0.35))] p-5 text-center">
-                  <span class="rounded-md border border-white/10 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-white/60">
+                <div v-else class="guide-set-card__placeholder grid h-full place-items-center p-5 text-center">
+                  <span class="guide-set-card__placeholder-label px-4 py-2 text-xs font-black uppercase tracking-[0.22em]">
                     Referencia sem imagem
                   </span>
                 </div>
-                <div class="absolute left-3 top-3 rounded-sm bg-black/60 px-2 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-white backdrop-blur-md">
+                <div class="guide-set-card__badge guide-set-card__badge--class absolute left-3 top-3 rounded-sm px-2 py-1 text-[10px] font-black uppercase tracking-[0.16em] backdrop-blur-md">
                   {{ set.className }}
                 </div>
-                <div class="absolute right-3 top-3 rounded-sm px-2 py-1 text-[10px] font-black uppercase tracking-[0.16em] backdrop-blur-md" :class="set.image ? 'bg-emerald-500/20 text-emerald-100' : 'bg-ember/20 text-ember'">
+                <div class="absolute right-3 top-3 rounded-sm px-2 py-1 text-[10px] font-black uppercase tracking-[0.16em] backdrop-blur-md" :class="set.image ? 'guide-set-card__badge--has-image' : 'guide-set-card__badge--pending'">
                   {{ set.image ? 'Imagem local' : 'Pendente' }}
                 </div>
               </div>
 
               <div class="grid gap-4 p-4">
                 <div>
-                  <h3 class="font-display text-2xl font-black leading-tight text-white">{{ set.name }}</h3>
-                  <p class="mt-2 text-sm leading-6 text-zinc-400">{{ set.description }}</p>
+                  <h3 class="bm-heading font-display text-2xl font-black leading-tight">{{ set.name }}</h3>
+                  <p class="bm-copy mt-2 text-sm">{{ set.description }}</p>
                 </div>
 
                 <div class="flex flex-wrap gap-2">
-                  <span class="rounded-sm bg-blood-700/25 px-2 py-1 text-[11px] font-black uppercase tracking-[0.12em] text-blood-100">{{ set.compatibility }}</span>
-                  <span class="rounded-sm bg-white/10 px-2 py-1 text-[11px] font-black uppercase tracking-[0.12em] text-white/72">{{ set.status }}</span>
-                  <span class="rounded-sm bg-ember/15 px-2 py-1 text-[11px] font-black uppercase tracking-[0.12em] text-ember">{{ set.pieces.length }} pecas</span>
+                  <span class="guide-badge guide-badge--wine px-2 py-1 text-[11px] font-black uppercase tracking-[0.12em]">{{ set.compatibility }}</span>
+                  <span class="guide-badge guide-badge--neutral px-2 py-1 text-[11px] font-black uppercase tracking-[0.12em]">{{ set.status }}</span>
+                  <span class="guide-badge guide-badge--red px-2 py-1 text-[11px] font-black uppercase tracking-[0.12em]">{{ set.pieces.length }} pecas</span>
                 </div>
 
-                <div v-if="set.pieces.length" class="flex flex-wrap gap-2 border-t border-white/10 pt-3">
-                  <span v-for="piece in set.pieces" :key="piece" class="rounded-md border border-white/10 bg-black/25 px-2.5 py-1 text-xs font-bold text-zinc-300">
+                <div v-if="set.pieces.length" class="guide-divider flex flex-wrap gap-2 pt-3">
+                  <span v-for="piece in set.pieces" :key="piece" class="guide-chip px-2.5 py-1 text-xs font-bold">
                     {{ piece }}
                   </span>
                 </div>
@@ -282,12 +282,12 @@
 
           <div
             v-if="filteredSetCards.length > 0"
-            class="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-md border border-white/10 bg-black/20 px-4 py-3 text-xs font-bold uppercase tracking-[0.14em] text-zinc-400"
+            class="guide-pagination mt-5 flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-xs font-bold uppercase tracking-[0.14em]"
           >
             <span>Pagina {{ setCurrentPage }} de {{ setTotalPages }} - {{ filteredSetCards.length }} itens</span>
             <div class="flex items-center gap-2">
               <button
-                class="rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-white transition disabled:cursor-not-allowed disabled:opacity-40"
+                class="guide-pagination__button px-3 py-2 transition disabled:cursor-not-allowed disabled:opacity-40"
                 type="button"
                 :disabled="setCurrentPage <= 1"
                 @click="setCurrentPage--"
@@ -295,7 +295,7 @@
                 Anterior
               </button>
               <button
-                class="rounded-md border border-white/10 bg-white/[0.04] px-3 py-2 text-white transition disabled:cursor-not-allowed disabled:opacity-40"
+                class="guide-pagination__button px-3 py-2 transition disabled:cursor-not-allowed disabled:opacity-40"
                 type="button"
                 :disabled="setCurrentPage >= setTotalPages"
                 @click="setCurrentPage++"
@@ -305,10 +305,10 @@
             </div>
           </div>
 
-          <div v-if="filteredSetCards.length === 0" class="mt-8 rounded-md border border-dashed border-white/15 bg-white/[0.035] p-8 text-center">
+          <div v-if="filteredSetCards.length === 0" class="guide-empty mt-8 p-8 text-center">
             <p class="bm-kicker">Nada encontrado</p>
-            <h3 class="mt-2 font-display text-3xl font-black uppercase text-white">Ajuste os filtros</h3>
-            <p class="mt-3 text-sm leading-7 text-zinc-400">Nao existe set correspondente aos filtros atuais.</p>
+            <h3 class="bm-heading mt-2 font-display text-3xl font-black uppercase">Ajuste os filtros</h3>
+            <p class="bm-copy mt-3">Nao existe set correspondente aos filtros atuais.</p>
           </div>
         </article>
       </section>
@@ -320,8 +320,8 @@
         <article class="bm-panel grid min-h-64 place-items-center rounded-md p-8 text-center">
           <div>
             <p class="bm-kicker">Conteúdo não publicado</p>
-            <h2 class="mt-2 font-display text-3xl font-bold text-white">{{ topicTitle }}</h2>
-            <p class="mt-4 text-sm leading-7 text-zinc-400">A administração ainda não publicou informações verificadas para este tópico.</p>
+            <h2 class="bm-heading mt-2 font-display text-3xl font-bold">{{ topicTitle }}</h2>
+            <p class="bm-copy mt-4">A administração ainda não publicou informações verificadas para este tópico.</p>
           </div>
         </article>
       </section>
@@ -862,6 +862,37 @@ useSeoMeta({
 </script>
 
 <style scoped>
+/* Content sections below the character hero: light/editorial system,
+   matching the rest of the site -- the hero above stays a dark photo
+   treatment on purpose (see .character-hero-shade below), everything past
+   it reads on the parchment background like any other guide page. */
+.guide-band { background: var(--bm-surface-soft); border-block: 1px solid var(--bm-border); }
+.guide-trait-pill { border: 1px solid var(--bm-wine); background: transparent; color: var(--bm-wine); transition: background-color 160ms ease, color 160ms ease; }
+.guide-trait-pill:hover { background: var(--bm-wine); color: #fff; }
+.guide-tag { border: 1px solid var(--bm-border); border-radius: 7px; background: var(--bm-surface-strong); color: var(--bm-muted); }
+.guide-subcard { border: 1px solid var(--bm-border); border-radius: 8px; background: var(--bm-surface-strong); }
+.guide-chip { border: 1px solid var(--bm-border); border-radius: 7px; background: var(--bm-surface-strong); color: var(--bm-text); }
+.guide-callout { border: 1px solid rgb(159 2 2 / 0.25); background: rgb(159 2 2 / 0.06); }
+.guide-divider { border-top: 1px solid var(--bm-border); }
+.guide-stat { border: 1px solid var(--bm-border); border-radius: 7px; background: var(--bm-surface-strong); color: var(--bm-muted); }
+.guide-field { width: 100%; border: 1px solid var(--bm-border-strong); border-radius: 7px; background: var(--bm-surface-strong); color: var(--bm-text); }
+.guide-field:focus { border-color: var(--bm-red); }
+.guide-set-card { border: 1px solid var(--bm-border); background: var(--bm-surface-strong); box-shadow: var(--shadow-panel); }
+.guide-set-card__image { background: var(--bm-surface); }
+.guide-set-card__placeholder { background: radial-gradient(circle at 50% 35%, rgb(0 0 0 / 0.06), rgb(0 0 0 / 0.02) 38%, rgb(0 0 0 / 0.1)); }
+.guide-set-card__placeholder-label { border: 1px solid var(--bm-border); border-radius: 7px; background: var(--bm-surface-strong); color: var(--bm-muted); }
+.guide-set-card__badge--class { background: rgb(16 16 16 / 0.72); color: #fff; }
+.guide-set-card__badge--has-image { background: rgb(16 128 78 / 0.16); color: #0d6b45; }
+.guide-set-card__badge--pending { background: rgb(159 2 2 / 0.14); color: var(--bm-red); }
+.guide-badge { border-radius: 5px; }
+.guide-badge--wine { background: rgb(84 8 9 / 0.1); color: var(--bm-wine); }
+.guide-badge--neutral { background: var(--bm-surface); color: var(--bm-muted); }
+.guide-badge--red { background: rgb(159 2 2 / 0.12); color: var(--bm-red); }
+.guide-pagination { border: 1px solid var(--bm-border); border-radius: 8px; background: var(--bm-surface-strong); color: var(--bm-muted); }
+.guide-pagination__button { border: 1px solid var(--bm-border-strong); border-radius: 7px; background: var(--bm-surface); color: var(--bm-text); }
+.guide-pagination__button:hover:not(:disabled) { border-color: var(--bm-wine); color: var(--bm-wine); }
+.guide-empty { border: 1px dashed var(--bm-border); border-radius: 10px; background: var(--bm-surface-strong); }
+
 .character-hero {
   isolation: isolate;
 }
