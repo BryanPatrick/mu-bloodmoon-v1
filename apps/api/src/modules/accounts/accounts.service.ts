@@ -5,7 +5,8 @@ import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import type { AdminTwoFactorResetRequest, AdminTwoFactorResetResponse } from '../auth/auth.contract'
 import type { AuthenticatedUser } from '../auth/auth.types'
-import { delegableAdminPermissions, permissionsForAccount } from '../auth/permissions'
+import { delegableAdminPermissions, delegableGmPermissions, permissionsForAccount } from '../auth/permissions'
+import type { PermissionKey } from '../auth/permissions'
 import { verifyStepUpToken } from '../auth/step-up.util'
 import type { AdminAccountsQuery, UpdateAccountPayload, UpdateAccountPermissionsPayload } from './accounts.types'
 
@@ -216,11 +217,11 @@ export class AccountsService {
   async accountPermissions(id: string) {
     const account = await this.prisma.account.findUnique({ where: { id }, include: { permissions: true } })
     if (!account) throw new NotFoundException('Account not found')
-    if (account.role !== 'ADMIN') throw new BadRequestException('Permissions can only be customized for ADM accounts')
+    const available = this.delegablePermissionsFor(account.role)
     return {
       accountId: account.id,
       username: account.username,
-      available: delegableAdminPermissions,
+      available,
       effective: permissionsForAccount(account.role, account.permissions),
       overrides: account.permissions.map(({ key, granted }) => ({ key, granted }))
     }
@@ -232,10 +233,10 @@ export class AccountsService {
     if (id === user.id) throw new ForbiddenException('You cannot change your own permissions')
     const account = await this.prisma.account.findUnique({ where: { id }, include: { permissions: true } })
     if (!account) throw new NotFoundException('Account not found')
-    if (account.role !== 'ADMIN') throw new BadRequestException('Permissions can only be customized for ADM accounts')
+    const delegable = this.delegablePermissionsFor(account.role)
 
     const requested = payload.permissions || []
-    if (requested.some((entry) => !delegableAdminPermissions.includes(entry.key as never))) {
+    if (requested.some((entry) => !delegable.includes(entry.key as PermissionKey))) {
       throw new BadRequestException('One or more permissions cannot be delegated')
     }
 
@@ -291,6 +292,12 @@ export class AccountsService {
     ])
     await this.audit.record({ actorId: user.id, actorUsername: user.username, action: 'account.sessions.revoked', targetType: 'Account', targetId: id, severity: 'warning', metadata: { username: account.username, reason: normalizedReason, self, result: 'success' } })
     return { ok: true, message: 'Sessions revoked' }
+  }
+
+  private delegablePermissionsFor(role: Role): PermissionKey[] {
+    if (role === 'ADMIN') return delegableAdminPermissions
+    if (role === 'GM') return delegableGmPermissions
+    throw new BadRequestException('Permissions can only be customized for ADM or GM accounts')
   }
 
   private recordDeniedChange(

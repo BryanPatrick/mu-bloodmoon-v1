@@ -112,7 +112,11 @@ export const permissionKeys = {
   gmGuildsView: 'gm.guilds.view',
   gmOperationalLogsView: 'gm.operational-logs.view',
   gmOccurrencesView: 'gm.occurrences.view',
-  gmOccurrencesManage: 'gm.occurrences.manage'
+  gmOccurrencesManage: 'gm.occurrences.manage',
+  gmEventsView: 'gm.events.view',
+  gmEventsExecute: 'gm.events.execute',
+  gmEventsCancel: 'gm.events.cancel',
+  gmEventsResultsValidate: 'gm.events.results.validate'
 } as const
 
 export type PermissionKey = typeof permissionKeys[keyof typeof permissionKeys]
@@ -121,6 +125,18 @@ const adminPermissions = Object.values(permissionKeys)
   .filter((permission): permission is PermissionKey => permission.startsWith('admin.'))
 
 export const delegableAdminPermissions: PermissionKey[] = [...adminPermissions]
+
+// GM event actions beyond viewing are deliberately NOT part of every GM's
+// baseline (permissionsForRole below) -- "não entregar todas
+// automaticamente se não forem necessárias". A SUPER_ADMIN grants these
+// per-account via the same AccountPermission delegation mechanism ADMIN
+// already uses (see accounts.service.ts's accountPermissions/
+// updateAccountPermissions, extended to accept GM accounts too).
+export const delegableGmPermissions: PermissionKey[] = [
+  permissionKeys.gmEventsExecute,
+  permissionKeys.gmEventsCancel,
+  permissionKeys.gmEventsResultsValidate
+]
 
 const playerPermissions: PermissionKey[] = [
   permissionKeys.accountManage,
@@ -139,7 +155,8 @@ const gmPermissions: PermissionKey[] = [
   permissionKeys.gmGuildsView,
   permissionKeys.gmOperationalLogsView,
   permissionKeys.gmOccurrencesView,
-  permissionKeys.gmOccurrencesManage
+  permissionKeys.gmOccurrencesManage,
+  permissionKeys.gmEventsView
 ]
 
 const rolePermissions: Record<Role, PermissionKey[] | ['*']> = {

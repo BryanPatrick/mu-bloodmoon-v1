@@ -62,6 +62,9 @@
     <section class="bm-dashboard-card p-5">
       <h2 class="font-display text-xl font-black uppercase">Atalhos</h2>
       <div class="mt-4 grid gap-2 sm:grid-cols-2">
+        <NuxtLink to="/painel/gm/eventos" class="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-black hover:border-ember/50">
+          Eventos
+        </NuxtLink>
         <NuxtLink to="/painel/gm/ocorrencias" class="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-black hover:border-ember/50">
           Ocorrências
         </NuxtLink>

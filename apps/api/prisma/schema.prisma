@@ -576,6 +576,12 @@ model Account {
   gmOccurrencesCreated  GmOccurrence[]          @relation("GmOccurrenceCreatedBy")
   gmOccurrencesAssigned GmOccurrence[]          @relation("GmOccurrenceAssignedTo")
   gmOccurrenceNotes     GmOccurrenceNote[]
+  gmEventDefinitionsCreated GmEventDefinition[] @relation("GmEventDefinitionCreatedBy")
+  gmEventRunsStarted        GmEventRun[]        @relation("GmEventRunStartedBy")
+  gmEventRunsEnded          GmEventRun[]        @relation("GmEventRunEndedBy")
+  gmEventRunsCancelled      GmEventRun[]        @relation("GmEventRunCancelledBy")
+  gmEventResultsCreated     GmEventResult[]     @relation("GmEventResultCreatedBy")
+  gmEventResultsValidated   GmEventResult[]     @relation("GmEventResultValidatedBy")
 }
 
 model TwoFactorRecoveryCode {
@@ -2809,4 +2815,125 @@ model GmOccurrenceNote {
   author       Account      @relation(fields: [authorId], references: [id])
 
   @@index([occurrenceId, createdAt])
+}
+
+// GM events MVP (Etapa 4). Four deliberately separate concepts, per the
+// audit confirming no existing model covers this (CommunityQuest is social
+// gamification; RoadmapItem is the changelog; OperationalEvent is a log;
+// GmOccurrence is a ticket -- none of them are schedulable game events):
+//   GmEventDefinition -- the configured/reusable event (what it is)
+//   GmEventSchedule    -- when it is meant to happen
+//   GmEventRun         -- one specific execution/occurrence
+//   GmEventResult      -- the outcome of that execution, GM-validated
+// executionMode distinguishes who is expected to drive a run: the system
+// (AUTOMATED), a GM by hand (MANUAL_GM), or both (HYBRID, system prepares,
+// GM confirms/accompanies) -- see gm-events.service.ts header for how this
+// is enforced today (MANUAL_GM/HYBRID only; AUTOMATED has no driver yet).
+// origin stays a free-text string, not an enum, deliberately: the audit
+// confirmed there is no live connection to the MU game server today
+// (MU_BRIDGE_ENABLED=false, game-integration.contract.ts is a types-only
+// stub) so every run this round is "PORTAL_ONLY" -- the portal recorded
+// the operation without confirming the game server did anything. A future
+// real integration adds a new origin value, not a schema migration,
+// matching the same free-text precedent as OperationalEvent.module and
+// GmOccurrence.type.
+enum GmEventExecutionMode {
+  AUTOMATED
+  MANUAL_GM
+  HYBRID
+}
+
+enum GmEventDefinitionStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model GmEventDefinition {
+  id            String                  @id @default(uuid())
+  key           String                  @unique @db.VarChar(100)
+  name          String                  @db.VarChar(191)
+  description   String?                 @db.Text
+  category      String                  @db.VarChar(100)
+  executionMode GmEventExecutionMode    @default(MANUAL_GM)
+  status        GmEventDefinitionStatus @default(ACTIVE)
+  createdById   String
+  createdAt     DateTime                @default(now())
+  updatedAt     DateTime                @updatedAt
+  createdBy     Account                 @relation("GmEventDefinitionCreatedBy", fields: [createdById], references: [id])
+  schedules     GmEventSchedule[]
+  runs          GmEventRun[]
+
+  @@index([status])
+}
+
+model GmEventSchedule {
+  id             String            @id @default(uuid())
+  definitionId   String
+  startsAt       DateTime
+  endsAt         DateTime?
+  recurrenceNote String?           @db.VarChar(191)
+  notes          String?           @db.Text
+  createdAt      DateTime          @default(now())
+  definition     GmEventDefinition @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+  runs           GmEventRun[]
+
+  @@index([definitionId, startsAt])
+}
+
+enum GmEventRunStatus {
+  SCHEDULED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  PROBLEM_REPORTED
+}
+
+model GmEventRun {
+  id            String            @id @default(uuid())
+  definitionId  String
+  scheduleId    String?
+  status        GmEventRunStatus  @default(SCHEDULED)
+  origin        String            @default("PORTAL_ONLY") @db.VarChar(40)
+  startedById   String?
+  startedAt     DateTime?
+  endedById     String?
+  endedAt       DateTime?
+  cancelledById String?
+  cancelledAt   DateTime?
+  cancelReason  String?           @db.Text
+  problemNote   String?           @db.Text
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  definition    GmEventDefinition @relation(fields: [definitionId], references: [id])
+  schedule      GmEventSchedule?  @relation(fields: [scheduleId], references: [id])
+  startedBy     Account?          @relation("GmEventRunStartedBy", fields: [startedById], references: [id])
+  endedBy       Account?          @relation("GmEventRunEndedBy", fields: [endedById], references: [id])
+  cancelledBy   Account?          @relation("GmEventRunCancelledBy", fields: [cancelledById], references: [id])
+  result        GmEventResult?
+
+  @@index([definitionId, status])
+  @@index([status, createdAt])
+}
+
+enum GmEventResultStatus {
+  PENDING_VALIDATION
+  VALIDATED
+  INVALIDATED
+}
+
+model GmEventResult {
+  id               String              @id @default(uuid())
+  runId            String              @unique
+  summary          String              @db.Text
+  participantCount Int?
+  status           GmEventResultStatus @default(PENDING_VALIDATION)
+  validatedById    String?
+  validatedAt      DateTime?
+  invalidateReason String?             @db.Text
+  createdById      String
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  run              GmEventRun          @relation(fields: [runId], references: [id], onDelete: Cascade)
+  createdBy        Account             @relation("GmEventResultCreatedBy", fields: [createdById], references: [id])
+  validatedBy      Account?            @relation("GmEventResultValidatedBy", fields: [validatedById], references: [id])
 }
