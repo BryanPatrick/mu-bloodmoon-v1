@@ -573,6 +573,9 @@ model Account {
   adminTaskComments    AdminTaskComment[]
   adminTaskEvidence    AdminTaskEvidence[]
   twoFactorRecoveryCodes TwoFactorRecoveryCode[]
+  gmOccurrencesCreated  GmOccurrence[]          @relation("GmOccurrenceCreatedBy")
+  gmOccurrencesAssigned GmOccurrence[]          @relation("GmOccurrenceAssignedTo")
+  gmOccurrenceNotes     GmOccurrenceNote[]
 }
 
 model TwoFactorRecoveryCode {
@@ -2759,4 +2762,51 @@ model GuildMovementApproval {
   movement          GuildMovement       @relation(fields: [guildMovementId], references: [id], onDelete: Cascade)
 
   @@index([guildMovementId])
+}
+
+// GM operational occurrences foundation (Etapa 3). Deliberately generic --
+// a row can represent a report, an event incident, suspicious behaviour, a
+// dispute, or anything else a GM needs to track and hand off. No automatic
+// punishment is ever derived from this model; it is a tracking/handoff tool
+// only. type/targetType are free text (not enums) for the same open-ended
+// reason as OperationalEvent.module.
+enum GmOccurrenceStatus {
+  OPEN
+  IN_REVIEW
+  ACTION_REQUIRED
+  RESOLVED
+  DISMISSED
+}
+
+model GmOccurrence {
+  id           String             @id @default(uuid())
+  type         String             @db.VarChar(100)
+  description  String             @db.Text
+  targetType   String?            @db.VarChar(100)
+  targetId     String?            @db.VarChar(191)
+  status       GmOccurrenceStatus @default(OPEN)
+  createdById  String
+  assignedToId String?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  resolvedAt   DateTime?
+  createdBy    Account            @relation("GmOccurrenceCreatedBy", fields: [createdById], references: [id])
+  assignedTo   Account?           @relation("GmOccurrenceAssignedTo", fields: [assignedToId], references: [id])
+  notes        GmOccurrenceNote[]
+
+  @@index([status, createdAt])
+  @@index([targetType, targetId])
+  @@index([assignedToId])
+}
+
+model GmOccurrenceNote {
+  id           String       @id @default(uuid())
+  occurrenceId String
+  authorId     String
+  note         String       @db.Text
+  createdAt    DateTime     @default(now())
+  occurrence   GmOccurrence @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
+  author       Account      @relation(fields: [authorId], references: [id])
+
+  @@index([occurrenceId, createdAt])
 }

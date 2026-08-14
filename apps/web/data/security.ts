@@ -90,7 +90,9 @@ export const permissions = {
   gmDashboardView: 'gm.dashboard.view',
   gmCharactersView: 'gm.characters.view',
   gmGuildsView: 'gm.guilds.view',
-  gmOperationalLogsView: 'gm.operational-logs.view'
+  gmOperationalLogsView: 'gm.operational-logs.view',
+  gmOccurrencesView: 'gm.occurrences.view',
+  gmOccurrencesManage: 'gm.occurrences.manage'
 } as const
 
 export type Permission = typeof permissions[keyof typeof permissions]
@@ -118,7 +120,9 @@ const gmPermissions: Permission[] = [
   permissions.gmDashboardView,
   permissions.gmCharactersView,
   permissions.gmGuildsView,
-  permissions.gmOperationalLogsView
+  permissions.gmOperationalLogsView,
+  permissions.gmOccurrencesView,
+  permissions.gmOccurrencesManage
 ]
 
 export const rolePermissions: Record<UserRole, Permission[] | ['*']> = {

@@ -293,6 +293,8 @@ const playerItems: MenuItem[] = [
 
 const gmItems: MenuItem[] = [
   { label: 'Painel GM', to: '/painel/gm', icon: LayoutDashboard, permission: permissions.gmDashboardView, roles: ['gm'] },
+  { label: 'Ocorrências', to: '/painel/gm/ocorrencias', icon: FileSearch, permission: permissions.gmOccurrencesView },
+  { label: 'Logs operacionais', to: '/painel/gm/logs', icon: Activity, permission: permissions.gmOperationalLogsView },
   { label: 'Minha conta', to: '/painel/conta', icon: UserCog },
   { label: 'Meus personagens', to: '/painel/personagens', icon: Users },
   { label: 'Comunidade', to: '/comunidade', icon: MessageCircle },

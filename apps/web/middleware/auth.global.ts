@@ -27,6 +27,8 @@ const adminRoutePermissions: Array<[string, Permission]> = [
 ]
 
 const gmRoutePermissions: Array<[string, Permission]> = [
+  ['/painel/gm/ocorrencias', permissions.gmOccurrencesView],
+  ['/painel/gm/logs', permissions.gmOperationalLogsView],
   ['/painel/gm', permissions.gmDashboardView]
 ]
 

@@ -26,6 +26,7 @@ import { RoadmapModule } from './modules/roadmap/roadmap.module'
 import { AdminTasksModule } from './modules/admin-tasks/admin-tasks.module'
 import { AdminReportsModule } from './modules/admin-reports/admin-reports.module'
 import { GuildsModule } from './modules/guilds/guilds.module'
+import { GmModule } from './modules/gm/gm.module'
 
 export const apiModules = [
   'auth',
@@ -47,7 +48,8 @@ export const apiModules = [
   'roadmap',
   'admin-tasks',
   'admin-reports',
-  'guilds'
+  'guilds',
+  'gm'
 ] as const
 
 export type ApiModuleName = typeof apiModules[number]
@@ -79,7 +81,8 @@ export type ApiModuleName = typeof apiModules[number]
     RoadmapModule,
     AdminTasksModule,
     AdminReportsModule,
-    GuildsModule
+    GuildsModule,
+    GmModule
   ]
 })
 export class AppModule implements NestModule {
