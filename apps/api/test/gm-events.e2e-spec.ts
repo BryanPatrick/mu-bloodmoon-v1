@@ -229,7 +229,8 @@ describe('GM events MVP (definitions, agenda, runs, results)', () => {
     expect(result.status).toBe(403)
   })
 
-  it('refuses to start a run for an AUTOMATED definition -- no live game-server driver exists yet', async () => {
+  it('refuses to start a run for an AUTOMATED definition -- routed through the GameBridge executor, which honestly fails, not a fake success', async () => {
+    const beforeCount = await prisma.gmEventRun.count({ where: { definitionId: automatedDefinitionId } })
     const result = await (
       await request()
     )
@@ -237,9 +238,17 @@ describe('GM events MVP (definitions, agenda, runs, results)', () => {
       .set('Authorization', `Bearer ${gmExecutorToken}`)
       .send({ definitionId: automatedDefinitionId })
     expect(result.status).toBe(400)
+    expect(String(result.body.message).toLowerCase()).toContain('gamebridge')
+
+    // No half-created run row was left behind by the failed attempt.
+    const afterCount = await prisma.gmEventRun.count({ where: { definitionId: automatedDefinitionId } })
+    expect(afterCount).toBe(beforeCount)
+
+    const events = await prisma.auditEvent.findMany({ where: { targetType: 'GmEventDefinition', targetId: automatedDefinitionId, action: 'gm.event.run.execution_failed' } })
+    expect(events.length).toBeGreaterThan(0)
   })
 
-  it('lets the authorized GM start a run, recorded as PORTAL_ONLY (never claims the game was actually changed)', async () => {
+  it('lets the authorized GM start a run, recorded as PORTAL_ONLY (never claims the game was actually changed), with a unique correlationId', async () => {
     const result = await (
       await request()
     )
@@ -250,11 +259,41 @@ describe('GM events MVP (definitions, agenda, runs, results)', () => {
     expect(result.body.status).toBe('ACTIVE')
     expect(result.body.origin).toBe('PORTAL_ONLY')
     expect(result.body.startedBy).toBe(gmExecutor.username)
+    expect(typeof result.body.correlationId).toBe('string')
+    expect(result.body.correlationId.length).toBeGreaterThan(0)
     runId = result.body.id
+
+    const detail = await (await request()).get(`/api/gm/events/runs/${runId}`).set('Authorization', `Bearer ${gmExecutorToken}`)
+    expect(detail.status).toBe(200)
+    expect(detail.body.bridgeAttempts).toBe(1)
+    expect(detail.body.externalResult).toBeNull()
+    expect(detail.body.externalError).toBeNull()
 
     const events = await prisma.auditEvent.findMany({ where: { targetType: 'GmEventRun', targetId: runId, action: 'gm.event.run.started' } })
     expect(events).toHaveLength(1)
     expect(events[0]!.actorUsername).toBe(gmExecutor.username)
+  })
+
+  it('gives every run a distinct correlationId', async () => {
+    const second = await (
+      await request()
+    )
+      .post('/api/gm/events/runs')
+      .set('Authorization', `Bearer ${gmExecutorToken}`)
+      .send({ definitionId })
+    expect(second.status).toBe(201)
+    expect(second.body.correlationId).not.toBe('')
+    const first = await (await request()).get(`/api/gm/events/runs/${runId}`).set('Authorization', `Bearer ${gmExecutorToken}`)
+    expect(second.body.correlationId).not.toBe(first.body.correlationId)
+
+    // Clean up so it doesn't interfere with the cancel/end flow below, which
+    // expects `runId` (the first run) to still be the sole ACTIVE one.
+    await (
+      await request()
+    )
+      .patch(`/api/gm/events/runs/${second.body.id}/cancel`)
+      .set('Authorization', `Bearer ${gmExecutorToken}`)
+      .send({ reason: 'Run extra criado apenas para validar correlationId unico' })
   })
 
   it('requires a reason to cancel, and blocks a GM without gm.events.cancel from cancelling at all', async () => {

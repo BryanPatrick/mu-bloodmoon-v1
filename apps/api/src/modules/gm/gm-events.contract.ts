@@ -91,6 +91,7 @@ export type GmEventRunSummary = {
   scheduleId: string | null
   status: GmEventRunStatus
   origin: string
+  correlationId: string
   startedBy: string | null
   startedAt: string | null
   endedBy: string | null
@@ -104,6 +105,9 @@ export type GmEventRunSummary = {
 }
 
 export type GmEventRunDetail = GmEventRunSummary & {
+  bridgeAttempts: number
+  externalResult: unknown | null
+  externalError: string | null
   result: {
     id: string
     summary: string

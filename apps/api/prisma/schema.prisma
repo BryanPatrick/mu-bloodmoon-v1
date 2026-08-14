@@ -2905,7 +2905,29 @@ model GmEventRun {
   definitionId  String
   scheduleId    String?
   status        GmEventRunStatus  @default(SCHEDULED)
+  // "PORTAL_ONLY" today (no live game-server connection exists -- see the
+  // header comment above), plus three reserved-but-unused values a future
+  // real GameBridge connection will actually produce: "GAMEBRIDGE_PENDING"
+  // (call in flight), "GAMEBRIDGE_CONNECTED" (call succeeded),
+  // "GAMEBRIDGE_ERROR" (call attempted and honestly failed -- never a fake
+  // success). Free text, not an enum, for the same reason as
+  // GmOccurrence.type: the value set is expected to grow without a schema
+  // migration. See gm/event-executors/ for the abstraction that produces it.
   origin        String            @default("PORTAL_ONLY") @db.VarChar(40)
+  // Doubles as the future GameBridge call's idempotency key (mirrors
+  // GameBridgeJob.idempotencyKey's role for marketplace escrow) and as the
+  // cross-system trace id (mirrors the correlationId convention already used
+  // by SystemError/OperationalEvent/SystemAlert/PlayerMarketOrder). Set once
+  // at run creation, before any executor is invoked.
+  correlationId String            @unique @default(uuid())
+  // How many times an executor was actually invoked for this run -- prepared
+  // for a future retry policy; today every run attempts exactly once.
+  bridgeAttempts Int              @default(0)
+  // Raw payload/message from whichever executor ran (Portal or, later,
+  // GameBridge). Both stay null for the Portal path today since there is
+  // nothing external to report.
+  externalResult Json?
+  externalError  String?          @db.Text
   startedById   String?
   startedAt     DateTime?
   endedById     String?

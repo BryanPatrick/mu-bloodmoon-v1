@@ -1,8 +1,10 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import type { GmEventRunStatus, Prisma } from '@prisma/client'
+import { randomUUID } from 'node:crypto'
 import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
+import { EventExecutorFactory } from './event-executors/event-executor.factory'
 import type {
   GmEventAuditEntry,
   GmEventDefinitionCreatePayload,
@@ -26,11 +28,6 @@ import type {
 
 const defaultPageSize = 20
 const maxPageSize = 100
-// AUTOMATED definitions have no driver this round -- there is no live
-// connection to the MU game server (see schema.prisma header comment and
-// game-integration.contract.ts), so nothing can execute an AUTOMATED run.
-// Only definitions a human is meant to operate can have a run started.
-const gmStartableModes = ['MANUAL_GM', 'HYBRID']
 
 function pagination(query: { page?: string; pageSize?: string }) {
   const page = Math.max(1, Number.parseInt(query.page || '', 10) || 1)
@@ -42,7 +39,8 @@ function pagination(query: { page?: string; pageSize?: string }) {
 export class GmEventsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly audit: AuditService
+    private readonly audit: AuditService,
+    private readonly executors: EventExecutorFactory
   ) {}
 
   // -- Definitions & schedule: ADMIN/SUPER_ADMIN configure, GM only views --
@@ -274,6 +272,9 @@ export class GmEventsService {
     if (!run) throw new NotFoundException('Event run not found')
     return {
       ...this.mapRunSummary(run),
+      bridgeAttempts: run.bridgeAttempts,
+      externalResult: run.externalResult,
+      externalError: run.externalError,
       result: run.result
         ? {
             id: run.result.id,
@@ -292,20 +293,45 @@ export class GmEventsService {
     const definition = await this.prisma.gmEventDefinition.findUnique({ where: { id: payload.definitionId } })
     if (!definition) throw new NotFoundException('Event definition not found')
     if (definition.status !== 'ACTIVE') throw new BadRequestException('This event definition is not active')
-    if (!gmStartableModes.includes(definition.executionMode)) {
-      throw new BadRequestException('AUTOMATED events have no manual driver yet -- they cannot be started by a GM')
-    }
     if (payload.scheduleId) {
       const schedule = await this.prisma.gmEventSchedule.findUnique({ where: { id: payload.scheduleId } })
       if (!schedule || schedule.definitionId !== payload.definitionId) throw new BadRequestException('Schedule does not belong to this event definition')
     }
 
+    // MANUAL_GM/HYBRID resolve to PortalEventExecutor (always succeeds --
+    // it only records that a GM drove this by hand). AUTOMATED resolves to
+    // GameBridgeEventExecutor, which today always honestly fails (no live
+    // game-server connection exists yet) -- see event-executors/ for both.
+    const runId = randomUUID()
+    const correlationId = randomUUID()
+    const executor = this.executors.forMode(definition.executionMode)
+    const execution = await executor.execute({
+      runId,
+      correlationId,
+      definitionId: definition.id,
+      definitionKey: definition.key,
+      executionMode: definition.executionMode
+    })
+
+    if (!execution.success) {
+      await this.audit.record({
+        actorId: user.id, actorUsername: user.username, action: 'gm.event.run.execution_failed',
+        targetType: 'GmEventDefinition', targetId: definition.id, severity: 'warning',
+        metadata: { correlationId, executor: executor.name, origin: execution.origin, error: execution.externalError, result: 'denied' }
+      })
+      throw new BadRequestException(execution.externalError || 'This event could not be started')
+    }
+
     const run = await this.prisma.gmEventRun.create({
       data: {
+        id: runId,
         definitionId: payload.definitionId,
         scheduleId: payload.scheduleId || null,
         status: 'ACTIVE',
-        origin: 'PORTAL_ONLY',
+        origin: execution.origin,
+        correlationId,
+        bridgeAttempts: 1,
+        externalResult: execution.externalResult === null ? undefined : (execution.externalResult as Prisma.InputJsonValue),
         startedById: user.id,
         startedAt: new Date()
       },
@@ -314,7 +340,7 @@ export class GmEventsService {
     await this.audit.record({
       actorId: user.id, actorUsername: user.username, action: 'gm.event.run.started',
       targetType: 'GmEventRun', targetId: run.id, severity: 'warning',
-      metadata: { definitionId: payload.definitionId, definitionKey: definition.key, origin: 'PORTAL_ONLY', result: 'success' }
+      metadata: { definitionId: payload.definitionId, definitionKey: definition.key, correlationId, origin: execution.origin, result: 'success' }
     })
     return this.getRun(run.id)
   }
@@ -430,6 +456,7 @@ export class GmEventsService {
     scheduleId: string | null
     status: GmEventRunStatus
     origin: string
+    correlationId: string
     startedBy: { username: string } | null
     startedAt: Date | null
     endedBy: { username: string } | null
@@ -447,6 +474,7 @@ export class GmEventsService {
     scheduleId: run.scheduleId,
     status: run.status,
     origin: run.origin,
+    correlationId: run.correlationId,
     startedBy: run.startedBy?.username || null,
     startedAt: run.startedAt?.toISOString() || null,
     endedBy: run.endedBy?.username || null,
