@@ -28,6 +28,18 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException('Insufficient role')
     }
 
+    // GM, ADMIN and SUPER_ADMIN all require 2FA to be active before they can
+    // reach any role-gated (i.e. administrative) endpoint -- PLAYER's 2FA
+    // stays optional. This is the backend enforcement of that policy: the
+    // frontend redirect to the setup screen is UX only, not the source of
+    // truth.
+    if (request.user?.role !== 'PLAYER' && !request.user?.twoFactorEnabled) {
+      throw new ForbiddenException({
+        code: 'TWO_FACTOR_SETUP_REQUIRED',
+        message: 'Ative a autenticacao em duas etapas para acessar esta area'
+      })
+    }
+
     return true
   }
 }

@@ -13,6 +13,7 @@ type AuthUser = {
   role: UserRole
   currencies: AuthCurrency[]
   permissions: string[]
+  twoFactorEnabled?: boolean
 }
 
 type AuthSession = {
@@ -223,7 +224,8 @@ export const useAuth = () => {
         name: response.user.name,
         role: roleFromApi(response.user.role),
         currencies: currenciesFromApi(response.user.currencies),
-        permissions: response.user.permissions || []
+        permissions: response.user.permissions || [],
+        twoFactorEnabled: response.user.twoFactorEnabled
       }
       saveSession(nextUser, response)
       return true
@@ -312,7 +314,8 @@ export const useAuth = () => {
     username: string,
     password: string,
     totpCode: string | undefined,
-    captchaToken: string
+    captchaToken: string,
+    recoveryCode?: string
   ): Promise<LoginResult> => {
     const config = useRuntimeConfig()
     const apiBase = String(config.public.apiBase || 'http://localhost:3333/api').replace(/\/$/, '')
@@ -320,7 +323,13 @@ export const useAuth = () => {
     try {
       const response = await $fetch<ApiLoginResponse>(`${apiBase}/auth/login`, {
         method: 'POST',
-        body: { username, password, captchaToken, ...(totpCode ? { totpCode } : {}) }
+        body: {
+          username,
+          password,
+          captchaToken,
+          ...(totpCode ? { totpCode } : {}),
+          ...(recoveryCode ? { recoveryCode } : {})
+        }
       })
       const nextUser: AuthUser = {
         id: response.user.id,
@@ -328,7 +337,8 @@ export const useAuth = () => {
         name: response.user.name,
         role: roleFromApi(response.user.role),
         currencies: currenciesFromApi(response.user.currencies),
-        permissions: response.user.permissions || []
+        permissions: response.user.permissions || [],
+        twoFactorEnabled: response.user.twoFactorEnabled
       }
 
       saveSession(nextUser, {
@@ -382,9 +392,10 @@ export const useAuth = () => {
     username: string,
     password: string,
     totpCode: string | undefined,
-    captchaToken: string
+    captchaToken: string,
+    recoveryCode?: string
   ): Promise<LoginResult> => {
-    return loginWithApi(username, password, totpCode, captchaToken)
+    return loginWithApi(username, password, totpCode, captchaToken, recoveryCode)
   }
 
   const requestPasswordRecovery = async (

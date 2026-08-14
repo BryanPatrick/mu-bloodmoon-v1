@@ -66,7 +66,9 @@ export const useAccountSecurityApi = () => {
     sessions: () => $fetch<AccountSession[]>(`${apiBase.value}/account/sessions`, { headers: authHeaders() }),
     revokeSessions: (reason: string) => $fetch<{ ok: boolean }>(`${apiBase.value}/account/sessions/revoke`, { method: 'PATCH', body: { reason }, headers: authHeaders() }),
     setupTwoFactor: (currentPassword: string) => $fetch<{ secret: string, uri: string, qrCode: string }>(`${apiBase.value}/auth/2fa/setup`, { method: 'POST', body: { currentPassword }, headers: authHeaders() }),
-    verifyTwoFactor: (code: string) => $fetch<{ ok: true }>(`${apiBase.value}/auth/2fa/verify`, { method: 'POST', body: { code }, headers: authHeaders() }),
-    disableTwoFactor: (currentPassword: string, code: string) => $fetch<{ ok: true }>(`${apiBase.value}/auth/2fa/disable`, { method: 'POST', body: { currentPassword, code }, headers: authHeaders() })
+    verifyTwoFactor: (code: string) => $fetch<{ ok: true, recoveryCodes: string[] }>(`${apiBase.value}/auth/2fa/verify`, { method: 'POST', body: { code }, headers: authHeaders() }),
+    disableTwoFactor: (currentPassword: string, code?: string, recoveryCode?: string) => $fetch<{ ok: true }>(`${apiBase.value}/auth/2fa/disable`, { method: 'POST', body: { currentPassword, code, recoveryCode }, headers: authHeaders() }),
+    regenerateRecoveryCodes: (currentPassword: string, code?: string, recoveryCode?: string) => $fetch<{ ok: true, recoveryCodes: string[] }>(`${apiBase.value}/auth/2fa/recovery-codes/regenerate`, { method: 'POST', body: { currentPassword, code, recoveryCode }, headers: authHeaders() }),
+    stepUp: (currentPassword: string, code?: string, recoveryCode?: string) => $fetch<{ stepUpToken: string, expiresAt: string }>(`${apiBase.value}/auth/step-up`, { method: 'POST', body: { currentPassword, code, recoveryCode }, headers: authHeaders() })
   }
 }

@@ -2,6 +2,7 @@ export type LoginRequest = {
   username: string
   password: string
   totpCode?: string
+  recoveryCode?: string
   captchaToken: string
 }
 
@@ -32,6 +33,7 @@ export type SessionUser = {
   role: string
   permissions: string[]
   twoFactorEnabled: boolean
+  twoFactorRequired: boolean
   currencies: Array<{
     currency: string
     balance: number
@@ -42,13 +44,55 @@ export type TwoFactorSetupRequest = {
   currentPassword: string
 }
 
+export type TwoFactorSetupResponse = {
+  secret: string
+  uri: string
+  qrCode: string
+}
+
 export type TwoFactorVerifyRequest = {
   code: string
 }
 
+export type TwoFactorVerifyResponse = {
+  ok: true
+  recoveryCodes: string[]
+}
+
 export type TwoFactorDisableRequest = {
   currentPassword: string
-  code: string
+  code?: string
+  recoveryCode?: string
+}
+
+export type TwoFactorRecoveryCodesRegenerateRequest = {
+  currentPassword: string
+  code?: string
+  recoveryCode?: string
+}
+
+export type TwoFactorRecoveryCodesRegenerateResponse = {
+  ok: true
+  recoveryCodes: string[]
+}
+
+export type StepUpRequest = {
+  currentPassword: string
+  code?: string
+  recoveryCode?: string
+}
+
+export type StepUpResponse = {
+  stepUpToken: string
+  expiresAt: string
+}
+
+export type AdminTwoFactorResetRequest = {
+  reason: string
+}
+
+export type AdminTwoFactorResetResponse = {
+  ok: true
 }
 
 export type LoginResponse = {

@@ -1,14 +1,22 @@
-import { Body, Controller, Get, Param, Patch, Query, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Headers, Param, Patch, Query, UseGuards } from '@nestjs/common'
 import { CurrentUser } from '../auth/current-user.decorator'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { Roles } from '../auth/roles.decorator'
 import { RolesGuard } from '../auth/roles.guard'
 import { RequirePermissions } from '../auth/permissions.decorator'
 import { PermissionsGuard } from '../auth/permissions.guard'
+import { RequireStepUp } from '../auth/step-up.decorator'
+import { StepUpGuard } from '../auth/step-up.guard'
 import { permissionKeys } from '../auth/permissions'
 import type { AuthenticatedUser } from '../auth/auth.types'
+import type { AdminTwoFactorResetRequest } from '../auth/auth.contract'
 import { AccountsService } from './accounts.service'
-import type { AdminAccountsQuery, RevokeSessionsPayload, UpdateAccountPayload, UpdateAccountPermissionsPayload } from './accounts.types'
+import type {
+  AdminAccountsQuery,
+  RevokeSessionsPayload,
+  UpdateAccountPayload,
+  UpdateAccountPermissionsPayload
+} from './accounts.types'
 
 @Controller('admin/accounts')
 @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
@@ -24,8 +32,25 @@ export class AccountsController {
 
   @Patch(':id')
   @RequirePermissions(permissionKeys.adminAccountsStatusManage)
-  update(@Param('id') id: string, @Body() payload: UpdateAccountPayload, @CurrentUser() user: AuthenticatedUser) {
-    return this.accountsService.updateAccount(id, payload, user)
+  update(
+    @Param('id') id: string,
+    @Body() payload: UpdateAccountPayload,
+    @CurrentUser() user: AuthenticatedUser,
+    @Headers('x-step-up-token') stepUpToken?: string
+  ) {
+    return this.accountsService.updateAccount(id, payload, user, stepUpToken)
+  }
+
+  @Patch(':id/2fa/reset')
+  @Roles('SUPER_ADMIN')
+  @RequireStepUp()
+  @UseGuards(StepUpGuard)
+  resetTwoFactor(
+    @Param('id') id: string,
+    @Body() payload: AdminTwoFactorResetRequest,
+    @CurrentUser() user: AuthenticatedUser
+  ) {
+    return this.accountsService.adminResetTwoFactor(id, payload, user)
   }
 
   @Get(':id/permissions')

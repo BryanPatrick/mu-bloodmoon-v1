@@ -16,6 +16,7 @@ export type ManagedAccount = {
   lastLoginAt: string
   characters: number
   currencies: Record<CurrencyCode, number>
+  twoFactorEnabled: boolean
 }
 
 export type ManagedCharacter = {
@@ -69,7 +70,8 @@ export const managedAccounts: ManagedAccount[] = [
       WCoin: 1250,
       'Goblin Point': 340,
       'Hunt Point': 8750
-    }
+    },
+    twoFactorEnabled: true
   },
   {
     id: 'acc-player',
@@ -86,7 +88,8 @@ export const managedAccounts: ManagedAccount[] = [
       WCoin: 50,
       'Goblin Point': 0,
       'Hunt Point': 320
-    }
+    },
+    twoFactorEnabled: false
   },
   {
     id: 'acc-gm',
@@ -103,7 +106,8 @@ export const managedAccounts: ManagedAccount[] = [
       WCoin: 0,
       'Goblin Point': 0,
       'Hunt Point': 0
-    }
+    },
+    twoFactorEnabled: false
   }
 ]
 

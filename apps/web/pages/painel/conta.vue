@@ -94,6 +94,9 @@
           </span>
         </div>
         <p class="mt-3 text-sm font-semibold text-white/55">Use Google Authenticator, Microsoft Authenticator ou outro aplicativo TOTP.</p>
+        <p v-if="twoFactorMandatory" class="mt-3 rounded-md border border-amber-300/25 bg-amber-400/10 p-3 text-xs font-bold text-amber-100">
+          2FA obrigatorio para contas administrativas (GM, ADM e Super ADM). {{ account?.twoFactorEnabled ? 'Sua conta ja esta protegida.' : 'Ative agora para continuar acessando areas administrativas.' }}
+        </p>
 
         <div v-if="!account?.twoFactorEnabled" class="mt-5 grid gap-3">
           <input v-model="twoFactorPassword" class="rounded-md border border-white/10 bg-black/[0.35] px-4 py-3 text-sm outline-none focus:border-blood-400" placeholder="Senha atual" type="password">
@@ -108,11 +111,30 @@
             </div>
           </div>
         </div>
-        <div v-else class="mt-5 grid gap-3 sm:grid-cols-2">
+        <div v-else-if="!twoFactorMandatoryBlocked" class="mt-5 grid gap-3 sm:grid-cols-2">
           <input v-model="twoFactorPassword" class="rounded-md border border-white/10 bg-black/[0.35] px-4 py-3 text-sm outline-none focus:border-blood-400" placeholder="Senha atual" type="password">
           <input v-model="twoFactorCode" class="rounded-md border border-white/10 bg-black/[0.35] px-4 py-3 text-sm outline-none focus:border-blood-400" placeholder="Codigo de 6 digitos" inputmode="numeric" maxlength="6">
-          <button class="bm-admin-danger w-fit sm:col-span-2" type="button" @click="disableTwoFactor">Desativar 2FA</button>
+          <button class="bm-admin-danger w-fit" type="button" @click="disableTwoFactor">Desativar 2FA</button>
+          <button class="bm-liquid-primary w-fit" type="button" @click="regenerateRecoveryCodes">Gerar novos codigos de recuperacao</button>
         </div>
+        <div v-else class="mt-5 grid gap-3">
+          <input v-model="twoFactorPassword" class="rounded-md border border-white/10 bg-black/[0.35] px-4 py-3 text-sm outline-none focus:border-blood-400" placeholder="Senha atual" type="password">
+          <input v-model="twoFactorCode" class="rounded-md border border-white/10 bg-black/[0.35] px-4 py-3 text-sm outline-none focus:border-blood-400" placeholder="Codigo de 6 digitos" inputmode="numeric" maxlength="6">
+          <button class="bm-liquid-primary w-fit" type="button" @click="regenerateRecoveryCodes">Gerar novos codigos de recuperacao</button>
+          <p class="rounded-md border border-white/10 bg-black/20 p-3 text-xs font-bold text-white/55">
+            Contas GM, ADM e Super ADM nao podem desativar o proprio 2FA. Se voce perdeu o acesso, peca a um Super ADM o reset administrativo.
+          </p>
+        </div>
+
+        <div v-if="recoveryCodes" class="mt-5 grid gap-3 rounded-md border border-cyan-300/25 bg-cyan-400/5 p-4">
+          <p class="text-sm font-black text-cyan-100">Guarde estes codigos de recuperacao agora</p>
+          <p class="text-xs font-bold text-white/55">Cada codigo funciona uma unica vez no lugar do codigo do aplicativo, caso voce perca o acesso. Eles nao serao mostrados novamente.</p>
+          <div class="grid grid-cols-2 gap-2 font-mono text-xs sm:grid-cols-5">
+            <code v-for="recoveryCode in recoveryCodes" :key="recoveryCode" class="rounded-md bg-black/40 p-2 text-center text-cyan-100">{{ recoveryCode }}</code>
+          </div>
+          <button class="bm-button-glass w-fit rounded-md px-4 py-2 text-xs font-black" type="button" @click="recoveryCodes = null">Ja guardei, fechar</button>
+        </div>
+
         <p v-if="twoFactorMessage" class="mt-4 rounded-md border border-white/10 bg-white/[0.04] p-3 text-sm font-bold">{{ twoFactorMessage }}</p>
       </section>
 
@@ -133,6 +155,7 @@
 <script setup lang="ts">
 import type { CommercePurchase, CommerceRecharge } from '~/composables/useCommerceApi'
 import type { AccountProfile, AccountSession } from '~/composables/useAccountSecurityApi'
+import { isTwoFactorMandatory, type UserRole } from '~/data/security'
 
 const { loadSession, user } = useAuth()
 const accountSecurityApi = useAccountSecurityApi()
@@ -148,6 +171,9 @@ const twoFactorPassword = ref('')
 const twoFactorCode = ref('')
 const twoFactorMessage = ref('')
 const twoFactorSetup = ref<{ secret: string, uri: string, qrCode: string } | null>(null)
+const recoveryCodes = ref<string[] | null>(null)
+const twoFactorMandatory = computed(() => isTwoFactorMandatory(user.value?.role as UserRole | undefined))
+const twoFactorMandatoryBlocked = computed(() => twoFactorMandatory.value)
 
 onMounted(async () => {
   loadSession()
@@ -168,7 +194,8 @@ const startTwoFactor = async () => {
 
 const confirmTwoFactor = async () => {
   try {
-    await accountSecurityApi.verifyTwoFactor(twoFactorCode.value)
+    const result = await accountSecurityApi.verifyTwoFactor(twoFactorCode.value)
+    recoveryCodes.value = result.recoveryCodes
     twoFactorMessage.value = 'Autenticacao em duas etapas ativada.'
     twoFactorSetup.value = null
     twoFactorPassword.value = ''
@@ -181,6 +208,17 @@ const disableTwoFactor = async () => {
   if (!confirm('Desativar a autenticacao em duas etapas e encerrar a sessao atual?')) return
   try { await accountSecurityApi.disableTwoFactor(twoFactorPassword.value, twoFactorCode.value); await navigateTo('/login') }
   catch { twoFactorMessage.value = 'Nao foi possivel desativar. Confira a senha e o codigo.' }
+}
+
+const regenerateRecoveryCodes = async () => {
+  if (!confirm('Gerar novos codigos de recuperacao invalida todos os codigos antigos. Continuar?')) return
+  try {
+    const result = await accountSecurityApi.regenerateRecoveryCodes(twoFactorPassword.value, twoFactorCode.value)
+    recoveryCodes.value = result.recoveryCodes
+    twoFactorMessage.value = 'Novos codigos de recuperacao gerados.'
+    twoFactorPassword.value = ''
+    twoFactorCode.value = ''
+  } catch { twoFactorMessage.value = 'Nao foi possivel gerar novos codigos. Confira a senha e o codigo.' }
 }
 
 const recentPurchases = computed(() => purchases.value.slice(0, 3))

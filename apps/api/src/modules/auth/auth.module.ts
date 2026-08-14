@@ -6,6 +6,7 @@ import { AuthService } from './auth.service'
 import { JwtAuthGuard } from './jwt-auth.guard'
 import { RolesGuard } from './roles.guard'
 import { PermissionsGuard } from './permissions.guard'
+import { StepUpGuard } from './step-up.guard'
 import { TwoFactorService } from './two-factor.service'
 import { AuthAbuseGuard } from './auth-abuse.guard'
 import { AuthRateLimitService } from './auth-rate-limit.service'
@@ -42,8 +43,9 @@ if (process.env.NODE_ENV === 'production' && accessSecret === refreshSecret) {
     MailTransportService,
     JwtAuthGuard,
     RolesGuard,
-    PermissionsGuard
+    PermissionsGuard,
+    StepUpGuard
   ],
-  exports: [AuthService, JwtAuthGuard, RolesGuard, PermissionsGuard, JwtModule]
+  exports: [AuthService, JwtAuthGuard, RolesGuard, PermissionsGuard, StepUpGuard, JwtModule]
 })
 export class AuthModule {}

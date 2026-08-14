@@ -7,6 +7,7 @@ export type AuthenticatedUser = {
   email: string
   role: Role
   permissions: string[]
+  twoFactorEnabled: boolean
   sessionVersion?: number
   sessionId?: string
 }
@@ -18,4 +19,11 @@ export type AccessTokenPayload = {
   sessionVersion: number
   sid: string
   type?: 'refresh'
+}
+
+export type StepUpTokenPayload = {
+  sub: string
+  sessionVersion: number
+  sid: string
+  type: 'step-up'
 }

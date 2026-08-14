@@ -126,6 +126,9 @@ describe('Portal critical baseline outside Community', () => {
     })
     expect(adminLogin.status).toBe(201)
     adminToken = adminLogin.body.accessToken
+    // 2FA is mandatory for any non-PLAYER role reaching a role-gated route.
+    // Flip it on after login so the already-issued token keeps working.
+    await prisma.account.update({ where: { username: administrator.username }, data: { twoFactorEnabled: true } })
   })
 
   it('protects authenticated routes from anonymous requests', async () => {

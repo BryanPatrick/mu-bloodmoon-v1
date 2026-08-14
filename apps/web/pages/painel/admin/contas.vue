@@ -50,6 +50,13 @@
                 <span class="rounded-sm bg-white/10 px-2 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-white/65">
                   {{ account.role }}
                 </span>
+                <span
+                  v-if="account.role !== 'player'"
+                  class="rounded-sm px-2 py-1 text-[11px] font-black uppercase tracking-[0.14em]"
+                  :class="account.twoFactorEnabled ? 'bg-emerald-500/15 text-emerald-100' : 'bg-amber-500/15 text-amber-100'"
+                >
+                  2FA {{ account.twoFactorEnabled ? 'ativo' : 'pendente' }}
+                </span>
               </div>
 
               <h2 class="mt-3 font-display text-3xl font-black leading-tight">{{ account.name }}</h2>
@@ -133,6 +140,14 @@
                 Rebaixar a player
               </button>
               <button v-if="user?.role === 'super-admin' && account.role === 'admin'" class="bm-button-glass rounded-md px-4 py-3 text-sm font-black" type="button" @click="openPermissions(account)">Permissões</button>
+              <button
+                v-if="user?.role === 'super-admin' && account.role !== 'player' && account.twoFactorEnabled"
+                class="rounded-md border border-amber-500/40 bg-amber-900/20 px-4 py-3 text-sm font-black text-amber-100"
+                type="button"
+                @click="resetTwoFactor(account)"
+              >
+                Reset 2FA
+              </button>
               <button class="bm-button-glass rounded-md px-4 py-3 text-sm font-black" type="button" @click="revokeSessions(account)">Revogar sessões</button>
             </div>
           </div>
@@ -159,6 +174,7 @@ import { permissions } from '~/data/security'
 
 const { hasPermission, loadSession, recordAudit, user } = useAuth()
 const adminAccountsApi = useAdminAccountsApi()
+const accountSecurityApi = useAccountSecurityApi()
 
 useSeoMeta({ title: 'Gerenciar contas' })
 
@@ -241,6 +257,7 @@ type ApiAccount = {
   updatedAt: string
   currencies: Record<string, number>
   characters?: number
+  twoFactorEnabled?: boolean
 }
 
 type ApiPaginatedResponse<T> = {
@@ -274,6 +291,7 @@ const mapApiAccount = (account: ApiAccount): ManagedAccount => ({
   createdAt: account.createdAt,
   lastLoginAt: account.updatedAt,
   characters: account.characters || 0,
+  twoFactorEnabled: Boolean(account.twoFactorEnabled),
   currencies: {
     WCoin: account.currencies.WCOIN || account.currencies.WCoin || 0,
     'Goblin Point': account.currencies.GOBLIN_POINT || account.currencies['Goblin Point'] || 0,
@@ -350,17 +368,55 @@ const markAccountViaApi = async (account: ManagedAccount, status: ManagedAccount
   }
 }
 
+const requestStepUpToken = async () => {
+  if (!import.meta.client) return null
+  const currentPassword = window.prompt('Confirme sua senha atual para continuar:') || ''
+  if (!currentPassword) return null
+  const code = window.prompt('Codigo do autenticador (ou codigo de recuperacao):') || ''
+  if (!code) return null
+  const isRecoveryFormat = /^[A-Z0-9]{4}-[A-Z0-9]{4}$/i.test(code.trim())
+  try {
+    const result = await accountSecurityApi.stepUp(
+      currentPassword,
+      isRecoveryFormat ? undefined : code,
+      isRecoveryFormat ? code : undefined
+    )
+    return result.stepUpToken
+  } catch {
+    apiError.value = 'Nao foi possivel confirmar sua identidade. Verifique a senha e o codigo.'
+    return null
+  }
+}
+
 const changeRole = async (account: ManagedAccount, role: 'PLAYER' | 'GM' | 'ADMIN') => {
   const action = role === 'ADMIN' ? 'promover a ADM' : role === 'GM' ? 'definir como GM' : 'rebaixar a player'
   const reason = requestReason(`${action}: ${account.username}`)
   if (!reason || !window.confirm(`Confirma ${action} para ${account.username}?`)) return
 
+  const stepUpToken = await requestStepUpToken()
+  if (!stepUpToken) return
+
   try {
-    const updated = await adminAccountsApi.update(account.id, { role, reason }) as ApiAccount
+    const updated = await adminAccountsApi.update(account.id, { role, reason }, stepUpToken) as ApiAccount
     const mapped = mapApiAccount(updated)
     apiAccounts.value = apiAccounts.value.map((item) => item.id === mapped.id ? mapped : item)
   } catch {
     apiError.value = 'Nao foi possivel alterar o papel da conta pela API.'
+  }
+}
+
+const resetTwoFactor = async (account: ManagedAccount) => {
+  const reason = requestReason(`Resetar 2FA de ${account.username}`)
+  if (!reason || !window.confirm(`Confirma o reset administrativo de 2FA para ${account.username}? A conta precisara configurar o 2FA novamente.`)) return
+
+  const stepUpToken = await requestStepUpToken()
+  if (!stepUpToken) return
+
+  try {
+    await adminAccountsApi.resetTwoFactor(account.id, reason, stepUpToken)
+    apiError.value = ''
+  } catch {
+    apiError.value = 'Nao foi possivel resetar o 2FA desta conta.'
   }
 }
 

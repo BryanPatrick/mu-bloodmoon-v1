@@ -112,6 +112,10 @@ describe('Guilds MVP', () => {
     joinerToken = await login(joiner.username, joiner.password)
     outsiderToken = await login(outsider.username, outsider.password)
     plainAdminToken = await login(plainAdmin.username, plainAdmin.password)
+    // 2FA is mandatory for any non-PLAYER role reaching a role-gated route.
+    // Flip it on after login so the already-issued tokens keep working.
+    await prisma.account.update({ where: { username: admin.username }, data: { twoFactorEnabled: true } })
+    await prisma.account.update({ where: { username: plainAdmin.username }, data: { twoFactorEnabled: true } })
 
     leaderCharacterId = (await createCharacter(leader.username, 'L')).id
     joinerCharacterId = (await createCharacter(joiner.username, 'J')).id

@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   UnauthorizedException
 } from '@nestjs/common'
@@ -23,13 +24,20 @@ import type {
   RegisterRequest,
   RegisterResponse,
   SessionUser,
+  StepUpRequest,
+  StepUpResponse,
   TwoFactorDisableRequest,
+  TwoFactorRecoveryCodesRegenerateRequest,
+  TwoFactorRecoveryCodesRegenerateResponse,
   TwoFactorSetupRequest,
-  TwoFactorVerifyRequest
+  TwoFactorSetupResponse,
+  TwoFactorVerifyRequest,
+  TwoFactorVerifyResponse
 } from './auth.contract'
 import type { AccessTokenPayload, AuthenticatedUser } from './auth.types'
 import { MailTransportService } from './mail-transport.service'
 import { permissionsForAccount } from './permissions'
+import { stepUpSecret, stepUpTokenTtlSeconds } from './step-up.util'
 import { TwoFactorService } from './two-factor.service'
 
 @Injectable()
@@ -77,7 +85,11 @@ export class AuthService {
 
     if (account.twoFactorEnabled) {
       const secret = account.twoFactorSecret ? this.twoFactor.decrypt(account.twoFactorSecret) : ''
-      if (!secret || !(await this.twoFactor.isValid(secret, payload.totpCode))) {
+      const totpOk = Boolean(secret) && (await this.twoFactor.isValid(secret, payload.totpCode))
+      const recoveryOk = !totpOk && payload.recoveryCode
+        ? await this.consumeRecoveryCode(account.id, payload.recoveryCode)
+        : false
+      if (!totpOk && !recoveryOk) {
         await this.recordFailedLogin(
           login,
           account.id,
@@ -473,7 +485,7 @@ export class AuthService {
     return { ok: true }
   }
 
-  async setupTwoFactor(payload: TwoFactorSetupRequest, user: AuthenticatedUser) {
+  async setupTwoFactor(payload: TwoFactorSetupRequest, user: AuthenticatedUser): Promise<TwoFactorSetupResponse> {
     const account = await this.prisma.account.findUnique({ where: { id: user.id } })
     if (!account || !(await bcrypt.compare(payload.currentPassword || '', account.passwordHash))) {
       throw new UnauthorizedException('Senha atual invalida')
@@ -496,21 +508,26 @@ export class AuthService {
     return { secret, uri, qrCode: await this.twoFactor.qrCode(uri) }
   }
 
-  async verifyTwoFactor(payload: TwoFactorVerifyRequest, user: AuthenticatedUser) {
+  async verifyTwoFactor(payload: TwoFactorVerifyRequest, user: AuthenticatedUser): Promise<TwoFactorVerifyResponse> {
     const account = await this.prisma.account.findUnique({ where: { id: user.id } })
     if (!account?.twoFactorPending)
       throw new BadRequestException('Inicie a configuracao do 2FA primeiro')
     const secret = this.twoFactor.decrypt(account.twoFactorPending)
     if (!(await this.twoFactor.isValid(secret, payload.code)))
       throw new BadRequestException('Codigo de autenticacao invalido')
-    await this.prisma.account.update({
-      where: { id: account.id },
-      data: {
-        twoFactorEnabled: true,
-        twoFactorSecret: account.twoFactorPending,
-        twoFactorPending: null
-      }
-    })
+    const recoveryCodes = this.twoFactor.generateRecoveryCodes()
+    await this.prisma.$transaction([
+      this.prisma.account.update({
+        where: { id: account.id },
+        data: {
+          twoFactorEnabled: true,
+          twoFactorSecret: account.twoFactorPending,
+          twoFactorPending: null
+        }
+      }),
+      this.prisma.twoFactorRecoveryCode.deleteMany({ where: { accountId: account.id } }),
+      ...(await this.recoveryCodeCreateArgs(account.id, recoveryCodes))
+    ])
     await this.audit.record({
       actorId: account.id,
       actorUsername: account.username,
@@ -519,18 +536,29 @@ export class AuthService {
       targetId: account.id,
       severity: 'warning'
     })
-    return { ok: true }
+    return { ok: true, recoveryCodes }
   }
 
   async disableTwoFactor(payload: TwoFactorDisableRequest, user: AuthenticatedUser) {
     const account = await this.prisma.account.findUnique({ where: { id: user.id } })
     if (!account?.twoFactorEnabled || !account.twoFactorSecret)
       throw new BadRequestException('A autenticacao em duas etapas nao esta ativa')
-    if (!(await bcrypt.compare(payload.currentPassword || '', account.passwordHash)))
+    if (account.role !== 'PLAYER') {
+      throw new ForbiddenException(
+        '2FA obrigatorio para contas GM, ADM e Super ADM. Peca a um Super ADM o reset administrativo se perdeu o acesso.'
+      )
+    }
+    if (!(await bcrypt.compare(payload.currentPassword || '', account.passwordHash))) {
       throw new UnauthorizedException('Senha atual invalida')
+    }
     const secret = this.twoFactor.decrypt(account.twoFactorSecret)
-    if (!(await this.twoFactor.isValid(secret, payload.code)))
+    const totpOk = Boolean(payload.code) && (await this.twoFactor.isValid(secret, payload.code))
+    const recoveryOk = !totpOk && payload.recoveryCode
+      ? await this.consumeRecoveryCode(account.id, payload.recoveryCode)
+      : false
+    if (!totpOk && !recoveryOk) {
       throw new BadRequestException('Codigo de autenticacao invalido')
+    }
     await this.prisma.$transaction([
       this.prisma.account.update({
         where: { id: account.id },
@@ -541,6 +569,7 @@ export class AuthService {
           sessionVersion: { increment: 1 }
         }
       }),
+      this.prisma.twoFactorRecoveryCode.deleteMany({ where: { accountId: account.id } }),
       this.prisma.accountSession.updateMany({
         where: { accountId: account.id, revokedAt: null },
         data: { revokedAt: new Date(), revokeReason: '2FA desativado' }
@@ -555,6 +584,95 @@ export class AuthService {
       severity: 'warning'
     })
     return { ok: true }
+  }
+
+  async regenerateRecoveryCodes(
+    payload: TwoFactorRecoveryCodesRegenerateRequest,
+    user: AuthenticatedUser
+  ): Promise<TwoFactorRecoveryCodesRegenerateResponse> {
+    const account = await this.prisma.account.findUnique({ where: { id: user.id } })
+    if (!account?.twoFactorEnabled || !account.twoFactorSecret)
+      throw new BadRequestException('A autenticacao em duas etapas nao esta ativa')
+    if (!(await bcrypt.compare(payload.currentPassword || '', account.passwordHash))) {
+      throw new UnauthorizedException('Senha atual invalida')
+    }
+    const secret = this.twoFactor.decrypt(account.twoFactorSecret)
+    const totpOk = Boolean(payload.code) && (await this.twoFactor.isValid(secret, payload.code))
+    const recoveryOk = !totpOk && payload.recoveryCode
+      ? await this.consumeRecoveryCode(account.id, payload.recoveryCode)
+      : false
+    if (!totpOk && !recoveryOk) {
+      throw new BadRequestException('Codigo de autenticacao invalido')
+    }
+    const recoveryCodes = this.twoFactor.generateRecoveryCodes()
+    await this.prisma.$transaction([
+      this.prisma.twoFactorRecoveryCode.deleteMany({ where: { accountId: account.id } }),
+      ...(await this.recoveryCodeCreateArgs(account.id, recoveryCodes))
+    ])
+    await this.audit.record({
+      actorId: account.id,
+      actorUsername: account.username,
+      action: 'auth.2fa.recovery_codes.regenerated',
+      targetType: 'Account',
+      targetId: account.id,
+      severity: 'warning'
+    })
+    return { ok: true, recoveryCodes }
+  }
+
+  async stepUp(payload: StepUpRequest, user: AuthenticatedUser): Promise<StepUpResponse> {
+    const account = await this.prisma.account.findUnique({ where: { id: user.id } })
+    if (!account || !(await bcrypt.compare(payload.currentPassword || '', account.passwordHash))) {
+      throw new UnauthorizedException('Senha atual invalida')
+    }
+    if (account.twoFactorEnabled) {
+      const secret = account.twoFactorSecret ? this.twoFactor.decrypt(account.twoFactorSecret) : ''
+      const totpOk = Boolean(secret) && Boolean(payload.code) && (await this.twoFactor.isValid(secret, payload.code))
+      const recoveryOk = !totpOk && payload.recoveryCode
+        ? await this.consumeRecoveryCode(account.id, payload.recoveryCode)
+        : false
+      if (!totpOk && !recoveryOk) {
+        throw new BadRequestException('Codigo de autenticacao invalido')
+      }
+    }
+    const expiresAt = new Date(Date.now() + stepUpTokenTtlSeconds * 1000)
+    const stepUpToken = await this.jwt.signAsync(
+      { sub: account.id, sessionVersion: account.sessionVersion, sid: user.sessionId, type: 'step-up' },
+      { secret: stepUpSecret(), expiresIn: stepUpTokenTtlSeconds }
+    )
+    await this.audit.record({
+      actorId: account.id,
+      actorUsername: account.username,
+      action: 'auth.step_up.issued',
+      targetType: 'Account',
+      targetId: account.id
+    })
+    return { stepUpToken, expiresAt: expiresAt.toISOString() }
+  }
+
+  private async consumeRecoveryCode(accountId: string, plainCode: string) {
+    const normalized = plainCode.trim()
+    if (!normalized) return false
+    const candidates = await this.prisma.twoFactorRecoveryCode.findMany({
+      where: { accountId, usedAt: null }
+    })
+    for (const candidate of candidates) {
+      if (await this.twoFactor.compareRecoveryCode(normalized, candidate.codeHash)) {
+        await this.prisma.twoFactorRecoveryCode.update({
+          where: { id: candidate.id },
+          data: { usedAt: new Date() }
+        })
+        return true
+      }
+    }
+    return false
+  }
+
+  private async recoveryCodeCreateArgs(accountId: string, codes: string[]) {
+    const hashed = await Promise.all(codes.map((code) => this.twoFactor.hashRecoveryCode(code)))
+    return hashed.map((codeHash) =>
+      this.prisma.twoFactorRecoveryCode.create({ data: { accountId, codeHash } })
+    )
   }
 
   private recordFailedLogin(
@@ -623,6 +741,7 @@ export class AuthService {
       role: account.role,
       permissions: permissionsForAccount(account.role, account.permissions),
       twoFactorEnabled: account.twoFactorEnabled,
+      twoFactorRequired: account.role !== 'PLAYER',
       currencies: (account.currencies || []).map((currency) => ({
         currency: currency.currency,
         balance: currency.balance

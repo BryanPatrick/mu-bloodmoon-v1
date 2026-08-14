@@ -466,6 +466,9 @@ describe('Community end-to-end beta journey (Etapa 14, real data, no mocks, no r
       .send({ username: userM.username, password: userM.password })
     expect(login.status).toBe(201)
     tokenM = login.body.accessToken
+    // 2FA is mandatory for any non-PLAYER role reaching a role-gated route.
+    // Flip it on after login so the already-issued token keeps working.
+    await prisma.account.update({ where: { id: accountM!.id }, data: { twoFactorEnabled: true } })
 
     const queue = await (
       await request()
@@ -516,6 +519,7 @@ describe('Community end-to-end beta journey (Etapa 14, real data, no mocks, no r
       .send({ username: userS.username, password: userS.password })
     expect(loginS.status).toBe(201)
     tokenS = loginS.body.accessToken
+    await prisma.account.update({ where: { username: userS.username }, data: { twoFactorEnabled: true } })
 
     const deniedForModerator = await (
       await request()

@@ -1,4 +1,5 @@
 import { execSync } from 'node:child_process'
+import { generateSecret, generateSync } from 'otplib'
 import { startDisposableDatabase, stopDisposableDatabase } from './support/disposable-mysql'
 
 const CONTAINER = 'bloodmoon-e2e-gm-role'
@@ -63,12 +64,15 @@ describe('GM role RBAC foundation', () => {
   let adminToken = ''
   let superAdminToken = ''
   let gmAccountId = ''
+  let twoFactorService: import('../src/modules/auth/two-factor.service').TwoFactorService
+  const totpSecrets = new Map<string, string>()
 
   beforeAll(async () => {
     const { Test } = await import('@nestjs/testing')
     const { AppModule } = await import('../src/app.module')
     const { SafeExceptionFilter } = await import('../src/common/safe-exception.filter')
     const { PrismaService } = await import('../src/database/prisma.service')
+    const { TwoFactorService } = await import('../src/modules/auth/two-factor.service')
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile()
     app = moduleRef.createNestApplication()
     app.setGlobalPrefix('api')
@@ -76,6 +80,7 @@ describe('GM role RBAC foundation', () => {
     await app.init()
     httpServer = app.getHttpServer()
     prisma = app.get(PrismaService)
+    twoFactorService = app.get(TwoFactorService)
   }, 60000)
 
   afterAll(async () => app?.close())
@@ -83,9 +88,27 @@ describe('GM role RBAC foundation', () => {
   const request = () => import('supertest').then((module) => module.default(httpServer))
 
   const login = async (username: string, password: string) => {
-    const result = await (await request()).post('/api/auth/login').send({ username, password })
+    const totpCode = totpSecrets.has(username) ? generateSync({ secret: totpSecrets.get(username)! }) : undefined
+    const result = await (
+      await request()
+    )
+      .post('/api/auth/login')
+      .send({ username, password, ...(totpCode ? { totpCode } : {}) })
     expect(result.status).toBe(201)
     return result.body.accessToken as string
+  }
+
+  // 2FA is mandatory for any non-PLAYER role reaching a role-gated route
+  // (roles.guard.ts) -- give the account a real TOTP secret (not just the
+  // twoFactorEnabled flag) so every subsequent login() call in this file
+  // can supply a valid code, exactly like a real GM/ADMIN/SUPER_ADMIN would.
+  const enableRealTwoFactor = async (username: string) => {
+    const secret = generateSecret({ length: 20 })
+    totpSecrets.set(username, secret)
+    await prisma.account.update({
+      where: { username },
+      data: { twoFactorEnabled: true, twoFactorSecret: twoFactorService.encrypt(secret) }
+    })
   }
 
   it('registers all four accounts as PLAYER by default via public registration', async () => {
@@ -111,6 +134,11 @@ describe('GM role RBAC foundation', () => {
 
   it('logs in with each role', async () => {
     playerToken = await login(player.username, player.password)
+    // GM doesn't strictly need 2FA today (no existing @Roles('GM', ...)
+    // endpoint to reach), but is included for parity with the real policy.
+    await enableRealTwoFactor(gm.username)
+    await enableRealTwoFactor(administrator.username)
+    await enableRealTwoFactor(superAdministrator.username)
     gmToken = await login(gm.username, gm.password)
     adminToken = await login(administrator.username, administrator.password)
     superAdminToken = await login(superAdministrator.username, superAdministrator.password)
@@ -203,18 +231,38 @@ describe('GM role RBAC foundation', () => {
   })
 
   it('lets SUPER_ADMIN promote and demote through PLAYER, GM and ADMIN', async () => {
-    const req = await request()
+    // Role changes require a fresh step-up token (see step-up.guard.ts /
+    // accounts.service.ts), on top of the normal bearer session.
+    const stepUpToken = async () => {
+      const result = await (
+        await request()
+      )
+        .post('/api/auth/step-up')
+        .set('Authorization', `Bearer ${superAdminToken}`)
+        .send({
+          currentPassword: superAdministrator.password,
+          code: generateSync({ secret: totpSecrets.get(superAdministrator.username)! })
+        })
+      expect(result.status).toBe(201)
+      return result.body.stepUpToken as string
+    }
 
-    const toAdmin = await req
+    const toAdmin = await (
+      await request()
+    )
       .patch(`/api/admin/accounts/${gmAccountId}`)
       .set('Authorization', `Bearer ${superAdminToken}`)
+      .set('X-Step-Up-Token', await stepUpToken())
       .send({ role: 'ADMIN', reason: 'Promovendo GM para ADM em teste e2e' })
     expect(toAdmin.status).toBe(200)
     expect(toAdmin.body.role).toBe('ADMIN')
 
-    const backToGm = await (await request())
+    const backToGm = await (
+      await request()
+    )
       .patch(`/api/admin/accounts/${gmAccountId}`)
       .set('Authorization', `Bearer ${superAdminToken}`)
+      .set('X-Step-Up-Token', await stepUpToken())
       .send({ role: 'GM', reason: 'Rebaixando de volta para GM em teste e2e' })
     expect(backToGm.status).toBe(200)
     expect(backToGm.body.role).toBe('GM')

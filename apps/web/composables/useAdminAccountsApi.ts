@@ -46,16 +46,22 @@ export const useAdminAccountsApi = () => {
         query: cleanQuery(query),
         headers: headers()
       }),
-    update: (id: string, payload: UpdateAdminAccountPayload) =>
+    update: (id: string, payload: UpdateAdminAccountPayload, stepUpToken?: string) =>
       $fetch(`${apiBase.value}/admin/accounts/${id}`, {
         method: 'PATCH',
         body: payload,
-        headers: headers()
+        headers: { ...headers(), ...(stepUpToken ? { 'X-Step-Up-Token': stepUpToken } : {}) }
       }),
     permissions: (id: string) => $fetch(`${apiBase.value}/admin/accounts/${id}/permissions`, { headers: headers() }),
     updatePermissions: (id: string, payload: { permissions: Array<{ key: string, granted: boolean }>, reason: string }) =>
       $fetch(`${apiBase.value}/admin/accounts/${id}/permissions`, { method: 'PATCH', body: payload, headers: headers() }),
     revokeSessions: (id: string, reason: string) =>
-      $fetch(`${apiBase.value}/admin/accounts/${id}/sessions/revoke`, { method: 'PATCH', body: { reason }, headers: headers() })
+      $fetch(`${apiBase.value}/admin/accounts/${id}/sessions/revoke`, { method: 'PATCH', body: { reason }, headers: headers() }),
+    resetTwoFactor: (id: string, reason: string, stepUpToken: string) =>
+      $fetch(`${apiBase.value}/admin/accounts/${id}/2fa/reset`, {
+        method: 'PATCH',
+        body: { reason },
+        headers: { ...headers(), 'X-Step-Up-Token': stepUpToken }
+      })
   }
 }

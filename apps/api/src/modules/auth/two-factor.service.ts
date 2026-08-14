@@ -1,12 +1,36 @@
 import { Injectable } from '@nestjs/common'
-import { createCipheriv, createDecipheriv, createHash, randomBytes } from 'node:crypto'
+import { createCipheriv, createDecipheriv, createHash, randomBytes, randomInt } from 'node:crypto'
+import * as bcrypt from 'bcryptjs'
 import { generateSecret, generateURI, verify } from 'otplib'
 import QRCode from 'qrcode'
+
+const RECOVERY_CODE_COUNT = 10
+const RECOVERY_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789' // no 0/O/1/I
 
 @Injectable()
 export class TwoFactorService {
   generateSecret() {
     return generateSecret({ length: 20 })
+  }
+
+  generateRecoveryCodes(count = RECOVERY_CODE_COUNT) {
+    return Array.from({ length: count }, () => {
+      const group = () =>
+        Array.from({ length: 4 }, () => RECOVERY_CODE_ALPHABET[randomInt(RECOVERY_CODE_ALPHABET.length)]).join('')
+      return `${group()}-${group()}`
+    })
+  }
+
+  hashRecoveryCode(code: string) {
+    return bcrypt.hash(this.normalizeRecoveryCode(code), 10)
+  }
+
+  compareRecoveryCode(code: string, hash: string) {
+    return bcrypt.compare(this.normalizeRecoveryCode(code), hash)
+  }
+
+  private normalizeRecoveryCode(code: string) {
+    return code.trim().toUpperCase()
   }
 
   uri(username: string, secret: string) {

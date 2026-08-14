@@ -132,6 +132,12 @@ describe('Community admin panel: three-tier RBAC (player / scoped moderator / su
       .send({ username: userM.username, password: userM.password })
     expect(loginM.status).toBe(201)
     tokenM = loginM.body.accessToken
+    // 2FA is mandatory for any non-PLAYER role reaching a role-gated route
+    // (roles.guard.ts). Flip it on *after* login (which doesn't require a
+    // real TOTP secret here -- this suite isn't testing 2FA itself) so the
+    // already-issued token keeps working for the rest of this file's
+    // role-gated requests, which re-check twoFactorEnabled live per request.
+    await prisma.account.update({ where: { id: accountM!.id }, data: { twoFactorEnabled: true } })
 
     await prisma.account.update({
       where: { username: userS.username },
@@ -144,6 +150,7 @@ describe('Community admin panel: three-tier RBAC (player / scoped moderator / su
       .send({ username: userS.username, password: userS.password })
     expect(loginS.status).toBe(201)
     tokenS = loginS.body.accessToken
+    await prisma.account.update({ where: { username: userS.username }, data: { twoFactorEnabled: true } })
   })
 
   describe('PLAYER: acesso negado', () => {

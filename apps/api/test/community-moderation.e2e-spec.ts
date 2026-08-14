@@ -139,6 +139,9 @@ describe('Community moderation, reports, sanctions, and audit (real data, no par
       .send({ username: userC.username, password: userC.password })
     expect(loginC.status).toBe(201)
     tokenC = loginC.body.accessToken
+    // 2FA is mandatory for any non-PLAYER role reaching a role-gated route.
+    // Flip it on after login so the already-issued token keeps working.
+    await prisma.account.update({ where: { username: userC.username }, data: { twoFactorEnabled: true } })
   })
 
   it('rejects a plain user hitting an admin endpoint -- unauthenticated (401) and authenticated non-admin (403)', async () => {

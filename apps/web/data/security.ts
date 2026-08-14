@@ -134,6 +134,10 @@ export const rolePermissions: Record<UserRole, Permission[] | ['*']> = {
 export const isAdminRole = (role?: UserRole) => role === 'admin' || role === 'super-admin'
 export const isGmRole = (role?: UserRole) => role === 'gm'
 
+// GM, ADMIN and SUPER_ADMIN all require 2FA to be active -- PLAYER's stays
+// optional. Mirrors the backend rule in apps/api/src/modules/auth/roles.guard.ts.
+export const isTwoFactorMandatory = (role?: UserRole) => Boolean(role) && role !== 'player'
+
 export const roleHasPermission = (role: UserRole | undefined, permission: Permission) => {
   if (!role) return false
   const roleAccess = rolePermissions[role]

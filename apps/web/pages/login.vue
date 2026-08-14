@@ -17,15 +17,31 @@
           autocomplete="current-password"
           type="password"
         />
-        <input
-          v-if="requiresTwoFactor"
-          v-model="totpCode"
-          class="bm-liquid-field px-4 py-3 text-sm outline-none transition focus:border-cyan-200/80"
-          placeholder="Codigo de autenticacao (6 digitos)"
-          autocomplete="one-time-code"
-          inputmode="numeric"
-          maxlength="6"
-        />
+        <template v-if="requiresTwoFactor">
+          <input
+            v-if="!useRecoveryCode"
+            v-model="totpCode"
+            class="bm-liquid-field px-4 py-3 text-sm outline-none transition focus:border-cyan-200/80"
+            placeholder="Codigo de autenticacao (6 digitos)"
+            autocomplete="one-time-code"
+            inputmode="numeric"
+            maxlength="6"
+          />
+          <input
+            v-else
+            v-model="recoveryCode"
+            class="bm-liquid-field px-4 py-3 text-sm outline-none transition focus:border-cyan-200/80"
+            placeholder="Codigo de recuperacao (XXXX-XXXX)"
+            autocomplete="off"
+          />
+          <button
+            class="w-fit text-xs font-bold text-white/55 transition hover:text-white"
+            type="button"
+            @click="useRecoveryCode = !useRecoveryCode"
+          >
+            {{ useRecoveryCode ? 'Usar codigo do aplicativo' : 'Perdeu o acesso? Usar codigo de recuperacao' }}
+          </button>
+        </template>
 
         <TurnstileWidget ref="captchaWidget" action="login" @token="captchaToken = $event" />
 
@@ -70,6 +86,8 @@ useSeoMeta({ title: () => t('login') })
 const username = ref('')
 const password = ref('')
 const totpCode = ref('')
+const recoveryCode = ref('')
+const useRecoveryCode = ref(false)
 const requiresTwoFactor = ref(false)
 const message = ref('')
 const isSuccess = ref(false)
@@ -99,8 +117,9 @@ const submitLogin = async () => {
     const result = await loginWithCredentials(
       username.value,
       password.value,
-      totpCode.value,
-      captchaToken.value
+      useRecoveryCode.value ? undefined : totpCode.value,
+      captchaToken.value,
+      useRecoveryCode.value ? recoveryCode.value : undefined
     )
     isSuccess.value = result.ok
     message.value = result.message

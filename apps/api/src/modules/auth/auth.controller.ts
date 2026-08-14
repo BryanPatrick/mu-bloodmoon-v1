@@ -6,7 +6,9 @@ import type {
   PasswordRecoveryResetRequest,
   RefreshRequest,
   RegisterRequest,
+  StepUpRequest,
   TwoFactorDisableRequest,
+  TwoFactorRecoveryCodesRegenerateRequest,
   TwoFactorSetupRequest,
   TwoFactorVerifyRequest
 } from './auth.contract'
@@ -124,5 +126,22 @@ export class AuthController {
     @CurrentUser() user: AuthenticatedUser
   ) {
     return this.authService.disableTwoFactor(payload, user)
+  }
+
+  @Post('2fa/recovery-codes/regenerate')
+  @AuthAbuseProtection({ policy: 'sensitive' })
+  @UseGuards(AuthAbuseGuard, JwtAuthGuard)
+  regenerateRecoveryCodes(
+    @Body() payload: TwoFactorRecoveryCodesRegenerateRequest,
+    @CurrentUser() user: AuthenticatedUser
+  ) {
+    return this.authService.regenerateRecoveryCodes(payload, user)
+  }
+
+  @Post('step-up')
+  @AuthAbuseProtection({ policy: 'sensitive' })
+  @UseGuards(AuthAbuseGuard, JwtAuthGuard)
+  stepUp(@Body() payload: StepUpRequest, @CurrentUser() user: AuthenticatedUser) {
+    return this.authService.stepUp(payload, user)
   }
 }

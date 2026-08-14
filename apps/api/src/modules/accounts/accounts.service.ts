@@ -1,9 +1,12 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { JwtService } from '@nestjs/jwt'
 import type { Account, AccountCurrency, AccountStatus, Prisma, Role } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
+import type { AdminTwoFactorResetRequest, AdminTwoFactorResetResponse } from '../auth/auth.contract'
 import type { AuthenticatedUser } from '../auth/auth.types'
 import { delegableAdminPermissions, permissionsForAccount } from '../auth/permissions'
+import { verifyStepUpToken } from '../auth/step-up.util'
 import type { AdminAccountsQuery, UpdateAccountPayload, UpdateAccountPermissionsPayload } from './accounts.types'
 
 const defaultPageSize = 30
@@ -57,7 +60,8 @@ function mapAdminAccount(account: Account & { currencies: AccountCurrency[], _co
 export class AccountsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly audit: AuditService
+    private readonly audit: AuditService,
+    private readonly jwt: JwtService
   ) {}
 
   async adminList(query: AdminAccountsQuery, user: AuthenticatedUser) {
@@ -96,7 +100,7 @@ export class AccountsService {
     return mapAdminAccount(account, user.role)
   }
 
-  async updateAccount(id: string, payload: UpdateAccountPayload, user: AuthenticatedUser) {
+  async updateAccount(id: string, payload: UpdateAccountPayload, user: AuthenticatedUser, stepUpToken?: string) {
     const reason = payload.reason?.trim()
     if (!payload.role && !payload.status) throw new BadRequestException('role or status is required')
     if (!reason || reason.length < 5) throw new BadRequestException('A justification with at least 5 characters is required')
@@ -109,6 +113,10 @@ export class AccountsService {
     }
 
     if (payload.role) {
+      if (!(await verifyStepUpToken(this.jwt, this.prisma, stepUpToken, user))) {
+        await this.recordDeniedChange(user, account, payload, reason, 'step-up-required')
+        throw new ForbiddenException({ code: 'STEP_UP_REQUIRED', message: 'Confirme sua identidade novamente para mudar um papel' })
+      }
       if (user.role !== 'SUPER_ADMIN') {
         await this.recordDeniedChange(user, account, payload, reason, 'role-change-requires-super-admin')
         throw new ForbiddenException('Only Super ADM can change account roles')
@@ -157,6 +165,52 @@ export class AccountsService {
     })
 
     return mapAdminAccount(updated, user.role)
+  }
+
+  async adminResetTwoFactor(
+    targetAccountId: string,
+    payload: AdminTwoFactorResetRequest,
+    actingUser: AuthenticatedUser
+  ): Promise<AdminTwoFactorResetResponse> {
+    const reason = payload.reason?.trim()
+    if (!reason || reason.length < 5) {
+      throw new BadRequestException('A justification with at least 5 characters is required')
+    }
+    if (targetAccountId === actingUser.id) {
+      throw new ForbiddenException('Use o fluxo normal de desativacao para a propria conta')
+    }
+    const target = await this.prisma.account.findUnique({ where: { id: targetAccountId } })
+    if (!target) throw new NotFoundException('Account not found')
+    if (!target.twoFactorEnabled) {
+      throw new BadRequestException('Esta conta nao tem 2FA ativo')
+    }
+
+    await this.prisma.$transaction([
+      this.prisma.account.update({
+        where: { id: targetAccountId },
+        data: {
+          twoFactorEnabled: false,
+          twoFactorSecret: null,
+          twoFactorPending: null,
+          sessionVersion: { increment: 1 }
+        }
+      }),
+      this.prisma.twoFactorRecoveryCode.deleteMany({ where: { accountId: targetAccountId } }),
+      this.prisma.accountSession.updateMany({
+        where: { accountId: targetAccountId, revokedAt: null },
+        data: { revokedAt: new Date(), revokeReason: 'Reset administrativo de 2FA' }
+      })
+    ])
+    await this.audit.record({
+      actorId: actingUser.id,
+      actorUsername: actingUser.username,
+      action: 'admin.account.2fa.reset',
+      targetType: 'Account',
+      targetId: targetAccountId,
+      severity: 'critical',
+      metadata: { targetUsername: target.username, targetRole: target.role, reason, result: 'success' }
+    })
+    return { ok: true }
   }
 
   async accountPermissions(id: string) {

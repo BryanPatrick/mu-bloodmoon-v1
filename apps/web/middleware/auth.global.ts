@@ -1,5 +1,5 @@
-import type { Permission } from '~/data/security'
-import { permissions } from '~/data/security'
+import type { Permission, UserRole } from '~/data/security'
+import { isTwoFactorMandatory, permissions } from '~/data/security'
 
 const adminRoutePermissions: Array<[string, Permission]> = [
   ['/painel/admin/contas', permissions.adminAccountsView],
@@ -31,11 +31,23 @@ const gmRoutePermissions: Array<[string, Permission]> = [
 ]
 
 export default defineNuxtRouteMiddleware((to) => {
-  const { hasPermission, isLoggedIn, loadSession } = useAuth()
+  const { hasPermission, isLoggedIn, loadSession, user } = useAuth()
   loadSession()
 
   if (to.path.startsWith('/painel') && !isLoggedIn.value) {
     return navigateTo(`/login?redirect=${encodeURIComponent(to.fullPath)}`)
+  }
+
+  // Backend already enforces this (RolesGuard rejects role-gated routes for
+  // GM/ADMIN/SUPER_ADMIN accounts without 2FA active) -- this redirect is UX
+  // only, so the user lands on the setup screen instead of a bare 403.
+  const isAdminOrGmRoute = to.path.startsWith('/painel/admin') || to.path.startsWith('/painel/gm')
+  if (
+    isAdminOrGmRoute &&
+    isTwoFactorMandatory(user.value?.role as UserRole | undefined) &&
+    !user.value?.twoFactorEnabled
+  ) {
+    return navigateTo('/painel/conta')
   }
 
   if (to.path.startsWith('/painel/admin') && !hasPermission(permissions.adminDashboardView)) {

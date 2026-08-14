@@ -7,10 +7,16 @@ import type { AccountPermission, Role } from '@prisma/client'
 // SUPER_ADMIN may promote/demote GM or ADMIN accounts (accounts.service.ts);
 // GM itself can never change roles.
 //
-// Planned 2FA policy (not yet enforced in code): SUPER_ADMIN, ADMIN and GM
-// all require mandatory 2FA; PLAYER's 2FA stays optional. When 2FA
-// enforcement is implemented, gate it off `Role !== 'PLAYER'` so GM is
-// covered automatically.
+// 2FA policy: SUPER_ADMIN, ADMIN and GM all require mandatory 2FA; PLAYER's
+// stays optional. Enforced in roles.guard.ts (blocks role-gated routes with
+// TWO_FACTOR_SETUP_REQUIRED when `role !== 'PLAYER' && !twoFactorEnabled`,
+// which covers GM automatically the moment it gets its own @Roles('GM', ...)
+// endpoints) and mirrored client-side in data/security.ts's
+// isTwoFactorMandatory for the setup-screen redirect (UX only, not the
+// source of truth). GM/ADMIN/SUPER_ADMIN cannot self-disable their own 2FA
+// (auth.service.ts's disableTwoFactor) -- only a SUPER_ADMIN can reset
+// another account's 2FA, via a step-up-gated endpoint
+// (accounts.service.ts's adminResetTwoFactor).
 
 export const permissionKeys = {
   adminDashboardView: 'admin.dashboard.view',

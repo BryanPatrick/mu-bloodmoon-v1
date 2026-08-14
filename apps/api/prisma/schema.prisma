@@ -572,6 +572,18 @@ model Account {
   adminTasksCreated    AdminTask[]                 @relation("AdminTaskCreator")
   adminTaskComments    AdminTaskComment[]
   adminTaskEvidence    AdminTaskEvidence[]
+  twoFactorRecoveryCodes TwoFactorRecoveryCode[]
+}
+
+model TwoFactorRecoveryCode {
+  id        String    @id @default(uuid())
+  accountId String
+  codeHash  String    @db.VarChar(191)
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  account   Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId, usedAt])
 }
 
 model AdminTask {

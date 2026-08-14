@@ -67,6 +67,7 @@ export class JwtAuthGuard implements CanActivate {
         email: account.email,
         role: account.role as Role,
         permissions: permissionsForAccount(account.role, account.permissions),
+        twoFactorEnabled: account.twoFactorEnabled,
         sessionVersion: account.sessionVersion,
         sessionId: session.id
       }
