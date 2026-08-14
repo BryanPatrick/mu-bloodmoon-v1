@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   ForbiddenException,
+  HttpException,
   Injectable,
   UnauthorizedException
 } from '@nestjs/common'
@@ -38,6 +39,7 @@ import type { AccessTokenPayload, AuthenticatedUser } from './auth.types'
 import { MailTransportService } from './mail-transport.service'
 import { permissionsForAccount } from './permissions'
 import { stepUpSecret, stepUpTokenTtlSeconds } from './step-up.util'
+import { TwoFactorAttemptLimitService } from './two-factor-attempt-limit.service'
 import { TwoFactorService } from './two-factor.service'
 
 @Injectable()
@@ -47,8 +49,38 @@ export class AuthService {
     private readonly jwt: JwtService,
     private readonly audit: AuditService,
     private readonly twoFactor: TwoFactorService,
-    private readonly mailTransport: MailTransportService
+    private readonly mailTransport: MailTransportService,
+    private readonly twoFactorAttempts: TwoFactorAttemptLimitService
   ) {}
+
+  // Checks the per-account TOTP/recovery-code cooldown before a code is
+  // verified, and records the outcome afterwards. Never reveals whether the
+  // limiter or the code itself was the reason for failure -- both surface as
+  // the same "invalid code" shape to the caller, except once actually
+  // rate-limited, which is its own distinct (but still generic) error.
+  private async guardTwoFactorAttempt<T>(accountId: string, actorUsername: string, verify: () => Promise<T> | T): Promise<T> {
+    const gate = this.twoFactorAttempts.checkAllowed(accountId)
+    if (!gate.allowed) {
+      await this.audit.record({
+        actorId: accountId,
+        actorUsername,
+        action: 'auth.2fa.rate_limited',
+        targetType: 'Account',
+        targetId: accountId,
+        result: 'DENIED',
+        severity: 'warning',
+        metadata: { retryAfterSeconds: gate.retryAfterSeconds }
+      })
+      throw new HttpException(
+        { code: 'TWO_FACTOR_RATE_LIMITED', message: 'Muitas tentativas invalidas. Aguarde antes de tentar novamente.' },
+        429
+      )
+    }
+    const ok = await verify()
+    if (ok) this.twoFactorAttempts.recordSuccess(accountId)
+    else this.twoFactorAttempts.recordFailure(accountId)
+    return ok
+  }
 
   async login(
     payload: LoginRequest,
@@ -85,11 +117,21 @@ export class AuthService {
 
     if (account.twoFactorEnabled) {
       const secret = account.twoFactorSecret ? this.twoFactor.decrypt(account.twoFactorSecret) : ''
-      const totpOk = Boolean(secret) && (await this.twoFactor.isValid(secret, payload.totpCode))
-      const recoveryOk = !totpOk && payload.recoveryCode
-        ? await this.consumeRecoveryCode(account.id, payload.recoveryCode)
+      // The client's very first login call intentionally omits the code (it
+      // does not yet know 2FA is required) -- that round-trip is not a
+      // guessing attempt and must not consume the per-account attempt
+      // budget. Only a call that actually submitted a code counts.
+      const codeProvided = Boolean(payload.totpCode || payload.recoveryCode)
+      const verified = codeProvided
+        ? await this.guardTwoFactorAttempt(account.id, account.username, async () => {
+            const totpOk = Boolean(secret) && (await this.twoFactor.isValid(secret, payload.totpCode))
+            const recoveryOk = !totpOk && payload.recoveryCode
+              ? await this.consumeRecoveryCode(account.id, payload.recoveryCode)
+              : false
+            return totpOk || recoveryOk
+          })
         : false
-      if (!totpOk && !recoveryOk) {
+      if (!verified) {
         await this.recordFailedLogin(
           login,
           account.id,
@@ -513,8 +555,10 @@ export class AuthService {
     if (!account?.twoFactorPending)
       throw new BadRequestException('Inicie a configuracao do 2FA primeiro')
     const secret = this.twoFactor.decrypt(account.twoFactorPending)
-    if (!(await this.twoFactor.isValid(secret, payload.code)))
-      throw new BadRequestException('Codigo de autenticacao invalido')
+    const verified = await this.guardTwoFactorAttempt(account.id, account.username, () =>
+      this.twoFactor.isValid(secret, payload.code)
+    )
+    if (!verified) throw new BadRequestException('Codigo de autenticacao invalido')
     const recoveryCodes = this.twoFactor.generateRecoveryCodes()
     await this.prisma.$transaction([
       this.prisma.account.update({
@@ -552,11 +596,14 @@ export class AuthService {
       throw new UnauthorizedException('Senha atual invalida')
     }
     const secret = this.twoFactor.decrypt(account.twoFactorSecret)
-    const totpOk = Boolean(payload.code) && (await this.twoFactor.isValid(secret, payload.code))
-    const recoveryOk = !totpOk && payload.recoveryCode
-      ? await this.consumeRecoveryCode(account.id, payload.recoveryCode)
-      : false
-    if (!totpOk && !recoveryOk) {
+    const verified = await this.guardTwoFactorAttempt(account.id, account.username, async () => {
+      const totpOk = Boolean(payload.code) && (await this.twoFactor.isValid(secret, payload.code))
+      const recoveryOk = !totpOk && payload.recoveryCode
+        ? await this.consumeRecoveryCode(account.id, payload.recoveryCode)
+        : false
+      return totpOk || recoveryOk
+    })
+    if (!verified) {
       throw new BadRequestException('Codigo de autenticacao invalido')
     }
     await this.prisma.$transaction([
@@ -597,11 +644,14 @@ export class AuthService {
       throw new UnauthorizedException('Senha atual invalida')
     }
     const secret = this.twoFactor.decrypt(account.twoFactorSecret)
-    const totpOk = Boolean(payload.code) && (await this.twoFactor.isValid(secret, payload.code))
-    const recoveryOk = !totpOk && payload.recoveryCode
-      ? await this.consumeRecoveryCode(account.id, payload.recoveryCode)
-      : false
-    if (!totpOk && !recoveryOk) {
+    const verified = await this.guardTwoFactorAttempt(account.id, account.username, async () => {
+      const totpOk = Boolean(payload.code) && (await this.twoFactor.isValid(secret, payload.code))
+      const recoveryOk = !totpOk && payload.recoveryCode
+        ? await this.consumeRecoveryCode(account.id, payload.recoveryCode)
+        : false
+      return totpOk || recoveryOk
+    })
+    if (!verified) {
       throw new BadRequestException('Codigo de autenticacao invalido')
     }
     const recoveryCodes = this.twoFactor.generateRecoveryCodes()
@@ -627,11 +677,14 @@ export class AuthService {
     }
     if (account.twoFactorEnabled) {
       const secret = account.twoFactorSecret ? this.twoFactor.decrypt(account.twoFactorSecret) : ''
-      const totpOk = Boolean(secret) && Boolean(payload.code) && (await this.twoFactor.isValid(secret, payload.code))
-      const recoveryOk = !totpOk && payload.recoveryCode
-        ? await this.consumeRecoveryCode(account.id, payload.recoveryCode)
-        : false
-      if (!totpOk && !recoveryOk) {
+      const verified = await this.guardTwoFactorAttempt(account.id, account.username, async () => {
+        const totpOk = Boolean(secret) && Boolean(payload.code) && (await this.twoFactor.isValid(secret, payload.code))
+        const recoveryOk = !totpOk && payload.recoveryCode
+          ? await this.consumeRecoveryCode(account.id, payload.recoveryCode)
+          : false
+        return totpOk || recoveryOk
+      })
+      if (!verified) {
         throw new BadRequestException('Codigo de autenticacao invalido')
       }
     }
