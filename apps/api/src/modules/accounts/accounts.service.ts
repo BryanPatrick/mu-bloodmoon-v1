@@ -273,8 +273,43 @@ export class AccountsService {
     }))
   }
 
-  async revokeOwnSessions(reason: string | undefined, user: AuthenticatedUser) {
+  async revokeOwnSessions(reason: string | undefined, user: AuthenticatedUser, stepUpToken?: string) {
+    // GM/ADMIN/SUPER_ADMIN sessions are higher-value targets (they can act
+    // on other accounts) -- ending ALL of them at once requires a fresh
+    // step-up, same as a role change. Ending a single device below does not,
+    // since it is self-limiting and cannot be used to lock the account out.
+    if (user.role !== 'PLAYER' && !(await verifyStepUpToken(this.jwt, this.prisma, stepUpToken, user))) {
+      await this.audit.record({
+        actorId: user.id, actorUsername: user.username, action: 'account.sessions.revoke_all.denied',
+        targetType: 'Account', targetId: user.id, severity: 'warning',
+        metadata: { reason: 'step-up-required', result: 'denied' }
+      })
+      throw new ForbiddenException({ code: 'STEP_UP_REQUIRED', message: 'Confirme sua identidade novamente para encerrar todas as sessoes' })
+    }
     return this.revokeAccountSessions(user.id, reason || 'Revogação solicitada pelo titular', user, true)
+  }
+
+  async revokeOwnSession(sessionId: string, reason: string | undefined, user: AuthenticatedUser) {
+    const normalizedReason = reason?.trim() || 'Sessão encerrada pelo titular da conta'
+    const session = await this.prisma.accountSession.findUnique({ where: { id: sessionId } })
+    if (!session || session.accountId !== user.id) throw new NotFoundException('Session not found')
+    if (!session.revokedAt) {
+      // Deliberately does NOT touch account.sessionVersion -- that would
+      // invalidate every other session too. A single session is revoked
+      // purely via its own revokedAt, which both the access-token guard and
+      // the refresh endpoint already check per-session (see jwt-auth.guard.ts
+      // and AuthService.refresh).
+      await this.prisma.accountSession.update({
+        where: { id: sessionId },
+        data: { revokedAt: new Date(), revokeReason: normalizedReason }
+      })
+      await this.audit.record({
+        actorId: user.id, actorUsername: user.username, action: 'account.session.revoked',
+        targetType: 'AccountSession', targetId: sessionId, severity: 'warning',
+        metadata: { reason: normalizedReason, wasCurrent: session.id === user.sessionId, result: 'success' }
+      })
+    }
+    return { ok: true, message: 'Session revoked' }
   }
 
   async revokeAccountSessions(id: string, reason: string | undefined, user: AuthenticatedUser, self = false) {

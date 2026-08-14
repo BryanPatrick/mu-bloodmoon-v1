@@ -88,7 +88,20 @@ export class AccountController {
   }
 
   @Patch('sessions/revoke')
-  revokeSessions(@Body() payload: RevokeSessionsPayload, @CurrentUser() user: AuthenticatedUser) {
-    return this.accountsService.revokeOwnSessions(payload.reason, user)
+  revokeSessions(
+    @Body() payload: RevokeSessionsPayload,
+    @CurrentUser() user: AuthenticatedUser,
+    @Headers('x-step-up-token') stepUpToken?: string
+  ) {
+    return this.accountsService.revokeOwnSessions(payload.reason, user, stepUpToken)
+  }
+
+  @Patch('sessions/:id/revoke')
+  revokeSession(
+    @Param('id') id: string,
+    @Body() payload: RevokeSessionsPayload,
+    @CurrentUser() user: AuthenticatedUser
+  ) {
+    return this.accountsService.revokeOwnSession(id, payload.reason, user)
   }
 }

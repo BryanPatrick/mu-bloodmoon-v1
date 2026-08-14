@@ -143,10 +143,14 @@
         <div class="mt-4 grid gap-2">
           <article v-for="item in sessions" :key="item.id" class="flex items-center justify-between gap-3 rounded-md border border-white/10 bg-white/[0.04] p-3">
             <div><strong>{{ item.label }}</strong><p class="mt-1 text-xs text-white/45">{{ item.ipAddress || 'IP nao identificado' }} · atividade {{ formatDate(item.lastSeenAt) }}</p><p v-if="item.revokeReason" class="mt-1 text-xs text-amber-200/70">{{ item.revokeReason }}</p></div>
-            <span class="text-xs font-black" :class="item.active ? 'text-emerald-200' : 'text-white/35'">{{ item.current ? 'ATUAL' : item.active ? 'ATIVA' : 'ENCERRADA' }}</span>
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-black" :class="item.active ? 'text-emerald-200' : 'text-white/35'">{{ item.current ? 'ATUAL' : item.active ? 'ATIVA' : 'ENCERRADA' }}</span>
+              <button v-if="item.active && !item.current" class="bm-admin-action" type="button" @click="revokeOneSession(item.id)">Encerrar</button>
+            </div>
           </article>
           <p v-if="!sessions.length" class="rounded-md border border-white/10 p-4 text-sm text-white/45">Nenhuma sessao registrada.</p>
         </div>
+        <p v-if="sessionsMessage" class="mt-3 text-xs font-bold text-white/55">{{ sessionsMessage }}</p>
       </section>
     </div>
   </ManagementShell>
@@ -180,10 +184,44 @@ onMounted(async () => {
   await Promise.all([loadProfile(), loadHistory(), loadSessions()])
 })
 
+const sessionsMessage = ref('')
 const loadSessions = async () => { try { sessions.value = await accountSecurityApi.sessions() } catch { sessions.value = [] } }
+
+const requestStepUpToken = async () => {
+  if (!import.meta.client) return null
+  const currentPassword = window.prompt('Confirme sua senha atual para continuar:') || ''
+  if (!currentPassword) return null
+  const code = window.prompt('Codigo do autenticador (ou codigo de recuperacao):') || ''
+  if (!code) return null
+  const isRecoveryFormat = /^[A-Z0-9]{4}-[A-Z0-9]{4}$/i.test(code.trim())
+  try {
+    const result = await accountSecurityApi.stepUp(currentPassword, isRecoveryFormat ? undefined : code, isRecoveryFormat ? code : undefined)
+    return result.stepUpToken
+  } catch {
+    sessionsMessage.value = 'Nao foi possivel confirmar sua identidade. Verifique a senha e o codigo.'
+    return null
+  }
+}
+
 const revokeAllSessions = async () => {
   if (!confirm('Encerrar todas as sessões, inclusive esta?')) return
-  try { await accountSecurityApi.revokeSessions('Revogação solicitada pelo titular da conta'); await navigateTo('/login') } catch { message.value = 'Não foi possível encerrar as sessões.' }
+  sessionsMessage.value = ''
+  // GM/ADMIN/SUPER_ADMIN sessions are higher-value -- the backend requires a
+  // fresh step-up to end all of them at once (see accounts.service.ts).
+  let stepUpToken: string | null | undefined
+  if (twoFactorMandatory.value) {
+    stepUpToken = await requestStepUpToken()
+    if (!stepUpToken) return
+  }
+  try { await accountSecurityApi.revokeSessions('Revogação solicitada pelo titular da conta', stepUpToken || undefined); await navigateTo('/login') }
+  catch { sessionsMessage.value = 'Não foi possível encerrar as sessões.' }
+}
+
+const revokeOneSession = async (sessionId: string) => {
+  if (!confirm('Encerrar esta sessão?')) return
+  sessionsMessage.value = ''
+  try { await accountSecurityApi.revokeSession(sessionId, 'Revogação solicitada pelo titular da conta'); await loadSessions() }
+  catch { sessionsMessage.value = 'Não foi possível encerrar esta sessão.' }
 }
 
 const startTwoFactor = async () => {

@@ -64,7 +64,14 @@ export const useAccountSecurityApi = () => {
         headers: authHeaders()
       }),
     sessions: () => $fetch<AccountSession[]>(`${apiBase.value}/account/sessions`, { headers: authHeaders() }),
-    revokeSessions: (reason: string) => $fetch<{ ok: boolean }>(`${apiBase.value}/account/sessions/revoke`, { method: 'PATCH', body: { reason }, headers: authHeaders() }),
+    revokeSessions: (reason: string, stepUpToken?: string) =>
+      $fetch<{ ok: boolean }>(`${apiBase.value}/account/sessions/revoke`, {
+        method: 'PATCH',
+        body: { reason },
+        headers: { ...authHeaders(), ...(stepUpToken ? { 'X-Step-Up-Token': stepUpToken } : {}) }
+      }),
+    revokeSession: (sessionId: string, reason?: string) =>
+      $fetch<{ ok: boolean }>(`${apiBase.value}/account/sessions/${sessionId}/revoke`, { method: 'PATCH', body: { reason }, headers: authHeaders() }),
     setupTwoFactor: (currentPassword: string) => $fetch<{ secret: string, uri: string, qrCode: string }>(`${apiBase.value}/auth/2fa/setup`, { method: 'POST', body: { currentPassword }, headers: authHeaders() }),
     verifyTwoFactor: (code: string) => $fetch<{ ok: true, recoveryCodes: string[] }>(`${apiBase.value}/auth/2fa/verify`, { method: 'POST', body: { code }, headers: authHeaders() }),
     disableTwoFactor: (currentPassword: string, code?: string, recoveryCode?: string) => $fetch<{ ok: true }>(`${apiBase.value}/auth/2fa/disable`, { method: 'POST', body: { currentPassword, code, recoveryCode }, headers: authHeaders() }),
