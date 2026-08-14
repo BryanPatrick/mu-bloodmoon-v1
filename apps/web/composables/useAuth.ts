@@ -1,4 +1,5 @@
 import { permissions, roleHasPermission, type Permission, type UserRole } from '~/data/security'
+import { roleFromApi } from '~/features/auth/role-from-api'
 
 type AuthCurrency = {
   label: string
@@ -82,7 +83,7 @@ const adminSessionMs = 8 * 60 * 60 * 1000
 const createId = () => `${Date.now()}-${Math.random().toString(16).slice(2)}`
 
 const sessionDurationFor = (role: UserRole) =>
-  role === 'admin' || role === 'super-admin' ? adminSessionMs : playerSessionMs
+  role === 'admin' || role === 'super-admin' || role === 'gm' ? adminSessionMs : playerSessionMs
 
 const readJson = <T>(key: string, fallback: T): T => {
   if (!import.meta.client) {
@@ -116,11 +117,6 @@ const currenciesFromApi = (currencies?: ApiLoginResponse['user']['currencies']) 
     value: currency.balance
   }))
 
-const roleFromApi = (role: string): UserRole => {
-  const normalized = role.toLowerCase().replaceAll('_', '-') as UserRole
-  return ['player', 'admin', 'super-admin'].includes(normalized) ? normalized : 'player'
-}
-
 export const useAuth = () => {
   const user = useState<AuthUser | null>('blood-moon-auth-user', () => null)
   const session = useState<AuthSession | null>('blood-moon-auth-session', () => null)
@@ -136,6 +132,21 @@ export const useAuth = () => {
     roleHasPermission(user.value?.role, permissions.adminDashboardView)
   )
   const accessToken = computed(() => session.value?.accessToken || '')
+
+  // Explicit three-state auth model (AUTH_LOADING / AUTHENTICATED / GUEST).
+  // `user` alone isn't enough to tell "confirmed guest" apart from "haven't
+  // resolved auth yet" -- both start out as null/false. `authReady` closes
+  // that gap: it flips true (synchronously, see loadSession() below) once
+  // loadSession() has actually run at least once, either from the cookie
+  // (server) or localStorage (client). Consumers must never treat
+  // `authStatus === 'loading'` as guest -- that's exactly the bug this
+  // exists to prevent (a guest CTA flashing for an authenticated user
+  // whose session just hasn't been read yet).
+  const authReady = useState<boolean>('blood-moon-auth-ready', () => false)
+  const authStatus = computed<'loading' | 'authenticated' | 'guest'>(() => {
+    if (!authReady.value) return 'loading'
+    return user.value ? 'authenticated' : 'guest'
+  })
 
   const recordAudit = (
     event: Omit<AuditEvent, 'id' | 'createdAt' | 'user' | 'role'> & {
@@ -221,7 +232,15 @@ export const useAuth = () => {
     }
   }
 
-  const loadSession = () => {
+  // loadSession() is fully synchronous on both server (cookie read) and
+  // client (localStorage read) -- no awaits on its state-resolution paths
+  // (refreshSession() is intentionally fire-and-forget). That means auth
+  // state is always fully known by the time this returns, on every call
+  // site and every branch below. loadSessionSync holds the original,
+  // multi-return-path logic; loadSession wraps it so authReady flips true
+  // after *any* of those paths, instead of duplicating the flag-set at
+  // every return.
+  const loadSessionSync = () => {
     if (import.meta.server) {
       const cookieState = authStateCookie.value
       if (cookieState?.user && cookieState.expiresAt > Date.now()) {
@@ -284,6 +303,11 @@ export const useAuth = () => {
     }
   }
 
+  const loadSession = () => {
+    loadSessionSync()
+    authReady.value = true
+  }
+
   const loginWithApi = async (
     username: string,
     password: string,
@@ -321,7 +345,7 @@ export const useAuth = () => {
       return {
         ok: true,
         message:
-          nextUser.role === 'admin' || nextUser.role === 'super-admin'
+          nextUser.role === 'admin' || nextUser.role === 'super-admin' || nextUser.role === 'gm'
             ? 'Login administrativo realizado pela API.'
             : 'Login realizado com sucesso.'
       }
@@ -499,6 +523,8 @@ export const useAuth = () => {
     accessToken,
     isLoggedIn,
     isAdmin,
+    authReady,
+    authStatus,
     loadSession,
     loginWithCredentials,
     refreshSession,

@@ -8,7 +8,12 @@ import type { AdminAccountsQuery, UpdateAccountPayload, UpdateAccountPermissions
 
 const defaultPageSize = 30
 const maxPageSize = 100
-const assignableRoles: Role[] = ['PLAYER', 'ADMIN']
+const assignableRoles: Role[] = ['PLAYER', 'GM', 'ADMIN']
+const allowedRoleTransitions = [
+  'PLAYER->ADMIN', 'ADMIN->PLAYER',
+  'PLAYER->GM', 'GM->PLAYER',
+  'GM->ADMIN', 'ADMIN->GM'
+]
 const allowedStatuses: AccountStatus[] = ['ACTIVE', 'PENDING', 'BLOCKED']
 
 function toPositiveInt(value: string | undefined, fallback: number) {
@@ -112,9 +117,9 @@ export class AccountsService {
         await this.recordDeniedChange(user, account, payload, reason, 'protected-role')
         throw new ForbiddenException('This role transition is not allowed')
       }
-      if (!['PLAYER->ADMIN', 'ADMIN->PLAYER'].includes(`${account.role}->${payload.role}`)) {
+      if (!allowedRoleTransitions.includes(`${account.role}->${payload.role}`)) {
         await this.recordDeniedChange(user, account, payload, reason, 'invalid-role-transition')
-        throw new BadRequestException('Only PLAYER and ADMIN promotion or demotion is allowed')
+        throw new BadRequestException('Only PLAYER, GM and ADMIN promotion or demotion is allowed')
       }
     }
 

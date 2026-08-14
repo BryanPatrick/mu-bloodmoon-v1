@@ -86,14 +86,19 @@ export const permissions = {
   communityAccess: 'community.access',
   rechargeAccess: 'recharge.access',
   guildsAccess: 'guilds.access',
-  guidesFutureView: 'guides.future.view'
+  guidesFutureView: 'guides.future.view',
+  gmDashboardView: 'gm.dashboard.view',
+  gmCharactersView: 'gm.characters.view',
+  gmGuildsView: 'gm.guilds.view',
+  gmOperationalLogsView: 'gm.operational-logs.view'
 } as const
 
 export type Permission = typeof permissions[keyof typeof permissions]
-export type UserRole = 'player' | 'admin' | 'super-admin'
+export type UserRole = 'player' | 'gm' | 'admin' | 'super-admin'
 
 export const roleLabels: Record<UserRole, string> = {
   player: 'Player',
+  gm: 'Game Master',
   admin: 'Administrador',
   'super-admin': 'Super ADM'
 }
@@ -108,8 +113,17 @@ const playerPermissions: Permission[] = [
   permissions.guildsAccess
 ]
 
+const gmPermissions: Permission[] = [
+  ...playerPermissions,
+  permissions.gmDashboardView,
+  permissions.gmCharactersView,
+  permissions.gmGuildsView,
+  permissions.gmOperationalLogsView
+]
+
 export const rolePermissions: Record<UserRole, Permission[] | ['*']> = {
   player: playerPermissions,
+  gm: gmPermissions,
   admin: [
     ...playerPermissions,
     permissions.guidesFutureView
@@ -118,6 +132,7 @@ export const rolePermissions: Record<UserRole, Permission[] | ['*']> = {
 }
 
 export const isAdminRole = (role?: UserRole) => role === 'admin' || role === 'super-admin'
+export const isGmRole = (role?: UserRole) => role === 'gm'
 
 export const roleHasPermission = (role: UserRole | undefined, permission: Permission) => {
   if (!role) return false

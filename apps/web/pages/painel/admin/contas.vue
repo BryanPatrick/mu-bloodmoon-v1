@@ -96,9 +96,33 @@
                 v-if="user?.role === 'super-admin' && account.role === 'player'"
                 class="bm-button-glass rounded-md px-4 py-3 text-sm font-black"
                 type="button"
+                @click="changeRole(account, 'GM')"
+              >
+                Promover a GM
+              </button>
+              <button
+                v-if="user?.role === 'super-admin' && (account.role === 'player' || account.role === 'gm')"
+                class="bm-button-glass rounded-md px-4 py-3 text-sm font-black"
+                type="button"
                 @click="changeRole(account, 'ADMIN')"
               >
                 Promover a ADM
+              </button>
+              <button
+                v-if="user?.role === 'super-admin' && account.role === 'gm'"
+                class="rounded-md border border-amber-500/40 bg-amber-900/20 px-4 py-3 text-sm font-black text-amber-100"
+                type="button"
+                @click="changeRole(account, 'PLAYER')"
+              >
+                Rebaixar a player
+              </button>
+              <button
+                v-if="user?.role === 'super-admin' && account.role === 'admin'"
+                class="rounded-md border border-amber-500/40 bg-amber-900/20 px-4 py-3 text-sm font-black text-amber-100"
+                type="button"
+                @click="changeRole(account, 'GM')"
+              >
+                Rebaixar a GM
               </button>
               <button
                 v-if="user?.role === 'super-admin' && account.role === 'admin'"
@@ -326,8 +350,8 @@ const markAccountViaApi = async (account: ManagedAccount, status: ManagedAccount
   }
 }
 
-const changeRole = async (account: ManagedAccount, role: 'PLAYER' | 'ADMIN') => {
-  const action = role === 'ADMIN' ? 'promover a ADM' : 'rebaixar a player'
+const changeRole = async (account: ManagedAccount, role: 'PLAYER' | 'GM' | 'ADMIN') => {
+  const action = role === 'ADMIN' ? 'promover a ADM' : role === 'GM' ? 'definir como GM' : 'rebaixar a player'
   const reason = requestReason(`${action}: ${account.username}`)
   if (!reason || !window.confirm(`Confirma ${action} para ${account.username}?`)) return
 

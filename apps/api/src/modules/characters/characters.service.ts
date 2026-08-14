@@ -59,7 +59,8 @@ const seedCharacters = [
   }
 ]
 
-const isAdmin = (user: AuthenticatedUser) => user.role === 'ADMIN' || user.role === 'SUPER_ADMIN'
+const canViewAllCharacters = (user: AuthenticatedUser) =>
+  user.role === 'GM' || user.role === 'ADMIN' || user.role === 'SUPER_ADMIN'
 
 const mapCharacter = (character: AccountCharacter & { account: { username: string } }) => ({
   id: character.id,
@@ -125,7 +126,7 @@ export class CharactersService {
     await this.ensureSeeded()
 
     const where: Prisma.AccountCharacterWhereInput = {
-      ...(!isAdmin(user) ? { accountId: user.id } : {}),
+      ...(!canViewAllCharacters(user) ? { accountId: user.id } : {}),
       ...(query.className ? { className: query.className } : {}),
       ...(query.status ? { status: query.status } : {}),
       ...(query.search
@@ -158,7 +159,7 @@ export class CharactersService {
       where: { id },
       include: { account: { select: { id: true, username: true } } }
     })
-    if (!character || (!isAdmin(user) && character.account.id !== user.id)) {
+    if (!character || (!canViewAllCharacters(user) && character.account.id !== user.id)) {
       throw new NotFoundException(`Character not found: ${id}`)
     }
 

@@ -5,6 +5,13 @@ import { execSync } from 'node:child_process'
 // (bloodmoon-mysql), never production. Created by the caller's beforeAll,
 // destroyed by its afterAll. Each spec picks its own container name so
 // multiple spec files never collide if run concurrently.
+//
+// When Docker isn't available (e.g. this Windows dev machine), set
+// E2E_LOCAL_MYSQL_URL to point at a disposable local MySQL/MariaDB instance
+// instead. All spec files then share that single database sequentially
+// (the suite already runs with --runInBand and every spec namespaces its
+// own test data with a timestamp suffix), and stopDisposableDatabase is a
+// no-op so the shared local database survives between spec files.
 
 const sh = (command: string, options: Parameters<typeof execSync>[1] = {}) =>
   execSync(command, { stdio: 'pipe', ...options }).toString()
@@ -15,6 +22,10 @@ export type DisposableDatabase = {
 }
 
 export async function startDisposableDatabase(containerName: string): Promise<DisposableDatabase> {
+  if (process.env.E2E_LOCAL_MYSQL_URL) {
+    return { containerName, databaseUrl: process.env.E2E_LOCAL_MYSQL_URL }
+  }
+
   const dbName = 'bloodmoon_e2e'
   const dbUser = 'validator'
   const dbPassword = 'validator_pw'
@@ -48,6 +59,9 @@ export async function startDisposableDatabase(containerName: string): Promise<Di
 }
 
 export function stopDisposableDatabase(containerName: string) {
+  if (process.env.E2E_LOCAL_MYSQL_URL) {
+    return
+  }
   try {
     sh(`docker rm -f ${containerName}`)
   } catch {

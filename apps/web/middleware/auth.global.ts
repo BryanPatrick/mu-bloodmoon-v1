@@ -26,6 +26,10 @@ const adminRoutePermissions: Array<[string, Permission]> = [
   ['/painel/admin/guildas', permissions.adminGuildsView]
 ]
 
+const gmRoutePermissions: Array<[string, Permission]> = [
+  ['/painel/gm', permissions.gmDashboardView]
+]
+
 export default defineNuxtRouteMiddleware((to) => {
   const { hasPermission, isLoggedIn, loadSession } = useAuth()
   loadSession()
@@ -38,7 +42,11 @@ export default defineNuxtRouteMiddleware((to) => {
     return navigateTo('/painel/conta')
   }
 
-  const requiredPermission = adminRoutePermissions.find(([path]) => to.path.startsWith(path))?.[1]
+  if (to.path.startsWith('/painel/gm') && !hasPermission(permissions.gmDashboardView)) {
+    return navigateTo('/painel/conta')
+  }
+
+  const requiredPermission = [...adminRoutePermissions, ...gmRoutePermissions].find(([path]) => to.path.startsWith(path))?.[1]
   if (requiredPermission && !hasPermission(requiredPermission)) {
     return navigateTo(`/acesso-negado?retorno=${encodeURIComponent('/painel')}`)
   }

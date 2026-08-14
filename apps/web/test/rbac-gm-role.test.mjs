@@ -1,0 +1,77 @@
+import assert from 'node:assert/strict'
+import { test } from 'node:test'
+
+import { roleFromApi } from '../features/auth/role-from-api.ts'
+import { isAdminRole, isGmRole, permissions, roleHasPermission, rolePermissions, roleLabels } from '../data/security.ts'
+
+test('roleFromApi maps the backend GM role to the frontend gm literal, not a downgrade to player', () => {
+  assert.equal(roleFromApi('GM'), 'gm')
+  assert.equal(roleFromApi('gm'), 'gm')
+})
+
+test('roleFromApi still maps every pre-existing backend role correctly', () => {
+  assert.equal(roleFromApi('PLAYER'), 'player')
+  assert.equal(roleFromApi('ADMIN'), 'admin')
+  assert.equal(roleFromApi('SUPER_ADMIN'), 'super-admin')
+})
+
+test('roleFromApi falls back to player for any unrecognized role string', () => {
+  assert.equal(roleFromApi('WHATEVER_NEW_ROLE'), 'player')
+  assert.equal(roleFromApi(''), 'player')
+})
+
+test('GM is not treated as an admin role', () => {
+  assert.equal(isAdminRole('gm'), false)
+  assert.equal(isGmRole('gm'), true)
+})
+
+test('admin and super-admin are not treated as the GM role', () => {
+  assert.equal(isGmRole('admin'), false)
+  assert.equal(isGmRole('super-admin'), false)
+  assert.equal(isGmRole('player'), false)
+})
+
+test('GM has a distinct role label, not reused from another role', () => {
+  assert.equal(roleLabels.gm, 'Game Master')
+  assert.notEqual(roleLabels.gm, roleLabels.admin)
+  assert.notEqual(roleLabels.gm, roleLabels.player)
+})
+
+test('GM does not inherit any admin.* permission by default', () => {
+  const gmAccess = rolePermissions.gm
+  const adminOnlyPermissions = Object.values(permissions).filter((permission) => permission.startsWith('admin.'))
+  for (const permission of adminOnlyPermissions) {
+    assert.equal(roleHasPermission('gm', permission), false, `GM should not have ${permission}`)
+  }
+  assert.ok(Array.isArray(gmAccess))
+})
+
+test('GM retains the baseline player-level permissions (own account, characters, community, etc.)', () => {
+  assert.equal(roleHasPermission('gm', permissions.accountManage), true)
+  assert.equal(roleHasPermission('gm', permissions.charactersManage), true)
+  assert.equal(roleHasPermission('gm', permissions.communityAccess), true)
+})
+
+test('GM has its own curated operational permissions', () => {
+  assert.equal(roleHasPermission('gm', permissions.gmDashboardView), true)
+  assert.equal(roleHasPermission('gm', permissions.gmCharactersView), true)
+  assert.equal(roleHasPermission('gm', permissions.gmGuildsView), true)
+})
+
+test('PLAYER does not have any GM-only permission', () => {
+  assert.equal(roleHasPermission('player', permissions.gmDashboardView), false)
+  assert.equal(roleHasPermission('player', permissions.gmCharactersView), false)
+})
+
+test('ADMIN keeps its own baseline permission set unaffected by the new GM role', () => {
+  // ADMIN's admin.* permissions are delegated per-account via AccountPermission
+  // overrides, not granted role-wide -- this baseline only carries the shared
+  // player-level permissions plus guidesFutureView, unchanged by adding GM.
+  assert.equal(roleHasPermission('admin', permissions.accountManage), true)
+  assert.equal(roleHasPermission('admin', permissions.guidesFutureView), true)
+})
+
+test('SUPER_ADMIN keeps full wildcard access unaffected by the new GM role', () => {
+  assert.equal(roleHasPermission('super-admin', permissions.gmDashboardView), true)
+  assert.equal(roleHasPermission('super-admin', permissions.adminRolesManage), true)
+})

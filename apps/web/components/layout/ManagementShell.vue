@@ -291,10 +291,21 @@ const playerItems: MenuItem[] = [
   { label: 'Configurações', to: '/painel/configuracoes', icon: Settings }
 ]
 
+const gmItems: MenuItem[] = [
+  { label: 'Painel GM', to: '/painel/gm', icon: LayoutDashboard, permission: permissions.gmDashboardView, roles: ['gm'] },
+  { label: 'Minha conta', to: '/painel/conta', icon: UserCog },
+  { label: 'Meus personagens', to: '/painel/personagens', icon: Users },
+  { label: 'Comunidade', to: '/comunidade', icon: MessageCircle },
+  { label: 'Guildas', to: '/guilds', icon: Shield },
+  { label: 'Notificações', to: '/painel/notificacoes', icon: Bell },
+  { label: 'Suporte', to: '/painel/suporte', icon: TicketCheck },
+  { label: 'Configurações', to: '/painel/configuracoes', icon: Settings }
+]
+
 const visibleMenuItems = computed(() => {
   const role = user.value?.role
   if (!role) return []
-  const items = role === 'player' ? playerItems : administrativeItems
+  const items = role === 'player' ? playerItems : role === 'gm' ? gmItems : administrativeItems
   return items
     .filter((item) => (!item.roles || item.roles.includes(role)) && (!item.permission || hasPermission(item.permission)))
     .map((item) => ({

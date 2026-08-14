@@ -92,9 +92,10 @@ export class AuditService {
       payload.correlationId || context?.correlationId || null
     const isAdministrative =
       Boolean(payload.actorId) &&
-      (actorRole === 'ADMIN' || actorRole === 'SUPER_ADMIN') &&
+      (actorRole === 'ADMIN' || actorRole === 'SUPER_ADMIN' || actorRole === 'GM') &&
       (
         payload.action.startsWith('admin.') ||
+        payload.action.startsWith('gm.') ||
         payload.action.startsWith('moderation.') ||
         payload.action.startsWith('support.ticket.updated')
       )

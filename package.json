@@ -17,7 +17,7 @@
     "web:generate": "nuxt generate apps/web",
     "web:preview": "nuxt preview apps/web/.output",
     "web:test:error": "node --test apps/web/test/error-presentation.test.mjs",
-    "web:test:smoke": "node --test apps/web/test/commercial-experience.test.mjs apps/web/test/error-presentation.test.mjs apps/web/test/public-pages-smoke.test.mjs",
+    "web:test:smoke": "node --test apps/web/test/commercial-experience.test.mjs apps/web/test/error-presentation.test.mjs apps/web/test/public-pages-smoke.test.mjs apps/web/test/community-left-rail-view.test.mjs apps/web/test/community-auth-ssr.test.mjs apps/web/test/rbac-gm-role.test.mjs",
     "dev:full": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-dev.ps1",
     "dev:full:import": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-dev.ps1 -ImportData",
     "api:check": "npm --workspace @blood-moon/api run check",
@@ -38,6 +38,7 @@
     "data:prepare-source-import": "node apps/api/scripts/prepare-source-harvest-import.mjs",
     "web-source:catalog": "node scripts/catalog-web-source-backup.mjs",
     "web-source:normalize": "node scripts/normalize-web-source-catalog.mjs",
+    "figma:manifest": "node scripts/build-figma-asset-manifest.mjs",
     "deploy:cpanel:package": "npm run api:build && npm run web:build && node scripts/package-cpanel-deploy.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -66,5 +67,17 @@
     "prettier": "^3.9.6",
     "typescript-eslint": "^8.66.0",
     "vue-eslint-parser": "^10.4.1"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "esbuild@0.27.7": true,
+    "prisma@5.22.0": true,
+    "sharp@0.34.5": true,
+    "unrs-resolver@1.12.2": true,
+    "vue-demi@0.14.10": true,
+    "@nestjs/core@10.4.22": true,
+    "@parcel/watcher@2.5.6": true,
+    "@prisma/client@5.22.0": true,
+    "@prisma/engines@5.22.0": true
   }
 }

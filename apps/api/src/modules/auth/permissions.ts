@@ -1,5 +1,17 @@
 import type { AccountPermission, Role } from '@prisma/client'
 
+// Role hierarchy: PLAYER < GM < ADMIN < SUPER_ADMIN.
+// GM is an operational, game-facing role -- it does NOT inherit ADMIN's
+// admin.* permissions. Its baseline is playerPermissions plus a small,
+// curated set of gm.* view permissions (see gmPermissions below). Only
+// SUPER_ADMIN may promote/demote GM or ADMIN accounts (accounts.service.ts);
+// GM itself can never change roles.
+//
+// Planned 2FA policy (not yet enforced in code): SUPER_ADMIN, ADMIN and GM
+// all require mandatory 2FA; PLAYER's 2FA stays optional. When 2FA
+// enforcement is implemented, gate it off `Role !== 'PLAYER'` so GM is
+// covered automatically.
+
 export const permissionKeys = {
   adminDashboardView: 'admin.dashboard.view',
   adminAccountsView: 'admin.accounts.view',
@@ -88,7 +100,11 @@ export const permissionKeys = {
   communityAccess: 'community.access',
   rechargeAccess: 'recharge.access',
   guildsAccess: 'guilds.access',
-  guidesFutureView: 'guides.future.view'
+  guidesFutureView: 'guides.future.view',
+  gmDashboardView: 'gm.dashboard.view',
+  gmCharactersView: 'gm.characters.view',
+  gmGuildsView: 'gm.guilds.view',
+  gmOperationalLogsView: 'gm.operational-logs.view'
 } as const
 
 export type PermissionKey = typeof permissionKeys[keyof typeof permissionKeys]
@@ -108,8 +124,17 @@ const playerPermissions: PermissionKey[] = [
   permissionKeys.guildsAccess
 ]
 
+const gmPermissions: PermissionKey[] = [
+  ...playerPermissions,
+  permissionKeys.gmDashboardView,
+  permissionKeys.gmCharactersView,
+  permissionKeys.gmGuildsView,
+  permissionKeys.gmOperationalLogsView
+]
+
 const rolePermissions: Record<Role, PermissionKey[] | ['*']> = {
   PLAYER: playerPermissions,
+  GM: gmPermissions,
   ADMIN: [
     ...playerPermissions,
     permissionKeys.guidesFutureView
