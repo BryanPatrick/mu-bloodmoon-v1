@@ -153,6 +153,77 @@
         <p v-if="sessionsMessage" class="mt-3 text-xs font-bold text-white/55">{{ sessionsMessage }}</p>
       </section>
     </div>
+
+    <Teleport to="body">
+      <div
+        v-if="pendingSessionAction"
+        class="fixed inset-0 z-[120] grid place-items-center bg-black/70 p-4 backdrop-blur-sm"
+        role="presentation"
+      >
+        <section
+          class="bm-panel w-full max-w-lg rounded-md p-6"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="session-action-title"
+        >
+          <p class="bm-kicker">Confirmacao de seguranca</p>
+          <h2 id="session-action-title" class="mt-2 font-display text-2xl font-black">
+            {{ pendingSessionAction.kind === 'all' ? 'Encerrar todas as sessoes' : 'Encerrar esta sessao' }}
+          </h2>
+          <p class="mt-2 text-sm font-semibold text-white/60">
+            {{ pendingSessionAction.kind === 'all' ? 'Esta acao tambem encerrara a sessao atual.' : 'Somente a sessao selecionada sera encerrada.' }}
+          </p>
+
+          <form class="mt-5 grid gap-4" @submit.prevent="submitSessionAction">
+            <template v-if="pendingSessionAction.kind === 'all' && twoFactorMandatory">
+              <input
+                :value="user?.username || ''"
+                class="sr-only"
+                tabindex="-1"
+                autocomplete="username"
+                aria-hidden="true"
+              >
+              <label class="grid gap-2 text-sm font-bold">
+                Senha atual
+                <input
+                  v-model="pendingSessionAction.currentPassword"
+                  class="rounded-md border border-white/10 bg-black/35 px-4 py-3 outline-none focus:border-blood-400"
+                  type="password"
+                  autocomplete="current-password"
+                  required
+                >
+              </label>
+              <label class="grid gap-2 text-sm font-bold">
+                Codigo do autenticador ou recuperacao
+                <input
+                  v-model="pendingSessionAction.code"
+                  class="rounded-md border border-white/10 bg-black/35 px-4 py-3 outline-none focus:border-blood-400"
+                  autocomplete="one-time-code"
+                  required
+                >
+              </label>
+            </template>
+
+            <p
+              v-if="sessionActionError"
+              class="rounded-md border border-blood-500/40 bg-blood-900/20 p-3 text-sm font-bold text-blood-100"
+              role="alert"
+            >
+              {{ sessionActionError }}
+            </p>
+
+            <div class="flex flex-wrap justify-end gap-3">
+              <button class="bm-button-glass rounded-md px-4 py-3 text-sm font-black" type="button" :disabled="sessionActionSubmitting" @click="closeSessionAction">
+                Cancelar
+              </button>
+              <button class="bm-admin-danger rounded-md px-4 py-3 text-sm font-black" type="submit" :disabled="sessionActionSubmitting">
+                {{ sessionActionSubmitting ? 'Encerrando...' : 'Confirmar' }}
+              </button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </Teleport>
   </ManagementShell>
 </template>
 
@@ -186,42 +257,66 @@ onMounted(async () => {
 
 const sessionsMessage = ref('')
 const loadSessions = async () => { try { sessions.value = await accountSecurityApi.sessions() } catch { sessions.value = [] } }
+type PendingSessionAction = {
+  kind: 'all' | 'one'
+  sessionId?: string
+  currentPassword: string
+  code: string
+}
+const pendingSessionAction = ref<PendingSessionAction | null>(null)
+const sessionActionError = ref('')
+const sessionActionSubmitting = ref(false)
 
-const requestStepUpToken = async () => {
-  if (!import.meta.client) return null
-  const currentPassword = window.prompt('Confirme sua senha atual para continuar:') || ''
-  if (!currentPassword) return null
-  const code = window.prompt('Codigo do autenticador (ou codigo de recuperacao):') || ''
-  if (!code) return null
+const requestStepUpToken = async (currentPassword: string, code: string) => {
   const isRecoveryFormat = /^[A-Z0-9]{4}-[A-Z0-9]{4}$/i.test(code.trim())
-  try {
-    const result = await accountSecurityApi.stepUp(currentPassword, isRecoveryFormat ? undefined : code, isRecoveryFormat ? code : undefined)
-    return result.stepUpToken
-  } catch {
-    sessionsMessage.value = 'Nao foi possivel confirmar sua identidade. Verifique a senha e o codigo.'
-    return null
-  }
+  const result = await accountSecurityApi.stepUp(currentPassword, isRecoveryFormat ? undefined : code, isRecoveryFormat ? code : undefined)
+  return result.stepUpToken
 }
 
 const revokeAllSessions = async () => {
-  if (!confirm('Encerrar todas as sessões, inclusive esta?')) return
-  sessionsMessage.value = ''
-  // GM/ADMIN/SUPER_ADMIN sessions are higher-value -- the backend requires a
-  // fresh step-up to end all of them at once (see accounts.service.ts).
-  let stepUpToken: string | null | undefined
-  if (twoFactorMandatory.value) {
-    stepUpToken = await requestStepUpToken()
-    if (!stepUpToken) return
-  }
-  try { await accountSecurityApi.revokeSessions('Revogação solicitada pelo titular da conta', stepUpToken || undefined); await navigateTo('/login') }
-  catch { sessionsMessage.value = 'Não foi possível encerrar as sessões.' }
+  pendingSessionAction.value = { kind: 'all', currentPassword: '', code: '' }
+  sessionActionError.value = ''
 }
 
 const revokeOneSession = async (sessionId: string) => {
-  if (!confirm('Encerrar esta sessão?')) return
+  pendingSessionAction.value = { kind: 'one', sessionId, currentPassword: '', code: '' }
+  sessionActionError.value = ''
+}
+
+const closeSessionAction = () => {
+  if (sessionActionSubmitting.value) return
+  pendingSessionAction.value = null
+  sessionActionError.value = ''
+}
+
+const submitSessionAction = async () => {
+  const action = pendingSessionAction.value
+  if (!action) return
   sessionsMessage.value = ''
-  try { await accountSecurityApi.revokeSession(sessionId, 'Revogação solicitada pelo titular da conta'); await loadSessions() }
-  catch { sessionsMessage.value = 'Não foi possível encerrar esta sessão.' }
+  sessionActionError.value = ''
+  sessionActionSubmitting.value = true
+  try {
+    if (action.kind === 'one' && action.sessionId) {
+      await accountSecurityApi.revokeSession(action.sessionId, 'Revogação solicitada pelo titular da conta')
+      pendingSessionAction.value = null
+      await loadSessions()
+      return
+    }
+
+    let stepUpToken: string | undefined
+    if (twoFactorMandatory.value) {
+      stepUpToken = await requestStepUpToken(action.currentPassword, action.code.trim())
+    }
+    await accountSecurityApi.revokeSessions('Revogação solicitada pelo titular da conta', stepUpToken)
+    pendingSessionAction.value = null
+    await navigateTo('/login')
+  } catch {
+    sessionActionError.value = action.kind === 'all' && twoFactorMandatory.value
+      ? 'Nao foi possivel confirmar sua identidade ou encerrar as sessoes. Verifique a senha e o codigo.'
+      : 'Nao foi possivel encerrar a sessao.'
+  } finally {
+    sessionActionSubmitting.value = false
+  }
 }
 
 const startTwoFactor = async () => {

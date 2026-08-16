@@ -93,3 +93,14 @@ test('admin account actions use an in-app modal instead of unsupported browser p
   assert.match(page, /autocomplete="current-password"/)
   assert.match(page, /autocomplete="one-time-code"/)
 })
+
+test('account session actions use an in-app modal instead of unsupported browser dialogs', async () => {
+  const page = await readFile(new URL('../pages/painel/conta.vue', import.meta.url), 'utf8')
+  const sessionActions = page.slice(page.indexOf('const requestStepUpToken'), page.indexOf('const startTwoFactor'))
+  assert.doesNotMatch(sessionActions, /window\.prompt\s*\(/)
+  assert.doesNotMatch(sessionActions, /\bconfirm\s*\(/)
+  assert.match(page, /aria-labelledby="session-action-title"/)
+  assert.match(page, /autocomplete="current-password"/)
+  assert.match(page, /autocomplete="one-time-code"/)
+  assert.match(page, /accountSecurityApi\.revokeSession\(action\.sessionId/)
+})
