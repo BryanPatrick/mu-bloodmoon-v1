@@ -67,6 +67,35 @@
       </div>
       <p v-if="actionError" class="mt-3 text-xs font-bold text-blood-200">{{ actionError }}</p>
     </section>
+
+    <Teleport to="body">
+      <div v-if="cancelAction" class="fixed inset-0 z-[120] grid place-items-center bg-black/70 p-4 backdrop-blur-sm" role="presentation">
+        <section class="bm-panel w-full max-w-lg rounded-md p-6" role="dialog" aria-modal="true" aria-labelledby="cancel-event-title">
+          <p class="bm-kicker">Confirmacao operacional</p>
+          <h2 id="cancel-event-title" class="mt-2 font-display text-2xl font-black">Cancelar evento</h2>
+          <form class="mt-5 grid gap-4" @submit.prevent="submitCancelRun">
+            <label class="grid gap-2 text-sm font-bold">
+              Motivo do cancelamento
+              <textarea
+                v-model="cancelAction.reason"
+                class="min-h-24 rounded-md border border-white/10 bg-black/35 px-4 py-3 outline-none focus:border-blood-400"
+                minlength="5"
+                required
+              />
+            </label>
+            <p v-if="cancelActionError" class="rounded-md border border-blood-500/40 bg-blood-900/20 p-3 text-sm font-bold text-blood-100" role="alert">
+              {{ cancelActionError }}
+            </p>
+            <div class="flex flex-wrap justify-end gap-3">
+              <button class="bm-button-glass rounded-md px-4 py-3 text-sm font-black" type="button" :disabled="cancelSubmitting" @click="closeCancelRun">Voltar</button>
+              <button class="rounded-md border border-amber-500/40 bg-amber-900/20 px-4 py-3 text-sm font-black text-amber-100" type="submit" :disabled="cancelSubmitting">
+                {{ cancelSubmitting ? 'Cancelando...' : 'Confirmar cancelamento' }}
+              </button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </Teleport>
   </ManagementShell>
 </template>
 
@@ -102,6 +131,9 @@ const agenda = ref<GmEventScheduleEntry[]>([])
 const runs = ref<GmEventRun[]>([])
 const activeStatus = ref<GmEventRunStatus | ''>('')
 const actionError = ref('')
+const cancelAction = ref<{ runId: string, reason: string } | null>(null)
+const cancelActionError = ref('')
+const cancelSubmitting = ref(false)
 
 const loadAgenda = async () => { try { agenda.value = await gmEventsApi.agenda() } catch { agenda.value = [] } }
 const loadRuns = async () => {
@@ -134,11 +166,34 @@ const reportProblem = async (id: string) => {
   catch { actionError.value = 'Não foi possível registrar o problema.' }
 }
 const cancelRun = async (id: string) => {
-  const reason = window.prompt('Motivo do cancelamento (mínimo 5 caracteres):')?.trim()
-  if (!reason || reason.length < 5) { actionError.value = 'É necessário um motivo com pelo menos 5 caracteres para cancelar.'; return }
+  cancelAction.value = { runId: id, reason: '' }
+  cancelActionError.value = ''
+}
+const closeCancelRun = () => {
+  if (cancelSubmitting.value) return
+  cancelAction.value = null
+  cancelActionError.value = ''
+}
+const submitCancelRun = async () => {
+  const action = cancelAction.value
+  if (!action) return
+  const reason = action.reason.trim()
+  if (reason.length < 5) {
+    cancelActionError.value = 'É necessário um motivo com pelo menos 5 caracteres para cancelar.'
+    return
+  }
+  cancelSubmitting.value = true
+  cancelActionError.value = ''
   actionError.value = ''
-  try { await gmEventsApi.cancelRun(id, reason); await loadRuns() }
-  catch { actionError.value = 'Não foi possível cancelar o evento.' }
+  try {
+    await gmEventsApi.cancelRun(action.runId, reason)
+    cancelAction.value = null
+    await loadRuns()
+  } catch {
+    cancelActionError.value = 'Não foi possível cancelar o evento.'
+  } finally {
+    cancelSubmitting.value = false
+  }
 }
 const submitResult = async (id: string) => {
   const summary = window.prompt('Resumo do resultado do evento:')?.trim()

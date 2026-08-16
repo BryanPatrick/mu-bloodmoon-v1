@@ -204,7 +204,7 @@
                 Rebaixar a player
               </button>
               <button
-                v-if="user?.role === 'super-admin' && account.role === 'admin'"
+                v-if="user?.role === 'super-admin' && ['admin', 'gm'].includes(account.role)"
                 class="bm-button-glass rounded-md px-4 py-3 text-sm font-black"
                 type="button"
                 @click="openPermissions(account)"
@@ -238,7 +238,7 @@
       <section v-if="permissionAccount" class="bm-panel grid gap-4 rounded-md p-5">
         <div class="flex items-center justify-between gap-3">
           <div>
-            <p class="bm-kicker">Permissões do ADM</p>
+            <p class="bm-kicker">Permissões do {{ permissionAccount.role === 'gm' ? 'GM' : 'ADM' }}</p>
             <h2 class="mt-1 font-display text-2xl font-black uppercase">
               {{ permissionAccount.username }}
             </h2>
@@ -249,7 +249,7 @@
         </div>
         <div class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
           <label
-            v-for="permission in delegablePermissions"
+            v-for="permission in delegablePermissionOptions"
             :key="permission.key"
             class="flex items-center gap-3 rounded-md border border-white/10 bg-white/[0.04] p-3 text-sm font-bold"
           >
@@ -395,7 +395,7 @@ const actionSubmitting = ref(false)
 const pendingActionRequiresStepUp = computed(
   () => pendingAction.value?.kind === 'role' || pendingAction.value?.kind === 'reset-2fa'
 )
-const delegablePermissions = [
+const adminPermissionOptions = [
   { key: permissions.adminAccountsView, label: 'Consultar jogadores' },
   { key: permissions.adminAccountsStatusManage, label: 'Bloquear e desbloquear jogadores' },
   { key: permissions.adminContentManage, label: 'Gerenciar conteúdo' },
@@ -454,6 +454,14 @@ const delegablePermissions = [
     label: 'Visualizar relatórios financeiros restritos'
   }
 ]
+const gmPermissionOptions = [
+  { key: permissions.gmEventsExecute, label: 'Iniciar e concluir eventos' },
+  { key: permissions.gmEventsCancel, label: 'Cancelar eventos' },
+  { key: permissions.gmEventsResultsValidate, label: 'Validar resultados de eventos' }
+]
+const delegablePermissionOptions = computed(() =>
+  permissionAccount.value?.role === 'gm' ? gmPermissionOptions : adminPermissionOptions
+)
 
 onMounted(() => {
   loadSession()

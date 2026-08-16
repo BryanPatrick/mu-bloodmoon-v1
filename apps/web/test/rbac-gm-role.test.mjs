@@ -104,3 +104,21 @@ test('account session actions use an in-app modal instead of unsupported browser
   assert.match(page, /autocomplete="one-time-code"/)
   assert.match(page, /accountSecurityApi\.revokeSession\(action\.sessionId/)
 })
+
+test('SUPER_ADMIN can delegate the curated event permissions to a GM account', async () => {
+  const page = await readFile(new URL('../pages/painel/admin/contas.vue', import.meta.url), 'utf8')
+  assert.match(page, /\['admin', 'gm'\]\.includes\(account\.role\)/)
+  assert.match(page, /permissionAccount\.value\?\.role === 'gm' \? gmPermissionOptions/)
+  assert.match(page, /permissions\.gmEventsExecute/)
+  assert.match(page, /permissions\.gmEventsCancel/)
+  assert.match(page, /permissions\.gmEventsResultsValidate/)
+})
+
+test('GM event cancellation uses an in-app validated modal instead of prompt()', async () => {
+  const page = await readFile(new URL('../pages/painel/gm/eventos/index.vue', import.meta.url), 'utf8')
+  const cancellation = page.slice(page.indexOf('const cancelRun'), page.indexOf('const submitResult'))
+  assert.doesNotMatch(cancellation, /window\.prompt\s*\(/)
+  assert.match(page, /aria-labelledby="cancel-event-title"/)
+  assert.match(page, /reason\.length < 5/)
+  assert.match(page, /gmEventsApi\.cancelRun\(action\.runId, reason\)/)
+})
