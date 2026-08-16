@@ -608,7 +608,7 @@ const openPermissions = async (account: ManagedAccount) => {
   try {
     const result = (await adminAccountsApi.permissions(account.id)) as { effective: string[] }
     permissionAccount.value = account
-    selectedPermissions.value = delegablePermissions
+    selectedPermissions.value = delegablePermissionOptions.value
       .filter((permission) => result.effective.includes(permission.key))
       .map((permission) => permission.key)
   } catch {
@@ -693,7 +693,7 @@ const submitPendingAction = async () => {
     } else if (action.kind === 'revoke-sessions') {
       await adminAccountsApi.revokeSessions(action.account.id, reason)
     } else if (action.kind === 'permissions') {
-      const entries = delegablePermissions.map((permission) => ({
+      const entries = delegablePermissionOptions.value.map((permission) => ({
         key: permission.key,
         granted: selectedPermissions.value.includes(permission.key)
       }))

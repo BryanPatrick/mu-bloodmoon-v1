@@ -107,6 +107,7 @@ test('account session actions use an in-app modal instead of unsupported browser
 
 test('SUPER_ADMIN can delegate the curated event permissions to a GM account', async () => {
   const page = await readFile(new URL('../pages/painel/admin/contas.vue', import.meta.url), 'utf8')
+  assert.doesNotMatch(page, /\bdelegablePermissions\b/)
   assert.match(page, /\['admin', 'gm'\]\.includes\(account\.role\)/)
   assert.match(page, /permissionAccount\.value\?\.role === 'gm' \? gmPermissionOptions/)
   assert.match(page, /permissions\.gmEventsExecute/)
