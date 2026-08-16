@@ -1,8 +1,16 @@
 import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
 import { test } from 'node:test'
 
 import { roleFromApi } from '../features/auth/role-from-api.ts'
-import { isAdminRole, isGmRole, permissions, roleHasPermission, rolePermissions, roleLabels } from '../data/security.ts'
+import {
+  isAdminRole,
+  isGmRole,
+  permissions,
+  roleHasPermission,
+  rolePermissions,
+  roleLabels
+} from '../data/security.ts'
 
 test('roleFromApi maps the backend GM role to the frontend gm literal, not a downgrade to player', () => {
   assert.equal(roleFromApi('GM'), 'gm')
@@ -39,7 +47,9 @@ test('GM has a distinct role label, not reused from another role', () => {
 
 test('GM does not inherit any admin.* permission by default', () => {
   const gmAccess = rolePermissions.gm
-  const adminOnlyPermissions = Object.values(permissions).filter((permission) => permission.startsWith('admin.'))
+  const adminOnlyPermissions = Object.values(permissions).filter((permission) =>
+    permission.startsWith('admin.')
+  )
   for (const permission of adminOnlyPermissions) {
     assert.equal(roleHasPermission('gm', permission), false, `GM should not have ${permission}`)
   }
@@ -74,4 +84,12 @@ test('ADMIN keeps its own baseline permission set unaffected by the new GM role'
 test('SUPER_ADMIN keeps full wildcard access unaffected by the new GM role', () => {
   assert.equal(roleHasPermission('super-admin', permissions.gmDashboardView), true)
   assert.equal(roleHasPermission('super-admin', permissions.adminRolesManage), true)
+})
+
+test('admin account actions use an in-app modal instead of unsupported browser prompts', async () => {
+  const page = await readFile(new URL('../pages/painel/admin/contas.vue', import.meta.url), 'utf8')
+  assert.doesNotMatch(page, /window\.prompt\s*\(/)
+  assert.match(page, /role="dialog"/)
+  assert.match(page, /autocomplete="current-password"/)
+  assert.match(page, /autocomplete="one-time-code"/)
 })
