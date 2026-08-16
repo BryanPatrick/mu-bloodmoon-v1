@@ -80,6 +80,7 @@ test('ADMIN can configure events without inheriting delegated GM execution power
   assert.equal(roleHasPermission('admin', permissions.accountManage), true)
   assert.equal(roleHasPermission('admin', permissions.guidesFutureView), true)
   assert.equal(roleHasPermission('admin', permissions.gmEventsView), true)
+  assert.equal(roleHasPermission('admin', permissions.adminDashboardView), true)
   assert.equal(roleHasPermission('admin', permissions.gmEventsExecute), false)
   assert.equal(roleHasPermission('admin', permissions.gmEventsCancel), false)
 })
