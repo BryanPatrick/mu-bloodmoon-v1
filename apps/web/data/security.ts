@@ -135,7 +135,11 @@ export const rolePermissions: Record<UserRole, Permission[] | ['*']> = {
   gm: gmPermissions,
   admin: [
     ...playerPermissions,
-    permissions.guidesFutureView
+    permissions.guidesFutureView,
+    // Keep the client route policy aligned with the API: ADMIN can
+    // configure event definitions/schedules, but cannot execute them by
+    // default without the separate operational permissions.
+    permissions.gmEventsView
   ],
   'super-admin': ['*']
 }

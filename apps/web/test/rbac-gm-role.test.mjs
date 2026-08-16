@@ -73,12 +73,15 @@ test('PLAYER does not have any GM-only permission', () => {
   assert.equal(roleHasPermission('player', permissions.gmCharactersView), false)
 })
 
-test('ADMIN keeps its own baseline permission set unaffected by the new GM role', () => {
+test('ADMIN can configure events without inheriting delegated GM execution powers', () => {
   // ADMIN's admin.* permissions are delegated per-account via AccountPermission
-  // overrides, not granted role-wide -- this baseline only carries the shared
-  // player-level permissions plus guidesFutureView, unchanged by adding GM.
+  // overrides. Event definition/schedule configuration additionally needs the
+  // shared read permission used by the API and the /painel/admin/eventos route.
   assert.equal(roleHasPermission('admin', permissions.accountManage), true)
   assert.equal(roleHasPermission('admin', permissions.guidesFutureView), true)
+  assert.equal(roleHasPermission('admin', permissions.gmEventsView), true)
+  assert.equal(roleHasPermission('admin', permissions.gmEventsExecute), false)
+  assert.equal(roleHasPermission('admin', permissions.gmEventsCancel), false)
 })
 
 test('SUPER_ADMIN keeps full wildcard access unaffected by the new GM role', () => {

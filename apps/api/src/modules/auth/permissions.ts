@@ -164,7 +164,10 @@ const rolePermissions: Record<Role, PermissionKey[] | ['*']> = {
   GM: gmPermissions,
   ADMIN: [
     ...playerPermissions,
-    permissionKeys.guidesFutureView
+    permissionKeys.guidesFutureView,
+    // ADMIN configures event definitions and schedules. Execution,
+    // cancellation and result validation remain separately delegated.
+    permissionKeys.gmEventsView
   ],
   SUPER_ADMIN: ['*']
 }
