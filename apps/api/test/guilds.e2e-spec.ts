@@ -1286,4 +1286,102 @@ describe('Guilds MVP', () => {
       expect(row.removedAt).not.toBeNull()
     })
   })
+
+  // GUILD STEP 4 (2026-08-18): exposes the existing atomic leadership
+  // transfer (updateMemberRole with roleKey: 'LEADER') in the UI -- no new
+  // endpoint. Authorization, exactly-one-LEADER, old-leader-demotion, and
+  // transfer concurrency are already covered exhaustively by the
+  // "leadership transfer -- single LEADER invariant" block above (Phase 0).
+  // The one genuinely new backend behavior added this step is the guard
+  // below: the promotion transaction now re-checks the target is still an
+  // active member at write time, not just at the initial read, closing the
+  // mirror-image gap of Step 3's self-demotion fix (this time on the
+  // promotion side rather than the demotion side).
+  describe('leadership transfer: target removed mid-flight (Guild Step 4)', () => {
+    let tfGuildSlug = ''
+    let tfGuildId = ''
+    let tfLeaderToken = ''
+    let tfLeaderMemberId = ''
+    let tfOfficerToken = ''
+    let tfTargetMemberId = ''
+
+    it('sets up an isolated guild with a LEADER, an OFFICER (who will do the kicking), and a target member', async () => {
+      const leader = await register('FL')
+      const officer = await register('FO')
+      const target = await register('FT')
+
+      const leaderCharId = (await createCharacter(leader.username, 'FL')).id
+      const officerCharId = (await createCharacter(officer.username, 'FO')).id
+      const targetCharId = (await createCharacter(target.username, 'FT')).id
+
+      tfLeaderToken = await login(leader.username, leader.password)
+      tfOfficerToken = await login(officer.username, officer.password)
+
+      const created = await (await request()).post('/api/admin/guilds').set('Authorization', `Bearer ${adminToken}`)
+        .send({ name: `Transfer Race Fixture ${suffix}`, tag: 'TRR', leaderCharacterId: leaderCharId })
+      expect(created.status).toBe(201)
+      tfGuildSlug = created.body.slug
+      tfGuildId = created.body.id
+      tfLeaderMemberId = (await prisma.guildMember.findUniqueOrThrow({ where: { characterId: leaderCharId } })).id
+
+      await prisma.guildMember.create({
+        data: { guildId: tfGuildId, characterId: officerCharId, accountId: (await prisma.account.findUniqueOrThrow({ where: { username: officer.username } })).id, roleKey: 'OFFICER' }
+      })
+      const targetMember = await prisma.guildMember.create({
+        data: { guildId: tfGuildId, characterId: targetCharId, accountId: (await prisma.account.findUniqueOrThrow({ where: { username: target.username } })).id, roleKey: 'MEMBER' }
+      })
+      tfTargetMemberId = targetMember.id
+    })
+
+    it('rejects a transfer to a target removed before the request lands: old leader stays LEADER, guild never orphaned', async () => {
+      const kick = await (await request())
+        .delete(`/api/guilds/${tfGuildSlug}/members/${tfTargetMemberId}`)
+        .set('Authorization', `Bearer ${tfOfficerToken}`)
+        .send({ reason: 'Removido antes da transferência.' })
+      expect(kick.status).toBe(200)
+
+      const transfer = await (await request())
+        .patch(`/api/guilds/${tfGuildSlug}/members/${tfTargetMemberId}/role`)
+        .set('Authorization', `Bearer ${tfLeaderToken}`)
+        .send({ roleKey: 'LEADER' })
+      expect(transfer.status).toBe(404)
+
+      // Rolled back atomically -- the old leader was never demoted either,
+      // not just "still holds LEADER somewhere among two rows".
+      const leaderRow = await prisma.guildMember.findUniqueOrThrow({ where: { id: tfLeaderMemberId } })
+      expect(leaderRow.roleKey).toBe('LEADER')
+      const leaderCount = await prisma.guildMember.count({ where: { guildId: tfGuildId, roleKey: 'LEADER', removedAt: null } })
+      expect(leaderCount).toBe(1)
+      const guildRow = await prisma.guild.findUniqueOrThrow({ where: { id: tfGuildId } })
+      expect(guildRow.leaderMemberId).toBe(tfLeaderMemberId)
+    })
+
+    it('concurrency: a kick racing a transfer against the same target ends in a valid, deterministic state -- never a 500, never zero or two LEADERs', async () => {
+      const target2 = await register('FT2')
+      const target2Char = await createCharacter(target2.username, 'FT2')
+      const target2Member = await prisma.guildMember.create({
+        data: { guildId: tfGuildId, characterId: target2Char.id, accountId: target2Char.accountId, roleKey: 'MEMBER' }
+      })
+
+      const [kick, transfer] = await Promise.all([
+        (await request()).delete(`/api/guilds/${tfGuildSlug}/members/${target2Member.id}`).set('Authorization', `Bearer ${tfOfficerToken}`).send({ reason: 'Corrida de concorrência.' }),
+        (await request()).patch(`/api/guilds/${tfGuildSlug}/members/${target2Member.id}/role`).set('Authorization', `Bearer ${tfLeaderToken}`).send({ roleKey: 'LEADER' })
+      ])
+
+      expect([kick.status, transfer.status]).not.toContain(500)
+      // Whichever operation actually landed first at the database determines
+      // the outcome, and both outcomes are valid:
+      //   - kick wins: target2 removed (200), transfer rejected (404, this
+      //     step's new guard).
+      //   - transfer wins: target2 promoted to LEADER (200), and the kick
+      //     -- which runs its own "cannot kick LEADER" check -- rejects with
+      //     400, since by the time it writes, target2 already holds LEADER.
+      // Never both succeed, never both fail, never a corrupted in-between.
+      const succeeded = [kick.status === 200, transfer.status === 200]
+      expect(succeeded.filter(Boolean).length).toBe(1)
+
+      const leaderCount = await prisma.guildMember.count({ where: { guildId: tfGuildId, roleKey: 'LEADER', removedAt: null } })
+      expect(leaderCount).toBe(1)
+    })
+  })
 })

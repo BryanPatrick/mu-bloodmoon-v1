@@ -617,7 +617,18 @@ export class GuildsService {
           where: { guildId: guild.id, roleKey: 'LEADER', id: { not: member.id } },
           data: { roleKey: 'OFFICER' }
         })
-        const next = await tx.guildMember.update({ where: { id: member.id }, data: { roleKey: 'LEADER' } })
+        // guildAndMember() read the target before this transaction started --
+        // if a concurrent kick removed them in between, a plain update-by-id
+        // would still succeed here, promoting a removed member to LEADER
+        // while leaving the guild with zero active LEADER rows (the target's
+        // removedAt stays set; nothing else holds roleKey='LEADER' anymore).
+        // updateMany + a fresh removedAt filter makes the write itself the
+        // race check. Throwing inside an interactive $transaction rolls back
+        // the whole thing, including the demotion above, so a rejected
+        // transfer never leaves the guild leaderless.
+        const { count } = await tx.guildMember.updateMany({ where: { id: member.id, removedAt: null }, data: { roleKey: 'LEADER' } })
+        if (count === 0) throw new NotFoundException('Membro não encontrado ou não está mais ativo na guild.')
+        const next = await tx.guildMember.findUniqueOrThrow({ where: { id: member.id } })
         await tx.guild.update({ where: { id: guild.id }, data: { leaderMemberId: member.id } })
         return next
       })
@@ -656,7 +667,19 @@ export class GuildsService {
     await this.assertRole(guild.id, user, ['LEADER', 'OFFICER'])
     if (member.roleKey === 'LEADER') throw new BadRequestException('O líder não pode ser removido diretamente.')
     const reason = this.requiredText(payload.reason, 'o motivo da remoção', 3, 500)
-    const updated = await this.prisma.guildMember.update({ where: { id: member.id }, data: { removedAt: new Date(), removedBy: user.id, removedReason: reason } })
+    // The roleKey === 'LEADER' check above reads the row BEFORE this write,
+    // same seam as updateMemberRole. Without a write-time re-check, a kick
+    // racing a concurrent leadership transfer could land after the target
+    // was promoted, silently setting removedAt on the guild's new LEADER --
+    // worse than a rejected kick, since nothing else would ever demote or
+    // reassign leadership afterward. updateMany + a fresh roleKey/removedAt
+    // filter makes the write itself the race check (Guild Step 4).
+    const { count } = await this.prisma.guildMember.updateMany({
+      where: { id: member.id, roleKey: { not: 'LEADER' }, removedAt: null },
+      data: { removedAt: new Date(), removedBy: user.id, removedReason: reason }
+    })
+    if (count === 0) throw new BadRequestException('Este membro não pode mais ser removido (papel ou estado mudou).')
+    const updated = await this.prisma.guildMember.findUniqueOrThrow({ where: { id: member.id } })
     await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_MEMBER_KICKED', entityType: 'GuildMember', entityId: member.id, actorUserId: user.id, targetUserId: member.accountId, description: reason })
     return updated
   }

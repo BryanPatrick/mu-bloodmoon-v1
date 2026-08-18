@@ -135,6 +135,13 @@
                         {{ roleChangingId === member.id ? 'Salvando...' : 'Aplicar' }}
                       </button>
                     </div>
+                    <!-- Deliberately outside the role <select>: this is a
+                    leadership transfer, not an ordinary role change, and the
+                    spec calls for it to read as visibly different/critical
+                    rather than buried as just another dropdown option. -->
+                    <button v-if="isLeader" type="button" class="guild-transfer-btn" @click="startTransfer(member)">
+                      Transferir liderança
+                    </button>
                     <button type="button" class="guild-link-btn" @click="startKick(member)">Remover</button>
                   </template>
                 </template>
@@ -145,6 +152,15 @@
         </table>
         <p v-else class="guild-tab-empty">Nenhum membro encontrado.</p>
         <p v-if="memberActionError" class="guild-error">{{ memberActionError }}</p>
+
+        <GuildLeadershipTransferModal
+          v-if="transferTarget"
+          :guild="guild"
+          :slug="slug"
+          :member="transferTarget"
+          @close="transferTarget = null"
+          @transferred="onLeadershipTransferred"
+        />
       </div>
 
       <!-- Guild Level -->
@@ -526,6 +542,23 @@ const confirmKick = async () => {
   }
 }
 
+const transferTarget = ref<any>(null)
+const startTransfer = (member: any) => { transferTarget.value = member }
+// The modal itself calls the API; this only runs on confirmed success. Two
+// refreshes, not one: loadTab('members') re-pulls the member list (role
+// badges update immediately), and emit('refresh') re-pulls the parent's
+// whole `guild` object -- which is what myMembership/isLeader/canManage are
+// computed from here, and what gates the "Editar perfil" button and
+// GuildProfileHeader's own canManage prop up in [slug].vue. Without the
+// second refresh, an ex-leader would keep seeing LEADER-only controls (the
+// role select, the transfer button itself) until an unrelated page reload --
+// exactly the stale-privileged-UI state this step rules out.
+const onLeadershipTransferred = async () => {
+  loaded.delete('members')
+  await loadTab('members')
+  emit('refresh')
+}
+
 const requestForm = reactive({ type: 'ITEM', title: '' })
 const submitRequest = async () => {
   if (!requestForm.title) return
@@ -589,6 +622,12 @@ td small { display: block; color: var(--bm-muted); font-size: 0.62rem; }
 .guild-member-actions__role { display: flex; align-items: center; gap: 6px; }
 .guild-member-actions__role select { border: 1px solid var(--bm-border); border-radius: 4px; background: var(--bm-surface); color: var(--bm-text); padding: 4px 6px; font-size: 0.66rem; }
 .guild-member-actions__none { color: var(--bm-muted); }
+/* Visually distinct from .guild-link-btn (plain text links used for Aplicar/
+   Remover) on purpose: a leadership transfer is a different class of action,
+   and margin-top plus its own bordered/filled treatment keeps it from
+   sitting flush against Remover, where a mistap on mobile would be costly. */
+.guild-transfer-btn { margin-top: 4px; border: 1px solid var(--bm-red); border-radius: 4px; background: transparent; padding: 5px 10px; color: var(--bm-red); font-size: 0.64rem; font-weight: 900; text-transform: uppercase; }
+.guild-transfer-btn:hover { background: var(--bm-red); color: #fff; }
 .guild-member-kick-confirm { display: grid; gap: 6px; width: min(260px, 100%); }
 .guild-member-kick-confirm textarea { border: 1px solid var(--bm-border); border-radius: 4px; background: var(--bm-surface); color: var(--bm-text); padding: 6px 8px; font-size: 0.7rem; resize: vertical; }
 .guild-member-kick-confirm__actions { display: flex; gap: 10px; }
