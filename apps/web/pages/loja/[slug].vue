@@ -31,7 +31,7 @@
               Personagem de destino
               <select v-model="destinationCharacterId" class="detail-field">
                 <option value="">Selecione um personagem</option>
-                <option v-for="character in characters" :key="character.id" :value="character.id">{{ character.name }} · {{ character.className }}</option>
+                <option v-for="character in characters" :key="character.id" :value="character.id">{{ character.name }} · {{ character.class }}</option>
               </select>
             </label>
             <label class="grid gap-1 text-[10px] font-black uppercase tracking-[0.16em] text-white/45">Quantidade<input v-model.number="quantity" type="number" min="1" class="detail-field w-24"></label>
@@ -56,7 +56,7 @@ const selectedVariant = ref<StoreVariant | null>(null)
 const quantity = ref(1)
 const buying = ref(false)
 const message = ref('')
-const characters = ref<Array<{ id: string, name: string, className: string }>>([])
+const characters = ref<Array<{ id: string, name: string, class: string }>>([])
 const destinationCharacterId = ref('')
 
 onMounted(async () => {
