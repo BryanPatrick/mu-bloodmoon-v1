@@ -32,11 +32,14 @@
           <template v-else-if="guild.recruitment === 'INVITE_ONLY'">
             <p>Esta guilda aceita apenas convites de membros atuais. Convites recebidos aparecem no seu painel.</p>
           </template>
+          <template v-else-if="joinRequested">
+            <p class="guild-join-box__pending">Solicitação enviada -- aguardando aprovação de um líder ou oficial.</p>
+          </template>
           <template v-else>
             <label>Personagem</label>
             <select v-model="joinCharacterId">
               <option value="" disabled>Selecione um personagem</option>
-              <option v-for="character in myCharacters" :key="character.id" :value="character.id">{{ character.name }} ({{ character.className }})</option>
+              <option v-for="character in myCharacters" :key="character.id" :value="character.id">{{ character.name }} ({{ character.class }})</option>
             </select>
             <textarea v-model="joinMessage" rows="2" placeholder="Mensagem (opcional)" />
             <button type="button" class="guild-btn" :disabled="!joinCharacterId || joining" @click="submitJoin">
@@ -118,7 +121,7 @@
                   <div v-if="kickTarget?.id === member.id" class="guild-member-kick-confirm">
                     <textarea v-model="kickReason" rows="2" placeholder="Motivo da remoção (mín. 3 caracteres)" />
                     <div class="guild-member-kick-confirm__actions">
-                      <button type="button" class="guild-link-btn" :disabled="kickingId === member.id" @click="confirmKick">
+                      <button type="button" class="guild-link-btn is-danger" :disabled="kickingId === member.id" @click="confirmKick">
                         {{ kickingId === member.id ? 'Removendo...' : 'Confirmar remoção' }}
                       </button>
                       <button type="button" class="guild-link-btn is-quiet" :disabled="kickingId === member.id" @click="cancelKick">Cancelar</button>
@@ -146,7 +149,7 @@
                     <button v-if="isLeader" type="button" class="guild-transfer-btn" @click="startTransfer(member)">
                       Transferir liderança
                     </button>
-                    <button type="button" class="guild-link-btn" @click="startKick(member)">Remover</button>
+                    <button type="button" class="guild-link-btn is-danger" @click="startKick(member)">Remover</button>
                   </template>
                 </template>
                 <span v-else class="guild-member-actions__none">—</span>
@@ -391,15 +394,24 @@ const joinCharacterId = ref('')
 const joinMessage = ref('')
 const joining = ref(false)
 const joinError = ref('')
+// join() returns { status: 'JOINED' | 'REQUESTED', ... } -- OPEN recruitment
+// resolves immediately into a real membership (the parent's refresh() picks
+// that up via myMembership, switching this box to the "you are a member"
+// branch on its own), but APPROVAL_REQUIRED only ever creates a pending
+// GuildJoinRequest with no membership to reflect -- without this flag the
+// box would silently reset back to the exact same "select a character" form
+// after a successful submission, indistinguishable from having done nothing.
+const joinRequested = ref(false)
 const submitJoin = async () => {
   if (!joinCharacterId.value || joining.value) return
   joining.value = true
   joinError.value = ''
   try {
-    await api.join(props.slug, { characterId: joinCharacterId.value, message: joinMessage.value })
+    const result = await api.join(props.slug, { characterId: joinCharacterId.value, message: joinMessage.value }) as any
     emit('refresh')
     joinCharacterId.value = ''
     joinMessage.value = ''
+    if (result?.status === 'REQUESTED') joinRequested.value = true
   } catch (err: any) {
     joinError.value = err?.data?.message || 'Não foi possível processar sua entrada nesta guilda.'
   } finally {
@@ -631,6 +643,7 @@ const submitProject = async () => {
 .guild-btn:disabled { opacity: 0.45; }
 .guild-btn.is-outline { background: transparent; color: var(--bm-wine); }
 .guild-error { color: var(--bm-red); font-size: 0.68rem; }
+.guild-join-box__pending { color: #1f8a4c; font-size: 0.76rem; font-weight: 700; }
 .guild-pending-requests { margin-top: 20px; display: grid; gap: 8px; }
 .guild-pending-requests article { border: 1px solid var(--bm-border); border-radius: 6px; padding: 10px 12px; font-size: 0.74rem; }
 .guild-pending-requests__actions { display: flex; gap: 8px; margin-top: 8px; }
@@ -651,8 +664,13 @@ th { color: var(--bm-muted); text-transform: uppercase; font-size: 0.6rem; }
 td small { display: block; color: var(--bm-muted); font-size: 0.62rem; }
 .guild-role-badge { border-radius: 3px; border: 1px solid var(--bm-border-strong); padding: 2px 7px; font-size: 0.6rem; font-weight: 800; text-transform: uppercase; }
 .guild-role-badge.is-leader { border-color: var(--bm-red); color: var(--bm-red); }
-.guild-link-btn { color: var(--bm-red); font-size: 0.68rem; font-weight: 800; background: none; border: none; }
+.guild-link-btn { color: var(--bm-wine); font-size: 0.68rem; font-weight: 800; background: none; border: none; }
 .guild-link-btn.is-quiet { color: var(--bm-muted); }
+/* Reserved for destructive actions only (Remover, Confirmar remoção) --
+   the plain .guild-link-btn base above is neutral on purpose so it stays
+   usable for benign actions (Aplicar, Tentar novamente) without those
+   reading as dangerous alongside the ones that actually are. */
+.guild-link-btn.is-danger { color: var(--bm-red); }
 .guild-link-btn:disabled { opacity: 0.5; }
 .guild-member-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
 .guild-member-actions__role { display: flex; align-items: center; gap: 6px; }

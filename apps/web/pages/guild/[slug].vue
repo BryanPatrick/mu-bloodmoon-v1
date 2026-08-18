@@ -1,7 +1,12 @@
 <template>
   <div class="guild-profile-page">
     <main>
-      <div v-if="pending" class="guild-profile-state">Carregando guilda...</div>
+      <!-- pending stays true during every background refresh() too (kick,
+      role change, invite, join, leave, ...), not just the first load -- gating
+      on "&& !guild" keeps a mutation's refresh from unmounting/remounting the
+      whole GuildProfileTabs subtree (and silently wiping its local UI state,
+      e.g. a just-submitted join request's pending confirmation) every time. -->
+      <div v-if="pending && !guild" class="guild-profile-state">Carregando guilda...</div>
 
       <div v-else-if="notFound" class="guild-profile-state">
         <p>Esta guilda não existe ou não está disponível.</p>

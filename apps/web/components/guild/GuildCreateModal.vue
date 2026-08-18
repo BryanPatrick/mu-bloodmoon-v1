@@ -79,10 +79,10 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
 <template>
   <Teleport to="body">
     <div class="create-guild-backdrop" @click.self="requestClose">
-      <form class="create-guild-modal" @submit.prevent="submit">
+      <form class="create-guild-modal" role="dialog" aria-labelledby="create-guild-modal-title" @submit.prevent="submit">
         <header>
           <Shield class="size-5" />
-          <h2>Criar guilda</h2>
+          <h2 id="create-guild-modal-title">Criar guilda</h2>
           <UButton color="neutral" variant="ghost" square aria-label="Fechar" :disabled="creating" @click="requestClose"><X class="size-4" /></UButton>
         </header>
 
@@ -107,7 +107,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
               Personagem líder
               <select v-model="form.leaderCharacterId" required>
                 <option value="" disabled>Selecione um personagem</option>
-                <option v-for="character in eligibleCharacters" :key="character.id" :value="character.id">{{ character.name }} ({{ character.className }})</option>
+                <option v-for="character in eligibleCharacters" :key="character.id" :value="character.id">{{ character.name }} ({{ character.class }})</option>
               </select>
               <small>Você será o líder inicial. Descrição, emblema, banner e recrutamento podem ser ajustados depois no perfil da guilda.</small>
             </label>

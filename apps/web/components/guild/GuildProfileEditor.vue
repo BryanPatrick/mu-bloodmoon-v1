@@ -147,9 +147,9 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
 <template>
   <Teleport to="body">
     <div class="guild-editor-backdrop" @click.self="requestClose">
-      <form class="guild-editor" @submit.prevent="submit">
+      <form class="guild-editor" role="dialog" aria-labelledby="guild-editor-title" @submit.prevent="submit">
         <header>
-          <div><span>Autogestão</span><h2>Editar perfil da guild</h2></div>
+          <div><span>Autogestão</span><h2 id="guild-editor-title">Editar perfil da guild</h2></div>
           <UButton color="neutral" variant="ghost" square aria-label="Fechar" :disabled="saving" @click="requestClose"><X class="size-4" /></UButton>
         </header>
 
