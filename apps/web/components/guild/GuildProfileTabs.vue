@@ -30,7 +30,7 @@
             <p>O recrutamento desta guilda está fechado no momento.</p>
           </template>
           <template v-else-if="guild.recruitment === 'INVITE_ONLY'">
-            <p>Esta guilda aceita apenas convites de membros atuais.</p>
+            <p>Esta guilda aceita apenas convites de membros atuais. Convites recebidos aparecem no seu painel.</p>
           </template>
           <template v-else>
             <label>Personagem</label>
@@ -61,6 +61,40 @@
               <button type="button" class="is-outline" @click="decideJoinRequest(request.id, 'reject')">Rejeitar</button>
             </div>
           </article>
+        </div>
+
+        <div v-if="canManage" class="guild-invite-box">
+          <p class="bm-kicker">Convidar jogador</p>
+          <input
+            v-model="inviteSearch"
+            type="text"
+            placeholder="Buscar personagem por nome..."
+            @input="scheduleInviteSearch"
+          >
+          <p v-if="inviteSearching" class="guild-invite-box__status">Buscando...</p>
+          <p v-else-if="inviteSearch.trim().length >= 2 && !inviteResults.length" class="guild-invite-box__status">Nenhum personagem elegível encontrado.</p>
+          <ul v-if="inviteResults.length" class="guild-invite-box__results">
+            <li v-for="candidate in inviteResults" :key="candidate.id">
+              <span>{{ candidate.name }} <small>({{ candidate.className }}, lvl {{ candidate.level }}) @{{ candidate.account?.username }}</small></span>
+              <button type="button" :disabled="invitingId === candidate.id" @click="submitInvite(candidate.id)">
+                {{ invitingId === candidate.id ? 'Enviando...' : 'Convidar' }}
+              </button>
+            </li>
+          </ul>
+          <p v-if="inviteError" class="guild-error">{{ inviteError }}</p>
+          <p v-if="inviteSuccess" class="guild-invite-box__success">{{ inviteSuccess }}</p>
+
+          <div v-if="pendingInvites.length" class="guild-pending-requests">
+            <p class="bm-kicker">Convites pendentes</p>
+            <article v-for="invite in pendingInvites" :key="invite.id">
+              <span>{{ invite.character?.name }}</span>
+              <div class="guild-pending-requests__actions">
+                <button type="button" class="is-outline" :disabled="cancellingInviteId === invite.id" @click="submitCancelInvite(invite.id)">
+                  {{ cancellingInviteId === invite.id ? 'Cancelando...' : 'Cancelar convite' }}
+                </button>
+              </div>
+            </article>
+          </div>
         </div>
       </div>
 
@@ -317,6 +351,72 @@ const decideJoinRequest = async (id: string, decision: 'approve' | 'reject') => 
   } catch { /* surfaced via unchanged list -- best-effort MVP action */ }
 }
 
+const pendingInvites = ref<any[]>([])
+const refreshPendingInvites = async () => {
+  if (!canManage.value) { pendingInvites.value = []; return }
+  pendingInvites.value = await api.guildInvites(props.slug).catch(() => [])
+}
+watch(canManage, refreshPendingInvites, { immediate: true })
+
+const inviteSearch = ref('')
+const inviteResults = ref<any[]>([])
+const inviteSearching = ref(false)
+const inviteError = ref('')
+const inviteSuccess = ref('')
+const invitingId = ref('')
+const cancellingInviteId = ref('')
+let inviteSearchTimer: ReturnType<typeof setTimeout> | undefined
+
+const runInviteSearch = async () => {
+  const term = inviteSearch.value.trim()
+  inviteError.value = ''
+  inviteSuccess.value = ''
+  if (term.length < 2) { inviteResults.value = []; inviteSearching.value = false; return }
+  inviteSearching.value = true
+  try {
+    inviteResults.value = await api.inviteCandidates(props.slug, term)
+  } catch {
+    inviteResults.value = []
+  } finally {
+    inviteSearching.value = false
+  }
+}
+// Debounced search-as-you-type: avoids firing a request per keystroke while
+// still feeling immediate (300ms is imperceptible as a delay but collapses
+// a burst of keystrokes into one request).
+const scheduleInviteSearch = () => {
+  if (inviteSearchTimer) clearTimeout(inviteSearchTimer)
+  inviteSearchTimer = setTimeout(runInviteSearch, 300)
+}
+
+const submitInvite = async (characterId: string) => {
+  if (invitingId.value) return
+  invitingId.value = characterId
+  inviteError.value = ''
+  inviteSuccess.value = ''
+  try {
+    await api.inviteToGuild(props.slug, { characterId })
+    inviteSuccess.value = 'Convite enviado.'
+    inviteResults.value = inviteResults.value.filter((candidate) => candidate.id !== characterId)
+    await refreshPendingInvites()
+  } catch (err: any) {
+    inviteError.value = err?.data?.message || 'Não foi possível enviar o convite.'
+  } finally {
+    invitingId.value = ''
+  }
+}
+
+const submitCancelInvite = async (id: string) => {
+  if (cancellingInviteId.value) return
+  cancellingInviteId.value = id
+  try {
+    await api.cancelInvite(props.slug, id)
+    await refreshPendingInvites()
+  } catch { /* best-effort MVP action, list stays unchanged on failure */ } finally {
+    cancellingInviteId.value = ''
+  }
+}
+
 const promptKick = async (member: any) => {
   const reason = typeof window !== 'undefined' ? window.prompt('Motivo da remoção:') : ''
   if (!reason) return
@@ -368,6 +468,15 @@ const submitProject = async () => {
 .guild-pending-requests__actions { display: flex; gap: 8px; margin-top: 8px; }
 .guild-pending-requests__actions button { border: 1px solid var(--bm-border-strong); border-radius: 4px; padding: 4px 10px; font-size: 0.66rem; font-weight: 800; background: var(--bm-red); color: #fff; }
 .guild-pending-requests__actions button.is-outline { background: transparent; color: var(--bm-wine); }
+.guild-invite-box { margin-top: 20px; display: grid; gap: 8px; max-width: 420px; padding: 14px; border: 1px solid var(--bm-border); border-radius: 8px; background: var(--bm-surface-soft); }
+.guild-invite-box > input { border: 1px solid var(--bm-border); border-radius: 4px; background: var(--bm-surface); color: var(--bm-text); padding: 8px; font-size: 0.76rem; }
+.guild-invite-box__status { color: var(--bm-muted); font-size: 0.68rem; }
+.guild-invite-box__success { color: #1f8a4c; font-size: 0.68rem; font-weight: 800; }
+.guild-invite-box__results { display: grid; gap: 6px; }
+.guild-invite-box__results li { display: flex; align-items: center; justify-content: space-between; gap: 8px; border: 1px solid var(--bm-border); border-radius: 6px; padding: 7px 10px; font-size: 0.72rem; }
+.guild-invite-box__results li small { display: block; color: var(--bm-muted); font-size: 0.62rem; }
+.guild-invite-box__results li button { flex: none; border: 1px solid var(--bm-border-strong); border-radius: 4px; padding: 4px 10px; font-size: 0.64rem; font-weight: 800; background: var(--bm-red); color: #fff; }
+.guild-invite-box__results li button:disabled { opacity: 0.5; }
 table { width: 100%; border-collapse: collapse; font-size: 0.74rem; }
 th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--bm-border); }
 th { color: var(--bm-muted); text-transform: uppercase; font-size: 0.6rem; }

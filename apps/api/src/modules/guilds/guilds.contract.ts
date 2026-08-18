@@ -50,6 +50,15 @@ export type GuildJoinDecisionPayload = {
   note?: string
 }
 
+export type GuildInviteCandidateQuery = {
+  search?: string
+}
+
+export type GuildInvitePayload = {
+  characterId?: string
+  message?: string
+}
+
 export type GuildMemberRolePayload = {
   roleKey?: string
 }

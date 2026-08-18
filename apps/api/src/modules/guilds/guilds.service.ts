@@ -1,11 +1,13 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
-import type { Prisma } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
 import { ObservabilityService } from '../observability/observability.service'
 import { GuildsMediaService } from './guilds-media.service'
 import type {
   GuildCreatePayload,
+  GuildInviteCandidateQuery,
+  GuildInvitePayload,
   GuildJoinDecisionPayload,
   GuildJoinPayload,
   GuildMemberKickPayload,
@@ -419,6 +421,167 @@ export class GuildsService {
     }
     const updated = await this.prisma.guildMember.update({ where: { id: membership.id }, data: { removedAt: new Date(), removedReason: 'Saída voluntária.' } })
     await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_MEMBER_LEFT', entityType: 'GuildMember', entityId: membership.id, actorUserId: user.id, description: `Membro saiu da guild "${guild.name}".` })
+    return updated
+  }
+
+  // ── Invites: guild-initiated counterpart to join()/GuildJoinRequest ──────
+  // join() already covers OPEN (instant) and APPROVAL_REQUIRED (player asks,
+  // guild decides). INVITE_ONLY guilds have no self-service path by design
+  // (join() rejects them with 403) -- these five methods are the only way
+  // in for that mode. Invite creation itself is allowed for OPEN and
+  // APPROVAL_REQUIRED too: a LEADER/OFFICER reaching out to a specific
+  // player directly is a reasonable action regardless of the guild's
+  // self-service posture, and gating it out would be an arbitrary asymmetry
+  // with no real protection behind it. CLOSED still blocks every path,
+  // invites included -- "closed" means closed.
+
+  // LEADER/OFFICER-only search for invite targets. Deliberately narrower
+  // than GET /characters (characters.service.ts's list(), which is scoped to
+  // the caller's own account unless GM+): that endpoint's cross-account
+  // search is an intentionally privileged capability, not something to
+  // widen for every guild officer. This returns only the minimal fields
+  // needed to pick an invite target, and only characters actually eligible
+  // (no active guild membership).
+  async inviteCandidates(slug: string, query: GuildInviteCandidateQuery, user: AuthenticatedUser) {
+    const guild = await this.guildIdBySlug(slug)
+    await this.assertRole(guild.id, user, ['LEADER', 'OFFICER'])
+    const search = (query.search || '').trim()
+    if (search.length < 2) return []
+    const characters = await this.prisma.accountCharacter.findMany({
+      where: {
+        name: { contains: search },
+        OR: [
+          { guildMembership: null },
+          { guildMembership: { removedAt: { not: null } } }
+        ]
+      },
+      select: { id: true, name: true, className: true, level: true, account: { select: { id: true, username: true } } },
+      take: 20,
+      orderBy: { name: 'asc' }
+    })
+    // A character already holding a PENDING invite from THIS guild is still
+    // a valid search result (the UI shows its pending state rather than
+    // hiding it), so no additional filter here -- inviteToGuild() is what
+    // enforces "at most one live PENDING invite per character per guild".
+    return characters
+  }
+
+  async inviteToGuild(slug: string, payload: GuildInvitePayload, user: AuthenticatedUser) {
+    const guild = await this.guildIdBySlug(slug)
+    await this.assertRole(guild.id, user, ['LEADER', 'OFFICER'])
+    if (guild.status !== 'ACTIVE') throw new BadRequestException('Esta guild não está aceitando novos membros.')
+    if (guild.recruitment === 'CLOSED') throw new BadRequestException('O recrutamento desta guild está fechado.')
+    const characterId = this.requiredText(payload.characterId, 'o personagem', 1, 191)
+    const character = await this.prisma.accountCharacter.findUnique({ where: { id: characterId } })
+    if (!character) throw new BadRequestException('Personagem inválido.')
+    const existingMembership = await this.prisma.guildMember.findUnique({ where: { characterId } })
+    if (existingMembership && !existingMembership.removedAt) {
+      throw new BadRequestException(existingMembership.guildId === guild.id ? 'Este personagem já é membro desta guild.' : 'Este personagem já pertence a outra guild.')
+    }
+    // Idempotent, not error-on-duplicate: a second invite attempt while one
+    // is already PENDING just refreshes the message on the existing row,
+    // same "existingPending" pattern join() uses for GuildJoinRequest.
+    // Not a compound-key unique index -- same reasoning as GuildJoinRequest
+    // (schema.prisma): a character can be re-invited after a prior
+    // invite was declined/cancelled, which would collide with that earlier
+    // decided row under a DB-level unique constraint. Enforced here instead.
+    const existingPending = await this.prisma.guildInvite.findFirst({ where: { guildId: guild.id, characterId, status: 'PENDING' } })
+    const invite = existingPending
+      ? await this.prisma.guildInvite.update({ where: { id: existingPending.id }, data: { message: payload.message?.trim().slice(0, 1000) || null } })
+      : await this.prisma.guildInvite.create({ data: { guildId: guild.id, characterId, accountId: character.accountId, invitedBy: user.id, message: payload.message?.trim().slice(0, 1000) || null } })
+    await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_INVITE_CREATED', entityType: 'GuildInvite', entityId: invite.id, actorUserId: user.id, targetUserId: character.accountId, description: `Convite enviado para "${guild.name}".` })
+    return invite
+  }
+
+  // LEADER/OFFICER-only listing of this guild's pending invites, for the
+  // cancel UI. Mirrors joinRequests() exactly (same batched-lookup shape,
+  // since GuildInvite.characterId/accountId are plain scalars too).
+  async guildInvites(slug: string, user: AuthenticatedUser) {
+    const guild = await this.guildIdBySlug(slug)
+    await this.assertRole(guild.id, user, ['LEADER', 'OFFICER'])
+    const invites = await this.prisma.guildInvite.findMany({
+      where: { guildId: guild.id, status: 'PENDING' },
+      orderBy: { createdAt: 'asc' },
+      take: 100
+    })
+    if (!invites.length) return []
+    const characters = await this.prisma.accountCharacter.findMany({ where: { id: { in: invites.map((invite) => invite.characterId) } }, select: { id: true, name: true, className: true, level: true } })
+    return invites.map((invite) => ({ ...invite, character: characters.find((character) => character.id === invite.characterId) || null }))
+  }
+
+  // Player-facing: every PENDING invite across every guild for this account.
+  // Includes guild.slug so the accept/decline UI can call the :slug-scoped
+  // endpoints below without a separate lookup.
+  async myInvites(user: AuthenticatedUser) {
+    const invites = await this.prisma.guildInvite.findMany({
+      where: { accountId: user.id, status: 'PENDING' },
+      orderBy: { createdAt: 'desc' },
+      include: { guild: { select: { id: true, slug: true, name: true, tag: true, emblemUrl: true } } }
+    })
+    if (!invites.length) return []
+    const characters = await this.prisma.accountCharacter.findMany({ where: { id: { in: invites.map((invite) => invite.characterId) } }, select: { id: true, name: true } })
+    return invites.map((invite) => ({ ...invite, character: characters.find((character) => character.id === invite.characterId) || null }))
+  }
+
+  private async guildAndInvite(slug: string, inviteId: string) {
+    const guild = await this.prisma.guild.findUnique({ where: { slug } })
+    if (!guild) throw new NotFoundException('Guild não encontrada.')
+    const invite = await this.prisma.guildInvite.findFirst({ where: { id: inviteId, guildId: guild.id } })
+    if (!invite) throw new NotFoundException('Convite não encontrado.')
+    return { guild, invite }
+  }
+
+  async acceptInvite(slug: string, inviteId: string, user: AuthenticatedUser) {
+    const { guild, invite } = await this.guildAndInvite(slug, inviteId)
+    // Authorization: only the invited ACCOUNT may accept -- not membership
+    // in the guild, not any role check. This is the direct answer to "a
+    // player tries to accept another user's invite" (point 18): the invite
+    // names a specific accountId at creation time and that never changes.
+    if (invite.accountId !== user.id) throw new ForbiddenException('Este convite não pertence à sua conta.')
+    if (invite.status !== 'PENDING') throw new BadRequestException('Este convite já foi decidido.')
+    const existingMembership = await this.prisma.guildMember.findUnique({ where: { characterId: invite.characterId } })
+    if (existingMembership && !existingMembership.removedAt) throw new BadRequestException('Este personagem já pertence a uma guild.')
+    try {
+      const [, member] = await this.prisma.$transaction([
+        this.prisma.guildInvite.update({ where: { id: invite.id }, data: { status: 'ACCEPTED', decidedAt: new Date() } }),
+        this.prisma.guildMember.upsert({
+          where: { characterId: invite.characterId },
+          create: { guildId: guild.id, characterId: invite.characterId, accountId: invite.accountId, roleKey: 'MEMBER', invitedBy: invite.invitedBy },
+          update: { guildId: guild.id, accountId: invite.accountId, roleKey: 'MEMBER', invitedBy: invite.invitedBy, joinedAt: new Date(), removedAt: null, removedBy: null, removedReason: null }
+        })
+      ])
+      await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_INVITE_ACCEPTED', entityType: 'GuildInvite', entityId: invite.id, actorUserId: user.id, description: `Convite aceito para "${guild.name}".` })
+      return member
+    } catch (error) {
+      // The pre-check above is best-effort, not a lock: GuildMember.characterId
+      // is DB-unique, so two near-simultaneous acceptances for the same
+      // character (this invite plus a join-request approval elsewhere, or two
+      // invite accepts) can both pass the check and then race at the upsert.
+      // MySQL's unique index is the actual race-safety net -- the loser gets
+      // P2002 here instead of silently overwriting the winner's membership.
+      // Surfaced as a clean 400, not a 500.
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+        throw new BadRequestException('Este personagem já pertence a uma guild.')
+      }
+      throw error
+    }
+  }
+
+  async declineInvite(slug: string, inviteId: string, user: AuthenticatedUser) {
+    const { guild, invite } = await this.guildAndInvite(slug, inviteId)
+    if (invite.accountId !== user.id) throw new ForbiddenException('Este convite não pertence à sua conta.')
+    if (invite.status !== 'PENDING') throw new BadRequestException('Este convite já foi decidido.')
+    const updated = await this.prisma.guildInvite.update({ where: { id: invite.id }, data: { status: 'DECLINED', decidedAt: new Date() } })
+    await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_INVITE_DECLINED', entityType: 'GuildInvite', entityId: invite.id, actorUserId: user.id, description: `Convite recusado para "${guild.name}".` })
+    return updated
+  }
+
+  async cancelInvite(slug: string, inviteId: string, user: AuthenticatedUser) {
+    const { guild, invite } = await this.guildAndInvite(slug, inviteId)
+    await this.assertRole(guild.id, user, ['LEADER', 'OFFICER'])
+    if (invite.status !== 'PENDING') throw new BadRequestException('Este convite já foi decidido.')
+    const updated = await this.prisma.guildInvite.update({ where: { id: invite.id }, data: { status: 'CANCELLED', decidedAt: new Date() } })
+    await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_INVITE_CANCELLED', entityType: 'GuildInvite', entityId: invite.id, actorUserId: user.id, targetUserId: invite.accountId, description: `Convite cancelado para "${guild.name}".` })
     return updated
   }
 

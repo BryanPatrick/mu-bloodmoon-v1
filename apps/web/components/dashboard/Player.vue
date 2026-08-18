@@ -15,6 +15,40 @@
         </article>
       </section>
 
+      <section v-if="invites.length" class="grid gap-4">
+        <article class="bm-dashboard-card p-5">
+          <h2 class="font-display text-xl font-black uppercase">Convites de Guild</h2>
+          <div class="mt-4 grid gap-2">
+            <div v-for="invite in invites" :key="invite.id" class="flex flex-col gap-3 rounded-xl border border-white/10 bg-white/[0.04] p-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <strong>{{ invite.guild?.name }}</strong>
+                <span class="ml-2 text-xs text-white/45">[{{ invite.guild?.tag }}]</span>
+                <p class="mt-1 text-xs text-white/45">Personagem: {{ invite.character?.name }}</p>
+              </div>
+              <div class="flex flex-none gap-2">
+                <button
+                  type="button"
+                  class="rounded-lg bg-ember px-3 py-1.5 text-xs font-black uppercase text-black disabled:opacity-50"
+                  :disabled="decidingId === invite.id"
+                  @click="respondInvite(invite, 'accept')"
+                >
+                  {{ decidingId === invite.id && decidingAction === 'accept' ? 'Aceitando...' : 'Aceitar' }}
+                </button>
+                <button
+                  type="button"
+                  class="rounded-lg border border-white/15 px-3 py-1.5 text-xs font-black uppercase text-white/70 disabled:opacity-50"
+                  :disabled="decidingId === invite.id"
+                  @click="respondInvite(invite, 'decline')"
+                >
+                  {{ decidingId === invite.id && decidingAction === 'decline' ? 'Recusando...' : 'Recusar' }}
+                </button>
+              </div>
+            </div>
+            <p v-if="inviteActionError" class="text-xs font-bold text-ember">{{ inviteActionError }}</p>
+          </div>
+        </article>
+      </section>
+
       <section class="grid gap-4 xl:grid-cols-2">
         <article class="bm-dashboard-card p-5">
           <div class="flex items-center justify-between gap-3">
@@ -63,18 +97,41 @@ const { user } = useAuth()
 const charactersApi = useCharactersApi()
 const commerceApi = useCommerceApi()
 const marketApi = useMarketplaceApi()
+const guildsApi = useGuildsApi()
 const characters = ref<ManagedCharacter[]>([])
 const purchases = ref<CommercePurchase[]>([])
 const listingCount = ref(0)
+const invites = ref<any[]>([])
 
 onMounted(async () => {
-  const [characterResult, purchaseResult, listings] = await Promise.allSettled([
-    charactersApi.list(), commerceApi.listAccountPurchases(), marketApi.listMyListings()
+  const [characterResult, purchaseResult, listings, inviteResult] = await Promise.allSettled([
+    charactersApi.list(), commerceApi.listAccountPurchases(), marketApi.listMyListings(), guildsApi.myInvites()
   ])
   if (characterResult.status === 'fulfilled') characters.value = characterResult.value.data
   if (purchaseResult.status === 'fulfilled') purchases.value = purchaseResult.value
   if (listings.status === 'fulfilled') listingCount.value = listings.value.length
+  if (inviteResult.status === 'fulfilled') invites.value = inviteResult.value
 })
+
+const decidingId = ref('')
+const decidingAction = ref<'accept' | 'decline' | ''>('')
+const inviteActionError = ref('')
+const respondInvite = async (invite: any, action: 'accept' | 'decline') => {
+  if (decidingId.value) return
+  decidingId.value = invite.id
+  decidingAction.value = action
+  inviteActionError.value = ''
+  try {
+    if (action === 'accept') await guildsApi.acceptInvite(invite.guild.slug, invite.id)
+    else await guildsApi.declineInvite(invite.guild.slug, invite.id)
+    invites.value = invites.value.filter((item) => item.id !== invite.id)
+  } catch (err: any) {
+    inviteActionError.value = err?.data?.message || 'Não foi possível processar o convite.'
+  } finally {
+    decidingId.value = ''
+    decidingAction.value = ''
+  }
+}
 
 const metrics = computed(() => [
   { label: 'Personagens', value: characters.value.length, icon: Gamepad2 },

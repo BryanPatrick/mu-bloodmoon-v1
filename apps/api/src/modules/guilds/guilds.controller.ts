@@ -6,6 +6,8 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import type { AuthenticatedUser } from '../auth/auth.types'
 import { GuildsService } from './guilds.service'
 import type {
+  GuildInviteCandidateQuery,
+  GuildInvitePayload,
   GuildJoinDecisionPayload,
   GuildJoinPayload,
   GuildMemberKickPayload,
@@ -31,6 +33,15 @@ export class GuildsController {
   @UseGuards(JwtAuthGuard)
   mine(@CurrentUser() user: AuthenticatedUser) {
     return this.guilds.mine(user)
+  }
+
+  // Literal segment, registered before the `:slug` catch-all below -- same
+  // reason `mine` is: a slug-less, account-scoped listing has to win the
+  // route match over `:slug` treating "invites" as a guild slug.
+  @Get('invites/mine')
+  @UseGuards(JwtAuthGuard)
+  myInvites(@CurrentUser() user: AuthenticatedUser) {
+    return this.guilds.myInvites(user)
   }
 
   @Get(':slug')
@@ -107,6 +118,42 @@ export class GuildsController {
   @UseGuards(JwtAuthGuard)
   rejectJoinRequest(@Param('slug') slug: string, @Param('id') id: string, @Body() payload: GuildJoinDecisionPayload, @CurrentUser() user: AuthenticatedUser) {
     return this.guilds.rejectJoinRequest(slug, id, payload, user)
+  }
+
+  @Get(':slug/invite-candidates')
+  @UseGuards(JwtAuthGuard)
+  inviteCandidates(@Param('slug') slug: string, @Query() query: GuildInviteCandidateQuery, @CurrentUser() user: AuthenticatedUser) {
+    return this.guilds.inviteCandidates(slug, query, user)
+  }
+
+  @Post(':slug/invites')
+  @UseGuards(JwtAuthGuard)
+  inviteToGuild(@Param('slug') slug: string, @Body() payload: GuildInvitePayload, @CurrentUser() user: AuthenticatedUser) {
+    return this.guilds.inviteToGuild(slug, payload, user)
+  }
+
+  @Get(':slug/invites')
+  @UseGuards(JwtAuthGuard)
+  guildInvites(@Param('slug') slug: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.guilds.guildInvites(slug, user)
+  }
+
+  @Post(':slug/invites/:id/accept')
+  @UseGuards(JwtAuthGuard)
+  acceptInvite(@Param('slug') slug: string, @Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.guilds.acceptInvite(slug, id, user)
+  }
+
+  @Post(':slug/invites/:id/decline')
+  @UseGuards(JwtAuthGuard)
+  declineInvite(@Param('slug') slug: string, @Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.guilds.declineInvite(slug, id, user)
+  }
+
+  @Post(':slug/invites/:id/cancel')
+  @UseGuards(JwtAuthGuard)
+  cancelInvite(@Param('slug') slug: string, @Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.guilds.cancelInvite(slug, id, user)
   }
 
   @Delete(':slug/members/me')

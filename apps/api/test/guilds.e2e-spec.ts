@@ -13,13 +13,16 @@ beforeAll(async () => {
   process.env.JWT_ACCESS_SECRET = 'e2e-guilds-access-secret'
   process.env.JWT_REFRESH_SECRET = 'e2e-guilds-refresh-secret'
   process.env.TWO_FACTOR_ENCRYPTION_KEY = 'e2e-guilds-two-factor-encryption-key-32c'
-  // This file's register() helper is called well over the default anti-abuse
-  // limit (10/hour/IP -- see auth-rate-limit.service.ts) once Guild Step 1's
-  // profile self-management fixtures are added on top of the pre-existing
-  // MVP and leadership-transfer fixtures. Same override pattern already used
-  // by password-recovery.e2e-spec.ts; scoped to this test process only.
+  // This file's register()/login() helpers are called well over the default
+  // anti-abuse limits (register: 10/hour/IP; login: 20/5min/IP -- see
+  // auth-rate-limit.service.ts) once Guild Step 1's profile self-management
+  // and Guild Step 2's invite-flow fixtures are added on top of the
+  // pre-existing MVP and leadership-transfer fixtures. Same override pattern
+  // already used by password-recovery.e2e-spec.ts; scoped to this test
+  // process only.
   process.env.AUTH_RATE_REGISTER_IP_LIMIT = '50'
   process.env.AUTH_RATE_REGISTER_SUBJECT_LIMIT = '50'
+  process.env.AUTH_RATE_LOGIN_IP_LIMIT = '100'
 
   execSync('npx prisma migrate deploy', { cwd: __dirname + '/..', env: process.env, stdio: 'pipe' })
 }, 120000)
@@ -736,6 +739,331 @@ describe('Guilds MVP', () => {
       expect(result.status).toBe(400)
       const afterGuild = await prisma.guild.findUniqueOrThrow({ where: { slug: mgmtGuildSlug } })
       expect(afterGuild.emblemUrl).toBe(beforeGuild.emblemUrl)
+    })
+  })
+
+  // GUILD STEP 2 (2026-08-18): closes the INVITE_ONLY dead end. join()
+  // already covers OPEN (instant) and APPROVAL_REQUIRED (join-request,
+  // tested above at "join flow: APPROVAL_REQUIRED..."); OPEN and CLOSED get
+  // one light confirmation test each here since neither had dedicated
+  // coverage before, but the bulk of this block is the genuinely new
+  // GuildInvite model/endpoints.
+  describe('recruitment / invite flow (Guild Step 2)', () => {
+    let inviteGuildSlug = ''
+    let inviteGuildLeaderToken = ''
+    let inviteGuildOfficerToken = ''
+    let inviteGuildRecruitToken = ''
+    let inviteGuildOutsiderToken = ''
+    let inviteGuildOfficerCharId = ''
+    let target1: { username: string, password: string }
+    let target1Token = ''
+    let target1CharId = ''
+    let target2Token = ''
+    let target2CharId = ''
+    let target3: { username: string, password: string }
+    let target3Token = ''
+    let target3CharId = ''
+
+    it('sets up an isolated INVITE_ONLY guild with a LEADER, OFFICER, RECRUIT, and three unaffiliated target characters', async () => {
+      const leader = await register('IL')
+      const officer = await register('IO')
+      const recruit = await register('IR')
+      const outsider = await register('IX')
+      target1 = await register('T1')
+      const target2 = await register('T2')
+      target3 = await register('T3')
+
+      const leaderCharId = (await createCharacter(leader.username, 'IL')).id
+      const officerCharId = (await createCharacter(officer.username, 'IO')).id
+      inviteGuildOfficerCharId = officerCharId
+      const recruitCharId = (await createCharacter(recruit.username, 'IR')).id
+      target1CharId = (await createCharacter(target1.username, 'T1')).id
+      target2CharId = (await createCharacter(target2.username, 'T2')).id
+      target3CharId = (await createCharacter(target3.username, 'T3')).id
+
+      inviteGuildLeaderToken = await login(leader.username, leader.password)
+      inviteGuildOfficerToken = await login(officer.username, officer.password)
+      inviteGuildRecruitToken = await login(recruit.username, recruit.password)
+      inviteGuildOutsiderToken = await login(outsider.username, outsider.password)
+      target1Token = await login(target1.username, target1.password)
+      target2Token = await login(target2.username, target2.password)
+      target3Token = await login(target3.username, target3.password)
+
+      const created = await (await request())
+        .post('/api/admin/guilds')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ name: `Invite Fixture ${suffix}`, tag: 'INV', recruitment: 'INVITE_ONLY', leaderCharacterId: leaderCharId })
+      expect(created.status).toBe(201)
+      expect(created.body.recruitment).toBe('INVITE_ONLY')
+      inviteGuildSlug = created.body.slug
+      const inviteGuildId = created.body.id
+
+      await prisma.guildMember.create({
+        data: { guildId: inviteGuildId, characterId: officerCharId, accountId: (await prisma.account.findUniqueOrThrow({ where: { username: officer.username } })).id, roleKey: 'OFFICER' }
+      })
+      await prisma.guildMember.create({
+        data: { guildId: inviteGuildId, characterId: recruitCharId, accountId: (await prisma.account.findUniqueOrThrow({ where: { username: recruit.username } })).id, roleKey: 'RECRUIT' }
+      })
+    })
+
+    it('confirms the dead end directly: a player cannot self-join an INVITE_ONLY guild', async () => {
+      const attempt = await (await request())
+        .post(`/api/guilds/${inviteGuildSlug}/join`)
+        .set('Authorization', `Bearer ${target1Token}`)
+        .send({ characterId: target1CharId })
+      expect(attempt.status).toBe(403)
+    })
+
+    it('rejects invite creation from a non-member (403), a RECRUIT (403), and requires a real character (400)', async () => {
+      const asOutsider = await (await request())
+        .post(`/api/guilds/${inviteGuildSlug}/invites`)
+        .set('Authorization', `Bearer ${inviteGuildOutsiderToken}`)
+        .send({ characterId: target1CharId })
+      expect(asOutsider.status).toBe(403)
+
+      const asRecruit = await (await request())
+        .post(`/api/guilds/${inviteGuildSlug}/invites`)
+        .set('Authorization', `Bearer ${inviteGuildRecruitToken}`)
+        .send({ characterId: target1CharId })
+      expect(asRecruit.status).toBe(403)
+
+      const badCharacter = await (await request())
+        .post(`/api/guilds/${inviteGuildSlug}/invites`)
+        .set('Authorization', `Bearer ${inviteGuildLeaderToken}`)
+        .send({ characterId: 'not-a-real-character-id' })
+      expect(badCharacter.status).toBe(400)
+    })
+
+    it('invite-candidates search (LEADER/OFFICER only) finds eligible targets and excludes existing members', async () => {
+      const asRecruit = await (await request())
+        .get(`/api/guilds/${inviteGuildSlug}/invite-candidates`)
+        .query({ search: 'T1' })
+        .set('Authorization', `Bearer ${inviteGuildRecruitToken}`)
+      expect(asRecruit.status).toBe(403)
+
+      // Search matches on character name (e.g. "EGldT1<suffix>", per
+      // createCharacter's naming), not account username.
+      const byName = await (await request())
+        .get(`/api/guilds/${inviteGuildSlug}/invite-candidates`)
+        .query({ search: 'T1' })
+        .set('Authorization', `Bearer ${inviteGuildOfficerToken}`)
+      expect(byName.status).toBe(200)
+      expect(byName.body.some((c: any) => c.id === target1CharId)).toBe(true)
+    })
+
+    it('LEADER creates a PENDING invite; a duplicate attempt updates the same row instead of creating a second one', async () => {
+      const first = await (await request())
+        .post(`/api/guilds/${inviteGuildSlug}/invites`)
+        .set('Authorization', `Bearer ${inviteGuildLeaderToken}`)
+        .send({ characterId: target1CharId, message: 'Venha para a guilda!' })
+      expect(first.status).toBe(201)
+      expect(first.body.status).toBe('PENDING')
+
+      const second = await (await request())
+        .post(`/api/guilds/${inviteGuildSlug}/invites`)
+        .set('Authorization', `Bearer ${inviteGuildOfficerToken}`)
+        .send({ characterId: target1CharId, message: 'Convite atualizado.' })
+      expect(second.status).toBe(201)
+      expect(second.body.id).toBe(first.body.id)
+      expect(second.body.message).toBe('Convite atualizado.')
+
+      const count = await prisma.guildInvite.count({ where: { guildId: (await prisma.guild.findUniqueOrThrow({ where: { slug: inviteGuildSlug } })).id, characterId: target1CharId } })
+      expect(count).toBe(1)
+    })
+
+    it('rejects an invite to a character who already belongs to the guild', async () => {
+      const attempt = await (await request())
+        .post(`/api/guilds/${inviteGuildSlug}/invites`)
+        .set('Authorization', `Bearer ${inviteGuildLeaderToken}`)
+        .send({ characterId: inviteGuildOfficerCharId })
+      expect(attempt.status).toBe(400)
+    })
+
+    it('lists the pending invite for LEADER/OFFICER (guild side) and for the target account (player side)', async () => {
+      const asRecruit = await (await request())
+        .get(`/api/guilds/${inviteGuildSlug}/invites`)
+        .set('Authorization', `Bearer ${inviteGuildRecruitToken}`)
+      expect(asRecruit.status).toBe(403)
+
+      const guildSide = await (await request())
+        .get(`/api/guilds/${inviteGuildSlug}/invites`)
+        .set('Authorization', `Bearer ${inviteGuildLeaderToken}`)
+      expect(guildSide.status).toBe(200)
+      expect(guildSide.body.some((invite: any) => invite.characterId === target1CharId)).toBe(true)
+
+      const playerSide = await (await request())
+        .get('/api/guilds/invites/mine')
+        .set('Authorization', `Bearer ${target1Token}`)
+      expect(playerSide.status).toBe(200)
+      expect(playerSide.body.length).toBe(1)
+      expect(playerSide.body[0].guild.slug).toBe(inviteGuildSlug)
+    })
+
+    it('rejects accept/decline from an account the invite was not sent to', async () => {
+      const playerSide = await (await request()).get('/api/guilds/invites/mine').set('Authorization', `Bearer ${target1Token}`)
+      const inviteId = playerSide.body[0].id
+
+      const wrongAccept = await (await request())
+        .post(`/api/guilds/${inviteGuildSlug}/invites/${inviteId}/accept`)
+        .set('Authorization', `Bearer ${target2Token}`)
+      expect(wrongAccept.status).toBe(403)
+
+      const wrongDecline = await (await request())
+        .post(`/api/guilds/${inviteGuildSlug}/invites/${inviteId}/decline`)
+        .set('Authorization', `Bearer ${inviteGuildOutsiderToken}`)
+      expect(wrongDecline.status).toBe(403)
+    })
+
+    it('ACCEPT is transactional: membership is created, invite is marked ACCEPTED, and the character now shows as an active member', async () => {
+      const playerSide = await (await request()).get('/api/guilds/invites/mine').set('Authorization', `Bearer ${target1Token}`)
+      const inviteId = playerSide.body[0].id
+
+      const accept = await (await request())
+        .post(`/api/guilds/${inviteGuildSlug}/invites/${inviteId}/accept`)
+        .set('Authorization', `Bearer ${target1Token}`)
+      expect(accept.status).toBe(201)
+      expect(accept.body.roleKey).toBe('MEMBER')
+
+      const invite = await prisma.guildInvite.findUniqueOrThrow({ where: { id: inviteId } })
+      expect(invite.status).toBe('ACCEPTED')
+      const member = await prisma.guildMember.findUniqueOrThrow({ where: { characterId: target1CharId } })
+      expect(member.removedAt).toBeNull()
+      expect(member.guildId).toBe((await prisma.guild.findUniqueOrThrow({ where: { slug: inviteGuildSlug } })).id)
+
+      // Already decided -- a second accept attempt is rejected, not silently
+      // re-applied.
+      const again = await (await request())
+        .post(`/api/guilds/${inviteGuildSlug}/invites/${inviteId}/accept`)
+        .set('Authorization', `Bearer ${target1Token}`)
+      expect(again.status).toBe(400)
+    })
+
+    it('DECLINE leaves no membership behind', async () => {
+      const invite = await (await request())
+        .post(`/api/guilds/${inviteGuildSlug}/invites`)
+        .set('Authorization', `Bearer ${inviteGuildLeaderToken}`)
+        .send({ characterId: target2CharId })
+      expect(invite.status).toBe(201)
+
+      const decline = await (await request())
+        .post(`/api/guilds/${inviteGuildSlug}/invites/${invite.body.id}/decline`)
+        .set('Authorization', `Bearer ${target2Token}`)
+      expect(decline.status).toBe(201)
+
+      const row = await prisma.guildInvite.findUniqueOrThrow({ where: { id: invite.body.id } })
+      expect(row.status).toBe('DECLINED')
+      const member = await prisma.guildMember.findUnique({ where: { characterId: target2CharId } })
+      expect(member).toBeNull()
+    })
+
+    it('CANCEL (guild side) invalidates a PENDING invite; a cancelled invite can no longer be accepted', async () => {
+      const invite = await (await request())
+        .post(`/api/guilds/${inviteGuildSlug}/invites`)
+        .set('Authorization', `Bearer ${inviteGuildLeaderToken}`)
+        .send({ characterId: target3CharId })
+      expect(invite.status).toBe(201)
+
+      const asRecruitCancel = await (await request())
+        .post(`/api/guilds/${inviteGuildSlug}/invites/${invite.body.id}/cancel`)
+        .set('Authorization', `Bearer ${inviteGuildRecruitToken}`)
+      expect(asRecruitCancel.status).toBe(403)
+
+      const cancel = await (await request())
+        .post(`/api/guilds/${inviteGuildSlug}/invites/${invite.body.id}/cancel`)
+        .set('Authorization', `Bearer ${inviteGuildOfficerToken}`)
+      expect(cancel.status).toBe(201)
+
+      const acceptAfterCancel = await (await request())
+        .post(`/api/guilds/${inviteGuildSlug}/invites/${invite.body.id}/accept`)
+        .set('Authorization', `Bearer ${target3Token}`)
+      expect(acceptAfterCancel.status).toBe(400)
+    })
+
+    it('membership integrity + concurrency: the same character invited by two different guilds ends up in exactly one, and the losing accept fails cleanly (not 500)', async () => {
+      const guildALeader = await register('CA')
+      const guildBLeader = await register('CB')
+      const concurrencyTarget = await register('CT')
+      const guildALeaderCharId = (await createCharacter(guildALeader.username, 'CA')).id
+      const guildBLeaderCharId = (await createCharacter(guildBLeader.username, 'CB')).id
+      const concurrencyTargetCharId = (await createCharacter(concurrencyTarget.username, 'CT')).id
+      const guildALeaderToken = await login(guildALeader.username, guildALeader.password)
+      const guildBLeaderToken = await login(guildBLeader.username, guildBLeader.password)
+      const concurrencyTargetToken = await login(concurrencyTarget.username, concurrencyTarget.password)
+
+      const guildA = await (await request()).post('/api/admin/guilds').set('Authorization', `Bearer ${adminToken}`)
+        .send({ name: `Concurrency A ${suffix}`, tag: 'CCA', recruitment: 'INVITE_ONLY', leaderCharacterId: guildALeaderCharId })
+      const guildB = await (await request()).post('/api/admin/guilds').set('Authorization', `Bearer ${adminToken}`)
+        .send({ name: `Concurrency B ${suffix}`, tag: 'CCB', recruitment: 'INVITE_ONLY', leaderCharacterId: guildBLeaderCharId })
+      expect(guildA.status).toBe(201)
+      expect(guildB.status).toBe(201)
+
+      const inviteA = await (await request()).post(`/api/guilds/${guildA.body.slug}/invites`).set('Authorization', `Bearer ${guildALeaderToken}`).send({ characterId: concurrencyTargetCharId })
+      const inviteB = await (await request()).post(`/api/guilds/${guildB.body.slug}/invites`).set('Authorization', `Bearer ${guildBLeaderToken}`).send({ characterId: concurrencyTargetCharId })
+      expect(inviteA.status).toBe(201)
+      expect(inviteB.status).toBe(201)
+
+      const [acceptA, acceptB] = await Promise.all([
+        (await request()).post(`/api/guilds/${guildA.body.slug}/invites/${inviteA.body.id}/accept`).set('Authorization', `Bearer ${concurrencyTargetToken}`),
+        (await request()).post(`/api/guilds/${guildB.body.slug}/invites/${inviteB.body.id}/accept`).set('Authorization', `Bearer ${concurrencyTargetToken}`)
+      ])
+
+      // Never both succeed, never both fail -- and whichever loses gets a
+      // clean 400 (BadRequestException from the pre-check or the P2002
+      // catch in acceptInvite), never a 500.
+      const statuses = [acceptA.status, acceptB.status].sort()
+      expect(statuses).toEqual([201, 400])
+      expect([acceptA.status, acceptB.status]).not.toContain(500)
+
+      const member = await prisma.guildMember.findUniqueOrThrow({ where: { characterId: concurrencyTargetCharId } })
+      expect(member.removedAt).toBeNull()
+      expect([guildA.body.id, guildB.body.id]).toContain(member.guildId)
+
+      const memberCount = await prisma.guildMember.count({ where: { characterId: concurrencyTargetCharId, removedAt: null } })
+      expect(memberCount).toBe(1)
+    })
+
+    it('OPEN flow: join() creates the membership immediately, no request/invite needed', async () => {
+      const openLeader = await register('OL')
+      const openJoiner = await register('OJ')
+      const openLeaderCharId = (await createCharacter(openLeader.username, 'OL')).id
+      const openJoinerCharId = (await createCharacter(openJoiner.username, 'OJ')).id
+      const openJoinerToken = await login(openJoiner.username, openJoiner.password)
+
+      const openGuild = await (await request()).post('/api/admin/guilds').set('Authorization', `Bearer ${adminToken}`)
+        .send({ name: `Open Fixture ${suffix}`, tag: 'OPN', recruitment: 'OPEN', leaderCharacterId: openLeaderCharId })
+      expect(openGuild.status).toBe(201)
+
+      const join = await (await request())
+        .post(`/api/guilds/${openGuild.body.slug}/join`)
+        .set('Authorization', `Bearer ${openJoinerToken}`)
+        .send({ characterId: openJoinerCharId })
+      expect(join.status).toBe(201)
+      expect(join.body.status).toBe('JOINED')
+
+      const member = await prisma.guildMember.findUniqueOrThrow({ where: { characterId: openJoinerCharId } })
+      expect(member.removedAt).toBeNull()
+    })
+
+    it('CLOSED flow: neither self-join nor a guild-initiated invite is accepted', async () => {
+      const closedLeader = await register('XL')
+      const closedLeaderCharId = (await createCharacter(closedLeader.username, 'XL')).id
+      const closedLeaderToken = await login(closedLeader.username, closedLeader.password)
+
+      const closedGuild = await (await request()).post('/api/admin/guilds').set('Authorization', `Bearer ${adminToken}`)
+        .send({ name: `Closed Fixture ${suffix}`, tag: 'CLS', recruitment: 'CLOSED', leaderCharacterId: closedLeaderCharId })
+      expect(closedGuild.status).toBe(201)
+
+      const join = await (await request())
+        .post(`/api/guilds/${closedGuild.body.slug}/join`)
+        .set('Authorization', `Bearer ${target1Token}`)
+        .send({ characterId: target1CharId })
+      expect(join.status).toBe(400)
+
+      const invite = await (await request())
+        .post(`/api/guilds/${closedGuild.body.slug}/invites`)
+        .set('Authorization', `Bearer ${closedLeaderToken}`)
+        .send({ characterId: target2CharId })
+      expect(invite.status).toBe(400)
     })
   })
 })

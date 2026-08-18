@@ -2388,6 +2388,17 @@ enum GuildJoinRequestStatus {
   EXPIRED
 }
 
+// No expiresAt/TTL: GuildJoinRequest's own EXPIRED status has never been
+// wired to a TTL either (nothing in guilds.service.ts sets it), so this
+// domain has no existing expiration precedent to follow. Not inventing one
+// here -- an invite stays PENDING until accepted, declined, or cancelled.
+enum GuildInviteStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  CANCELLED
+}
+
 enum GuildRequestType {
   ITEM
   JEWEL
@@ -2482,6 +2493,7 @@ model Guild {
   foundedByAccount   Account?               @relation("GuildFounder", fields: [foundedByAccountId], references: [id], onDelete: SetNull)
   members            GuildMember[]
   joinRequests       GuildJoinRequest[]
+  invites            GuildInvite[]
   focusTags          GuildFocusAssignment[]
   requests           GuildRequest[]
   projects           GuildProject[]
@@ -2563,6 +2575,32 @@ model GuildFocusAssignment {
   guild     Guild         @relation(fields: [guildId], references: [id], onDelete: Cascade)
 
   @@unique([guildId, tag])
+}
+
+// Guild-initiated counterpart to GuildJoinRequest (player-initiated). Fixes
+// the INVITE_ONLY dead end: join() rejects self-service entry for
+// INVITE_ONLY guilds, and until this model existed there was no other way
+// in. Same shape/conventions as GuildJoinRequest deliberately, including the
+// "no DB unique index for PENDING" choice -- MySQL has no partial/filtered
+// unique index, so "at most one live PENDING invite per character per
+// guild" is enforced in the service layer (check-then-write in
+// inviteToGuild()), not the DB.
+model GuildInvite {
+  id           String            @id @default(uuid())
+  guildId      String
+  characterId  String
+  accountId    String
+  invitedBy    String
+  message      String?           @db.Text
+  status       GuildInviteStatus @default(PENDING)
+  decidedAt    DateTime?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  guild        Guild             @relation(fields: [guildId], references: [id], onDelete: Cascade)
+
+  @@index([guildId, characterId, status])
+  @@index([accountId, status])
+  @@index([status])
 }
 
 // Admin-managed catalog, not per-guild -- one row per level.
