@@ -227,12 +227,33 @@ export class AccountsService {
     }
   }
 
-  async updateAccountPermissions(id: string, payload: UpdateAccountPermissionsPayload, user: AuthenticatedUser) {
+  async updateAccountPermissions(id: string, payload: UpdateAccountPermissionsPayload, user: AuthenticatedUser, stepUpToken?: string) {
     const reason = payload.reason?.trim()
     if (!reason || reason.length < 5) throw new BadRequestException('A justification with at least 5 characters is required')
     if (id === user.id) throw new ForbiddenException('You cannot change your own permissions')
     const account = await this.prisma.account.findUnique({ where: { id }, include: { permissions: true } })
     if (!account) throw new NotFoundException('Account not found')
+
+    // Delegating admin.* permissions to another ADMIN is as sensitive as a
+    // role change -- delegableAdminPermissions includes admin.roles.manage
+    // itself, so without this check an ADMIN holding that one permission
+    // could re-grant it (and every other admin.* permission) to any peer
+    // ADMIN account, indefinitely, without SUPER_ADMIN ever being involved
+    // again. Mirrors the exact same SUPER_ADMIN-only + step-up restriction
+    // updateAccount() already enforces for role transitions. GM targets are
+    // untouched -- delegableGmPermissions is a small curated gm.events.*
+    // set, not admin authority.
+    if (account.role === 'ADMIN') {
+      if (user.role !== 'SUPER_ADMIN') {
+        await this.recordDeniedPermissionsChange(user, account, payload, reason, 'permissions-change-requires-super-admin')
+        throw new ForbiddenException('Only Super ADM can change another ADM account permissions')
+      }
+      if (!(await verifyStepUpToken(this.jwt, this.prisma, stepUpToken, user))) {
+        await this.recordDeniedPermissionsChange(user, account, payload, reason, 'step-up-required')
+        throw new ForbiddenException({ code: 'STEP_UP_REQUIRED', message: 'Confirme sua identidade novamente para alterar permissões de outro ADM' })
+      }
+    }
+
     const delegable = this.delegablePermissionsFor(account.role)
 
     const requested = payload.permissions || []
@@ -333,6 +354,31 @@ export class AccountsService {
     if (role === 'ADMIN') return delegableAdminPermissions
     if (role === 'GM') return delegableGmPermissions
     throw new BadRequestException('Permissions can only be customized for ADM or GM accounts')
+  }
+
+  private recordDeniedPermissionsChange(
+    user: AuthenticatedUser,
+    account: Account,
+    payload: UpdateAccountPermissionsPayload,
+    reason: string,
+    denialReason: string
+  ) {
+    return this.audit.record({
+      actorId: user.id,
+      actorUsername: user.username,
+      action: 'admin.account.permissions.denied',
+      targetType: 'Account',
+      targetId: account.id,
+      severity: 'warning',
+      metadata: {
+        username: account.username,
+        targetRole: account.role,
+        requested: payload.permissions || [],
+        reason,
+        denialReason,
+        result: 'denied'
+      }
+    })
   }
 
   private recordDeniedChange(

@@ -61,8 +61,13 @@ export class AccountsController {
 
   @Patch(':id/permissions')
   @RequirePermissions(permissionKeys.adminRolesManage)
-  updatePermissions(@Param('id') id: string, @Body() payload: UpdateAccountPermissionsPayload, @CurrentUser() user: AuthenticatedUser) {
-    return this.accountsService.updateAccountPermissions(id, payload, user)
+  updatePermissions(
+    @Param('id') id: string,
+    @Body() payload: UpdateAccountPermissionsPayload,
+    @CurrentUser() user: AuthenticatedUser,
+    @Headers('x-step-up-token') stepUpToken?: string
+  ) {
+    return this.accountsService.updateAccountPermissions(id, payload, user, stepUpToken)
   }
 
   @Patch(':id/sessions/revoke')

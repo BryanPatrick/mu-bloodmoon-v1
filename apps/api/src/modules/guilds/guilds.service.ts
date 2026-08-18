@@ -435,8 +435,34 @@ export class GuildsService {
     await this.assertRole(guild.id, user, ['LEADER'])
     const roleKey = (payload.roleKey || '').toUpperCase()
     if (!ROLE_VOCABULARY.includes(roleKey as RoleKey)) throw new BadRequestException('Papel inválido.')
+
+    if (roleKey === 'LEADER') {
+      // A guild must have exactly one active LEADER. Setting roleKey='LEADER'
+      // via this generic endpoint is therefore treated internally as a
+      // leadership transfer, not an ordinary role change: any other member
+      // currently holding 'LEADER' (normally just the previous leader, but
+      // updateMany also self-heals any pre-existing duplicate from before
+      // this fix) is demoted to 'OFFICER' -- the next tier down, no new role
+      // invented -- in the SAME transaction as the promotion, so there is
+      // never a window with zero or two LEADER members. assertRole() checks
+      // roleKey directly, so leaving a stale second 'LEADER' around would
+      // have granted that ex-leader ongoing LEADER-only authority, not just
+      // a cosmetic data inconsistency.
+      if (member.roleKey === 'LEADER') return member
+      const promoted = await this.prisma.$transaction(async (tx) => {
+        await tx.guildMember.updateMany({
+          where: { guildId: guild.id, roleKey: 'LEADER', id: { not: member.id } },
+          data: { roleKey: 'OFFICER' }
+        })
+        const next = await tx.guildMember.update({ where: { id: member.id }, data: { roleKey: 'LEADER' } })
+        await tx.guild.update({ where: { id: guild.id }, data: { leaderMemberId: member.id } })
+        return next
+      })
+      await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_LEADERSHIP_TRANSFERRED', entityType: 'GuildMember', entityId: member.id, actorUserId: user.id, targetUserId: member.accountId, description: `Liderança transferida para ${member.accountId}; líder anterior rebaixado a OFFICER.` })
+      return promoted
+    }
+
     const updated = await this.prisma.guildMember.update({ where: { id: member.id }, data: { roleKey } })
-    if (roleKey === 'LEADER') await this.prisma.guild.update({ where: { id: guild.id }, data: { leaderMemberId: member.id } })
     await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_MEMBER_ROLE_CHANGED', entityType: 'GuildMember', entityId: member.id, actorUserId: user.id, targetUserId: member.accountId, description: `Papel alterado para ${roleKey}.` })
     return updated
   }

@@ -493,6 +493,19 @@ export class MarketplaceService {
   }
 
   async activateListing(id: string, user: AuthenticatedUser) {
+    // Manual dev/staging override: fabricates a COMPLETED result for the
+    // lock job instead of the real GameBridge worker completing it, because
+    // that worker cannot run yet (see process-game-bridge-jobs.mjs, gated by
+    // the same MU_BRIDGE_ENABLED flag). Explicitly refuse to run once the
+    // real bridge is enabled -- otherwise this stays the only path a
+    // listing ever reaches ACTIVE, silently bypassing the real item-lock
+    // confirmation in production. No architectural change here, just an
+    // explicit environment guard on an operation that was implicitly
+    // always available.
+    if (process.env.MU_BRIDGE_ENABLED === 'true') {
+      throw new BadRequestException('Ativacao manual desabilitada: MU_BRIDGE_ENABLED=true exige confirmacao real do GameBridge, nao aprovacao manual.')
+    }
+
     const listing = await this.prisma.playerMarketListing.findUnique({ where: { id } })
     if (!listing) {
       throw new NotFoundException('Anuncio nao encontrado.')

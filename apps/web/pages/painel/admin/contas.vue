@@ -393,7 +393,10 @@ const pendingAction = ref<PendingAdminAction | null>(null)
 const pendingActionError = ref('')
 const actionSubmitting = ref(false)
 const pendingActionRequiresStepUp = computed(
-  () => pendingAction.value?.kind === 'role' || pendingAction.value?.kind === 'reset-2fa'
+  () =>
+    pendingAction.value?.kind === 'role' ||
+    pendingAction.value?.kind === 'reset-2fa' ||
+    (pendingAction.value?.kind === 'permissions' && pendingAction.value.account.role === 'admin')
 )
 const adminPermissionOptions = [
   { key: permissions.adminAccountsView, label: 'Consultar jogadores' },
@@ -697,7 +700,7 @@ const submitPendingAction = async () => {
         key: permission.key,
         granted: selectedPermissions.value.includes(permission.key)
       }))
-      await adminAccountsApi.updatePermissions(action.account.id, { permissions: entries, reason })
+      await adminAccountsApi.updatePermissions(action.account.id, { permissions: entries, reason }, stepUpToken)
       permissionAccount.value = null
     }
 

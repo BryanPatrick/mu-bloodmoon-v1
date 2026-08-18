@@ -198,12 +198,33 @@ describe('GM role RBAC foundation', () => {
     // are delegated per-account via AccountPermission overrides, so this
     // exercises the real delegation flow rather than assuming a bare ADMIN
     // role grants access on its own.
+    //
+    // Delegating any admin.* permission to another ADMIN account requires a
+    // fresh step-up token (accounts.service.ts's updateAccountPermissions,
+    // PHASE 0 fix 2026-08-18) -- see
+    // test/accounts-permissions-escalation.e2e-spec.ts for the full
+    // regression coverage of that fix. This test only needs to supply a
+    // valid token to keep exercising the legitimate SUPER_ADMIN path.
     const adminAccount = await prisma.account.findUniqueOrThrow({ where: { username: administrator.username } })
+    const permissionsStepUpToken = async () => {
+      const result = await (
+        await request()
+      )
+        .post('/api/auth/step-up')
+        .set('Authorization', `Bearer ${superAdminToken}`)
+        .send({
+          currentPassword: superAdministrator.password,
+          code: generateSync({ secret: totpSecrets.get(superAdministrator.username)! })
+        })
+      expect(result.status).toBe(201)
+      return result.body.stepUpToken as string
+    }
     const grant = await (
       await request()
     )
       .patch(`/api/admin/accounts/${adminAccount.id}/permissions`)
       .set('Authorization', `Bearer ${superAdminToken}`)
+      .set('X-Step-Up-Token', await permissionsStepUpToken())
       .send({ permissions: [{ key: 'admin.accounts.view', granted: true }], reason: 'Delegando leitura de contas em teste e2e' })
     expect(grant.status).toBe(200)
 

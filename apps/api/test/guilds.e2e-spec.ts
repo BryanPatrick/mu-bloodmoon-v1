@@ -419,4 +419,143 @@ describe('Guilds MVP', () => {
     expect(restore.status).toBe(201)
     expect(restore.body.status).toBe('ACTIVE')
   })
+
+  // PHASE 0 regression (2026-08-18): promoting a member to LEADER via the
+  // generic role-change endpoint used to only update the promoted member's
+  // roleKey and guild.leaderMemberId -- it never demoted the previous
+  // LEADER, so a guild could end up with two members holding roleKey
+  // 'LEADER' at once. assertRole() checks roleKey directly (not
+  // leaderMemberId), so the stale ex-leader kept real LEADER-only authority,
+  // not just a cosmetic data glitch. Fixed by making the promotion an
+  // atomic transfer: any other member with roleKey 'LEADER' is demoted to
+  // 'OFFICER' in the same transaction as the promotion. This block uses a
+  // separate, isolated guild+members fixture so it cannot interfere with
+  // the shared fixture used by the tests above.
+  describe('leadership transfer -- single LEADER invariant', () => {
+    let transferGuildSlug = ''
+    let transferGuildId = ''
+    let originalLeader: { username: string, password: string }
+    let memberX: { username: string, password: string }
+    let memberY: { username: string, password: string }
+    let originalLeaderToken = ''
+    let memberXToken = ''
+    let memberYToken = ''
+    let originalLeaderMemberId = ''
+    let memberXId = ''
+    let memberYId = ''
+
+    const countLeaders = async () =>
+      prisma.guildMember.count({ where: { guildId: transferGuildId, roleKey: 'LEADER', removedAt: null } })
+
+    it('sets up an isolated guild with a leader and two ordinary members', async () => {
+      originalLeader = await register('TL')
+      memberX = await register('TX')
+      memberY = await register('TY')
+
+      const leaderCharId = (await createCharacter(originalLeader.username, 'TL')).id
+      const memberXCharId = (await createCharacter(memberX.username, 'TX')).id
+      const memberYCharId = (await createCharacter(memberY.username, 'TY')).id
+
+      originalLeaderToken = await login(originalLeader.username, originalLeader.password)
+      memberXToken = await login(memberX.username, memberX.password)
+      memberYToken = await login(memberY.username, memberY.password)
+
+      const created = await (await request())
+        .post('/api/admin/guilds')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ name: `Transfer Fixture ${suffix}`, tag: 'TRF', leaderCharacterId: leaderCharId })
+      expect(created.status).toBe(201)
+      transferGuildSlug = created.body.slug
+      transferGuildId = created.body.id
+
+      const leaderRow = await prisma.guildMember.findUniqueOrThrow({ where: { characterId: leaderCharId } })
+      originalLeaderMemberId = leaderRow.id
+
+      const memberXRow = await prisma.guildMember.create({
+        data: { guildId: transferGuildId, characterId: memberXCharId, accountId: (await prisma.account.findUniqueOrThrow({ where: { username: memberX.username } })).id, roleKey: 'OFFICER' }
+      })
+      memberXId = memberXRow.id
+      const memberYRow = await prisma.guildMember.create({
+        data: { guildId: transferGuildId, characterId: memberYCharId, accountId: (await prisma.account.findUniqueOrThrow({ where: { username: memberY.username } })).id, roleKey: 'MEMBER' }
+      })
+      memberYId = memberYRow.id
+
+      expect(await countLeaders()).toBe(1)
+    })
+
+    it('transfers leadership to Member X: exactly one LEADER before and after, previous leader demoted to OFFICER (not invented)', async () => {
+      const result = await (await request())
+        .patch(`/api/guilds/${transferGuildSlug}/members/${memberXId}/role`)
+        .set('Authorization', `Bearer ${originalLeaderToken}`)
+        .send({ roleKey: 'LEADER' })
+      expect(result.status).toBe(200)
+      expect(result.body.roleKey).toBe('LEADER')
+
+      expect(await countLeaders()).toBe(1)
+
+      const demotedOriginal = await prisma.guildMember.findUniqueOrThrow({ where: { id: originalLeaderMemberId } })
+      expect(demotedOriginal.roleKey).toBe('OFFICER')
+
+      const guildRow = await prisma.guild.findUniqueOrThrow({ where: { id: transferGuildId } })
+      expect(guildRow.leaderMemberId).toBe(memberXId)
+    })
+
+    it('rejects a role change from a member who no longer holds LEADER (the demoted original leader)', async () => {
+      const result = await (await request())
+        .patch(`/api/guilds/${transferGuildSlug}/members/${memberYId}/role`)
+        .set('Authorization', `Bearer ${originalLeaderToken}`)
+        .send({ roleKey: 'OFFICER' })
+      expect(result.status).toBe(403)
+    })
+
+    it('transfers leadership back to the original leader: still exactly one LEADER, Member X demoted to OFFICER', async () => {
+      const result = await (await request())
+        .patch(`/api/guilds/${transferGuildSlug}/members/${originalLeaderMemberId}/role`)
+        .set('Authorization', `Bearer ${memberXToken}`)
+        .send({ roleKey: 'LEADER' })
+      expect(result.status).toBe(200)
+
+      expect(await countLeaders()).toBe(1)
+      const demotedX = await prisma.guildMember.findUniqueOrThrow({ where: { id: memberXId } })
+      expect(demotedX.roleKey).toBe('OFFICER')
+    })
+
+    it('re-promoting the current leader to LEADER is an idempotent no-op, never creating a second LEADER', async () => {
+      const result = await (await request())
+        .patch(`/api/guilds/${transferGuildSlug}/members/${originalLeaderMemberId}/role`)
+        .set('Authorization', `Bearer ${originalLeaderToken}`)
+        .send({ roleKey: 'LEADER' })
+      expect(result.status).toBe(200)
+      expect(result.body.roleKey).toBe('LEADER')
+      expect(await countLeaders()).toBe(1)
+    })
+
+    it('rejects an unauthorized outsider attempting a leadership transfer', async () => {
+      const result = await (await request())
+        .patch(`/api/guilds/${transferGuildSlug}/members/${memberYId}/role`)
+        .set('Authorization', `Bearer ${memberYToken}`)
+        .send({ roleKey: 'LEADER' })
+      expect(result.status).toBe(403)
+      expect(await countLeaders()).toBe(1)
+    })
+
+    it('never ends up with zero or two LEADERs even under two concurrent transfer attempts', async () => {
+      const [first, second] = await Promise.all([
+        (await request())
+          .patch(`/api/guilds/${transferGuildSlug}/members/${memberXId}/role`)
+          .set('Authorization', `Bearer ${originalLeaderToken}`)
+          .send({ roleKey: 'LEADER' }),
+        (await request())
+          .patch(`/api/guilds/${transferGuildSlug}/members/${memberYId}/role`)
+          .set('Authorization', `Bearer ${originalLeaderToken}`)
+          .send({ roleKey: 'LEADER' })
+      ])
+      // At least one concurrent request may be rejected if the actor's own
+      // LEADER status was already transferred away by the other request
+      // racing ahead of it -- the invariant under test is never "both
+      // succeed", it's "the guild never has zero or two LEADERs afterward".
+      expect([first.status, second.status].filter((status) => status === 200).length).toBeGreaterThanOrEqual(1)
+      expect(await countLeaders()).toBe(1)
+    })
+  })
 })
