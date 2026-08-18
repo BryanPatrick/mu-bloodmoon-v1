@@ -13,6 +13,13 @@ beforeAll(async () => {
   process.env.JWT_ACCESS_SECRET = 'e2e-guilds-access-secret'
   process.env.JWT_REFRESH_SECRET = 'e2e-guilds-refresh-secret'
   process.env.TWO_FACTOR_ENCRYPTION_KEY = 'e2e-guilds-two-factor-encryption-key-32c'
+  // This file's register() helper is called well over the default anti-abuse
+  // limit (10/hour/IP -- see auth-rate-limit.service.ts) once Guild Step 1's
+  // profile self-management fixtures are added on top of the pre-existing
+  // MVP and leadership-transfer fixtures. Same override pattern already used
+  // by password-recovery.e2e-spec.ts; scoped to this test process only.
+  process.env.AUTH_RATE_REGISTER_IP_LIMIT = '50'
+  process.env.AUTH_RATE_REGISTER_SUBJECT_LIMIT = '50'
 
   execSync('npx prisma migrate deploy', { cwd: __dirname + '/..', env: process.env, stdio: 'pipe' })
 }, 120000)
@@ -556,6 +563,179 @@ describe('Guilds MVP', () => {
       // succeed", it's "the guild never has zero or two LEADERs afterward".
       expect([first.status, second.status].filter((status) => status === 200).length).toBeGreaterThanOrEqual(1)
       expect(await countLeaders()).toBe(1)
+    })
+  })
+
+  // GUILD STEP 1 (2026-08-18): connects the frontend to backend
+  // self-management that already existed (updateGuild/uploadEmblem/
+  // uploadBanner) but had no UI wired to it. This block verifies the
+  // backend side of that connection: an authorized member (LEADER or
+  // OFFICER, not just LEADER) can edit and upload; an unauthorized member
+  // and a non-member cannot; validation rejects out-of-range input; a real
+  // image upload actually works end-to-end. Isolated fixture, does not
+  // touch the shared guild used by earlier tests in this file.
+  describe('profile self-management (Guild Step 1)', () => {
+    let mgmtGuildSlug = ''
+    let mgmtLeaderToken = ''
+    let mgmtOfficerToken = ''
+    let mgmtRecruit: { username: string, password: string }
+    let mgmtRecruitToken = ''
+    let mgmtOutsiderToken = ''
+
+    it('sets up an isolated guild with a LEADER, an OFFICER and a plain RECRUIT member', async () => {
+      const mgmtLeader = await register('ML')
+      const mgmtOfficer = await register('MO')
+      mgmtRecruit = await register('MR')
+      const mgmtOutsider = await register('MX')
+
+      const leaderCharId = (await createCharacter(mgmtLeader.username, 'ML')).id
+      const officerCharId = (await createCharacter(mgmtOfficer.username, 'MO')).id
+      const recruitCharId = (await createCharacter(mgmtRecruit.username, 'MR')).id
+
+      mgmtLeaderToken = await login(mgmtLeader.username, mgmtLeader.password)
+      mgmtOfficerToken = await login(mgmtOfficer.username, mgmtOfficer.password)
+      mgmtRecruitToken = await login(mgmtRecruit.username, mgmtRecruit.password)
+      mgmtOutsiderToken = await login(mgmtOutsider.username, mgmtOutsider.password)
+
+      const created = await (await request())
+        .post('/api/admin/guilds')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({ name: `Management Fixture ${suffix}`, tag: 'MGT', leaderCharacterId: leaderCharId })
+      expect(created.status).toBe(201)
+      mgmtGuildSlug = created.body.slug
+      const mgmtGuildId = created.body.id
+
+      await prisma.guildMember.create({
+        data: { guildId: mgmtGuildId, characterId: officerCharId, accountId: (await prisma.account.findUniqueOrThrow({ where: { username: mgmtOfficer.username } })).id, roleKey: 'OFFICER' }
+      })
+      await prisma.guildMember.create({
+        data: { guildId: mgmtGuildId, characterId: recruitCharId, accountId: (await prisma.account.findUniqueOrThrow({ where: { username: mgmtRecruit.username } })).id, roleKey: 'RECRUIT' }
+      })
+    })
+
+    it('rejects profile updates from a non-member (403) and a RECRUIT member (403) -- only LEADER/OFFICER may edit', async () => {
+      const asOutsider = await (await request())
+        .patch(`/api/guilds/${mgmtGuildSlug}`)
+        .set('Authorization', `Bearer ${mgmtOutsiderToken}`)
+        .send({ description: 'Tentativa de não-membro.' })
+      expect(asOutsider.status).toBe(403)
+
+      const asRecruit = await (await request())
+        .patch(`/api/guilds/${mgmtGuildSlug}`)
+        .set('Authorization', `Bearer ${mgmtRecruitToken}`)
+        .send({ description: 'Tentativa de recruta comum.' })
+      expect(asRecruit.status).toBe(403)
+    })
+
+    it('lets an OFFICER (not just LEADER) edit the profile -- matches assertRole([LEADER, OFFICER]) in guilds.service.ts', async () => {
+      const result = await (await request())
+        .patch(`/api/guilds/${mgmtGuildSlug}`)
+        .set('Authorization', `Bearer ${mgmtOfficerToken}`)
+        .send({ name: `Management Fixture ${suffix}`, tag: 'MGT', description: 'Editado por um OFFICER.', focusTags: ['PVE', 'FARM'] })
+      expect(result.status).toBe(200)
+      expect(result.body.description).toBe('Editado por um OFFICER.')
+      expect(result.body.focusTags.map((entry: any) => entry.tag).sort()).toEqual(['FARM', 'PVE'])
+    })
+
+    it('validates field bounds server-side regardless of what the UI sends', async () => {
+      const shortName = await (await request())
+        .patch(`/api/guilds/${mgmtGuildSlug}`)
+        .set('Authorization', `Bearer ${mgmtLeaderToken}`)
+        .send({ name: 'ab' })
+      expect(shortName.status).toBe(400)
+
+      const shortTag = await (await request())
+        .patch(`/api/guilds/${mgmtGuildSlug}`)
+        .set('Authorization', `Bearer ${mgmtLeaderToken}`)
+        .send({ tag: 'a' })
+      expect(shortTag.status).toBe(400)
+
+      const longDescription = await (await request())
+        .patch(`/api/guilds/${mgmtGuildSlug}`)
+        .set('Authorization', `Bearer ${mgmtLeaderToken}`)
+        .send({ description: 'x'.repeat(4001) })
+      // description is silently truncated to 4000 chars server-side (not
+      // rejected) -- confirm that behavior explicitly rather than assuming.
+      expect(longDescription.status).toBe(200)
+      expect(longDescription.body.description.length).toBe(4000)
+    })
+
+    it('never lets the update endpoint change owner/leader/role/permissions fields -- only the documented profile fields exist on the payload type', async () => {
+      const before = await prisma.guild.findUniqueOrThrow({ where: { slug: mgmtGuildSlug } })
+      const attempt = await (await request())
+        .patch(`/api/guilds/${mgmtGuildSlug}`)
+        .set('Authorization', `Bearer ${mgmtLeaderToken}`)
+        // leaderMemberId/status/source are not part of GuildUpdatePayload --
+        // even if sent, Prisma's typed update() call in updateGuild() only
+        // ever reads name/tag/description/recruitment/focusTags off the
+        // payload, so extra fields are silently ignored, not applied.
+        .send({ description: 'Ainda editando.', leaderMemberId: 'not-a-real-id', status: 'SUSPENDED' })
+      expect(attempt.status).toBe(200)
+      const after = await prisma.guild.findUniqueOrThrow({ where: { slug: mgmtGuildSlug } })
+      expect(after.leaderMemberId).toBe(before.leaderMemberId)
+      expect(after.status).toBe(before.status)
+    })
+
+    it('rejects an emblem upload from a non-member (403) and a RECRUIT (403)', async () => {
+      const sharp = (await import('sharp')).default
+      const png = await sharp({ create: { width: 32, height: 32, channels: 3, background: { r: 120, g: 10, b: 10 } } }).png().toBuffer()
+
+      const asOutsider = await (await request())
+        .post(`/api/guilds/${mgmtGuildSlug}/emblem`)
+        .set('Authorization', `Bearer ${mgmtOutsiderToken}`)
+        .attach('file', png, 'emblem.png')
+      expect(asOutsider.status).toBe(403)
+
+      const asRecruit = await (await request())
+        .post(`/api/guilds/${mgmtGuildSlug}/emblem`)
+        .set('Authorization', `Bearer ${mgmtRecruitToken}`)
+        .attach('file', png, 'emblem.png')
+      expect(asRecruit.status).toBe(403)
+    })
+
+    it('lets LEADER upload a real emblem end-to-end: resized to 512x512, re-encoded to webp, guild.emblemUrl updated', async () => {
+      const sharp = (await import('sharp')).default
+      const png = await sharp({ create: { width: 800, height: 600, channels: 3, background: { r: 10, g: 200, b: 10 } } }).png().toBuffer()
+
+      const result = await (await request())
+        .post(`/api/guilds/${mgmtGuildSlug}/emblem`)
+        .set('Authorization', `Bearer ${mgmtLeaderToken}`)
+        .attach('file', png, 'emblem.png')
+      expect(result.status).toBe(201)
+      expect(result.body.width).toBe(512)
+      expect(result.body.height).toBe(512)
+      expect(result.body.mimeType).toBe('image/webp')
+      expect(result.body.url).toMatch(/^\/api\/media\/guild\/[a-f0-9-]+\.webp$/)
+
+      const guildRow = await prisma.guild.findUniqueOrThrow({ where: { slug: mgmtGuildSlug } })
+      expect(guildRow.emblemUrl).toBe(result.body.url)
+    })
+
+    it('lets OFFICER upload a real banner end-to-end: resized to 1600x480', async () => {
+      const sharp = (await import('sharp')).default
+      const png = await sharp({ create: { width: 2000, height: 2000, channels: 3, background: { r: 10, g: 10, b: 200 } } }).png().toBuffer()
+
+      const result = await (await request())
+        .post(`/api/guilds/${mgmtGuildSlug}/banner`)
+        .set('Authorization', `Bearer ${mgmtOfficerToken}`)
+        .attach('file', png, 'banner.png')
+      expect(result.status).toBe(201)
+      expect(result.body.width).toBe(1600)
+      expect(result.body.height).toBe(480)
+
+      const guildRow = await prisma.guild.findUniqueOrThrow({ where: { slug: mgmtGuildSlug } })
+      expect(guildRow.bannerUrl).toBe(result.body.url)
+    })
+
+    it('rejects a non-image file with a clear error, leaving the previous emblem untouched', async () => {
+      const beforeGuild = await prisma.guild.findUniqueOrThrow({ where: { slug: mgmtGuildSlug } })
+      const result = await (await request())
+        .post(`/api/guilds/${mgmtGuildSlug}/emblem`)
+        .set('Authorization', `Bearer ${mgmtLeaderToken}`)
+        .attach('file', Buffer.from('not an image'), 'notes.txt')
+      expect(result.status).toBe(400)
+      const afterGuild = await prisma.guild.findUniqueOrThrow({ where: { slug: mgmtGuildSlug } })
+      expect(afterGuild.emblemUrl).toBe(beforeGuild.emblemUrl)
     })
   })
 })

@@ -14,16 +14,33 @@
       </div>
 
       <template v-else-if="guild">
-        <GuildProfileHeader :guild="guild" />
+        <GuildProfileHeader :guild="guild" :can-manage="canManage">
+          <template v-if="canManage" #actions>
+            <UButton color="neutral" variant="soft" size="sm" @click="showEditor = true">
+              <Pencil class="size-4" />Editar perfil
+            </UButton>
+          </template>
+        </GuildProfileHeader>
         <GuildProfileTabs :guild="guild" :slug="slug" @refresh="refresh" />
+
+        <GuildProfileEditor
+          v-if="showEditor"
+          :guild="guild"
+          :slug="slug"
+          @close="showEditor = false"
+          @saved="onSaved"
+        />
       </template>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
+import { Pencil } from 'lucide-vue-next'
+
 const route = useRoute()
 const api = useGuildsApi()
+const { user } = useAuth()
 
 const slug = computed(() => String(route.params.slug || '').toLowerCase())
 
@@ -32,6 +49,23 @@ const { data: guild, pending, error, refresh } = await useAsyncData(
   () => api.bySlug(slug.value),
   { watch: [slug] }
 )
+
+// Backend authority: guilds.service.ts's updateGuild/uploadEmblem/
+// uploadBanner all gate on assertRole(['LEADER', 'OFFICER']) -- mirrored
+// here for UI visibility only, never trusted as the real access control.
+// A direct API call from a non-LEADER/OFFICER member still gets 403 from
+// the backend regardless of what this computed shows.
+const canManage = computed(() => {
+  const members = (guild.value as any)?.members as Array<{ roleKey: string, account?: { id?: string } }> | undefined
+  const membership = members?.find((member) => member.account?.id === user.value?.id)
+  return membership?.roleKey === 'LEADER' || membership?.roleKey === 'OFFICER'
+})
+
+const showEditor = ref(false)
+// Always re-fetch from the API after any save (profile fields or an
+// emblem/banner upload) rather than trusting a locally-merged guess --
+// keeps the header/tabs showing the server's real, current state.
+const onSaved = () => refresh()
 
 const errorStatus = computed(() => {
   const err = error.value as any
