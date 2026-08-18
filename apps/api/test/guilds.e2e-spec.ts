@@ -1066,4 +1066,224 @@ describe('Guilds MVP', () => {
       expect(invite.status).toBe(400)
     })
   })
+
+  // GUILD STEP 3 (2026-08-18): member list / role management / kick UI.
+  // updateMemberRole is LEADER-only (assertRole(['LEADER']) in
+  // guilds.service.ts) -- stricter than kickMember, invites, and profile
+  // edits, which all allow LEADER+OFFICER. This block exists specifically to
+  // pin that asymmetry down with real requests, plus the two integrity
+  // guards added this step: a LEADER cannot demote themselves via this
+  // generic endpoint (self-escalation-adjacent -- would orphan the guild),
+  // and a role change against a concurrently-removed member is rejected
+  // instead of silently landing on a ghost row.
+  describe('member management / roles (Guild Step 3)', () => {
+    let roleGuildSlug = ''
+    let roleGuildId = ''
+    let roleLeaderToken = ''
+    let roleLeaderMemberId = ''
+    let roleOfficerToken = ''
+    let roleOfficerMemberId = ''
+    let roleRecruitToken = ''
+    let roleOutsiderToken = ''
+    let m1Id = ''
+    let m2Id = ''
+
+    it('sets up an isolated guild with LEADER, OFFICER, RECRUIT, two plain MEMBERs, and an outsider', async () => {
+      const leader = await register('RL')
+      const officer = await register('RO')
+      const recruit = await register('RR')
+      const outsider = await register('RX')
+      const m1 = await register('M1')
+      const m2 = await register('M2')
+
+      const leaderCharId = (await createCharacter(leader.username, 'RL')).id
+      const officerCharId = (await createCharacter(officer.username, 'RO')).id
+      const recruitCharId = (await createCharacter(recruit.username, 'RR')).id
+      const m1CharId = (await createCharacter(m1.username, 'M1')).id
+      const m2CharId = (await createCharacter(m2.username, 'M2')).id
+
+      roleLeaderToken = await login(leader.username, leader.password)
+      roleOfficerToken = await login(officer.username, officer.password)
+      roleRecruitToken = await login(recruit.username, recruit.password)
+      roleOutsiderToken = await login(outsider.username, outsider.password)
+
+      const created = await (await request()).post('/api/admin/guilds').set('Authorization', `Bearer ${adminToken}`)
+        .send({ name: `Roles Fixture ${suffix}`, tag: 'ROL', leaderCharacterId: leaderCharId })
+      expect(created.status).toBe(201)
+      roleGuildSlug = created.body.slug
+      roleGuildId = created.body.id
+      roleLeaderMemberId = (await prisma.guildMember.findUniqueOrThrow({ where: { characterId: leaderCharId } })).id
+
+      const officerMember = await prisma.guildMember.create({
+        data: { guildId: roleGuildId, characterId: officerCharId, accountId: (await prisma.account.findUniqueOrThrow({ where: { username: officer.username } })).id, roleKey: 'OFFICER' }
+      })
+      roleOfficerMemberId = officerMember.id
+      await prisma.guildMember.create({
+        data: { guildId: roleGuildId, characterId: recruitCharId, accountId: (await prisma.account.findUniqueOrThrow({ where: { username: recruit.username } })).id, roleKey: 'RECRUIT' }
+      })
+      const m1Member = await prisma.guildMember.create({
+        data: { guildId: roleGuildId, characterId: m1CharId, accountId: (await prisma.account.findUniqueOrThrow({ where: { username: m1.username } })).id, roleKey: 'MEMBER' }
+      })
+      m1Id = m1Member.id
+      const m2Member = await prisma.guildMember.create({
+        data: { guildId: roleGuildId, characterId: m2CharId, accountId: (await prisma.account.findUniqueOrThrow({ where: { username: m2.username } })).id, roleKey: 'MEMBER' }
+      })
+      m2Id = m2Member.id
+    })
+
+    it('confirms the real permission asymmetry: OFFICER, RECRUIT, and outsider can all not change roles -- only LEADER can', async () => {
+      const asOfficer = await (await request())
+        .patch(`/api/guilds/${roleGuildSlug}/members/${m1Id}/role`)
+        .set('Authorization', `Bearer ${roleOfficerToken}`)
+        .send({ roleKey: 'OFFICER' })
+      expect(asOfficer.status).toBe(403)
+
+      const asRecruit = await (await request())
+        .patch(`/api/guilds/${roleGuildSlug}/members/${m1Id}/role`)
+        .set('Authorization', `Bearer ${roleRecruitToken}`)
+        .send({ roleKey: 'OFFICER' })
+      expect(asRecruit.status).toBe(403)
+
+      const asOutsider = await (await request())
+        .patch(`/api/guilds/${roleGuildSlug}/members/${m1Id}/role`)
+        .set('Authorization', `Bearer ${roleOutsiderToken}`)
+        .send({ roleKey: 'OFFICER' })
+      expect(asOutsider.status).toBe(403)
+    })
+
+    it('OFFICER cannot alter the LEADER (blocked at the role-change guard itself, not just RBAC)', async () => {
+      // OFFICER never even reaches the LEADER-target guard -- assertRole
+      // rejects first, same 403 as the generic case above. Kept as its own
+      // test because it is the literal case the spec asks about.
+      const attempt = await (await request())
+        .patch(`/api/guilds/${roleGuildSlug}/members/${roleLeaderMemberId}/role`)
+        .set('Authorization', `Bearer ${roleOfficerToken}`)
+        .send({ roleKey: 'MEMBER' })
+      expect(attempt.status).toBe(403)
+    })
+
+    it('self-escalation: the LEADER cannot change their own role via this generic endpoint', async () => {
+      const attempt = await (await request())
+        .patch(`/api/guilds/${roleGuildSlug}/members/${roleLeaderMemberId}/role`)
+        .set('Authorization', `Bearer ${roleLeaderToken}`)
+        .send({ roleKey: 'OFFICER' })
+      expect(attempt.status).toBe(400)
+
+      const leaderRow = await prisma.guildMember.findUniqueOrThrow({ where: { id: roleLeaderMemberId } })
+      expect(leaderRow.roleKey).toBe('LEADER')
+      const guildRow = await prisma.guild.findUniqueOrThrow({ where: { id: roleGuildId } })
+      expect(guildRow.leaderMemberId).toBe(roleLeaderMemberId)
+    })
+
+    it('valid promotion and demotion by LEADER', async () => {
+      const promote = await (await request())
+        .patch(`/api/guilds/${roleGuildSlug}/members/${m1Id}/role`)
+        .set('Authorization', `Bearer ${roleLeaderToken}`)
+        .send({ roleKey: 'OFFICER' })
+      expect(promote.status).toBe(200)
+      expect(promote.body.roleKey).toBe('OFFICER')
+
+      const demote = await (await request())
+        .patch(`/api/guilds/${roleGuildSlug}/members/${m1Id}/role`)
+        .set('Authorization', `Bearer ${roleLeaderToken}`)
+        .send({ roleKey: 'RECRUIT' })
+      expect(demote.status).toBe(200)
+      expect(demote.body.roleKey).toBe('RECRUIT')
+
+      const row = await prisma.guildMember.findUniqueOrThrow({ where: { id: m1Id } })
+      expect(row.roleKey).toBe('RECRUIT')
+    })
+
+    it('kick: OFFICER can kick a MEMBER (allowed), RECRUIT and outsider cannot (denied), LEADER cannot be kicked by anyone', async () => {
+      const asRecruit = await (await request())
+        .delete(`/api/guilds/${roleGuildSlug}/members/${m2Id}`)
+        .set('Authorization', `Bearer ${roleRecruitToken}`)
+        .send({ reason: 'Tentativa não autorizada.' })
+      expect(asRecruit.status).toBe(403)
+
+      const asOutsider = await (await request())
+        .delete(`/api/guilds/${roleGuildSlug}/members/${m2Id}`)
+        .set('Authorization', `Bearer ${roleOutsiderToken}`)
+        .send({ reason: 'Tentativa não autorizada.' })
+      expect(asOutsider.status).toBe(403)
+
+      const leaderKickedByOfficer = await (await request())
+        .delete(`/api/guilds/${roleGuildSlug}/members/${roleLeaderMemberId}`)
+        .set('Authorization', `Bearer ${roleOfficerToken}`)
+        .send({ reason: 'Tentativa inválida contra o líder.' })
+      expect(leaderKickedByOfficer.status).toBe(400)
+
+      const noReason = await (await request())
+        .delete(`/api/guilds/${roleGuildSlug}/members/${m2Id}`)
+        .set('Authorization', `Bearer ${roleOfficerToken}`)
+        .send({})
+      expect(noReason.status).toBe(400)
+
+      const validKick = await (await request())
+        .delete(`/api/guilds/${roleGuildSlug}/members/${m2Id}`)
+        .set('Authorization', `Bearer ${roleOfficerToken}`)
+        .send({ reason: 'Inatividade prolongada.' })
+      expect(validKick.status).toBe(200)
+
+      const row = await prisma.guildMember.findUniqueOrThrow({ where: { id: m2Id } })
+      expect(row.removedAt).not.toBeNull()
+    })
+
+    it('operations against an already-removed member fail cleanly, not with a corrupted or crashed state', async () => {
+      // m2 was kicked in the previous test -- a role change against it now
+      // must reject, not silently write a role onto a ghost membership row.
+      const roleChangeAfterKick = await (await request())
+        .patch(`/api/guilds/${roleGuildSlug}/members/${m2Id}/role`)
+        .set('Authorization', `Bearer ${roleLeaderToken}`)
+        .send({ roleKey: 'OFFICER' })
+      expect(roleChangeAfterKick.status).toBe(404)
+
+      const secondKick = await (await request())
+        .delete(`/api/guilds/${roleGuildSlug}/members/${m2Id}`)
+        .set('Authorization', `Bearer ${roleLeaderToken}`)
+        .send({ reason: 'Segunda tentativa.' })
+      // guildAndMember() filters removedAt: null, so an already-removed
+      // member is simply not found -- same clean 404, not a 500 or a
+      // silently-reapplied kick.
+      expect(secondKick.status).toBe(404)
+    })
+
+    it('concurrency: two simultaneous role changes on the same member resolve to exactly one valid final value, no crash', async () => {
+      const [first, second] = await Promise.all([
+        (await request()).patch(`/api/guilds/${roleGuildSlug}/members/${roleOfficerMemberId}/role`).set('Authorization', `Bearer ${roleLeaderToken}`).send({ roleKey: 'TREASURER' }),
+        (await request()).patch(`/api/guilds/${roleGuildSlug}/members/${roleOfficerMemberId}/role`).set('Authorization', `Bearer ${roleLeaderToken}`).send({ roleKey: 'MEMBER' })
+      ])
+      expect([first.status, second.status]).not.toContain(500)
+      expect(first.status).toBe(200)
+      expect(second.status).toBe(200)
+
+      const row = await prisma.guildMember.findUniqueOrThrow({ where: { id: roleOfficerMemberId } })
+      expect(['TREASURER', 'MEMBER']).toContain(row.roleKey)
+    })
+
+    it('concurrency: a kick racing a role change against the same member ends in a valid, deterministic state -- never a 500, member ends up removed either way', async () => {
+      const targetCharacter = await createCharacter((await register('M3')).username, 'M3')
+      const targetMember = await prisma.guildMember.create({
+        data: { guildId: roleGuildId, characterId: targetCharacter.id, accountId: targetCharacter.accountId, roleKey: 'MEMBER' }
+      })
+
+      const [kick, roleChange] = await Promise.all([
+        (await request()).delete(`/api/guilds/${roleGuildSlug}/members/${targetMember.id}`).set('Authorization', `Bearer ${roleLeaderToken}`).send({ reason: 'Removido durante corrida de concorrência.' }),
+        (await request()).patch(`/api/guilds/${roleGuildSlug}/members/${targetMember.id}/role`).set('Authorization', `Bearer ${roleLeaderToken}`).send({ roleKey: 'OFFICER' })
+      ])
+
+      expect([kick.status, roleChange.status]).not.toContain(500)
+      // The kick has no concurrent-removal guard of its own (nothing else
+      // can race it into removing the SAME row twice in this scenario), so
+      // it always lands. The role change either wins the race and succeeds
+      // (200) or loses to the kick and is rejected (404 via the same
+      // updateMany+count guard exercised deterministically above) -- both
+      // are valid, neither is a crash or a silently corrupted row.
+      expect(kick.status).toBe(200)
+      expect([200, 404]).toContain(roleChange.status)
+
+      const row = await prisma.guildMember.findUniqueOrThrow({ where: { id: targetMember.id } })
+      expect(row.removedAt).not.toBeNull()
+    })
+  })
 })

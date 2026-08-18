@@ -625,7 +625,28 @@ export class GuildsService {
       return promoted
     }
 
-    const updated = await this.prisma.guildMember.update({ where: { id: member.id }, data: { roleKey } })
+    // The mirror image of the dual-leader bug fixed for the promotion branch
+    // above: nothing else in this generic endpoint stops the acting LEADER
+    // from demoting THEMSELVES away from 'LEADER' (the only way this branch
+    // is reached with member.roleKey === 'LEADER', since assertRole above
+    // already requires the caller to BE the current LEADER). That would
+    // leave Guild.leaderMemberId pointing at a member who no longer holds
+    // roleKey='LEADER', and zero members holding it -- an orphaned guild,
+    // not just a cosmetic inconsistency. Changing the current leader's own
+    // role is a leadership-transfer action in disguise; it belongs to the
+    // dedicated transfer flow (Guild Step 4), not this generic endpoint.
+    if (member.roleKey === 'LEADER') {
+      throw new BadRequestException('Use a transferência de liderança para alterar o papel do líder atual.')
+    }
+
+    // Guard against a role change landing on a member a concurrent kick just
+    // removed: guildAndMember() read the row before either write happened,
+    // so a plain update-by-id would silently apply a role to an already-
+    // removed member. updateMany + a fresh removedAt filter makes the write
+    // itself the race check, not just the earlier read.
+    const { count } = await this.prisma.guildMember.updateMany({ where: { id: member.id, removedAt: null }, data: { roleKey } })
+    if (count === 0) throw new NotFoundException('Membro não encontrado.')
+    const updated = await this.prisma.guildMember.findUniqueOrThrow({ where: { id: member.id } })
     await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_MEMBER_ROLE_CHANGED', entityType: 'GuildMember', entityId: member.id, actorUserId: user.id, targetUserId: member.accountId, description: `Papel alterado para ${roleKey}.` })
     return updated
   }

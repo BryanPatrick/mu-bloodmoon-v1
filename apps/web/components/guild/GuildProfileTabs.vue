@@ -101,21 +101,50 @@
       <!-- Membros -->
       <div v-else-if="activeTab === 'members'" class="guild-tab-members">
         <div v-if="loading.members" class="guild-tab-empty">Carregando membros...</div>
-        <table v-else-if="members.length">
-          <thead><tr><th>Personagem</th><th>Papel</th><th>XP</th><th>Contribuição</th><th v-if="canManage"></th></tr></thead>
+        <table v-else-if="members.length" class="guild-members-table">
+          <thead><tr><th>Personagem</th><th>Papel</th><th>XP</th><th>Contribuição</th><th v-if="canManage">Ações</th></tr></thead>
           <tbody>
             <tr v-for="member in members" :key="member.id">
-              <td>{{ member.character?.name }} <small>@{{ member.account?.username }}</small></td>
-              <td><span class="guild-role-badge" :class="`is-${member.roleKey?.toLowerCase()}`">{{ roleLabel(member.roleKey) }}</span></td>
-              <td>{{ member.memberXp }}</td>
-              <td>{{ member.contributionScore }}</td>
-              <td v-if="canManage && member.roleKey !== 'LEADER'">
-                <button type="button" class="guild-link-btn" @click="promptKick(member)">Remover</button>
+              <td data-label="Personagem">{{ member.character?.name }} <small>@{{ member.account?.username }}</small></td>
+              <td data-label="Papel"><span class="guild-role-badge" :class="`is-${member.roleKey?.toLowerCase()}`">{{ roleLabel(member.roleKey) }}</span></td>
+              <td data-label="XP">{{ member.memberXp }}</td>
+              <td data-label="Contribuição">{{ member.contributionScore }}</td>
+              <td v-if="canManage" data-label="Ações" class="guild-member-actions">
+                <template v-if="canManageMember(member)">
+                  <div v-if="kickTarget?.id === member.id" class="guild-member-kick-confirm">
+                    <textarea v-model="kickReason" rows="2" placeholder="Motivo da remoção (mín. 3 caracteres)" />
+                    <div class="guild-member-kick-confirm__actions">
+                      <button type="button" class="guild-link-btn" :disabled="kickingId === member.id" @click="confirmKick">
+                        {{ kickingId === member.id ? 'Removendo...' : 'Confirmar remoção' }}
+                      </button>
+                      <button type="button" class="guild-link-btn is-quiet" :disabled="kickingId === member.id" @click="cancelKick">Cancelar</button>
+                    </div>
+                    <p v-if="kickError" class="guild-error">{{ kickError }}</p>
+                  </div>
+                  <template v-else>
+                    <div v-if="isLeader" class="guild-member-actions__role">
+                      <select v-model="roleDrafts[member.id]" :disabled="roleChangingId === member.id">
+                        <option v-for="option in assignableRoles" :key="option" :value="option">{{ roleLabel(option) }}</option>
+                      </select>
+                      <button
+                        type="button"
+                        class="guild-link-btn"
+                        :disabled="roleChangingId === member.id || roleDrafts[member.id] === member.roleKey"
+                        @click="submitRoleChange(member)"
+                      >
+                        {{ roleChangingId === member.id ? 'Salvando...' : 'Aplicar' }}
+                      </button>
+                    </div>
+                    <button type="button" class="guild-link-btn" @click="startKick(member)">Remover</button>
+                  </template>
+                </template>
+                <span v-else class="guild-member-actions__none">—</span>
               </td>
             </tr>
           </tbody>
         </table>
         <p v-else class="guild-tab-empty">Nenhum membro encontrado.</p>
+        <p v-if="memberActionError" class="guild-error">{{ memberActionError }}</p>
       </div>
 
       <!-- Guild Level -->
@@ -417,14 +446,84 @@ const submitCancelInvite = async (id: string) => {
   }
 }
 
-const promptKick = async (member: any) => {
-  const reason = typeof window !== 'undefined' ? window.prompt('Motivo da remoção:') : ''
-  if (!reason) return
+// Backend authority: updateMemberRole (guilds.service.ts) is LEADER-only --
+// stricter than kickMember, which also allows OFFICER. isLeader mirrors that
+// exactly rather than reusing canManage, so an OFFICER never sees a role
+// control that would just 403 on submit.
+const isLeader = computed(() => myMembership.value?.roleKey === 'LEADER')
+
+// A member row only shows an actions menu when there is something the
+// acting user is actually authorized to do -- never a disabled control with
+// no explanation. Both role changes and kicks are backend-blocked against
+// the LEADER row (kicking the leader is rejected outright; changing the
+// leader's own role away from LEADER is a leadership-transfer action
+// reserved for a future step), and self-service actions belong to "Sair da
+// guilda" above, not this menu.
+const canManageMember = (member: any) => member.roleKey !== 'LEADER' && member.id !== myMembership.value?.id
+
+// Never includes LEADER: promoting a member to LEADER is a leadership
+// transfer (guilds.service.ts treats it as one, demoting the prior leader
+// in the same transaction), explicitly deferred to a later step. Hiding it
+// here, not just relying on the backend to reject it, keeps the control
+// itself from implying an action this step doesn't support.
+const assignableRoles = ['OFFICER', 'TREASURER', 'MEMBER', 'RECRUIT']
+const roleDrafts = reactive<Record<string, string>>({})
+watch(members, (list) => {
+  const next: Record<string, string> = {}
+  for (const member of list) next[member.id] = assignableRoles.includes(member.roleKey) ? member.roleKey : 'MEMBER'
+  Object.assign(roleDrafts, next)
+}, { immediate: true })
+
+const roleChangingId = ref('')
+const memberActionError = ref('')
+const submitRoleChange = async (member: any) => {
+  const nextRole = roleDrafts[member.id]
+  if (!nextRole || nextRole === member.roleKey || roleChangingId.value) return
+  roleChangingId.value = member.id
+  memberActionError.value = ''
   try {
-    await api.kickMember(props.slug, member.id, { reason })
+    await api.updateMemberRole(props.slug, member.id, { roleKey: nextRole })
     loaded.delete('members')
     await loadTab('members')
-  } catch { /* best-effort MVP action */ }
+  } catch (err: any) {
+    memberActionError.value = err?.data?.message || 'Não foi possível alterar o papel deste membro.'
+    roleDrafts[member.id] = member.roleKey
+  } finally {
+    roleChangingId.value = ''
+  }
+}
+
+const kickTarget = ref<any>(null)
+const kickReason = ref('')
+const kickingId = ref('')
+const kickError = ref('')
+const startKick = (member: any) => {
+  kickTarget.value = member
+  kickReason.value = ''
+  kickError.value = ''
+}
+const cancelKick = () => {
+  kickTarget.value = null
+  kickReason.value = ''
+  kickError.value = ''
+}
+const confirmKick = async () => {
+  if (!kickTarget.value || kickingId.value) return
+  const reason = kickReason.value.trim()
+  if (reason.length < 3) { kickError.value = 'Informe um motivo (mínimo 3 caracteres).'; return }
+  kickingId.value = kickTarget.value.id
+  kickError.value = ''
+  try {
+    await api.kickMember(props.slug, kickTarget.value.id, { reason })
+    kickTarget.value = null
+    kickReason.value = ''
+    loaded.delete('members')
+    await loadTab('members')
+  } catch (err: any) {
+    kickError.value = err?.data?.message || 'Não foi possível remover este membro.'
+  } finally {
+    kickingId.value = ''
+  }
 }
 
 const requestForm = reactive({ type: 'ITEM', title: '' })
@@ -484,6 +583,15 @@ td small { display: block; color: var(--bm-muted); font-size: 0.62rem; }
 .guild-role-badge { border-radius: 3px; border: 1px solid var(--bm-border-strong); padding: 2px 7px; font-size: 0.6rem; font-weight: 800; text-transform: uppercase; }
 .guild-role-badge.is-leader { border-color: var(--bm-red); color: var(--bm-red); }
 .guild-link-btn { color: var(--bm-red); font-size: 0.68rem; font-weight: 800; background: none; border: none; }
+.guild-link-btn.is-quiet { color: var(--bm-muted); }
+.guild-link-btn:disabled { opacity: 0.5; }
+.guild-member-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.guild-member-actions__role { display: flex; align-items: center; gap: 6px; }
+.guild-member-actions__role select { border: 1px solid var(--bm-border); border-radius: 4px; background: var(--bm-surface); color: var(--bm-text); padding: 4px 6px; font-size: 0.66rem; }
+.guild-member-actions__none { color: var(--bm-muted); }
+.guild-member-kick-confirm { display: grid; gap: 6px; width: min(260px, 100%); }
+.guild-member-kick-confirm textarea { border: 1px solid var(--bm-border); border-radius: 4px; background: var(--bm-surface); color: var(--bm-text); padding: 6px 8px; font-size: 0.7rem; resize: vertical; }
+.guild-member-kick-confirm__actions { display: flex; gap: 10px; }
 .guild-inline-form { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
 .guild-inline-form select, .guild-inline-form input { border: 1px solid var(--bm-border); border-radius: 4px; background: var(--bm-surface); color: var(--bm-text); padding: 8px; font-size: 0.76rem; }
 .guild-list-item { border: 1px solid var(--bm-border); border-radius: 6px; padding: 12px; margin-bottom: 8px; }
@@ -496,5 +604,16 @@ td small { display: block; color: var(--bm-muted); font-size: 0.62rem; }
 @media (max-width: 640px) {
   .guild-tabs nav button { min-width: 100px; justify-content: center; }
   table { display: block; overflow-x: auto; }
+  /* Members specifically: a horizontally-scrolled table is still an
+     illegible table on a phone. Reflow into stacked cards instead -- one
+     <tr> per member, each <td> a labeled row via its own data-label. */
+  .guild-members-table { display: block; overflow-x: visible; }
+  .guild-members-table thead { display: none; }
+  .guild-members-table tbody { display: block; }
+  .guild-members-table tr { display: block; margin-bottom: 10px; border: 1px solid var(--bm-border); border-radius: 8px; padding: 10px 12px; }
+  .guild-members-table td { display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: none; padding: 5px 0; }
+  .guild-members-table td::before { content: attr(data-label); flex: none; color: var(--bm-muted); font-size: 0.58rem; font-weight: 900; text-transform: uppercase; }
+  .guild-members-table td.guild-member-actions { flex-direction: column; align-items: stretch; }
+  .guild-members-table td.guild-member-actions::before { margin-bottom: 2px; }
 }
 </style>
