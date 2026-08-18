@@ -6,6 +6,7 @@ import { ObservabilityService } from '../observability/observability.service'
 import { GuildsMediaService } from './guilds-media.service'
 import type {
   GuildCreatePayload,
+  GuildDisbandPayload,
   GuildInviteCandidateQuery,
   GuildInvitePayload,
   GuildJoinDecisionPayload,
@@ -247,13 +248,35 @@ export class GuildsService {
     return text.slice(0, max)
   }
 
-  // Shared by admin creation (this round's only reachable path -- see
-  // GuildsAdminService.createGuild) and a possible future self-service
-  // flow. Gateway-agnostic by caller: opening this to players later is a
-  // route/permission change here, not a rewrite.
+  // Shared by admin creation (GuildsAdminService.createGuild) and
+  // self-service creation (createGuildSelfService below, Guild Step 5.5).
+  // Gateway-agnostic by caller -- the eligibility/ownership rules that make
+  // self-service safe (own character, no active membership, rate limiting)
+  // live in the caller, not here, so admin creation keeps its own latitude
+  // (e.g. an arbitrary leaderCharacterId) unchanged.
   async createGuild(payload: GuildCreatePayload, actingUser: AuthenticatedUser) {
     const name = this.requiredText(payload.name, 'o nome da guild', 3, 100)
     const tag = this.requiredText(payload.tag, 'a tag da guild', 2, 10).toUpperCase()
+    // Name/tag uniqueness (Guild Step 5.5): neither was ever DB-unique --
+    // only the derived slug is (@unique in schema.prisma) -- so two guilds
+    // could already share a name/tag under different slugs before this
+    // check existed. Scoped to ACTIVE guilds only: a DISBANDED guild's name
+    // is invisible everywhere a user could see it (directory already
+    // filters to status: 'ACTIVE'), so its name/tag are free to reuse. This
+    // does NOT touch the slug uniqueness constraint itself, which stays
+    // unconditional -- re-creating a disbanded "Dragons" still lands on
+    // slug "dragons-2" even though "dragons" is now free by this rule. That
+    // inconsistency is a real, open product question (see NAME_REUSE_POLICY
+    // in the Guild Step 5.5 report), not something silently resolved here.
+    const collision = await this.prisma.guild.findFirst({
+      where: { status: 'ACTIVE', OR: [{ name: { equals: name } }, { tag: { equals: tag } }] },
+      select: { name: true, tag: true }
+    })
+    if (collision) {
+      throw new BadRequestException(
+        collision.tag.toUpperCase() === tag ? 'Esta tag já está em uso por outra guild ativa.' : 'Este nome já está em uso por outra guild ativa.'
+      )
+    }
     const slugBase = slugify(name) || slugify(tag)
     if (!slugBase) throw new BadRequestException('Não foi possível gerar um identificador para a guild.')
     let slug = slugBase
@@ -265,36 +288,52 @@ export class GuildsService {
     const focusTags = Array.isArray(payload.focusTags) ? [...new Set(payload.focusTags)] : []
     const foundedByAccountId = payload.foundedByAccountId || null
 
-    const guild = await this.prisma.$transaction(async (tx) => {
-      const created = await tx.guild.create({
-        data: {
-          slug,
-          name,
-          tag,
-          description: payload.description?.trim().slice(0, 4000) || null,
-          recruitment: payload.recruitment || 'APPROVAL_REQUIRED',
-          foundedByAccountId,
-          focusTags: focusTags.length ? { create: focusTags.map((focusTag) => ({ tag: focusTag })) } : undefined,
-          treasury: { create: { balances: { create: TREASURY_SEED } } },
-          vault: { create: {} }
+    let guild
+    try {
+      guild = await this.prisma.$transaction(async (tx) => {
+        const created = await tx.guild.create({
+          data: {
+            slug,
+            name,
+            tag,
+            description: payload.description?.trim().slice(0, 4000) || null,
+            recruitment: payload.recruitment || 'APPROVAL_REQUIRED',
+            foundedByAccountId,
+            focusTags: focusTags.length ? { create: focusTags.map((focusTag) => ({ tag: focusTag })) } : undefined,
+            treasury: { create: { balances: { create: TREASURY_SEED } } },
+            vault: { create: {} }
+          }
+        })
+        if (payload.leaderCharacterId) {
+          const character = await tx.accountCharacter.findUnique({ where: { id: payload.leaderCharacterId } })
+          if (character) {
+            const member = await tx.guildMember.upsert({
+              where: { characterId: character.id },
+              create: { guildId: created.id, characterId: character.id, accountId: character.accountId, roleKey: 'LEADER' },
+              update: {
+                guildId: created.id, accountId: character.accountId, roleKey: 'LEADER',
+                removedAt: null, removedBy: null, removedReason: null, joinedAt: new Date()
+              }
+            })
+            await tx.guild.update({ where: { id: created.id }, data: { leaderMemberId: member.id } })
+          }
         }
+        return created
       })
-      if (payload.leaderCharacterId) {
-        const character = await tx.accountCharacter.findUnique({ where: { id: payload.leaderCharacterId } })
-        if (character) {
-          const member = await tx.guildMember.upsert({
-            where: { characterId: character.id },
-            create: { guildId: created.id, characterId: character.id, accountId: character.accountId, roleKey: 'LEADER' },
-            update: {
-              guildId: created.id, accountId: character.accountId, roleKey: 'LEADER',
-              removedAt: null, removedBy: null, removedReason: null, joinedAt: new Date()
-            }
-          })
-          await tx.guild.update({ where: { id: created.id }, data: { leaderMemberId: member.id } })
-        }
+    } catch (error) {
+      // The name/tag collision check and the slug-collision loop above are
+      // both plain reads before this write -- neither is a lock. Two
+      // requests racing to create the same name/tag (Guild Step 5.5 point
+      // 7) can both pass those checks and then collide here on slug's real
+      // DB-unique constraint, which MySQL enforces regardless. That is the
+      // actual safety net for this race (name/tag themselves have none --
+      // see the comment above), same P2002-to-400 pattern already used in
+      // acceptInvite. Surfaced as a clean 400, never an unhandled 500.
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+        throw new BadRequestException('Uma guild com esse nome ou tag acabou de ser criada. Tente novamente.')
       }
-      return created
-    })
+      throw error
+    }
 
     await this.observability.recordOperationalEvent({
       module: 'guilds', eventType: 'GUILD_CREATED', entityType: 'Guild', entityId: guild.id,
@@ -302,6 +341,49 @@ export class GuildsService {
       data: { slug: guild.slug, source: guild.source }
     })
     return this.guildBySlugOrThrow(guild.slug)
+  }
+
+  // Designated hook for future creation-eligibility policy (minimumLevel,
+  // minimumReset, zenCost, itemRequirement, ...) -- Guild Step 5.5
+  // deliberately does not invent values for any of these; today every
+  // owned, unaffiliated character is eligible. Kept as one explicit
+  // function (not a config table/admin UI) so a real policy has a single,
+  // obvious place to land later without restructuring createGuildSelfService
+  // itself -- building that config system now, before any value is decided,
+  // would be the overengineering the spec explicitly warned against.
+  private assertCreationEligibility(_character: { id: string, level: number, reset: number }) {
+    // Permissive: no rule active yet.
+  }
+
+  // Player-facing counterpart to admin creation (GuildsAdminService.createGuild).
+  // Reuses the same createGuild core -- same slug/treasury/leader-upsert/audit
+  // logic -- but layers the eligibility rules a self-service caller actually
+  // needs and an admin caller doesn't: the character must belong to the
+  // caller's own account, and must not already hold an active membership
+  // anywhere. foundedByAccountId and leaderCharacterId are never taken from
+  // the client payload here -- forced to the verified caller/character so a
+  // player can never claim founder credit for, or hand leadership to,
+  // someone else's character.
+  async createGuildSelfService(payload: GuildCreatePayload, user: AuthenticatedUser) {
+    const characterId = this.requiredText(payload.leaderCharacterId, 'o personagem líder', 1, 191)
+    const character = await this.ownCharacter(characterId, user)
+    const existingMembership = await this.prisma.guildMember.findUnique({ where: { characterId: character.id } })
+    if (existingMembership && !existingMembership.removedAt) {
+      throw new BadRequestException('Este personagem já pertence a uma guild. Saia da guild atual antes de criar uma nova.')
+    }
+    this.assertCreationEligibility(character)
+    return this.createGuild(
+      {
+        name: payload.name,
+        tag: payload.tag,
+        description: payload.description,
+        recruitment: payload.recruitment,
+        focusTags: payload.focusTags,
+        leaderCharacterId: character.id,
+        foundedByAccountId: user.id
+      },
+      user
+    )
   }
 
   async updateGuild(slug: string, payload: GuildUpdatePayload, user: AuthenticatedUser) {
@@ -325,6 +407,54 @@ export class GuildsService {
     })
     await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_UPDATED', entityType: 'Guild', entityId: guild.id, actorUserId: user.id, description: 'Perfil da guild atualizado.' })
     return this.guildBySlugOrThrow(updated.slug)
+  }
+
+  // Leader-facing disband (Guild Step 5.5). LEADER-only -- assertRole below,
+  // not just the controller's @RequireStepUp() -- and step-up itself is
+  // enforced at the controller via StepUpGuard, not here, so this method's
+  // own authority check is the backend-final one regardless of what guard
+  // wiring looks like at the edge.
+  //
+  // Same non-destructive model the existing admin DISBAND action already
+  // uses (GuildsAdminService.action): a GuildStatus flip, never a hard
+  // delete. GuildMember/Treasury/Vault/Project rows are untouched -- history
+  // is preserved by design (spec point 8), and directory()/bySlug() already
+  // exclude non-ACTIVE guilds from anywhere a user could act on them.
+  //
+  // What IS actively touched: every PENDING GuildInvite and GuildJoinRequest
+  // for this guild is mass-cancelled in the SAME transaction as the status
+  // flip. This closes the ordinary (non-racing) case of "no pending
+  // invite/request should stay usable after disband" outright, and combines
+  // with write-time `status: 'PENDING'` guards already added to
+  // accept/decline/cancel/approve/reject (see those methods) to close the
+  // genuinely concurrent case too: whichever transaction's write lands
+  // first wins, and the loser gets a clean rejection, never a silent
+  // success against a guild that no longer exists.
+  async disbandGuild(slug: string, payload: GuildDisbandPayload, user: AuthenticatedUser) {
+    const guild = await this.prisma.guild.findUnique({ where: { slug } })
+    if (!guild) throw new NotFoundException('Guild não encontrada.')
+    await this.assertRole(guild.id, user, ['LEADER'])
+    if (guild.status !== 'ACTIVE') throw new BadRequestException('Esta guild já não está ativa.')
+
+    const confirmText = (payload.confirmText || '').trim()
+    const matchesName = confirmText.length > 0 && confirmText.toUpperCase() === guild.name.toUpperCase()
+    const matchesTag = confirmText.length > 0 && confirmText.toUpperCase() === guild.tag.toUpperCase()
+    if (!matchesName && !matchesTag) {
+      throw new BadRequestException(`Digite o nome ou a tag da guild ("${guild.name}" ou "${guild.tag}") para confirmar o encerramento.`)
+    }
+
+    const now = new Date()
+    const [disbanded] = await this.prisma.$transaction([
+      this.prisma.guild.update({ where: { id: guild.id }, data: { status: 'DISBANDED' } }),
+      this.prisma.guildInvite.updateMany({ where: { guildId: guild.id, status: 'PENDING' }, data: { status: 'CANCELLED', decidedAt: now } }),
+      this.prisma.guildJoinRequest.updateMany({ where: { guildId: guild.id, status: 'PENDING' }, data: { status: 'CANCELLED', decidedBy: user.id, decidedAt: now, decisionNote: 'Guild encerrada pelo líder.' } })
+    ])
+
+    await this.observability.recordOperationalEvent({
+      module: 'guilds', eventType: 'GUILD_DISBANDED', entityType: 'Guild', entityId: guild.id,
+      actorUserId: user.id, description: `Guild "${guild.name}" [${guild.tag}] encerrada pelo líder.`
+    })
+    return disbanded
   }
 
   async uploadEmblem(slug: string, file: Express.Multer.File, user: AuthenticatedUser) {
@@ -357,10 +487,23 @@ export class GuildsService {
       // one lifetime row, upserted across joins/leaves/rejoins, rather than
       // a full historical trail. Simpler and matches the unique constraint;
       // full history lives in the operational-event stream regardless.
-      const member = await this.prisma.guildMember.upsert({
-        where: { characterId: character.id },
-        create: { guildId: guild.id, characterId: character.id, accountId: user.id, roleKey: 'MEMBER' },
-        update: { guildId: guild.id, accountId: user.id, roleKey: 'MEMBER', joinedAt: new Date(), removedAt: null, removedBy: null, removedReason: null }
+      //
+      // Wrapped in a transaction that re-verifies guild.status immediately
+      // before the write (Guild Step 5.5, "disband vs join"): the read at
+      // the top of this method and this write are otherwise two separate
+      // round-trips, wide enough for a concurrent disband to land in
+      // between and leave a brand-new member in a guild that no longer
+      // exists. upsert() can't take extra WHERE conditions itself (it keys
+      // strictly on the characterId unique constraint), so the guard is a
+      // second read inside the same transaction rather than a query filter.
+      const member = await this.prisma.$transaction(async (tx) => {
+        const stillActive = await tx.guild.findFirst({ where: { id: guild.id, status: 'ACTIVE' }, select: { id: true } })
+        if (!stillActive) throw new BadRequestException('Esta guild não está aceitando novos membros.')
+        return tx.guildMember.upsert({
+          where: { characterId: character.id },
+          create: { guildId: guild.id, characterId: character.id, accountId: user.id, roleKey: 'MEMBER' },
+          update: { guildId: guild.id, accountId: user.id, roleKey: 'MEMBER', joinedAt: new Date(), removedAt: null, removedBy: null, removedReason: null }
+        })
       })
       await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_MEMBER_JOINED', entityType: 'GuildMember', entityId: member.id, actorUserId: user.id, description: `Personagem entrou na guild "${guild.name}".` })
       return { status: 'JOINED' as const, member }
@@ -368,10 +511,19 @@ export class GuildsService {
     // Not a compound-key upsert: the unique index only covers PENDING (see
     // schema.prisma) so a character can rejoin after leaving/being kicked
     // without colliding with its own earlier APPROVED/REJECTED rows.
-    const existingPending = await this.prisma.guildJoinRequest.findFirst({ where: { guildId: guild.id, characterId: character.id, status: 'PENDING' } })
-    const request = existingPending
-      ? await this.prisma.guildJoinRequest.update({ where: { id: existingPending.id }, data: { message: payload.message?.trim().slice(0, 1000) || null } })
-      : await this.prisma.guildJoinRequest.create({ data: { guildId: guild.id, characterId: character.id, accountId: user.id, message: payload.message?.trim().slice(0, 1000) || null } })
+    // Same write-time re-check as the OPEN branch above -- otherwise a
+    // brand-new PENDING request could be created against a guild a
+    // concurrent disband just cancelled everything else on, and nothing
+    // would ever clean that one up afterward (disband only cancels
+    // requests that already existed at the moment it ran).
+    const request = await this.prisma.$transaction(async (tx) => {
+      const stillActive = await tx.guild.findFirst({ where: { id: guild.id, status: 'ACTIVE' }, select: { id: true } })
+      if (!stillActive) throw new BadRequestException('Esta guild não está aceitando novos membros.')
+      const existingPending = await tx.guildJoinRequest.findFirst({ where: { guildId: guild.id, characterId: character.id, status: 'PENDING' } })
+      return existingPending
+        ? tx.guildJoinRequest.update({ where: { id: existingPending.id }, data: { message: payload.message?.trim().slice(0, 1000) || null } })
+        : tx.guildJoinRequest.create({ data: { guildId: guild.id, characterId: character.id, accountId: user.id, message: payload.message?.trim().slice(0, 1000) || null } })
+    })
     await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_JOIN_REQUESTED', entityType: 'GuildJoinRequest', entityId: request.id, actorUserId: user.id, description: `Solicitação de entrada enviada para "${guild.name}".` })
     return { status: 'REQUESTED' as const, request }
   }
@@ -390,14 +542,26 @@ export class GuildsService {
     if (request.status !== 'PENDING') throw new BadRequestException('Esta solicitação já foi decidida.')
     const existing = await this.prisma.guildMember.findUnique({ where: { characterId: request.characterId } })
     if (existing && !existing.removedAt) throw new BadRequestException('Este personagem já pertence a uma guild.')
-    const [, member] = await this.prisma.$transaction([
-      this.prisma.guildJoinRequest.update({ where: { id: request.id }, data: { status: 'APPROVED', decidedBy: user.id, decidedAt: new Date(), decisionNote: payload.note?.trim().slice(0, 500) || null } }),
-      this.prisma.guildMember.upsert({
+    // updateMany + a fresh status: 'PENDING' filter, not the array-form
+    // $transaction this used before: the write itself is now the race
+    // check (Guild Step 5.5), not just the read above. A concurrent
+    // disband's mass-cancel (disbandGuild) flips this same status field
+    // away from PENDING, so this guard catches "disband vs invite accept"'s
+    // sibling case -- approving a request -- with no separate guild.status
+    // check needed: the request row's own status already carries that
+    // information by the time disband has run.
+    const member = await this.prisma.$transaction(async (tx) => {
+      const { count } = await tx.guildJoinRequest.updateMany({
+        where: { id: request.id, status: 'PENDING' },
+        data: { status: 'APPROVED', decidedBy: user.id, decidedAt: new Date(), decisionNote: payload.note?.trim().slice(0, 500) || null }
+      })
+      if (count === 0) throw new BadRequestException('Esta solicitação já foi decidida.')
+      return tx.guildMember.upsert({
         where: { characterId: request.characterId },
         create: { guildId: guild.id, characterId: request.characterId, accountId: request.accountId, roleKey: 'MEMBER', invitedBy: user.id },
         update: { guildId: guild.id, accountId: request.accountId, roleKey: 'MEMBER', invitedBy: user.id, joinedAt: new Date(), removedAt: null, removedBy: null, removedReason: null }
       })
-    ])
+    })
     await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_JOIN_APPROVED', entityType: 'GuildJoinRequest', entityId: request.id, actorUserId: user.id, targetUserId: request.accountId, description: `Solicitação aprovada por ${user.username}.` })
     return member
   }
@@ -406,7 +570,12 @@ export class GuildsService {
     const { guild, request } = await this.guildAndJoinRequest(slug, requestId)
     await this.assertRole(guild.id, user, ['LEADER', 'OFFICER'])
     if (request.status !== 'PENDING') throw new BadRequestException('Esta solicitação já foi decidida.')
-    const updated = await this.prisma.guildJoinRequest.update({ where: { id: request.id }, data: { status: 'REJECTED', decidedBy: user.id, decidedAt: new Date(), decisionNote: payload.note?.trim().slice(0, 500) || null } })
+    const { count } = await this.prisma.guildJoinRequest.updateMany({
+      where: { id: request.id, status: 'PENDING' },
+      data: { status: 'REJECTED', decidedBy: user.id, decidedAt: new Date(), decisionNote: payload.note?.trim().slice(0, 500) || null }
+    })
+    if (count === 0) throw new BadRequestException('Esta solicitação já foi decidida.')
+    const updated = await this.prisma.guildJoinRequest.findUniqueOrThrow({ where: { id: request.id } })
     await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_JOIN_REJECTED', entityType: 'GuildJoinRequest', entityId: request.id, actorUserId: user.id, targetUserId: request.accountId, description: `Solicitação rejeitada por ${user.username}.` })
     return updated
   }
@@ -542,14 +711,19 @@ export class GuildsService {
     const existingMembership = await this.prisma.guildMember.findUnique({ where: { characterId: invite.characterId } })
     if (existingMembership && !existingMembership.removedAt) throw new BadRequestException('Este personagem já pertence a uma guild.')
     try {
-      const [, member] = await this.prisma.$transaction([
-        this.prisma.guildInvite.update({ where: { id: invite.id }, data: { status: 'ACCEPTED', decidedAt: new Date() } }),
-        this.prisma.guildMember.upsert({
+      const member = await this.prisma.$transaction(async (tx) => {
+        // Same write-time guard class as approveJoinRequest -- a concurrent
+        // disband's mass-cancel (disbandGuild) flips this invite's status
+        // away from PENDING, so this catches "disband vs invite accept"
+        // with no separate guild.status check needed.
+        const { count } = await tx.guildInvite.updateMany({ where: { id: invite.id, status: 'PENDING' }, data: { status: 'ACCEPTED', decidedAt: new Date() } })
+        if (count === 0) throw new BadRequestException('Este convite já foi decidido.')
+        return tx.guildMember.upsert({
           where: { characterId: invite.characterId },
           create: { guildId: guild.id, characterId: invite.characterId, accountId: invite.accountId, roleKey: 'MEMBER', invitedBy: invite.invitedBy },
           update: { guildId: guild.id, accountId: invite.accountId, roleKey: 'MEMBER', invitedBy: invite.invitedBy, joinedAt: new Date(), removedAt: null, removedBy: null, removedReason: null }
         })
-      ])
+      })
       await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_INVITE_ACCEPTED', entityType: 'GuildInvite', entityId: invite.id, actorUserId: user.id, description: `Convite aceito para "${guild.name}".` })
       return member
     } catch (error) {
@@ -571,7 +745,9 @@ export class GuildsService {
     const { guild, invite } = await this.guildAndInvite(slug, inviteId)
     if (invite.accountId !== user.id) throw new ForbiddenException('Este convite não pertence à sua conta.')
     if (invite.status !== 'PENDING') throw new BadRequestException('Este convite já foi decidido.')
-    const updated = await this.prisma.guildInvite.update({ where: { id: invite.id }, data: { status: 'DECLINED', decidedAt: new Date() } })
+    const { count } = await this.prisma.guildInvite.updateMany({ where: { id: invite.id, status: 'PENDING' }, data: { status: 'DECLINED', decidedAt: new Date() } })
+    if (count === 0) throw new BadRequestException('Este convite já foi decidido.')
+    const updated = await this.prisma.guildInvite.findUniqueOrThrow({ where: { id: invite.id } })
     await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_INVITE_DECLINED', entityType: 'GuildInvite', entityId: invite.id, actorUserId: user.id, description: `Convite recusado para "${guild.name}".` })
     return updated
   }
@@ -580,7 +756,9 @@ export class GuildsService {
     const { guild, invite } = await this.guildAndInvite(slug, inviteId)
     await this.assertRole(guild.id, user, ['LEADER', 'OFFICER'])
     if (invite.status !== 'PENDING') throw new BadRequestException('Este convite já foi decidido.')
-    const updated = await this.prisma.guildInvite.update({ where: { id: invite.id }, data: { status: 'CANCELLED', decidedAt: new Date() } })
+    const { count } = await this.prisma.guildInvite.updateMany({ where: { id: invite.id, status: 'PENDING' }, data: { status: 'CANCELLED', decidedAt: new Date() } })
+    if (count === 0) throw new BadRequestException('Este convite já foi decidido.')
+    const updated = await this.prisma.guildInvite.findUniqueOrThrow({ where: { id: invite.id } })
     await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_INVITE_CANCELLED', entityType: 'GuildInvite', entityId: invite.id, actorUserId: user.id, targetUserId: invite.accountId, description: `Convite cancelado para "${guild.name}".` })
     return updated
   }
@@ -596,6 +774,7 @@ export class GuildsService {
   async updateMemberRole(slug: string, memberId: string, payload: GuildMemberRolePayload, user: AuthenticatedUser) {
     const { guild, member } = await this.guildAndMember(slug, memberId)
     await this.assertRole(guild.id, user, ['LEADER'])
+    if (guild.status !== 'ACTIVE') throw new BadRequestException('Esta guild foi encerrada.')
     const roleKey = (payload.roleKey || '').toUpperCase()
     if (!ROLE_VOCABULARY.includes(roleKey as RoleKey)) throw new BadRequestException('Papel inválido.')
 
@@ -626,7 +805,7 @@ export class GuildsService {
         // race check. Throwing inside an interactive $transaction rolls back
         // the whole thing, including the demotion above, so a rejected
         // transfer never leaves the guild leaderless.
-        const { count } = await tx.guildMember.updateMany({ where: { id: member.id, removedAt: null }, data: { roleKey: 'LEADER' } })
+        const { count } = await tx.guildMember.updateMany({ where: { id: member.id, removedAt: null, guild: { status: 'ACTIVE' } }, data: { roleKey: 'LEADER' } })
         if (count === 0) throw new NotFoundException('Membro não encontrado ou não está mais ativo na guild.')
         const next = await tx.guildMember.findUniqueOrThrow({ where: { id: member.id } })
         await tx.guild.update({ where: { id: guild.id }, data: { leaderMemberId: member.id } })
@@ -655,7 +834,7 @@ export class GuildsService {
     // so a plain update-by-id would silently apply a role to an already-
     // removed member. updateMany + a fresh removedAt filter makes the write
     // itself the race check, not just the earlier read.
-    const { count } = await this.prisma.guildMember.updateMany({ where: { id: member.id, removedAt: null }, data: { roleKey } })
+    const { count } = await this.prisma.guildMember.updateMany({ where: { id: member.id, removedAt: null, guild: { status: 'ACTIVE' } }, data: { roleKey } })
     if (count === 0) throw new NotFoundException('Membro não encontrado.')
     const updated = await this.prisma.guildMember.findUniqueOrThrow({ where: { id: member.id } })
     await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_MEMBER_ROLE_CHANGED', entityType: 'GuildMember', entityId: member.id, actorUserId: user.id, targetUserId: member.accountId, description: `Papel alterado para ${roleKey}.` })
@@ -673,9 +852,13 @@ export class GuildsService {
     // was promoted, silently setting removedAt on the guild's new LEADER --
     // worse than a rejected kick, since nothing else would ever demote or
     // reassign leadership afterward. updateMany + a fresh roleKey/removedAt
-    // filter makes the write itself the race check (Guild Step 4).
+    // filter makes the write itself the race check (Guild Step 4). The
+    // guild:{status:'ACTIVE'} relation filter is Guild Step 5.5's addition,
+    // closing "disband vs member role change"'s kick counterpart the same
+    // way -- kicking someone is itself a role change away from active
+    // membership, and a disbanded guild has no legitimate kicks left to make.
     const { count } = await this.prisma.guildMember.updateMany({
-      where: { id: member.id, roleKey: { not: 'LEADER' }, removedAt: null },
+      where: { id: member.id, roleKey: { not: 'LEADER' }, removedAt: null, guild: { status: 'ACTIVE' } },
       data: { removedAt: new Date(), removedBy: user.id, removedReason: reason }
     })
     if (count === 0) throw new BadRequestException('Este membro não pode mais ser removido (papel ou estado mudou).')

@@ -19,6 +19,12 @@
             <UButton color="neutral" variant="soft" size="sm" @click="showEditor = true">
               <Pencil class="size-4" />Editar perfil
             </UButton>
+            <!-- Visually and behaviorally separate from "Editar perfil":
+            LEADER-only (not OFFICER, unlike profile edit), and distinctly
+            styled since it's a destructive, step-up-gated action. -->
+            <UButton v-if="isLeader" color="error" variant="outline" size="sm" @click="showDisbandModal = true">
+              <ShieldAlert class="size-4" />Encerrar guilda
+            </UButton>
           </template>
         </GuildProfileHeader>
         <GuildProfileTabs :guild="guild" :slug="slug" @refresh="refresh" />
@@ -30,17 +36,27 @@
           @close="showEditor = false"
           @saved="onSaved"
         />
+
+        <GuildDisbandModal
+          v-if="showDisbandModal"
+          :guild="guild"
+          :slug="slug"
+          @close="showDisbandModal = false"
+          @disbanded="onDisbanded"
+        />
       </template>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Pencil } from 'lucide-vue-next'
+import { Pencil, ShieldAlert } from 'lucide-vue-next'
 
 const route = useRoute()
+const router = useRouter()
 const api = useGuildsApi()
 const { user } = useAuth()
+const toast = useToast()
 
 const slug = computed(() => String(route.params.slug || '').toLowerCase())
 
@@ -55,17 +71,31 @@ const { data: guild, pending, error, refresh } = await useAsyncData(
 // here for UI visibility only, never trusted as the real access control.
 // A direct API call from a non-LEADER/OFFICER member still gets 403 from
 // the backend regardless of what this computed shows.
-const canManage = computed(() => {
+const membership = computed(() => {
   const members = (guild.value as any)?.members as Array<{ roleKey: string, account?: { id?: string } }> | undefined
-  const membership = members?.find((member) => member.account?.id === user.value?.id)
-  return membership?.roleKey === 'LEADER' || membership?.roleKey === 'OFFICER'
+  return members?.find((member) => member.account?.id === user.value?.id)
 })
+const canManage = computed(() => membership.value?.roleKey === 'LEADER' || membership.value?.roleKey === 'OFFICER')
+// Disband is LEADER-only, stricter than canManage (which also allows
+// OFFICER for profile edits) -- mirrors the backend's assertRole(['LEADER'])
+// in disbandGuild(), same UI-visibility-only caveat as canManage above.
+const isLeader = computed(() => membership.value?.roleKey === 'LEADER')
 
 const showEditor = ref(false)
 // Always re-fetch from the API after any save (profile fields or an
 // emblem/banner upload) rather than trusting a locally-merged guess --
 // keeps the header/tabs showing the server's real, current state.
 const onSaved = () => refresh()
+
+const showDisbandModal = ref(false)
+// No refresh() here -- the guild is gone from this leader's perspective.
+// Navigating away entirely is what actually clears stale guild context
+// (step 5.5 point 18): a refresh would just re-fetch the now-DISBANDED
+// guild and leave this same page rendering it as if it still mattered.
+const onDisbanded = () => {
+  toast.add({ title: 'Guilda encerrada', color: 'success' })
+  router.push('/guilds')
+}
 
 const errorStatus = computed(() => {
   const err = error.value as any

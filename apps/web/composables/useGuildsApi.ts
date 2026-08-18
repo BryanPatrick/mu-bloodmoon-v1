@@ -28,7 +28,16 @@ export const useGuildsApi = () => {
     directory: (value: Query = {}) => request<GuildPage>('/guilds', query(value)),
     mine: () => request<any[]>('/guilds/mine'),
     bySlug: (slug: string) => request(`/guilds/${encodeURIComponent(slug)}`),
+    create: (body: unknown) => request('/guilds', { method: 'POST', body }),
     updateGuild: (slug: string, body: unknown) => request(`/guilds/${encodeURIComponent(slug)}`, { method: 'PATCH', body }),
+    // Step-up token is required by the backend's StepUpGuard (Guild Step
+    // 5.5) -- same X-Step-Up-Token header convention as
+    // useAccountSecurityApi's revokeSessions.
+    disband: (slug: string, confirmText: string, stepUpToken: string) => request(`/guilds/${encodeURIComponent(slug)}`, {
+      method: 'DELETE',
+      body: { confirmText },
+      headers: { 'X-Step-Up-Token': stepUpToken }
+    }),
     members: (slug: string, value: Query = {}) => request<GuildPage>(`/guilds/${encodeURIComponent(slug)}/members`, query(value)),
     requests: (slug: string, value: Query = {}) => request<GuildPage>(`/guilds/${encodeURIComponent(slug)}/requests`, query(value)),
     projects: (slug: string, value: Query = {}) => request<GuildPage>(`/guilds/${encodeURIComponent(slug)}/projects`, query(value)),

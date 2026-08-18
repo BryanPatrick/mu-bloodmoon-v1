@@ -4,7 +4,14 @@
       <p class="bm-kicker">Blood Moon</p>
       <h1>Guildas</h1>
       <p>Organização, prestígio e cooperação. Encontre uma guilda para chamar de sua ou acompanhe as maiores facções do servidor.</p>
+      <!-- Shown whenever the player is authenticated; eligibility itself
+      (an unaffiliated character to lead it) is resolved inside the modal,
+      which shows a clear message instead of a form when there is none --
+      avoids an extra fetch just to decide whether to render the button. -->
+      <UButton v-if="user" color="error" class="guilds-hero__create" @click="showCreateModal = true">Criar guilda</UButton>
     </header>
+
+    <GuildCreateModal v-if="showCreateModal" @close="showCreateModal = false" @created="showCreateModal = false" />
 
     <section class="guilds-highlights">
       <article v-for="block in highlightBlocks" :key="block.key" :class="{ 'is-active': activeHighlight === block.key }" @click="selectHighlight(block.key)">
@@ -96,6 +103,8 @@
 import { Search, Shield, SlidersHorizontal, Trophy, Users, X } from 'lucide-vue-next'
 
 const api = useGuildsApi()
+const { user } = useAuth()
+const showCreateModal = ref(false)
 
 const search = ref('')
 const recruitment = ref('')
@@ -167,6 +176,7 @@ useHead({ title: 'Guildas | Blood Moon' })
 .guilds-hero { width: min(100% - 32px, 1180px); margin-inline: auto; padding: 40px 0 20px; text-align: center; }
 .guilds-hero h1 { margin-top: 6px; font-family: Cinzel, serif; font-size: 2rem; font-weight: 900; color: var(--bm-heading); }
 .guilds-hero p { max-width: 560px; margin: 10px auto 0; color: var(--bm-muted); font-size: 0.82rem; line-height: 1.6; }
+.guilds-hero__create { margin-top: 16px; }
 
 .guilds-highlights { display: flex; flex-wrap: wrap; gap: 10px; width: min(100% - 32px, 1180px); margin: 0 auto 20px; overflow-x: auto; }
 .guilds-highlights article { flex: 0 0 auto; min-width: 150px; cursor: pointer; border: 1px solid var(--bm-border-strong); border-radius: 8px; background: var(--bm-surface-soft); padding: 12px 14px; }

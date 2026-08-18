@@ -41,6 +41,10 @@ export type GuildUpdatePayload = {
   focusTags?: GuildFocusTag[]
 }
 
+export type GuildDisbandPayload = {
+  confirmText?: string
+}
+
 export type GuildJoinPayload = {
   characterId?: string
   message?: string

@@ -7,16 +7,26 @@ const api = useGuildsApi()
 const toast = useToast()
 
 // Only the fields the backend's GuildUpdatePayload actually accepts
-// (guilds.contract.ts) -- name, tag, description, focusTags. Deliberately
-// excludes `recruitment` (INVITE_ONLY has a known dead-end, out of scope
-// for this step) and NEVER includes owner/leader/role/permissions fields --
+// (guilds.contract.ts) -- name, tag, description, focusTags, recruitment.
+// `recruitment` was deliberately excluded through Guild Step 1 (INVITE_ONLY
+// was a dead end then); Guild Step 2 closed that dead end with a real
+// invite flow, so Guild Step 5's audit connects the field now that changing
+// it is actually safe. NEVER includes owner/leader/role/permissions fields --
 // those have their own dedicated, backend-authoritative endpoints.
 const form = reactive({
   name: props.guild.name || '',
   tag: props.guild.tag || '',
   description: props.guild.description || '',
+  recruitment: props.guild.recruitment || 'APPROVAL_REQUIRED',
   focusTags: (props.guild.focusTags || []).map((entry: any) => entry.tag)
 })
+
+const recruitmentOptions = [
+  { value: 'OPEN', label: 'Aberto', hint: 'Qualquer jogador entra direto, sem aprovação.' },
+  { value: 'APPROVAL_REQUIRED', label: 'Aprovação necessária', hint: 'Jogador solicita, LEADER/OFFICER aprova ou rejeita.' },
+  { value: 'INVITE_ONLY', label: 'Somente convite', hint: 'Só entra quem for convidado por um LEADER/OFFICER.' },
+  { value: 'CLOSED', label: 'Fechado', hint: 'Não aceita novos membros por nenhuma via.' }
+]
 
 const focusTagOptions = [
   { value: 'PVP', label: 'PvP' },
@@ -64,6 +74,7 @@ const submit = async () => {
       name: form.name.trim(),
       tag: form.tag.trim().toUpperCase(),
       description: form.description.trim(),
+      recruitment: form.recruitment,
       focusTags: form.focusTags
     })
     toast.add({ title: 'Perfil da guild atualizado', color: 'success' })
@@ -161,6 +172,13 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
               <small v-if="descriptionError" class="guild-editor__field-error">{{ descriptionError }}</small>
               <small v-else>{{ form.description.length }}/4000</small>
             </label>
+            <label>
+              Recrutamento
+              <select v-model="form.recruitment">
+                <option v-for="option in recruitmentOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
+              </select>
+              <small>{{ recruitmentOptions.find((option) => option.value === form.recruitment)?.hint }}</small>
+            </label>
             <fieldset class="guild-editor__focus">
               <legend>Foco da guild</legend>
               <label v-for="option in focusTagOptions" :key="option.value" class="guild-editor__focus-option">
@@ -229,9 +247,9 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
 .guild-editor section { display: grid; align-content: start; gap: 10px; }
 .guild-editor section h3 { border-bottom: 1px solid var(--bm-border); padding-bottom: 8px; color: var(--bm-wine); font-size: 0.68rem; font-weight: 900; text-transform: uppercase; }
 .guild-editor label { display: grid; gap: 5px; color: var(--bm-muted); font-size: 0.62rem; font-weight: 800; }
-.guild-editor input, .guild-editor textarea { min-height: 38px; border: 1px solid var(--bm-border); border-radius: 6px; background: var(--bm-surface); padding: 8px 10px; outline: none; color: var(--bm-text); font-size: 0.72rem; }
+.guild-editor input, .guild-editor textarea, .guild-editor select { min-height: 38px; border: 1px solid var(--bm-border); border-radius: 6px; background: var(--bm-surface); padding: 8px 10px; outline: none; color: var(--bm-text); font-size: 0.72rem; }
 .guild-editor textarea { min-height: 90px; resize: vertical; }
-.guild-editor input:focus, .guild-editor textarea:focus { border-color: var(--bm-red); }
+.guild-editor input:focus, .guild-editor textarea:focus, .guild-editor select:focus { border-color: var(--bm-red); }
 .guild-editor small { color: var(--bm-muted); font-size: 0.58rem; line-height: 1.5; }
 .guild-editor__field-error { color: var(--bm-red); font-weight: 800; }
 .guild-editor__error { margin: 0 18px; border: 1px solid var(--bm-red); border-radius: 6px; background: rgb(191 2 2 / 0.08); padding: 9px 12px; color: var(--bm-red); font-size: 0.68rem; font-weight: 700; }

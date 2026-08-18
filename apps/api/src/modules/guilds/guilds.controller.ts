@@ -3,9 +3,13 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { ThrottlerGuard } from '@nestjs/throttler'
 import { CurrentUser } from '../auth/current-user.decorator'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
+import { RequireStepUp } from '../auth/step-up.decorator'
+import { StepUpGuard } from '../auth/step-up.guard'
 import type { AuthenticatedUser } from '../auth/auth.types'
 import { GuildsService } from './guilds.service'
 import type {
+  GuildCreatePayload,
+  GuildDisbandPayload,
   GuildInviteCandidateQuery,
   GuildInvitePayload,
   GuildJoinDecisionPayload,
@@ -27,6 +31,16 @@ export class GuildsController {
   @Get()
   directory(@Query() query: GuildQuery) {
     return this.guilds.directory(query)
+  }
+
+  // Self-service creation (Guild Step 5.5). ThrottlerGuard is the same
+  // reused-not-invented rate limiter already applied to emblem/banner
+  // uploads below -- an authenticated, mutating, abuse-prone action is
+  // exactly what it exists for; no new CAPTCHA, no new limiter.
+  @Post()
+  @UseGuards(JwtAuthGuard, ThrottlerGuard)
+  create(@Body() payload: GuildCreatePayload, @CurrentUser() user: AuthenticatedUser) {
+    return this.guilds.createGuildSelfService(payload, user)
   }
 
   @Get('mine')
@@ -53,6 +67,18 @@ export class GuildsController {
   @UseGuards(JwtAuthGuard)
   update(@Param('slug') slug: string, @Body() payload: GuildUpdatePayload, @CurrentUser() user: AuthenticatedUser) {
     return this.guilds.updateGuild(slug, payload, user)
+  }
+
+  // Leader-facing disband (Guild Step 5.5) -- step-up required, product
+  // decision. Reuses the existing generic StepUpGuard/@RequireStepUp()
+  // infrastructure (same mechanism already gating admin 2FA resets and
+  // permission delegation) rather than inventing a guild-specific
+  // re-auth flow.
+  @Delete(':slug')
+  @UseGuards(JwtAuthGuard, StepUpGuard)
+  @RequireStepUp()
+  disband(@Param('slug') slug: string, @Body() payload: GuildDisbandPayload, @CurrentUser() user: AuthenticatedUser) {
+    return this.guilds.disbandGuild(slug, payload, user)
   }
 
   @Get(':slug/members')

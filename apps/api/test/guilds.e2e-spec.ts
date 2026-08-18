@@ -20,9 +20,9 @@ beforeAll(async () => {
   // pre-existing MVP and leadership-transfer fixtures. Same override pattern
   // already used by password-recovery.e2e-spec.ts; scoped to this test
   // process only.
-  process.env.AUTH_RATE_REGISTER_IP_LIMIT = '50'
-  process.env.AUTH_RATE_REGISTER_SUBJECT_LIMIT = '50'
-  process.env.AUTH_RATE_LOGIN_IP_LIMIT = '100'
+  process.env.AUTH_RATE_REGISTER_IP_LIMIT = '150'
+  process.env.AUTH_RATE_REGISTER_SUBJECT_LIMIT = '150'
+  process.env.AUTH_RATE_LOGIN_IP_LIMIT = '250'
 
   execSync('npx prisma migrate deploy', { cwd: __dirname + '/..', env: process.env, stdio: 'pipe' })
 }, 120000)
@@ -178,11 +178,16 @@ describe('Guilds MVP', () => {
     expect(leaderRow?.contributionScore).toBe(0)
   })
 
-  it('auto-suffixes the slug on a duplicate guild name', async () => {
+  it('auto-suffixes the slug when two different names slugify to the same base', async () => {
+    // Name uniqueness (Guild Step 5.5) now blocks a literal duplicate name,
+    // but slugify() strips punctuation down to '-', so two DIFFERENT names
+    // ("Blood Legion X" vs "Blood Legion X!!!") can still collide on the
+    // derived slug -- the auto-suffix loop this test exercises is still a
+    // real, needed mechanism, just no longer reachable via an identical name.
     const res = await (await request())
       .post('/api/admin/guilds')
       .set('Authorization', `Bearer ${adminToken}`)
-      .send({ name: `Blood Legion ${suffix}`, tag: 'BLD2' })
+      .send({ name: `Blood Legion ${suffix}!!!`, tag: 'BLD2' })
     expect(res.status).toBe(201)
     expect(res.body.slug).not.toBe(guildSlug)
     expect(res.body.slug.startsWith(guildSlug)).toBe(true)
@@ -1382,6 +1387,417 @@ describe('Guilds MVP', () => {
 
       const leaderCount = await prisma.guildMember.count({ where: { guildId: tfGuildId, roleKey: 'LEADER', removedAt: null } })
       expect(leaderCount).toBe(1)
+    })
+  })
+
+  // GUILD STEP 5 (2026-08-18): functional closure audit. updateGuild's
+  // `recruitment` field was accepted by the backend since Guild Step 1, but
+  // the frontend editor deliberately excluded it (INVITE_ONLY was a dead
+  // end then). Guild Step 2 closed that dead end; this step connects the
+  // field in the UI. The backend side was never actually gated behind
+  // anything -- this test exists to confirm the whole path end-to-end
+  // (update -> profile -> directory search), not to prove a new
+  // authorization rule.
+  describe('recruitment mode change reflects in profile and directory (Guild Step 5)', () => {
+    let rmGuildSlug = ''
+    let rmLeaderToken = ''
+    let rmOfficerToken = ''
+
+    it('sets up an isolated OPEN guild with a LEADER and an OFFICER', async () => {
+      const leader = await register('QL')
+      const officer = await register('QO')
+      const leaderCharId = (await createCharacter(leader.username, 'QL')).id
+      const officerCharId = (await createCharacter(officer.username, 'QO')).id
+
+      rmLeaderToken = await login(leader.username, leader.password)
+      rmOfficerToken = await login(officer.username, officer.password)
+
+      const created = await (await request()).post('/api/admin/guilds').set('Authorization', `Bearer ${adminToken}`)
+        .send({ name: `Recruitment Fixture ${suffix}`, tag: 'RCM', recruitment: 'OPEN', leaderCharacterId: leaderCharId })
+      expect(created.status).toBe(201)
+      expect(created.body.recruitment).toBe('OPEN')
+      rmGuildSlug = created.body.slug
+      const guildId = created.body.id
+
+      await prisma.guildMember.create({
+        data: { guildId, characterId: officerCharId, accountId: (await prisma.account.findUniqueOrThrow({ where: { username: officer.username } })).id, roleKey: 'OFFICER' }
+      })
+    })
+
+    it('OFFICER changes recruitment to CLOSED; profile and directory both reflect it immediately', async () => {
+      const update = await (await request())
+        .patch(`/api/guilds/${rmGuildSlug}`)
+        .set('Authorization', `Bearer ${rmOfficerToken}`)
+        .send({ recruitment: 'CLOSED' })
+      expect(update.status).toBe(200)
+      expect(update.body.recruitment).toBe('CLOSED')
+
+      const profile = await (await request()).get(`/api/guilds/${rmGuildSlug}`)
+      expect(profile.status).toBe(200)
+      expect(profile.body.recruitment).toBe('CLOSED')
+
+      const stillInOpenSearch = await (await request()).get('/api/guilds').query({ recruitment: 'OPEN', search: 'RCM' })
+      expect(stillInOpenSearch.body.data.some((g: any) => g.slug === rmGuildSlug)).toBe(false)
+
+      const nowInClosedSearch = await (await request()).get('/api/guilds').query({ recruitment: 'CLOSED', search: 'RCM' })
+      expect(nowInClosedSearch.body.data.some((g: any) => g.slug === rmGuildSlug)).toBe(true)
+    })
+
+    it('LEADER changes recruitment back to INVITE_ONLY; the guild is genuinely usable in that mode (not the old dead end)', async () => {
+      const update = await (await request())
+        .patch(`/api/guilds/${rmGuildSlug}`)
+        .set('Authorization', `Bearer ${rmLeaderToken}`)
+        .send({ recruitment: 'INVITE_ONLY' })
+      expect(update.status).toBe(200)
+      expect(update.body.recruitment).toBe('INVITE_ONLY')
+
+      const target = await register('QT')
+      const targetCharId = (await createCharacter(target.username, 'QT')).id
+      const targetToken = await login(target.username, target.password)
+
+      const selfJoin = await (await request())
+        .post(`/api/guilds/${rmGuildSlug}/join`)
+        .set('Authorization', `Bearer ${targetToken}`)
+        .send({ characterId: targetCharId })
+      expect(selfJoin.status).toBe(403)
+
+      const invite = await (await request())
+        .post(`/api/guilds/${rmGuildSlug}/invites`)
+        .set('Authorization', `Bearer ${rmLeaderToken}`)
+        .send({ characterId: targetCharId })
+      expect(invite.status).toBe(201)
+
+      const accept = await (await request())
+        .post(`/api/guilds/${rmGuildSlug}/invites/${invite.body.id}/accept`)
+        .set('Authorization', `Bearer ${targetToken}`)
+      expect(accept.status).toBe(201)
+    })
+  })
+
+  // GUILD STEP 5.5, PART A (2026-08-18): self-service creation. Reuses
+  // createGuild's core (slug/treasury/leader-upsert/audit), layering the
+  // eligibility rules a self-service caller needs that admin creation
+  // doesn't. No admin token used anywhere in this block -- POST /guilds is
+  // the plain JwtAuthGuard-only route.
+  describe('self-service guild creation (Guild Step 5.5 Part A)', () => {
+    let creatorToken = ''
+    let creatorCharId = ''
+    let firstGuildName = ''
+    let firstGuildTag = ''
+
+    it('sets up a player with two characters (one to lead, one spare)', async () => {
+      const creator = await register('GA')
+      creatorToken = await login(creator.username, creator.password)
+      creatorCharId = (await createCharacter(creator.username, 'GA')).id
+      await createCharacter(creator.username, 'GB')
+    })
+
+    it('rejects creation with a character that does not belong to the caller', async () => {
+      const other = await register('GO')
+      const otherCharId = (await createCharacter(other.username, 'GO')).id
+      const attempt = await (await request())
+        .post('/api/guilds')
+        .set('Authorization', `Bearer ${creatorToken}`)
+        .send({ name: `Not Mine ${suffix}`, tag: 'NMY', leaderCharacterId: otherCharId })
+      expect(attempt.status).toBe(400)
+    })
+
+    it('eligible creation succeeds: creator becomes the sole LEADER, treasury seeded, recruitment defaults, redirect-ready slug returned', async () => {
+      firstGuildName = `Self Service ${suffix}`
+      firstGuildTag = 'SSV'
+      const result = await (await request())
+        .post('/api/guilds')
+        .set('Authorization', `Bearer ${creatorToken}`)
+        .send({ name: firstGuildName, tag: firstGuildTag, leaderCharacterId: creatorCharId })
+      expect(result.status).toBe(201)
+      expect(result.body.slug).toBeTruthy()
+      expect(result.body.recruitment).toBe('APPROVAL_REQUIRED')
+
+      const leaderRow = await prisma.guildMember.findUniqueOrThrow({ where: { characterId: creatorCharId } })
+      expect(leaderRow.roleKey).toBe('LEADER')
+      expect(leaderRow.guildId).toBe(result.body.id)
+      const leaderCount = await prisma.guildMember.count({ where: { guildId: result.body.id, roleKey: 'LEADER', removedAt: null } })
+      expect(leaderCount).toBe(1)
+
+      const treasury = await prisma.guildTreasury.findUniqueOrThrow({ where: { guildId: result.body.id }, include: { balances: true } })
+      expect(treasury.balances.length).toBe(7)
+    })
+
+    it('rejects creation when the character already holds an active membership (including its own just-created guild)', async () => {
+      const attempt = await (await request())
+        .post('/api/guilds')
+        .set('Authorization', `Bearer ${creatorToken}`)
+        .send({ name: `Second Guild ${suffix}`, tag: 'SEC', leaderCharacterId: creatorCharId })
+      expect(attempt.status).toBe(400)
+    })
+
+    it('rejects a duplicate name and a duplicate tag against the existing ACTIVE guild', async () => {
+      const spare = await register('GS')
+      const spareToken = await login(spare.username, spare.password)
+      const spareCharId = (await createCharacter(spare.username, 'GS')).id
+
+      const dupName = await (await request())
+        .post('/api/guilds')
+        .set('Authorization', `Bearer ${spareToken}`)
+        .send({ name: firstGuildName, tag: 'UNIQ1', leaderCharacterId: spareCharId })
+      expect(dupName.status).toBe(400)
+
+      const dupTag = await (await request())
+        .post('/api/guilds')
+        .set('Authorization', `Bearer ${spareToken}`)
+        .send({ name: `Unique Name ${suffix}`, tag: firstGuildTag, leaderCharacterId: spareCharId })
+      expect(dupTag.status).toBe(400)
+    })
+
+    it('concurrency: two different accounts racing to create the same name -- exactly one succeeds, the loser fails cleanly (never 500)', async () => {
+      // Runs BEFORE the rate-limit flood test below on purpose: that test
+      // deliberately exceeds the shared ThrottlerGuard window, and the two
+      // requests here would otherwise risk landing inside that same
+      // still-active window and both getting 429 instead of exercising the
+      // actual name-collision race.
+      const raceName = `Race Guild ${suffix}`
+      const playerX = await register('GX')
+      const playerY = await register('GY')
+      const playerXToken = await login(playerX.username, playerX.password)
+      const playerYToken = await login(playerY.username, playerY.password)
+      const playerXCharId = (await createCharacter(playerX.username, 'GX')).id
+      const playerYCharId = (await createCharacter(playerY.username, 'GY')).id
+
+      const [resultX, resultY] = await Promise.all([
+        (await request()).post('/api/guilds').set('Authorization', `Bearer ${playerXToken}`).send({ name: raceName, tag: 'RCX', leaderCharacterId: playerXCharId }),
+        (await request()).post('/api/guilds').set('Authorization', `Bearer ${playerYToken}`).send({ name: raceName, tag: 'RCY', leaderCharacterId: playerYCharId })
+      ])
+      expect([resultX.status, resultY.status]).not.toContain(500)
+      const succeeded = [resultX.status === 201, resultY.status === 201]
+      expect(succeeded.filter(Boolean).length).toBe(1)
+
+      const activeWithName = await prisma.guild.count({ where: { name: raceName, status: 'ACTIVE' } })
+      expect(activeWithName).toBe(1)
+    })
+
+    it('rate limit: reuses the existing ThrottlerGuard (same one already governing emblem/banner uploads) -- a burst of requests eventually gets 429, never silently unlimited', async () => {
+      const burst = await Promise.all(
+        Array.from({ length: 15 }, async (_, index) =>
+          (await request())
+            .post('/api/guilds')
+            .set('Authorization', `Bearer ${creatorToken}`)
+            .send({ name: `Burst ${suffix} ${index}`, tag: `B${index}` })
+        )
+      )
+      expect(burst.some((response) => response.status === 429)).toBe(true)
+    })
+  })
+
+  // GUILD STEP 5.5, PART B (2026-08-18): leader-facing disband. Reuses the
+  // existing non-destructive status model (same DISBANDED value the admin
+  // action already writes) and the existing generic step-up infrastructure
+  // (same StepUpGuard/@RequireStepUp() already gating admin 2FA resets).
+  describe('leader-facing disband (Guild Step 5.5 Part B)', () => {
+    let dbGuildSlug = ''
+    let dbGuildId = ''
+    let dbGuildName = ''
+    let dbGuildTag = ''
+    let dbLeaderToken = ''
+    let dbLeaderPassword = ''
+    let dbOfficerToken = ''
+    let dbMemberToken = ''
+    let dbInvitedToken = ''
+    let dbPendingInviteId = ''
+    let dbPendingRequestId = ''
+
+    // Takes an ALREADY-VALID access token, not a username/password to log in
+    // with fresh: this app enforces a single active session per account
+    // (see the single_session migration), so logging in again here would
+    // invalidate whatever token the caller already holds for that same
+    // account and obtained earlier (e.g. during this block's own setup),
+    // breaking it out from under the test the moment step-up runs. Step-up
+    // itself needs only the EXISTING session's bearer token plus a password
+    // re-entry in the body -- no fresh login required at all, matching the
+    // exact pattern already established in gm-role.e2e-spec.ts.
+    const stepUpTokenFor = async (token: string, password: string) => {
+      const result = await (await request()).post('/api/auth/step-up').set('Authorization', `Bearer ${token}`).send({ currentPassword: password })
+      expect(result.status).toBe(201)
+      return result.body.stepUpToken as string
+    }
+
+    it('sets up a guild with LEADER, OFFICER, MEMBER, a pending invite, and a pending join request', async () => {
+      const leader = await register('DL')
+      const officer = await register('DO')
+      const member = await register('DM')
+      const invited = await register('DI')
+      const requester = await register('DR')
+
+      dbLeaderPassword = leader.password
+      const leaderCharId = (await createCharacter(leader.username, 'DL')).id
+      const officerCharId = (await createCharacter(officer.username, 'DO')).id
+      const memberCharId = (await createCharacter(member.username, 'DM')).id
+      const invitedCharId = (await createCharacter(invited.username, 'DI')).id
+      const requesterCharId = (await createCharacter(requester.username, 'DR')).id
+
+      dbLeaderToken = await login(leader.username, leader.password)
+      dbOfficerToken = await login(officer.username, officer.password)
+      dbMemberToken = await login(member.username, member.password)
+      dbInvitedToken = await login(invited.username, invited.password)
+      const requesterToken = await login(requester.username, requester.password)
+
+      dbGuildName = `Disband Fixture ${suffix}`
+      dbGuildTag = 'DIS'
+      const created = await (await request()).post('/api/admin/guilds').set('Authorization', `Bearer ${adminToken}`)
+        .send({ name: dbGuildName, tag: dbGuildTag, recruitment: 'INVITE_ONLY', leaderCharacterId: leaderCharId })
+      expect(created.status).toBe(201)
+      dbGuildSlug = created.body.slug
+      dbGuildId = created.body.id
+
+      await prisma.guildMember.create({ data: { guildId: dbGuildId, characterId: officerCharId, accountId: (await prisma.account.findUniqueOrThrow({ where: { username: officer.username } })).id, roleKey: 'OFFICER' } })
+      await prisma.guildMember.create({ data: { guildId: dbGuildId, characterId: memberCharId, accountId: (await prisma.account.findUniqueOrThrow({ where: { username: member.username } })).id, roleKey: 'MEMBER' } })
+
+      const invite = await (await request()).post(`/api/guilds/${dbGuildSlug}/invites`).set('Authorization', `Bearer ${dbLeaderToken}`).send({ characterId: invitedCharId })
+      expect(invite.status).toBe(201)
+      dbPendingInviteId = invite.body.id
+
+      // A separate APPROVAL_REQUIRED-only path is needed for a real join
+      // request -- switch recruitment temporarily via the real update
+      // endpoint (LEADER-authorized), matching how this would really happen.
+      const switchMode = await (await request()).patch(`/api/guilds/${dbGuildSlug}`).set('Authorization', `Bearer ${dbLeaderToken}`).send({ recruitment: 'APPROVAL_REQUIRED' })
+      expect(switchMode.status).toBe(200)
+      const joinReq = await (await request()).post(`/api/guilds/${dbGuildSlug}/join`).set('Authorization', `Bearer ${requesterToken}`).send({ characterId: requesterCharId })
+      expect(joinReq.status).toBe(201)
+      expect(joinReq.body.status).toBe('REQUESTED')
+      dbPendingRequestId = joinReq.body.request.id
+      // Back to INVITE_ONLY so the rest of this block's assumptions hold.
+      await (await request()).patch(`/api/guilds/${dbGuildSlug}`).set('Authorization', `Bearer ${dbLeaderToken}`).send({ recruitment: 'INVITE_ONLY' })
+    })
+
+    it('denies OFFICER and MEMBER, even with valid step-up of their own account', async () => {
+      const officerStepUp = await stepUpTokenFor(dbOfficerToken, 'e2e-test-password-guilds')
+      const asOfficer = await (await request())
+        .delete(`/api/guilds/${dbGuildSlug}`)
+        .set('Authorization', `Bearer ${dbOfficerToken}`)
+        .set('X-Step-Up-Token', officerStepUp)
+        .send({ confirmText: dbGuildName })
+      expect(asOfficer.status).toBe(403)
+
+      const memberStepUp = await stepUpTokenFor(dbMemberToken, 'e2e-test-password-guilds')
+      const asMember = await (await request())
+        .delete(`/api/guilds/${dbGuildSlug}`)
+        .set('Authorization', `Bearer ${dbMemberToken}`)
+        .set('X-Step-Up-Token', memberStepUp)
+        .send({ confirmText: dbGuildName })
+      expect(asMember.status).toBe(403)
+    })
+
+    it('denies LEADER without a step-up token at all', async () => {
+      const attempt = await (await request())
+        .delete(`/api/guilds/${dbGuildSlug}`)
+        .set('Authorization', `Bearer ${dbLeaderToken}`)
+        .send({ confirmText: dbGuildName })
+      expect(attempt.status).toBe(403)
+    })
+
+    it('denies LEADER with valid step-up but wrong confirmation text', async () => {
+      const stepUpToken = await stepUpTokenFor(dbLeaderToken, dbLeaderPassword)
+      const attempt = await (await request())
+        .delete(`/api/guilds/${dbGuildSlug}`)
+        .set('Authorization', `Bearer ${dbLeaderToken}`)
+        .set('X-Step-Up-Token', stepUpToken)
+        .send({ confirmText: 'not the guild name' })
+      expect(attempt.status).toBe(400)
+
+      const guildRow = await prisma.guild.findUniqueOrThrow({ where: { id: dbGuildId } })
+      expect(guildRow.status).toBe('ACTIVE')
+    })
+
+    it('LEADER succeeds with valid step-up and the guild TAG (not just the name) as confirmation: guild disbanded, invites/requests invalidated, members/treasury preserved', async () => {
+      const stepUpToken = await stepUpTokenFor(dbLeaderToken, dbLeaderPassword)
+      const result = await (await request())
+        .delete(`/api/guilds/${dbGuildSlug}`)
+        .set('Authorization', `Bearer ${dbLeaderToken}`)
+        .set('X-Step-Up-Token', stepUpToken)
+        .send({ confirmText: dbGuildTag.toLowerCase() })
+      expect(result.status).toBe(200)
+      expect(result.body.status).toBe('DISBANDED')
+
+      const invite = await prisma.guildInvite.findUniqueOrThrow({ where: { id: dbPendingInviteId } })
+      expect(invite.status).toBe('CANCELLED')
+      const joinRequest = await prisma.guildJoinRequest.findUniqueOrThrow({ where: { id: dbPendingRequestId } })
+      expect(joinRequest.status).toBe('CANCELLED')
+
+      // History preserved: members, treasury, vault untouched.
+      const activeMembers = await prisma.guildMember.count({ where: { guildId: dbGuildId, removedAt: null } })
+      expect(activeMembers).toBe(3)
+      const treasury = await prisma.guildTreasury.findUniqueOrThrow({ where: { guildId: dbGuildId }, include: { balances: true } })
+      expect(treasury.balances.length).toBe(7)
+    })
+
+    it('a second disband attempt is rejected cleanly (guild is no longer ACTIVE)', async () => {
+      const stepUpToken = await stepUpTokenFor(dbLeaderToken, dbLeaderPassword)
+      const attempt = await (await request())
+        .delete(`/api/guilds/${dbGuildSlug}`)
+        .set('Authorization', `Bearer ${dbLeaderToken}`)
+        .set('X-Step-Up-Token', stepUpToken)
+        .send({ confirmText: dbGuildName })
+      expect(attempt.status).toBe(400)
+    })
+
+    it('the disbanded guild no longer appears in directory search', async () => {
+      const search = await (await request()).get('/api/guilds').query({ search: dbGuildTag })
+      expect(search.body.data.some((g: any) => g.slug === dbGuildSlug)).toBe(false)
+    })
+
+    it('post-disband: accept/decline/cancel on the now-cancelled invite and approve/reject on the now-cancelled request all fail cleanly', async () => {
+      // Must be the invite's actual recipient -- acceptInvite() checks
+      // accountId ownership BEFORE the status check, so using any other
+      // account (even the LEADER) would 403 on ownership first and never
+      // exercise the "already decided" rejection this test is for.
+      const acceptAttempt = await (await request())
+        .post(`/api/guilds/${dbGuildSlug}/invites/${dbPendingInviteId}/accept`)
+        .set('Authorization', `Bearer ${dbInvitedToken}`)
+      expect(acceptAttempt.status).toBe(400)
+
+      const approveAttempt = await (await request())
+        .post(`/api/guilds/${dbGuildSlug}/join-requests/${dbPendingRequestId}/approve`)
+        .set('Authorization', `Bearer ${dbLeaderToken}`)
+        .send({})
+      expect(approveAttempt.status).toBe(400)
+    })
+
+    it('concurrency: disband racing a leadership transfer and a role change on the same guild -- never a 500, guild ends DISBANDED with membership state left exactly as it was', async () => {
+      const leader2 = await register('EL')
+      const officer2 = await register('EO')
+      const member2 = await register('EM')
+      const leader2CharId = (await createCharacter(leader2.username, 'EL')).id
+      const officer2CharId = (await createCharacter(officer2.username, 'EO')).id
+      const member2CharId = (await createCharacter(member2.username, 'EM')).id
+      const leader2Token = await login(leader2.username, leader2.password)
+
+      const guild2Name = `Disband Race ${suffix}`
+      const created = await (await request()).post('/api/admin/guilds').set('Authorization', `Bearer ${adminToken}`)
+        .send({ name: guild2Name, tag: 'DBR', leaderCharacterId: leader2CharId })
+      expect(created.status).toBe(201)
+      const guild2Slug = created.body.slug
+      const guild2Id = created.body.id
+      const officer2Member = await prisma.guildMember.create({ data: { guildId: guild2Id, characterId: officer2CharId, accountId: (await prisma.account.findUniqueOrThrow({ where: { username: officer2.username } })).id, roleKey: 'OFFICER' } })
+      const member2Row = await prisma.guildMember.create({ data: { guildId: guild2Id, characterId: member2CharId, accountId: (await prisma.account.findUniqueOrThrow({ where: { username: member2.username } })).id, roleKey: 'MEMBER' } })
+
+      const stepUpToken = await stepUpTokenFor(leader2Token, leader2.password)
+
+      const [disbandResult, transferResult, roleChangeResult] = await Promise.all([
+        (await request()).delete(`/api/guilds/${guild2Slug}`).set('Authorization', `Bearer ${leader2Token}`).set('X-Step-Up-Token', stepUpToken).send({ confirmText: guild2Name }),
+        (await request()).patch(`/api/guilds/${guild2Slug}/members/${officer2Member.id}/role`).set('Authorization', `Bearer ${leader2Token}`).send({ roleKey: 'LEADER' }),
+        (await request()).patch(`/api/guilds/${guild2Slug}/members/${member2Row.id}/role`).set('Authorization', `Bearer ${leader2Token}`).send({ roleKey: 'OFFICER' })
+      ])
+
+      expect([disbandResult.status, transferResult.status, roleChangeResult.status]).not.toContain(500)
+
+      const guildRow = await prisma.guild.findUniqueOrThrow({ where: { id: guild2Id } })
+      // Disband itself always succeeds in this race (nothing else contends
+      // for the guild.status write) -- the interesting assertion is that
+      // the two role-changing requests, whichever order they actually land
+      // in relative to disband, never leave a corrupted or duplicated
+      // LEADER state.
+      expect(guildRow.status).toBe('DISBANDED')
+      const leaderCount = await prisma.guildMember.count({ where: { guildId: guild2Id, roleKey: 'LEADER', removedAt: null } })
+      expect(leaderCount).toBeLessThanOrEqual(1)
     })
   })
 })

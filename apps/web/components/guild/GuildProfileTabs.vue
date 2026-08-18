@@ -101,6 +101,10 @@
       <!-- Membros -->
       <div v-else-if="activeTab === 'members'" class="guild-tab-members">
         <div v-if="loading.members" class="guild-tab-empty">Carregando membros...</div>
+        <div v-else-if="tabErrors.members" class="guild-tab-empty">
+          <p>{{ tabErrors.members }}</p>
+          <button type="button" class="guild-link-btn" @click="retryTab('members')">Tentar novamente</button>
+        </div>
         <table v-else-if="members.length" class="guild-members-table">
           <thead><tr><th>Personagem</th><th>Papel</th><th>XP</th><th>Contribuição</th><th v-if="canManage">Ações</th></tr></thead>
           <tbody>
@@ -194,12 +198,18 @@
           <button type="submit" class="guild-btn" :disabled="!requestForm.title">Criar solicitação</button>
         </form>
         <div v-if="loading.requests" class="guild-tab-empty">Carregando solicitações...</div>
-        <article v-for="item in requests" v-else :key="item.id" class="guild-list-item">
-          <header><strong>{{ item.title }}</strong><span class="guild-status-badge">{{ item.status }}</span></header>
-          <p v-if="item.description">{{ item.description }}</p>
-          <p v-if="item.disclaimer" class="guild-disclaimer">{{ item.disclaimer }}</p>
-        </article>
-        <p v-if="!loading.requests && !requests.length" class="guild-tab-empty">Nenhuma solicitação registrada ainda.</p>
+        <div v-else-if="tabErrors.requests" class="guild-tab-empty">
+          <p>{{ tabErrors.requests }}</p>
+          <button type="button" class="guild-link-btn" @click="retryTab('requests')">Tentar novamente</button>
+        </div>
+        <template v-else>
+          <article v-for="item in requests" :key="item.id" class="guild-list-item">
+            <header><strong>{{ item.title }}</strong><span class="guild-status-badge">{{ item.status }}</span></header>
+            <p v-if="item.description">{{ item.description }}</p>
+            <p v-if="item.disclaimer" class="guild-disclaimer">{{ item.disclaimer }}</p>
+          </article>
+          <p v-if="!requests.length" class="guild-tab-empty">Nenhuma solicitação registrada ainda.</p>
+        </template>
       </div>
 
       <!-- Projects -->
@@ -209,18 +219,28 @@
           <button type="submit" class="guild-btn" :disabled="!projectForm.title">Criar projeto</button>
         </form>
         <div v-if="loading.projects" class="guild-tab-empty">Carregando projetos...</div>
-        <article v-for="item in projects" v-else :key="item.id" class="guild-list-item">
-          <header><strong>{{ item.title }}</strong><span class="guild-status-badge">{{ item.status }}</span></header>
-          <p v-if="item.description">{{ item.description }}</p>
-          <p v-if="item.goal" class="guild-project-goal">Meta: {{ item.goal }}</p>
-        </article>
-        <p v-if="!loading.projects && !projects.length" class="guild-tab-empty">Nenhum projeto planejado ainda.</p>
+        <div v-else-if="tabErrors.projects" class="guild-tab-empty">
+          <p>{{ tabErrors.projects }}</p>
+          <button type="button" class="guild-link-btn" @click="retryTab('projects')">Tentar novamente</button>
+        </div>
+        <template v-else>
+          <article v-for="item in projects" :key="item.id" class="guild-list-item">
+            <header><strong>{{ item.title }}</strong><span class="guild-status-badge">{{ item.status }}</span></header>
+            <p v-if="item.description">{{ item.description }}</p>
+            <p v-if="item.goal" class="guild-project-goal">Meta: {{ item.goal }}</p>
+          </article>
+          <p v-if="!projects.length" class="guild-tab-empty">Nenhum projeto planejado ainda.</p>
+        </template>
       </div>
 
       <!-- Treasury (Tier B) -->
       <div v-else-if="activeTab === 'treasury'" class="guild-tab-treasury">
         <p class="guild-tier-note">Dados reais e auditáveis, mas nenhuma movimentação é possível nesta etapa. Depósito nunca gera Guild XP.</p>
         <div v-if="loading.treasury" class="guild-tab-empty">Carregando tesouraria...</div>
+        <div v-else-if="tabErrors.treasury" class="guild-tab-empty">
+          <p>{{ tabErrors.treasury }}</p>
+          <button type="button" class="guild-link-btn" @click="retryTab('treasury')">Tentar novamente</button>
+        </div>
         <table v-else-if="treasuryBalances.length">
           <thead><tr><th>Recurso</th><th>Disponível</th><th>Reservado</th></tr></thead>
           <tbody>
@@ -231,12 +251,21 @@
             </tr>
           </tbody>
         </table>
+        <!-- Guild Step 5 audit finding: this branch had no fallback at all --
+        every guild is seeded with 7 balance rows at creation, so it never
+        fires in practice, but a genuinely empty treasury rendered nothing,
+        not even a message. -->
+        <p v-else class="guild-tab-empty">Nenhum saldo registrado ainda.</p>
       </div>
 
       <!-- Vault (Tier B) -->
       <div v-else-if="activeTab === 'vault'" class="guild-tab-treasury">
         <p class="guild-tier-note">Cofre real e auditável, ainda sem itens e sem movimentação nesta etapa.</p>
         <div v-if="loading.vault" class="guild-tab-empty">Carregando cofre...</div>
+        <div v-else-if="tabErrors.vault" class="guild-tab-empty">
+          <p>{{ tabErrors.vault }}</p>
+          <button type="button" class="guild-link-btn" @click="retryTab('vault')">Tentar novamente</button>
+        </div>
         <p v-else-if="!vaultItems.length" class="guild-tab-empty">O cofre desta guilda está vazio.</p>
       </div>
 
@@ -313,29 +342,36 @@ const treasuryBalances = ref<any[]>([])
 const vaultItems = ref<any[]>([])
 const pendingJoinRequests = ref<any[]>([])
 const loaded = new Set<string>()
+// Guild Step 5 audit finding: the previous try/finally (no catch) per tab
+// silently cleared the loading flag on a fetch failure and left the panel
+// blank -- indistinguishable from a real empty state, with no way to retry
+// short of switching tabs away and back. Centralized here so every tab gets
+// the same load/error/retry contract instead of five near-duplicate blocks.
+const tabErrors = reactive<Record<string, string>>({ members: '', requests: '', projects: '', treasury: '', vault: '' })
+const TAB_LOADERS: Record<string, { load: () => Promise<any>, assign: (data: any) => void }> = {
+  members: { load: () => api.members(props.slug, { pageSize: 100 }), assign: (data) => { members.value = data.data } },
+  requests: { load: () => api.requests(props.slug, { pageSize: 50 }), assign: (data) => { requests.value = data.data } },
+  projects: { load: () => api.projects(props.slug, { pageSize: 50 }), assign: (data) => { projects.value = data.data } },
+  treasury: { load: () => api.treasury(props.slug), assign: (data) => { treasuryBalances.value = data.balances } },
+  vault: { load: () => api.vault(props.slug), assign: (data) => { vaultItems.value = data.items } }
+}
 
 const loadTab = async (key: string) => {
   if (loaded.has(key)) return
-  if (key === 'members') {
-    loading.members = true
-    try { members.value = (await api.members(props.slug, { pageSize: 100 })).data } finally { loading.members = false }
-  } else if (key === 'requests') {
-    loading.requests = true
-    try { requests.value = (await api.requests(props.slug, { pageSize: 50 })).data } finally { loading.requests = false }
-  } else if (key === 'projects') {
-    loading.projects = true
-    try { projects.value = (await api.projects(props.slug, { pageSize: 50 })).data } finally { loading.projects = false }
-  } else if (key === 'treasury') {
-    loading.treasury = true
-    try { treasuryBalances.value = (await api.treasury(props.slug)).balances } finally { loading.treasury = false }
-  } else if (key === 'vault') {
-    loading.vault = true
-    try { vaultItems.value = (await api.vault(props.slug)).items } finally { loading.vault = false }
-  } else {
-    return
+  const loader = TAB_LOADERS[key]
+  if (!loader) return
+  loading[key as keyof typeof loading] = true
+  tabErrors[key] = ''
+  try {
+    loader.assign(await loader.load())
+    loaded.add(key)
+  } catch (err: any) {
+    tabErrors[key] = err?.data?.message || 'Não foi possível carregar esta seção.'
+  } finally {
+    loading[key as keyof typeof loading] = false
   }
-  loaded.add(key)
 }
+const retryTab = (key: string) => { loaded.delete(key); loadTab(key) }
 
 watch(activeTab, (key) => loadTab(key), { immediate: true })
 
