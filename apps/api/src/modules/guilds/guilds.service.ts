@@ -484,29 +484,44 @@ export class GuildsService {
     }
     if (guild.recruitment === 'OPEN') {
       // characterId is unique on GuildMember -- a character keeps exactly
-      // one lifetime row, upserted across joins/leaves/rejoins, rather than
-      // a full historical trail. Simpler and matches the unique constraint;
-      // full history lives in the operational-event stream regardless.
+      // one lifetime row across joins/leaves/rejoins, rather than a full
+      // historical trail. Full history lives in the operational-event
+      // stream regardless.
       //
       // Wrapped in a transaction that re-verifies guild.status immediately
       // before the write (Guild Step 5.5, "disband vs join"): the read at
       // the top of this method and this write are otherwise two separate
       // round-trips, wide enough for a concurrent disband to land in
       // between and leave a brand-new member in a guild that no longer
-      // exists. upsert() can't take extra WHERE conditions itself (it keys
-      // strictly on the characterId unique constraint), so the guard is a
-      // second read inside the same transaction rather than a query filter.
-      const member = await this.prisma.$transaction(async (tx) => {
-        const stillActive = await tx.guild.findFirst({ where: { id: guild.id, status: 'ACTIVE' }, select: { id: true } })
-        if (!stillActive) throw new BadRequestException('Esta guild não está aceitando novos membros.')
-        return tx.guildMember.upsert({
-          where: { characterId: character.id },
-          create: { guildId: guild.id, characterId: character.id, accountId: user.id, roleKey: 'MEMBER' },
-          update: { guildId: guild.id, accountId: user.id, roleKey: 'MEMBER', joinedAt: new Date(), removedAt: null, removedBy: null, removedReason: null }
+      // exists.
+      try {
+        const member = await this.prisma.$transaction(async (tx) => {
+          const stillActive = await tx.guild.findFirst({ where: { id: guild.id, status: 'ACTIVE' }, select: { id: true } })
+          if (!stillActive) throw new BadRequestException('Esta guild não está aceitando novos membros.')
+          const memberFields = { guildId: guild.id, accountId: user.id, roleKey: 'MEMBER', joinedAt: new Date(), removedAt: null, removedBy: null, removedReason: null }
+          // Same write-time re-verification as acceptInvite()/
+          // approveJoinRequest() -- upsert() here would silently UPDATE into
+          // a row a concurrent join/accept/approve for this same character
+          // (e.g. another OPEN guild, or an invite accepted elsewhere) just
+          // created or reclaimed, instead of erroring. See acceptInvite() for
+          // the full rationale.
+          if (existing) {
+            const rejoin = await tx.guildMember.updateMany({ where: { characterId: character.id, removedAt: { not: null } }, data: memberFields })
+            if (rejoin.count === 0) throw new BadRequestException('Este personagem já pertence a uma guild.')
+            return tx.guildMember.findUniqueOrThrow({ where: { characterId: character.id } })
+          }
+          return tx.guildMember.create({ data: { characterId: character.id, ...memberFields } })
         })
-      })
-      await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_MEMBER_JOINED', entityType: 'GuildMember', entityId: member.id, actorUserId: user.id, description: `Personagem entrou na guild "${guild.name}".` })
-      return { status: 'JOINED' as const, member }
+        await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_MEMBER_JOINED', entityType: 'GuildMember', entityId: member.id, actorUserId: user.id, description: `Personagem entrou na guild "${guild.name}".` })
+        return { status: 'JOINED' as const, member }
+      } catch (error) {
+        // Genuine unique-constraint loss on the create() path above -- the
+        // loser gets a clean 400 here instead of a 500.
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+          throw new BadRequestException('Este personagem já pertence a uma guild.')
+        }
+        throw error
+      }
     }
     // Not a compound-key upsert: the unique index only covers PENDING (see
     // schema.prisma) so a character can rejoin after leaving/being kicked
@@ -550,20 +565,33 @@ export class GuildsService {
     // sibling case -- approving a request -- with no separate guild.status
     // check needed: the request row's own status already carries that
     // information by the time disband has run.
-    const member = await this.prisma.$transaction(async (tx) => {
-      const { count } = await tx.guildJoinRequest.updateMany({
-        where: { id: request.id, status: 'PENDING' },
-        data: { status: 'APPROVED', decidedBy: user.id, decidedAt: new Date(), decisionNote: payload.note?.trim().slice(0, 500) || null }
+    try {
+      const member = await this.prisma.$transaction(async (tx) => {
+        const { count } = await tx.guildJoinRequest.updateMany({
+          where: { id: request.id, status: 'PENDING' },
+          data: { status: 'APPROVED', decidedBy: user.id, decidedAt: new Date(), decisionNote: payload.note?.trim().slice(0, 500) || null }
+        })
+        if (count === 0) throw new BadRequestException('Esta solicitação já foi decidida.')
+        const memberFields = { guildId: guild.id, accountId: request.accountId, roleKey: 'MEMBER', invitedBy: user.id, joinedAt: new Date(), removedAt: null, removedBy: null, removedReason: null }
+        // Same write-time re-verification as acceptInvite() -- upsert() here
+        // would silently UPDATE into a row a concurrent accept/approve for
+        // this same character already just created or reclaimed, instead of
+        // erroring. See acceptInvite() for the full rationale.
+        if (existing) {
+          const rejoin = await tx.guildMember.updateMany({ where: { characterId: request.characterId, removedAt: { not: null } }, data: memberFields })
+          if (rejoin.count === 0) throw new BadRequestException('Este personagem já pertence a uma guild.')
+          return tx.guildMember.findUniqueOrThrow({ where: { characterId: request.characterId } })
+        }
+        return tx.guildMember.create({ data: { characterId: request.characterId, ...memberFields } })
       })
-      if (count === 0) throw new BadRequestException('Esta solicitação já foi decidida.')
-      return tx.guildMember.upsert({
-        where: { characterId: request.characterId },
-        create: { guildId: guild.id, characterId: request.characterId, accountId: request.accountId, roleKey: 'MEMBER', invitedBy: user.id },
-        update: { guildId: guild.id, accountId: request.accountId, roleKey: 'MEMBER', invitedBy: user.id, joinedAt: new Date(), removedAt: null, removedBy: null, removedReason: null }
-      })
-    })
-    await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_JOIN_APPROVED', entityType: 'GuildJoinRequest', entityId: request.id, actorUserId: user.id, targetUserId: request.accountId, description: `Solicitação aprovada por ${user.username}.` })
-    return member
+      await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_JOIN_APPROVED', entityType: 'GuildJoinRequest', entityId: request.id, actorUserId: user.id, targetUserId: request.accountId, description: `Solicitação aprovada por ${user.username}.` })
+      return member
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+        throw new BadRequestException('Este personagem já pertence a uma guild.')
+      }
+      throw error
+    }
   }
 
   async rejectJoinRequest(slug: string, requestId: string, payload: GuildJoinDecisionPayload, user: AuthenticatedUser) {
@@ -718,22 +746,30 @@ export class GuildsService {
         // with no separate guild.status check needed.
         const { count } = await tx.guildInvite.updateMany({ where: { id: invite.id, status: 'PENDING' }, data: { status: 'ACCEPTED', decidedAt: new Date() } })
         if (count === 0) throw new BadRequestException('Este convite já foi decidido.')
-        return tx.guildMember.upsert({
-          where: { characterId: invite.characterId },
-          create: { guildId: guild.id, characterId: invite.characterId, accountId: invite.accountId, roleKey: 'MEMBER', invitedBy: invite.invitedBy },
-          update: { guildId: guild.id, accountId: invite.accountId, roleKey: 'MEMBER', invitedBy: invite.invitedBy, joinedAt: new Date(), removedAt: null, removedBy: null, removedReason: null }
-        })
+        const memberFields = { guildId: guild.id, accountId: invite.accountId, roleKey: 'MEMBER', invitedBy: invite.invitedBy, joinedAt: new Date(), removedAt: null, removedBy: null, removedReason: null }
+        // The pre-check above is best-effort, not a lock, so the two branches
+        // below each re-verify at write time instead of trusting it:
+        // - No prior row: plain create() -- MySQL's unique index on
+        //   characterId genuinely rejects a second concurrent insert (unlike
+        //   upsert(), which silently UPDATEs into an existing row instead of
+        //   erroring, letting two racing accepts for the same character both
+        //   report success).
+        // - Prior row soft-removed: a conditional updateMany() that only
+        //   matches while removedAt is still set, so a second accept racing
+        //   to rejoin the very same removed row can't silently steal it back
+        //   after the first one already claimed it.
+        if (existingMembership) {
+          const rejoin = await tx.guildMember.updateMany({ where: { characterId: invite.characterId, removedAt: { not: null } }, data: memberFields })
+          if (rejoin.count === 0) throw new BadRequestException('Este personagem já pertence a uma guild.')
+          return tx.guildMember.findUniqueOrThrow({ where: { characterId: invite.characterId } })
+        }
+        return tx.guildMember.create({ data: { characterId: invite.characterId, ...memberFields } })
       })
       await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_INVITE_ACCEPTED', entityType: 'GuildInvite', entityId: invite.id, actorUserId: user.id, description: `Convite aceito para "${guild.name}".` })
       return member
     } catch (error) {
-      // The pre-check above is best-effort, not a lock: GuildMember.characterId
-      // is DB-unique, so two near-simultaneous acceptances for the same
-      // character (this invite plus a join-request approval elsewhere, or two
-      // invite accepts) can both pass the check and then race at the upsert.
-      // MySQL's unique index is the actual race-safety net -- the loser gets
-      // P2002 here instead of silently overwriting the winner's membership.
-      // Surfaced as a clean 400, not a 500.
+      // Genuine unique-constraint loss on the create() path above -- the
+      // loser gets a clean 400 here instead of a 500.
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
         throw new BadRequestException('Este personagem já pertence a uma guild.')
       }

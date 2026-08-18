@@ -7,6 +7,101 @@ const CONTAINER = 'bloodmoon-e2e-guilds'
 
 const KNOWN_RESOURCE_KEYS = ['ZEN', 'WCOIN', 'GOBLIN_POINT', 'HUNT_POINT', 'JEWEL_BLESS', 'JEWEL_SOUL', 'JEWEL_CHAOS']
 
+// This file's fixtures are only safe to run repeatedly against the SAME
+// database in the real-Docker path (startDisposableDatabase() below returns
+// a brand-new throwaway container every time, so it's never an issue there).
+// The E2E_LOCAL_MYSQL_URL fallback (Docker unavailable, e.g. this Windows
+// dev machine -- see disposable-mysql.ts) reuses one persistent local
+// database across every run instead, and stopDisposableDatabase() is a
+// deliberate no-op in that path -- so nothing ever tears down what this file
+// created. Every account/character this file creates already embeds `suffix`
+// (Date.now().toString(36)) in its unique fields, so those never collide
+// across runs on their own. Guilds are the one exception: many fixtures use
+// short, human-readable, HARD-CODED tags ('TRR', 'RCM', 'MGT', 'INV', 'DIS',
+// ...) with no suffix, because a real guild tag is capped at 10 characters
+// (Guild.tag @db.VarChar(10) in schema.prisma) -- a base36 timestamp alone
+// eats 8 of those, leaving no room for a readable prefix. Once Guild Step
+// 5.5 added an ACTIVE-scoped uniqueness check on Guild.name/tag
+// (guilds.service.ts createGuild()), a second run against the same
+// persistent local database started colliding with the first run's still-
+// ACTIVE leftover guilds -- and the same applies to GuildLevelConfig.level,
+// a global (not per-guild) admin catalog row this file also creates with a
+// literal level: 2.
+//
+// resetGuildTestState() is the fix: wipe every row this file itself could
+// ever have created, before the first fixture in this describe block runs,
+// so each run always starts from a genuinely clean slate regardless of how
+// the previous run ended (passed, failed, or crashed before its own
+// afterAll ran). It is deliberately NOT a beforeEach -- fixtures across
+// `it()`s in the same describe block intentionally build on each other
+// (e.g. "join flow" -> "role change" -> "kick" all share one guild), so
+// wiping per-test would break the suite's own structure, not just clean up
+// after it.
+async function resetGuildTestState(prisma: import('../src/database/prisma.service').PrismaService) {
+  // Safety guard: refuse to run anywhere but this test process's own
+  // database. Jest sets NODE_ENV to 'test' automatically and it is never
+  // 'test' in any deployed environment; DATABASE_URL at this point is
+  // whatever this file's own beforeAll just assigned moments before
+  // app.init() (either the disposable container's URL, built from a
+  // hardcoded 'bloodmoon_e2e' database name, or the developer's own
+  // E2E_LOCAL_MYSQL_URL override) -- never a value this file could have
+  // received from a production/staging config.
+  if (process.env.NODE_ENV !== 'test') {
+    throw new Error('resetGuildTestState() refused to run: NODE_ENV is not "test".')
+  }
+  const databaseUrl = process.env.DATABASE_URL || ''
+  const isDisposableContainer = databaseUrl.includes('bloodmoon_e2e')
+  const isConfiguredLocalFallback = Boolean(process.env.E2E_LOCAL_MYSQL_URL) && databaseUrl === process.env.E2E_LOCAL_MYSQL_URL
+  if (!isDisposableContainer && !isConfiguredLocalFallback) {
+    throw new Error(`resetGuildTestState() refused to run: DATABASE_URL does not look like a disposable or explicitly-configured local e2e database (${databaseUrl}).`)
+  }
+
+  // GuildMovement/GuildMovementApproval are deliberately NOT wired into
+  // Guild's relation graph (see the comment on GuildMovement in
+  // schema.prisma), so they do not cascade from guild.deleteMany() below.
+  // Nothing in this file creates them today, but clearing them costs
+  // nothing and keeps this function correct if that ever changes.
+  await prisma.guildMovementApproval.deleteMany()
+  await prisma.guildMovement.deleteMany()
+  // Every other Guild-domain table this file writes to (GuildMember,
+  // GuildJoinRequest, GuildInvite, GuildFocusAssignment, GuildRequest,
+  // GuildProject, GuildMedia, GuildTreasury -> GuildTreasuryBalance,
+  // GuildVault -> GuildVaultItem) has `onDelete: Cascade` back to Guild in
+  // schema.prisma -- a real MySQL FK cascade, not just Prisma-client
+  // behavior -- so deleting Guild rows here takes all of them with it.
+  await prisma.guild.deleteMany()
+  // Global admin-config catalogs, not per-guild, so not covered by the
+  // cascade above.
+  await prisma.guildLevelConfig.deleteMany()
+  await prisma.guildXpConversionRule.deleteMany()
+
+  // Account/AccountCharacter rows this file creates via register()/
+  // createCharacter() are uniquely suffixed, so they never *collide* across
+  // runs the way the hardcoded guild tags above did -- but nothing ever
+  // deleted them either, and after enough local runs the sheer row count
+  // starts breaking queries that assume a small result set (e.g.
+  // inviteCandidates()'s `take: 20` + `orderBy: name` in guilds.service.ts,
+  // which can silently push a brand-new run's own target character past
+  // the 20th row once enough same-substring names from past runs pile up).
+  // Scoped to this file's own exact, structural naming convention only --
+  // register()'s username is always `e2egld${label}_${suffix}` and
+  // createCharacter()'s name is always `EGld${label}${suffix}` (see both
+  // helpers below) -- verified unique to this spec file (no other
+  // apps/api/test/*.e2e-spec.ts uses either prefix), so this can never
+  // touch player_teste/tester_two/adm_teste or any other real or shared
+  // fixture. Most of Account's dependent tables cascade
+  // (`onDelete: Cascade` in schema.prisma, e.g. AccountCharacter,
+  // AccountSession, GuildMember) and would clean themselves up once Account
+  // rows go -- AccountCurrency is the one confirmed exception (register()
+  // seeds one row per currency per account, no cascade on that relation),
+  // so it needs an explicit delete first or Account's own deleteMany() below
+  // fails on a live FK constraint instead of silently skipping anything.
+  const testAccountIds = (await prisma.account.findMany({ where: { username: { startsWith: 'e2egld' } }, select: { id: true } })).map((a) => a.id)
+  await prisma.accountCurrency.deleteMany({ where: { accountId: { in: testAccountIds } } })
+  await prisma.accountCharacter.deleteMany({ where: { name: { startsWith: 'EGld' } } })
+  await prisma.account.deleteMany({ where: { username: { startsWith: 'e2egld' } } })
+}
+
 beforeAll(async () => {
   const database = await startDisposableDatabase(CONTAINER)
   process.env.DATABASE_URL = database.databaseUrl
@@ -51,9 +146,19 @@ describe('Guilds MVP', () => {
     await app.init()
     httpServer = app.getHttpServer()
     prisma = app.get(PrismaService)
+
+    // Clean slate before this run's own fixtures start, regardless of how
+    // any prior run against this same database ended -- see the comment on
+    // resetGuildTestState() above for why this is needed at all.
+    await resetGuildTestState(prisma)
   }, 60000)
 
   afterAll(async () => {
+    // Best-effort tidy-up after a normal run too. Not load-bearing for
+    // repeatability (the next run's own beforeAll cleans up regardless) but
+    // leaves the database in the same clean state a fresh checkout would
+    // find it in.
+    if (prisma) await resetGuildTestState(prisma)
     await app?.close()
   })
 
@@ -985,47 +1090,210 @@ describe('Guilds MVP', () => {
     })
 
     it('membership integrity + concurrency: the same character invited by two different guilds ends up in exactly one, and the losing accept fails cleanly (not 500)', async () => {
-      const guildALeader = await register('CA')
-      const guildBLeader = await register('CB')
-      const concurrencyTarget = await register('CT')
-      const guildALeaderCharId = (await createCharacter(guildALeader.username, 'CA')).id
-      const guildBLeaderCharId = (await createCharacter(guildBLeader.username, 'CB')).id
-      const concurrencyTargetCharId = (await createCharacter(concurrencyTarget.username, 'CT')).id
-      const guildALeaderToken = await login(guildALeader.username, guildALeader.password)
-      const guildBLeaderToken = await login(guildBLeader.username, guildBLeader.password)
-      const concurrencyTargetToken = await login(concurrencyTarget.username, concurrencyTarget.password)
+      // Looped rather than a single race: the real conflict only manifests
+      // when both accepts' pre-checks land before either has committed its
+      // write, and a lone Promise.all() attempt can dodge that window by
+      // pure timing luck -- which is exactly how the upsert()-based bug this
+      // pins (see acceptInvite() in guilds.service.ts) went unnoticed for a
+      // while. Repeating the race gives a regression a real chance of being
+      // caught instead of getting lucky once.
+      const ITERATIONS = 6
+      for (let i = 0; i < ITERATIONS; i++) {
+        const guildALeader = await register(`RA${i}`)
+        const guildBLeader = await register(`RB${i}`)
+        const concurrencyTarget = await register(`RT${i}`)
+        const guildALeaderCharId = (await createCharacter(guildALeader.username, `RA${i}`)).id
+        const guildBLeaderCharId = (await createCharacter(guildBLeader.username, `RB${i}`)).id
+        const concurrencyTargetCharId = (await createCharacter(concurrencyTarget.username, `RT${i}`)).id
+        const guildALeaderToken = await login(guildALeader.username, guildALeader.password)
+        const guildBLeaderToken = await login(guildBLeader.username, guildBLeader.password)
+        const concurrencyTargetToken = await login(concurrencyTarget.username, concurrencyTarget.password)
 
-      const guildA = await (await request()).post('/api/admin/guilds').set('Authorization', `Bearer ${adminToken}`)
-        .send({ name: `Concurrency A ${suffix}`, tag: 'CCA', recruitment: 'INVITE_ONLY', leaderCharacterId: guildALeaderCharId })
-      const guildB = await (await request()).post('/api/admin/guilds').set('Authorization', `Bearer ${adminToken}`)
-        .send({ name: `Concurrency B ${suffix}`, tag: 'CCB', recruitment: 'INVITE_ONLY', leaderCharacterId: guildBLeaderCharId })
-      expect(guildA.status).toBe(201)
-      expect(guildB.status).toBe(201)
+        const guildA = await (await request()).post('/api/admin/guilds').set('Authorization', `Bearer ${adminToken}`)
+          .send({ name: `Concurrency A${i} ${suffix}`, tag: `CCA${i}`, recruitment: 'INVITE_ONLY', leaderCharacterId: guildALeaderCharId })
+        const guildB = await (await request()).post('/api/admin/guilds').set('Authorization', `Bearer ${adminToken}`)
+          .send({ name: `Concurrency B${i} ${suffix}`, tag: `CCB${i}`, recruitment: 'INVITE_ONLY', leaderCharacterId: guildBLeaderCharId })
+        expect(guildA.status).toBe(201)
+        expect(guildB.status).toBe(201)
 
-      const inviteA = await (await request()).post(`/api/guilds/${guildA.body.slug}/invites`).set('Authorization', `Bearer ${guildALeaderToken}`).send({ characterId: concurrencyTargetCharId })
-      const inviteB = await (await request()).post(`/api/guilds/${guildB.body.slug}/invites`).set('Authorization', `Bearer ${guildBLeaderToken}`).send({ characterId: concurrencyTargetCharId })
-      expect(inviteA.status).toBe(201)
-      expect(inviteB.status).toBe(201)
+        const inviteA = await (await request()).post(`/api/guilds/${guildA.body.slug}/invites`).set('Authorization', `Bearer ${guildALeaderToken}`).send({ characterId: concurrencyTargetCharId })
+        const inviteB = await (await request()).post(`/api/guilds/${guildB.body.slug}/invites`).set('Authorization', `Bearer ${guildBLeaderToken}`).send({ characterId: concurrencyTargetCharId })
+        expect(inviteA.status).toBe(201)
+        expect(inviteB.status).toBe(201)
 
-      const [acceptA, acceptB] = await Promise.all([
-        (await request()).post(`/api/guilds/${guildA.body.slug}/invites/${inviteA.body.id}/accept`).set('Authorization', `Bearer ${concurrencyTargetToken}`),
-        (await request()).post(`/api/guilds/${guildB.body.slug}/invites/${inviteB.body.id}/accept`).set('Authorization', `Bearer ${concurrencyTargetToken}`)
-      ])
+        // Both agents are resolved before either .post() is issued, so the
+        // two requests are fired back-to-back with no intervening await --
+        // as tight a race as this black-box HTTP test can produce.
+        const [reqA, reqB] = await Promise.all([request(), request()])
+        const [acceptA, acceptB] = await Promise.all([
+          reqA.post(`/api/guilds/${guildA.body.slug}/invites/${inviteA.body.id}/accept`).set('Authorization', `Bearer ${concurrencyTargetToken}`),
+          reqB.post(`/api/guilds/${guildB.body.slug}/invites/${inviteB.body.id}/accept`).set('Authorization', `Bearer ${concurrencyTargetToken}`)
+        ])
 
-      // Never both succeed, never both fail -- and whichever loses gets a
-      // clean 400 (BadRequestException from the pre-check or the P2002
-      // catch in acceptInvite), never a 500.
-      const statuses = [acceptA.status, acceptB.status].sort()
-      expect(statuses).toEqual([201, 400])
-      expect([acceptA.status, acceptB.status]).not.toContain(500)
+        // Never both succeed, never both fail -- and whichever loses gets a
+        // clean 400 (BadRequestException from the pre-check or the
+        // write-time guard in acceptInvite), never a 500.
+        const statuses = [acceptA.status, acceptB.status].sort()
+        expect(statuses).toEqual([201, 400])
+        expect([acceptA.status, acceptB.status]).not.toContain(500)
 
-      const member = await prisma.guildMember.findUniqueOrThrow({ where: { characterId: concurrencyTargetCharId } })
-      expect(member.removedAt).toBeNull()
-      expect([guildA.body.id, guildB.body.id]).toContain(member.guildId)
+        const member = await prisma.guildMember.findUniqueOrThrow({ where: { characterId: concurrencyTargetCharId } })
+        expect(member.removedAt).toBeNull()
+        expect([guildA.body.id, guildB.body.id]).toContain(member.guildId)
 
-      const memberCount = await prisma.guildMember.count({ where: { characterId: concurrencyTargetCharId, removedAt: null } })
-      expect(memberCount).toBe(1)
-    })
+        const memberCount = await prisma.guildMember.count({ where: { characterId: concurrencyTargetCharId, removedAt: null } })
+        expect(memberCount).toBe(1)
+      }
+    }, 60000)
+
+    it('membership integrity + concurrency: an invite accept racing a join-request approve for the same character also ends up in exactly one guild (cross-flow, approveJoinRequest() shares the same write-time guard)', async () => {
+      const ITERATIONS = 6
+      for (let i = 0; i < ITERATIONS; i++) {
+        const inviteLeader = await register(`XA${i}`)
+        const requestLeader = await register(`XB${i}`)
+        const target = await register(`XT${i}`)
+        const inviteLeaderCharId = (await createCharacter(inviteLeader.username, `XA${i}`)).id
+        const requestLeaderCharId = (await createCharacter(requestLeader.username, `XB${i}`)).id
+        const targetCharId = (await createCharacter(target.username, `XT${i}`)).id
+        const inviteLeaderToken = await login(inviteLeader.username, inviteLeader.password)
+        const requestLeaderToken = await login(requestLeader.username, requestLeader.password)
+        const targetToken = await login(target.username, target.password)
+
+        const guildInv = await (await request()).post('/api/admin/guilds').set('Authorization', `Bearer ${adminToken}`)
+          .send({ name: `Cross Inv${i} ${suffix}`, tag: `CXI${i}`, recruitment: 'INVITE_ONLY', leaderCharacterId: inviteLeaderCharId })
+        const guildReq = await (await request()).post('/api/admin/guilds').set('Authorization', `Bearer ${adminToken}`)
+          .send({ name: `Cross Req${i} ${suffix}`, tag: `CXR${i}`, recruitment: 'APPROVAL_REQUIRED', leaderCharacterId: requestLeaderCharId })
+        expect(guildInv.status).toBe(201)
+        expect(guildReq.status).toBe(201)
+
+        const invite = await (await request()).post(`/api/guilds/${guildInv.body.slug}/invites`).set('Authorization', `Bearer ${inviteLeaderToken}`).send({ characterId: targetCharId })
+        expect(invite.status).toBe(201)
+
+        const joinReq = await (await request()).post(`/api/guilds/${guildReq.body.slug}/join`).set('Authorization', `Bearer ${targetToken}`).send({ characterId: targetCharId })
+        expect(joinReq.status).toBe(201)
+        expect(joinReq.body.status).toBe('REQUESTED')
+        const pending = await (await request()).get(`/api/guilds/${guildReq.body.slug}/join-requests`).set('Authorization', `Bearer ${requestLeaderToken}`)
+        const requestId = pending.body[0].id
+
+        const [reqA, reqB] = await Promise.all([request(), request()])
+        const [accept, approve] = await Promise.all([
+          reqA.post(`/api/guilds/${guildInv.body.slug}/invites/${invite.body.id}/accept`).set('Authorization', `Bearer ${targetToken}`),
+          reqB.post(`/api/guilds/${guildReq.body.slug}/join-requests/${requestId}/approve`).set('Authorization', `Bearer ${requestLeaderToken}`).send({})
+        ])
+
+        const statuses = [accept.status, approve.status].sort()
+        expect(statuses).toEqual([201, 400])
+        expect([accept.status, approve.status]).not.toContain(500)
+
+        // Not just "one of the two" -- tie the membership directly to
+        // whichever operation actually reported success, per the same
+        // stricter check the other race tests in this file use.
+        const winner = accept.status === 201 ? guildInv : guildReq
+        const member = await prisma.guildMember.findUniqueOrThrow({ where: { characterId: targetCharId } })
+        expect(member.removedAt).toBeNull()
+        expect(member.guildId).toBe(winner.body.id)
+
+        const memberCount = await prisma.guildMember.count({ where: { characterId: targetCharId, removedAt: null } })
+        expect(memberCount).toBe(1)
+      }
+    }, 60000)
+
+    // GUILD MEMBERSHIP RACE HOTFIX: acceptInvite() and approveJoinRequest()
+    // both write a GuildMember via upsert(characterId), which does NOT
+    // provide the race-safety the code assumed -- see the test above for the
+    // accept-vs-accept case this pins, and the cross-flow test right above
+    // it for accept-vs-approve. These two blocks exercise the remaining
+    // entry-point combinations that hit the exact same vulnerable pattern
+    // (approve-vs-approve, and join(OPEN) -- which had its own separate
+    // upsert() call -- racing an invite accept). Same looped-race rationale
+    // as above: a lone Promise.all() attempt can dodge the real conflict
+    // window by pure timing luck.
+    it('membership integrity + concurrency: the same character with join requests to two different guilds ends up in exactly one after concurrent APPROVE, the loser fails cleanly', async () => {
+      const ITERATIONS = 4
+      for (let i = 0; i < ITERATIONS; i++) {
+        const guildALeader = await register(`QA${i}`)
+        const guildBLeader = await register(`QB${i}`)
+        const target = await register(`QT${i}`)
+        const guildALeaderCharId = (await createCharacter(guildALeader.username, `QA${i}`)).id
+        const guildBLeaderCharId = (await createCharacter(guildBLeader.username, `QB${i}`)).id
+        const targetCharId = (await createCharacter(target.username, `QT${i}`)).id
+        const guildALeaderToken = await login(guildALeader.username, guildALeader.password)
+        const guildBLeaderToken = await login(guildBLeader.username, guildBLeader.password)
+        const targetToken = await login(target.username, target.password)
+
+        const guildA = await (await request()).post('/api/admin/guilds').set('Authorization', `Bearer ${adminToken}`)
+          .send({ name: `Approve Race A${i} ${suffix}`, tag: `QCA${i}`, recruitment: 'APPROVAL_REQUIRED', leaderCharacterId: guildALeaderCharId })
+        const guildB = await (await request()).post('/api/admin/guilds').set('Authorization', `Bearer ${adminToken}`)
+          .send({ name: `Approve Race B${i} ${suffix}`, tag: `QCB${i}`, recruitment: 'APPROVAL_REQUIRED', leaderCharacterId: guildBLeaderCharId })
+        expect(guildA.status).toBe(201)
+        expect(guildB.status).toBe(201)
+
+        const requestA = await (await request()).post(`/api/guilds/${guildA.body.slug}/join`).set('Authorization', `Bearer ${targetToken}`).send({ characterId: targetCharId })
+        const requestB = await (await request()).post(`/api/guilds/${guildB.body.slug}/join`).set('Authorization', `Bearer ${targetToken}`).send({ characterId: targetCharId })
+        expect(requestA.status).toBe(201)
+        expect(requestB.status).toBe(201)
+
+        const [reqA, reqB] = await Promise.all([request(), request()])
+        const [approveA, approveB] = await Promise.all([
+          reqA.post(`/api/guilds/${guildA.body.slug}/join-requests/${requestA.body.request.id}/approve`).set('Authorization', `Bearer ${guildALeaderToken}`).send({}),
+          reqB.post(`/api/guilds/${guildB.body.slug}/join-requests/${requestB.body.request.id}/approve`).set('Authorization', `Bearer ${guildBLeaderToken}`).send({})
+        ])
+
+        const statuses = [approveA.status, approveB.status].sort()
+        expect(statuses).toEqual([201, 400])
+        expect([approveA.status, approveB.status]).not.toContain(500)
+
+        const winner = approveA.status === 201 ? guildA : guildB
+        const member = await prisma.guildMember.findUniqueOrThrow({ where: { characterId: targetCharId } })
+        expect(member.removedAt).toBeNull()
+        expect(member.guildId).toBe(winner.body.id)
+
+        const memberCount = await prisma.guildMember.count({ where: { characterId: targetCharId, removedAt: null } })
+        expect(memberCount).toBe(1)
+      }
+    }, 60000)
+
+    it('membership integrity + concurrency: join(OPEN) racing an invite ACCEPT for the same character ends in exactly one membership, the loser fails cleanly', async () => {
+      const ITERATIONS = 4
+      for (let i = 0; i < ITERATIONS; i++) {
+        const openGuildLeader = await register(`JO${i}`)
+        const inviteGuildLeader = await register(`JI${i}`)
+        const target = await register(`JT${i}`)
+        const openGuildLeaderCharId = (await createCharacter(openGuildLeader.username, `JO${i}`)).id
+        const inviteGuildLeaderCharId = (await createCharacter(inviteGuildLeader.username, `JI${i}`)).id
+        const targetCharId = (await createCharacter(target.username, `JT${i}`)).id
+        const inviteGuildLeaderToken = await login(inviteGuildLeader.username, inviteGuildLeader.password)
+        const targetToken = await login(target.username, target.password)
+
+        const openGuild = await (await request()).post('/api/admin/guilds').set('Authorization', `Bearer ${adminToken}`)
+          .send({ name: `Open Race${i} ${suffix}`, tag: `JCO${i}`, recruitment: 'OPEN', leaderCharacterId: openGuildLeaderCharId })
+        const inviteGuild = await (await request()).post('/api/admin/guilds').set('Authorization', `Bearer ${adminToken}`)
+          .send({ name: `Invite Race${i} ${suffix}`, tag: `JCI${i}`, recruitment: 'INVITE_ONLY', leaderCharacterId: inviteGuildLeaderCharId })
+        expect(openGuild.status).toBe(201)
+        expect(inviteGuild.status).toBe(201)
+
+        const invite = await (await request()).post(`/api/guilds/${inviteGuild.body.slug}/invites`).set('Authorization', `Bearer ${inviteGuildLeaderToken}`).send({ characterId: targetCharId })
+        expect(invite.status).toBe(201)
+
+        const [reqJoin, reqAccept] = await Promise.all([request(), request()])
+        const [join, accept] = await Promise.all([
+          reqJoin.post(`/api/guilds/${openGuild.body.slug}/join`).set('Authorization', `Bearer ${targetToken}`).send({ characterId: targetCharId }),
+          reqAccept.post(`/api/guilds/${inviteGuild.body.slug}/invites/${invite.body.id}/accept`).set('Authorization', `Bearer ${targetToken}`)
+        ])
+
+        const statuses = [join.status, accept.status].sort()
+        expect(statuses).toEqual([201, 400])
+        expect([join.status, accept.status]).not.toContain(500)
+
+        const winner = join.status === 201 ? openGuild : inviteGuild
+        const member = await prisma.guildMember.findUniqueOrThrow({ where: { characterId: targetCharId } })
+        expect(member.removedAt).toBeNull()
+        expect(member.guildId).toBe(winner.body.id)
+
+        const memberCount = await prisma.guildMember.count({ where: { characterId: targetCharId, removedAt: null } })
+        expect(memberCount).toBe(1)
+      }
+    }, 60000)
 
     it('OPEN flow: join() creates the membership immediately, no request/invite needed', async () => {
       const openLeader = await register('OL')
