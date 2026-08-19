@@ -49,3 +49,18 @@ Apply the production migration before enabling the new admin screens:
 ```bash
 npx prisma migrate deploy
 ```
+
+## Bridge dev controls (never in production)
+
+`activateListing`, `updateListingStatus`, `updateOrderStatus` and
+`updateBridgeJob` (`marketplace-bridge-dev.controller.ts`) fabricate a
+GameBridge confirmation by setting status directly, with no state-transition
+rules -- they exist only to unblock local/staging work while GameBridge
+itself doesn't exist. They are not the moderation console above and are
+never the same thing as `MU_BRIDGE_ENABLED`. The controller is only
+registered (Global Portal Audit P1.3) when
+`isMarketplaceBridgeDevControlsSafe()` (`marketplace-bridge-dev.env.ts`)
+holds: `MARKETPLACE_BRIDGE_DEV_CONTROLS_ENABLED=true`, `NODE_ENV` in
+`development`/`test`, and `DATABASE_URL` matching a known local/e2e
+database. Outside that, the routes are not registered at all -- a request
+to them 404s at Nest's router, not a 403 from a guard.

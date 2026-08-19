@@ -17,7 +17,7 @@
             <NuxtLink to="/about" class="bm-button home-outline-button">Conhecer o servidor</NuxtLink>
           </div>
           <div class="home-server-strip" aria-label="Resumo do servidor">
-            <span v-if="serverStatusLabel"><i :class="{ 'is-offline': !serverIsOnline }" /> {{ serverStatusLabel }}</span>
+            <span v-if="serverStatusLabel" :title="statusUpdatedAtTitle"><i :class="{ 'is-offline': !serverIsOnline }" /> {{ serverStatusLabel }}</span>
             <strong v-if="onlinePlayersLabel">{{ onlinePlayersLabel }}</strong>
             <strong>Season 6</strong>
           </div>
@@ -116,6 +116,8 @@ type NewsEntry = { id: string; title: string; summary?: string | null; updatedAt
 type LauncherBootstrap = {
   server?: {
     status?: string | null
+    statusSource?: string | null
+    statusUpdatedAt?: string | null
     onlinePlayers?: number | null
     clientVersion?: string | null
   }
@@ -147,11 +149,28 @@ const discordUrl = computed(() => {
 })
 const normalizedServerStatus = computed(() => String(launcher.value?.server?.status || '').toUpperCase())
 const serverIsOnline = computed(() => normalizedServerStatus.value === 'ONLINE')
+// No GameBridge/live telemetry exists yet (Global Portal Audit, P1.2). Only
+// claim a status when an admin actually set it via the CMS (statusSource
+// === 'MANUAL') -- otherwise this would just be the hardcoded API fallback
+// wearing a confident, live-looking badge. Word it as "informado", not as
+// a live sync claim.
+const statusSource = computed(() => String(launcher.value?.server?.statusSource || 'UNKNOWN').toUpperCase())
+const statusWord = computed(() => {
+  if (normalizedServerStatus.value === 'ONLINE') return 'Online'
+  if (normalizedServerStatus.value === 'MAINTENANCE') return 'Em manutenção'
+  if (normalizedServerStatus.value === 'OFFLINE') return 'Offline'
+  return ''
+})
 const serverStatusLabel = computed(() => {
-  if (!normalizedServerStatus.value || normalizedServerStatus.value === 'UNKNOWN') return ''
-  if (normalizedServerStatus.value === 'ONLINE') return 'Servidor online'
-  if (normalizedServerStatus.value === 'MAINTENANCE') return 'Servidor em manutenção'
-  return 'Servidor offline'
+  if (statusSource.value !== 'MANUAL' || !statusWord.value) return ''
+  return `Status informado: ${statusWord.value}`
+})
+const statusUpdatedAtTitle = computed(() => {
+  const raw = launcher.value?.server?.statusUpdatedAt
+  if (!raw || statusSource.value !== 'MANUAL') return undefined
+  const parsed = new Date(raw)
+  if (Number.isNaN(parsed.getTime())) return undefined
+  return `Última atualização: ${parsed.toLocaleString('pt-BR')}`
 })
 const onlinePlayersLabel = computed(() => typeof launcher.value?.server?.onlinePlayers === 'number'
   ? `${launcher.value.server.onlinePlayers.toLocaleString('pt-BR')} jogadores`
@@ -162,7 +181,7 @@ const serverStats = computed(() => [
   ...(setting('server-drop-rate') ? [{ label: 'Drop de itens', value: setting('server-drop-rate'), icon: 'drop' }] : []),
   ...(setting('server-reset-policy') ? [{ label: 'Resets', value: setting('server-reset-policy'), icon: 'reset' }] : []),
   ...(setting('server-master-level') ? [{ label: 'Master level', value: setting('server-master-level'), icon: 'master' }] : []),
-  ...(serverStatusLabel.value ? [{ label: 'Status', value: serverStatusLabel.value.replace('Servidor ', ''), icon: 'status', online: serverIsOnline.value }] : []),
+  ...(serverStatusLabel.value ? [{ label: 'Status', value: statusWord.value, icon: 'status', online: serverIsOnline.value }] : []),
   ...(launcher.value?.server?.clientVersion ? [{ label: 'Cliente', value: launcher.value.server.clientVersion, icon: 'master' }] : [])
 ])
 const features = [

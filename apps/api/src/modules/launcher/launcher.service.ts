@@ -46,6 +46,16 @@ export class LauncherService {
       })
     ])
     const settings = new Map(settingRows.map((row) => [row.key, row]))
+    // No GameBridge integration exists yet (Global Portal Audit, P1.2) --
+    // there is no live source for server status/online-player-count. MANUAL
+    // means an admin explicitly set the value via the CMS; UNKNOWN means
+    // nobody ever has, and the response is only the hardcoded fallback
+    // below. LIVE is reserved for when a real game-server integration
+    // exists -- never set today. Callers (the homepage, the launcher) must
+    // not present this as confirmed live telemetry until that changes.
+    const statusRow = settings.get('launcher-server-status')
+    const statusSource: 'MANUAL' | 'LIVE' | 'UNKNOWN' = statusRow ? 'MANUAL' : 'UNKNOWN'
+    const statusUpdatedAt = statusRow ? statusRow.updatedAt.toISOString() : null
     const news = entries.map((entry) => ({
       id: entry.id,
       slug: entry.slug,
@@ -63,6 +73,8 @@ export class LauncherService {
         name: settingValue(settings, 'launcher-server-name', 'BloodMoon'),
         realm: settingValue(settings, 'launcher-realm-name', 'BloodMoon'),
         status: settingValue(settings, 'launcher-server-status', 'ONLINE'),
+        statusSource,
+        statusUpdatedAt,
         onlinePlayers: settingValue(settings, 'launcher-online-players', 0),
         maintenance: settingValue(settings, 'launcher-maintenance', {
           active: false,

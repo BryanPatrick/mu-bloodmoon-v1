@@ -3,6 +3,7 @@ import type { AccountCharacter, CharacterRuntimeStatus, Prisma } from '@prisma/c
 import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
+import { isDemoCharacterSeedingSafe } from './characters.env'
 import type { CharacterActionPayload, CharacterQuery } from './characters.types'
 
 const normalizeKey = (value: string) =>
@@ -86,6 +87,13 @@ export class CharactersService {
   ) {}
 
   async ensureSeeded() {
+    // Demo/fixture data only -- never real MU characters (there is no game
+    // data integration yet). Gated the same way Test Personas gates its own
+    // fixtures: closed by default, and production's DATABASE_URL can never
+    // satisfy the guard even if the opt-in flag were set there by mistake.
+    if (!isDemoCharacterSeedingSafe()) {
+      return
+    }
     const count = await this.prisma.accountCharacter.count()
     if (count) {
       return
