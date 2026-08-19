@@ -52,9 +52,9 @@ async function patchNuxtServerForCpanel(outputDir) {
 }
 
 function tarGzipDirectory(sourceDir, targetFile) {
-  const tarArgs = process.platform === 'win32'
-    ? ['-czf', targetFile, '-C', sourceDir, '.']
-    : ['--force-local', '-czf', targetFile, '-C', sourceDir, '.']
+  // --force-local stops GNU tar from parsing a Windows drive-letter colon
+  // (e.g. D:\...) as a remote host:path. Harmless and correct on POSIX too.
+  const tarArgs = ['--force-local', '-czf', targetFile, '-C', sourceDir, '.']
   const result = spawnSync('tar', tarArgs, {
     stdio: 'inherit'
   })

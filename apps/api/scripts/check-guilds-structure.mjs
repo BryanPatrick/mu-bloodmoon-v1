@@ -37,7 +37,7 @@ for (const route of [
 ]) {
   if (!controller.includes(route)) failures.push(`Missing public guilds route/handler ${route}`)
 }
-if (controller.includes("@Post()")) failures.push('Public guilds controller must not expose self-service guild creation this round')
+if (!controller.includes("@Post()")) failures.push('Public guilds controller must expose self-service guild creation (Guild Step 5.5)')
 
 for (const route of ['list', 'detail', 'createGuild', 'action', 'levelConfig', 'xpRules', 'reports']) {
   if (!adminController.includes(route) && !adminService.includes(route)) failures.push(`Missing guilds admin capability ${route}`)
