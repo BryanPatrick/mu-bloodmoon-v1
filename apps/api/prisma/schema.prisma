@@ -1969,15 +1969,30 @@ model CommunityMedia {
   postId       String?
   kind         CommunityMediaKind
   status       CommunityMediaStatus @default(TEMPORARY)
-  url          String               @db.VarChar(512)
+  // Null until promoted out of quarantine -- a TEMPORARY/REJECTED row has no
+  // publicly resolvable location yet.
+  url          String?              @db.VarChar(512)
   storagePath  String               @db.VarChar(512)
+  // Which StorageProvider actually holds this object -- rows written before
+  // a provider migration keep whatever they were created with, so this is
+  // per-row, not a single global setting.
+  storageProvider String            @default("local") @db.VarChar(20)
   originalName String               @db.VarChar(255)
-  mimeType     String               @db.VarChar(100)
-  extension    String               @db.VarChar(12)
+  // What Multer/the client claimed the file was, captured at quarantine time
+  // -- kept separate from `mimeType` (the server-detected, validated,
+  // post-re-encode type) specifically so a REJECTED row still records the
+  // mismatch for abuse-pattern review.
+  declaredMimeType String?          @db.VarChar(100)
+  // Null until validation actually determines a real format/size -- a
+  // REJECTED row (corrupt bytes, undecodable content) may never reach that
+  // point.
+  mimeType     String?              @db.VarChar(100)
+  extension    String?              @db.VarChar(12)
   sizeBytes    Int
-  width        Int
-  height       Int
+  width        Int?
+  height       Int?
   sha256       String               @db.VarChar(64)
+  rejectionReason String?           @db.Text
   createdAt    DateTime             @default(now())
   updatedAt    DateTime             @updatedAt
   removedAt    DateTime?

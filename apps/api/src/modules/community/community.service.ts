@@ -481,7 +481,7 @@ export class CommunityService {
   }
 
   async updateProfile(payload: CommunityProfilePayload, user: AuthenticatedUser) {
-    await this.profile(user.id, user.name || user.username)
+    const before = await this.profile(user.id, user.name || user.username)
     const displayName = this.optionalText(payload.displayName, 'Nome público', 100)
     const bio = this.optionalText(payload.bio, 'Bio', 2000)
     const avatarUrl = this.optionalUrl(payload.avatarUrl, 'URL do avatar', 512)
@@ -499,7 +499,7 @@ export class CommunityService {
       throw new BadRequestException('Conquistas em destaque devem ser uma lista.')
     }
 
-    return this.prisma.communityProfile.update({
+    const updated = await this.prisma.communityProfile.update({
       where: { accountId: user.id },
       data: {
         ...(displayName ? { displayName } : {}),
@@ -518,6 +518,19 @@ export class CommunityService {
         ...(activityVisibility ? { activityVisibility } : {})
       }
     })
+    // Avatar/cover have no dedicated mediaId column -- the previous
+    // CommunityMedia row (if any) is only findable by matching its URL, and
+    // only when the URL actually changed (re-saving the same picture must
+    // not release the media still in active use).
+    if (avatarUrl !== undefined && avatarUrl !== before.avatarUrl) {
+      await this.mediaService.releaseByUrl(before.avatarUrl, user.id)
+      await this.mediaService.attachByUrl(avatarUrl, user.id)
+    }
+    if (coverUrl !== undefined && coverUrl !== before.coverUrl) {
+      await this.mediaService.releaseByUrl(before.coverUrl, user.id)
+      await this.mediaService.attachByUrl(coverUrl, user.id)
+    }
+    return updated
   }
 
   async follow(username: string, user: AuthenticatedUser) {
@@ -599,7 +612,10 @@ export class CommunityService {
     const content = payload.content !== undefined ? (payload.content.trim() ? await this.validateText(payload.content, 'post', user.id, false) : '') : post.content
     const assets = payload.mediaIds !== undefined ? await this.mediaService.resolveForPost(payload.mediaIds, user.id, type) : null
     if (!content && !(assets?.length || (Array.isArray(post.media) && post.media.length))) throw new BadRequestException('Escreva algo ou selecione uma midia.')
-    return this.prisma.$transaction(async (tx) => {
+    const droppedMediaIds = assets
+      ? (await this.prisma.communityMedia.findMany({ where: { postId: id }, select: { id: true } })).map((row) => row.id)
+      : []
+    const updated = await this.prisma.$transaction(async (tx) => {
       await tx.communityPostRevision.create({
         data: {
           postId: id, title: post.title, content: post.content, type: post.type, visibility: post.visibility,
@@ -622,11 +638,19 @@ export class CommunityService {
         }
       })
     })
+    // Physical cleanup happens after the transaction commits, never inside
+    // it -- a storage-layer move isn't part of the DB's atomicity, and a
+    // filesystem hiccup here must not roll back an otherwise-successful edit.
+    const keptMediaIds = new Set((assets || []).map((asset) => asset.id))
+    const releasedMediaIds = droppedMediaIds.filter((mediaId) => !keptMediaIds.has(mediaId))
+    if (releasedMediaIds.length) await this.mediaService.releaseMedia(releasedMediaIds)
+    return updated
   }
 
   async removeOwnPost(id: string, user: AuthenticatedUser) {
     const post = await this.prisma.communityPost.findUnique({ where: { id } })
     if (!post || post.authorId !== user.id) throw new NotFoundException('Publicação não encontrada.')
+    const mediaIds = (await this.prisma.communityMedia.findMany({ where: { postId: id }, select: { id: true } })).map((row) => row.id)
     const [removed] = await this.prisma.$transaction([
       this.prisma.communityPost.update({
         where: { id },
@@ -640,6 +664,7 @@ export class CommunityService {
         data: { postId: null, status: 'REMOVED', removedAt: new Date() }
       })
     ])
+    if (mediaIds.length) await this.mediaService.releaseMedia(mediaIds)
     await this.observability.recordOperationalEvent({ module: 'community', eventType: 'COMMUNITY_POST_REMOVED_BY_AUTHOR', entityType: 'CommunityPost', entityId: id, actorUserId: user.id, description: 'Publicacao removida pelo autor.' })
     return removed
   }

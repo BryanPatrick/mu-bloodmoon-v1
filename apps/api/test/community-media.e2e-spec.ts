@@ -22,6 +22,14 @@ beforeAll(async () => {
   process.env.JWT_REFRESH_SECRET ||= 'e2e-test-refresh-secret-not-for-production-use'
   process.env.TWO_FACTOR_ENCRYPTION_KEY ||= 'e2e-test-two-factor-key-at-least-32-characters'
   process.env.COMMUNITY_MEDIA_DIR = mediaDir
+  // Quarantine/removed are separate roots from the available dir above
+  // (never served, never the same directory) -- kept as subdirectories of
+  // the same temp root so the single rmSync(mediaDir) in afterAll cleans up
+  // all three together, instead of leaking into the real repo-local
+  // storage/ dirs the way an unset env var would (defaults resolve under
+  // process.cwd()).
+  process.env.MEDIA_QUARANTINE_DIR = join(mediaDir, 'quarantine')
+  process.env.MEDIA_REMOVED_DIR = join(mediaDir, 'removed')
 
   execSync('npx prisma migrate deploy', { cwd: __dirname + '/..', env: process.env, stdio: 'pipe' })
 }, 120000)
@@ -41,18 +49,29 @@ describe('Community media (real pipeline, no base64/mock)', () => {
   let app: import('@nestjs/common').INestApplication
   let httpServer: import('http').Server
   let sharp: typeof import('sharp')
+  let prisma: import('../src/database/prisma.service').PrismaService
 
   beforeAll(async () => {
     const { Test } = await import('@nestjs/testing')
     const { AppModule } = await import('../src/app.module')
     const { SafeExceptionFilter } = await import('../src/common/safe-exception.filter')
+    const { PrismaService } = await import('../src/database/prisma.service')
+    const express = (await import('express')).default
     sharp = (await import('sharp')).default as unknown as typeof import('sharp')
 
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile()
     app = moduleRef.createNestApplication()
     app.setGlobalPrefix('api')
     app.useGlobalFilters(app.get(SafeExceptionFilter))
+    // Test.createTestingModule + createNestApplication builds the app
+    // directly from AppModule and never runs main.ts's bootstrap() -- so the
+    // express.static mount that serves /api/media/community/* in the real
+    // app is otherwise entirely absent here. Mirrors main.ts exactly so
+    // tests that fetch a media URL exercise real serving behaviour, not a
+    // route that plain doesn't exist in this harness.
+    app.use('/api/media/community', express.static(mediaDir, { dotfiles: 'deny', index: false, fallthrough: false, maxAge: '7d' }))
     await app.init()
+    prisma = app.get(PrismaService)
     httpServer = app.getHttpServer()
   }, 60000)
 
@@ -158,10 +177,16 @@ describe('Community media (real pipeline, no base64/mock)', () => {
     expect(res.status).toBe(400)
   })
 
-  it('returns 500 (not 400) when storage itself fails, and creates no CommunityMedia row', async () => {
+  it('returns 500 (not 400) when storage itself fails; the quarantine row is left at TEMPORARY, never promoted', async () => {
     // Point COMMUNITY_MEDIA_DIR at a path that already exists as a *file* --
     // mkdir(..., {recursive:true}) genuinely fails with ENOTDIR here, a real
-    // filesystem fault, not a crafted validation failure.
+    // filesystem fault, not a crafted validation failure. Quarantine write
+    // and validation both succeed first (they don't use COMMUNITY_MEDIA_DIR)
+    // -- only the promotion step fails, so a TEMPORARY row does exist
+    // afterwards. It is not a REJECTED row (validation never said no) and
+    // has no url (never promoted) -- the orphan-cleanup helper is what
+    // eventually sweeps a row stuck in this state, same as any other
+    // never-finished upload.
     const { writeFileSync, unlinkSync } = await import('node:fs')
     const blockerPath = join(mediaDir, 'this-is-a-file-not-a-directory')
     writeFileSync(blockerPath, 'blocking')
@@ -181,10 +206,42 @@ describe('Community media (real pipeline, no base64/mock)', () => {
         .set('Authorization', `Bearer ${token}`)
         .attach('file', png, 'storage-fail.png')
       expect(res.status).toBe(500)
+
+      const stuck = await prisma.communityMedia.findFirst({
+        where: { ownerId: (await prisma.account.findUnique({ where: { username: user.username }, select: { id: true } }))!.id, status: 'TEMPORARY' },
+        orderBy: { createdAt: 'desc' }
+      })
+      expect(stuck).toBeTruthy()
+      expect(stuck!.url).toBeNull()
     } finally {
       process.env.COMMUNITY_MEDIA_DIR = previous
       unlinkSync(blockerPath)
     }
+  })
+
+  it('quarantined/rejected files are never reachable through the public media route', async () => {
+    const garbage = Buffer.from('definitely not an image'.repeat(30))
+    const upload = await (
+      await request()
+    )
+      .post('/api/community/media')
+      .set('Authorization', `Bearer ${token}`)
+      .attach('file', garbage, { filename: 'quarantine-check.png', contentType: 'image/png' })
+    expect(upload.status).toBe(400)
+
+    const account = await prisma.account.findUnique({ where: { username: user.username }, select: { id: true } })
+    const rejected = await prisma.communityMedia.findFirst({
+      where: { ownerId: account!.id, status: 'REJECTED' },
+      orderBy: { createdAt: 'desc' }
+    })
+    expect(rejected).toBeTruthy()
+    expect(rejected!.url).toBeNull()
+    // storagePath for a REJECTED row is the quarantine key -- proving the
+    // public static mount (which only ever serves COMMUNITY_MEDIA_DIR) 404s
+    // on it confirms the quarantine directory is genuinely never reachable
+    // by URL, not just that the DB row lacks one.
+    const res = await (await request()).get(`/api/media/community/${rejected!.storagePath}`)
+    expect(res.status).toBe(404)
   })
 
   it('avatar: uses the real upload pipeline, no base64/manual URL', async () => {
@@ -212,6 +269,79 @@ describe('Community media (real pipeline, no base64/mock)', () => {
 
     const profile = await (await request()).get(`/api/community/profiles/${user.username}`)
     expect(profile.body.communityProfile.avatarUrl).toBe(upload.body.url)
+  })
+
+  it('avatar replace: the previous avatar file is released (moved out of the served dir), not left as a silent orphan', async () => {
+    const firstPng = await sharp({
+      create: { width: 40, height: 40, channels: 3, background: { r: 10, g: 10, b: 200 } }
+    })
+      .png()
+      .toBuffer()
+    const firstUpload = await (
+      await request()
+    )
+      .post('/api/community/media')
+      .set('Authorization', `Bearer ${token}`)
+      .attach('file', firstPng, 'avatar-1.png')
+    expect(firstUpload.status).toBe(201)
+    await (await request())
+      .patch('/api/community/me')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ avatarUrl: firstUpload.body.url })
+    const reachableBeforeReplace = await (await request()).get(firstUpload.body.url)
+    expect(reachableBeforeReplace.status).toBe(200)
+
+    const secondPng = await sharp({
+      create: { width: 40, height: 40, channels: 3, background: { r: 200, g: 10, b: 10 } }
+    })
+      .png()
+      .toBuffer()
+    const secondUpload = await (
+      await request()
+    )
+      .post('/api/community/media')
+      .set('Authorization', `Bearer ${token}`)
+      .attach('file', secondPng, 'avatar-2.png')
+    expect(secondUpload.status).toBe(201)
+    const replace = await (
+      await request()
+    )
+      .patch('/api/community/me')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ avatarUrl: secondUpload.body.url })
+    expect(replace.status).toBe(200)
+    expect(replace.body.avatarUrl).toBe(secondUpload.body.url)
+
+    const firstStillReachable = await (await request()).get(firstUpload.body.url)
+    expect(firstStillReachable.status).toBe(404)
+    const secondReachable = await (await request()).get(secondUpload.body.url)
+    expect(secondReachable.status).toBe(200)
+
+    const firstRow = await prisma.communityMedia.findUnique({ where: { id: firstUpload.body.id } })
+    expect(firstRow!.status).toBe('REMOVED')
+    const secondRow = await prisma.communityMedia.findUnique({ where: { id: secondUpload.body.id } })
+    expect(secondRow!.status).toBe('ATTACHED')
+  })
+
+  it('avatar re-save with the same URL does not release the still-in-use file', async () => {
+    // Reuses the avatar the previous test left active (secondUpload from
+    // "avatar replace") instead of uploading a fresh one -- this file shares
+    // one 10-uploads/60s throttle window across all its tests, so an extra
+    // upload here isn't free.
+    const activeAvatarUrl = (await (await request()).get(`/api/community/profiles/${user.username}`)).body
+      .communityProfile.avatarUrl
+    expect(typeof activeAvatarUrl).toBe('string')
+
+    const resave = await (
+      await request()
+    )
+      .patch('/api/community/me')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ avatarUrl: activeAvatarUrl, bio: 'no-op resave' })
+    expect(resave.status).toBe(200)
+
+    const stillReachable = await (await request()).get(activeAvatarUrl)
+    expect(stillReachable.status).toBe(200)
   })
 
   it('post with media: uses the real upload pipeline and attaches correctly', async () => {

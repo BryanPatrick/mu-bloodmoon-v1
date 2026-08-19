@@ -21,6 +21,21 @@ type HttpRequest = {
   headers?: Record<string, string | string[] | undefined>
 }
 
+// express.static (main.ts's community/guild media mounts, both registered
+// with fallthrough:false) throws a plain http-errors object on a missing
+// file, not a Nest HttpException -- without this, every such 404 fell
+// through to the generic 500 branch below, and got logged as a real
+// SystemError for something as ordinary as a browser requesting a removed
+// image. Scoped to a well-formed 4xx/5xx numeric status so an unrelated
+// error object that happens to carry an unrelated `.status` property can't
+// accidentally get misread as an intentional HTTP error.
+function statusFromExpressError(exception: unknown): number | null {
+  if (!exception || typeof exception !== 'object') return null
+  const candidate = exception as { status?: unknown; statusCode?: unknown }
+  const status = typeof candidate.status === 'number' ? candidate.status : typeof candidate.statusCode === 'number' ? candidate.statusCode : null
+  return status !== null && Number.isInteger(status) && status >= 400 && status <= 599 ? status : null
+}
+
 const PUBLIC_ERROR_CODES = new Set([
   'TWO_FACTOR_REQUIRED',
   'TWO_FACTOR_SETUP_REQUIRED',
@@ -46,7 +61,9 @@ export class SafeExceptionFilter implements ExceptionFilter {
     const response = http.getResponse<HttpResponse>()
     const request = http.getRequest<HttpRequest>()
     const requestId = this.requestContext.correlationId() || randomUUID()
-    const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
+    const status = exception instanceof HttpException
+      ? exception.getStatus()
+      : statusFromExpressError(exception) ?? HttpStatus.INTERNAL_SERVER_ERROR
     const source = exception instanceof HttpException ? exception.getResponse() : null
     const sourceMessage = typeof source === 'string' ? source : source && typeof source === 'object' && 'message' in source ? (source as { message?: unknown }).message : null
     const sourceCode = source && typeof source === 'object' && 'code' in source ? (source as { code?: unknown }).code : null

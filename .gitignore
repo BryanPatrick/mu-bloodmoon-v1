@@ -13,6 +13,12 @@ apps/api/storage/uploads/*
 !apps/api/storage/uploads/.gitkeep
 apps/api/storage/guild-media/*
 !apps/api/storage/guild-media/.gitkeep
+apps/api/storage/community-media/*
+!apps/api/storage/community-media/.gitkeep
+apps/api/storage/media-quarantine/*
+!apps/api/storage/media-quarantine/.gitkeep
+apps/api/storage/media-removed/*
+!apps/api/storage/media-removed/.gitkeep
 .agents/
 .codex/
 .claude/

@@ -16,9 +16,11 @@
     "test:beta:critical": "jest --config ./test/jest-e2e.json --runInBand --testPathPatterns=\"(portal-critical|password-recovery|error-handling)\\.e2e-spec\\.ts$\"",
     "test:beta:community": "jest --config ./test/jest-e2e.json --runInBand --testPathPatterns=\"community-.*\\.e2e-spec\\.ts$\"",
     "test:beta": "npm run test:beta:critical && npm run test:beta:community",
-    "test:personas:reset": "node scripts/reset-test-personas.mjs"
+    "test:personas:reset": "node scripts/reset-test-personas.mjs",
+    "media:cleanup:orphans": "node scripts/cleanup-orphan-media.mjs"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1113.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.0.0",
     "@nestjs/core": "^10.0.0",

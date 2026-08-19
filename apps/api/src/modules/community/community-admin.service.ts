@@ -9,6 +9,7 @@ import type {
 import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
+import { MediaService } from '../media/media.service'
 import { ObservabilityService } from '../observability/observability.service'
 import type {
   CommunityAchievementPayload,
@@ -47,7 +48,8 @@ export class CommunityAdminService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
-    private readonly observability: ObservabilityService
+    private readonly observability: ObservabilityService,
+    private readonly mediaService: MediaService
   ) {}
 
   private async audited(
@@ -196,8 +198,23 @@ export class CommunityAdminService {
       : action === 'UNFEATURE' ? { isFeatured: false }
       : action === 'LIMIT_REACH' ? { reachLimited: true }
       : { reachLimited: false }
+    // HIDE/REMOVE previously only ever changed CommunityPost.status -- the
+    // post's CommunityMedia rows, and the files behind them, stayed exactly
+    // as publicly reachable as before the moderation action. Mirrors what
+    // the author's own edit/delete path already does (community.service.ts)
+    // instead of inventing a second convention.
+    const mediaIds = status === 'HIDDEN' || status === 'REMOVED' || status === 'PUBLISHED'
+      ? (await this.prisma.communityMedia.findMany({ where: { postId: id }, select: { id: true } })).map((row) => row.id)
+      : []
+    if (mediaIds.length && (status === 'HIDDEN' || status === 'REMOVED')) {
+      await this.prisma.communityMedia.updateMany({ where: { id: { in: mediaIds } }, data: { status: 'REMOVED', removedAt: new Date() } })
+    } else if (mediaIds.length && status === 'PUBLISHED') {
+      await this.prisma.communityMedia.updateMany({ where: { id: { in: mediaIds } }, data: { status: 'ATTACHED', removedAt: null } })
+    }
     const after = await this.prisma.communityPost.update({ where: { id }, data })
     await this.audited(user, `admin.community.post.${action.toLowerCase()}`, 'CommunityPost', id, reason, before, after, before.authorId, payload.evidence)
+    if (mediaIds.length && (status === 'HIDDEN' || status === 'REMOVED')) await this.mediaService.releaseMedia(mediaIds)
+    else if (mediaIds.length && status === 'PUBLISHED') await this.mediaService.restoreMedia(mediaIds)
     return after
   }
 

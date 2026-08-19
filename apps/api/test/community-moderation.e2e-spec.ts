@@ -21,6 +21,8 @@ beforeAll(async () => {
   process.env.JWT_REFRESH_SECRET ||= 'e2e-test-refresh-secret-not-for-production-use'
   process.env.TWO_FACTOR_ENCRYPTION_KEY ||= 'e2e-test-two-factor-key-at-least-32-characters'
   process.env.COMMUNITY_MEDIA_DIR = mediaDir
+  process.env.MEDIA_QUARANTINE_DIR = join(mediaDir, 'quarantine')
+  process.env.MEDIA_REMOVED_DIR = join(mediaDir, 'removed')
 
   execSync('npx prisma migrate deploy', { cwd: __dirname + '/..', env: process.env, stdio: 'pipe' })
 }, 120000)
@@ -46,11 +48,17 @@ describe('Community moderation, reports, sanctions, and audit (real data, no par
     const { AppModule } = await import('../src/app.module')
     const { SafeExceptionFilter } = await import('../src/common/safe-exception.filter')
     const { PrismaService } = await import('../src/database/prisma.service')
+    const express = (await import('express')).default
 
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile()
     app = moduleRef.createNestApplication()
     app.setGlobalPrefix('api')
     app.useGlobalFilters(app.get(SafeExceptionFilter))
+    // Same reasoning as community-media.e2e-spec.ts: Test.createTestingModule
+    // never runs main.ts's bootstrap(), so the static mount that serves
+    // /api/media/community/* is otherwise absent here -- needed below to
+    // prove a moderated post's media actually stops/resumes being servable.
+    app.use('/api/media/community', express.static(mediaDir, { dotfiles: 'deny', index: false, fallthrough: false, maxAge: '7d' }))
     await app.init()
     httpServer = app.getHttpServer()
     prisma = app.get(PrismaService)
@@ -379,12 +387,11 @@ describe('Community moderation, reports, sanctions, and audit (real data, no par
         .attach('file', garbage, { filename: 'malicious.png', contentType: 'image/png' })
       expect(upload.status).toBe(400)
 
-      // Evidence preserved is proportional: who/when/why (module, userId,
-      // internalMessage with the specific validation failure), not the raw
-      // rejected bytes -- a corrupted/spoofed upload's content is never
-      // written to disk in the first place (media.service.ts only writes
-      // after validation passes), so there is nothing resembling a stored
-      // "malicious file archive" to review here, by design.
+      // Evidence is now two-layered: the SystemError row below (who/when/why
+      // for the moderation dashboard), plus a REJECTED CommunityMedia row
+      // whose raw bytes are actually kept in quarantine -- unlike the
+      // pipeline's earlier version, which discarded rejected uploads
+      // entirely and had nothing to show a reviewer beyond the error log.
       const accountAId = await prismaAccountId(prisma, userA.username)
       const errors = await prisma.systemError.findMany({
         where: { module: 'community.media', userId: accountAId },
@@ -394,12 +401,80 @@ describe('Community moderation, reports, sanctions, and audit (real data, no par
       expect(errors).toHaveLength(1)
       expect(errors[0]!.internalMessage).toBeTruthy()
 
+      const rejected = await prisma.communityMedia.findFirst({
+        where: { ownerId: accountAId, status: 'REJECTED' },
+        orderBy: { createdAt: 'desc' }
+      })
+      expect(rejected).toBeTruthy()
+      expect(rejected!.rejectionReason).toBeTruthy()
+      expect(rejected!.url).toBeNull()
+      const { existsSync } = await import('node:fs')
+      expect(existsSync(join(mediaDir, 'quarantine', rejected!.storagePath))).toBe(true)
+
       const after = await (
         await request()
       )
         .get('/api/admin/community/dashboard')
         .set('Authorization', `Bearer ${tokenC}`)
       expect(after.body.errors).toBe(errorsBefore + 1)
+    })
+  })
+
+  describe('MODERACAO DE MIDIA: post com imagem real, HIDE remove o arquivo da area publica, RESTORE devolve', () => {
+    it('HIDE moves the post media file out of the public route; RESTORE moves it back', async () => {
+      const sharp = ((await import('sharp')).default) as unknown as typeof import('sharp')
+      const png = await sharp({
+        create: { width: 30, height: 30, channels: 3, background: { r: 5, g: 5, b: 200 } }
+      })
+        .png()
+        .toBuffer()
+      const upload = await (
+        await request()
+      )
+        .post('/api/community/media')
+        .set('Authorization', `Bearer ${tokenA}`)
+        .attach('file', png, 'moderation-media.png')
+      expect(upload.status).toBe(201)
+
+      const post = await (
+        await request()
+      )
+        .post('/api/community/posts')
+        .set('Authorization', `Bearer ${tokenA}`)
+        .send({ type: 'IMAGE', content: 'Post com midia para moderacao -- E2E.', mediaIds: [upload.body.id] })
+      expect(post.status).toBe(201)
+      const mediaPostId = post.body.id as string
+
+      const reachableBeforeHide = await (await request()).get(upload.body.url)
+      expect(reachableBeforeHide.status).toBe(200)
+
+      const hide = await (
+        await request()
+      )
+        .post(`/api/admin/community/posts/${mediaPostId}/actions`)
+        .set('Authorization', `Bearer ${tokenC}`)
+        .send({ action: 'HIDE', reason: 'Moderacao de midia -- E2E.' })
+      expect(hide.status).toBe(201)
+      expect(hide.body.status).toBe('HIDDEN')
+
+      const removedAfterHide = await (await request()).get(upload.body.url)
+      expect(removedAfterHide.status).toBe(404)
+      const rowAfterHide = await prisma.communityMedia.findUnique({ where: { id: upload.body.id } })
+      expect(rowAfterHide!.status).toBe('REMOVED')
+
+      const restore = await (
+        await request()
+      )
+        .post(`/api/admin/community/posts/${mediaPostId}/actions`)
+        .set('Authorization', `Bearer ${tokenC}`)
+        .send({ action: 'RESTORE', reason: 'Revertendo moderacao de teste -- E2E.' })
+      expect(restore.status).toBe(201)
+      expect(restore.body.status).toBe('PUBLISHED')
+
+      const reachableAfterRestore = await (await request()).get(upload.body.url)
+      expect(reachableAfterRestore.status).toBe(200)
+      const rowAfterRestore = await prisma.communityMedia.findUnique({ where: { id: upload.body.id } })
+      expect(rowAfterRestore!.status).toBe('ATTACHED')
     })
   })
 })

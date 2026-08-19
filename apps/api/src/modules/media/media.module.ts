@@ -2,7 +2,9 @@ import { Module } from '@nestjs/common'
 import { ThrottlerModule } from '@nestjs/throttler'
 import { AuthModule } from '../auth/auth.module'
 import { MediaController } from './media.controller'
+import { MediaOrphanCleanupService } from './media-orphan-cleanup.service'
 import { MediaService } from './media.service'
+import { MediaStorageService } from './storage/media-storage.service'
 
 @Module({
   imports: [
@@ -16,7 +18,7 @@ import { MediaService } from './media.service'
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 10 }])
   ],
   controllers: [MediaController],
-  providers: [MediaService],
-  exports: [MediaService]
+  providers: [MediaService, MediaStorageService, MediaOrphanCleanupService],
+  exports: [MediaService, MediaOrphanCleanupService]
 })
 export class MediaModule {}
