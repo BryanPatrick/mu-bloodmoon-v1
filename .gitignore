@@ -11,6 +11,8 @@ apps/launcher-updater/bin/
 apps/launcher-updater/obj/
 apps/api/storage/uploads/*
 !apps/api/storage/uploads/.gitkeep
+apps/api/storage/guild-media/*
+!apps/api/storage/guild-media/.gitkeep
 .agents/
 .codex/
 .claude/
