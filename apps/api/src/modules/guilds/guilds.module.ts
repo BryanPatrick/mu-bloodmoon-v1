@@ -10,6 +10,7 @@ import { GuildsService } from './guilds.service'
 @Module({
   imports: [AuthModule, AuditModule],
   controllers: [GuildsController, GuildsAdminController],
-  providers: [GuildsService, GuildsAdminService, GuildsMediaService]
+  providers: [GuildsService, GuildsAdminService, GuildsMediaService],
+  exports: [GuildsService]
 })
 export class GuildsModule {}

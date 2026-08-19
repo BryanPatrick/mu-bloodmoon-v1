@@ -5,7 +5,7 @@
   "type": "commonjs",
   "scripts": {
     "build": "nest build",
-    "check": "node scripts/check-api-structure.mjs && node scripts/check-security-structure.mjs && node scripts/check-observability-structure.mjs && node scripts/check-roadmap-structure.mjs && node scripts/check-store-structure.mjs && node scripts/check-marketplace-structure.mjs && node scripts/check-community-structure.mjs && node scripts/check-admin-tasks-structure.mjs && node scripts/check-admin-reports-structure.mjs && node scripts/check-guilds-structure.mjs && tsc -p tsconfig.json --noEmit",
+    "check": "node scripts/check-api-structure.mjs && node scripts/check-security-structure.mjs && node scripts/check-observability-structure.mjs && node scripts/check-roadmap-structure.mjs && node scripts/check-store-structure.mjs && node scripts/check-marketplace-structure.mjs && node scripts/check-community-structure.mjs && node scripts/check-admin-tasks-structure.mjs && node scripts/check-admin-reports-structure.mjs && node scripts/check-guilds-structure.mjs && node scripts/check-test-personas-structure.mjs && tsc -p tsconfig.json --noEmit",
     "dev": "npm run build && node dist/apps/api/src/main.js",
     "worker:game-bridge": "node scripts/process-game-bridge-jobs.mjs",
     "worker:marketplace-expirations": "node scripts/process-marketplace-expirations.mjs",
@@ -15,7 +15,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json --runInBand",
     "test:beta:critical": "jest --config ./test/jest-e2e.json --runInBand --testPathPatterns=\"(portal-critical|password-recovery|error-handling)\\.e2e-spec\\.ts$\"",
     "test:beta:community": "jest --config ./test/jest-e2e.json --runInBand --testPathPatterns=\"community-.*\\.e2e-spec\\.ts$\"",
-    "test:beta": "npm run test:beta:critical && npm run test:beta:community"
+    "test:beta": "npm run test:beta:critical && npm run test:beta:community",
+    "test:personas:reset": "node scripts/reset-test-personas.mjs"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

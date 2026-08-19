@@ -48,6 +48,6 @@ if (process.env.NODE_ENV === 'production' && accessSecret === refreshSecret) {
     PermissionsGuard,
     StepUpGuard
   ],
-  exports: [AuthService, JwtAuthGuard, RolesGuard, PermissionsGuard, StepUpGuard, JwtModule]
+  exports: [AuthService, TwoFactorService, JwtAuthGuard, RolesGuard, PermissionsGuard, StepUpGuard, JwtModule]
 })
 export class AuthModule {}

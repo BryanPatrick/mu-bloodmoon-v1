@@ -537,6 +537,7 @@ export const useAuth = () => {
     authReady,
     authStatus,
     loadSession,
+    saveSession,
     loginWithCredentials,
     refreshSession,
     requestPasswordRecovery,

@@ -27,6 +27,7 @@ import { AdminTasksModule } from './modules/admin-tasks/admin-tasks.module'
 import { AdminReportsModule } from './modules/admin-reports/admin-reports.module'
 import { GuildsModule } from './modules/guilds/guilds.module'
 import { GmModule } from './modules/gm/gm.module'
+import { TestPersonasModule } from './modules/test-personas/test-personas.module'
 
 export const apiModules = [
   'auth',
@@ -49,7 +50,8 @@ export const apiModules = [
   'admin-tasks',
   'admin-reports',
   'guilds',
-  'gm'
+  'gm',
+  'test-personas'
 ] as const
 
 export type ApiModuleName = typeof apiModules[number]
@@ -82,7 +84,8 @@ export type ApiModuleName = typeof apiModules[number]
     AdminTasksModule,
     AdminReportsModule,
     GuildsModule,
-    GmModule
+    GmModule,
+    TestPersonasModule.register()
   ]
 })
 export class AppModule implements NestModule {
