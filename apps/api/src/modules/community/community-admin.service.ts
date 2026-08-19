@@ -11,17 +11,18 @@ import { AuditService } from '../audit/audit.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
 import { MediaService } from '../media/media.service'
 import { ObservabilityService } from '../observability/observability.service'
-import type {
-  CommunityAchievementPayload,
-  CommunityAdminActionPayload,
-  CommunityBadgePayload,
-  CommunityGrantPayload,
-  CommunityModerationPayload,
-  CommunityPolicyPayload,
-  CommunityQuestProgressPayload,
-  CommunityQuery,
-  CommunityQuestPayload,
-  CommunityTaskPayload
+import {
+  OPEN_REPORT_STATUSES,
+  type CommunityAchievementPayload,
+  type CommunityAdminActionPayload,
+  type CommunityBadgePayload,
+  type CommunityGrantPayload,
+  type CommunityModerationPayload,
+  type CommunityPolicyPayload,
+  type CommunityQuestProgressPayload,
+  type CommunityQuery,
+  type CommunityQuestPayload,
+  type CommunityTaskPayload
 } from './community.contract'
 
 const pageValues = (query: CommunityQuery) => {
@@ -414,19 +415,39 @@ export class CommunityAdminService {
     if (!['NEW', 'ASSIGNED', 'INVESTIGATING', 'WAITING_FOR_USER', 'RESOLVED', 'REJECTED', 'ESCALATED', 'REOPENED'].includes(status)) {
       throw new BadRequestException('Status inválido.')
     }
-    const after = await this.prisma.communityReport.update({
-      where: { id },
-      data: {
-        status,
-        assigneeId: payload.assigneeId ?? (status === 'ASSIGNED' ? user.id : before.assigneeId),
-        priority: payload.priority ?? before.priority,
-        internalNotes: payload.notes?.trim() ?? before.internalNotes,
-        decision: ['RESOLVED', 'REJECTED'].includes(status) ? reason : before.decision,
-        dueAt: payload.dueAt ? new Date(payload.dueAt) : before.dueAt,
-        resolvedBy: ['RESOLVED', 'REJECTED'].includes(status) ? user.id : null,
-        resolvedAt: ['RESOLVED', 'REJECTED'].includes(status) ? new Date() : null
+    // Keeps the openDedupeKey invariant that report()'s atomic duplicate
+    // check depends on: 1 while status is open (so a second open report for
+    // the same reporter+target is rejected by the DB unique index), NULL
+    // once closed (so this row stops blocking future re-reports). Every
+    // status transition -- including REOPENED, which goes back to open --
+    // must update this in the same write as `status` itself.
+    let after
+    try {
+      after = await this.prisma.communityReport.update({
+        where: { id },
+        data: {
+          status,
+          openDedupeKey: OPEN_REPORT_STATUSES.includes(status) ? 1 : null,
+          assigneeId: payload.assigneeId ?? (status === 'ASSIGNED' ? user.id : before.assigneeId),
+          priority: payload.priority ?? before.priority,
+          internalNotes: payload.notes?.trim() ?? before.internalNotes,
+          decision: ['RESOLVED', 'REJECTED'].includes(status) ? reason : before.decision,
+          dueAt: payload.dueAt ? new Date(payload.dueAt) : before.dueAt,
+          resolvedBy: ['RESOLVED', 'REJECTED'].includes(status) ? user.id : null,
+          resolvedAt: ['RESOLVED', 'REJECTED'].includes(status) ? new Date() : null
+        }
+      })
+    } catch (error) {
+      // Reopening (status back to an open value) hits the same unique
+      // index report() relies on -- if the reporter has since filed a
+      // fresh open report for the same target in the meantime, reopening
+      // this older one would collide. A real, if rare, conflict -- surfaced
+      // clearly rather than as a generic 500.
+      if (typeof error === 'object' && error !== null && (error as { code?: string }).code === 'P2002') {
+        throw new BadRequestException('Já existe uma denúncia aberta deste usuário para o mesmo conteúdo -- não é possível reabrir esta.')
       }
-    })
+      throw error
+    }
     await this.audited(user, `admin.community.report.${status.toLowerCase()}`, 'CommunityReport', id, reason, before, after, before.reportedUserId, payload.evidence)
     return after
   }

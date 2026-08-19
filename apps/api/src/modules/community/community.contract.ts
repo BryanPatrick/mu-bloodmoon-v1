@@ -9,6 +9,21 @@ import type {
   CommunityTaskStatus
 } from '@prisma/client'
 
+// Single source of truth for which CommunityReportStatus values count as
+// "still open" -- used both to decide whether a new report should be
+// blocked as a duplicate (community.service.ts) and to keep
+// CommunityReport.openDedupeKey in sync on every status transition
+// (community-admin.service.ts). RESOLVED/REJECTED are the only closed
+// statuses; everything else (including REOPENED) is open again.
+export const OPEN_REPORT_STATUSES: CommunityReportStatus[] = [
+  'NEW',
+  'ASSIGNED',
+  'INVESTIGATING',
+  'WAITING_FOR_USER',
+  'ESCALATED',
+  'REOPENED'
+]
+
 export type CommunityQuery = {
   page?: string
   pageSize?: string

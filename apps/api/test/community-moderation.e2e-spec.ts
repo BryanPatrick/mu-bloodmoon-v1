@@ -274,6 +274,202 @@ describe('Community moderation, reports, sanctions, and audit (real data, no par
     })
   })
 
+  describe('REPORT FLOW: comentario (Community Step 2 -- UI de denuncia do usuario)', () => {
+    // Self-contained: its own post/comment, never touches the outer
+    // postId/reportId (those belong to the post-report flow above and are
+    // still read by AUDITORIA below).
+    let commentPostId = ''
+    let commentId = ''
+    let commentReportId = ''
+
+    it('sets up a fresh post by A with a comment by A, to be reported by B', async () => {
+      const post = await (
+        await request()
+      )
+        .post('/api/community/posts')
+        .set('Authorization', `Bearer ${tokenA}`)
+        .send({ type: 'TEXT', content: 'Post de A para teste de denuncia de comentario -- E2E.' })
+      expect(post.status).toBe(201)
+      commentPostId = post.body.id
+
+      const comment = await (
+        await request()
+      )
+        .post(`/api/community/posts/${commentPostId}/comments`)
+        .set('Authorization', `Bearer ${tokenA}`)
+        .send({ content: 'Comentario de A que sera denunciado -- E2E.' })
+      expect(comment.status).toBe(201)
+      commentId = comment.body.id
+    })
+
+    it('B reports the comment; persisted with commentId set and postId null', async () => {
+      const res = await (
+        await request()
+      )
+        .post('/api/community/reports')
+        .set('Authorization', `Bearer ${tokenB}`)
+        .send({ commentId, reason: 'Comentario ofensivo real reportado no E2E.' })
+      expect(res.status).toBe(201)
+      expect(res.body.status).toBe('NEW')
+      expect(res.body.commentId).toBe(commentId)
+      expect(res.body.postId).toBeNull()
+      commentReportId = res.body.id
+    })
+
+    it('the comment report appears in the same admin queue as post reports', async () => {
+      const res = await (
+        await request()
+      )
+        .get('/api/admin/community/reports')
+        .set('Authorization', `Bearer ${tokenC}`)
+        .query({ status: 'NEW' })
+      expect(res.status).toBe(200)
+      const found = res.body.data.find((item: any) => item.id === commentReportId)
+      expect(found).toBeTruthy()
+      expect(found.commentId).toBe(commentId)
+      expect(found.reporter.username).toBe(userB.username)
+    })
+
+    it('rejects reporting a target that does not exist (404)', async () => {
+      const res = await (
+        await request()
+      )
+        .post('/api/community/reports')
+        .set('Authorization', `Bearer ${tokenB}`)
+        .send({ commentId: '00000000-0000-0000-0000-000000000000', reason: 'Alvo inexistente -- E2E.' })
+      expect(res.status).toBe(404)
+    })
+
+    it('rejects a report with both postId and commentId, and a report with neither', async () => {
+      const both = await (
+        await request()
+      )
+        .post('/api/community/reports')
+        .set('Authorization', `Bearer ${tokenB}`)
+        .send({ postId: commentPostId, commentId, reason: 'Ambos os alvos -- E2E.' })
+      expect(both.status).toBe(400)
+
+      const neither = await (
+        await request()
+      )
+        .post('/api/community/reports')
+        .set('Authorization', `Bearer ${tokenB}`)
+        .send({ reason: 'Nenhum alvo -- E2E.' })
+      expect(neither.status).toBe(400)
+    })
+
+    it('rejects an unauthenticated report attempt (401)', async () => {
+      const res = await (
+        await request()
+      )
+        .post('/api/community/reports')
+        .send({ commentId, reason: 'Sem autenticacao -- E2E.' })
+      expect(res.status).toBe(401)
+    })
+
+    it('translates the duplicate-report rejection into a clear, specific message (not a generic error)', async () => {
+      const res = await (
+        await request()
+      )
+        .post('/api/community/reports')
+        .set('Authorization', `Bearer ${tokenB}`)
+        .send({ commentId, reason: 'Segunda tentativa no mesmo comentario -- E2E.' })
+      expect(res.status).toBe(400)
+      expect(res.body.message).toBe('Você já possui uma denúncia aberta para este conteúdo.')
+    })
+
+    it('concurrent double-submit is deterministic: exactly one report created, one 201, one 400 with the duplicate message (Community Step 3 -- atomic create-first, no findFirst-then-create race)', async () => {
+      const freshComment = await (
+        await request()
+      )
+        .post(`/api/community/posts/${commentPostId}/comments`)
+        .set('Authorization', `Bearer ${tokenA}`)
+        .send({ content: 'Segundo comentario de A para teste de concorrencia -- E2E.' })
+      expect(freshComment.status).toBe(201)
+      const raceCommentId = freshComment.body.id
+
+      const [first, second] = await Promise.all([
+        (await request())
+          .post('/api/community/reports')
+          .set('Authorization', `Bearer ${tokenB}`)
+          .send({ commentId: raceCommentId, reason: 'Corrida A -- E2E.' }),
+        (await request())
+          .post('/api/community/reports')
+          .set('Authorization', `Bearer ${tokenB}`)
+          .send({ commentId: raceCommentId, reason: 'Corrida B -- E2E.' })
+      ])
+      const statuses = [first.status, second.status].sort()
+      expect(statuses).toEqual([201, 400])
+      const loser = first.status === 400 ? first : second
+      expect(loser.body.message).toBe('Você já possui uma denúncia aberta para este conteúdo.')
+
+      const reporterId = await prismaAccountId(prisma, userB.username)
+      const createdCount = await prisma.communityReport.count({ where: { commentId: raceCommentId, reporterId } })
+      expect(createdCount).toBe(1)
+    })
+
+    it('rejects the author reporting their own comment', async () => {
+      const res = await (
+        await request()
+      )
+        .post('/api/community/reports')
+        .set('Authorization', `Bearer ${tokenA}`)
+        .send({ commentId, reason: 'Auto-denuncia de comentario -- E2E.' })
+      expect(res.status).toBe(400)
+    })
+
+    it('a new report for the same target is allowed again once the previous one is resolved -- history is preserved, not blocked forever (Community Step 3)', async () => {
+      const target = await (
+        await request()
+      )
+        .post(`/api/community/posts/${commentPostId}/comments`)
+        .set('Authorization', `Bearer ${tokenA}`)
+        .send({ content: 'Comentario para teste de re-denuncia apos resolucao -- E2E.' })
+      expect(target.status).toBe(201)
+      const targetCommentId = target.body.id
+
+      const firstReport = await (
+        await request()
+      )
+        .post('/api/community/reports')
+        .set('Authorization', `Bearer ${tokenB}`)
+        .send({ commentId: targetCommentId, reason: 'Primeira denuncia -- E2E.' })
+      expect(firstReport.status).toBe(201)
+
+      // Still blocked while open, same as any duplicate.
+      const stillOpen = await (
+        await request()
+      )
+        .post('/api/community/reports')
+        .set('Authorization', `Bearer ${tokenB}`)
+        .send({ commentId: targetCommentId, reason: 'Segunda tentativa enquanto aberta -- E2E.' })
+      expect(stillOpen.status).toBe(400)
+
+      const resolve = await (
+        await request()
+      )
+        .patch(`/api/admin/community/reports/${firstReport.body.id}`)
+        .set('Authorization', `Bearer ${tokenC}`)
+        .send({ status: 'RESOLVED', reason: 'Resolvida para liberar nova denuncia -- E2E.' })
+      expect(resolve.status).toBe(200)
+      expect(resolve.body.status).toBe('RESOLVED')
+
+      // Now allowed again -- the closed report never blocks a future one.
+      const secondReport = await (
+        await request()
+      )
+        .post('/api/community/reports')
+        .set('Authorization', `Bearer ${tokenB}`)
+        .send({ commentId: targetCommentId, reason: 'Nova denuncia apos resolucao -- E2E.' })
+      expect(secondReport.status).toBe(201)
+      expect(secondReport.body.id).not.toBe(firstReport.body.id)
+
+      // Both rows still exist -- history is preserved, not overwritten.
+      const total = await prisma.communityReport.count({ where: { commentId: targetCommentId } })
+      expect(total).toBe(2)
+    })
+  })
+
   describe('AUDITORIA', () => {
     it('generates a real audit trail entry for the moderation action (actor/action/target/timestamp/reason), with no secrets', async () => {
       const events = await prisma.auditEvent.findMany({

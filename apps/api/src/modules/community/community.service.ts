@@ -1,5 +1,5 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
-import type { CommunityPostType, CommunityPostVisibility, Prisma } from '@prisma/client'
+import type { CommunityPostType, CommunityPostVisibility, CommunityReport, Prisma } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
 import { ObservabilityService } from '../observability/observability.service'
@@ -787,26 +787,34 @@ export class CommunityService {
     if (target.authorId === user.id) throw new BadRequestException('Você não pode denunciar seu próprio conteúdo.')
     const reason = payload.reason?.trim()
     if (!reason || reason.length < 3) throw new BadRequestException('Informe o motivo da denúncia.')
-    const duplicate = await this.prisma.communityReport.findFirst({
-      where: {
-        reporterId: user.id,
-        postId: payload.postId || null,
-        commentId: payload.commentId || null,
-        status: { in: ['NEW', 'ASSIGNED', 'INVESTIGATING', 'WAITING_FOR_USER', 'ESCALATED', 'REOPENED'] }
-      }
-    })
-    if (duplicate) throw new BadRequestException('Você já possui uma denúncia aberta para este conteúdo.')
-    const report = await this.prisma.communityReport.create({
-      data: {
-        reporterId: user.id,
-        reportedUserId: target.authorId,
-        postId: payload.postId || null,
-        commentId: payload.commentId || null,
-        reason,
-        description: payload.description?.trim() || null,
-        evidence: json(payload.evidence)
-      }
-    })
+    // Create-first, not findFirst-then-create: the real duplicate check is
+    // the database's own unique index on (reporterId, targetKey,
+    // openDedupeKey) -- a sequential read-then-write here would leave a gap
+    // two genuinely concurrent requests could both pass through. A new
+    // report always starts at status NEW (open), hence the fixed
+    // openDedupeKey: 1 -- see OPEN_REPORT_STATUSES/targetKey comments on
+    // the CommunityReport model for why this is safe with MySQL's
+    // NULL-tolerant unique-index behavior.
+    const targetKey = payload.postId ? `post:${payload.postId}` : `comment:${payload.commentId}`
+    let report: CommunityReport
+    try {
+      report = await this.prisma.communityReport.create({
+        data: {
+          reporterId: user.id,
+          reportedUserId: target.authorId,
+          postId: payload.postId || null,
+          commentId: payload.commentId || null,
+          targetKey,
+          openDedupeKey: 1,
+          reason,
+          description: payload.description?.trim() || null,
+          evidence: json(payload.evidence)
+        }
+      })
+    } catch (error) {
+      if (this.isDuplicateKeyError(error)) throw new BadRequestException('Você já possui uma denúncia aberta para este conteúdo.')
+      throw error
+    }
     await this.observability.recordOperationalEvent({
       module: 'community',
       eventType: 'COMMUNITY_CONTENT_REPORTED',

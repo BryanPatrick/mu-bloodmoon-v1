@@ -67,7 +67,7 @@ export const mapProfileResponse = (value: any): CommunitySocialProfile => {
     (Array.isArray(post.media) ? post.media : [])
       .map((item: any, index: number) => ({
         id: `${post.id}-${index}`,
-        imageUrl: mediaUrl(item),
+        imageUrl: resolveMediaUrl(mediaUrl(item)),
         alt: post.title || 'Mídia da publicação'
       }))
       .filter((item: any) => item.imageUrl)
@@ -75,8 +75,17 @@ export const mapProfileResponse = (value: any): CommunitySocialProfile => {
   return {
     displayName: profile?.displayName || value.name || value.username,
     username: value.username,
-    avatarUrl: profile?.avatarUrl || '',
-    coverUrl: profile?.coverUrl || '',
+    // Resolved here (not left to each render site) so every consumer gets
+    // an already-loadable URL -- CommunityProfileHeader used to compensate
+    // by calling resolveMediaUrl itself at render time, but CommunityUserRail
+    // and the profile page's own mobile-avatar button rendered this raw,
+    // producing a relative path the browser resolved against the Web app's
+    // own origin instead of the API's -- a broken image whenever they run on
+    // different origins (true in dev, and in production). resolveMediaUrl is
+    // idempotent on an already-absolute URL, so CommunityProfileHeader's own
+    // call stays a safe no-op.
+    avatarUrl: resolveMediaUrl(profile?.avatarUrl || ''),
+    coverUrl: resolveMediaUrl(profile?.coverUrl || ''),
     bio: profile?.bio || '',
     mainCharacter: {
       name: profile?.mainCharacterName || '',

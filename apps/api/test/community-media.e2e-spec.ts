@@ -371,6 +371,27 @@ describe('Community media (real pipeline, no base64/mock)', () => {
     expect(created).toBeTruthy()
     expect(Array.isArray(created.media)).toBe(true)
     expect(created.media[0].url).toBe(upload.body.url)
+
+    // Continues the same post/media (no extra upload -- this file shares one
+    // 10-uploads/60s throttle window) into author-initiated delete, which
+    // goes through a different code path than moderation HIDE/REMOVE
+    // (removeOwnPost, not postAction) -- never directly verified end-to-end
+    // that its media release actually takes the file out of the public
+    // route, only that moderation's did.
+    const reachableBeforeDelete = await (await request()).get(upload.body.url)
+    expect(reachableBeforeDelete.status).toBe(200)
+
+    const remove = await (
+      await request()
+    )
+      .delete(`/api/community/posts/${post.body.id}`)
+      .set('Authorization', `Bearer ${token}`)
+    expect(remove.status).toBe(200)
+
+    const unreachableAfterDelete = await (await request()).get(upload.body.url)
+    expect(unreachableAfterDelete.status).toBe(404)
+    const mediaRow = await prisma.communityMedia.findUnique({ where: { id: upload.body.id } })
+    expect(mediaRow!.status).toBe('REMOVED')
   })
 
   it('failed upload creates no ghost post: post creation rejects an unknown mediaId', async () => {

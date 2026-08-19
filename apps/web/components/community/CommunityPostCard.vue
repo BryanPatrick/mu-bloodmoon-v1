@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Bookmark, Copy, Edit3, Gem, Heart, Medal, MessageCircle, MoreHorizontal, Repeat2, Share2, Trash2, Trophy, Zap } from 'lucide-vue-next'
+import { Bookmark, Copy, Edit3, Flag, Gem, Heart, Medal, MessageCircle, MoreHorizontal, Repeat2, Share2, Trash2, Trophy, Zap } from 'lucide-vue-next'
 import type { CommunityCommentView, CommunityPostView, CommunityReactionType } from '~/features/community/types/post'
 import { resolveMediaUrl as mediaUrl } from '~/features/community/map-profile-response'
 import { normalizeComment } from '~/features/community/map-post-response'
@@ -82,10 +82,29 @@ const reactionMenu = (target: CommunityPostView | CommunityCommentView, comment 
     ? emit('reactComment', target as CommunityCommentView, item.type)
     : guardedEmit(busyReact, () => emit('react', target as CommunityPostView, item.type))
 }))]
-const menuItems = computed(() => props.own ? [[
-  { label: 'Editar', icon: Edit3, onSelect: () => emit('edit', props.post) },
-  { label: 'Excluir', icon: Trash2, color: 'error' as const, onSelect: () => emit('remove', props.post) }
-]] : [])
+// Report has no post/comment-level UI state to react to on success (unlike
+// edit/delete, the reported content keeps showing normally to the
+// reporter) -- self-contained per card instead of threaded through parent
+// emits, since there's nothing for the parent to orchestrate afterward.
+const reportOpen = ref(false)
+const reportTarget = ref<{ type: 'post' | 'comment'; id: string } | null>(null)
+const openReport = (type: 'post' | 'comment', id: string) => { reportTarget.value = { type, id }; reportOpen.value = true }
+
+const menuItems = computed(() => {
+  if (props.own) return [[
+    { label: 'Editar', icon: Edit3, onSelect: () => emit('edit', props.post) },
+    { label: 'Excluir', icon: Trash2, color: 'error' as const, onSelect: () => emit('remove', props.post) }
+  ]]
+  // Own content never offers "Denunciar" -- the backend rejects
+  // self-reports outright (community.service.ts's report()), so the option
+  // would only ever produce a guaranteed 400.
+  if (props.currentUserId) return [[{ label: 'Denunciar', icon: Flag, onSelect: () => openReport('post', props.post.id) }]]
+  return []
+})
+const commentMenuItems = (comment: CommunityCommentView) =>
+  props.currentUserId && comment.author.id !== props.currentUserId
+    ? [[{ label: 'Denunciar', icon: Flag, onSelect: () => openReport('comment', comment.id) }]]
+    : []
 const submitComment = () => {
   const content = commentText.value.trim()
   if (!content || commentSubmitting.value) return
@@ -113,7 +132,7 @@ const onImgError = (event: Event) => { (event.target as HTMLImageElement).src = 
       </CommunityProfileHoverCard>
       <div v-if="post.labels.length" class="community-post__labels"><span v-for="label in post.labels.slice(0, 2)" :key="label">{{ labelNames[label] }}</span></div>
       <span v-else class="community-badge">{{ typeLabels[post.type] }}</span>
-      <UDropdownMenu v-if="own" :items="menuItems"><UButton color="neutral" variant="ghost" square aria-label="Opções da publicação"><MoreHorizontal class="size-4" /></UButton></UDropdownMenu>
+      <UDropdownMenu v-if="own || currentUserId" :items="menuItems"><UButton color="neutral" variant="ghost" square aria-label="Opções da publicação"><MoreHorizontal class="size-4" /></UButton></UDropdownMenu>
     </header>
 
     <div class="community-post__body">
@@ -156,10 +175,11 @@ const onImgError = (event: Event) => { (event.target as HTMLImageElement).src = 
             <button type="button" @click="startReply(comment)">Responder</button>
             <button v-if="comment.author.id === currentUserId" type="button" @click="startEdit(comment)">Editar</button>
             <button v-if="comment.author.id === currentUserId" type="button" @click="emit('removeComment', comment)">Excluir</button>
+            <UDropdownMenu v-if="currentUserId && comment.author.id !== currentUserId" :items="commentMenuItems(comment)"><button type="button" aria-label="Mais opções do comentário"><MoreHorizontal class="size-3.5" /></button></UDropdownMenu>
           </div>
           <div v-for="reply in comment.replies" :key="reply.id" class="community-comment is-reply">
             <img :src="reply.author.avatarUrl || '/favicon.png'" :alt="reply.author.name" @error="onImgError"><div><strong>{{ reply.author.name }}</strong><p>{{ reply.content }} <small v-if="reply.edited">· Editado</small></p>
-              <div class="community-comment__actions"><UDropdownMenu :items="reactionMenu(reply, true)"><button type="button">Reagir · {{ reply.reactions.length }}</button></UDropdownMenu><button v-if="reply.author.id === currentUserId" type="button" @click="startEdit(reply)">Editar</button><button v-if="reply.author.id === currentUserId" type="button" @click="emit('removeComment', reply)">Excluir</button></div>
+              <div class="community-comment__actions"><UDropdownMenu :items="reactionMenu(reply, true)"><button type="button">Reagir · {{ reply.reactions.length }}</button></UDropdownMenu><button v-if="reply.author.id === currentUserId" type="button" @click="startEdit(reply)">Editar</button><button v-if="reply.author.id === currentUserId" type="button" @click="emit('removeComment', reply)">Excluir</button><UDropdownMenu v-if="currentUserId && reply.author.id !== currentUserId" :items="commentMenuItems(reply)"><button type="button" aria-label="Mais opções do comentário"><MoreHorizontal class="size-3.5" /></button></UDropdownMenu></div>
             </div>
           </div>
         </div>
@@ -167,6 +187,8 @@ const onImgError = (event: Event) => { (event.target as HTMLImageElement).src = 
       <p v-if="commentLoadError" class="community-comments__empty is-error">Não foi possível carregar mais comentários. Tente novamente.</p>
       <button v-if="hasMoreComments" class="community-comments__more" type="button" :disabled="loadingMoreComments" @click="loadMoreComments">{{ loadingMoreComments ? 'Carregando...' : 'Carregar mais comentários' }}</button>
     </section>
+
+    <CommunityReportDialog v-if="reportTarget" v-model:open="reportOpen" :target-type="reportTarget.type" :target-id="reportTarget.id" />
   </article>
 </template>
 

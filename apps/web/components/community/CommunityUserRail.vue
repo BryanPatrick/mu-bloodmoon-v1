@@ -20,7 +20,9 @@ const shortcuts = [
     <div class="community-user-rail__profile">
       <div class="community-avatar">
         <img :src="profile.avatarUrl || '/favicon.png'" :alt="profile.displayName" @error="onImgError">
-        <UTooltip text="Alterar avatar"><button type="button" aria-label="Alterar avatar">+</button></UTooltip>
+        <UTooltip text="Alterar avatar">
+          <NuxtLink :to="`/comunidade/${profile.username}`" aria-label="Alterar avatar">+</NuxtLink>
+        </UTooltip>
       </div>
       <h2 class="community-user-rail__name">{{ profile.displayName }}</h2>
       <p class="community-user-rail__username">@{{ profile.username }}</p>
@@ -53,7 +55,7 @@ const shortcuts = [
 .community-user-rail__profile { display: grid; justify-items: center; border-bottom: 1px solid var(--bm-border); padding: 24px 18px 18px; text-align: center; }
 .community-avatar { position: relative; width: 92px; height: 92px; }
 .community-avatar img { width: 100%; height: 100%; border: 2px solid var(--bm-surface-strong); border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 1px var(--bm-border-strong), var(--shadow-panel); }
-.community-avatar button { position: absolute; right: -2px; bottom: 1px; display: grid; width: 26px; height: 26px; place-items: center; border: 2px solid var(--bm-surface-soft); border-radius: 50%; background: var(--bm-red); color: white; font-weight: 900; }
+.community-avatar a { position: absolute; right: -2px; bottom: 1px; display: grid; width: 26px; height: 26px; place-items: center; border: 2px solid var(--bm-surface-soft); border-radius: 50%; background: var(--bm-red); color: white; font-weight: 900; text-decoration: none; line-height: 1; }
 .community-user-rail h2 { margin-top: 14px; color: var(--bm-heading); font-family: Cinzel, serif; font-size: 1.15rem; font-weight: 800; }
 .community-user-rail__profile p { margin-top: 2px; color: var(--bm-muted); font-size: 0.74rem; }
 .community-empty-hint { margin-top: 10px; color: var(--bm-muted); font-size: 0.72rem; font-style: italic; }

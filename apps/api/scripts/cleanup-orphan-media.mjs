@@ -1,11 +1,14 @@
 // npm run media:cleanup:orphans -- [--apply] [--older-than-hours=24]
 //
-// Sweeps TEMPORARY/REJECTED CommunityMedia rows (upload requests that never
-// finished validating, or that were rejected) whose quarantine file has sat
-// unreviewed past the age window, and removes both the row and the file.
-// Defaults to a dry run -- reports what it would do without deleting
-// anything -- so this is safe to run against any environment; pass --apply
-// to actually delete. Not a production cron: run manually, locally.
+// Sweeps two orphan categories past the age window: TEMPORARY/REJECTED rows
+// (upload requests that never finished validating, or were rejected --
+// quarantine file and row both deleted, nothing to preserve) and READY rows
+// never attached to a post or promoted to an avatar/cover (the file is
+// released -- moved out of the served directory, row kept as REMOVED for
+// the audit trail, same as any other moderation removal). Defaults to a dry
+// run -- reports what it would do without changing anything -- so this is
+// safe to run against any environment; pass --apply to actually act. Not a
+// production cron: run manually, locally.
 import 'reflect-metadata'
 
 function parseArgs(argv) {
@@ -28,8 +31,8 @@ async function main() {
     const result = await cleanup.cleanup({ dryRun: !apply, ...(olderThanHours !== undefined ? { olderThanHours } : {}) })
     console.log(
       result.dryRun
-        ? `DRY RUN: ${result.scanned} orphan candidate(s) found. Re-run with --apply to delete.`
-        : `Deleted ${result.deletedFiles} file(s) and ${result.deletedRows} row(s) out of ${result.scanned} candidate(s).`
+        ? `DRY RUN: ${result.scanned} orphan candidate(s) found. Re-run with --apply to act.`
+        : `Deleted ${result.deletedFiles} quarantine file(s)/${result.deletedRows} row(s); released ${result.releasedFiles} READY file(s)/${result.releasedRows} row(s); out of ${result.scanned} candidate(s).`
     )
   } finally {
     await app.close()

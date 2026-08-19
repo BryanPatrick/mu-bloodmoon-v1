@@ -2064,6 +2064,17 @@ model CommunityCommentRevision {
   @@index([commentId, createdAt])
 }
 
+// Multi-reaction is deliberate, confirmed by this model's own design
+// (Community Step 3 audit): the unique constraints below key on
+// (accountId, postId/commentId, TYPE) -- if the intent had been "one
+// reaction per account per post", type would not be part of the key. A
+// user having both LIKE and HONOR active on the same post at once is
+// therefore correct, existing behavior, not a bug -- toggleReaction() in
+// community.service.ts toggles each type independently by design.
+// The frontend's reaction picker (a single dropdown, one aggregate count
+// with no per-type breakdown) doesn't fully expose this multi-type
+// semantics -- registered as a P2 product/UX decision (a more granular
+// per-type display), not something this audit changes.
 model CommunityReaction {
   id        String            @id @default(uuid())
   accountId String
@@ -2126,6 +2137,19 @@ model CommunityReport {
   reportedUserId String?
   postId         String?
   commentId      String?
+  // Deterministic, always-non-null encoding of the target ("post:<id>" or
+  // "comment:<id>"). Exists solely so the unique index below never touches
+  // postId/commentId directly -- MySQL's unique-index semantics never
+  // reject a duplicate when any indexed column is NULL, and exactly one of
+  // postId/commentId is always NULL here.
+  targetKey      String                  @db.VarChar(200)
+  // 1 while status is one of the "open" statuses (see OPEN_REPORT_STATUSES
+  // in community.service.ts), NULL once RESOLVED/REJECTED. Combined with
+  // the unique index, this is what actually makes "at most one open report
+  // per reporter+target" atomic at the database level -- a NULL row never
+  // collides with anything, which is what leaves closed-report history
+  // (and legitimate re-reports after resolution) unlimited.
+  openDedupeKey  Int?
   reason         String                  @db.VarChar(191)
   description    String?                 @db.Text
   evidence       Json?
@@ -2144,6 +2168,7 @@ model CommunityReport {
   post           CommunityPost?          @relation(fields: [postId], references: [id], onDelete: Cascade)
   comment        CommunityComment?       @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
+  @@unique([reporterId, targetKey, openDedupeKey])
   @@index([status, priority, createdAt])
   @@index([assigneeId, status])
   @@index([reportedUserId, createdAt])
