@@ -28,6 +28,7 @@ import { AdminReportsModule } from './modules/admin-reports/admin-reports.module
 import { GuildsModule } from './modules/guilds/guilds.module'
 import { GmModule } from './modules/gm/gm.module'
 import { TestPersonasModule } from './modules/test-personas/test-personas.module'
+import { GameDataModule } from './modules/game-data/game-data.module'
 
 export const apiModules = [
   'auth',
@@ -51,7 +52,8 @@ export const apiModules = [
   'admin-reports',
   'guilds',
   'gm',
-  'test-personas'
+  'test-personas',
+  'game-data'
 ] as const
 
 export type ApiModuleName = typeof apiModules[number]
@@ -85,7 +87,8 @@ export type ApiModuleName = typeof apiModules[number]
     AdminReportsModule,
     GuildsModule,
     GmModule,
-    TestPersonasModule.register()
+    TestPersonasModule.register(),
+    GameDataModule
   ]
 })
 export class AppModule implements NestModule {

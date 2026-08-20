@@ -1,0 +1,16 @@
+# Blood Moon Game Data Worker -- Game Data Platform Phase 1.
+# Secrets (AGENT_SECRETS_JSON, API_READ_SECRETS_JSON) are never set here --
+# `wrangler secret put <NAME>` only, matching this repo's existing
+# never-commit-real-values convention (see deploy/.env.production.example).
+name = "bloodmoon-game-data-worker"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "bloodmoon-game-data"
+# Replace with the real D1 database id once a Cloudflare account provisions
+# one -- not required for local `wrangler dev`/vitest-pool-workers testing.
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "db/migrations"

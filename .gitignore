@@ -9,6 +9,16 @@ apps/launcher/obj/
 apps/launcher/Assets/launcher-shell.jpg
 apps/launcher-updater/bin/
 apps/launcher-updater/obj/
+apps/game-bridge-agent/bin/
+apps/game-bridge-agent/obj/
+apps/game-bridge-agent/data/
+apps/game-bridge-agent/appsettings.Local.json
+apps/game-bridge-agent/BloodMoon.GameBridgeAgent.Tests/bin/
+apps/game-bridge-agent/BloodMoon.GameBridgeAgent.Tests/obj/
+apps/game-data-worker/node_modules/
+apps/game-data-worker/.wrangler/
+apps/game-data-worker/dist/
+apps/game-data-worker/.dev.vars
 apps/api/storage/uploads/*
 !apps/api/storage/uploads/.gitkeep
 apps/api/storage/guild-media/*

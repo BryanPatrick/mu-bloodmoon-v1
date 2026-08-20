@@ -29,6 +29,12 @@
     "launcher:build": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-launcher.ps1",
     "launcher:publish": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-launcher.ps1 -Publish",
     "launcher:preview": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-launcher.ps1 -Preview",
+    "game-bridge-agent:build": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-game-bridge-agent.ps1",
+    "game-bridge-agent:test": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-game-bridge-agent.ps1 -Test",
+    "game-bridge-agent:publish": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-game-bridge-agent.ps1 -Publish",
+    "game-data-worker:dev": "npm run dev --workspace=apps/game-data-worker",
+    "game-data-worker:test": "npm run test --workspace=apps/game-data-worker",
+    "game-data-worker:typecheck": "npm run typecheck --workspace=apps/game-data-worker",
     "patch:publish": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/Publish-BloodMoonPatch.ps1",
     "db:setup": "node scripts/setup-mysql.mjs",
     "db:import": "node apps/api/scripts/import-prepared-data.mjs",
@@ -69,15 +75,20 @@
     "vue-eslint-parser": "^10.4.1"
   },
   "allowScripts": {
-    "esbuild@0.28.1": true,
-    "esbuild@0.27.7": true,
     "prisma@5.22.0": true,
-    "sharp@0.34.5": true,
     "unrs-resolver@1.12.2": true,
     "vue-demi@0.14.10": true,
     "@nestjs/core@10.4.22": true,
     "@parcel/watcher@2.5.6": true,
     "@prisma/client@5.22.0": true,
-    "@prisma/engines@5.22.0": true
+    "@prisma/engines@5.22.0": true,
+    "workerd@1.20241230.0": true,
+    "workerd@1.20250718.0": true,
+    "esbuild@0.17.19": true,
+    "esbuild@0.21.5": true,
+    "esbuild@0.27.7": true,
+    "esbuild@0.28.1": true,
+    "sharp@0.33.5": true,
+    "sharp@0.34.5": true
   }
 }
