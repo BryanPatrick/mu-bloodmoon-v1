@@ -1,5 +1,20 @@
 # Account linking — contract preparation only (not implemented)
 
+> **SUPERSEDED (2026-08-20, Phase 3A).** Kept verbatim below, per this
+> project's never-silently-overwrite rule — do not edit the historical
+> content further. The "Account Linking" framing this document was built
+> on (a Portal Account and a separate MU Account that get linked
+> together) is corrected in
+> [`docs/game-data/unified-account.md`](unified-account.md): there is one
+> Blood Moon Account, and `memb_guid`/`memb___id` are its representation
+> inside the legacy MU database, not a second account. This document's
+> still-load-bearing finding — `memb_guid` is the correct join key,
+> username equality is unsafe — carries forward unchanged into the new
+> model (`unified-account.md`'s "The three technical identities"). See
+> also [`docs/game-data/game-account-provisioning-contract.md`](game-account-provisioning-contract.md)
+> for the future registration/provisioning flow that replaces "linking"
+> as a concept.
+
 Documentation only. No code in this phase creates, imports, links or
 unlinks a Portal Account to a real MU account or character. This is
 deliberate — the schema evidence needed to do it safely does not exist yet
