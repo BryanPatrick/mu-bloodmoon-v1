@@ -1,0 +1,20 @@
+Command: D:\MU\Tools\RemoteOps\bm-agent-probe.ps1 -MembGuid 3 (second, fully
+independent invocation -- fresh scp of the probe binary, fresh SSH
+execution, fresh SqlConnection, fresh SqlServerGameDatabaseReader and
+AccountSnapshotReader instances; nothing cached or reused from Run 1)
+
+Raw stdout (sanitized JSON):
+{"overall":"PASS","sqlClientConnection":"PASS","snapshotStatus":"Ok","accountId":3,"online":false,"activeCharacterMasked":"L**** (len=5)","cashShopPresent":true,"warehouseMoney":59999999,"characters":[{"slot":1,"nameMasked":"L**** (len=5)","class":2,"level":357,"resetCount":9,"masterLevel":2,"guildPresent":true,"hasAnyRanking":false},{"slot":2,"nameMasked":"a*** (len=4)","class":18,"level":400,"resetCount":0,"masterLevel":0,"guildPresent":false,"hasAnyRanking":false},{"slot":3,"nameMasked":"E*** (len=4)","class":34,"level":400,"resetCount":0,"masterLevel":0,"guildPresent":false,"hasAnyRanking":false},{"slot":4,"nameMasked":"s******* (len=8)","class":82,"level":400,"resetCount":0,"masterLevel":0,"guildPresent":false,"hasAnyRanking":false},{"slot":5,"nameMasked":"R*** (len=4)","class":96,"level":400,"resetCount":0,"masterLevel":0,"guildPresent":false,"hasAnyRanking":false}],"entityKey":"account-snapshot:3","payloadSha256":"630518fb2883f0a044fd181c86e310c835969beb580bca4da987c62414e1679a","inconsistencyReason":null,"errorType":null,"errorMessage":null}
+
+Determinism proof (Part J):
+  Run 1 payloadSha256 = 630518fb2883f0a044fd181c86e310c835969beb580bca4da987c62414e1679a
+  Run 2 payloadSha256 = 630518fb2883f0a044fd181c86e310c835969beb580bca4da987c62414e1679a
+  MATCH = true
+
+This hash is SHA256 of AccountSnapshotChangeFactory.ToDetectedChange(model).PayloadJson
+-- the exact same string ChangeDetector compares against AgentLocalStore's
+observed_state to decide whether an event fires. Two independent real SQL
+reads of the same, unchanged live account produced byte-for-byte identical
+normalized payloads. Result: FALSE_CHANGE_EVENT_ON_IDENTICAL_STATE = NO,
+proven against real infrastructure, not just the fixture-based
+AccountSnapshotChangeFactoryTests/RealDataAccountSnapshotTests from Phase 2B.

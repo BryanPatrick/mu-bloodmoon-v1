@@ -1,0 +1,35 @@
+Command: D:\MU\Tools\RemoteOps\bm-agent-probe.ps1 -MembGuid 3
+Mechanism: BloodMoonConnectivityProbe.exe (self-contained win-x64, .NET 8,
+  ProjectReferences the real apps/game-bridge-agent/BloodMoon.GameBridgeAgent.csproj
+  directly -- SqlServerGameDatabaseReader and AccountSnapshotReader are the
+  exact real, committed classes, not a reimplementation), staged via the
+  existing RemoteOps SSH channel to C:\BloodMoonRemoteOps\ (the designated
+  staging directory, never C:\MuServer), executed once, then deleted.
+Connection string shape (real credential values never appear in any log):
+  Server=localhost;Database=MuOnline;User ID=<observer>;Password=<redacted>;
+  Encrypt=False;Connect Timeout=8;Application Name=BloodMoonGameBridgeConnectivityProbe
+  -- Server=localhost because the probe runs ON the same VPS SQL Server
+  already listens on; no tunnel, no new port, no firewall change.
+
+Raw stdout (sanitized JSON, exactly as printed by the probe):
+{"overall":"PASS","sqlClientConnection":"PASS","snapshotStatus":"Ok","accountId":3,"online":false,"activeCharacterMasked":"L**** (len=5)","cashShopPresent":true,"warehouseMoney":59999999,"characters":[{"slot":1,"nameMasked":"L**** (len=5)","class":2,"level":357,"resetCount":9,"masterLevel":2,"guildPresent":true,"hasAnyRanking":false},{"slot":2,"nameMasked":"a*** (len=4)","class":18,"level":400,"resetCount":0,"masterLevel":0,"guildPresent":false,"hasAnyRanking":false},{"slot":3,"nameMasked":"E*** (len=4)","class":34,"level":400,"resetCount":0,"masterLevel":0,"guildPresent":false,"hasAnyRanking":false},{"slot":4,"nameMasked":"s******* (len=8)","class":82,"level":400,"resetCount":0,"masterLevel":0,"guildPresent":false,"hasAnyRanking":false},{"slot":5,"nameMasked":"R*** (len=4)","class":96,"level":400,"resetCount":0,"masterLevel":0,"guildPresent":false,"hasAnyRanking":false}],"entityKey":"account-snapshot:3","payloadSha256":"630518fb2883f0a044fd181c86e310c835969beb580bca4da987c62414e1679a","inconsistencyReason":null,"errorType":null,"errorMessage":null}
+
+Observed stderr (environmental, unrelated to the SQL connection): a
+Portuguese .NET security advisory about a negotiated TLS 1.0 protocol
+being insecure ("Aviso de Seguranca: o TLS 1.0 negociado..."). The
+SqlConnection itself used Encrypt=False (matching Invoke-SqlReadOnly.ps1's
+own long-standing convention, since the connection never leaves loopback);
+sqlClientConnection reported PASS with no errorType/errorMessage, and the
+resulting real data matches independently-validated Phase 2B evidence
+exactly -- this warning did not affect the SQL connection's correctness
+and was not investigated further.
+
+Cross-check against Phase 2B's bm-sql-based validation
+(references/game-data/sql-discovery/phase-2b-readmodel-validation-20260820/):
+every field above (5 slots, Lucas/aaaa/Elfa/summoner/RFRF in that exact
+order, class/level/resetCount/masterLevel values, guildPresent for Lucas
+only, cashShopPresent=true, warehouseMoney=59999999, online=false) matches
+the independently-captured bm-sql evidence exactly. This is the same real
+account, read two different ways (PowerShell/System.Data.SqlClient via
+bm-sql in Phase 2B vs. the Agent's own Microsoft.Data.SqlClient here),
+agreeing completely.

@@ -129,3 +129,23 @@ that SQL is reached only through `bm-sql`/SSH; port 1433 is never opened).
 `REAL_GAMEBRIDGE_SQL_CLIENT_CONNECTION` (the Agent's own ADO.NET
 connection, physically executed) are two different claims — only the
 first is `PASS` as of this update.
+
+## Update — Phase 2C real Agent↔SQL connectivity (2026-08-20)
+
+The paragraph immediately above is now out of date on its final claim,
+kept unedited per the never-silently-overwrite rule.
+`REAL_GAMEBRIDGE_SQL_CLIENT_CONNECTION` is now **`PASS`**: a real
+`Microsoft.Data.SqlClient` connection, using the Agent's own real
+`SqlServerGameDatabaseReader`/`AccountSnapshotReader` code, was proven
+against the live server. See `docs/game-data/deployment-topology.md` for
+the full method (same-host `localhost` connectivity, no tunnel, no new
+port) and
+`references/game-data/sql-discovery/phase-2c-real-connectivity-20260820/`
+for raw evidence, including a determinism proof (two independent real
+reads, identical payload hash) and a real invalid-credential failure-mode
+test. `apps/game-bridge-agent/tools/ConnectivityProbe` is the harness that
+proved this — a one-shot diagnostic tool, not a production deployment; no
+Windows Service was installed on the VPS this phase. Cloudflare
+provisioning (Worker/D1/real event flow) remains unattempted — no
+Cloudflare account or credential exists yet for this project — so
+`END_TO_END_REAL_INFRA` stays `NOT_TESTED`.

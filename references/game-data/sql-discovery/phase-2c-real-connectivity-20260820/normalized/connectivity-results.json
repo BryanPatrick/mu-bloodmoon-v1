@@ -1,0 +1,19 @@
+{
+  "realSqlClientConnection": "PASS",
+  "realAgentAccountSnapshot": "PASS",
+  "accountUsed": { "membGuid": 3, "note": "same real QA/test-fixture account validated in Phase 2B (teste2)" },
+  "determinism": {
+    "run1PayloadSha256": "630518fb2883f0a044fd181c86e310c835969beb580bca4da987c62414e1679a",
+    "run2PayloadSha256": "630518fb2883f0a044fd181c86e310c835969beb580bca4da987c62414e1679a",
+    "match": true,
+    "falseChangeEventOnIdenticalState": false
+  },
+  "failureModeTests": {
+    "invalidCredential": { "result": "FAIL (expected)", "errorType": "SqlException", "exitCode": 2, "crashed": false, "secretsLeaked": false }
+  },
+  "connectivityMethod": "DIRECT_LOCAL",
+  "connectionStringShape": "Server=localhost;Database=MuOnline;User ID=<observer>;Password=<redacted>;Encrypt=False;Connect Timeout=8",
+  "publicSqlPortOpened": false,
+  "newNetworkPathCreated": false,
+  "remoteCleanupVerified": true
+}

@@ -25,6 +25,10 @@
     <Content Remove="BloodMoon.GameBridgeAgent.Tests\**" />
     <EmbeddedResource Remove="BloodMoon.GameBridgeAgent.Tests\**" />
     <None Remove="BloodMoon.GameBridgeAgent.Tests\**" />
+    <Compile Remove="tools\**" />
+    <Content Remove="tools\**" />
+    <EmbeddedResource Remove="tools\**" />
+    <None Remove="tools\**" />
   </ItemGroup>
 
   <ItemGroup>
