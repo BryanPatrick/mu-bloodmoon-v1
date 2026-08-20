@@ -100,3 +100,32 @@ environment. Everything above is built for real production use, but
 See `docs/game-data/phase-1-report.md` for the exact, non-conflated status
 fields (`END_TO_END_LOCAL_SIMULATION` vs `REAL_MU_SQL_CONNECTION` vs
 `REAL_CLOUDFLARE_CONNECTION` vs `END_TO_END_REAL_INFRA`).
+
+## Update — Phase 2B real account read models (2026-08-20)
+
+The paragraphs above described Phase 1's status verbatim, kept unedited per
+the never-silently-overwrite rule. As of this date, `SqlServerGameDatabaseReader`
+is **no longer entirely schema-blocked**: 10 new account-scoped methods
+(account/character/master-level/guild/rankings/currencies/online-status)
+are real, parameterized implementations against schema confirmed
+`REAL_SQL_METADATA` on 2026-08-20 — see
+`docs/game-data/read-models/account-snapshot.md` for the full contract.
+Phase 1's original bulk-poll methods
+(`GetCharacterResetSnapshotsAsync`/`GetRankingSnapshotsAsync`) are
+untouched and remain `BLOCKED_BY_SCHEMA_DISCOVERY` — this was a deliberate,
+additive addition, not an architecture redesign.
+
+The distinction in "Local verification vs. real infrastructure" above
+still holds with one refinement: the 10 new methods' SQL query text and
+logic *were* validated against real live data (via the pre-existing
+`bm-sql` bridge, the same read-only access already approved — see
+`references/game-data/sql-discovery/phase-2b-readmodel-validation-20260820/`),
+but `Microsoft.Data.SqlClient` has still never physically opened a
+connection from this codebase to the real server — no such connection is
+possible from the current dev environment without opening a new,
+unauthorized network path (`D:\MU\docs\remoteops-runbook.md` is explicit
+that SQL is reached only through `bm-sql`/SSH; port 1433 is never opened).
+`REAL_MU_SQL_CONNECTION` (via `bm-sql`, for validation) and
+`REAL_GAMEBRIDGE_SQL_CLIENT_CONNECTION` (the Agent's own ADO.NET
+connection, physically executed) are two different claims — only the
+first is `PASS` as of this update.

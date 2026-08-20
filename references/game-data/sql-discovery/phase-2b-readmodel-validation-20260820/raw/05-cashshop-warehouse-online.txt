@@ -1,0 +1,63 @@
+Query (mirrors GetCashShopBalancesAsync): SELECT AccountID, WCoinC, WCoinP, GoblinPoint
+FROM CashShopData
+-------------------------------------------------------------------------------------------
+AccountID   : teste
+WCoinC      : 993
+WCoinP      : 1002
+GoblinPoint : 1097
+
+AccountID   : teste1
+WCoinC      : 1000
+WCoinP      : 1000
+GoblinPoint : 1000
+
+AccountID   : teste2
+WCoinC      : 1007
+WCoinP      : 998
+GoblinPoint : 42638
+
+AccountID   : teste3
+WCoinC      : 10
+WCoinP      : 10
+GoblinPoint : 10
+
+(no CashShopData row for BMFAKE01 or teste4 -- COUNT(*) = 4 of 6 accounts)
+
+Query (mirrors GetWarehouseMoneyAsync): SELECT AccountID, Money FROM warehouse
+------------------------------------------------------------------------------
+AccountID : teste
+Money     : 0
+
+AccountID : teste1
+Money     : 487195
+
+AccountID : teste2
+Money     : 59999999
+
+AccountID : teste3
+Money     : 0
+
+(no warehouse row for BMFAKE01 or teste4 -- COUNT(*) = 4 of 6 accounts)
+
+Query (mirrors GetAccountOnlineStatusAsync): SELECT memb___id, ConnectStat
+FROM MEMB_STAT
+--------------------------------------------------------------------------
+MembId      : BMFAKE01   ConnectStat : 0
+MembId      : teste      ConnectStat : 0
+MembId      : teste1     ConnectStat : 0
+MembId      : teste2     ConnectStat : 0
+MembId      : teste3     ConnectStat : 0
+MembId      : teste4     ConnectStat : 0
+(COUNT(*) = 6 -- every account has a MEMB_STAT row)
+
+Findings:
+1. CashShopData/warehouse: real positive-path data confirmed for teste2
+   (WCoinC=1007, WCoinP=998, GoblinPoint=42638, warehouse Money=59999999)
+   -- these are not synthetic fixture numbers, they are the live values.
+   BMFAKE01/teste4 correctly have no row in either table (real null path).
+2. MEMB_STAT: every one of the 6 accounts has a real row with
+   ConnectStat=0 (everyone currently offline) -- a present row with a
+   non-null 0 is a genuinely different case from "no MEMB_STAT row at
+   all" (which GetAccountOnlineStatusAsync would report as null/unknown,
+   never assumed-offline); this server's current data only exercises the
+   "row exists, value 0" case, not the "no row" case, for all 6 accounts.

@@ -1,0 +1,55 @@
+Query (mirrors GetMasterLevelAsync): SELECT Name, MasterLevel FROM MasterSkillTree
+WHERE Name IN ('Lucas','aaaa','Elfa','summoner','RFRF')
+--------------------------------------------------------------------------------
+Name     MasterLevel
+----     -----------
+aaaa               0
+Elfa                0
+Lucas               2
+RFRF                0
+summoner             0
+
+Query (mirrors GetGuildMembershipAsync): SELECT Name, G_Name, G_Status FROM GuildMember
+WHERE Name IN ('Lucas','aaaa','Elfa','summoner','RFRF')
+--------------------------------------------------------------------------------------------
+Name    : Lucas
+GName   : GMaster
+GStatus : 128
+(no rows for aaaa, Elfa, summoner, RFRF)
+
+Query: SELECT COUNT(*) FROM GuildMember  -> 2 (whole database)
+Query: SELECT COUNT(*) FROM MasterSkillTree -> 12 (whole database -- one row
+  per live character, confirming MasterSkillTree has a row for every
+  Character even when MasterLevel=0, never a missing row for an existing
+  character on this server's current data)
+
+Query: rankings totals across all 5 leaderboard tables (whole database)
+  SELECT (SELECT COUNT(*) FROM RankingBloodCastle) AS BC,
+         (SELECT COUNT(*) FROM RankingDevilSquare) AS DS,
+         (SELECT COUNT(*) FROM RankingChaosCastle) AS CC,
+         (SELECT COUNT(*) FROM RankingCastleSiege) AS CS,
+         (SELECT COUNT(*) FROM RankingDuel) AS DU
+------------------------------------------------------------------------------
+BC : 0
+DS : 0
+CC : 0
+CS : 0
+DU : 0
+
+Findings:
+1. Real, present-row null-vs-zero distinction confirmed on live data:
+   MasterSkillTree has a row for every one of the 5 characters (and all 12
+   live characters DB-wide) -- Lucas's row has MasterLevel=2 (a genuine
+   trained value), the other 4 have MasterLevel=0 (a genuine present-but-
+   untrained value). GetMasterLevelAsync correctly returns 0, not null,
+   for these -- null is reserved for "no MasterSkillTree row at all",
+   which does not currently occur for any live character.
+2. GuildMember: only Lucas (of these 5, and only 1 of the other whole-DB
+   row) has a guild -- confirms the "most characters return null Guild"
+   path is the real common case on this server, not just a fixture
+   default.
+3. Rankings: all 5 leaderboard tables are completely empty on the live
+   server right now (0 rows total, for any character). Confirms
+   "GetRankingsForCharacterAsync returns an all-null CharacterRankings" is
+   the actual current real-world result for every character on this
+   server -- not a hypothetical missing-row test case.

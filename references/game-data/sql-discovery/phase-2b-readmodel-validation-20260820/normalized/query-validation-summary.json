@@ -1,0 +1,71 @@
+{
+  "account": { "membGuid": 3, "membId": "teste2" },
+  "methods": [
+    {
+      "method": "GetAccountByMembGuidAsync",
+      "realResult": { "membGuid": 3, "membId": "teste2" },
+      "rowPresent": true
+    },
+    {
+      "method": "GetAccountCharacterSlotsAsync",
+      "realResult": {
+        "id": "teste2",
+        "slots": [
+          { "slotNumber": 1, "characterName": "Lucas" },
+          { "slotNumber": 2, "characterName": "aaaa" },
+          { "slotNumber": 3, "characterName": "Elfa" },
+          { "slotNumber": 4, "characterName": "summoner" },
+          { "slotNumber": 5, "characterName": "RFRF" }
+        ],
+        "activeCharacterName": "Lucas"
+      },
+      "rowPresent": true,
+      "otherAccountsObserved": {
+        "teste4": { "slots": [], "activeCharacterName": null, "note": "zero characters -- real edge case" },
+        "teste1": { "slots": [1, 2, 3, 5], "note": "real non-contiguous gap at slot 4" }
+      }
+    },
+    {
+      "method": "GetCharactersByNamesAsync",
+      "rowsPresent": 5,
+      "rowsRequested": 5,
+      "orphans": 0,
+      "ownershipConsistency": "ALL_5_CONSISTENT (Character.AccountID == 'teste2' for every slot)"
+    },
+    {
+      "method": "GetMasterLevelAsync",
+      "realResults": { "Lucas": 2, "aaaa": 0, "Elfa": 0, "summoner": 0, "RFRF": 0 },
+      "note": "every character has a present row; the null (\"no row\") path is not exercised by this account, but is confirmed structurally correct via unit tests"
+    },
+    {
+      "method": "GetGuildMembershipAsync",
+      "realResults": {
+        "Lucas": { "guildName": "GMaster", "guildStatus": 128 },
+        "aaaa": null,
+        "Elfa": null,
+        "summoner": null,
+        "RFRF": null
+      }
+    },
+    {
+      "method": "GetRankingsForCharacterAsync",
+      "realResults": "all-null for every character on the live server -- all 5 ranking tables are empty database-wide (0 rows)"
+    },
+    {
+      "method": "GetCashShopBalancesAsync",
+      "realResult": { "wCoinC": 1007, "wCoinP": 998, "goblinPoint": 42638 },
+      "rowPresent": true
+    },
+    {
+      "method": "GetWarehouseMoneyAsync",
+      "realResult": 59999999,
+      "rowPresent": true
+    },
+    {
+      "method": "GetAccountOnlineStatusAsync",
+      "realResult": false,
+      "rowPresent": true,
+      "note": "ConnectStat=0, a present row with a real non-null value -- distinct from the null/no-row case"
+    }
+  ]
+}

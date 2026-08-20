@@ -7,4 +7,6 @@ public static class EntityKey
     public static string ForCharacterReset(string characterId) => $"character-reset:{characterId}";
 
     public static string ForRanking(string leaderboard, string characterId) => $"ranking:{leaderboard}:{characterId}";
+
+    public static string ForAccountSnapshot(int membGuid) => $"account-snapshot:{membGuid}";
 }

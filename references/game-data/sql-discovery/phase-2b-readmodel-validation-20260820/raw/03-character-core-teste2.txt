@@ -1,0 +1,64 @@
+Query (mirrors GetCharactersByNamesAsync, all 21 CharacterCore columns
+requested; showing the subset printed during validation):
+SELECT AccountID, Name, Class, cLevel, Experience, ResetCount, MasterResetCount
+FROM Character WHERE Name IN ('Lucas','aaaa','Elfa','summoner','RFRF')
+
+AccountID        : teste2
+Name             : Lucas
+Class            : 2
+CLevel           : 357
+Experience       : 1599231350
+ResetCount       : 9
+MasterResetCount : 0
+
+AccountID        : teste2
+Name             : aaaa
+Class            : 18
+CLevel           : 400
+Experience       : -472819216
+ResetCount       : 0
+MasterResetCount : 0
+
+AccountID        : teste2
+Name             : Elfa
+Class            : 34
+CLevel           : 400
+Experience       : -472819216
+ResetCount       : 0
+MasterResetCount : 0
+
+AccountID        : teste2
+Name             : summoner
+Class            : 82
+CLevel           : 400
+Experience       : -472819216
+ResetCount       : 0
+MasterResetCount : 0
+
+AccountID        : teste2
+Name             : RFRF
+Class            : 96
+CLevel           : 400
+Experience       : -472819216
+ResetCount       : 0
+MasterResetCount : 0
+
+Findings:
+1. All 5 slot names resolved to real Character rows -- zero orphan slots
+   for this account.
+2. Character.AccountID = 'teste2' for all 5, exactly matching
+   AccountCharacter.Id -- the real ownership consistency guard passes for
+   this account (Character.AccountID never contradicts AccountCharacter).
+3. GENUINE OBSERVATION (not a bug in this phase's code, flagged for
+   awareness): aaaa/Elfa/summoner/RFRF all show Experience = -472819216, a
+   negative value. Experience is stored as SQL Server `int` (32-bit
+   signed) on the real Character table; CharacterCore.Experience is
+   likewise a C# `int`. A cLevel=400 character's real experience value
+   exceeds Int32.MaxValue (2147483647) and has wrapped around during
+   storage/accumulation on the game server's own side -- this is a
+   pre-existing real-data condition on the live server, not something
+   introduced by GameBridge's read path (GameBridge only reads the column
+   as-is via SqlDataReader.GetInt32, matching the column's real SQL type
+   exactly). Documented here as new real-data evidence; no type change
+   made this phase (would be a schema-contract change beyond Phase 2B's
+   read-only scope).

@@ -82,3 +82,18 @@ No `AccountId` column exists on `GuildMember` — see `guild.md`.
 | `MasterSkillTree.MasterLevel` | OBSERVED | **ALREADY_KNOWN + NEW_LEGACY_EVIDENCE** | Join key (`Name`) now known |
 | Character join/identity key | UNKNOWN (`join-keys-unknown.md`) | **NEW_LEGACY_EVIDENCE** | `AccountId` (string username) for account link; identity column is `"id"` per this install's config — still not `SCHEMA_CONFIRMED` until validated live |
 | `Character.Name` | INFERRED candidate | **NEW_LEGACY_EVIDENCE, strongly supported** | Used as both display name and an alternate lookup key throughout |
+
+## Update — `RuudMoney` does not exist (REAL_SQL_METADATA, 2026-08-20)
+
+**⚠️ CONTRADICTS_CURRENT_ASSUMPTION**: line 32 above (`RuudMoney` aliased
+`Ruud`, from the legacy player-facing model) is left unchanged, per the
+never-silently-overwrite rule — it accurately records what the legacy PHP
+code referenced. But live schema introspection of the real `Character`
+table (60 real columns, full enumeration) found **no `RuudMoney` column at
+all**. `REAL_SQL_METADATA` outranks `LEGACY_CODE_CONFIRMED` per this
+catalog's evidence-priority rule — `apps/game-bridge-agent`'s `CharacterCore`
+read model (Phase 2B) excludes `RuudMoney` entirely. See
+`references/game-data/sql-discovery/live-20260820/raw/03-schema-character-membinfo.txt`
+for the full column enumeration and
+`docs/game-data/read-models/account-snapshot.md` for the resulting
+contract.

@@ -1,0 +1,35 @@
+bm-sql.ps1 health
+-----------------
+Status    : PASS
+Database  : MuOnline
+Login     : bloodmoon_observer
+Version   : 12.0.2000.8
+CanSelect : 1
+CanUpdate : 0
+
+Query: SELECT ac.Id AS AccId, ac.Number AS SlotCount FROM AccountCharacter ac
+------------------------------------------------------------------------------
+AccId    SlotCount
+-----    ---------
+teste1           1
+teste             2
+teste2            3
+teste3            4
+BMFAKE01          5
+teste4            6
+
+Query: SELECT memb_guid AS MembGuid, memb___id AS MembId FROM MEMB_INFO WHERE memb___id = 'teste2'
+----------------------------------------------------------------------------------------------------
+MembGuid MembId
+-------- ------
+       3 teste2
+
+Query: SELECT memb_guid AS MembGuid, memb___id AS MembId FROM MEMB_INFO WHERE memb_guid = 3
+-----------------------------------------------------------------------------------------------
+MembGuid MembId
+-------- ------
+       3 teste2
+
+Purpose: validates GetAccountByMembGuidAsync's exact query
+  (SELECT memb_guid, memb___id FROM MEMB_INFO WHERE memb_guid = @membGuid)
+  round-trips correctly: memb_guid=3 -> memb___id='teste2' and back.

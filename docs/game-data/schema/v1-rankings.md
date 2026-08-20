@@ -71,3 +71,16 @@ also has `DeathScore` (`int`) and `CrownTime` (`int`), resolving the legacy
 All five tables' PK is `Name` (`varchar(10)`), confirming
 `Ranking*.Name = Character.Name` as the real join for every one of them —
 including `RankingDuel`, previously only LEGACY_CODE_CONFIRMED.
+
+## Update — nullability + real-data validation (Phase 2B, 2026-08-20)
+
+Every score-type column above (`Score`, `KillScore`/`DeathScore`/`CrownTime`,
+`WinScore`/`LoseScore`) is `IsNullable=True` on the live schema — not
+implied by the table above, which only lists column/type/PK. A present
+ranking row with a `NULL` score is a different case from no row at all;
+`apps/game-bridge-agent`'s `RankingModels.cs` models this as `int?` fields
+inside a nullable record, never inventing zero either way. Real-data
+validation: all five tables currently have **0 rows total** on the live
+server for any character — see
+`references/game-data/sql-discovery/phase-2b-readmodel-validation-20260820/`.
+Full read-model contract: `docs/game-data/read-models/account-snapshot.md`.

@@ -1,0 +1,53 @@
+Query (mirrors GetAccountCharacterSlotsAsync): SELECT GameID1..GameID10, GameIDC FROM AccountCharacter WHERE Id = @membId
+
+Id = 'teste3' (memb_guid=4, single-slot account)
+--------------------------------------------------
+G1 : EtheriusZ
+G2..G10 : (all empty)
+GC : EtheriusZ
+
+Id = 'BMFAKE01' (single-slot account)
+----------------------------------------
+G1 : BmFake01
+G2..G10 : (all empty)
+GC : BmFake01
+
+Id = 'teste4' (zero-character account -- real ACCOUNT_NOT_FOUND-adjacent
+  edge case: MEMB_INFO/AccountCharacter rows exist, but every slot and
+  GameIDC are empty)
+----------------------------------------------------------------------------
+G1..G10 : (all empty)
+GC : (empty)
+
+Id = 'teste' (single non-slot-1... actually slot 1 only)
+-----------------------------------------------------------
+G1 : Trakinas
+G2..G5 : (empty)
+GC : Trakinas
+
+Id = 'teste1' (non-contiguous multi-slot account -- slot 4 is empty,
+  proving real gaps exist and are skipped, not just a hypothetical)
+----------------------------------------------------------------------------
+G1 : Bryan
+G2 : BKZIN
+G3 : 3636
+G4 : (empty)
+G5 : aaaaa
+GC : Bryan
+
+Id = 'teste2' (memb_guid=3, richest real account -- used as the primary
+  Phase 2B real-data fixture, see 03-*.txt onward)
+----------------------------------------------------------------------------
+G1 : Lucas
+G2 : aaaa
+G3 : Elfa
+G4 : summoner
+G5 : RFRF
+GC : Lucas
+
+Purpose: confirms real slot data exhibits every shape the read model must
+  handle -- zero characters, one character, multiple contiguous slots,
+  and multiple non-contiguous slots with a real gap (teste1's empty
+  GameID4) -- and that GameIDC always duplicates an already-present slot
+  value rather than acting as an 11th slot, matching
+  AccountCharacterSlotsBuilder's contract.

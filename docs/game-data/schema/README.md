@@ -90,3 +90,19 @@ account identity was further validated in
 that remains a separate, not-yet-done implementation task, deliberately
 deferred. Raw evidence for everything above:
 `references/game-data/sql-discovery/`.
+
+## Update — Phase 2B real account read models (2026-08-20)
+
+The paragraph above is kept unedited, per the never-silently-overwrite
+rule, but is now out of date on one point: `SqlServerGameDatabaseReader`
+**has** been updated — 10 new account-scoped methods are real,
+parameterized implementations. See
+`docs/game-data/read-models/account-snapshot.md` for the full contract
+and `references/game-data/sql-discovery/phase-2b-readmodel-validation-20260820/`
+for real-data validation of every one of those 10 methods' query text.
+Phase 1's original bulk-poll methods remain `BLOCKED_BY_SCHEMA_DISCOVERY`,
+unchanged. This update also corrects one prior `OBSERVED`-tier assumption:
+`RankingCastleSiege` has real `KillScore`/`DeathScore`/`CrownTime` columns,
+not a generic `Score` (see `v1-rankings.md`), and confirms `RuudMoney`
+(named in the legacy web sweep) does not exist on the real `Character`
+table — `ABSENT_IN_CURRENT_SCHEMA`, `EVIDENCE_SOURCE: REAL_SQL_METADATA`.
