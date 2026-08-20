@@ -58,3 +58,16 @@ CREATE TABLE IF NOT EXISTS agent_heartbeats (
   buffer_depth INTEGER NOT NULL,
   last_seen_at TEXT NOT NULL
 );
+
+-- Phase 2D addition (see db/migrations/0002_account_snapshot_state.sql).
+-- Persists the "account.snapshot" event type -- Phase 2B/2C's real,
+-- account-scoped GameBridge read model. payload_json is already sanitized
+-- at the source (no memb___id, no personal data, no blobs).
+CREATE TABLE IF NOT EXISTS account_snapshot_state (
+  account_id INTEGER PRIMARY KEY,
+  payload_json TEXT NOT NULL,
+  source TEXT NOT NULL,
+  server_id TEXT NOT NULL,
+  source_sequence INTEGER NOT NULL,
+  updated_at TEXT NOT NULL
+);

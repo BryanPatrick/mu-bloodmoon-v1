@@ -1,0 +1,37 @@
+Problem: every clientId read as UNKNOWN_CLIENT despite AGENT_SECRETS_JSON
+being set correctly (multiple times, multiple encoding-control attempts
+on the sending side).
+
+Diagnosis method: a temporary, unauthenticated GET /__debug/env-check
+route was added to index.ts (removed after diagnosis -- never part of the
+committed Worker), reporting only non-secret metadata: raw string length,
+first/last character CODE (not content), a SHA-256 hash of the raw value
+(irreversible, safe), and the exact JSON.parse() error message.
+
+Key finding:
+  rawFirstChar: 65279   <- U+FEFF, a UTF-8 byte-order mark
+  parseError: "Unexpected token '﻿', \"﻿{\"gamebri\"... is not
+               valid JSON"
+
+Confirmed the BOM was added by `wrangler secret put` itself while reading
+piped stdin (this project's pinned wrangler 3.114.17, on Windows) --
+verified by checking the exact string handed to the pipe locally
+(first character code 123, i.e. '{', confirmed clean) immediately before
+piping, across three different sending mechanisms (PowerShell object
+pipe, [Console]::OutputEncoding override, raw Process.StandardInput
+StreamWriter with explicit UTF8-no-BOM encoding) -- all three still
+produced a BOM'd value on the Cloudflare side. The BOM is added
+CLI-side, not by anything under this project's control.
+
+Secondary finding (unrelated to the BOM, found in the same investigation):
+`wrangler secret put` does not take effect for the currently-serving
+Worker version until the next `wrangler deploy` -- confirmed by setting a
+plain, non-JSON 12-character test value and observing the debug route
+still report the PREVIOUS (JSON-shaped, longer) value's length until a
+fresh `wrangler deploy` ran with no code changes, after which the new
+12-character value was immediately visible.
+
+Fix applied: index.ts's parseSecrets() now strips a single leading
+U+FEFF character before JSON.parse (see src/index.ts and
+test/hmac.spec.ts's BOM-tolerance tests). Debug route fully removed
+before the real secrets were set for production use.

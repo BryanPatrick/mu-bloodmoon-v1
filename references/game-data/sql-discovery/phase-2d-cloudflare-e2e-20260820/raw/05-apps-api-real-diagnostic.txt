@@ -1,0 +1,34 @@
+Test: apps/api/test/game-data-real-cloudflare-e2e.e2e-spec.ts
+(new this phase; companion to the existing Phase 1
+game-data-local-e2e.e2e-spec.ts, which proves the same contract against a
+LOCAL wrangler dev instance -- this one proves it against the REAL
+deployed Worker).
+
+Run: npm run test:e2e -- --testPathPatterns="game-data-real-cloudflare-e2e"
+Result: Test Suites: 1 passed, 1 total. Tests: 1 passed, 1 total.
+
+What it proved, using entirely real components:
+1. A fresh, real, HMAC-signed heartbeat (real Agent clientId/secret) was
+   sent directly to the real deployed Worker.
+2. A real SUPER_ADMIN JWT was obtained via the existing test-personas
+   flow (real AuthService.register/login, real AccountSession row, real
+   JwtService-signed token -- not a hand-minted token).
+3. GET /api/admin/game-data/status was called with that real token,
+   through the REAL JwtAuthGuard + RolesGuard('ADMIN','SUPER_ADMIN') +
+   PermissionsGuard(admin.game-data.view) stack -- not bypassed.
+4. The controller's real GameDataClient (real Node crypto HMAC signer)
+   called the REAL deployed Worker's real /internal/state/status route
+   (api-read HMAC scope, real secret from the gitignored local config
+   Phase 2D wrote).
+5. Result: bridgeStatus="HEALTHY", lastHeartbeatAt=<real ISO timestamp
+   matching the heartbeat just sent>. Response body keys are exactly
+   ["bridgeStatus","lastHeartbeatAt"] -- confirmed no Worker URL, secret,
+   or SQL detail leaks through this endpoint, as designed since Phase 1.
+
+Regression check: the ORIGINAL game-data-local-e2e.e2e-spec.ts (local
+wrangler dev simulation) was re-run immediately after this phase's Worker
+code changes (account.snapshot event type, BOM-tolerant secret parsing)
+and still passes (3/3 tests) -- confirms those additions did not break
+the existing local-simulation contract.
+
+APPS_API_REAL_GAME_DATA = PASS.

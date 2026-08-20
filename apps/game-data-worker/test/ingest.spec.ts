@@ -139,4 +139,50 @@ describe('Event ingestion (Game Data Platform Phase 1)', () => {
       .first<{ score: number }>()
     expect(row?.score).toBe(999)
   })
+
+  it('applies account.snapshot events -- the real Phase 2B/2C GameBridge read model (Phase 2D)', async () => {
+    const body = JSON.stringify({
+      eventId: 'evt-account-snapshot-1',
+      eventType: 'account.snapshot',
+      schemaVersion: 1,
+      source: 'agent-1',
+      serverId: 's1',
+      sourceSequence: 1,
+      accountId: '3',
+      characterId: null,
+      observedAt: new Date().toISOString(),
+      payloadJson: JSON.stringify({ accountId: 3, online: false, characters: [] })
+    })
+
+    const res = await postEvent(body)
+
+    expect(res.status).toBe(200)
+    const row = await env.DB.prepare('SELECT payload_json, source_sequence FROM account_snapshot_state WHERE account_id = ?')
+      .bind(3)
+      .first<{ payload_json: string; source_sequence: number }>()
+    expect(row?.source_sequence).toBe(1)
+    expect(JSON.parse(row?.payload_json ?? '{}')).toEqual({ accountId: 3, online: false, characters: [] })
+  })
+
+  it('account.snapshot obeys the same sequence guard -- an older sourceSequence never regresses current-state', async () => {
+    const newer = JSON.stringify({
+      eventId: 'evt-account-newer', eventType: 'account.snapshot', schemaVersion: 1, source: 'agent-1',
+      serverId: 's1', sourceSequence: 5, accountId: '7', characterId: null, observedAt: new Date().toISOString(),
+      payloadJson: JSON.stringify({ accountId: 7, online: true })
+    })
+    expect((await postEvent(newer)).status).toBe(200)
+
+    const older = JSON.stringify({
+      eventId: 'evt-account-older', eventType: 'account.snapshot', schemaVersion: 1, source: 'agent-1',
+      serverId: 's1', sourceSequence: 3, accountId: '7', characterId: null, observedAt: new Date().toISOString(),
+      payloadJson: JSON.stringify({ accountId: 7, online: false })
+    })
+    expect((await postEvent(older)).status).toBe(200) // accepted as "new" by dedupe, but must not regress state
+
+    const row = await env.DB.prepare('SELECT source_sequence, payload_json FROM account_snapshot_state WHERE account_id = ?')
+      .bind(7)
+      .first<{ source_sequence: number; payload_json: string }>()
+    expect(row?.source_sequence).toBe(5)
+    expect(JSON.parse(row?.payload_json ?? '{}')).toEqual({ accountId: 7, online: true })
+  })
 })

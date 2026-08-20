@@ -1,0 +1,66 @@
+Command: D:\MU\Tools\RemoteOps\bm-agent-probe.ps1 -MembGuid 3 -IncludeCloudflare
+Mechanism: same BloodMoonConnectivityProbe.exe from Phase 2C (real,
+committed SqlServerGameDatabaseReader/AccountSnapshotReader classes),
+extended this phase (CloudflarePhase.cs) with the real, committed
+HmacRequestSigner/GameDataClient/HeartbeatPublisher/EventEnvelope
+classes -- run once on the production VPS, against the REAL deployed
+Worker (https://bloodmoon-game-data-worker.bryanelrick22.workers.dev),
+using the real HMAC secret (transmitted the same transient,
+deleted-after-use way as the SQL credential -- never on this process's
+command line, never printed).
+
+Final successful run (after the BOM fix + client-id-mismatch fix):
+
+{"overall":"PASS","sqlClientConnection":"PASS","snapshotStatus":"Ok",
+ "accountId":3,"online":false,"activeCharacterMasked":"L**** (len=5)",
+ "cashShopPresent":true,"warehouseMoney":59999999,
+ "characters":[5 real characters, slot order preserved -- see Phase 2C
+   evidence for full field detail, unchanged],
+ "entityKey":"account-snapshot:3",
+ "payloadSha256":"630518fb2883f0a044fd181c86e310c835969beb580bca4da987c62414e1679a",
+ "heartbeatSent":"PASS",
+ "eventSent":"PASS",
+ "eventId":"839b8dfd-c24b-4f67-8f4b-089810acfdb3",
+ "eventSourceSequence":1787258053466,
+ "dedupeTest":"200 {\"status\":\"ALREADY_PROCESSED\",\"eventId\":\"839b8dfd-c24b-4f67-8f4b-089810acfdb3\"}",
+ "nonceReplayTest":"first=200 replay=401",
+ "sequenceGuardEventAccepted":"200 {\"status\":\"ACCEPTED\",\"eventId\":\"3f4485ca-ab19-4461-9401-930a91fb6e0d\"}"}
+
+Findings:
+1. payloadSha256 is IDENTICAL to Phase 2C's real-data hash
+   (630518fb...1679a) -- the live account's state has not changed between
+   phases; also identical across this phase's own two independent probe
+   runs, reconfirming determinism against real infrastructure.
+2. heartbeatSent/eventSent = PASS: the real Agent classes (not a
+   reimplementation) successfully signed and sent a real heartbeat and a
+   real account.snapshot event to the real Worker.
+3. dedupeTest: resending the exact same eventId returned
+   ALREADY_PROCESSED (200), not a duplicate application -- real
+   event-level idempotency confirmed.
+4. nonceReplayTest "first=200 replay=401": a fresh nonce succeeded, the
+   identical (nonce, signed request) replayed verbatim was rejected --
+   real transport-level replay protection confirmed.
+5. sequenceGuardEventAccepted "200 ACCEPTED": a NEW eventId carrying an
+   OLDER sourceSequence was accepted at the event_dedupe layer (correct --
+   it is a genuinely new event) but, per the D1 query below, did NOT
+   regress current-state.
+
+Real D1 state after the run (wrangler d1 execute --remote):
+
+agent_heartbeats:
+  agent_id=gamebridge-agent-01, server_id=bloodmoon-s6,
+  buffer_state=NORMAL, buffer_depth=0,
+  last_seen_at=2026-08-20T20:34:11.769Z
+
+account_snapshot_state (account_id=3):
+  source=gamebridge-agent-01, server_id=bloodmoon-s6,
+  source_sequence=1787258053466 (the HIGH value from the first event --
+    confirms the older-sequence event from the sequence-guard test did
+    NOT overwrite it, despite being accepted at the event_dedupe layer),
+  updated_at=2026-08-20T20:34:10.847Z, payload_len=2541 (bytes -- bounded,
+    not raw telemetry)
+
+Cleanup: the staged probe binary and every transient request file were
+confirmed absent from C:\BloodMoonRemoteOps on the VPS after every run in
+this phase (checked via a separate read-only SSH command after each
+probe invocation).

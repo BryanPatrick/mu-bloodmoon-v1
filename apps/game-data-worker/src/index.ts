@@ -7,10 +7,17 @@ import { handleIngestEvent } from './ingest'
 import { jsonResponse } from './json'
 import { handleReadStatus } from './read'
 
-function parseSecrets(json: string | undefined): Record<string, string> {
+export function parseSecrets(json: string | undefined): Record<string, string> {
   if (!json) return {}
   try {
-    const parsed = JSON.parse(json)
+    // `wrangler secret put` reading piped stdin on Windows (this
+    // project's wrangler 3.114.17) prepends a UTF-8 BOM (U+FEFF) to the
+    // stored secret value regardless of the piped string's own encoding
+    // -- confirmed by direct inspection (Phase 2D). Strip it defensively
+    // so a real, external CLI quirk can never turn into every clientId
+    // silently reading as unknown.
+    const cleaned = json.charCodeAt(0) === 0xfeff ? json.slice(1) : json
+    const parsed = JSON.parse(cleaned)
     return parsed && typeof parsed === 'object' ? (parsed as Record<string, string>) : {}
   } catch {
     return {}

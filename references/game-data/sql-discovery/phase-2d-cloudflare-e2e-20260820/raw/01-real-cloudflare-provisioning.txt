@@ -1,0 +1,41 @@
+Cloudflare account: single, unambiguous account confirmed via
+`wrangler whoami` (real login completed by the user; account matches the
+project owner's own email). Same account already hosts the unrelated
+"AI Knowledge Hub" project -- reused per explicit instruction not to
+assume a new account is needed, with all new resources kept logically
+separate (distinct Worker, distinct D1, distinct secrets).
+
+D1 database created:
+  wrangler d1 create bloodmoon-game-data
+  -> Successfully created DB 'bloodmoon-game-data' in region ENAM
+  -> database_id = cf84e6fe-7ea6-4f0b-a2f2-313ec3c0dab6
+
+Migrations applied to the REAL remote database
+(wrangler d1 migrations apply bloodmoon-game-data --remote):
+  0001_init.sql                    -> applied (Phase 1 schema)
+  0002_account_snapshot_state.sql  -> applied (Phase 2D addition)
+
+Real remote schema validated (SELECT name FROM sqlite_master WHERE
+type='table'):
+  account_snapshot_state, agent_heartbeats, character_reset_state,
+  d1_migrations, event_dedupe, ranking_state, request_nonce
+  (+ system tables _cf_KV, sqlite_sequence)
+  -- zero Account Linking schema present.
+
+Worker deployed:
+  wrangler deploy
+  -> Uploaded bloodmoon-game-data-worker
+  -> Deployed bloodmoon-game-data-worker triggers
+  -> https://bloodmoon-game-data-worker.bryanelrick22.workers.dev
+
+Pre-existing Worker/D1 check (before creating anything):
+  wrangler d1 list -> only ai-knowledge-hub-db existed (Knowledge Hub's,
+    untouched)
+  wrangler deployments list --name bloodmoon-game-data-worker ->
+    "This Worker does not exist on your account" (confirmed clean slate)
+
+Secrets set (wrangler secret put AGENT_SECRETS_JSON /
+API_READ_SECRETS_JSON) -- values never logged, never printed, never
+committed. Client IDs (not secret): gamebridge-agent-01 (Agent write
+scope), apps-api (apps/api read scope, matching the hardcoded CLIENT_ID
+constant in apps/api/src/modules/game-data/game-data.client.ts).

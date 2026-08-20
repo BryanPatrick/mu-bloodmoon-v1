@@ -1,5 +1,6 @@
 import { SELF } from 'cloudflare:test'
 import { beforeAll, describe, expect, it } from 'vitest'
+import { parseSecrets } from '../src/index'
 import { applySchema, signRequest } from './helpers'
 
 beforeAll(async () => {
@@ -70,5 +71,27 @@ describe('HMAC is bound to the exact request (Game Data Platform Phase 1)', () =
     const res = await SELF.fetch('https://worker.example/ingest/heartbeat', { method: 'POST', headers, body })
 
     expect(res.status).toBe(401)
+  })
+
+  // Phase 2D: `wrangler secret put` reading piped stdin on Windows (this
+  // project's pinned wrangler 3.114.17) was found to prepend a UTF-8 BOM
+  // (U+FEFF) to the stored secret value -- confirmed by direct inspection
+  // against the real deployed Worker, independent of how the piped string
+  // was encoded on the sending side. parseSecrets must tolerate this real
+  // external-tool quirk rather than let every clientId silently read as
+  // unknown.
+  it('parseSecrets tolerates a leading UTF-8 BOM (wrangler secret put on Windows)', () => {
+    const withBom = '﻿{"gamebridge-agent-01":"a-real-looking-secret"}'
+    expect(parseSecrets(withBom)).toEqual({ 'gamebridge-agent-01': 'a-real-looking-secret' })
+  })
+
+  it('parseSecrets still works normally without a BOM', () => {
+    expect(parseSecrets('{"a":"b"}')).toEqual({ a: 'b' })
+  })
+
+  it('parseSecrets returns empty for genuinely malformed JSON, BOM or not', () => {
+    expect(parseSecrets('﻿not json')).toEqual({})
+    expect(parseSecrets('not json')).toEqual({})
+    expect(parseSecrets(undefined)).toEqual({})
   })
 })

@@ -1,0 +1,25 @@
+Real auth-failure tests against the deployed Worker (curl, direct HTTP,
+no valid credentials):
+
+1. Unauthenticated POST /ingest/heartbeat, empty body, no auth headers:
+   -> 401 MISSING_HEADERS
+
+2. Garbage/invalid-format HMAC signature (68 zero chars, wrong length):
+   -> 401 (rejected before or at signature verification)
+
+3. Ancient/expired timestamp (1000000000000 ms, year 2001) with the same
+   garbage signature:
+   -> 401
+
+4. GET to a nonexistent route (/nonexistent):
+   -> 404 NOT_FOUND (proves normal routing works, distinguishing
+      "route doesn't exist" from "route exists but rejects you")
+
+5. Nonce replay (Part N, see 03-real-e2e-probe-results.txt): the exact
+   same (nonce, signed heartbeat request) sent twice -> first=200,
+   replay=401.
+
+All five confirm real, deployed rejection of invalid/replayed/malformed
+requests -- REAL_WORKER_AUTH_FAILURES = PASS. No 500 error occurred on
+any invalid input tested; no request with invalid credentials was ever
+accepted.

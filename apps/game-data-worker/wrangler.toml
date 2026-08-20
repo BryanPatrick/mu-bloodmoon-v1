@@ -10,7 +10,9 @@ compatibility_flags = ["nodejs_compat"]
 [[d1_databases]]
 binding = "DB"
 database_name = "bloodmoon-game-data"
-# Replace with the real D1 database id once a Cloudflare account provisions
-# one -- not required for local `wrangler dev`/vitest-pool-workers testing.
-database_id = "00000000-0000-0000-0000-000000000000"
+# Real D1 database, provisioned 2026-08-20 (Phase 2D) in the same
+# Cloudflare account as the unrelated ai-knowledge-hub-db -- a distinct,
+# separate database, never shared/reused. See
+# docs/game-data/cloudflare-resources.md.
+database_id = "cf84e6fe-7ea6-4f0b-a2f2-313ec3c0dab6"
 migrations_dir = "db/migrations"

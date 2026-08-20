@@ -34,6 +34,13 @@ type RankingPayload = {
   score: number
 }
 
+// account.snapshot (Phase 2B/2C's real, account-scoped read model --
+// AccountSnapshotChangeFactory) -- the only event type real SQL data can
+// currently produce (character.reset-state/ranking.state's real readers
+// remain BLOCKED_BY_SCHEMA_DISCOVERY). accountId on the envelope is
+// already the canonical memb_guid, carried as a string per EventEnvelope's
+// shape -- parsed back to the D1 column's INTEGER affinity here.
+
 function parseEnvelope(value: unknown): EventEnvelope | null {
   if (!value || typeof value !== 'object') return null
   const v = value as Record<string, unknown>
@@ -164,6 +171,27 @@ async function applyCurrentState(envelope: EventEnvelope, env: Env): Promise<boo
         envelope.sourceSequence,
         now
       )
+      .run()
+    return true
+  }
+
+  if (envelope.eventType === 'account.snapshot') {
+    const accountId = Number(envelope.accountId)
+    if (!Number.isInteger(accountId)) return false
+    await env.DB.prepare(
+      `INSERT INTO account_snapshot_state
+         (account_id, payload_json, source, server_id, source_sequence, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?)
+       ON CONFLICT(account_id) DO UPDATE SET
+         payload_json = excluded.payload_json,
+         source = excluded.source,
+         server_id = excluded.server_id,
+         source_sequence = excluded.source_sequence,
+         updated_at = excluded.updated_at
+       WHERE excluded.source != account_snapshot_state.source
+          OR excluded.source_sequence > account_snapshot_state.source_sequence`
+    )
+      .bind(accountId, envelope.payloadJson, envelope.source, envelope.serverId, envelope.sourceSequence, now)
       .run()
     return true
   }

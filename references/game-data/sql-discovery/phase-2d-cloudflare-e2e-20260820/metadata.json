@@ -1,0 +1,17 @@
+{
+  "sourceType": "REAL_CLOUDFLARE_INFRA_END_TO_END",
+  "sourcePathOrIdentifier": "Real Cloudflare account (same account as the unrelated ai-knowledge-hub project, reused deliberately, resources logically separate) -- Worker bloodmoon-game-data-worker, D1 bloodmoon-game-data (cf84e6fe-7ea6-4f0b-a2f2-313ec3c0dab6) -- plus the real MU SQL Server and the real GameBridge Agent code, exercised via the same ConnectivityProbe harness introduced in Phase 2C, extended this phase with a real Cloudflare-signing phase",
+  "collectedAt": "2026-08-20 (wall-clock captured this session)",
+  "collector": "Claude Sonnet 5, Game Data Platform Phase 2D -- Cloudflare Real Provisioning + End-to-End Real Validation",
+  "purpose": "Close END_TO_END_REAL_INFRA: prove every link of MU SQL -> GameBridge Agent -> HTTPS signed -> Cloudflare Worker -> D1 -> apps/api -> admin diagnostic is real, not simulated, not local-only.",
+  "sanitized": true,
+  "sanitizationNote": "No API token, OAuth token, HMAC secret, or SQL credential appears anywhere in this evidence set. The account.snapshot event content is the same masked/aggregate real QA-account data already disclosed in the Phase 2B/2C evidence sets (account teste2 / memb_guid=3) -- no new personal data introduced. A temporary debug route used to diagnose a BOM issue reported only string length, character codes, and a SHA-256 hash -- never a secret value -- and was fully removed before real secrets were set for production use (see raw/02-bom-diagnosis.txt).",
+  "files": [
+    { "name": "01-real-cloudflare-provisioning.txt", "content": "Real D1 creation, real migrations applied remotely, real schema validation, real Worker deployment, pre-existing-resource checks confirming a clean slate separate from Knowledge Hub" },
+    { "name": "02-bom-diagnosis.txt", "content": "Root-cause diagnosis of a real wrangler CLI quirk (BOM injection on piped secret values) that blocked all auth until found and fixed; also documents a secondary finding (secret put requires a following deploy to take effect)" },
+    { "name": "03-real-e2e-probe-results.txt", "content": "The full real Agent-to-Cloudflare proof: real heartbeat, real account.snapshot event from real SQL data, real dedupe/nonce-replay/sequence-guard behavior, cross-checked against real D1 query results" },
+    { "name": "04-real-worker-auth-failure-tests.txt", "content": "Five real rejection tests against the deployed Worker (missing headers, invalid signature, expired timestamp, unknown route, nonce replay) -- all safely rejected" },
+    { "name": "05-apps-api-real-diagnostic.txt", "content": "The apps/api leg: a new e2e spec proving the real admin diagnostic endpoint, through real auth guards and the real GameDataClient, reflects real Cloudflare/D1 state -- plus confirmation the original local-simulation spec still passes" }
+  ],
+  "notes": "GAME_WRITES_PERFORMED=0 throughout -- every SQL operation is the same read-only account-snapshot chain proven read-only-by-construction in Phase 2B. No firewall rule was created or modified; no SQL port was opened; the only new internet-reachable surface is the Cloudflare Worker itself, and every route except 404s requires a valid HMAC signature. See docs/game-data/cloudflare-resources.md and docs/game-data/deployment-topology.md for the full narrative."
+}

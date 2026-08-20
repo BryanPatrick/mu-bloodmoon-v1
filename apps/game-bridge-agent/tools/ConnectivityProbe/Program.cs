@@ -114,6 +114,16 @@ internal static class Program
                 var change = AccountSnapshotChangeFactory.ToDetectedChange(model);
                 result.EntityKey = change.EntityKey;
                 result.PayloadSha256 = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(change.PayloadJson))).ToLowerInvariant();
+
+                // Phase 2D Parts G-Q: real Cloudflare proof, only attempted
+                // when the request actually carries Worker/auth fields
+                // (Phase 2C's SQL-only requests omit them entirely).
+                if (!string.IsNullOrWhiteSpace(request.WorkerBaseUrl) &&
+                    !string.IsNullOrWhiteSpace(request.AgentId) &&
+                    !string.IsNullOrWhiteSpace(request.HmacSecret))
+                {
+                    await CloudflarePhase.RunAsync(request, model, result);
+                }
             }
             else if (snapshot.Status == AccountSnapshotResult.ResultStatus.Inconsistent)
             {
@@ -184,6 +194,14 @@ internal sealed class ProbeRequest
     public string Username { get; set; } = "";
     public string Password { get; set; } = "";
     public int MembGuid { get; set; }
+
+    // Phase 2D: present only when the real Cloudflare phase should also
+    // run. HmacSecret is transient exactly like Password above -- never
+    // logged, never appears on this process's command line.
+    public string? WorkerBaseUrl { get; set; }
+    public string? AgentId { get; set; }
+    public string? HmacSecret { get; set; }
+    public string? ServerId { get; set; }
 }
 
 internal sealed class ProbeResult
@@ -202,6 +220,15 @@ internal sealed class ProbeResult
     public string? InconsistencyReason { get; set; }
     public string? ErrorType { get; set; }
     public string? ErrorMessage { get; set; }
+
+    // Phase 2D: real Cloudflare proof results.
+    public string? HeartbeatSent { get; set; }
+    public string? EventSent { get; set; }
+    public string? EventId { get; set; }
+    public long? EventSourceSequence { get; set; }
+    public string? DedupeTest { get; set; }
+    public string? NonceReplayTest { get; set; }
+    public string? SequenceGuardEventAccepted { get; set; }
 }
 
 internal sealed class ProbeCharacter

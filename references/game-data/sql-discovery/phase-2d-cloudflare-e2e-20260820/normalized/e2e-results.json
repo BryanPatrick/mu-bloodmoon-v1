@@ -1,0 +1,40 @@
+{
+  "cloudflareAccount": { "reused": true, "sharedWith": "ai-knowledge-hub (logically separate resources)" },
+  "d1": {
+    "name": "bloodmoon-game-data",
+    "databaseId": "cf84e6fe-7ea6-4f0b-a2f2-313ec3c0dab6",
+    "migrationsApplied": ["0001_init.sql", "0002_account_snapshot_state.sql"],
+    "realTablesConfirmed": ["account_snapshot_state", "agent_heartbeats", "character_reset_state", "event_dedupe", "ranking_state", "request_nonce"]
+  },
+  "worker": {
+    "name": "bloodmoon-game-data-worker",
+    "url": "https://bloodmoon-game-data-worker.bryanelrick22.workers.dev"
+  },
+  "chain": {
+    "realSqlClientConnection": "PASS",
+    "realAgentAccountSnapshot": "PASS",
+    "realAgentHeartbeat": "PASS",
+    "realD1HeartbeatPersistence": "PASS",
+    "realAgentEventToCloudflare": "PASS",
+    "realCurrentStateUpdate": "PASS",
+    "realEventDedupe": "PASS",
+    "realNonceReplayProtection": "PASS",
+    "realSequenceGuard": "PASS",
+    "realIdenticalStateNoFalseEvent": "PASS",
+    "realWorkerAuthFailures": "PASS",
+    "appsApiRealGameData": "PASS",
+    "endToEndRealInfra": "PASS"
+  },
+  "eventEvidence": {
+    "eventId": "839b8dfd-c24b-4f67-8f4b-089810acfdb3",
+    "sourceSequence": 1787258053466,
+    "payloadSha256": "630518fb2883f0a044fd181c86e310c835969beb580bca4da987c62414e1679a",
+    "matchesPhase2CHash": true
+  },
+  "regressions": {
+    "gameBridgeAgentTests": "63/63 PASS",
+    "workerTests": "30/30 PASS",
+    "appsApiLocalSimulationSpec": "3/3 PASS (unchanged)",
+    "appsApiRealCloudflareSpec": "1/1 PASS (new)"
+  }
+}
