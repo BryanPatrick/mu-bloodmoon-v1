@@ -1,0 +1,145 @@
+﻿
+
+Table      : AccountCharacter
+IndexName  : PK_AccountCharacter
+IsPK       : True
+IsUnique   : True
+Column     : Id
+KeyOrdinal : 1
+
+Table      : CashShopData
+IndexName  : PK_TempCashShop
+IsPK       : True
+IsUnique   : True
+Column     : AccountID
+KeyOrdinal : 1
+
+Table      : Character
+IndexName  : PK_Character
+IsPK       : True
+IsUnique   : True
+Column     : Name
+KeyOrdinal : 1
+
+Table      : DmN_Account_Logs
+IndexName  : PK__DmN_Acco__3213E83F3F204461
+IsPK       : True
+IsUnique   : True
+Column     : id
+KeyOrdinal : 1
+
+Table      : DmN_Market
+IndexName  : PK__DmN_Mark__3213E83F5B4E1349
+IsPK       : True
+IsUnique   : True
+Column     : id
+KeyOrdinal : 1
+
+Table      : DmN_Web_Storage
+IndexName  : PK__DmN_Web___3213E83FBB2E76E2
+IsPK       : True
+IsUnique   : True
+Column     : id
+KeyOrdinal : 1
+
+Table      : Guild
+IndexName  : PK_Guild
+IsPK       : True
+IsUnique   : True
+Column     : G_Name
+KeyOrdinal : 1
+
+Table      : GuildMember
+IndexName  : PK_GuildMember
+IsPK       : True
+IsUnique   : True
+Column     : Name
+KeyOrdinal : 1
+
+Table      : MasterSkillTree
+IndexName  : PK_MasterSkillTree
+IsPK       : True
+IsUnique   : True
+Column     : Name
+KeyOrdinal : 1
+
+Table      : MEMB_INFO
+IndexName  : PK_MEMB_INFO_1
+IsPK       : True
+IsUnique   : True
+Column     : memb_guid
+KeyOrdinal : 1
+
+Table      : MEMB_STAT
+IndexName  : PK_MEMB_STAT
+IsPK       : True
+IsUnique   : True
+Column     : memb___id
+KeyOrdinal : 1
+
+Table      : MuCastle_DATA
+IndexName  : PK_MuCastle_DATA
+IsPK       : True
+IsUnique   : True
+Column     : MAP_SVR_GROUP
+KeyOrdinal : 1
+
+Table      : MuCastle_REG_SIEGE
+IndexName  : IX_ATTACK_GUILD_SUBKEY
+IsPK       : False
+IsUnique   : True
+Column     : MAP_SVR_GROUP
+KeyOrdinal : 1
+
+Table      : MuCastle_REG_SIEGE
+IndexName  : IX_ATTACK_GUILD_SUBKEY
+IsPK       : False
+IsUnique   : True
+Column     : REG_SIEGE_GUILD
+KeyOrdinal : 2
+
+Table      : RankingBloodCastle
+IndexName  : PK_RankingBloodCastle
+IsPK       : True
+IsUnique   : True
+Column     : Name
+KeyOrdinal : 1
+
+Table      : RankingCastleSiege
+IndexName  : PK_RankingCastleSiege
+IsPK       : True
+IsUnique   : True
+Column     : Name
+KeyOrdinal : 1
+
+Table      : RankingChaosCastle
+IndexName  : PK_RankingChaosCastle
+IsPK       : True
+IsUnique   : True
+Column     : Name
+KeyOrdinal : 1
+
+Table      : RankingDevilSquare
+IndexName  : PK_RankingDevilSquare
+IsPK       : True
+IsUnique   : True
+Column     : Name
+KeyOrdinal : 1
+
+Table      : RankingDuel
+IndexName  : PK_RankingDuel
+IsPK       : True
+IsUnique   : True
+Column     : Name
+KeyOrdinal : 1
+
+Table      : warehouse
+IndexName  : PK_warehouse
+IsPK       : True
+IsUnique   : True
+Column     : AccountID
+KeyOrdinal : 1
+
+
+
+

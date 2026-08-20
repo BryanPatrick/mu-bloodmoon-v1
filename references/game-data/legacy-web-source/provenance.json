@@ -1,0 +1,80 @@
+{
+  "recordType": "RAW_SOURCE_PROVENANCE",
+  "subject": "Legacy vendor-supplied web portal + AdminCP (Free MU CMS / DmN MuCMS / PG MuCMS)",
+  "registeredAt": "2026-08-20T13:22:30Z",
+  "registeredBy": "Claude Sonnet 5, Game Data Platform Phase 2A raw-knowledge check",
+  "policy": "Raw source stays outside git (references/web-source-current/catalog.json already documents this: 'Nao versionar nem compartilhar' for the constants.php credentials, and the catalog itself is explicitly metadata-only). This record exists so provenance for that external raw material is preserved in-repo without duplicating ~46MB archives into git history.",
+  "sources": [
+    {
+      "id": "hostbr-backup-20260716",
+      "classification": "RAW_COMPLETE",
+      "type": "cPanel full-account backup archive (tar.gz), containing homedir/public_html (the legacy CMS) plus cPanel account metadata (dnszones, ssl)",
+      "path": "D:\\MU\\Deploy\\Cpanel-Backups\\hostbr-web-20260716\\backup-7.16.2026_12-53-47_mubloodxz.tar.gz",
+      "extractedCopyPath": "D:\\MU\\Deploy\\Cpanel-Backups\\hostbr-web-20260716\\extracted\\backup-7.16.2026_12-53-47_mubloodxz\\homedir\\public_html",
+      "sizeBytes": 46195813,
+      "sha256": "b14622c9d71fd5eefeff1fc6a51f0b08429d553bc7cdad0c41ebbbfbb6bb683b",
+      "hashVerifiedAgainstPriorRecord": true,
+      "priorRecordPath": "D:\\MU\\Deploy\\Cpanel-Backups\\hostbr-web-20260716\\README.txt",
+      "collectedAt": "2026-07-16",
+      "collector": "manual cPanel backup download (per sibling README.txt: Host BR/cPanel, mubloodmoon.com.br)",
+      "entriesVerified": 10270,
+      "sanitized": false,
+      "secretsPresent": true,
+      "secretsNote": "homedir/public_html/constants.php contains live SQL Server sa credentials and AdminCP admin credentials. Never reproduced in any docs/ file. See references/web-source-current/catalog.json's own warning.",
+      "usedIn": [
+        "docs/game-data/legacy-web-intelligence/ (all files)",
+        "docs/current-web-source-catalog.md",
+        "docs/current-admincp-catalog.md",
+        "references/web-source-current/catalog.json",
+        "references/web-source-current/normalized-domains.json"
+      ]
+    },
+    {
+      "id": "bloodmoon-production-20260816",
+      "classification": "RAW_COMPLETE",
+      "type": "public_html-only tar.gz snapshot, filename-labeled 'pre-nuxt' (taken before the portal's Nuxt migration)",
+      "path": "D:\\MU\\backups\\bloodmoon-production\\public_html-legacy-pre-nuxt-20260816.tar.gz",
+      "sizeBytes": 45850417,
+      "sha256": "a700510421c7b8ef1cd4ffcb490152653594a8f6c40e87e48ff8e618da4ab0de",
+      "hashVerifiedAgainstPriorRecord": false,
+      "priorRecordPath": null,
+      "priorProvenanceGap": "No sibling README/metadata file existed for this archive before this record. This registration is the first recorded hash/provenance for it.",
+      "collectedAt": "2026-08-16",
+      "collector": "UNKNOWN (no accompanying metadata found -- filename and mtime are the only dating evidence)",
+      "entriesVerified": 9865,
+      "sanitized": false,
+      "secretsPresent": true,
+      "secretsNote": "public_html/constants.php contains the same class of live credentials as the other archive. Never reproduced in any docs/ file. A subagent's own internal tool-call transcript (not this repo, not any chat message) inadvertently echoed real values from this file while auditing it -- flagged to the user; those specific credentials should be treated as compromised/rotate-worthy.",
+      "usedIn": [
+        "docs/game-data/legacy-web-intelligence/ (all files)"
+      ]
+    }
+  ],
+  "normalizedArtifacts": [
+    {
+      "path": "references/web-source-current/catalog.json",
+      "derivedFrom": "hostbr-backup-20260716",
+      "type": "file/byte inventory (structure only, no code content)"
+    },
+    {
+      "path": "references/web-source-current/normalized-domains.json",
+      "derivedFrom": "hostbr-backup-20260716",
+      "type": "normalized domain/feature inventory"
+    }
+  ],
+  "derivedArtifacts": [
+    {
+      "path": "docs/current-web-source-catalog.md",
+      "derivedFrom": "hostbr-backup-20260716"
+    },
+    {
+      "path": "docs/current-admincp-catalog.md",
+      "derivedFrom": "hostbr-backup-20260716"
+    },
+    {
+      "path": "docs/game-data/legacy-web-intelligence/*.md",
+      "derivedFrom": ["hostbr-backup-20260716", "bloodmoon-production-20260816"],
+      "note": "Findings quote minimal verbatim query fragments as evidence; full source is never copied. Every table/column/procedure claim traces back to one of the two sources above via this record."
+    }
+  ]
+}

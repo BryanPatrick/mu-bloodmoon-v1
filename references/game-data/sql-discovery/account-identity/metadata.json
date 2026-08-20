@@ -1,0 +1,29 @@
+{
+  "sourceType": "REAL_LIVE_SQL_SERVER",
+  "sourcePathOrIdentifier": "Production MU game VPS SQL Server, database MuOnline, via bm-sql RemoteOps bridge (login bloodmoon_observer)",
+  "purpose": "Phase 2A.1 -- Account Identity Integrity Validation: resolve the real, unambiguous chain from MU Account to Character(s) before Account Linking or any account-based read model is implemented.",
+  "collector": "Claude Sonnet 5",
+  "sanitized": true,
+  "sanitizationNote": "Every query returns only counts, type/constraint metadata, or boolean-style aggregates. No username, password/hash, email, or IP value was ever selected or returned in any query result. Confirmed by inspection of all 14 raw files.",
+  "queries": [
+    { "file": "01-membinfo-identity-metadata.txt", "purpose": "MEMB_INFO.memb_guid/memb___id: nullable, collation, IS_IDENTITY, seed/increment, default", "sha256": "1c95095b7455371244b12fb65c899dd5c38b13d100503896ff4589e6f7753f8c" },
+    { "file": "02-membguid-integrity-counts.txt", "purpose": "memb_guid: total/non-null/distinct/null counts", "sha256": "ee05635b08183857e7ab58fd1ded53170ffa843e16ed3a257e2887ef161f80a9" },
+    { "file": "03-membguid-duplicate-check.txt", "purpose": "memb_guid duplicate group count", "sha256": "411eb2c60de60f200664a696260d7e2209a2eb71ade78b569279b6ebf589e6a7" },
+    { "file": "04-membid-total-distinct.txt", "purpose": "memb___id total rows vs distinct count", "sha256": "80596cee98e3f2e4096943a8ffcb8aecd336853eea9924278d63ff0a2c9a598f" },
+    { "file": "05-membid-duplicate-summary.txt", "purpose": "memb___id duplicated-value count, rows involved, max multiplicity", "sha256": "07fd3ef79248aff8af606f421a684d54ca5d346b196442323891c521c45ab867" },
+    { "file": "06-membid-multiplicity-distribution.txt", "purpose": "memb___id multiplicity histogram", "sha256": "9ee6528cce834dcc1618579f63f4ee611c10b12daa31437b4b353ee91f7b547c" },
+    { "file": "07-accountcharacter-keys.txt", "purpose": "AccountCharacter PK/unique key metadata", "sha256": "e898ebff0b8c7e319db71b6e06bd234022aaca84f9c410a8329da71f4e799439" },
+    { "file": "08-h1-accountcharacter-id-vs-membid.txt", "purpose": "Hypothesis test: AccountCharacter.Id = MEMB_INFO.memb___id", "sha256": "a62522fdc33e82167226a3a9a00733ba8ea7e89dd467c7a7888ebda656ef800a" },
+    { "file": "09-h2-accountcharacter-id-vs-membguid.txt", "purpose": "Hypothesis test: AccountCharacter.Id = MEMB_INFO.memb_guid (rejected)", "sha256": "98f9528f814e6eb166423caf3f48bb9e5181c7d9880bb5e3276abaaafdae61c8" },
+    { "file": "10-slot-nonempty-and-match-counts.txt", "purpose": "Per-slot (GameID1-10, GameIDC) non-empty count, Character.Name match count, orphan count", "sha256": "86be11f83f1ee392b60c9f0ebcb18df6422707bea54a02fe0f597c74293a5dd9" },
+    { "file": "11-slot-total-vs-distinct.txt", "purpose": "Total slot-value assignments vs distinct character names across GameID1-5", "sha256": "401a9d6806bc036854202722f00cc566eefab3d23d3b9b35cab3ae7b31bdabe8" },
+    { "file": "12-duplicate-character-across-accounts.txt", "purpose": "Count of characters claimed by more than one account's slots", "sha256": "68e0cf2e8077595f069046dcfac80b0d5c7244326ed9f71f90e6a92e6887858b" },
+    { "file": "13-characterid-vs-accountcharacter-consistency.txt", "purpose": "Consistent/Conflicting/Only-A/Only-B classification between Character.AccountID and AccountCharacter slot ownership", "sha256": "c16be62b0875441a7f57da0b83104716e84b02bab14ad1e17c223419e8342ddd" },
+    { "file": "14-accountcharacter-coverage.txt", "purpose": "MEMB_INFO/AccountCharacter/Character coverage totals", "sha256": "d1c63bede00187a9ef89c38d3be61315660c0ba798422029adeb488b07e63d42" }
+  ],
+  "codeSearchEvidence": {
+    "source": "LEGACY_WEB_CODE (Deploy/Cpanel-Backups/hostbr-web-20260716/extracted/.../public_html/)",
+    "finding": "memb_guid appears in 51 legacy PHP files. Every UPDATE MEMB_INFO statement found uses memb_guid only in a WHERE clause (never as a SET target). create_account()'s INSERT column list does not include memb_guid. Consistent with database-generated IDENTITY behavior, never application-assigned or mutated."
+  },
+  "notes": "GAME_WRITES_PERFORMED=0 -- every query is a SELECT (aggregate/metadata only); the bridge's own keyword filter independently rejects INSERT/UPDATE/DELETE/etc. Two query patterns were found to fail at the remote bridge regardless of content: (1) any output column without an explicit alias, and (2) SUM(CASE WHEN EXISTS(...) THEN ... END) specifically (a plain CASE WHEN EXISTS works; EXISTS in a bare WHERE clause works; only the aggregate-wrapped correlated-EXISTS combination fails) -- worked around throughout by using explicit aliases and JOIN+COUNT instead of SUM+CASE+EXISTS."
+}

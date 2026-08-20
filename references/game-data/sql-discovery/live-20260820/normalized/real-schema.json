@@ -1,0 +1,179 @@
+{
+  "source": "REAL_LIVE_SQL_SERVER, MuOnline, captured 2026-08-20 via bm-sql RemoteOps bridge",
+  "derivedFrom": "../raw/*.txt",
+  "confirmedNotToExist": ["C_PlayerKiller_Info", "T_InGameShop_Point", "T_MasterLevelSystem"],
+  "onlyPhysicalForeignKeyInDatabase": { "constraint": "FK_CustomQuest_Character", "from": "CustomQuest.Name", "to": "Character.Name" },
+  "tables": {
+    "MEMB_INFO": {
+      "primaryKey": ["memb_guid"],
+      "columns": [
+        { "name": "memb_guid", "type": "int", "nullable": false, "note": "real PK, NOT memb___id" },
+        { "name": "memb___id", "type": "varchar(10)", "collation": "Latin1_General_CI_AS", "note": "login username; no DB-level unique constraint found" },
+        { "name": "memb__pwd", "type": "varchar(10)" },
+        { "name": "memb_name", "type": "varchar(10)" },
+        { "name": "sno__numb", "type": "char(18)" },
+        { "name": "post_code", "type": "char(6)" },
+        { "name": "addr_info", "type": "varchar(50)" },
+        { "name": "addr_deta", "type": "varchar(50)" },
+        { "name": "tel__numb", "type": "varchar(20)" },
+        { "name": "phon_numb", "type": "varchar(15)" },
+        { "name": "mail_addr", "type": "varchar(50)" },
+        { "name": "fpas_ques", "type": "varchar(50)" },
+        { "name": "fpas_answ", "type": "varchar(50)" },
+        { "name": "job__code", "type": "char(2)" },
+        { "name": "appl_days", "type": "datetime" },
+        { "name": "modi_days", "type": "datetime" },
+        { "name": "out__days", "type": "datetime" },
+        { "name": "true_days", "type": "datetime" },
+        { "name": "mail_chek", "type": "char(1)" },
+        { "name": "bloc_code", "type": "char(1)", "note": "block/ban flag" },
+        { "name": "ctl1_code", "type": "char(1)", "note": "GM/staff flag" },
+        { "name": "AccountLevel", "type": "int" },
+        { "name": "AccountExpireDate", "type": "smalldatetime" },
+        { "name": "Lock", "type": "int" },
+        { "name": "RewardVip", "type": "int" },
+        { "name": "RewardCoin", "type": "int" },
+        { "name": "RewardIndication", "type": "int" },
+        { "name": "Admin", "type": "int" },
+        { "name": "last_login", "type": "datetime" },
+        { "name": "activated", "type": "int" },
+        { "name": "activation_id", "type": "varchar(50)" },
+        { "name": "last_login_ip", "type": "varchar(50)" },
+        { "name": "country", "type": "varchar(50)" },
+        { "name": "dmn_country", "type": "varchar(50)" }
+      ]
+    },
+    "MEMB_STAT": {
+      "primaryKey": ["memb___id"],
+      "columns": [
+        { "name": "memb___id", "type": "varchar(10)" },
+        { "name": "ConnectStat", "type": "tinyint", "note": "1 = online" },
+        { "name": "ServerName", "type": "varchar(50)" },
+        { "name": "IP", "type": "varchar(15)" },
+        { "name": "ConnectTM", "type": "smalldatetime" },
+        { "name": "DisConnectTM", "type": "smalldatetime" },
+        { "name": "OnlineHours", "type": "int" }
+      ]
+    },
+    "Character": {
+      "primaryKey": ["Name"],
+      "columns": [
+        { "name": "AccountID", "type": "varchar(10)", "collation": "Latin1_General_CI_AS", "note": "logical join to MEMB_INFO.memb___id, no physical FK" },
+        { "name": "Name", "type": "varchar(10)", "collation": "Latin1_General_CI_AS", "note": "real PK" },
+        { "name": "cLevel", "type": "int" }, { "name": "LevelUpPoint", "type": "int" }, { "name": "Class", "type": "tinyint" },
+        { "name": "Experience", "type": "int" }, { "name": "Strength", "type": "int" }, { "name": "Dexterity", "type": "int" },
+        { "name": "Vitality", "type": "int" }, { "name": "Energy", "type": "int" }, { "name": "Leadership", "type": "int" },
+        { "name": "Inventory", "type": "varbinary(3776)" }, { "name": "MagicList", "type": "varbinary(180)" }, { "name": "Money", "type": "int" },
+        { "name": "Life", "type": "real" }, { "name": "MaxLife", "type": "real" }, { "name": "Mana", "type": "real" }, { "name": "MaxMana", "type": "real" },
+        { "name": "BP", "type": "real" }, { "name": "MaxBP", "type": "real" }, { "name": "Shield", "type": "real" }, { "name": "MaxShield", "type": "real" },
+        { "name": "MapNumber", "type": "smallint" }, { "name": "MapPosX", "type": "smallint" }, { "name": "MapPosY", "type": "smallint" }, { "name": "MapDir", "type": "tinyint" },
+        { "name": "PkCount", "type": "int" }, { "name": "PkLevel", "type": "int" }, { "name": "PkTime", "type": "int" },
+        { "name": "MDate", "type": "smalldatetime" }, { "name": "LDate", "type": "smalldatetime" },
+        { "name": "CtlCode", "type": "tinyint", "note": "character-level ban flag" }, { "name": "DbVersion", "type": "tinyint" },
+        { "name": "Quest", "type": "varbinary(50)" }, { "name": "ChatLimitTime", "type": "smallint" },
+        { "name": "FruitPoint", "type": "int" }, { "name": "EffectList", "type": "varbinary(416)" },
+        { "name": "FruitAddPoint", "type": "int" }, { "name": "FruitSubPoint", "type": "int" },
+        { "name": "ResetCount", "type": "int" }, { "name": "ResetDay", "type": "int" }, { "name": "ResetWek", "type": "int" }, { "name": "ResetMon", "type": "int" },
+        { "name": "MasterResetCount", "type": "int" }, { "name": "ExtInventory", "type": "int" },
+        { "name": "Kills", "type": "int" }, { "name": "Deads", "type": "int" }, { "name": "OnlineTime", "type": "int" }, { "name": "OnlineLottery", "type": "int" },
+        { "name": "RobberEvent", "type": "int" }, { "name": "ChangeSkinSystem", "type": "int" }, { "name": "ResetTime", "type": "datetime" },
+        { "name": "HuntPoints", "type": "int" }, { "name": "last_reset_time", "type": "int" }, { "name": "last_greset_time", "type": "int" },
+        { "name": "resets", "type": "int", "note": "distinct from ResetCount -- both exist" }, { "name": "grand_resets", "type": "int", "note": "distinct from MasterResetCount -- both exist" },
+        { "name": "dmn_pk_count", "type": "int" }, { "name": "dmn_last_server_pk_count", "type": "int" },
+        { "name": "id", "type": "int", "collation": null, "note": "exists but NOT the confirmed PK (Name is) -- no unique/PK constraint found on it in this pass" }
+      ]
+    },
+    "AccountCharacter": {
+      "primaryKey": ["Id"],
+      "columns": [
+        { "name": "Number", "type": "int" }, { "name": "Id", "type": "varchar(10)", "collation": "Latin1_General_CI_AS", "note": "= MEMB_STAT.memb___id" },
+        { "name": "GameID1", "type": "varchar(10)" }, { "name": "GameID2", "type": "varchar(10)" }, { "name": "GameID3", "type": "varchar(10)" },
+        { "name": "GameID4", "type": "varchar(10)" }, { "name": "GameID5", "type": "varchar(10)" }, { "name": "GameID6", "type": "varchar(10)" },
+        { "name": "GameID7", "type": "varchar(10)" }, { "name": "GameID8", "type": "varchar(10)" }, { "name": "GameID9", "type": "varchar(10)" },
+        { "name": "GameID10", "type": "varchar(10)" },
+        { "name": "GameIDC", "type": "varchar(10)", "note": "currently-active character; legacy code only referenced this one, not GameID1-10" },
+        { "name": "MoveCnt", "type": "tinyint" }, { "name": "ExtClass", "type": "int" }, { "name": "ExtWarehouse", "type": "int" }
+      ]
+    },
+    "MasterSkillTree": {
+      "primaryKey": ["Name"],
+      "columns": [
+        { "name": "Name", "type": "varchar(10)" }, { "name": "MasterLevel", "type": "int" }, { "name": "MasterPoint", "type": "int" },
+        { "name": "MasterExperience", "type": "bigint" }, { "name": "MasterSkill", "type": "varbinary(180)" }
+      ]
+    },
+    "CashShopData": {
+      "primaryKey": ["AccountID"],
+      "columns": [
+        { "name": "AccountID", "type": "varchar(10)" }, { "name": "WCoinC", "type": "int" }, { "name": "WCoinP", "type": "int" }, { "name": "GoblinPoint", "type": "int" }
+      ]
+    },
+    "RankingBloodCastle": { "primaryKey": ["Name"], "columns": [{ "name": "Name", "type": "varchar(10)" }, { "name": "Score", "type": "int" }] },
+    "RankingDevilSquare": { "primaryKey": ["Name"], "columns": [{ "name": "Name", "type": "varchar(10)" }, { "name": "Score", "type": "int" }] },
+    "RankingChaosCastle": { "primaryKey": ["Name"], "columns": [{ "name": "Name", "type": "varchar(10)" }, { "name": "Score", "type": "int" }] },
+    "RankingCastleSiege": {
+      "primaryKey": ["Name"],
+      "columns": [{ "name": "Name", "type": "varchar(10)" }, { "name": "KillScore", "type": "int" }, { "name": "DeathScore", "type": "int", "note": "resolves the legacy config's blank column2" }, { "name": "CrownTime", "type": "int" }]
+    },
+    "RankingDuel": { "primaryKey": ["Name"], "columns": [{ "name": "Name", "type": "varchar(10)" }, { "name": "WinScore", "type": "int" }, { "name": "LoseScore", "type": "int" }] },
+    "Guild": {
+      "primaryKey": ["G_Name"],
+      "columns": [
+        { "name": "G_Name", "type": "varchar(8)" }, { "name": "G_Mark", "type": "varbinary(32)" }, { "name": "G_Score", "type": "int" },
+        { "name": "G_Master", "type": "varchar(10)" }, { "name": "G_Count", "type": "int" }, { "name": "G_Notice", "type": "varchar(60)" },
+        { "name": "Number", "type": "int" }, { "name": "G_Type", "type": "int" }, { "name": "G_Rival", "type": "int" }, { "name": "G_Union", "type": "int" },
+        { "name": "MemberCount", "type": "int" }
+      ]
+    },
+    "GuildMember": {
+      "primaryKey": ["Name"],
+      "columns": [
+        { "name": "Name", "type": "varchar(10)" }, { "name": "G_Name", "type": "varchar(8)" }, { "name": "G_Level", "type": "tinyint" }, { "name": "G_Status", "type": "tinyint" }
+      ]
+    },
+    "MuCastle_DATA": {
+      "primaryKey": ["MAP_SVR_GROUP"],
+      "columns": [
+        { "name": "MAP_SVR_GROUP", "type": "int" }, { "name": "SIEGE_START_DATE", "type": "datetime" }, { "name": "SIEGE_END_DATE", "type": "datetime" },
+        { "name": "SIEGE_GUILDLIST_SETTED", "type": "bit" }, { "name": "SIEGE_ENDED", "type": "bit" }, { "name": "CASTLE_OCCUPY", "type": "bit" },
+        { "name": "OWNER_GUILD", "type": "varchar(8)" }, { "name": "MONEY", "type": "money" }, { "name": "TAX_RATE_CHAOS", "type": "int" },
+        { "name": "TAX_RATE_STORE", "type": "int" }, { "name": "TAX_HUNT_ZONE", "type": "int" }
+      ]
+    },
+    "MuCastle_REG_SIEGE": {
+      "primaryKey": [],
+      "uniqueIndex": { "name": "IX_ATTACK_GUILD_SUBKEY", "columns": ["MAP_SVR_GROUP", "REG_SIEGE_GUILD"] },
+      "columns": [
+        { "name": "MAP_SVR_GROUP", "type": "int" }, { "name": "REG_SIEGE_GUILD", "type": "varchar(8)" }, { "name": "REG_MARKS", "type": "int" },
+        { "name": "IS_GIVEUP", "type": "tinyint" }, { "name": "SEQ_NUM", "type": "int" }
+      ]
+    },
+    "warehouse": {
+      "primaryKey": ["AccountID"],
+      "note": "real table name is lowercase 'warehouse', legacy PHP code referenced 'Warehouse' -- SQL Server default collation makes this immaterial",
+      "columns": [
+        { "name": "AccountID", "type": "varchar(10)" }, { "name": "Items", "type": "varbinary(3840)" }, { "name": "Money", "type": "int" },
+        { "name": "EndUseDate", "type": "smalldatetime" }, { "name": "DbVersion", "type": "tinyint" }, { "name": "pw", "type": "smallint", "note": "not referenced by legacy code sweep" }
+      ]
+    },
+    "DmN_Ban_List": {
+      "primaryKey": ["id"],
+      "columns": [
+        { "name": "id", "type": "int" }, { "name": "name", "type": "varchar(10)" }, { "name": "type", "type": "int" },
+        { "name": "server", "type": "varchar(50)" }, { "name": "time", "type": "int", "note": "int, not datetime -- likely a unix timestamp" },
+        { "name": "is_permanent", "type": "int" }, { "name": "reason", "type": "text" }
+      ]
+    },
+    "DmN_Shop_Credits": {
+      "primaryKey": [],
+      "columns": [
+        { "name": "memb___id", "type": "varchar(20)" }, { "name": "credits", "type": "bigint" }, { "name": "credits2", "type": "bigint" },
+        { "name": "credits3", "type": "bigint" }, { "name": "server", "type": "varchar(50)" }, { "name": "credits4", "type": "int", "note": "the one column the legacy code's credit-type-4 mapping actually uses; credits/credits2/credits3 not observed wired to anything in the sweep" }
+      ]
+    },
+    "DmN_Web_Storage": { "primaryKey": ["id"], "columns": [{ "name": "id", "type": "int" }, { "name": "item", "type": "varchar(64)" }, { "name": "account", "type": "varchar(20)" }, { "name": "server", "type": "varchar(50)" }, { "name": "expires_on", "type": "int" }, { "name": "is_removed", "type": "int" }] },
+    "DmN_Warehouse_Delete_Log": { "primaryKey": [], "columns": [{ "name": "id", "type": "int" }, { "name": "account", "type": "varchar(50)" }, { "name": "server", "type": "varchar(50)" }, { "name": "item", "type": "varchar(64)" }, { "name": "date", "type": "datetime" }, { "name": "deleted_by_admin", "type": "int" }] },
+    "DmN_Account_Logs": { "primaryKey": ["id"], "columns": [{ "name": "id", "type": "int" }, { "name": "text", "type": "text" }, { "name": "amount", "type": "float" }, { "name": "date", "type": "datetime" }, { "name": "account", "type": "varchar(10)" }, { "name": "server", "type": "varchar(50)" }, { "name": "ip", "type": "varchar(50)" }] },
+    "DmN_Market": { "primaryKey": ["id"], "note": "48 columns total, see raw/04 for full list -- includes ~14 per-class 'is_xx' flag columns", "columnCount": 48 }
+  }
+}

@@ -1,0 +1,1139 @@
+﻿
+
+Table      : AccountCharacter
+ColumnId   : 1
+Column     : Number
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : AccountCharacter
+ColumnId   : 2
+Column     : Id
+Type       : varchar
+MaxLength  : 10
+IsNullable : False
+
+Table      : AccountCharacter
+ColumnId   : 3
+Column     : GameID1
+Type       : varchar
+MaxLength  : 10
+IsNullable : True
+
+Table      : AccountCharacter
+ColumnId   : 4
+Column     : GameID2
+Type       : varchar
+MaxLength  : 10
+IsNullable : True
+
+Table      : AccountCharacter
+ColumnId   : 5
+Column     : GameID3
+Type       : varchar
+MaxLength  : 10
+IsNullable : True
+
+Table      : AccountCharacter
+ColumnId   : 6
+Column     : GameID4
+Type       : varchar
+MaxLength  : 10
+IsNullable : True
+
+Table      : AccountCharacter
+ColumnId   : 7
+Column     : GameID5
+Type       : varchar
+MaxLength  : 10
+IsNullable : True
+
+Table      : AccountCharacter
+ColumnId   : 8
+Column     : GameID6
+Type       : varchar
+MaxLength  : 10
+IsNullable : True
+
+Table      : AccountCharacter
+ColumnId   : 9
+Column     : GameID7
+Type       : varchar
+MaxLength  : 10
+IsNullable : True
+
+Table      : AccountCharacter
+ColumnId   : 10
+Column     : GameID8
+Type       : varchar
+MaxLength  : 10
+IsNullable : True
+
+Table      : AccountCharacter
+ColumnId   : 11
+Column     : GameID9
+Type       : varchar
+MaxLength  : 10
+IsNullable : True
+
+Table      : AccountCharacter
+ColumnId   : 12
+Column     : GameID10
+Type       : varchar
+MaxLength  : 10
+IsNullable : True
+
+Table      : AccountCharacter
+ColumnId   : 13
+Column     : GameIDC
+Type       : varchar
+MaxLength  : 10
+IsNullable : True
+
+Table      : AccountCharacter
+ColumnId   : 14
+Column     : MoveCnt
+Type       : tinyint
+MaxLength  : 1
+IsNullable : True
+
+Table      : AccountCharacter
+ColumnId   : 15
+Column     : ExtClass
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : AccountCharacter
+ColumnId   : 16
+Column     : ExtWarehouse
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : CashShopData
+ColumnId   : 1
+Column     : AccountID
+Type       : varchar
+MaxLength  : 10
+IsNullable : False
+
+Table      : CashShopData
+ColumnId   : 2
+Column     : WCoinC
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : CashShopData
+ColumnId   : 3
+Column     : WCoinP
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : CashShopData
+ColumnId   : 4
+Column     : GoblinPoint
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Account_Logs
+ColumnId   : 1
+Column     : id
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Account_Logs
+ColumnId   : 2
+Column     : text
+Type       : text
+MaxLength  : 16
+IsNullable : True
+
+Table      : DmN_Account_Logs
+ColumnId   : 3
+Column     : amount
+Type       : float
+MaxLength  : 8
+IsNullable : True
+
+Table      : DmN_Account_Logs
+ColumnId   : 4
+Column     : date
+Type       : datetime
+MaxLength  : 8
+IsNullable : True
+
+Table      : DmN_Account_Logs
+ColumnId   : 5
+Column     : account
+Type       : varchar
+MaxLength  : 10
+IsNullable : True
+
+Table      : DmN_Account_Logs
+ColumnId   : 6
+Column     : server
+Type       : varchar
+MaxLength  : 50
+IsNullable : True
+
+Table      : DmN_Account_Logs
+ColumnId   : 7
+Column     : ip
+Type       : varchar
+MaxLength  : 50
+IsNullable : True
+
+Table      : DmN_Ban_List
+ColumnId   : 1
+Column     : id
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Ban_List
+ColumnId   : 2
+Column     : name
+Type       : varchar
+MaxLength  : 10
+IsNullable : True
+
+Table      : DmN_Ban_List
+ColumnId   : 3
+Column     : type
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : DmN_Ban_List
+ColumnId   : 4
+Column     : server
+Type       : varchar
+MaxLength  : 50
+IsNullable : True
+
+Table      : DmN_Ban_List
+ColumnId   : 5
+Column     : time
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : DmN_Ban_List
+ColumnId   : 6
+Column     : is_permanent
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Ban_List
+ColumnId   : 7
+Column     : reason
+Type       : text
+MaxLength  : 16
+IsNullable : True
+
+Table      : DmN_Market
+ColumnId   : 1
+Column     : id
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 2
+Column     : cat
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : DmN_Market
+ColumnId   : 3
+Column     : item
+Type       : varchar
+MaxLength  : 64
+IsNullable : True
+
+Table      : DmN_Market
+ColumnId   : 4
+Column     : price_type
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : DmN_Market
+ColumnId   : 5
+Column     : price
+Type       : bigint
+MaxLength  : 8
+IsNullable : True
+
+Table      : DmN_Market
+ColumnId   : 6
+Column     : seller
+Type       : varchar
+MaxLength  : 50
+IsNullable : True
+
+Table      : DmN_Market
+ColumnId   : 7
+Column     : add_date
+Type       : datetime
+MaxLength  : 8
+IsNullable : True
+
+Table      : DmN_Market
+ColumnId   : 8
+Column     : active_till
+Type       : datetime
+MaxLength  : 8
+IsNullable : True
+
+Table      : DmN_Market
+ColumnId   : 9
+Column     : serial
+Type       : varchar
+MaxLength  : 8
+IsNullable : True
+
+Table      : DmN_Market
+ColumnId   : 10
+Column     : serial2
+Type       : varchar
+MaxLength  : 8
+IsNullable : True
+
+Table      : DmN_Market
+ColumnId   : 11
+Column     : active
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 12
+Column     : sold
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 13
+Column     : has_luck
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 14
+Column     : has_skill
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 15
+Column     : lvl
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 16
+Column     : highlighted
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 17
+Column     : char
+Type       : varchar
+MaxLength  : 10
+IsNullable : True
+
+Table      : DmN_Market
+ColumnId   : 18
+Column     : server
+Type       : varchar
+MaxLength  : 50
+IsNullable : True
+
+Table      : DmN_Market
+ColumnId   : 19
+Column     : removed
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 20
+Column     : has_ancient
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 21
+Column     : has_exe_1
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 22
+Column     : has_exe_2
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 23
+Column     : has_exe_3
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 24
+Column     : has_exe_4
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 25
+Column     : has_exe_5
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 26
+Column     : has_exe_6
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 27
+Column     : is_sm
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 28
+Column     : is_bk
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 29
+Column     : is_me
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 30
+Column     : is_mg
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 31
+Column     : is_dl
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 32
+Column     : is_sum
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 33
+Column     : is_rf
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 34
+Column     : price_jewel
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 35
+Column     : jewel_type
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 36
+Column     : item_name
+Type       : varchar
+MaxLength  : 100
+IsNullable : True
+
+Table      : DmN_Market
+ColumnId   : 37
+Column     : has_exe_7
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 38
+Column     : has_exe_8
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 39
+Column     : has_exe_9
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 40
+Column     : is_gl
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 41
+Column     : is_rw
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 42
+Column     : is_sl
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 43
+Column     : is_gc
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 44
+Column     : item_id
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 45
+Column     : is_km
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 46
+Column     : is_lm
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 47
+Column     : is_ik
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Market
+ColumnId   : 48
+Column     : item_password
+Type       : varchar
+MaxLength  : 50
+IsNullable : True
+
+Table      : DmN_Shop_Credits
+ColumnId   : 1
+Column     : memb___id
+Type       : varchar
+MaxLength  : 20
+IsNullable : False
+
+Table      : DmN_Shop_Credits
+ColumnId   : 2
+Column     : credits
+Type       : bigint
+MaxLength  : 8
+IsNullable : False
+
+Table      : DmN_Shop_Credits
+ColumnId   : 3
+Column     : credits2
+Type       : bigint
+MaxLength  : 8
+IsNullable : False
+
+Table      : DmN_Shop_Credits
+ColumnId   : 4
+Column     : credits3
+Type       : bigint
+MaxLength  : 8
+IsNullable : False
+
+Table      : DmN_Shop_Credits
+ColumnId   : 5
+Column     : server
+Type       : varchar
+MaxLength  : 50
+IsNullable : True
+
+Table      : DmN_Shop_Credits
+ColumnId   : 6
+Column     : credits4
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : DmN_Warehouse_Delete_Log
+ColumnId   : 1
+Column     : id
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Warehouse_Delete_Log
+ColumnId   : 2
+Column     : account
+Type       : varchar
+MaxLength  : 50
+IsNullable : True
+
+Table      : DmN_Warehouse_Delete_Log
+ColumnId   : 3
+Column     : server
+Type       : varchar
+MaxLength  : 50
+IsNullable : True
+
+Table      : DmN_Warehouse_Delete_Log
+ColumnId   : 4
+Column     : item
+Type       : varchar
+MaxLength  : 64
+IsNullable : True
+
+Table      : DmN_Warehouse_Delete_Log
+ColumnId   : 5
+Column     : date
+Type       : datetime
+MaxLength  : 8
+IsNullable : True
+
+Table      : DmN_Warehouse_Delete_Log
+ColumnId   : 6
+Column     : deleted_by_admin
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Web_Storage
+ColumnId   : 1
+Column     : id
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : DmN_Web_Storage
+ColumnId   : 2
+Column     : item
+Type       : varchar
+MaxLength  : 64
+IsNullable : True
+
+Table      : DmN_Web_Storage
+ColumnId   : 3
+Column     : account
+Type       : varchar
+MaxLength  : 20
+IsNullable : True
+
+Table      : DmN_Web_Storage
+ColumnId   : 4
+Column     : server
+Type       : varchar
+MaxLength  : 50
+IsNullable : True
+
+Table      : DmN_Web_Storage
+ColumnId   : 5
+Column     : expires_on
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : DmN_Web_Storage
+ColumnId   : 6
+Column     : is_removed
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : Guild
+ColumnId   : 1
+Column     : G_Name
+Type       : varchar
+MaxLength  : 8
+IsNullable : False
+
+Table      : Guild
+ColumnId   : 2
+Column     : G_Mark
+Type       : varbinary
+MaxLength  : 32
+IsNullable : True
+
+Table      : Guild
+ColumnId   : 3
+Column     : G_Score
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : Guild
+ColumnId   : 4
+Column     : G_Master
+Type       : varchar
+MaxLength  : 10
+IsNullable : True
+
+Table      : Guild
+ColumnId   : 5
+Column     : G_Count
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : Guild
+ColumnId   : 6
+Column     : G_Notice
+Type       : varchar
+MaxLength  : 60
+IsNullable : True
+
+Table      : Guild
+ColumnId   : 7
+Column     : Number
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : Guild
+ColumnId   : 8
+Column     : G_Type
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : Guild
+ColumnId   : 9
+Column     : G_Rival
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : Guild
+ColumnId   : 10
+Column     : G_Union
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : Guild
+ColumnId   : 11
+Column     : MemberCount
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : GuildMember
+ColumnId   : 1
+Column     : Name
+Type       : varchar
+MaxLength  : 10
+IsNullable : False
+
+Table      : GuildMember
+ColumnId   : 2
+Column     : G_Name
+Type       : varchar
+MaxLength  : 8
+IsNullable : False
+
+Table      : GuildMember
+ColumnId   : 3
+Column     : G_Level
+Type       : tinyint
+MaxLength  : 1
+IsNullable : True
+
+Table      : GuildMember
+ColumnId   : 4
+Column     : G_Status
+Type       : tinyint
+MaxLength  : 1
+IsNullable : False
+
+Table      : MasterSkillTree
+ColumnId   : 1
+Column     : Name
+Type       : varchar
+MaxLength  : 10
+IsNullable : False
+
+Table      : MasterSkillTree
+ColumnId   : 2
+Column     : MasterLevel
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : MasterSkillTree
+ColumnId   : 3
+Column     : MasterPoint
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : MasterSkillTree
+ColumnId   : 4
+Column     : MasterExperience
+Type       : bigint
+MaxLength  : 8
+IsNullable : True
+
+Table      : MasterSkillTree
+ColumnId   : 5
+Column     : MasterSkill
+Type       : varbinary
+MaxLength  : 180
+IsNullable : True
+
+Table      : MEMB_STAT
+ColumnId   : 1
+Column     : memb___id
+Type       : varchar
+MaxLength  : 10
+IsNullable : False
+
+Table      : MEMB_STAT
+ColumnId   : 2
+Column     : ConnectStat
+Type       : tinyint
+MaxLength  : 1
+IsNullable : True
+
+Table      : MEMB_STAT
+ColumnId   : 3
+Column     : ServerName
+Type       : varchar
+MaxLength  : 50
+IsNullable : True
+
+Table      : MEMB_STAT
+ColumnId   : 4
+Column     : IP
+Type       : varchar
+MaxLength  : 15
+IsNullable : True
+
+Table      : MEMB_STAT
+ColumnId   : 5
+Column     : ConnectTM
+Type       : smalldatetime
+MaxLength  : 4
+IsNullable : True
+
+Table      : MEMB_STAT
+ColumnId   : 6
+Column     : DisConnectTM
+Type       : smalldatetime
+MaxLength  : 4
+IsNullable : True
+
+Table      : MEMB_STAT
+ColumnId   : 7
+Column     : OnlineHours
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : MuCastle_DATA
+ColumnId   : 1
+Column     : MAP_SVR_GROUP
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : MuCastle_DATA
+ColumnId   : 2
+Column     : SIEGE_START_DATE
+Type       : datetime
+MaxLength  : 8
+IsNullable : False
+
+Table      : MuCastle_DATA
+ColumnId   : 3
+Column     : SIEGE_END_DATE
+Type       : datetime
+MaxLength  : 8
+IsNullable : False
+
+Table      : MuCastle_DATA
+ColumnId   : 4
+Column     : SIEGE_GUILDLIST_SETTED
+Type       : bit
+MaxLength  : 1
+IsNullable : False
+
+Table      : MuCastle_DATA
+ColumnId   : 5
+Column     : SIEGE_ENDED
+Type       : bit
+MaxLength  : 1
+IsNullable : False
+
+Table      : MuCastle_DATA
+ColumnId   : 6
+Column     : CASTLE_OCCUPY
+Type       : bit
+MaxLength  : 1
+IsNullable : False
+
+Table      : MuCastle_DATA
+ColumnId   : 7
+Column     : OWNER_GUILD
+Type       : varchar
+MaxLength  : 8
+IsNullable : False
+
+Table      : MuCastle_DATA
+ColumnId   : 8
+Column     : MONEY
+Type       : money
+MaxLength  : 8
+IsNullable : False
+
+Table      : MuCastle_DATA
+ColumnId   : 9
+Column     : TAX_RATE_CHAOS
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : MuCastle_DATA
+ColumnId   : 10
+Column     : TAX_RATE_STORE
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : MuCastle_DATA
+ColumnId   : 11
+Column     : TAX_HUNT_ZONE
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : MuCastle_REG_SIEGE
+ColumnId   : 1
+Column     : MAP_SVR_GROUP
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : MuCastle_REG_SIEGE
+ColumnId   : 2
+Column     : REG_SIEGE_GUILD
+Type       : varchar
+MaxLength  : 8
+IsNullable : False
+
+Table      : MuCastle_REG_SIEGE
+ColumnId   : 3
+Column     : REG_MARKS
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : MuCastle_REG_SIEGE
+ColumnId   : 4
+Column     : IS_GIVEUP
+Type       : tinyint
+MaxLength  : 1
+IsNullable : False
+
+Table      : MuCastle_REG_SIEGE
+ColumnId   : 5
+Column     : SEQ_NUM
+Type       : int
+MaxLength  : 4
+IsNullable : False
+
+Table      : RankingBloodCastle
+ColumnId   : 1
+Column     : Name
+Type       : varchar
+MaxLength  : 10
+IsNullable : False
+
+Table      : RankingBloodCastle
+ColumnId   : 2
+Column     : Score
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : RankingCastleSiege
+ColumnId   : 1
+Column     : Name
+Type       : varchar
+MaxLength  : 10
+IsNullable : False
+
+Table      : RankingCastleSiege
+ColumnId   : 2
+Column     : KillScore
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : RankingCastleSiege
+ColumnId   : 3
+Column     : DeathScore
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : RankingCastleSiege
+ColumnId   : 4
+Column     : CrownTime
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : RankingChaosCastle
+ColumnId   : 1
+Column     : Name
+Type       : varchar
+MaxLength  : 10
+IsNullable : False
+
+Table      : RankingChaosCastle
+ColumnId   : 2
+Column     : Score
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : RankingDevilSquare
+ColumnId   : 1
+Column     : Name
+Type       : varchar
+MaxLength  : 10
+IsNullable : False
+
+Table      : RankingDevilSquare
+ColumnId   : 2
+Column     : Score
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : RankingDuel
+ColumnId   : 1
+Column     : Name
+Type       : varchar
+MaxLength  : 10
+IsNullable : False
+
+Table      : RankingDuel
+ColumnId   : 2
+Column     : WinScore
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : RankingDuel
+ColumnId   : 3
+Column     : LoseScore
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : warehouse
+ColumnId   : 1
+Column     : AccountID
+Type       : varchar
+MaxLength  : 10
+IsNullable : False
+
+Table      : warehouse
+ColumnId   : 2
+Column     : Items
+Type       : varbinary
+MaxLength  : 3840
+IsNullable : True
+
+Table      : warehouse
+ColumnId   : 3
+Column     : Money
+Type       : int
+MaxLength  : 4
+IsNullable : True
+
+Table      : warehouse
+ColumnId   : 4
+Column     : EndUseDate
+Type       : smalldatetime
+MaxLength  : 4
+IsNullable : True
+
+Table      : warehouse
+ColumnId   : 5
+Column     : DbVersion
+Type       : tinyint
+MaxLength  : 1
+IsNullable : True
+
+Table      : warehouse
+ColumnId   : 6
+Column     : pw
+Type       : smallint
+MaxLength  : 2
+IsNullable : True
+
+
+
+

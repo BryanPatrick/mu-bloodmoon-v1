@@ -1,0 +1,11 @@
+﻿
+
+FkName       : FK_CustomQuest_Character
+ParentTable  : CustomQuest
+ParentColumn : Name
+RefTable     : Character
+RefColumn    : Name
+
+
+
+

@@ -1,0 +1,663 @@
+﻿
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 1
+Column    : AccountID
+Type      : varchar
+MaxLength : 10
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 2
+Column    : Name
+Type      : varchar
+MaxLength : 10
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 3
+Column    : cLevel
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 4
+Column    : LevelUpPoint
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 5
+Column    : Class
+Type      : tinyint
+MaxLength : 1
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 6
+Column    : Experience
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 7
+Column    : Strength
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 8
+Column    : Dexterity
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 9
+Column    : Vitality
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 10
+Column    : Energy
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 11
+Column    : Leadership
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 12
+Column    : Inventory
+Type      : varbinary
+MaxLength : 3776
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 13
+Column    : MagicList
+Type      : varbinary
+MaxLength : 180
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 14
+Column    : Money
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 15
+Column    : Life
+Type      : real
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 16
+Column    : MaxLife
+Type      : real
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 17
+Column    : Mana
+Type      : real
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 18
+Column    : MaxMana
+Type      : real
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 19
+Column    : BP
+Type      : real
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 20
+Column    : MaxBP
+Type      : real
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 21
+Column    : Shield
+Type      : real
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 22
+Column    : MaxShield
+Type      : real
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 23
+Column    : MapNumber
+Type      : smallint
+MaxLength : 2
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 24
+Column    : MapPosX
+Type      : smallint
+MaxLength : 2
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 25
+Column    : MapPosY
+Type      : smallint
+MaxLength : 2
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 26
+Column    : MapDir
+Type      : tinyint
+MaxLength : 1
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 27
+Column    : PkCount
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 28
+Column    : PkLevel
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 29
+Column    : PkTime
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 30
+Column    : MDate
+Type      : smalldatetime
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 31
+Column    : LDate
+Type      : smalldatetime
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 32
+Column    : CtlCode
+Type      : tinyint
+MaxLength : 1
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 33
+Column    : DbVersion
+Type      : tinyint
+MaxLength : 1
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 34
+Column    : Quest
+Type      : varbinary
+MaxLength : 50
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 35
+Column    : ChatLimitTime
+Type      : smallint
+MaxLength : 2
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 36
+Column    : FruitPoint
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 37
+Column    : EffectList
+Type      : varbinary
+MaxLength : 416
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 38
+Column    : FruitAddPoint
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 39
+Column    : FruitSubPoint
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 40
+Column    : ResetCount
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 41
+Column    : ResetDay
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 42
+Column    : ResetWek
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 43
+Column    : ResetMon
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 44
+Column    : MasterResetCount
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 45
+Column    : ExtInventory
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 46
+Column    : Kills
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 47
+Column    : Deads
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 48
+Column    : OnlineTime
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 49
+Column    : OnlineLottery
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 50
+Column    : RobberEvent
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 51
+Column    : ChangeSkinSystem
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 52
+Column    : ResetTime
+Type      : datetime
+MaxLength : 8
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 53
+Column    : HuntPoints
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 54
+Column    : last_reset_time
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 55
+Column    : last_greset_time
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 56
+Column    : resets
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 57
+Column    : grand_resets
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 58
+Column    : dmn_pk_count
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 59
+Column    : dmn_last_server_pk_count
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : Character
+ColumnId  : 60
+Column    : id
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 1
+Column    : memb_guid
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 2
+Column    : memb___id
+Type      : varchar
+MaxLength : 10
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 3
+Column    : memb__pwd
+Type      : varchar
+MaxLength : 10
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 4
+Column    : memb_name
+Type      : varchar
+MaxLength : 10
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 5
+Column    : sno__numb
+Type      : char
+MaxLength : 18
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 6
+Column    : post_code
+Type      : char
+MaxLength : 6
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 7
+Column    : addr_info
+Type      : varchar
+MaxLength : 50
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 8
+Column    : addr_deta
+Type      : varchar
+MaxLength : 50
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 9
+Column    : tel__numb
+Type      : varchar
+MaxLength : 20
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 10
+Column    : phon_numb
+Type      : varchar
+MaxLength : 15
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 11
+Column    : mail_addr
+Type      : varchar
+MaxLength : 50
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 12
+Column    : fpas_ques
+Type      : varchar
+MaxLength : 50
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 13
+Column    : fpas_answ
+Type      : varchar
+MaxLength : 50
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 14
+Column    : job__code
+Type      : char
+MaxLength : 2
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 15
+Column    : appl_days
+Type      : datetime
+MaxLength : 8
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 16
+Column    : modi_days
+Type      : datetime
+MaxLength : 8
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 17
+Column    : out__days
+Type      : datetime
+MaxLength : 8
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 18
+Column    : true_days
+Type      : datetime
+MaxLength : 8
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 19
+Column    : mail_chek
+Type      : char
+MaxLength : 1
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 20
+Column    : bloc_code
+Type      : char
+MaxLength : 1
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 21
+Column    : ctl1_code
+Type      : char
+MaxLength : 1
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 22
+Column    : AccountLevel
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 23
+Column    : AccountExpireDate
+Type      : smalldatetime
+MaxLength : 4
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 24
+Column    : Lock
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 25
+Column    : RewardVip
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 26
+Column    : RewardCoin
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 27
+Column    : RewardIndication
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 28
+Column    : Admin
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 29
+Column    : last_login
+Type      : datetime
+MaxLength : 8
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 30
+Column    : activated
+Type      : int
+MaxLength : 4
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 31
+Column    : activation_id
+Type      : varchar
+MaxLength : 50
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 32
+Column    : last_login_ip
+Type      : varchar
+MaxLength : 50
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 33
+Column    : country
+Type      : varchar
+MaxLength : 50
+
+Schema    : dbo
+Table     : MEMB_INFO
+ColumnId  : 34
+Column    : dmn_country
+Type      : varchar
+MaxLength : 50
+
+
+
+

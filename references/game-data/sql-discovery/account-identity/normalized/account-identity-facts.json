@@ -1,0 +1,72 @@
+{
+  "membGuid": {
+    "column": "MEMB_INFO.memb_guid",
+    "type": "int",
+    "isPrimaryKey": true,
+    "isIdentity": true,
+    "identitySeed": 1,
+    "identityIncrement": 1,
+    "isNullable": false,
+    "totalRows": 6,
+    "distinctValues": 6,
+    "nullCount": 0,
+    "duplicateGroupCount": 0,
+    "codeSearchWritePath": "NONE_FOUND -- appears only in WHERE clauses across 51 legacy PHP files; never a SET target; never in create_account()'s INSERT column list"
+  },
+  "membId": {
+    "column": "MEMB_INFO.memb___id",
+    "type": "varchar(10)",
+    "collation": "Latin1_General_CI_AS",
+    "isPrimaryKey": false,
+    "isUniqueConstraintPresent": false,
+    "isNullable": false,
+    "totalRows": 6,
+    "distinctValues": 6,
+    "duplicatedValueCount": 0,
+    "accountRowsInvolvedInDuplicates": 0,
+    "maxDuplicateMultiplicity": null,
+    "multiplicityDistribution": [{ "multiplicity": 1, "groupCount": 6 }],
+    "note": "No live duplicates exist today. The missing DB-level UNIQUE constraint is a structural risk (nothing prevents a future duplicate), not a current data integrity problem."
+  },
+  "accountCharacter": {
+    "table": "AccountCharacter",
+    "primaryKey": "Id",
+    "accountColumn": "Id",
+    "accountColumnType": "varchar(10)",
+    "totalRows": 6,
+    "h1_idEqualsMembId": { "hypothesis": "AccountCharacter.Id = MEMB_INFO.memb___id", "matchedRows": 6, "totalRows": 6, "result": "CONFIRMED" },
+    "h2_idEqualsMembGuid": { "hypothesis": "AccountCharacter.Id = MEMB_INFO.memb_guid (cast)", "matchedRows": 0, "totalRows": 6, "result": "REJECTED" },
+    "coverage": { "totalMembInfo": 6, "totalAccountCharacter": 6, "accountsWithAccountCharacter": 6, "accountsWithoutAccountCharacter": 0 }
+  },
+  "characterSlots": {
+    "columns": ["GameID1","GameID2","GameID3","GameID4","GameID5","GameID6","GameID7","GameID8","GameID9","GameID10"],
+    "maxCharacterSlots": 10,
+    "gameIDC": { "role": "currently-active character pointer, not an 11th independent slot", "nonEmptyCount": 5, "matchesCharacterNameCount": 5, "orphanCount": 0 },
+    "perSlot": [
+      { "slot": "GameID1", "nonEmptyCount": 5, "matchesCharacterNameCount": 5, "orphanCount": 0 },
+      { "slot": "GameID2", "nonEmptyCount": 2, "matchesCharacterNameCount": 2, "orphanCount": 0 },
+      { "slot": "GameID3", "nonEmptyCount": 2, "matchesCharacterNameCount": 2, "orphanCount": 0 },
+      { "slot": "GameID4", "nonEmptyCount": 1, "matchesCharacterNameCount": 1, "orphanCount": 0 },
+      { "slot": "GameID5", "nonEmptyCount": 2, "matchesCharacterNameCount": 2, "orphanCount": 0 },
+      { "slot": "GameID6", "nonEmptyCount": 0, "matchesCharacterNameCount": 0, "orphanCount": 0 },
+      { "slot": "GameID7", "nonEmptyCount": 0, "matchesCharacterNameCount": 0, "orphanCount": 0 },
+      { "slot": "GameID8", "nonEmptyCount": 0, "matchesCharacterNameCount": 0, "orphanCount": 0 },
+      { "slot": "GameID9", "nonEmptyCount": 0, "matchesCharacterNameCount": 0, "orphanCount": 0 },
+      { "slot": "GameID10", "nonEmptyCount": 0, "matchesCharacterNameCount": 0, "orphanCount": 0 }
+    ],
+    "totalSlotValues": 12,
+    "distinctSlotValues": 12,
+    "charactersClaimedByMultipleAccounts": 0,
+    "totalCharacterRows": 12
+  },
+  "ownershipConsistency": {
+    "sourceA": "Character.AccountID = MEMB_INFO.memb___id",
+    "sourceB": "AccountCharacter.GameID1..GameID5 = Character.Name",
+    "consistentCount": 12,
+    "conflictingOwnerCount": 0,
+    "onlyInCharacterAccountIdCount": 0,
+    "onlyInAccountCharacterSlotCount": 0,
+    "classification": "CONSISTENT"
+  },
+  "onlyPhysicalForeignKeyInDatabase": { "constraint": "FK_CustomQuest_Character", "from": "CustomQuest.Name", "to": "Character.Name", "note": "unrelated to account identity" }
+}
