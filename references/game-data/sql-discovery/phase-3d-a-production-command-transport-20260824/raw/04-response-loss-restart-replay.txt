@@ -1,0 +1,7 @@
+SOURCE=D1 controlled fault injection + VPS task restart + Agent SQLite ledger + MU aggregate counts
+RAW=After real success, transport state was set to the equivalent of CLAIMED with an expired lease and no stored result while the persistent Agent ledger retained SUCCEEDED.
+RAW=Agent was stopped, exact process path verified, restarted as one process, reclaimed after lease expiry, and reported prior membGuid=8.
+RAW=D1 attempt_count advanced to 3; final status SUCCEEDED; result membGuid=8.
+RAW=Post-recovery MU totals remained MEMB_INFO=8, AccountCharacter=8, Character=13, warehouse=4, CashShopData=4, Guild=2, GuildMember=2.
+NORMALIZED=Agent restart, expired lease, result loss and duplicate delivery converged without a second write.
+DERIVED=PRODUCTION_TRANSPORT_REPLAY=IDEMPOTENT; PRODUCTION_RESPONSE_LOSS_RECOVERY=PASS; AGENT_RESTART_RECOVERY=PASS; LEASE_EXPIRY_RECOVERY=PASS.

@@ -1,0 +1,9 @@
+SOURCE=Real Cloudflare Worker command claim endpoint
+invalid Agent signature=401
+player JWT placeholder=401
+Launcher bearer placeholder=401
+Discord credential header placeholder=401
+valid production Agent HMAC with environment=staging=403
+
+NORMALIZED=Only the dedicated command Agent identity in the production/bloodmoon-s6 scope can claim.
+DERIVED=DISCORD_WRITE_CAPABILITY=NONE; Launcher/player command access=NONE.

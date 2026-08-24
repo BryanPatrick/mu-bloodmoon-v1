@@ -26,10 +26,10 @@ enum AccountStatus {
 // separate from AccountStatus: a Blood Moon Account can be fully ACTIVE
 // (site/community usable) while its game identity is still PENDING.
 enum GameProvisioningStatus {
-  PENDING      // requested, not yet dispatched to GameBridge
+  PENDING // requested, not yet dispatched to GameBridge
   PROVISIONING // dispatched, awaiting a real result
-  ACTIVE       // membGuid confirmed -- this is GAME_READY, no separate flag
-  FAILED       // a real failure (not a timeout) -- retry re-enters PROVISIONING
+  ACTIVE // membGuid confirmed -- this is GAME_READY, no separate flag
+  FAILED // a real failure (not a timeout) -- retry re-enters PROVISIONING
 }
 
 enum CurrencyCode {
@@ -537,63 +537,64 @@ enum RoadmapRelationType {
 }
 
 model Account {
-  id                   String                      @id @default(uuid())
-  username             String                      @unique
-  name                 String
-  email                String                      @unique
-  passwordHash         String
-  personalIdHash       String?
-  sessionVersion       Int                         @default(0)
-  twoFactorEnabled     Boolean                     @default(false)
-  twoFactorSecret      String?                     @db.Text
-  twoFactorPending     String?                     @db.Text
-  role                 Role                        @default(PLAYER)
-  status               AccountStatus               @default(PENDING)
-  createdAt            DateTime                    @default(now())
-  updatedAt            DateTime                    @updatedAt
-  currencies           AccountCurrency[]
-  auditEvents          AuditEvent[]                @relation("AuditActor")
-  purchases            PurchaseIntent[]
-  recharges            RechargeIntent[]
-  characters           AccountCharacter[]
-  guildsFounded        Guild[]                     @relation("GuildFounder")
-  guildMemberships     GuildMember[]               @relation("GuildMemberAccount")
-  marketListings       PlayerMarketListing[]       @relation("MarketplaceSeller")
-  marketOrders         PlayerMarketOrder[]         @relation("MarketplaceBuyer")
-  marketplaceReports   MarketplaceReport[]         @relation("MarketplaceReporter")
-  communityProfile     CommunityProfile?
-  communityPosts       CommunityPost[]             @relation("CommunityPostAuthor")
-  communityComments    CommunityComment[]          @relation("CommunityCommentAuthor")
-  communityReactions   CommunityReaction[]
-  communityReports     CommunityReport[]           @relation("CommunityReporter")
-  reportedCommunity    CommunityReport[]           @relation("CommunityReportedUser")
-  achievementGrants    CommunityAchievementGrant[]
-  badgeGrants          CommunityBadgeGrant[]
-  questProgress        CommunityQuestParticipant[]
-  bridgeJobs           GameBridgeJob[]
-  permissions          AccountPermission[]
-  supportTickets       SupportTicket[]             @relation("TicketOwner")
-  assignedTickets      SupportTicket[]             @relation("TicketAssignee")
-  moderationActions    AccountModeration[]         @relation("ModerationTarget")
-  moderationIssued     AccountModeration[]         @relation("ModerationActor")
-  sessions             AccountSession[]
-  passwordResetTokens  PasswordResetToken[]
-  adminTasksAssigned   AdminTask[]                 @relation("AdminTaskAssignee")
-  adminTasksAssignedBy AdminTask[]                 @relation("AdminTaskAssigner")
-  adminTasksCreated    AdminTask[]                 @relation("AdminTaskCreator")
-  adminTaskComments    AdminTaskComment[]
-  adminTaskEvidence    AdminTaskEvidence[]
-  twoFactorRecoveryCodes TwoFactorRecoveryCode[]
-  gmOccurrencesCreated  GmOccurrence[]          @relation("GmOccurrenceCreatedBy")
-  gmOccurrencesAssigned GmOccurrence[]          @relation("GmOccurrenceAssignedTo")
-  gmOccurrenceNotes     GmOccurrenceNote[]
-  gmEventDefinitionsCreated GmEventDefinition[] @relation("GmEventDefinitionCreatedBy")
-  gmEventRunsStarted        GmEventRun[]        @relation("GmEventRunStartedBy")
-  gmEventRunsEnded          GmEventRun[]        @relation("GmEventRunEndedBy")
-  gmEventRunsCancelled      GmEventRun[]        @relation("GmEventRunCancelledBy")
-  gmEventResultsCreated     GmEventResult[]     @relation("GmEventResultCreatedBy")
-  gmEventResultsValidated   GmEventResult[]     @relation("GmEventResultValidatedBy")
+  id                        String                      @id @default(uuid())
+  username                  String                      @unique
+  name                      String
+  email                     String                      @unique
+  passwordHash              String
+  personalIdHash            String?
+  sessionVersion            Int                         @default(0)
+  twoFactorEnabled          Boolean                     @default(false)
+  twoFactorSecret           String?                     @db.Text
+  twoFactorPending          String?                     @db.Text
+  role                      Role                        @default(PLAYER)
+  status                    AccountStatus               @default(PENDING)
+  createdAt                 DateTime                    @default(now())
+  updatedAt                 DateTime                    @updatedAt
+  currencies                AccountCurrency[]
+  auditEvents               AuditEvent[]                @relation("AuditActor")
+  purchases                 PurchaseIntent[]
+  recharges                 RechargeIntent[]
+  characters                AccountCharacter[]
+  guildsFounded             Guild[]                     @relation("GuildFounder")
+  guildMemberships          GuildMember[]               @relation("GuildMemberAccount")
+  marketListings            PlayerMarketListing[]       @relation("MarketplaceSeller")
+  marketOrders              PlayerMarketOrder[]         @relation("MarketplaceBuyer")
+  marketplaceReports        MarketplaceReport[]         @relation("MarketplaceReporter")
+  communityProfile          CommunityProfile?
+  communityPosts            CommunityPost[]             @relation("CommunityPostAuthor")
+  communityComments         CommunityComment[]          @relation("CommunityCommentAuthor")
+  communityReactions        CommunityReaction[]
+  communityReports          CommunityReport[]           @relation("CommunityReporter")
+  reportedCommunity         CommunityReport[]           @relation("CommunityReportedUser")
+  achievementGrants         CommunityAchievementGrant[]
+  badgeGrants               CommunityBadgeGrant[]
+  questProgress             CommunityQuestParticipant[]
+  bridgeJobs                GameBridgeJob[]
+  permissions               AccountPermission[]
+  supportTickets            SupportTicket[]             @relation("TicketOwner")
+  assignedTickets           SupportTicket[]             @relation("TicketAssignee")
+  moderationActions         AccountModeration[]         @relation("ModerationTarget")
+  moderationIssued          AccountModeration[]         @relation("ModerationActor")
+  sessions                  AccountSession[]
+  passwordResetTokens       PasswordResetToken[]
+  adminTasksAssigned        AdminTask[]                 @relation("AdminTaskAssignee")
+  adminTasksAssignedBy      AdminTask[]                 @relation("AdminTaskAssigner")
+  adminTasksCreated         AdminTask[]                 @relation("AdminTaskCreator")
+  adminTaskComments         AdminTaskComment[]
+  adminTaskEvidence         AdminTaskEvidence[]
+  twoFactorRecoveryCodes    TwoFactorRecoveryCode[]
+  gmOccurrencesCreated      GmOccurrence[]              @relation("GmOccurrenceCreatedBy")
+  gmOccurrencesAssigned     GmOccurrence[]              @relation("GmOccurrenceAssignedTo")
+  gmOccurrenceNotes         GmOccurrenceNote[]
+  gmEventDefinitionsCreated GmEventDefinition[]         @relation("GmEventDefinitionCreatedBy")
+  gmEventRunsStarted        GmEventRun[]                @relation("GmEventRunStartedBy")
+  gmEventRunsEnded          GmEventRun[]                @relation("GmEventRunEndedBy")
+  gmEventRunsCancelled      GmEventRun[]                @relation("GmEventRunCancelledBy")
+  gmEventResultsCreated     GmEventResult[]             @relation("GmEventResultCreatedBy")
+  gmEventResultsValidated   GmEventResult[]             @relation("GmEventResultValidatedBy")
   gameIdentity              GameAccountIdentity?
+  gameCredential            GameAccountCredential?
 }
 
 // Phase 3B. The Portal-side half of the Unified Blood Moon Account model
@@ -612,20 +613,42 @@ model Account {
 // game credential (if one is ever needed) must live in its own,
 // separately-scoped, rotatable store, never here.
 model GameAccountIdentity {
-  id                     String                 @id @default(uuid())
-  accountId              String                 @unique
-  membGuid               Int?                   @unique
-  legacyLogin            String?                @unique @db.VarChar(10)
-  provisioningStatus     GameProvisioningStatus @default(PENDING)
-  provisioningRequestId  String                 @unique
-  provisionedAt          DateTime?
-  lastErrorCode          String?                @db.VarChar(191)
-  lastAttemptAt          DateTime?
-  createdAt              DateTime               @default(now())
-  updatedAt              DateTime               @updatedAt
-  account                Account                @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  id                    String                 @id @default(uuid())
+  accountId             String                 @unique
+  membGuid              Int?                   @unique
+  legacyLogin           String?                @unique @db.VarChar(10)
+  provisioningStatus    GameProvisioningStatus @default(PENDING)
+  provisioningRequestId String                 @unique
+  provisionedAt         DateTime?
+  lastErrorCode         String?                @db.VarChar(191)
+  lastAttemptAt         DateTime?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  account               Account                @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
   @@index([provisioningStatus])
+}
+
+// Phase 3D-A. Encrypted MU-only technical credential. This relation is never
+// selected by player/Admin/Discord/Launcher DTOs. Key material is external;
+// only the authenticated AES-GCM envelope is persisted here.
+model GameAccountCredential {
+  id                String    @id @default(uuid())
+  accountId         String    @unique
+  commandId         String    @unique
+  legacyLogin       String    @unique @db.VarChar(10)
+  ciphertext        String    @db.Text
+  nonce             String    @db.VarChar(64)
+  tag               String    @db.VarChar(64)
+  keyVersion        String    @db.VarChar(20)
+  algorithm         String    @db.VarChar(40)
+  envelopeCreatedAt DateTime
+  commandExpiresAt  DateTime
+  createdAt         DateTime  @default(now())
+  rotatedAt         DateTime?
+  account           Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([keyVersion])
 }
 
 // Phase 3B Part L/W. Launcher remote content already has a real home:
@@ -2033,39 +2056,39 @@ model CommunityPost {
 }
 
 model CommunityMedia {
-  id           String               @id @default(uuid())
-  ownerId      String
-  postId       String?
-  kind         CommunityMediaKind
-  status       CommunityMediaStatus @default(TEMPORARY)
+  id               String               @id @default(uuid())
+  ownerId          String
+  postId           String?
+  kind             CommunityMediaKind
+  status           CommunityMediaStatus @default(TEMPORARY)
   // Null until promoted out of quarantine -- a TEMPORARY/REJECTED row has no
   // publicly resolvable location yet.
-  url          String?              @db.VarChar(512)
-  storagePath  String               @db.VarChar(512)
+  url              String?              @db.VarChar(512)
+  storagePath      String               @db.VarChar(512)
   // Which StorageProvider actually holds this object -- rows written before
   // a provider migration keep whatever they were created with, so this is
   // per-row, not a single global setting.
-  storageProvider String            @default("local") @db.VarChar(20)
-  originalName String               @db.VarChar(255)
+  storageProvider  String               @default("local") @db.VarChar(20)
+  originalName     String               @db.VarChar(255)
   // What Multer/the client claimed the file was, captured at quarantine time
   // -- kept separate from `mimeType` (the server-detected, validated,
   // post-re-encode type) specifically so a REJECTED row still records the
   // mismatch for abuse-pattern review.
-  declaredMimeType String?          @db.VarChar(100)
+  declaredMimeType String?              @db.VarChar(100)
   // Null until validation actually determines a real format/size -- a
   // REJECTED row (corrupt bytes, undecodable content) may never reach that
   // point.
-  mimeType     String?              @db.VarChar(100)
-  extension    String?              @db.VarChar(12)
-  sizeBytes    Int
-  width        Int?
-  height       Int?
-  sha256       String               @db.VarChar(64)
-  rejectionReason String?           @db.Text
-  createdAt    DateTime             @default(now())
-  updatedAt    DateTime             @updatedAt
-  removedAt    DateTime?
-  post         CommunityPost?       @relation(fields: [postId], references: [id], onDelete: SetNull)
+  mimeType         String?              @db.VarChar(100)
+  extension        String?              @db.VarChar(12)
+  sizeBytes        Int
+  width            Int?
+  height           Int?
+  sha256           String               @db.VarChar(64)
+  rejectionReason  String?              @db.Text
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  removedAt        DateTime?
+  post             CommunityPost?       @relation(fields: [postId], references: [id], onDelete: SetNull)
 
   @@index([ownerId, status, createdAt])
   @@index([postId])
@@ -2695,17 +2718,17 @@ model GuildFocusAssignment {
 // guild" is enforced in the service layer (check-then-write in
 // inviteToGuild()), not the DB.
 model GuildInvite {
-  id           String            @id @default(uuid())
-  guildId      String
-  characterId  String
-  accountId    String
-  invitedBy    String
-  message      String?           @db.Text
-  status       GuildInviteStatus @default(PENDING)
-  decidedAt    DateTime?
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
-  guild        Guild             @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  id          String            @id @default(uuid())
+  guildId     String
+  characterId String
+  accountId   String
+  invitedBy   String
+  message     String?           @db.Text
+  status      GuildInviteStatus @default(PENDING)
+  decidedAt   DateTime?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  guild       Guild             @relation(fields: [guildId], references: [id], onDelete: Cascade)
 
   @@index([guildId, characterId, status])
   @@index([accountId, status])
@@ -3048,10 +3071,10 @@ enum GmEventRunStatus {
 }
 
 model GmEventRun {
-  id            String            @id @default(uuid())
-  definitionId  String
-  scheduleId    String?
-  status        GmEventRunStatus  @default(SCHEDULED)
+  id             String            @id @default(uuid())
+  definitionId   String
+  scheduleId     String?
+  status         GmEventRunStatus  @default(SCHEDULED)
   // "PORTAL_ONLY" today (no live game-server connection exists -- see the
   // header comment above), plus three reserved-but-unused values a future
   // real GameBridge connection will actually produce: "GAMEBRIDGE_PENDING"
@@ -3060,37 +3083,37 @@ model GmEventRun {
   // success). Free text, not an enum, for the same reason as
   // GmOccurrence.type: the value set is expected to grow without a schema
   // migration. See gm/event-executors/ for the abstraction that produces it.
-  origin        String            @default("PORTAL_ONLY") @db.VarChar(40)
+  origin         String            @default("PORTAL_ONLY") @db.VarChar(40)
   // Doubles as the future GameBridge call's idempotency key (mirrors
   // GameBridgeJob.idempotencyKey's role for marketplace escrow) and as the
   // cross-system trace id (mirrors the correlationId convention already used
   // by SystemError/OperationalEvent/SystemAlert/PlayerMarketOrder). Set once
   // at run creation, before any executor is invoked.
-  correlationId String            @unique @default(uuid())
+  correlationId  String            @unique @default(uuid())
   // How many times an executor was actually invoked for this run -- prepared
   // for a future retry policy; today every run attempts exactly once.
-  bridgeAttempts Int              @default(0)
+  bridgeAttempts Int               @default(0)
   // Raw payload/message from whichever executor ran (Portal or, later,
   // GameBridge). Both stay null for the Portal path today since there is
   // nothing external to report.
   externalResult Json?
-  externalError  String?          @db.Text
-  startedById   String?
-  startedAt     DateTime?
-  endedById     String?
-  endedAt       DateTime?
-  cancelledById String?
-  cancelledAt   DateTime?
-  cancelReason  String?           @db.Text
-  problemNote   String?           @db.Text
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
-  definition    GmEventDefinition @relation(fields: [definitionId], references: [id])
-  schedule      GmEventSchedule?  @relation(fields: [scheduleId], references: [id])
-  startedBy     Account?          @relation("GmEventRunStartedBy", fields: [startedById], references: [id])
-  endedBy       Account?          @relation("GmEventRunEndedBy", fields: [endedById], references: [id])
-  cancelledBy   Account?          @relation("GmEventRunCancelledBy", fields: [cancelledById], references: [id])
-  result        GmEventResult?
+  externalError  String?           @db.Text
+  startedById    String?
+  startedAt      DateTime?
+  endedById      String?
+  endedAt        DateTime?
+  cancelledById  String?
+  cancelledAt    DateTime?
+  cancelReason   String?           @db.Text
+  problemNote    String?           @db.Text
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  definition     GmEventDefinition @relation(fields: [definitionId], references: [id])
+  schedule       GmEventSchedule?  @relation(fields: [scheduleId], references: [id])
+  startedBy      Account?          @relation("GmEventRunStartedBy", fields: [startedById], references: [id])
+  endedBy        Account?          @relation("GmEventRunEndedBy", fields: [endedById], references: [id])
+  cancelledBy    Account?          @relation("GmEventRunCancelledBy", fields: [cancelledById], references: [id])
+  result         GmEventResult?
 
   @@index([definitionId, status])
   @@index([status, createdAt])

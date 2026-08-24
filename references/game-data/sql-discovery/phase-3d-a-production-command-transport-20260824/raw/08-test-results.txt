@@ -1,0 +1,10 @@
+SOURCE=Local test runners on 2026-08-24
+GameBridge Agent=75/75 PASS
+Cloudflare Worker=40/40 PASS; typecheck PASS
+Portal Phase 3D-A focused=8/8 PASS
+Portal complete E2E regression=39/39 suites, 475/475 tests PASS
+Portal structural/type check=PASS
+Portal build=PASS
+Real infrastructure=Queue producer/consumer PASS; D1 migration PASS; outbound Agent PASS; QA create/replay/recovery PASS
+
+The first complete Portal attempt lacked E2E_LOCAL_MYSQL_URL and failed only because Docker is absent. It was interrupted and rerun through the harness-supported local MySQL fallback; the authoritative rerun passed 475/475.

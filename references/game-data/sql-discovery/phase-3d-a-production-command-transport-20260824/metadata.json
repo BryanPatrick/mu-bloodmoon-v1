@@ -1,0 +1,8 @@
+{
+  "phase": "3D-A",
+  "capturedAtUtc": "2026-08-24T17:40:00Z",
+  "sources": ["Cloudflare Queues", "Cloudflare D1", "Windows GameBridge Agent", "Portal MySQL", "MU SQL Server"],
+  "sanitized": true,
+  "plaintextCredentialRetained": false,
+  "priorIncidentTruth": "SENSITIVE_DATA_LEAKED=YES, REMEDIATED; ACTIVE_CREDENTIAL_EXPOSED=NO"
+}

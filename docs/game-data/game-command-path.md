@@ -1,5 +1,9 @@
 # Game command path
 
+> Phase 3D-A production note: the Phase 3C SSH/file path below is preserved as
+> TEST/CONTROLLED evidence only. Production uses Portal HMAC -> Worker producer
+> -> Queue -> Worker/D1 inbox -> outbound Agent claim -> outbound result.
+
 The Phase 3C write path is physically separate from all read paths:
 
 `Portal PENDING identity -> controlled RemoteOps command file -> Agent runner -> IGameDatabaseWriter -> dbo.DmN_CreateGameAccount`
@@ -21,5 +25,5 @@ The SQL procedure independently serializes the legacy login with a transaction-
 owned `sp_getapplock`, so different requests for the same login have one winner.
 
 The controlled QA transport is intentionally not connected to public registration.
-Replacing it with a production queue requires a separately reviewed encrypted
-credential envelope and is a Phase 3D prerequisite, not part of this activation.
+It is superseded for production by the Phase 3D-A transport and AES-256-GCM
+envelope. Public registration remains off.

@@ -1,0 +1,10 @@
+{
+  "phase": "3D-A",
+  "transport": "Cloudflare Queue + Worker consumer + D1 inbox + outbound HMAC Agent",
+  "command": { "create": "PASS", "claim": "PASS", "lease": "PASS", "result": "PASS", "reconciliation": "PASS", "expiry": "PASS" },
+  "recovery": { "replay": "IDEMPOTENT", "responseLoss": "PASS", "agentRestart": "PASS", "leaseExpiry": "PASS" },
+  "credential": { "algorithm": "AES-256-GCM", "portalStorage": "ENCRYPTED", "cloudflareStorage": "ENCRYPTED", "keyVersion": "v1", "plaintextInD1": false, "plaintextInLogs": false, "plaintextInApi": false },
+  "realMutation": { "membInfo": 1, "accountCharacter": 1, "unexpected": 0, "membGuid": 8 },
+  "publicProvisioning": false,
+  "push": false
+}

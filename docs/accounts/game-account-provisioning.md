@@ -1,13 +1,16 @@
 # Game account provisioning
 
+> Phase 3D-A adds production Queue + D1 delivery and encrypted credential
+> persistence. Phase 3C SSH/file delivery remains controlled QA only.
+
 Phase 3C introduces one deliberately narrow command: `CREATE_GAME_ACCOUNT`.
 Public registration does not dispatch it; `GAME_ACCOUNT_PROVISIONING_ON_REGISTER`
-remains off until Phase 3D is separately reviewed.
+remains off until Phase 3D-B is separately reviewed.
 
 The Portal account and MU account use different credentials. The Portal password
-and its hash never cross the MU boundary. The legacy MU credential is 8–10 ASCII
-alphanumeric characters, is never logged or persisted in the command ledger, and
-for the controlled QA run was held only in local DPAPI-protected secret storage.
+and its hash never cross the MU boundary. The generated MU credential is 10 ASCII
+alphanumeric characters, never logged and never persisted in plaintext. Portal
+stores AES-256-GCM ciphertext; D1 only relays it; Agent decrypts before SQL.
 
 The provisioning sequence is:
 
@@ -20,9 +23,10 @@ The provisioning sequence is:
 6. mark `GameAccountIdentity` `ACTIVE` with `membGuid`, `legacyLogin`, and
    `provisionedAt`.
 
-The Phase 3C transport is a controlled operator/QA path, not an automatic public
-registration path. The temporary runner and secret request files are removed
-after validation; the two SQLite ledgers remain on the VPS as recovery evidence.
+The production dispatcher has no public controller. It persists immutable
+command/provisioning identities, envelope and command expiry, then reconciles the
+safe result. Phase 3C transport is not required by production. Public automatic
+registration remains off.
 
 An `ACTIVE` identity with zero characters is valid. `/launcher/me` returns
 `gameReady: true`, and `/launcher/me/characters` returns an empty list.

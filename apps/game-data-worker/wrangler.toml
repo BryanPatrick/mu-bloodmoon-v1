@@ -16,3 +16,17 @@ database_name = "bloodmoon-game-data"
 # docs/game-data/cloudflare-resources.md.
 database_id = "cf84e6fe-7ea6-4f0b-a2f2-313ec3c0dab6"
 migrations_dir = "db/migrations"
+
+[[queues.producers]]
+binding = "GAME_COMMANDS"
+queue = "bloodmoon-production-game-commands"
+
+[[queues.consumers]]
+queue = "bloodmoon-production-game-commands"
+max_batch_size = 10
+max_batch_timeout = 5
+max_retries = 5
+dead_letter_queue = "bloodmoon-production-game-commands-dlq"
+
+[triggers]
+crons = ["17 4 * * *"]

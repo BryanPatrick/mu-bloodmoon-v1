@@ -4,6 +4,14 @@
 // read endpoint, and apps/api's read credential can never reach ingest.
 export interface Env {
   DB: D1Database
+  GAME_COMMANDS: Queue<GameCommandQueueMessage>
   AGENT_SECRETS_JSON: string
   API_READ_SECRETS_JSON: string
+  COMMAND_AGENT_SECRETS_JSON: string
+  COMMAND_AGENT_SCOPES_JSON: string
+  COMMAND_PORTAL_SECRETS_JSON: string
+}
+
+export interface GameCommandQueueMessage {
+  commandId: string
 }

@@ -1,0 +1,20 @@
+SOURCE=Portal dispatcher + D1 transport + production Agent + MU SQL + Portal reconciliation
+qaAccountId=3cd1200f-3ad1-48ab-a9af-34609713898b
+commandId=6f753260-f4be-41f0-a485-5018f39b0456
+provisioningRequestId=b7701820-1441-41f4-a549-be240dca5c5a
+legacyLogin=q3def7ec77
+membGuid=8
+
+Initial configuration diagnosis: FAILED_FINAL/CREDENTIAL_DECRYPT_FAILED before SQL; no mutation. Root cause was camelCase DPAPI document property binding. Same account, commandId and provisioningRequestId were retried after correction.
+
+Final D1 status=SUCCEEDED
+Final Portal status=ACTIVE
+Credential Portal storage=ENCRYPTED
+MEMB_INFO baseline=7 post=8 delta=+1 target rows=1
+AccountCharacter baseline=7 post=8 delta=+1 target rows=1
+Character baseline=13 post=13 delta=0
+warehouse baseline=4 post=4 delta=0
+CashShopData baseline=4 post=4 delta=0
+Guild baseline=2 post=2 delta=0
+GuildMember baseline=2 post=2 delta=0
+UNEXPECTED_MU_TABLE_MUTATIONS=0

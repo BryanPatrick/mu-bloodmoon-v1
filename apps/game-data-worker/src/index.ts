@@ -1,11 +1,12 @@
 import { verifySignedRequest } from './auth/hmac'
 import { checkAndRecordNonce } from './auth/nonce'
 import { CLOCK_TOLERANCE_MS, NONCE_TTL_SECONDS } from './config'
-import type { Env } from './env'
+import type { Env, GameCommandQueueMessage } from './env'
 import { handleHeartbeat } from './heartbeat'
 import { handleIngestEvent } from './ingest'
 import { jsonResponse } from './json'
 import { handleReadStatus } from './read'
+import { claimCommands, createCommand, deleteExpiredCommandHistory, getCommandResult, makeQueuedCommandAvailable, reportCommandResult, retryFailedCommand } from './commands'
 
 export function parseSecrets(json: string | undefined): Record<string, string> {
   if (!json) return {}
@@ -71,9 +72,53 @@ export default {
         return await handleReadStatus(env)
       }
 
+      if (request.method === 'POST' && url.pathname === '/internal/game-commands') {
+        const rawBody = await request.text()
+        const auth = await authenticate(request, rawBody, parseSecrets(env.COMMAND_PORTAL_SECRETS_JSON), 'command:create', env)
+        if (!auth.ok) return auth.response
+        return await createCommand(rawBody, env)
+      }
+
+      if (request.method === 'POST' && url.pathname === '/game-commands/claim') {
+        const rawBody = await request.text()
+        const auth = await authenticate(request, rawBody, parseSecrets(env.COMMAND_AGENT_SECRETS_JSON), 'command:claim', env)
+        if (!auth.ok) return auth.response
+        return await claimCommands(rawBody, auth.clientId, env)
+      }
+
+      if (request.method === 'POST' && url.pathname === '/game-commands/result') {
+        const rawBody = await request.text()
+        const auth = await authenticate(request, rawBody, parseSecrets(env.COMMAND_AGENT_SECRETS_JSON), 'command:result', env)
+        if (!auth.ok) return auth.response
+        return await reportCommandResult(rawBody, auth.clientId, env)
+      }
+
+      if (request.method === 'GET' && url.pathname.startsWith('/internal/game-commands/')) {
+        const rawBody = ''
+        const auth = await authenticate(request, rawBody, parseSecrets(env.COMMAND_PORTAL_SECRETS_JSON), 'command:reconcile', env)
+        if (!auth.ok) return auth.response
+        return await getCommandResult(url.pathname.slice('/internal/game-commands/'.length), env)
+      }
+
+      if (request.method === 'POST' && url.pathname.startsWith('/internal/game-commands/') && url.pathname.endsWith('/retry')) {
+        const rawBody = await request.text()
+        const auth = await authenticate(request, rawBody, parseSecrets(env.COMMAND_PORTAL_SECRETS_JSON), 'command:retry', env)
+        if (!auth.ok) return auth.response
+        const commandId = url.pathname.slice('/internal/game-commands/'.length, -'/retry'.length)
+        return await retryFailedCommand(commandId, rawBody, env)
+      }
+
       return jsonResponse({ error: 'NOT_FOUND' }, 404)
     } catch {
       return jsonResponse({ error: 'INTERNAL_ERROR' }, 500)
     }
+  },
+
+  async queue(batch: MessageBatch<unknown>, env: Env): Promise<void> {
+    for (const message of batch.messages) await makeQueuedCommandAvailable(message as Message<GameCommandQueueMessage>, env)
+  },
+
+  async scheduled(_controller: ScheduledController, env: Env): Promise<void> {
+    await deleteExpiredCommandHistory(env)
   }
 } satisfies ExportedHandler<Env>

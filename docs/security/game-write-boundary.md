@@ -23,3 +23,12 @@ files that are deleted after use and does not echo them.
 
 Discord routes remain GET/read-only and have no access to the writer credential or
 writer interface. Public registration provisioning remains disabled.
+
+## Phase 3D-A production boundary
+
+The Agent is installed outside `C:\MuServer`, runs under `SYSTEM`, loads the
+procedure-only writer and command key ring from DPAPI, and exposes no listener.
+Command HMAC is separate from telemetry/read HMAC. Queue/D1 cannot send raw SQL
+or broaden `bloodmoon_writer`; only `CREATE_GAME_ACCOUNT` is executable.
+Passwords, keys, ciphertext bodies and SQL diagnostics are excluded from results
+and operational logs.

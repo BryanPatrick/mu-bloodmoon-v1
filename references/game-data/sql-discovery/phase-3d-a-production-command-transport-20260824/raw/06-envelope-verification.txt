@@ -1,0 +1,11 @@
+SOURCE=Portal Node crypto tests + Agent .NET AES-GCM tests + persistence inspection
+Portal envelope tests=7/7 PASS
+Agent decryptor tests=5/5 PASS (Agent suite total 75/75)
+Verified=random nonce, different ciphertext for same plaintext, tamper rejection, wrong key rejection, missing keyVersion rejection, wrong AAD rejection, ciphertext swap rejection, serialization without plaintext.
+Verified=Local and VPS v1 key material match without printing key material.
+Verified=Cloudflare stores ciphertext fields only; result/reconciliation omits envelope.
+GAME_CREDENTIAL_ALGORITHM=AES-256-GCM
+GAME_CREDENTIAL_KEY_VERSIONING=PASS
+GAME_CREDENTIAL_PLAINTEXT_IN_D1=NO
+GAME_CREDENTIAL_PLAINTEXT_IN_LOGS=NO
+GAME_CREDENTIAL_PLAINTEXT_IN_API=NO

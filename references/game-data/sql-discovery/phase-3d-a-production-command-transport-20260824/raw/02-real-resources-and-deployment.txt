@@ -1,0 +1,8 @@
+SOURCE=Wrangler 4.125.0 and Windows VPS scheduled-task inspection
+RAW=Queue bloodmoon-production-game-commands id 2ab5a09c9d1f4b38b65fedbbd41be90d: producers=1 consumers=1.
+RAW=DLQ bloodmoon-production-game-commands-dlq id e047f1de2bb04edb8c53fecd15c3dbe5.
+RAW=D1 bloodmoon-game-data id cf84e6fe-7ea6-4f0b-a2f2-313ec3c0dab6 migration 0003 applied.
+RAW=Worker bloodmoon-game-data-worker deployed with Queue + D1 bindings.
+RAW=VPS task BloodMoonGameBridgeAgent Running, one process, install root C:\BloodMoonGameBridgeAgent.
+NORMALIZED=Dedicated Blood Moon resources; Knowledge Hub not reused; Agent under SYSTEM with DPAPI LocalMachine secrets.
+DERIVED=AGENT_OUTBOUND_ONLY=YES; PUBLIC_VPS_LISTENER_ADDED=NO; PUBLIC_SQL_PORT_OPENED=NO.

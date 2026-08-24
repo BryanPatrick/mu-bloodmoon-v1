@@ -1,0 +1,8 @@
+SOURCE=Cloudflare official documentation + repository implementation
+RAW=Queues supports Worker consumers and external HTTP pull. Pull requires a Cloudflare Queue read/write API token. Queues is at-least-once and may duplicate; ordering is not guaranteed.
+NORMALIZED=Use Worker producer -> Queue -> Worker consumer -> D1 inbox. Agent claims D1 through Worker HMAC, outbound only.
+DERIVED=Queue is buffer; D1 is transport/reconciliation; SQLite ledger is execution idempotency.
+
+CLOUDFLARE_QUEUES_EVALUATED=YES
+CLOUDFLARE_QUEUES_USED=YES
+PRODUCTION_DEPENDS_ON_QA_SSH_FILE_TRANSPORT=NO
