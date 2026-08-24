@@ -21,6 +21,8 @@ const MAX_AUTOMATIC_ATTEMPTS = 8
 const STALE_PROVISIONING_THRESHOLD_MS = 5 * 60_000
 const JITTER_RATIO = 0.2
 const DEFAULT_INTERVAL_MS = 30_000
+const RECONCILIATION_LOCK_NAME = 'bloodmoon:game-provisioning-reconciliation'
+const RECONCILIATION_LOCK_TIMEOUT_MS = 60_000
 
 export type ReconciliationOutcome =
   | 'DISPATCHED'
@@ -67,6 +69,13 @@ export class GameProvisioningReconciliationService implements OnModuleInit, OnMo
   // dispatch()/reconcile() enforce that themselves; this worker never
   // fabricates a new one.
   async runOnce(): Promise<ReconciliationTickResult> {
+    return this.withReconciliationLock(
+      () => this.runOnceWithLock(),
+      () => ({ scanned: 0, acted: 0, skippedBackoff: 0, skippedAttemptCeiling: 0, errors: 0 })
+    )
+  }
+
+  private async runOnceWithLock(): Promise<ReconciliationTickResult> {
     const result: ReconciliationTickResult = { scanned: 0, acted: 0, skippedBackoff: 0, skippedAttemptCeiling: 0, errors: 0 }
     const candidates = await this.prisma.gameAccountIdentity.findMany({
       where: { provisioningStatus: { in: ['PENDING', 'PROVISIONING', 'FAILED'] } }
@@ -96,6 +105,13 @@ export class GameProvisioningReconciliationService implements OnModuleInit, OnMo
   // requires the ability to reconcile later regardless of how many
   // automatic attempts already happened.
   async manualRetry(accountId: string): Promise<{ provisioningStatus: string }> {
+    return this.withReconciliationLock(
+      () => this.manualRetryWithLock(accountId),
+      () => { throw new Error('GAME_PROVISIONING_RECONCILIATION_BUSY') }
+    )
+  }
+
+  private async manualRetryWithLock(accountId: string): Promise<{ provisioningStatus: string }> {
     const identity = await this.prisma.gameAccountIdentity.findUnique({ where: { accountId } })
     if (!identity) throw new Error('GAME_ACCOUNT_IDENTITY_NOT_FOUND')
     if (identity.provisioningStatus === 'ACTIVE') return { provisioningStatus: 'ACTIVE' }
@@ -125,6 +141,30 @@ export class GameProvisioningReconciliationService implements OnModuleInit, OnMo
 
     const updated = await this.prisma.gameAccountIdentity.findUniqueOrThrow({ where: { accountId } })
     return { provisioningStatus: updated.provisioningStatus }
+  }
+
+  // MySQL named locks are connection-scoped. Keeping the lock query and the
+  // work inside one interactive Prisma transaction pins that connection for
+  // the full callback, while the provisioning operations continue to use the
+  // normal Prisma pool. This prevents overlapping ticks across Passenger
+  // processes without adding a migration or relying on a single-process
+  // hosting setting. A crashed process releases the lock when MySQL closes
+  // its connection.
+  private async withReconciliationLock<T>(work: () => Promise<T>, whenBusy: () => T): Promise<T> {
+    return this.prisma.$transaction(async (lockConnection) => {
+      const rows = await lockConnection.$queryRaw<Array<{ acquired: number | bigint | null }>>`
+        SELECT GET_LOCK(${RECONCILIATION_LOCK_NAME}, 0) AS acquired
+      `
+      if (Number(rows[0]?.acquired ?? 0) !== 1) return whenBusy()
+
+      try {
+        return await work()
+      } finally {
+        await lockConnection.$queryRaw`
+          SELECT RELEASE_LOCK(${RECONCILIATION_LOCK_NAME})
+        `
+      }
+    }, { timeout: RECONCILIATION_LOCK_TIMEOUT_MS })
   }
 
   // Part AN -- safe fields only: account reference, status, attempt count,
