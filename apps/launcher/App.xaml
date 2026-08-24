@@ -2,6 +2,14 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Application.Resources>
+   <ResourceDictionary>
+    <ResourceDictionary.MergedDictionaries>
+      <!-- Launcher Foundation phase: neutral local placeholders for
+           missing remote images (Part W). Additive: merged alongside the
+           existing styles below, nothing here replaces them. -->
+      <ResourceDictionary Source="Assets/Placeholders.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
     <Style x:Key="HotspotButton" TargetType="Button">
       <Setter Property="Background" Value="Transparent" />
       <Setter Property="BorderBrush" Value="Transparent" />
@@ -60,5 +68,6 @@
       <Setter Property="FontFamily" Value="Segoe UI Semibold" />
       <Setter Property="FontSize" Value="10" />
     </Style>
+   </ResourceDictionary>
   </Application.Resources>
 </Application>

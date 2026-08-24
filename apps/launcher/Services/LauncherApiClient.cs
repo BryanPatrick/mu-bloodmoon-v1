@@ -7,7 +7,16 @@ using BloodMoon.Launcher.Models;
 
 namespace BloodMoon.Launcher.Services;
 
-public sealed class LauncherApiClient : IDisposable
+// Narrow seam for LauncherContentService (Launcher Foundation phase) to
+// depend on -- lets tests inject a fake bootstrap source without touching
+// LauncherApiClient's internal HttpClient/handler at all. LauncherApiClient
+// already has a matching GetBootstrapAsync, so it satisfies this for free.
+public interface ILauncherBootstrapSource
+{
+    Task<LauncherBootstrap> GetBootstrapAsync(CancellationToken cancellationToken);
+}
+
+public sealed class LauncherApiClient : IDisposable, ILauncherBootstrapSource
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
     private readonly HttpClient _http = new() { Timeout = TimeSpan.FromSeconds(15) };
@@ -47,6 +56,16 @@ public sealed class LauncherApiClient : IDisposable
 
     public Task<LauncherAccount> GetAccountAsync(string accessToken, CancellationToken cancellationToken) =>
         GetAsync<LauncherAccount>("launcher/account", accessToken, cancellationToken);
+
+    // Phase 3B routes, not called by any UI flow yet -- added here so the
+    // new AccountState mapper (Launcher Foundation phase) has a real,
+    // typed way to read the Unified Blood Moon Account gameReady signal
+    // once a page is built to show it.
+    public Task<LauncherMe> GetMeAsync(string accessToken, CancellationToken cancellationToken) =>
+        GetAsync<LauncherMe>("launcher/me", accessToken, cancellationToken);
+
+    public Task<LauncherMeCharacters> GetMeCharactersAsync(string accessToken, CancellationToken cancellationToken) =>
+        GetAsync<LauncherMeCharacters>("launcher/me/characters", accessToken, cancellationToken);
 
     public async Task LogoutAsync(string accessToken, CancellationToken cancellationToken)
     {

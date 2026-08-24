@@ -23,6 +23,12 @@ fabricated as live telemetry, a rule from the original Global Portal
 Audit P1.2 fix, unchanged and still enforced), links, patch notes, and
 recent news.
 
+**Launcher Foundation phase**: also returns `schemaVersion`,
+`contentVersion`, `campaign`, `socials`, `utilities`, and `assets` — all
+additive; see `docs/launcher/remote-content.md` for the client-side
+consumption model and `docs/launcher/remote-content-contract.md` for the
+full field-by-field shape.
+
 ## Authenticated — the existing modern Portal session (JwtAuthGuard)
 
 ### `GET /launcher/account` *(existing, unchanged)*

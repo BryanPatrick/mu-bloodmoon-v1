@@ -84,3 +84,23 @@ system with its own, different ingestion pipeline).
 Unchanged principle: the Launcher's fixed UI structure never changes
 remotely — no arbitrary layout coordinates are ever sent from the
 backend (Part L). Only text/URLs/dates flow through the contract above.
+
+## Launcher Foundation phase additions (2026-08-24)
+
+Same reasoning as above, extended rather than replaced. New `SiteSetting`
+keys, still no new table:
+
+| Key | Shape | Purpose |
+|---|---|---|
+| `launcher-campaign` | `{enabled,type,title,subtitle,versionLabel,imageUrl,ctaLabel,ctaUrl}` | The Open Beta / Temporada 1 card (Part F) |
+| `launcher-social-links` | ordered array of `{id,label,url,iconAssetId,order,enabled}` | Replaces the flat social keys when set; capped at `MAX_SOCIAL_ITEMS = 5` (Part G) |
+| `launcher-wiki-url`, `launcher-support-url` | string | New utility links (Part H) — the old contract only had a website/news URL |
+
+Also added: `schemaVersion` (constant `1` today) and `contentVersion` (a
+deterministic hash of every underlying row's key/id + `updatedAt`) at the
+top level of the bootstrap response, and an `assets[]` manifest for every
+image already backed by a real `ReferenceAsset` with a captured hash —
+see `docs/launcher/asset-contract.md` and
+`docs/launcher/page-data-contracts.md` for how the client consumes these.
+`socials`/`utilities` supersede nothing — the pre-existing flat `links`
+object is untouched for backward compatibility.

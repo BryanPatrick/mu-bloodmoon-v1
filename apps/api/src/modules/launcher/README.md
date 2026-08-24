@@ -16,3 +16,10 @@ API pública e autenticada consumida pelo launcher Windows.
 Configurações públicas do launcher usam a categoria `launcher` e as chaves
 criadas pela migration `20260723003000_launcher_integration`. Segredos, tokens
 e credenciais nunca são armazenados em `SiteSetting`.
+
+Fase Launcher Foundation: `GET /launcher/bootstrap` também retorna
+`schemaVersion`, `contentVersion`, `campaign`, `socials`, `utilities` e
+`assets`, todos aditivos. Quatro novas chaves `SiteSetting`, sem tabela
+nova: `launcher-campaign` (JSON), `launcher-social-links` (JSON, lista
+ordenada, limitada a 5 itens), `launcher-wiki-url`, `launcher-support-url`.
+Ver `docs/launcher/remote-content.md`.

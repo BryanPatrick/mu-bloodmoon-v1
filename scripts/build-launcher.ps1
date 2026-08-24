@@ -1,12 +1,14 @@
 param(
     [switch]$Publish,
-    [switch]$Preview
+    [switch]$Preview,
+    [switch]$Test
 )
 
 $ErrorActionPreference = 'Stop'
 
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $project = Join-Path $repositoryRoot 'apps\launcher\BloodMoon.Launcher.csproj'
+$testProject = Join-Path $repositoryRoot 'apps\launcher\BloodMoon.Launcher.Tests\BloodMoon.Launcher.Tests.csproj'
 $updaterProject = Join-Path $repositoryRoot 'apps\launcher-updater\BloodMoon.Launcher.Updater.csproj'
 $bundledDotnet = Join-Path $env:USERPROFILE '.cache\dotnet-sdk-8\dotnet.exe'
 $dotnet = if ($env:BLOODMOON_DOTNET) {
@@ -25,6 +27,14 @@ $launcherVersion = ([xml](Get-Content -LiteralPath $project)).Project.PropertyGr
 
 if (-not $dotnet) {
     throw 'SDK .NET 8 não encontrado. Instale o dotnet ou defina BLOODMOON_DOTNET.'
+}
+
+if ($Test) {
+    & $dotnet test $testProject
+    if ($LASTEXITCODE -ne 0) {
+        throw 'Falha nos testes do launcher.'
+    }
+    exit 0
 }
 
 New-Item -ItemType Directory -Force -Path $outputRoot | Out-Null

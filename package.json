@@ -29,6 +29,7 @@
     "launcher:build": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-launcher.ps1",
     "launcher:publish": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-launcher.ps1 -Publish",
     "launcher:preview": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-launcher.ps1 -Preview",
+    "launcher:test": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-launcher.ps1 -Test",
     "game-bridge-agent:build": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-game-bridge-agent.ps1",
     "game-bridge-agent:test": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-game-bridge-agent.ps1 -Test",
     "game-bridge-agent:publish": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-game-bridge-agent.ps1 -Publish",

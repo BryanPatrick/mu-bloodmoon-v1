@@ -1,0 +1,142 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!--
+    Part W: neutral, hand-authored vector placeholders for missing
+    remote images (class icon, guild emblem, news/event/campaign image).
+    Deliberately flat, monochrome, geometric shapes, no photographic or
+    AI-generated content (Part W: "No random AI graphics"). Looked up by
+    PlaceholderResolver.ResourceKeyFor via DynamicResource/FindResource
+    once a view actually renders these; this dictionary is not merged into
+    anything remote-content-driven.
+  -->
+
+  <DrawingImage x:Key="Placeholder.ClassIcon">
+    <DrawingImage.Drawing>
+      <DrawingGroup>
+        <GeometryDrawing Brush="#2A2624">
+          <GeometryDrawing.Geometry>
+            <EllipseGeometry Center="32,32" RadiusX="30" RadiusY="30" />
+          </GeometryDrawing.Geometry>
+          <GeometryDrawing.Pen>
+            <Pen Brush="#4A4440" Thickness="2" />
+          </GeometryDrawing.Pen>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="#5A544E">
+          <GeometryDrawing.Geometry>
+            <EllipseGeometry Center="32,24" RadiusX="10" RadiusY="10" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="#5A544E">
+          <GeometryDrawing.Geometry>
+            <PathGeometry Figures="M 14,50 C 14,36 50,36 50,50 Z" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+    </DrawingImage.Drawing>
+  </DrawingImage>
+
+  <DrawingImage x:Key="Placeholder.GuildEmblem">
+    <DrawingImage.Drawing>
+      <DrawingGroup>
+        <GeometryDrawing Brush="#2A2624">
+          <GeometryDrawing.Geometry>
+            <PathGeometry Figures="M 32,4 L 58,16 L 58,36 C 58,50 46,58 32,60 C 18,58 6,50 6,36 L 6,16 Z" />
+          </GeometryDrawing.Geometry>
+          <GeometryDrawing.Pen>
+            <Pen Brush="#4A4440" Thickness="2" />
+          </GeometryDrawing.Pen>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="#5A544E">
+          <GeometryDrawing.Geometry>
+            <PathGeometry Figures="M 32,18 L 42,26 L 38,42 L 26,42 L 22,26 Z" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+    </DrawingImage.Drawing>
+  </DrawingImage>
+
+  <DrawingImage x:Key="Placeholder.NewsImage">
+    <DrawingImage.Drawing>
+      <DrawingGroup>
+        <GeometryDrawing Brush="#241F1D">
+          <GeometryDrawing.Geometry>
+            <RectangleGeometry Rect="0,0,120,72" RadiusX="4" RadiusY="4" />
+          </GeometryDrawing.Geometry>
+          <GeometryDrawing.Pen>
+            <Pen Brush="#3E3733" Thickness="1.5" />
+          </GeometryDrawing.Pen>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="#4A4440">
+          <GeometryDrawing.Geometry>
+            <RectangleGeometry Rect="16,18,88,6" RadiusX="2" RadiusY="2" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="#3E3834">
+          <GeometryDrawing.Geometry>
+            <RectangleGeometry Rect="16,32,88,6" RadiusX="2" RadiusY="2" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="#3E3834">
+          <GeometryDrawing.Geometry>
+            <RectangleGeometry Rect="16,46,56,6" RadiusX="2" RadiusY="2" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+    </DrawingImage.Drawing>
+  </DrawingImage>
+
+  <DrawingImage x:Key="Placeholder.EventImage">
+    <DrawingImage.Drawing>
+      <DrawingGroup>
+        <GeometryDrawing Brush="#241F1D">
+          <GeometryDrawing.Geometry>
+            <RectangleGeometry Rect="0,0,120,72" RadiusX="4" RadiusY="4" />
+          </GeometryDrawing.Geometry>
+          <GeometryDrawing.Pen>
+            <Pen Brush="#3E3733" Thickness="1.5" />
+          </GeometryDrawing.Pen>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="#5A544E">
+          <GeometryDrawing.Geometry>
+            <RectangleGeometry Rect="30,14,60,44" RadiusX="3" RadiusY="3" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="#241F1D">
+          <GeometryDrawing.Geometry>
+            <RectangleGeometry Rect="30,26,60,4" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="#241F1D">
+          <GeometryDrawing.Geometry>
+            <RectangleGeometry Rect="40,8,4,12" RadiusX="1" RadiusY="1" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="#241F1D">
+          <GeometryDrawing.Geometry>
+            <RectangleGeometry Rect="76,8,4,12" RadiusX="1" RadiusY="1" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+    </DrawingImage.Drawing>
+  </DrawingImage>
+
+  <DrawingImage x:Key="Placeholder.CampaignImage">
+    <DrawingImage.Drawing>
+      <DrawingGroup>
+        <GeometryDrawing Brush="#241F1D">
+          <GeometryDrawing.Geometry>
+            <RectangleGeometry Rect="0,0,160,72" RadiusX="4" RadiusY="4" />
+          </GeometryDrawing.Geometry>
+          <GeometryDrawing.Pen>
+            <Pen Brush="#4A2A22" Thickness="1.5" />
+          </GeometryDrawing.Pen>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="#5A302A">
+          <GeometryDrawing.Geometry>
+            <PathGeometry Figures="M 80,14 L 87,32 L 106,32 L 90,44 L 96,62 L 80,50 L 64,62 L 70,44 L 54,32 L 73,32 Z" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+    </DrawingImage.Drawing>
+  </DrawingImage>
+</ResourceDictionary>

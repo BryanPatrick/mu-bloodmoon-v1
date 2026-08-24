@@ -22,8 +22,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- The new BloodMoon.Launcher.Tests project lives in a subdirectory of
+         this one; without this exclusion the SDK's default globs would
+         also compile its *.cs files into this WinExe project (mirrors
+         apps/game-bridge-agent/BloodMoon.GameBridgeAgent.csproj's own
+         identical exclusion for its sibling Tests project). -->
+    <Compile Remove="BloodMoon.Launcher.Tests\**" />
+    <Content Remove="BloodMoon.Launcher.Tests\**" />
+    <EmbeddedResource Remove="BloodMoon.Launcher.Tests\**" />
+    <None Remove="BloodMoon.Launcher.Tests\**" />
+    <Page Remove="BloodMoon.Launcher.Tests\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Assets\launcher-shell-v2.png" />
     <Content Include="launcher.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <!-- Part B's packaged fallback content: must ship next to the exe so
+         PackagedFallbackContent.Load can read it with no network and no
+         cache present (first run, offline). -->
+    <Content Include="fallback-content.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

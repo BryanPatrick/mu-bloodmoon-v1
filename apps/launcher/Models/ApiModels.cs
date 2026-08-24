@@ -10,6 +10,63 @@ public sealed class LauncherBootstrap
     public List<string> PatchNotes { get; set; } = [];
     public LauncherNews? Featured { get; set; }
     public List<LauncherNews> News { get; set; } = [];
+
+    // Launcher Foundation phase -- additive fields on the same, existing
+    // bootstrap contract (docs/launcher/remote-content.md). SchemaVersion
+    // and ContentVersion drive LauncherContentCache's compare-before-download
+    // and unsupported-schema fallback; Campaign/Socials/Utilities/Assets are
+    // the new remote-content shapes for Parts F/G/H/I. Missing from an older
+    // server response, System.Text.Json just leaves these at their defaults
+    // below -- never a deserialization failure.
+    public int SchemaVersion { get; set; } = 1;
+    public string ContentVersion { get; set; } = "";
+    public LauncherCampaign Campaign { get; set; } = new();
+    public List<LauncherSocialLink> Socials { get; set; } = [];
+    public List<LauncherUtilityLink> Utilities { get; set; } = [];
+    public List<LauncherAssetManifestEntry> Assets { get; set; } = [];
+}
+
+public sealed class LauncherCampaign
+{
+    public bool Enabled { get; set; }
+    public string? Type { get; set; }
+    public string? Title { get; set; }
+    public string? Subtitle { get; set; }
+    public string? VersionLabel { get; set; }
+    public string? ImageUrl { get; set; }
+    public string? CtaLabel { get; set; }
+    public string? CtaUrl { get; set; }
+}
+
+public sealed class LauncherSocialLink
+{
+    public string Id { get; set; } = "";
+    public string Label { get; set; } = "";
+    public string Url { get; set; } = "";
+    public string? IconAssetId { get; set; }
+    public int Order { get; set; }
+    public bool Enabled { get; set; }
+}
+
+public sealed class LauncherUtilityLink
+{
+    public string Id { get; set; } = "";
+    public string Label { get; set; } = "";
+    public string Url { get; set; } = "";
+    public bool Enabled { get; set; }
+}
+
+// Part I -- a caller trusts Hash/Size only for entries the backend actually
+// backed with a real ReferenceAsset row; see LauncherService.buildAssetManifest
+// on the API side for the corresponding honesty rule.
+public sealed class LauncherAssetManifestEntry
+{
+    public string Id { get; set; } = "";
+    public string Url { get; set; } = "";
+    public string ContentType { get; set; } = "application/octet-stream";
+    public string Hash { get; set; } = "";
+    public long Size { get; set; }
+    public string Kind { get; set; } = "";
 }
 
 public sealed class LauncherServer
@@ -17,6 +74,12 @@ public sealed class LauncherServer
     public string Name { get; set; } = "BloodMoon";
     public string Realm { get; set; } = "BloodMoon";
     public string Status { get; set; } = "ONLINE";
+    // Present on the API since the Global Portal Audit's P1.2 fix but not
+    // previously captured client-side -- MANUAL (an admin set it),
+    // UNKNOWN (nobody has), or LIVE (reserved, never emitted today). Never
+    // presented as confirmed live telemetry when this is UNKNOWN.
+    public string StatusSource { get; set; } = "UNKNOWN";
+    public DateTimeOffset? StatusUpdatedAt { get; set; }
     public int OnlinePlayers { get; set; }
     public LauncherMaintenance Maintenance { get; set; } = new();
     public string ClientVersion { get; set; } = "1.0.0";
@@ -111,4 +174,27 @@ public sealed class LauncherSession
 {
     public string AccessToken { get; set; } = "";
     public string RefreshToken { get; set; } = "";
+}
+
+// Phase 3B's /launcher/me + /launcher/me/characters -- the Unified Blood
+// Moon Account / real game-data status, distinct from LauncherAccount above
+// (Portal-local profile). Not called by LauncherApiClient before this
+// phase; see docs/launcher/api-contract.md's explicit disambiguation.
+public sealed class LauncherMe
+{
+    public string AccountId { get; set; } = "";
+    public string Username { get; set; } = "";
+    public string Role { get; set; } = "";
+    public bool GameReady { get; set; }
+    public string ProvisioningStatus { get; set; } = "NONE";
+}
+
+public sealed class LauncherMeCharacters
+{
+    public bool GameReady { get; set; }
+    // Always empty today (docs/launcher/api-contract.md) -- no
+    // CREATE_GAME_ACCOUNT path exists yet, so no per-character shape is a
+    // real, evidenced contract to model strongly. Kept as a raw element list
+    // so a future real shape can be added without breaking this DTO.
+    public List<System.Text.Json.JsonElement> Characters { get; set; } = [];
 }

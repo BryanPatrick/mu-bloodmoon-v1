@@ -20,4 +20,16 @@ public sealed class LauncherSettings
     public bool MusicEnabled { get; set; } = true;
     public bool SoundEnabled { get; set; } = true;
     public int Volume { get; set; } = 10;
+
+    // Launcher Foundation phase (Part T) -- all genuinely local preferences,
+    // never sourced from the remote content contract. Additive: an older
+    // settings.json on disk without these keys just gets the defaults below
+    // (SettingsService already tolerates missing/older files).
+    public string Quality { get; set; } = "Alta";
+    public bool CloseLauncherAfterGameStarts { get; set; } = true;
+    public bool MinimizeToTray { get; set; }
+    public bool StartWithWindows { get; set; }
+    public bool UiAnimationsEnabled { get; set; } = true;
+    public bool PerformanceMode { get; set; }
+    public int UiEffectsVolume { get; set; } = 10;
 }
