@@ -4,15 +4,18 @@ import {
   ForbiddenException,
   HttpException,
   Injectable,
+  Logger,
   UnauthorizedException
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import type { Account, AccountCurrency, AccountPermission } from '@prisma/client'
+import { Prisma } from '@prisma/client'
+import type { Account, AccountCurrency, AccountPermission, GameAccountIdentity } from '@prisma/client'
 import * as bcrypt from 'bcryptjs'
 import { createHash, randomBytes, randomUUID } from 'node:crypto'
 import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import { GameAccountIdentityService } from '../game-account-identity/game-account-identity.service'
+import { GameAccountProvisioningService } from '../game-account-identity/game-account-provisioning.service'
 import type {
   ChangePasswordRequest,
   ChangePasswordResponse,
@@ -45,6 +48,8 @@ import { TwoFactorService } from './two-factor.service'
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name)
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwt: JwtService,
@@ -52,7 +57,8 @@ export class AuthService {
     private readonly twoFactor: TwoFactorService,
     private readonly mailTransport: MailTransportService,
     private readonly twoFactorAttempts: TwoFactorAttemptLimitService,
-    private readonly gameAccountIdentity: GameAccountIdentityService
+    private readonly gameAccountIdentity: GameAccountIdentityService,
+    private readonly gameAccountProvisioning: GameAccountProvisioningService
   ) {}
 
   // Checks the per-account TOTP/recovery-code cooldown before a code is
@@ -270,34 +276,56 @@ export class AuthService {
 
     if (existing) throw new ConflictException('Account cannot be created with these details')
 
-    const account = await this.prisma.account.create({
-      data: {
-        username,
-        name,
-        email,
-        passwordHash: await bcrypt.hash(password, 12),
-        personalIdHash: await bcrypt.hash(personalId, 12),
-        role: 'PLAYER',
-        status: 'ACTIVE',
-        currencies: {
-          create: [
-            { currency: 'WCOIN', balance: 0 },
-            { currency: 'GOBLIN_POINT', balance: 0 },
-            { currency: 'HUNT_POINT', balance: 0 }
-          ]
+    let account: Account & { gameIdentity: GameAccountIdentity | null }
+    try {
+      account = await this.prisma.account.create({
+        data: {
+          username,
+          name,
+          email,
+          passwordHash: await bcrypt.hash(password, 12),
+          personalIdHash: await bcrypt.hash(personalId, 12),
+          role: 'PLAYER',
+          status: 'ACTIVE',
+          currencies: {
+            create: [
+              { currency: 'WCOIN', balance: 0 },
+              { currency: 'GOBLIN_POINT', balance: 0 },
+              { currency: 'HUNT_POINT', balance: 0 }
+            ]
+          },
+          // Phase 3B, feature-flagged, OFF by default. See
+          // docs/game-data/game-account-provisioning-contract.md Part I and
+          // docs/accounts/unified-account-implementation.md's activation
+          // plan -- CREATE_GAME_ACCOUNT itself does not exist yet (Phase 3C),
+          // so this only ever reaches PENDING, atomically with Account
+          // creation via Prisma's nested-write (no separate transaction
+          // needed). Never activated in production until Phase 3C ships.
+          ...(process.env.GAME_ACCOUNT_PROVISIONING_ON_REGISTER === 'true'
+            ? { gameIdentity: { create: this.gameAccountIdentity.buildPendingCreateInput() } }
+            : {})
         },
-        // Phase 3B, feature-flagged, OFF by default. See
-        // docs/game-data/game-account-provisioning-contract.md Part I and
-        // docs/accounts/unified-account-implementation.md's activation
-        // plan -- CREATE_GAME_ACCOUNT itself does not exist yet (Phase 3C),
-        // so this only ever reaches PENDING, atomically with Account
-        // creation via Prisma's nested-write (no separate transaction
-        // needed). Never activated in production until Phase 3C ships.
-        ...(process.env.GAME_ACCOUNT_PROVISIONING_ON_REGISTER === 'true'
-          ? { gameIdentity: { create: this.gameAccountIdentity.buildPendingCreateInput() } }
-          : {})
+        // Part C -- Account + GameAccountIdentity(PENDING) are created by ONE
+        // Prisma `create` call with a nested write; Prisma wraps a single
+        // create's nested writes in one implicit transaction, so if the
+        // identity row fails to insert, the Account insert rolls back too --
+        // no separate $transaction wrapper needed for atomicity here.
+        include: { gameIdentity: true }
+      })
+    } catch (error) {
+      // Part Q/AM -- the findFirst check above is a plain read, not a lock:
+      // two truly concurrent registrations for the same username/email can
+      // both pass it before either commits, then race on the real DB unique
+      // constraint here. Same P2002-to-409 pattern already used in
+      // guilds.service.ts -- surfaced as the same clean Conflict the
+      // pre-check already returns, never an unhandled 500 leaking a raw
+      // Prisma error. Only one of the two ever reaches account.create's
+      // nested GameAccountIdentity write, so no duplicate identity either.
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+        throw new ConflictException('Account cannot be created with these details')
       }
-    })
+      throw error
+    }
 
     await this.audit.record({
       actorId: account.id,
@@ -310,11 +338,49 @@ export class AuthService {
       }
     })
 
+    // Part E/H -- dispatched AFTER commit (the create() above already
+    // resolved), never awaited by the HTTP response. Errors are caught and
+    // logged here, never thrown -- a Cloudflare/Agent/SQL outage must not
+    // make registration fail, and a crash right here is exactly what the
+    // reconciliation worker's PENDING scan (Part I/AK) exists to recover
+    // from on its own next tick. Skipped entirely (not attempted) when the
+    // command transport isn't configured -- dispatch() would otherwise
+    // still generate a real credential and transition PENDING ->
+    // PROVISIONING before failing at the network step, a premature side
+    // effect this best-effort kick has no business causing when success is
+    // already known to be impossible; the reconciliation worker (which only
+    // ever runs where the transport IS expected to be configured) remains
+    // the authoritative path either way.
+    if (account.gameIdentity) {
+      if (isProvisioningDispatchPossible()) {
+        void this.gameAccountProvisioning.dispatch(account.id).catch((error) => {
+          this.logger.warn(`Post-registration provisioning dispatch failed for ${account.id}: ${errorMessage(error)}`)
+        })
+      } else {
+        // Not a silent success: the identity stays honestly PENDING (never
+        // ACTIVE without a real transport-confirmed write -- that
+        // invariant is enforced structurally by reconcile(), not by
+        // anything here), and this WARN is the operational signal that a
+        // registration happened with provisioning enabled but no attempt
+        // was even possible. The reconciliation worker's PENDING scan
+        // (docs/operations/provisioning-reconciliation.md) is what
+        // actually recovers this account once the transport is configured
+        // -- it re-checks every PENDING row unconditionally, so this
+        // account is never permanently stuck as long as that worker runs.
+        this.logger.warn(
+          `Registered ${account.id} with provisioning enabled but the command transport is not configured -- ` +
+            'no dispatch attempted; relying on the reconciliation worker.'
+        )
+      }
+    }
+
     return {
       id: account.id,
       username: account.username,
       email: account.email,
-      status: account.status
+      status: account.status,
+      gameReady: GameAccountIdentityService.isGameReady(account.gameIdentity ?? null),
+      provisioningStatus: account.gameIdentity?.provisioningStatus ?? 'NONE'
     }
   }
 
@@ -837,4 +903,25 @@ export class AuthService {
     }
     return 'http://localhost:3000'
   }
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
+}
+
+// Mirrors GameCommandTransportClient's and GameCredentialEnvelopeService's
+// own "not configured" guards (game-command-transport.client.ts,
+// game-credential-envelope.service.ts) without importing/duplicating their
+// internals -- a presence-only check on the same env vars they require,
+// kept independently trivial rather than a shared abstraction across a
+// module boundary this file must not modify. dispatch() checks credential
+// generation before the network call, so either being unconfigured would
+// otherwise still cost a wasted legacyLogin/credential-generation attempt
+// for a call already known to be impossible.
+function isProvisioningDispatchPossible(): boolean {
+  const transportConfigured = Boolean(process.env.GAME_DATA_WORKER_URL?.trim() && process.env.GAME_COMMAND_PORTAL_SECRET?.trim())
+  const keyringConfigured = Boolean(
+    process.env.GAME_CREDENTIAL_ACTIVE_KEY_VERSION?.trim() && process.env.GAME_CREDENTIAL_KEYS_JSON?.trim()
+  )
+  return transportConfigured && keyringConfigured
 }

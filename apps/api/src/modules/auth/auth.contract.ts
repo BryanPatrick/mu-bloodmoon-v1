@@ -106,6 +106,13 @@ export type RegisterResponse = {
   username: string
   email: string
   status: string
+  // Phase 3D-B Part F -- safe provisioning-state signal only. Never
+  // legacyLogin, membGuid, MU password, credential envelope, commandId, or
+  // provisioningRequestId. 'NONE' when GAME_ACCOUNT_PROVISIONING_ON_REGISTER
+  // is off (no GameAccountIdentity exists), matching /launcher/me's
+  // existing convention for the same case.
+  gameReady: boolean
+  provisioningStatus: 'NONE' | 'PENDING' | 'PROVISIONING' | 'ACTIVE' | 'FAILED'
 }
 
 export type ChangePasswordResponse = {

@@ -3141,3 +3141,27 @@ model GmEventResult {
   createdBy        Account             @relation("GmEventResultCreatedBy", fields: [createdById], references: [id])
   validatedBy      Account?            @relation("GmEventResultValidatedBy", fields: [validatedById], references: [id])
 }
+
+// Phase 3D-B. An append-only log of every automatic dispatch/reconcile
+// attempt the reconciliation worker makes for a GameAccountIdentity, used
+// for exponential backoff, the automatic-attempt ceiling, and the admin
+// operational view (Part AN/AO). Deliberately has NO Prisma relation to
+// GameAccountIdentity/GameAccountCredential (Phase 3D-A, owned by a
+// concurrent workstream) -- accountId/provisioningRequestId are plain
+// columns, joined by value only, so this model never requires touching
+// either of those files. Never stores ciphertext, raw SQL errors, or any
+// credential material -- errorCode mirrors the same safe, structured codes
+// GameAccountIdentity.lastErrorCode already uses.
+model GameProvisioningAttempt {
+  id                     String   @id @default(uuid())
+  accountId              String   @db.VarChar(191)
+  provisioningRequestId  String   @db.VarChar(191)
+  attemptNumber          Int
+  outcome                String   @db.VarChar(40)
+  errorCode              String?  @db.VarChar(191)
+  attemptedAt            DateTime @default(now())
+
+  @@index([accountId])
+  @@index([provisioningRequestId])
+  @@index([attemptedAt])
+}

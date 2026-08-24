@@ -30,6 +30,7 @@ import { GmModule } from './modules/gm/gm.module'
 import { TestPersonasModule } from './modules/test-personas/test-personas.module'
 import { GameDataModule } from './modules/game-data/game-data.module'
 import { GameAccountIdentityModule } from './modules/game-account-identity/game-account-identity.module'
+import { GameProvisioningReconciliationModule } from './modules/game-provisioning-reconciliation/game-provisioning-reconciliation.module'
 import { IntegrationsDiscordModule } from './modules/integrations-discord/integrations-discord.module'
 
 export const apiModules = [
@@ -57,6 +58,7 @@ export const apiModules = [
   'test-personas',
   'game-data',
   'game-account-identity',
+  'game-provisioning-reconciliation',
   'integrations-discord'
 ] as const
 
@@ -94,6 +96,7 @@ export type ApiModuleName = typeof apiModules[number]
     TestPersonasModule.register(),
     GameDataModule,
     GameAccountIdentityModule,
+    GameProvisioningReconciliationModule,
     IntegrationsDiscordModule
   ]
 })
