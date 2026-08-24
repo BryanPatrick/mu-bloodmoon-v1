@@ -12,6 +12,7 @@ import * as bcrypt from 'bcryptjs'
 import { createHash, randomBytes, randomUUID } from 'node:crypto'
 import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
+import { GameAccountIdentityService } from '../game-account-identity/game-account-identity.service'
 import type {
   ChangePasswordRequest,
   ChangePasswordResponse,
@@ -50,7 +51,8 @@ export class AuthService {
     private readonly audit: AuditService,
     private readonly twoFactor: TwoFactorService,
     private readonly mailTransport: MailTransportService,
-    private readonly twoFactorAttempts: TwoFactorAttemptLimitService
+    private readonly twoFactorAttempts: TwoFactorAttemptLimitService,
+    private readonly gameAccountIdentity: GameAccountIdentityService
   ) {}
 
   // Checks the per-account TOTP/recovery-code cooldown before a code is
@@ -283,7 +285,17 @@ export class AuthService {
             { currency: 'GOBLIN_POINT', balance: 0 },
             { currency: 'HUNT_POINT', balance: 0 }
           ]
-        }
+        },
+        // Phase 3B, feature-flagged, OFF by default. See
+        // docs/game-data/game-account-provisioning-contract.md Part I and
+        // docs/accounts/unified-account-implementation.md's activation
+        // plan -- CREATE_GAME_ACCOUNT itself does not exist yet (Phase 3C),
+        // so this only ever reaches PENDING, atomically with Account
+        // creation via Prisma's nested-write (no separate transaction
+        // needed). Never activated in production until Phase 3C ships.
+        ...(process.env.GAME_ACCOUNT_PROVISIONING_ON_REGISTER === 'true'
+          ? { gameIdentity: { create: this.gameAccountIdentity.buildPendingCreateInput() } }
+          : {})
       }
     })
 

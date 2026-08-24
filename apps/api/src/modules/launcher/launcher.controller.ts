@@ -18,4 +18,20 @@ export class LauncherController {
   account(@CurrentUser() user: AuthenticatedUser) {
     return this.launcherService.account(user.id)
   }
+
+  // Phase 3B Part M -- Unified Blood Moon Account / game-readiness status,
+  // distinct from the existing /launcher/account route above (Portal-local
+  // profile + display characters). See launcher.service.ts's me()/
+  // myCharacters() doc comments for why these are separate concepts.
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  me(@CurrentUser() user: AuthenticatedUser) {
+    return this.launcherService.me(user)
+  }
+
+  @Get('me/characters')
+  @UseGuards(JwtAuthGuard)
+  myCharacters(@CurrentUser() user: AuthenticatedUser) {
+    return this.launcherService.myCharacters(user)
+  }
 }

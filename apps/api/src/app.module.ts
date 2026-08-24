@@ -29,6 +29,8 @@ import { GuildsModule } from './modules/guilds/guilds.module'
 import { GmModule } from './modules/gm/gm.module'
 import { TestPersonasModule } from './modules/test-personas/test-personas.module'
 import { GameDataModule } from './modules/game-data/game-data.module'
+import { GameAccountIdentityModule } from './modules/game-account-identity/game-account-identity.module'
+import { IntegrationsDiscordModule } from './modules/integrations-discord/integrations-discord.module'
 
 export const apiModules = [
   'auth',
@@ -53,7 +55,9 @@ export const apiModules = [
   'guilds',
   'gm',
   'test-personas',
-  'game-data'
+  'game-data',
+  'game-account-identity',
+  'integrations-discord'
 ] as const
 
 export type ApiModuleName = typeof apiModules[number]
@@ -88,7 +92,9 @@ export type ApiModuleName = typeof apiModules[number]
     GuildsModule,
     GmModule,
     TestPersonasModule.register(),
-    GameDataModule
+    GameDataModule,
+    GameAccountIdentityModule,
+    IntegrationsDiscordModule
   ]
 })
 export class AppModule implements NestModule {

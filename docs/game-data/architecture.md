@@ -130,6 +130,25 @@ that SQL is reached only through `bm-sql`/SSH; port 1433 is never opened).
 connection, physically executed) are two different claims — only the
 first is `PASS` as of this update.
 
+## Update — Phase 3A/3B: Unified Account (2026-08-20/24)
+
+Phase 3A replaced the "Account Linking" concept with a single Unified
+Blood Moon Account model — see `docs/game-data/unified-account.md` and
+`docs/game-data/game-account-provisioning-contract.md`.
+`docs/game-data/account-linking-contract.md` is marked `SUPERSEDED`, kept
+verbatim per the never-silently-overwrite rule.
+
+Phase 3B shipped the Portal-side foundation: `GameAccountIdentity`
+(Prisma model + state machine, `docs/accounts/game-account-identity.md`),
+a feature-flagged (off by default) registration hook, a Portal-database
+account-cleanup pass (local dev DB only — see
+`docs/accounts/unified-account-implementation.md`), new `/launcher/me`
+and `/launcher/me/characters` routes on the existing Launcher module, and
+a new read-only Discord integration
+(`docs/integrations/discord-read-api.md`). No GameBridge write command
+exists yet — `CREATE_GAME_ACCOUNT` remains Phase 3C+, unimplemented, and
+`GAME_WRITES_PERFORMED` stayed `0` throughout both phases.
+
 ## Update — Phase 2C real Agent↔SQL connectivity (2026-08-20)
 
 The paragraph immediately above is now out of date on its final claim,

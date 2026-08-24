@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
 import { AuditModule } from '../audit/audit.module'
+import { GameAccountIdentityModule } from '../game-account-identity/game-account-identity.module'
 import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
 import { JwtAuthGuard } from './jwt-auth.guard'
@@ -30,6 +31,7 @@ if (process.env.NODE_ENV === 'production' && accessSecret === refreshSecret) {
 @Module({
   imports: [
     AuditModule,
+    GameAccountIdentityModule,
     JwtModule.register({
       secret: accessSecret
     })

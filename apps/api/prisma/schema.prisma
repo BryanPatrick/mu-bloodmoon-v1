@@ -21,6 +21,17 @@ enum AccountStatus {
   BLOCKED
 }
 
+// Phase 3B. State machine for GameAccountIdentity.provisioningStatus --
+// see docs/game-data/game-account-provisioning-contract.md. Deliberately
+// separate from AccountStatus: a Blood Moon Account can be fully ACTIVE
+// (site/community usable) while its game identity is still PENDING.
+enum GameProvisioningStatus {
+  PENDING      // requested, not yet dispatched to GameBridge
+  PROVISIONING // dispatched, awaiting a real result
+  ACTIVE       // membGuid confirmed -- this is GAME_READY, no separate flag
+  FAILED       // a real failure (not a timeout) -- retry re-enters PROVISIONING
+}
+
 enum CurrencyCode {
   WCOIN
   GOBLIN_POINT
@@ -582,6 +593,64 @@ model Account {
   gmEventRunsCancelled      GmEventRun[]        @relation("GmEventRunCancelledBy")
   gmEventResultsCreated     GmEventResult[]     @relation("GmEventResultCreatedBy")
   gmEventResultsValidated   GmEventResult[]     @relation("GmEventResultValidatedBy")
+  gameIdentity              GameAccountIdentity?
+}
+
+// Phase 3B. The Portal-side half of the Unified Blood Moon Account model
+// (docs/game-data/unified-account.md,
+// docs/game-data/game-account-provisioning-contract.md). Maps a
+// canonical Account to its representation in the legacy MU game
+// database -- never a second account, never an authority in its own
+// right (see unified-account.md's "Identity authority" section).
+//
+// No GameBridge command is implemented yet (Phase 3C+) -- this model is
+// pure Portal-side scaffolding, safe to create with zero rows ever
+// reaching ACTIVE. GAME_WRITES_PERFORMED stays 0.
+//
+// Never stores a game password/credential in any form -- see
+// unified-account.md's Password strategy section for why a generated
+// game credential (if one is ever needed) must live in its own,
+// separately-scoped, rotatable store, never here.
+model GameAccountIdentity {
+  id                     String                 @id @default(uuid())
+  accountId              String                 @unique
+  membGuid               Int?                   @unique
+  legacyLogin            String?                @unique @db.VarChar(10)
+  provisioningStatus     GameProvisioningStatus @default(PENDING)
+  provisioningRequestId  String                 @unique
+  provisionedAt          DateTime?
+  lastErrorCode          String?                @db.VarChar(191)
+  lastAttemptAt          DateTime?
+  createdAt              DateTime               @default(now())
+  updatedAt              DateTime               @updatedAt
+  account                Account                @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([provisioningStatus])
+}
+
+// Phase 3B Part L/W. Launcher remote content already has a real home:
+// SiteSetting (category launcher/server/social) + KnowledgeEntry (kind
+// NEWS/EVENT) -- see LauncherService.bootstrap(), already shipped before
+// this phase. No new content models are added here; reusing what exists
+// beats a parallel CMS (docs/launcher/remote-content-contract.md
+// documents the existing shape instead of inventing a second one).
+
+// Phase 3B Part R/S. A dedicated, revocable service credential for the
+// Discord read-only integration -- never the Launcher's user session,
+// never a SUPER_ADMIN JWT, never the GameBridge HMAC secret
+// (docs/integrations/discord-read-api.md). Only a hash is ever stored,
+// matching PasswordResetToken's existing pattern -- the raw key is shown
+// to the operator exactly once, at creation, and never again.
+model DiscordServiceCredential {
+  id         String    @id @default(uuid())
+  label      String    @db.VarChar(191) // operator-facing name, e.g. "prod-bot-2026"
+  keyHash    String    @unique @db.VarChar(191)
+  scopes     String    @db.VarChar(191) // comma-separated: discord:server:read,discord:events:read,...
+  createdAt  DateTime  @default(now())
+  lastUsedAt DateTime?
+  revokedAt  DateTime?
+
+  @@index([revokedAt])
 }
 
 model TwoFactorRecoveryCode {

@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import type { KnowledgeEntry, ReferenceAsset, SiteSetting } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
+import type { AuthenticatedUser } from '../auth/auth.types'
+import { GameAccountIdentityService } from '../game-account-identity/game-account-identity.service'
 
 type EntryWithAssets = KnowledgeEntry & {
   assets: Array<{ role: string; sortOrder: number; asset: ReferenceAsset }>
@@ -18,7 +20,10 @@ const firstImage = (entry: EntryWithAssets) =>
 
 @Injectable()
 export class LauncherService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly gameAccountIdentity: GameAccountIdentityService
+  ) {}
 
   async bootstrap() {
     const [settingRows, entries] = await Promise.all([
@@ -151,5 +156,38 @@ export class LauncherService {
       activeCharacter: account.characters[0] ?? null,
       characters: account.characters
     }
+  }
+
+  // Phase 3B Part M/T -- Unified Blood Moon Account status, distinct from
+  // account() above: account() is Portal-local display data
+  // (AccountCharacter, an unrelated concept -- see
+  // docs/game-data/legacy-web-intelligence/character.md's naming-collision
+  // note). This resolves the real chain: Account.id ->
+  // GameAccountIdentity.membGuid -> Game Data. Never exposes memb___id or
+  // memb_guid itself (unified-account.md Part K).
+  async me(user: AuthenticatedUser) {
+    const identity = await this.gameAccountIdentity.findByAccountId(user.id)
+    return {
+      accountId: user.id,
+      username: user.username,
+      role: user.role,
+      gameReady: GameAccountIdentityService.isGameReady(identity),
+      provisioningStatus: identity?.provisioningStatus ?? ('NONE' as const)
+    }
+  }
+
+  // No CREATE_GAME_ACCOUNT command exists yet (Phase 3C), so no real
+  // GameAccountIdentity can reach ACTIVE today -- this honestly returns
+  // an empty list for every account right now; that is correct current
+  // behavior, not a stub standing in for one. membGuid resolution is
+  // already correct; the Game Data Worker's per-account read route
+  // (apps/game-data-worker/src/read.ts only exposes bridge status today)
+  // is the remaining Phase-3C-adjacent wiring point.
+  async myCharacters(user: AuthenticatedUser) {
+    const identity = await this.gameAccountIdentity.findByAccountId(user.id)
+    if (!GameAccountIdentityService.isGameReady(identity)) {
+      return { gameReady: false, characters: [] as const }
+    }
+    return { gameReady: true, characters: [] as const }
   }
 }
