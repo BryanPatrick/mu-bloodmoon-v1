@@ -1,0 +1,61 @@
+Query: SELECT c.column_id, c.name, ty.name, c.max_length, c.is_nullable,
+  c.is_identity, dc.definition FROM sys.columns c
+  JOIN sys.types ty ON ty.user_type_id = c.user_type_id
+  LEFT JOIN sys.default_constraints dc ON dc.parent_object_id = c.object_id
+    AND dc.parent_column_id = c.column_id
+  WHERE c.object_id = OBJECT_ID('MEMB_INFO') ORDER BY c.column_id
+
+Full real column metadata (34 columns), captured 2026-08-24:
+
+ColId ColName            TypeName      MaxLen IsNullable IsIdentity DefaultDef
+1     memb_guid          int           4      False      True       (none)
+2     memb___id          varchar       10     False      False      (none)
+3     memb__pwd          varchar       10     False      False      (none)
+4     memb_name          varchar       10     False      False      (none)
+5     sno__numb          char          18     False      False      (none)
+6     post_code          char          6      True       False      (none)
+7     addr_info          varchar       50     True       False      (none)
+8     addr_deta          varchar       50     True       False      (none)
+9     tel__numb          varchar       20     True       False      (none)
+10    phon_numb          varchar       15     True       False      (none)
+11    mail_addr          varchar       50     True       False      (none)
+12    fpas_ques          varchar       50     True       False      (none)
+13    fpas_answ          varchar       50     True       False      (none)
+14    job__code          char          2      True       False      (none)
+15    appl_days          datetime      8      True       False      (none)
+16    modi_days          datetime      8      True       False      (none)
+17    out__days          datetime      8      True       False      (none)
+18    true_days          datetime      8      True       False      (none)
+19    mail_chek          char          1      True       False      (none)
+20    bloc_code          char          1      False      False      (none)
+21    ctl1_code          char          1      False      False      (none)
+22    AccountLevel       int           4      False      False      (none)
+23    AccountExpireDate  smalldatetime 4      False      False      (none)
+24    Lock               int           4      False      False      (none)
+25    RewardVip          int           4      False      False      (none)
+26    RewardCoin         int           4      False      False      (none)
+27    RewardIndication   int           4      False      False      (none)
+28    Admin              int           4      False      False      (none)
+29    last_login         datetime      8      True       False      (none)
+30    activated          int           4      False      False      (none)
+31    activation_id      varchar       50     True       False      (none)
+32    last_login_ip      varchar       50     True       False      (none)
+33    country            varchar       50     True       False      (none)
+34    dmn_country        varchar       50     True       False      (none)
+
+CRITICAL FINDING: zero DEFAULT CONSTRAINTs exist on any column, on either
+table. Every NOT NULL column must be explicitly supplied by any INSERT --
+there is no DB-level fallback for anything.
+
+CONTRADICTS_CURRENT_ASSUMPTION: the previously-recorded legacy web
+create_account() INSERT column list (memb___id, memb__pwd, memb_name,
+sno__numb, post_code, addr_info, addr_deta, mail_addr, fpas_ques,
+fpas_answ, phon_numb, job__code, appl_days, modi_days, out__days,
+true_days, mail_chek, bloc_code, ctl1_code, activated, activation_id,
+dmn_country[, servercode]) does NOT mention 7 of the columns confirmed
+NOT NULL above: AccountLevel, AccountExpireDate, Lock, RewardVip,
+RewardCoin, RewardIndication, Admin. Either these columns were added to
+the schema after that PHP code was written, or that code path has a
+mechanism not captured in the recorded column list. Either way, Phase 3A's
+instruction "do not assume legacy web INSERT statements are still
+complete" is directly confirmed correct by this finding.

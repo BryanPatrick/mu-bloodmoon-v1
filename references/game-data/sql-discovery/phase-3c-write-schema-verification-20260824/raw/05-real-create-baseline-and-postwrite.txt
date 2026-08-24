@@ -1,0 +1,16 @@
+sourceType: REAL_SQL_AGGREGATE_DATA
+capturedAtUtcBaseline: 2026-08-24T15:13:20Z
+capturedAtUtcPostwrite: 2026-08-24T15:16:53Z
+qaLegacyLogin: q3c5v6vrrx
+
+TABLE                    BASELINE  POSTWRITE  DELTA  TARGET_ROWS
+MEMB_INFO                6         7          +1     1
+AccountCharacter         6         7          +1     1
+Character                13        13          0     0
+warehouse                4         4           0     0
+CashShopData             4         4           0     0
+Guild                    2         2           0     n/a
+GuildMember              2         2           0     n/a
+
+AUTHORIZED_MUTATION_BUDGET=PASS
+UNEXPECTED_MU_TABLE_MUTATIONS=0

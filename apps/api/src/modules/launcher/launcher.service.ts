@@ -10,13 +10,13 @@ type EntryWithAssets = KnowledgeEntry & {
 
 const settingValue = <T>(settings: Map<string, SiteSetting>, key: string, fallback: T): T => {
   const value = settings.get(key)?.value
-  return value === undefined || value === null ? fallback : value as T
+  return value === undefined || value === null ? fallback : (value as T)
 }
 
 const firstImage = (entry: EntryWithAssets) =>
-  entry.assets.find(({ asset }) => asset.kind === 'IMAGE' && asset.publicPath)?.asset.publicPath
-  ?? entry.assets.find(({ asset }) => asset.kind === 'IMAGE')?.asset.sourceUrl
-  ?? null
+  entry.assets.find(({ asset }) => asset.kind === 'IMAGE' && asset.publicPath)?.asset.publicPath ??
+  entry.assets.find(({ asset }) => asset.kind === 'IMAGE')?.asset.sourceUrl ??
+  null
 
 @Injectable()
 export class LauncherService {
@@ -176,13 +176,10 @@ export class LauncherService {
     }
   }
 
-  // No CREATE_GAME_ACCOUNT command exists yet (Phase 3C), so no real
-  // GameAccountIdentity can reach ACTIVE today -- this honestly returns
-  // an empty list for every account right now; that is correct current
-  // behavior, not a stub standing in for one. membGuid resolution is
-  // already correct; the Game Data Worker's per-account read route
-  // (apps/game-data-worker/src/read.ts only exposes bridge status today)
-  // is the remaining Phase-3C-adjacent wiring point.
+  // A newly provisioned account legitimately has no characters. The
+  // identity can therefore be ACTIVE/game-ready while this list is empty.
+  // A per-account Game Data read route can replace the empty list once
+  // character ingestion is wired; absence of characters is not an error.
   async myCharacters(user: AuthenticatedUser) {
     const identity = await this.gameAccountIdentity.findByAccountId(user.id)
     if (!GameAccountIdentityService.isGameReady(identity)) {

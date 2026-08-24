@@ -108,6 +108,7 @@ describe('Mercado Pago recharge payments', () => {
   const request = () => import('supertest').then((m) => m.default(httpServer))
 
   const suffix = Date.now().toString(36)
+  const runId = (value: string) => `${value}-${suffix}`
   const player = {
     name: 'E2E Recharge Player',
     username: `e2erc_${suffix}`,
@@ -131,7 +132,14 @@ describe('Mercado Pago recharge payments', () => {
     token = login.body.accessToken
 
     const pack = await prisma.rechargePackage.create({
-      data: { key: `e2e-recharge-pack-${suffix}`, currency: 'WCOIN', amount: 500, bonus: 50, price: '19,90', active: true }
+      data: {
+        key: `e2e-recharge-pack-${suffix}`,
+        currency: 'WCOIN',
+        amount: 500,
+        bonus: 50,
+        price: '19,90',
+        active: true
+      }
     })
     packageId = pack.id
   })
@@ -148,7 +156,7 @@ describe('Mercado Pago recharge payments', () => {
       const body = JSON.parse(String(init?.body))
       return jsonResponse(
         mockOrderBody({
-          id: 'ORD-scenario-1',
+          id: runId('ORD-scenario-1'),
           external_reference: body.external_reference,
           total_amount: '19.90',
           status: 'action_required',
@@ -157,24 +165,28 @@ describe('Mercado Pago recharge payments', () => {
       )
     }
 
-    const intentRes = await (await request())
+    const intentRes = await (
+      await request()
+    )
       .post('/api/recharge/intents')
       .set('Authorization', `Bearer ${token}`)
       .send({ packageId })
     expect(intentRes.status).toBe(201)
     const intentId = intentRes.body.id
 
-    const checkoutRes = await (await request())
+    const checkoutRes = await (
+      await request()
+    )
       .post(`/api/recharge/intents/${intentId}/checkout`)
       .set('Authorization', `Bearer ${token}`)
     expect(checkoutRes.status).toBe(201)
-    expect(checkoutRes.body.externalOrderId).toBe('ORD-scenario-1')
+    expect(checkoutRes.body.externalOrderId).toBe(runId('ORD-scenario-1'))
     expect(checkoutRes.body.qrCode).toBeTruthy()
     expect(capturedIdempotencyKey).toBeTruthy()
     expect(calls).toBe(1)
 
     const stored = await prisma.rechargeIntent.findUnique({ where: { id: intentId } })
-    expect(stored?.externalOrderId).toBe('ORD-scenario-1')
+    expect(stored?.externalOrderId).toBe(runId('ORD-scenario-1'))
     expect(stored?.paymentIdempotencyKey).toBe(capturedIdempotencyKey)
   })
 
@@ -184,17 +196,34 @@ describe('Mercado Pago recharge payments', () => {
     fetchHandler = async (url, init) => {
       idempotencyKeys.push((init?.headers as Record<string, string>)?.['X-Idempotency-Key'])
       const body = JSON.parse(String(init?.body))
-      return jsonResponse(mockOrderBody({ id: 'ORD-scenario-2', external_reference: body.external_reference, total_amount: '19.90', status: 'action_required' }))
+      return jsonResponse(
+        mockOrderBody({
+          id: runId('ORD-scenario-2'),
+          external_reference: body.external_reference,
+          total_amount: '19.90',
+          status: 'action_required'
+        })
+      )
     }
 
-    const intentRes = await (await request())
+    const intentRes = await (
+      await request()
+    )
       .post('/api/recharge/intents')
       .set('Authorization', `Bearer ${token}`)
       .send({ packageId })
     const intentId = intentRes.body.id
 
-    await (await request()).post(`/api/recharge/intents/${intentId}/checkout`).set('Authorization', `Bearer ${token}`)
-    await (await request()).post(`/api/recharge/intents/${intentId}/checkout`).set('Authorization', `Bearer ${token}`)
+    await (
+      await request()
+    )
+      .post(`/api/recharge/intents/${intentId}/checkout`)
+      .set('Authorization', `Bearer ${token}`)
+    await (
+      await request()
+    )
+      .post(`/api/recharge/intents/${intentId}/checkout`)
+      .set('Authorization', `Bearer ${token}`)
 
     expect(idempotencyKeys.length).toBe(2)
     expect(idempotencyKeys[0]).toBe(idempotencyKeys[1])
@@ -206,14 +235,27 @@ describe('Mercado Pago recharge payments', () => {
     fetchHandler = async (_url, init) => {
       const body = JSON.parse(String(init?.body))
       externalReference = body.external_reference
-      return jsonResponse(mockOrderBody({ id: orderId, external_reference: externalReference, total_amount: '19.90', status: 'action_required' }))
+      return jsonResponse(
+        mockOrderBody({
+          id: orderId,
+          external_reference: externalReference,
+          total_amount: '19.90',
+          status: 'action_required'
+        })
+      )
     }
-    const intentRes = await (await request())
+    const intentRes = await (
+      await request()
+    )
       .post('/api/recharge/intents')
       .set('Authorization', `Bearer ${token}`)
       .send({ packageId })
     const intentId = intentRes.body.id
-    await (await request()).post(`/api/recharge/intents/${intentId}/checkout`).set('Authorization', `Bearer ${token}`)
+    await (
+      await request()
+    )
+      .post(`/api/recharge/intents/${intentId}/checkout`)
+      .set('Authorization', `Bearer ${token}`)
     return { intentId, externalOrderId: orderId, externalReference }
   }
 
@@ -223,36 +265,63 @@ describe('Mercado Pago recharge payments', () => {
         .post('/api/payments/webhooks/mercadopago')
         .query({ 'data.id': dataId })
         .set('x-request-id', requestId)
-        .set('x-signature', signature ?? signWebhook(dataId, requestId, String(Math.floor(Date.now() / 1000))))
-        .send({ action: 'order.updated', api_version: 'v1', application_id: 'e2e', date_created: new Date().toISOString(), id: `evt-${dataId}`, live_mode: false, type: 'order', user_id: 1, data: { id: dataId } })
+        .set(
+          'x-signature',
+          signature ?? signWebhook(dataId, requestId, String(Math.floor(Date.now() / 1000)))
+        )
+        .send({
+          action: 'order.updated',
+          api_version: 'v1',
+          application_id: 'e2e',
+          date_created: new Date().toISOString(),
+          id: `evt-${dataId}`,
+          live_mode: false,
+          type: 'order',
+          user_id: 1,
+          data: { id: dataId }
+        })
     )
 
   // ── Scenario 3: valid webhook -> PAID + balance credited + audit/observability rows ──
   it('processes a valid webhook: credits the wallet exactly once and marks the intent PAID', async () => {
-    const { intentId, externalOrderId, externalReference } = await createCheckoutIntent('ORD-scenario-3')
+    const { intentId, externalOrderId, externalReference } = await createCheckoutIntent(
+      runId('ORD-scenario-3')
+    )
 
     fetchHandler = async () =>
-      jsonResponse(mockOrderBody({ id: externalOrderId, external_reference: externalReference, total_amount: '19.90', status: 'processed', status_detail: 'accredited' }))
+      jsonResponse(
+        mockOrderBody({
+          id: externalOrderId,
+          external_reference: externalReference,
+          total_amount: '19.90',
+          status: 'processed',
+          status_detail: 'accredited'
+        })
+      )
 
-    const res = await sendWebhook(externalOrderId, 'req-scenario-3')
+    const res = await sendWebhook(externalOrderId, runId('req-scenario-3'))
     expect(res.status).toBe(200)
 
     const updated = await prisma.rechargeIntent.findUnique({ where: { id: intentId } })
     expect(updated?.status).toBe('PAID')
 
-    const wallet = await prisma.accountCurrency.findFirst({ where: { accountId: updated!.accountId, currency: 'WCOIN' } })
+    const wallet = await prisma.accountCurrency.findFirst({
+      where: { accountId: updated!.accountId, currency: 'WCOIN' }
+    })
     expect(wallet?.balance).toBeGreaterThanOrEqual(550) // amount 500 + bonus 50
 
-    const auditRows = await prisma.auditEvent.findMany({ where: { targetId: intentId, action: 'recharge.webhook.status' } })
+    const auditRows = await prisma.auditEvent.findMany({
+      where: { targetId: intentId, action: 'recharge.webhook.status' }
+    })
     expect(auditRows.length).toBeGreaterThan(0)
   })
 
   // ── Scenario 4: invalid/malformed webhook (garbage data.id, valid-looking signature) -> no mutation ──
   it('rejects a webhook whose data.id does not resolve to any known order without mutating anything', async () => {
-    const dataId = 'ORD-does-not-exist-anywhere'
+    const dataId = runId('ORD-does-not-exist-anywhere')
     fetchHandler = async () => jsonResponse({ message: 'not found' }, 404)
 
-    const res = await sendWebhook(dataId, 'req-scenario-4')
+    const res = await sendWebhook(dataId, runId('req-scenario-4'))
     expect(res.status).toBe(200) // always 200 to MP so it does not retry forever
     const event = await prisma.paymentWebhookEvent.findFirst({ where: { externalOrderId: dataId } })
     expect(event?.rechargeIntentId).toBeNull()
@@ -265,10 +334,10 @@ describe('Mercado Pago recharge payments', () => {
       called = true
       return jsonResponse({}, 200)
     }
-    const dataId = 'ORD-scenario-5'
+    const dataId = runId('ORD-scenario-5')
     const ts = String(Math.floor(Date.now() / 1000))
     const badSignature = `ts=${ts},v1=${'0'.repeat(64)}`
-    const res = await sendWebhook(dataId, 'req-scenario-5', badSignature)
+    const res = await sendWebhook(dataId, runId('req-scenario-5'), badSignature)
     expect(res.status).toBe(200)
     expect(called).toBe(false)
 
@@ -279,29 +348,93 @@ describe('Mercado Pago recharge payments', () => {
 
   // ── Scenario 6: repeated webhook (same event) -> credited once ──
   it('does not double-credit when the exact same webhook event is redelivered', async () => {
-    const { intentId, externalOrderId, externalReference } = await createCheckoutIntent('ORD-scenario-6')
+    const { intentId, externalOrderId, externalReference } = await createCheckoutIntent(
+      runId('ORD-scenario-6')
+    )
     fetchHandler = async () =>
-      jsonResponse(mockOrderBody({ id: externalOrderId, external_reference: externalReference, total_amount: '19.90', status: 'processed', status_detail: 'accredited' }))
+      jsonResponse(
+        mockOrderBody({
+          id: externalOrderId,
+          external_reference: externalReference,
+          total_amount: '19.90',
+          status: 'processed',
+          status_detail: 'accredited'
+        })
+      )
 
     const before = await prisma.rechargeIntent.findUnique({ where: { id: intentId } })
-    const walletBefore = (await prisma.accountCurrency.findFirst({ where: { accountId: before!.accountId, currency: 'WCOIN' } }))?.balance || 0
+    const walletBefore =
+      (
+        await prisma.accountCurrency.findFirst({
+          where: { accountId: before!.accountId, currency: 'WCOIN' }
+        })
+      )?.balance || 0
 
-    const requestId = 'req-scenario-6-fixed'
+    const requestId = runId('req-scenario-6-fixed')
     const ts = String(Math.floor(Date.now() / 1000))
     const signature = signWebhook(externalOrderId, requestId, ts)
-    await (await request()).post('/api/payments/webhooks/mercadopago').query({ 'data.id': externalOrderId }).set('x-request-id', requestId).set('x-signature', signature).send({ action: 'order.updated', api_version: 'v1', application_id: 'e2e', date_created: new Date().toISOString(), id: `evt-${externalOrderId}`, live_mode: false, type: 'order', user_id: 1, data: { id: externalOrderId } })
-    await (await request()).post('/api/payments/webhooks/mercadopago').query({ 'data.id': externalOrderId }).set('x-request-id', requestId).set('x-signature', signature).send({ action: 'order.updated', api_version: 'v1', application_id: 'e2e', date_created: new Date().toISOString(), id: `evt-${externalOrderId}`, live_mode: false, type: 'order', user_id: 1, data: { id: externalOrderId } })
+    await (
+      await request()
+    )
+      .post('/api/payments/webhooks/mercadopago')
+      .query({ 'data.id': externalOrderId })
+      .set('x-request-id', requestId)
+      .set('x-signature', signature)
+      .send({
+        action: 'order.updated',
+        api_version: 'v1',
+        application_id: 'e2e',
+        date_created: new Date().toISOString(),
+        id: `evt-${externalOrderId}`,
+        live_mode: false,
+        type: 'order',
+        user_id: 1,
+        data: { id: externalOrderId }
+      })
+    await (
+      await request()
+    )
+      .post('/api/payments/webhooks/mercadopago')
+      .query({ 'data.id': externalOrderId })
+      .set('x-request-id', requestId)
+      .set('x-signature', signature)
+      .send({
+        action: 'order.updated',
+        api_version: 'v1',
+        application_id: 'e2e',
+        date_created: new Date().toISOString(),
+        id: `evt-${externalOrderId}`,
+        live_mode: false,
+        type: 'order',
+        user_id: 1,
+        data: { id: externalOrderId }
+      })
 
-    const walletAfter = (await prisma.accountCurrency.findFirst({ where: { accountId: before!.accountId, currency: 'WCOIN' } }))?.balance || 0
+    const walletAfter =
+      (
+        await prisma.accountCurrency.findFirst({
+          where: { accountId: before!.accountId, currency: 'WCOIN' }
+        })
+      )?.balance || 0
     expect(walletAfter - walletBefore).toBe(550)
   })
 
   // ── Scenario 7: approved payment -> approvedAt set, exact credited amount ──
   it('sets approvedAt and credits exactly amount + bonus on approval', async () => {
-    const { intentId, externalOrderId, externalReference } = await createCheckoutIntent('ORD-scenario-7')
+    const { intentId, externalOrderId, externalReference } = await createCheckoutIntent(
+      runId('ORD-scenario-7')
+    )
     fetchHandler = async () =>
-      jsonResponse(mockOrderBody({ id: externalOrderId, external_reference: externalReference, total_amount: '19.90', status: 'processed', status_detail: 'accredited' }))
-    await sendWebhook(externalOrderId, 'req-scenario-7')
+      jsonResponse(
+        mockOrderBody({
+          id: externalOrderId,
+          external_reference: externalReference,
+          total_amount: '19.90',
+          status: 'processed',
+          status_detail: 'accredited'
+        })
+      )
+    await sendWebhook(externalOrderId, runId('req-scenario-7'))
 
     const updated = await prisma.rechargeIntent.findUnique({ where: { id: intentId } })
     expect(updated?.status).toBe('PAID')
@@ -310,27 +443,57 @@ describe('Mercado Pago recharge payments', () => {
 
   // ── Scenario 8: rejected payment -> FAILED, no credit ──
   it('marks a rejected payment as FAILED without crediting the wallet', async () => {
-    const { intentId, externalOrderId, externalReference } = await createCheckoutIntent('ORD-scenario-8')
+    const { intentId, externalOrderId, externalReference } = await createCheckoutIntent(
+      runId('ORD-scenario-8')
+    )
     const before = await prisma.rechargeIntent.findUnique({ where: { id: intentId } })
-    const walletBefore = (await prisma.accountCurrency.findFirst({ where: { accountId: before!.accountId, currency: 'WCOIN' } }))?.balance || 0
+    const walletBefore =
+      (
+        await prisma.accountCurrency.findFirst({
+          where: { accountId: before!.accountId, currency: 'WCOIN' }
+        })
+      )?.balance || 0
 
     fetchHandler = async () =>
-      jsonResponse(mockOrderBody({ id: externalOrderId, external_reference: externalReference, total_amount: '19.90', status: 'failed', status_detail: 'failed' }))
-    await sendWebhook(externalOrderId, 'req-scenario-8')
+      jsonResponse(
+        mockOrderBody({
+          id: externalOrderId,
+          external_reference: externalReference,
+          total_amount: '19.90',
+          status: 'failed',
+          status_detail: 'failed'
+        })
+      )
+    await sendWebhook(externalOrderId, runId('req-scenario-8'))
 
     const updated = await prisma.rechargeIntent.findUnique({ where: { id: intentId } })
     expect(updated?.status).toBe('FAILED')
-    const walletAfter = (await prisma.accountCurrency.findFirst({ where: { accountId: before!.accountId, currency: 'WCOIN' } }))?.balance || 0
+    const walletAfter =
+      (
+        await prisma.accountCurrency.findFirst({
+          where: { accountId: before!.accountId, currency: 'WCOIN' }
+        })
+      )?.balance || 0
     expect(walletAfter).toBe(walletBefore)
   })
 
   // ── Scenario 9: pending payment -> no premature credit, webhook still processed (not an error) ──
   it('keeps a pending (action_required) order in a non-terminal status without crediting', async () => {
-    const { intentId, externalOrderId, externalReference } = await createCheckoutIntent('ORD-scenario-9')
+    const { intentId, externalOrderId, externalReference } = await createCheckoutIntent(
+      runId('ORD-scenario-9')
+    )
     fetchHandler = async () =>
-      jsonResponse(mockOrderBody({ id: externalOrderId, external_reference: externalReference, total_amount: '19.90', status: 'action_required', status_detail: 'waiting_transfer' }))
+      jsonResponse(
+        mockOrderBody({
+          id: externalOrderId,
+          external_reference: externalReference,
+          total_amount: '19.90',
+          status: 'action_required',
+          status_detail: 'waiting_transfer'
+        })
+      )
 
-    const res = await sendWebhook(externalOrderId, 'req-scenario-9')
+    const res = await sendWebhook(externalOrderId, runId('req-scenario-9'))
     expect(res.status).toBe(200)
     const updated = await prisma.rechargeIntent.findUnique({ where: { id: intentId } })
     expect(['PENDING', 'PREPARED']).toContain(updated?.status)
@@ -338,38 +501,65 @@ describe('Mercado Pago recharge payments', () => {
 
   // ── Scenario 10: divergent amount -> MANUAL_REVIEW, no credit, CRITICAL SystemAlert ──
   it('flags a divergent amount for manual review and raises a CRITICAL alert', async () => {
-    const { intentId, externalOrderId, externalReference } = await createCheckoutIntent('ORD-scenario-10')
+    const { intentId, externalOrderId, externalReference } = await createCheckoutIntent(
+      runId('ORD-scenario-10')
+    )
     fetchHandler = async () =>
-      jsonResponse(mockOrderBody({ id: externalOrderId, external_reference: externalReference, total_amount: '999.00', status: 'processed', status_detail: 'accredited' }))
-    await sendWebhook(externalOrderId, 'req-scenario-10')
+      jsonResponse(
+        mockOrderBody({
+          id: externalOrderId,
+          external_reference: externalReference,
+          total_amount: '999.00',
+          status: 'processed',
+          status_detail: 'accredited'
+        })
+      )
+    await sendWebhook(externalOrderId, runId('req-scenario-10'))
 
     const updated = await prisma.rechargeIntent.findUnique({ where: { id: intentId } })
     expect(updated?.status).toBe('MANUAL_REVIEW')
 
-    const alerts = await prisma.systemAlert.findMany({ where: { module: 'store', severity: 'CRITICAL' } })
+    const alerts = await prisma.systemAlert.findMany({
+      where: { module: 'store', severity: 'CRITICAL' }
+    })
     expect(alerts.length).toBeGreaterThan(0)
   })
 
   // ── Scenario 11: nonexistent internal order -> 200, no match, alert fired ──
   it('handles a webhook for an order with no matching RechargeIntent without throwing', async () => {
-    const orderId = 'ORD-scenario-11-orphan'
-    fetchHandler = async () => jsonResponse(mockOrderBody({ id: orderId, external_reference: 'never-created-reference', total_amount: '19.90', status: 'processed', status_detail: 'accredited' }))
-    const res = await sendWebhook(orderId, 'req-scenario-11')
+    const orderId = runId('ORD-scenario-11-orphan')
+    fetchHandler = async () =>
+      jsonResponse(
+        mockOrderBody({
+          id: orderId,
+          external_reference: 'never-created-reference',
+          total_amount: '19.90',
+          status: 'processed',
+          status_detail: 'accredited'
+        })
+      )
+    const res = await sendWebhook(orderId, runId('req-scenario-11'))
     expect(res.status).toBe(200)
 
-    const alerts = await prisma.systemAlert.findMany({ where: { module: 'store', alertType: 'CRITICAL_FAILURE' } })
+    const alerts = await prisma.systemAlert.findMany({
+      where: { module: 'store', alertType: 'CRITICAL_FAILURE' }
+    })
     expect(alerts.length).toBeGreaterThan(0)
   })
 
   // ── Scenario 12 + 13: failure during credit (retryable), then a successful retry credits once, further redelivery credits nothing more ──
   it('does not leave the intent PAID if crediting fails, and a later retry credits exactly once', async () => {
-    const { intentId, externalOrderId, externalReference } = await createCheckoutIntent('ORD-scenario-12')
+    const { intentId, externalOrderId, externalReference } = await createCheckoutIntent(
+      runId('ORD-scenario-12')
+    )
 
     // Patch the service's own creditCurrency (not the Prisma delegate --
     // $transaction hands the callback a distinct transactional `tx` proxy,
     // so patching prisma.accountCurrency.upsert directly would not actually
     // intercept the call made through `tx` inside the transaction).
-    const service = commerceService as unknown as { creditCurrency: (...args: unknown[]) => Promise<void> }
+    const service = commerceService as unknown as {
+      creditCurrency: (...args: unknown[]) => Promise<void>
+    }
     const originalCreditCurrency = service.creditCurrency.bind(service)
     let shouldFail = true
     service.creditCurrency = async (...args: unknown[]) => {
@@ -381,14 +571,39 @@ describe('Mercado Pago recharge payments', () => {
     }
 
     fetchHandler = async () =>
-      jsonResponse(mockOrderBody({ id: externalOrderId, external_reference: externalReference, total_amount: '19.90', status: 'processed', status_detail: 'accredited' }))
+      jsonResponse(
+        mockOrderBody({
+          id: externalOrderId,
+          external_reference: externalReference,
+          total_amount: '19.90',
+          status: 'processed',
+          status_detail: 'accredited'
+        })
+      )
 
-    const requestId = 'req-scenario-12-13'
+    const requestId = runId('req-scenario-12-13')
     const ts = String(Math.floor(Date.now() / 1000))
     const signature = signWebhook(externalOrderId, requestId, ts)
-    const body = { action: 'order.updated', api_version: 'v1', application_id: 'e2e', date_created: new Date().toISOString(), id: `evt-${externalOrderId}`, live_mode: false, type: 'order', user_id: 1, data: { id: externalOrderId } }
+    const body = {
+      action: 'order.updated',
+      api_version: 'v1',
+      application_id: 'e2e',
+      date_created: new Date().toISOString(),
+      id: `evt-${externalOrderId}`,
+      live_mode: false,
+      type: 'order',
+      user_id: 1,
+      data: { id: externalOrderId }
+    }
 
-    const firstAttempt = await (await request()).post('/api/payments/webhooks/mercadopago').query({ 'data.id': externalOrderId }).set('x-request-id', requestId).set('x-signature', signature).send(body)
+    const firstAttempt = await (
+      await request()
+    )
+      .post('/api/payments/webhooks/mercadopago')
+      .query({ 'data.id': externalOrderId })
+      .set('x-request-id', requestId)
+      .set('x-signature', signature)
+      .send(body)
     expect(firstAttempt.status).toBe(500)
 
     let updated = await prisma.rechargeIntent.findUnique({ where: { id: intentId } })
@@ -396,17 +611,41 @@ describe('Mercado Pago recharge payments', () => {
 
     // Redeliver (same event) -- the webhook table row is FAILED, not
     // PROCESSED, so this retry is allowed to proceed and should now succeed.
-    const secondAttempt = await (await request()).post('/api/payments/webhooks/mercadopago').query({ 'data.id': externalOrderId }).set('x-request-id', requestId).set('x-signature', signature).send(body)
+    const secondAttempt = await (
+      await request()
+    )
+      .post('/api/payments/webhooks/mercadopago')
+      .query({ 'data.id': externalOrderId })
+      .set('x-request-id', requestId)
+      .set('x-signature', signature)
+      .send(body)
     expect(secondAttempt.status).toBe(200)
 
     updated = await prisma.rechargeIntent.findUnique({ where: { id: intentId } })
     expect(updated?.status).toBe('PAID')
-    const walletAfterSecond = (await prisma.accountCurrency.findFirst({ where: { accountId: updated!.accountId, currency: 'WCOIN' } }))?.balance || 0
+    const walletAfterSecond =
+      (
+        await prisma.accountCurrency.findFirst({
+          where: { accountId: updated!.accountId, currency: 'WCOIN' }
+        })
+      )?.balance || 0
 
     // A third redelivery of the same (now PROCESSED) event must not credit again.
-    const thirdAttempt = await (await request()).post('/api/payments/webhooks/mercadopago').query({ 'data.id': externalOrderId }).set('x-request-id', requestId).set('x-signature', signature).send(body)
+    const thirdAttempt = await (
+      await request()
+    )
+      .post('/api/payments/webhooks/mercadopago')
+      .query({ 'data.id': externalOrderId })
+      .set('x-request-id', requestId)
+      .set('x-signature', signature)
+      .send(body)
     expect(thirdAttempt.status).toBe(200)
-    const walletAfterThird = (await prisma.accountCurrency.findFirst({ where: { accountId: updated!.accountId, currency: 'WCOIN' } }))?.balance || 0
+    const walletAfterThird =
+      (
+        await prisma.accountCurrency.findFirst({
+          where: { accountId: updated!.accountId, currency: 'WCOIN' }
+        })
+      )?.balance || 0
     expect(walletAfterThird).toBe(walletAfterSecond)
 
     service.creditCurrency = originalCreditCurrency
@@ -414,8 +653,18 @@ describe('Mercado Pago recharge payments', () => {
 
   // ── Regression: client-sent price is ignored -- only packageId is accepted ──
   it('ignores any client-sent price/amount and always prices from the server-side package', async () => {
-    fetchHandler = async () => jsonResponse(mockOrderBody({ id: 'ORD-regression-price', external_reference: 'x', total_amount: '19.90', status: 'action_required' }))
-    const res = await (await request())
+    fetchHandler = async () =>
+      jsonResponse(
+        mockOrderBody({
+          id: runId('ORD-regression-price'),
+          external_reference: 'x',
+          total_amount: '19.90',
+          status: 'action_required'
+        })
+      )
+    const res = await (
+      await request()
+    )
       .post('/api/recharge/intents')
       .set('Authorization', `Bearer ${token}`)
       // Deliberately sending extra fields a malicious client might try --
@@ -438,18 +687,33 @@ describe('Mercado Pago recharge payments', () => {
       email: `e2e-recharge-other-${suffix}@example.invalid`
     }
     await (await request()).post('/api/auth/register').send(other)
-    const otherLogin = await (await request()).post('/api/auth/login').send({ username: other.username, password: other.password })
+    const otherLogin = await (
+      await request()
+    )
+      .post('/api/auth/login')
+      .send({ username: other.username, password: other.password })
     const otherToken = otherLogin.body.accessToken
 
-    const intentRes = await (await request()).post('/api/recharge/intents').set('Authorization', `Bearer ${token}`).send({ packageId })
-    const res = await (await request()).post(`/api/recharge/intents/${intentRes.body.id}/checkout`).set('Authorization', `Bearer ${otherToken}`)
+    const intentRes = await (
+      await request()
+    )
+      .post('/api/recharge/intents')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ packageId })
+    const res = await (
+      await request()
+    )
+      .post(`/api/recharge/intents/${intentRes.body.id}/checkout`)
+      .set('Authorization', `Bearer ${otherToken}`)
     expect(res.status).toBe(403)
   })
 
   it('fails closed when real-money payments are disabled, even through the API', async () => {
     process.env.REAL_MONEY_PAYMENTS_ENABLED = 'false'
     const countBefore = await prisma.rechargeIntent.count()
-    const res = await (await request())
+    const res = await (
+      await request()
+    )
       .post('/api/recharge/intents')
       .set('Authorization', `Bearer ${token}`)
       .send({ packageId })

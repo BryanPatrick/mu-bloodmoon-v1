@@ -1,0 +1,23 @@
+AccountCharacter full column metadata (16 columns):
+ColId ColName       TypeName TypeName MaxLen IsNullable IsIdentity
+1     Number        int      4        False  True   (real IDENTITY, not
+                                                        previously confirmed)
+2     Id            varchar  10       False  False  (real PK, confirmed)
+3-12  GameID1..10   varchar  10       True   False
+13    GameIDC       varchar  10       True   False
+14    MoveCnt       tinyint  1        True   False
+15    ExtClass      int      4        False  False  (no default -- must supply)
+16    ExtWarehouse  int      4        False  False  (no default -- must supply)
+
+PK / unique indexes (both tables):
+  AccountCharacter: PK_AccountCharacter on (Id) -- confirmed real PK
+  MEMB_INFO: PK_MEMB_INFO_1 on (memb_guid) -- confirmed real PK/IDENTITY
+
+Triggers on MEMB_INFO or AccountCharacter: NONE (0 rows returned).
+Check constraints on MEMB_INFO or AccountCharacter: NONE (0 rows returned).
+
+memb___id (MEMB_INFO) still has NO unique index/constraint of any kind --
+re-confirmed unchanged from Phase 2A/3A findings. This is the exact race
+condition Part L warns about: an application-level "check then insert" is
+not safe under concurrency without an explicit lock, since the database
+itself will not reject a duplicate memb___id.

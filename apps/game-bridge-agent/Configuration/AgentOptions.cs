@@ -13,6 +13,7 @@ public sealed class AgentOptions
     public string WorkerBaseUrl { get; set; } = "";
     public string HmacSecret { get; set; } = "";
     public string SqlServerConnectionString { get; set; } = "";
+    public string SqlServerWriterConnectionString { get; set; } = "";
     public int PollIntervalSeconds { get; set; } = 30;
     public int HeartbeatIntervalSeconds { get; set; } = 60;
     public int OutboxPendingHardCap { get; set; } = 500;

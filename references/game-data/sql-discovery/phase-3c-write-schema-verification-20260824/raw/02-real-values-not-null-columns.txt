@@ -1,0 +1,35 @@
+Query: SELECT memb_guid, AccountLevel, AccountExpireDate, Lock, RewardVip,
+  RewardCoin, RewardIndication, Admin, bloc_code, ctl1_code, activated,
+  mail_chek FROM MEMB_INFO ORDER BY memb_guid
+(safe: no personal/login/password/email/IP data selected)
+
+All 6 real accounts, IDENTICAL values across every column checked:
+  AccountLevel      = 0
+  AccountExpireDate  = 1900-01-01 03:00:00  (smalldatetime's minimum
+                        representable date -- the real "never expires"
+                        sentinel this install uses)
+  Lock               = 0
+  RewardVip          = 0
+  RewardCoin         = 0
+  RewardIndication   = 0
+  Admin              = 0
+  bloc_code          = 0  (unblocked)
+  activated          = 0
+  mail_chek          = 0
+
+ONE EXCEPTION, flagged and NOT blindly copied:
+  ctl1_code = 1 for ALL 6 real accounts.
+
+Legacy code (docs/game-data/legacy-web-intelligence/account.md) recorded
+ctl1_code as a "GM/staff flag" (search_condition_status(): AND
+m.ctl1_code = 1 filters for "gm"). All 6 existing QA/test accounts
+showing ctl1_code=1 is not proof that 1 is the safe/normal default for a
+NEW account -- it may simply mean whoever seeded these 6 test accounts
+gave them GM-adjacent flags for testing purposes. The new Phase 3C QA
+account intentionally uses ctl1_code='0' instead, the conservative
+non-privileged choice, deliberately diverging from the observed pattern
+-- see derived/write-set-decision.md for the full reasoning.
+
+AccountCharacter real values (Id, ExtClass, ExtWarehouse, MoveCnt), all 6
+rows: ExtClass=0, ExtWarehouse=0, MoveCnt=0 -- consistent, no exceptions,
+safe to use as-is.

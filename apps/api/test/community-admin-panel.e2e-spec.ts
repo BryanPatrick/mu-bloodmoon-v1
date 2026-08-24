@@ -150,7 +150,10 @@ describe('Community admin panel: three-tier RBAC (player / scoped moderator / su
       .send({ username: userS.username, password: userS.password })
     expect(loginS.status).toBe(201)
     tokenS = loginS.body.accessToken
-    await prisma.account.update({ where: { username: userS.username }, data: { twoFactorEnabled: true } })
+    await prisma.account.update({
+      where: { username: userS.username },
+      data: { twoFactorEnabled: true }
+    })
   })
 
   describe('PLAYER: acesso negado', () => {
@@ -330,7 +333,7 @@ describe('Community admin panel: three-tier RBAC (player / scoped moderator / su
         .post('/api/admin/community/achievements')
         .set('Authorization', `Bearer ${tokenS}`)
         .send({
-          name: 'Conquista real do E2E',
+          name: `Conquista real do E2E ${uniqueSuffix}`,
           description: 'Descricao real.',
           category: 'geral',
           isActive: true
@@ -352,7 +355,7 @@ describe('Community admin panel: three-tier RBAC (player / scoped moderator / su
         .patch(`/api/admin/community/achievements/${achievementId}`)
         .set('Authorization', `Bearer ${tokenS}`)
         .send({
-          name: 'Conquista real do E2E (corrigida)',
+          name: `Conquista real do E2E ${uniqueSuffix} (corrigida)`,
           description: 'Descricao real.',
           category: 'geral',
           isActive: true
@@ -367,7 +370,7 @@ describe('Community admin panel: three-tier RBAC (player / scoped moderator / su
         .patch(`/api/admin/community/achievements/${achievementId}`)
         .set('Authorization', `Bearer ${tokenS}`)
         .send({
-          name: 'Conquista real do E2E (corrigida)',
+          name: `Conquista real do E2E ${uniqueSuffix} (corrigida)`,
           description: 'Descricao real.',
           category: 'geral',
           isActive: false

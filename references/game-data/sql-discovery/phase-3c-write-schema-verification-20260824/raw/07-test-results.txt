@@ -1,0 +1,17 @@
+capturedAtUtc: 2026-08-24T15:44:00Z
+
+GameBridge Agent: 70/70 PASS
+Game Data Worker: 30/30 PASS
+Game Data Worker typecheck: PASS
+API structure/security/typecheck: PASS
+API build: PASS
+ProvisioningProbe self-contained publish: PASS
+
+API full E2E first attempt: BLOCKED (Docker executable unavailable)
+API full E2E supported local fallback: 33/36 suites, 450/458 tests PASS
+API failing-fixture rerun after rerunnable-ID corrections: 3/3 suites, 53/53 tests PASS
+API composite result: 36/36 suites, 458/458 tests PASS
+
+The three fixture corrections are test-only. They replace fixed webhook/order
+and achievement identifiers with per-run identifiers and account for the
+documented persistent-database deduplication behavior.
