@@ -349,7 +349,16 @@ export class AdminContentService {
         seasonMin: payload.seasonMin ?? null,
         seasonMax: payload.seasonMax ?? null,
         rawData: jsonValue(payload.rawData),
-        normalizedData: jsonValue(payload.normalizedData)
+        normalizedData: jsonValue(payload.normalizedData),
+        launcherEnabled: payload.launcherEnabled ?? false,
+        launcherSummary: payload.launcherSummary?.trim() || null,
+        body: payload.body ?? null,
+        eventStartsAt: payload.eventStartsAt ? new Date(payload.eventStartsAt) : null,
+        eventEndsAt: payload.eventEndsAt ? new Date(payload.eventEndsAt) : null,
+        recommendedLevel: payload.recommendedLevel?.trim() || null,
+        entryInfo: payload.entryInfo ?? null,
+        guideUrl: payload.guideUrl?.trim() || null,
+        calendarEnabled: payload.calendarEnabled ?? false
       }
     })
 
@@ -386,7 +395,16 @@ export class AdminContentService {
         ...(payload.seasonMin !== undefined ? { seasonMin: payload.seasonMin } : {}),
         ...(payload.seasonMax !== undefined ? { seasonMax: payload.seasonMax } : {}),
         ...(payload.rawData !== undefined ? { rawData: jsonValue(payload.rawData) } : {}),
-        ...(payload.normalizedData !== undefined ? { normalizedData: jsonValue(payload.normalizedData) } : {})
+        ...(payload.normalizedData !== undefined ? { normalizedData: jsonValue(payload.normalizedData) } : {}),
+        ...(payload.launcherEnabled !== undefined ? { launcherEnabled: payload.launcherEnabled } : {}),
+        ...(payload.launcherSummary !== undefined ? { launcherSummary: payload.launcherSummary?.trim() || null } : {}),
+        ...(payload.body !== undefined ? { body: payload.body } : {}),
+        ...(payload.eventStartsAt !== undefined ? { eventStartsAt: payload.eventStartsAt ? new Date(payload.eventStartsAt) : null } : {}),
+        ...(payload.eventEndsAt !== undefined ? { eventEndsAt: payload.eventEndsAt ? new Date(payload.eventEndsAt) : null } : {}),
+        ...(payload.recommendedLevel !== undefined ? { recommendedLevel: payload.recommendedLevel?.trim() || null } : {}),
+        ...(payload.entryInfo !== undefined ? { entryInfo: payload.entryInfo } : {}),
+        ...(payload.guideUrl !== undefined ? { guideUrl: payload.guideUrl?.trim() || null } : {}),
+        ...(payload.calendarEnabled !== undefined ? { calendarEnabled: payload.calendarEnabled } : {})
       }
     })
 

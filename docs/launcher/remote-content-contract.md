@@ -104,3 +104,18 @@ see `docs/launcher/asset-contract.md` and
 `docs/launcher/page-data-contracts.md` for how the client consumes these.
 `socials`/`utilities` supersede nothing — the pre-existing flat `links`
 object is untouched for backward compatibility.
+
+## Update — Launcher CMS Studio phase
+
+This document's central lesson (audit first, reuse `SiteSetting`/
+`KnowledgeEntry`, never build a parallel content system reflexively) was
+applied again when the Launcher CMS Studio phase asked for a full visual
+editor: `ShopProduct`/`StoreCategory` were reused as-is for Store content,
+`KnowledgeEntry` was extended additively rather than forked for News/
+Events, and only the pieces that genuinely didn't exist yet (a formal slot
+registry, draft/publish/versioning, a general asset library, purchase
+terms) got new models. `docs/launcher/cms-launcher-studio.md` is the
+record of that audit for this phase. `launcher.service.ts`/
+`launcher.controller.ts` themselves are untouched — the new work lives in
+`launcher-studio/` and reaches the Launcher client via an additive `GET
+/launcher/content` route, not a change to `GET /launcher/bootstrap`.

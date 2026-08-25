@@ -24,7 +24,8 @@ const adminRoutePermissions: Array<[string, Permission]> = [
   ['/painel/admin/retencao', permissions.adminRetentionManage],
   ['/painel/admin/sistema', permissions.adminServerSettingsManage],
   ['/painel/admin/guildas', permissions.adminGuildsView],
-  ['/painel/admin/eventos', permissions.gmEventsView]
+  ['/painel/admin/eventos', permissions.gmEventsView],
+  ['/painel/admin/launcher-studio', permissions.adminLauncherContentRead]
 ]
 
 const gmRoutePermissions: Array<[string, Permission]> = [

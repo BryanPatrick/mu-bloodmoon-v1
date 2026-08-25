@@ -115,6 +115,10 @@ export type CreatePurchaseIntentPayload = {
   variantId?: string
   quantity?: number
   destinationCharacterId?: string
+  // Launcher CMS Studio phase (Part V/W) -- required whenever an active
+  // StorePurchaseTerms version exists. The frontend checkbox is UX only;
+  // this is what the backend actually checks.
+  termsVersion?: number
 }
 
 export type StoreOrderActionPayload = {

@@ -96,7 +96,7 @@
 
 <script setup lang="ts">
 import {
-  Activity, BarChart3, Bell, ChevronDown, FileSearch, LayoutDashboard, Map, PackageCheck,
+  Activity, BarChart3, Bell, ChevronDown, FileSearch, LayoutDashboard, LayoutTemplate, Map, PackageCheck,
   ListTodo, MessageCircle, PanelLeftClose, PanelLeftOpen, Settings, Shield, ShoppingBag,
   Store, TicketCheck, UserCog, Users
 } from 'lucide-vue-next'
@@ -230,6 +230,12 @@ const administrativeItems: MenuItem[] = [
     to: '/painel/admin/eventos',
     icon: Map,
     permission: permissions.gmEventsView
+  },
+  {
+    label: 'Launcher Studio',
+    to: '/painel/admin/launcher-studio',
+    icon: LayoutTemplate,
+    permission: permissions.adminLauncherContentRead
   },
   {
     label: 'Monitoramento',

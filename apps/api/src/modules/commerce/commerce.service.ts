@@ -461,6 +461,23 @@ export class CommerceService {
 
   async createPurchaseIntent(payload: CreatePurchaseIntentPayload, user: AuthenticatedUser) {
     const now = new Date()
+
+    // Part V/W -- enforced only once an operator has actually configured a
+    // Purchase Terms version (StorePurchaseTerms via Launcher Studio). A
+    // deployment/test DB that has never created one behaves exactly as
+    // before this phase; once one exists, every new purchase must name the
+    // currently active version -- the checkout checkbox is never trusted
+    // on its own.
+    const activeTerms = await this.prisma.storePurchaseTerms.findFirst({
+      where: { active: true },
+      orderBy: { version: 'desc' }
+    })
+    if (activeTerms) {
+      if (payload.termsVersion !== activeTerms.version) {
+        throw new BadRequestException('You must accept the current Purchase Terms before checking out')
+      }
+    }
+
     const quantity = Math.max(1, Math.min(100, Number(payload.quantity) || 1))
     const product = await this.prisma.shopProduct.findUnique({
       where: { id: payload.productId },
@@ -573,6 +590,8 @@ export class CommerceService {
           currency,
           status: 'PAID',
           correlationId,
+          termsVersion: activeTerms ? activeTerms.version : null,
+          termsAcceptedAt: activeTerms ? now : null,
           deliveries: {
             create: {
               status: 'WAITING',

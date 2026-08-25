@@ -32,6 +32,7 @@ import { GameDataModule } from './modules/game-data/game-data.module'
 import { GameAccountIdentityModule } from './modules/game-account-identity/game-account-identity.module'
 import { GameProvisioningReconciliationModule } from './modules/game-provisioning-reconciliation/game-provisioning-reconciliation.module'
 import { IntegrationsDiscordModule } from './modules/integrations-discord/integrations-discord.module'
+import { LauncherStudioModule } from './modules/launcher-studio/launcher-studio.module'
 
 export const apiModules = [
   'auth',
@@ -59,7 +60,8 @@ export const apiModules = [
   'game-data',
   'game-account-identity',
   'game-provisioning-reconciliation',
-  'integrations-discord'
+  'integrations-discord',
+  'launcher-studio'
 ] as const
 
 export type ApiModuleName = typeof apiModules[number]
@@ -97,7 +99,8 @@ export type ApiModuleName = typeof apiModules[number]
     GameDataModule,
     GameAccountIdentityModule,
     GameProvisioningReconciliationModule,
-    IntegrationsDiscordModule
+    IntegrationsDiscordModule,
+    LauncherStudioModule
   ]
 })
 export class AppModule implements NestModule {

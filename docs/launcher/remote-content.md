@@ -77,3 +77,15 @@ support URLs, publishing news — is already reachable by editing rows in
 `SiteSetting`/`KnowledgeEntry`/`ReferenceAsset` through whatever admin
 tooling already writes them; no new backend capability is required, only
 (eventually) an admin UI for it, which this phase does not build (Part AD).
+
+## Update — Launcher CMS Studio phase
+
+The admin UI Part AD deferred now exists (`docs/launcher/
+cms-launcher-studio.md`), but it does **not** replace the fields on this
+page. It adds a separate, additive route (`GET /launcher/content`) backed
+by a formal slot registry with draft/publish/versioning/rollback — built
+that way specifically because `SiteSetting`'s one-row-per-key shape can't
+represent an unpublished draft, which the new CMS's edit-before-publish
+requirement needs. `campaign`/`socials`/`utilities`/`news`/`assets` above
+are unchanged and still the source of truth for their fields; nothing in
+this phase modified `launcher.service.ts`.

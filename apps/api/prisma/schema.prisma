@@ -1308,11 +1308,31 @@ model KnowledgeEntry {
   duplicates     KnowledgeEntry[]      @relation("KnowledgeEntryDuplicates")
   assets         KnowledgeEntryAsset[]
 
+  // Launcher CMS Studio phase (Part S/T) -- additive fields only, all
+  // nullable/defaulted so every pre-existing row (the wiki-ingestion
+  // pipeline this model already serves) is unaffected. `summary` above
+  // remains the general/website summary; `launcherSummary` is the
+  // Launcher-specific shorter variant and falls back to `summary` when
+  // unset (bootstrap.ts) rather than duplicating the concept a third time.
+  // `cardImage`/`heroImage` are NOT new columns -- they reuse the existing
+  // KnowledgeEntryAsset.role join (role: "card" | "hero"), the same reuse
+  // this model already does for its one prior image concept.
+  launcherEnabled  Boolean   @default(false)
+  launcherSummary  String?   @db.Text
+  body             String?   @db.LongText
+  eventStartsAt    DateTime?
+  eventEndsAt      DateTime?
+  recommendedLevel String?   @db.VarChar(60)
+  entryInfo        String?   @db.Text
+  guideUrl         String?   @db.Text
+  calendarEnabled  Boolean   @default(false)
+
   @@index([kind])
   @@index([scope])
   @@index([status])
   @@index([sourceKey])
   @@index([slug])
+  @@index([launcherEnabled])
 }
 
 model ReferenceAsset {
@@ -1636,6 +1656,13 @@ model PurchaseIntent {
   cancelledBy            String?
   cancelledAt            DateTime?
   completedAt            DateTime?
+  // Part V/W -- the checkout checkbox alone is never trusted; the backend
+  // records exactly which StorePurchaseTerms.version was active and
+  // accepted at confirmation time. Both nullable/additive so existing rows
+  // (predating this phase) remain valid; the service layer, not the
+  // schema, refuses a *new* purchase without both set.
+  termsVersion           Int?
+  termsAcceptedAt        DateTime?
   createdAt              DateTime             @default(now())
   updatedAt              DateTime             @updatedAt
   account                Account              @relation(fields: [accountId], references: [id], onDelete: Cascade)
@@ -3153,15 +3180,150 @@ model GmEventResult {
 // credential material -- errorCode mirrors the same safe, structured codes
 // GameAccountIdentity.lastErrorCode already uses.
 model GameProvisioningAttempt {
-  id                     String   @id @default(uuid())
-  accountId              String   @db.VarChar(191)
-  provisioningRequestId  String   @db.VarChar(191)
-  attemptNumber          Int
-  outcome                String   @db.VarChar(40)
-  errorCode              String?  @db.VarChar(191)
-  attemptedAt            DateTime @default(now())
+  id                    String   @id @default(uuid())
+  accountId             String   @db.VarChar(191)
+  provisioningRequestId String   @db.VarChar(191)
+  attemptNumber         Int
+  outcome               String   @db.VarChar(40)
+  errorCode             String?  @db.VarChar(191)
+  attemptedAt           DateTime @default(now())
 
   @@index([accountId])
   @@index([provisioningRequestId])
   @@index([attemptedAt])
+}
+
+// Launcher CMS Studio phase. STRUCTURE (which slots exist, where they sit,
+// what type/constraints each has) is a static TypeScript catalog --
+// launcher-studio/slot-registry.ts -- never a database row, so the CMS can
+// never introduce a slot the compiled Launcher doesn't already know how to
+// render. These models hold only the CONTENT an operator puts into an
+// already-declared slot. slotId always matches a live slot-registry id;
+// there is no FK to enforce that (the registry isn't a table) so the
+// service layer validates it on every write.
+//
+// Deliberately separate from the existing SiteSetting-JSON-blob pattern
+// launcher.service.ts already uses for campaign/socials/utilities -- that
+// pattern has exactly one row per key with a single status, so a draft can
+// never sit alongside a still-live published value (see LauncherSlotContent
+// below). Reusing SiteSetting here would mean writing a slot's edit
+// straight over its live value, which Part AE (edit must not immediately
+// affect clients) explicitly rules out. The existing SiteSetting-backed
+// bootstrap fields are untouched -- this is an additive parallel path for
+// the slots newly declared by the registry.
+model LauncherSlotContent {
+  id                 String             @id @default(uuid())
+  slotId             String             @unique @db.VarChar(191)
+  pageKey            String             @db.VarChar(60)
+  status             LauncherSlotStatus @default(DRAFT)
+  draftValue         Json
+  publishedValue     Json?
+  publishedInVersion Int?
+  updatedBy          String?
+  publishedBy        String?
+  publishedAt        DateTime?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([pageKey])
+  @@index([status])
+}
+
+// One row per publish (Part AF: contentVersion the Launcher can key
+// cache/update off) and one row per rollback (Part AG) -- rollback is
+// always a new, forward-moving publish that restores older per-slot
+// snapshots, never a destructive rewrite of history.
+model LauncherContentPublish {
+  id          String   @id @default(uuid())
+  version     Int      @unique @default(autoincrement())
+  kind        String   @default("PUBLISH") @db.VarChar(20) // PUBLISH | ROLLBACK
+  note        String?  @db.Text
+  publishedBy String?
+  publishedAt DateTime @default(now())
+
+  @@index([publishedAt])
+}
+
+// Per-slot snapshot captured at every publish/rollback, keyed by the
+// LauncherContentPublish.version it belongs to -- how rollback finds "what
+// was this slot's published value as of version N" without ever deleting a
+// prior value.
+model LauncherSlotContentRevision {
+  id        String   @id @default(uuid())
+  slotId    String   @db.VarChar(191)
+  version   Int
+  value     Json
+  createdAt DateTime @default(now())
+
+  @@unique([slotId, version])
+  @@index([slotId])
+}
+
+// Central asset library (Part M/N/O). One asset, many consumers (Launcher
+// slot content, future Website/Discord/Game reuse) -- content should
+// reference an id here rather than duplicate a URL. Deliberately separate
+// from ReferenceAsset: that model's shape (sourceUrl/duplicateOf/
+// ReferenceSource/KnowledgeEntryAsset.role) is purpose-built for the
+// web-scraped knowledge-base pipeline, not a general editorial asset
+// library with consumer categories -- reusing it here would conflate two
+// different domains rather than avoid a duplicate one.
+model LauncherAsset {
+  id              String                       @id @default(uuid())
+  name            String                       @db.VarChar(191)
+  category        LauncherAssetCategory
+  mimeType        String                       @db.VarChar(80)
+  width           Int?
+  height          Int?
+  sizeBytes       Int
+  sha256          String                       @db.VarChar(64)
+  storageProvider LauncherAssetStorageProvider @default(LOCAL)
+  storageKey      String                       @db.VarChar(512)
+  publicUrl       String?                      @db.VarChar(512)
+  status          EditorialStatus              @default(PUBLISHED)
+  createdBy       String?
+  createdAt       DateTime                     @default(now())
+  updatedAt       DateTime                     @updatedAt
+
+  @@index([category])
+  @@index([sha256])
+  @@index([status])
+}
+
+// Part V/W -- purchase-terms versions and the backend-recorded acceptance
+// on PurchaseIntent below. The backend, not the frontend checkbox, is the
+// source of truth for which version an account accepted.
+model StorePurchaseTerms {
+  id          String   @id @default(uuid())
+  version     Int      @unique @default(autoincrement())
+  title       String   @db.VarChar(191)
+  content     String   @db.Text
+  effectiveAt DateTime @default(now())
+  active      Boolean  @default(true)
+  createdBy   String?
+  createdAt   DateTime @default(now())
+
+  @@index([active])
+}
+
+enum LauncherSlotStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum LauncherAssetCategory {
+  LAUNCHER
+  WEBSITE
+  GAME
+  CLASSES
+  ITEMS
+  EVENTS
+  NEWS
+  CAMPAIGNS
+  BRANDING
+  SYSTEM
+}
+
+enum LauncherAssetStorageProvider {
+  LOCAL
+  R2
 }

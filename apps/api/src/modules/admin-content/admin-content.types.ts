@@ -40,6 +40,18 @@ export type AdminCreateKnowledgeEntryPayload = {
   seasonMax?: number | null
   rawData?: unknown
   normalizedData?: unknown
+  // Launcher CMS Studio phase (Part S/T) -- additive, only meaningful for
+  // kind NEWS/EVENT. See schema.prisma's KnowledgeEntry comment for why
+  // these live here instead of a second content model.
+  launcherEnabled?: boolean
+  launcherSummary?: string | null
+  body?: string | null
+  eventStartsAt?: string | null
+  eventEndsAt?: string | null
+  recommendedLevel?: string | null
+  entryInfo?: string | null
+  guideUrl?: string | null
+  calendarEnabled?: boolean
 }
 
 export type AdminUpdateKnowledgeEntryPayload = Partial<AdminCreateKnowledgeEntryPayload>
