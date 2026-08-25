@@ -48,17 +48,45 @@ export class TwoFactorService {
     return result.valid
   }
 
+  // Versioned keyring, added for safe key rotation. Storage format is
+  // self-describing -- `v{N}.iv.tag.ciphertext` for anything encrypted
+  // under this scheme, vs. the original (pre-versioning) 3-part
+  // `iv.tag.ciphertext` with no version marker at all. A 3-part value is
+  // therefore unambiguously "v1, from before versioning existed" -- no
+  // schema/migration needed to carry version metadata, since every
+  // existing row already announces its own version by its shape. New
+  // writes always use the current active version; decrypt() accepts
+  // either shape and picks the matching key.
+  //
+  // `v1`'s key source is deliberately still exactly
+  // `TWO_FACTOR_ENCRYPTION_KEY` (or its historical fallbacks) -- the
+  // already-deployed secret, untouched -- so introducing this keyring
+  // requires zero knowledge of the current production key and cannot by
+  // itself invalidate a single existing record. A new version's source
+  // lives in `TWO_FACTOR_ENCRYPTION_KEY_{VERSION}` (e.g.
+  // `TWO_FACTOR_ENCRYPTION_KEY_V2`); `TWO_FACTOR_ENCRYPTION_ACTIVE_KEY_VERSION`
+  // selects which version encrypt() uses for new writes (defaults to
+  // `v1`, i.e. today's unchanged behavior, until explicitly advanced).
   encrypt(secret: string) {
+    const version = this.activeVersion()
+    const key = this.keyForVersion(version)
     const iv = randomBytes(12)
-    const cipher = createCipheriv('aes-256-gcm', this.key(), iv)
+    const cipher = createCipheriv('aes-256-gcm', key, iv)
     const encrypted = Buffer.concat([cipher.update(secret, 'utf8'), cipher.final()])
-    return [iv, cipher.getAuthTag(), encrypted].map((part) => part.toString('base64url')).join('.')
+    const parts = [iv, cipher.getAuthTag(), encrypted].map((part) => part.toString('base64url'))
+    return [version, ...parts].join('.')
   }
 
   decrypt(value: string) {
-    const [ivValue, tagValue, encryptedValue] = value.split('.')
-    if (!ivValue || !tagValue || !encryptedValue) throw new Error('Invalid encrypted 2FA secret')
-    const decipher = createDecipheriv('aes-256-gcm', this.key(), Buffer.from(ivValue, 'base64url'))
+    const segments = value.split('.')
+    const [version, ivValue, tagValue, encryptedValue] =
+      segments.length === 4
+        ? segments
+        : segments.length === 3
+          ? ['v1', ...segments]
+          : []
+    if (!version || !ivValue || !tagValue || !encryptedValue) throw new Error('Invalid encrypted 2FA secret')
+    const decipher = createDecipheriv('aes-256-gcm', this.keyForVersion(version), Buffer.from(ivValue, 'base64url'))
     decipher.setAuthTag(Buffer.from(tagValue, 'base64url'))
     return Buffer.concat([
       decipher.update(Buffer.from(encryptedValue, 'base64url')),
@@ -66,11 +94,30 @@ export class TwoFactorService {
     ]).toString('utf8')
   }
 
-  private key() {
-    const source = process.env.TWO_FACTOR_ENCRYPTION_KEY
-      || process.env.JWT_REFRESH_SECRET
-      || (process.env.NODE_ENV === 'production' ? '' : 'dev-two-factor-key-change-me')
-    if (!source) throw new Error('TWO_FACTOR_ENCRYPTION_KEY is required in production')
+  // The keyVersion actually encrypted a given value with -- exposed so the
+  // migration tool (Part H) can find not-yet-migrated records without
+  // decrypting them first.
+  keyVersionOf(value: string): string {
+    const segments = value.split('.')
+    return segments.length === 4 ? segments[0] : 'v1'
+  }
+
+  activeVersion(): string {
+    return process.env.TWO_FACTOR_ENCRYPTION_ACTIVE_KEY_VERSION || 'v1'
+  }
+
+  private keyForVersion(version: string) {
+    if (!/^v[1-9][0-9]{0,3}$/.test(version)) throw new Error(`Invalid 2FA key version: ${version}`)
+    const source =
+      version === 'v1'
+        ? process.env.TWO_FACTOR_ENCRYPTION_KEY ||
+          process.env.JWT_REFRESH_SECRET ||
+          (process.env.NODE_ENV === 'production' ? '' : 'dev-two-factor-key-change-me')
+        : process.env[`TWO_FACTOR_ENCRYPTION_KEY_${version.toUpperCase()}`] || ''
+    if (!source) {
+      const envHint = version === 'v1' ? 'TWO_FACTOR_ENCRYPTION_KEY' : `TWO_FACTOR_ENCRYPTION_KEY_${version.toUpperCase()}`
+      throw new Error(`${envHint} is required (key version ${version} is not configured)`)
+    }
     return createHash('sha256').update(source).digest()
   }
 }
