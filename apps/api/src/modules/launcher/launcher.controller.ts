@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common'
+import { Controller, Get, Query, UseGuards } from '@nestjs/common'
 import type { AuthenticatedUser } from '../auth/auth.types'
 import { CurrentUser } from '../auth/current-user.decorator'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
@@ -33,5 +33,16 @@ export class LauncherController {
   @UseGuards(JwtAuthGuard)
   myCharacters(@CurrentUser() user: AuthenticatedUser) {
     return this.launcherService.myCharacters(user)
+  }
+
+  // Launcher Phase L3 -- public, same trust level as /launcher/bootstrap.
+  @Get('events')
+  events() {
+    return this.launcherService.events()
+  }
+
+  @Get('rankings')
+  rankings(@Query('type') type?: string) {
+    return this.launcherService.rankings(type)
   }
 }

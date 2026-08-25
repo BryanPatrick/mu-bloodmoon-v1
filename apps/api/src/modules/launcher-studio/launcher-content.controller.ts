@@ -16,4 +16,12 @@ export class LauncherContentController {
   content(@Query('page') page?: string) {
     return this.launcherStudio.resolvedContent(page)
   }
+
+  // Part AL/AK -- public, same trust level as the rest of this controller.
+  // The Store checkout flow reads this to display the terms and learn the
+  // active version before sending termsVersion on purchase.
+  @Get('store/terms/active')
+  activeTerms() {
+    return this.launcherStudio.activeTerms()
+  }
 }

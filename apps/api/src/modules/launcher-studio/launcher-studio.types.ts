@@ -45,9 +45,23 @@ export interface ResolvedSlot {
   status: 'DRAFT' | 'PUBLISHED' | 'UNSET'
 }
 
+// Part E's asset-resolution flow (assetId -> API-resolved metadata/url)
+// needs a manifest the same shape as GET /launcher/bootstrap's existing
+// assets[] -- an IMAGE/asset-REFERENCE slot's Value is only ever a
+// LauncherAsset id, never a URL, so the client can't resolve it without
+// this.
+export interface LauncherAssetManifestEntry {
+  id: string
+  url: string
+  contentType: string
+  hash: string
+  size: number
+}
+
 export interface LauncherContentResponse {
   schemaVersion: number
   contentVersion: number
   generatedAt: string
   slots: ResolvedSlot[]
+  assets: LauncherAssetManifestEntry[]
 }

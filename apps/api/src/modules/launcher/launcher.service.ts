@@ -403,4 +403,97 @@ export class LauncherService {
     }
     return { gameReady: true, characters: [] as const }
   }
+
+  // Launcher Phase L3 -- the Events page needs a real active/upcoming list
+  // and a monthly calendar; KnowledgeEntry (kind EVENT, already extended
+  // with eventStartsAt/eventEndsAt/calendarEnabled this phase) is the real,
+  // already-published source, same one GET /launcher/bootstrap's news list
+  // already draws NEWS entries from. A dedicated route rather than folding
+  // this into bootstrap -- events.contract.ts's integrations-discord module
+  // deliberately keeps each consumer on its own dedicated read path rather
+  // than a shared cross-cutting service (see discord.service.ts's own
+  // getEvents/getRankings comments); this route follows that same,
+  // already-established convention.
+  async events() {
+    const now = new Date()
+    const entries = await this.prisma.knowledgeEntry.findMany({
+      where: {
+        kind: 'EVENT',
+        status: 'PUBLISHED',
+        scope: 'SEASON_6',
+        launcherEnabled: true
+      },
+      orderBy: [{ eventStartsAt: 'asc' }],
+      take: 40,
+      include: {
+        assets: { include: { asset: true }, orderBy: { sortOrder: 'asc' } }
+      }
+    })
+
+    const toEventCard = (entry: (typeof entries)[number]) => ({
+      id: entry.id,
+      name: entry.title,
+      shortDescription: entry.launcherSummary ?? entry.summary ?? '',
+      startsAt: entry.eventStartsAt,
+      endsAt: entry.eventEndsAt,
+      recommendedLevel: entry.recommendedLevel,
+      entryInfo: entry.entryInfo,
+      bannerUrl: firstImage(entry as EntryWithAssets),
+      guideUrl: entry.guideUrl
+    })
+
+    const active = entries.find(
+      (entry) => entry.eventStartsAt && entry.eventStartsAt <= now && (!entry.eventEndsAt || entry.eventEndsAt >= now)
+    )
+    const upcoming = entries.filter((entry) => entry.id !== active?.id && entry.eventStartsAt && entry.eventStartsAt > now)
+    const calendarEntries = entries.filter((entry) => entry.calendarEnabled && entry.eventStartsAt)
+
+    return {
+      activeEvent: active ? toEventCard(active) : null,
+      upcoming: upcoming.slice(0, 10).map(toEventCard),
+      calendar: calendarEntries.map((entry) => ({
+        date: entry.eventStartsAt,
+        name: entry.title,
+        shortDescription: entry.launcherSummary ?? entry.summary ?? '',
+        startsAt: entry.eventStartsAt,
+        guideUrl: entry.guideUrl
+      }))
+    }
+  }
+
+  // Same honest substitute discord.service.ts's getRankings already uses
+  // and documents: the real Game Data Platform has no public leaderboard
+  // read path yet (docs/game-data/read-models/account-snapshot.md) -- this
+  // is real, currently-available Portal-side AccountCharacter data, not a
+  // stand-in presented as something it isn't. Public character name/class/
+  // level/reset only -- no account identity, no memb_guid/memb___id.
+  async rankings(rankingType?: string) {
+    const orderBy =
+      rankingType === 'level'
+        ? [{ level: 'desc' as const }]
+        : rankingType === 'resets'
+          ? [{ reset: 'desc' as const }]
+          : [{ masterReset: 'desc' as const }, { reset: 'desc' as const }, { level: 'desc' as const }]
+
+    const characters = await this.prisma.accountCharacter.findMany({
+      orderBy,
+      take: 100,
+      select: { name: true, className: true, level: true, reset: true, masterReset: true }
+    })
+
+    const valueFor = (c: (typeof characters)[number]) =>
+      rankingType === 'level' ? c.level : rankingType === 'resets' ? c.reset : c.masterReset
+
+    return {
+      rankingType: rankingType || 'masterReset',
+      availableRankingTypes: ['masterReset', 'resets', 'level'],
+      entries: characters.map((c, index) => ({
+        rank: index + 1,
+        characterName: c.name,
+        currentClass: c.className,
+        level: c.level,
+        value: valueFor(c)
+      }))
+    }
+  }
 }

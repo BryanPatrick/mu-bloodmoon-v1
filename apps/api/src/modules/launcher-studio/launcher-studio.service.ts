@@ -346,6 +346,15 @@ export class LauncherStudioService {
     return this.prisma.storePurchaseTerms.findMany({ orderBy: { version: 'desc' } })
   }
 
+  // Public read path (Part AL) -- the Store checkout needs to display the
+  // current terms and know which version to send back. Returns null (not
+  // 404) when no terms have been configured yet, matching the same
+  // backward-compatible "nothing configured" state createPurchaseIntent
+  // already treats as a no-op (commerce.service.ts).
+  async activeTerms() {
+    return this.prisma.storePurchaseTerms.findFirst({ where: { active: true }, orderBy: { version: 'desc' } })
+  }
+
   async createTerms(payload: AdminLauncherTermsCreatePayload, user: AuthenticatedUser) {
     if (!payload.title?.trim() || !payload.content?.trim()) {
       throw new BadRequestException('Title and content are required.')
@@ -389,7 +398,39 @@ export class LauncherStudioService {
       schemaVersion: BOOTSTRAP_SCHEMA_VERSION,
       contentVersion: latestVersion?.version ?? 0,
       generatedAt: new Date().toISOString(),
-      slots: resolved
+      slots: resolved,
+      assets: await this.buildAssetManifest(resolved)
     }
+  }
+
+  // Part E -- every IMAGE/asset-REFERENCE slot value (including each
+  // iconAssetId inside an ORDERED_LIST item) is a LauncherAsset id, never a
+  // URL. This resolves the ids actually present in the response to real,
+  // hash-verifiable entries, the same shape bootstrap's own asset
+  // manifest already uses -- an id with no matching LauncherAsset row
+  // (deleted/never existed) is simply omitted, never a fabricated entry.
+  private async buildAssetManifest(resolved: ResolvedSlot[]) {
+    const ids = new Set<string>()
+    const collect = (value: unknown) => {
+      if (typeof value === 'string' && value) ids.add(value)
+      if (Array.isArray(value)) {
+        for (const item of value) {
+          if (item && typeof item === 'object' && 'iconAssetId' in item) collect((item as { iconAssetId?: unknown }).iconAssetId)
+        }
+      }
+    }
+    for (const slot of resolved) collect(slot.value)
+    if (ids.size === 0) return []
+
+    const assets = await this.prisma.launcherAsset.findMany({ where: { id: { in: [...ids] } } })
+    return assets
+      .filter((asset) => asset.publicUrl)
+      .map((asset) => ({
+        id: asset.id,
+        url: asset.publicUrl as string,
+        contentType: asset.mimeType,
+        hash: asset.sha256,
+        size: asset.sizeBytes
+      }))
   }
 }
