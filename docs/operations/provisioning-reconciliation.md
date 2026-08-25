@@ -82,3 +82,27 @@ endpoint here or anywhere else.
 4. Rollback: either flag back to unset/`false` immediately halts new
    dispatch/reconciliation without touching `/auth/login`, existing
    accounts, or existing MU rows.
+
+## Update (security hardening phase) -- production runner + concurrency guard
+
+Production does not run the in-process `setInterval` loop described
+above (`GAME_PROVISIONING_RECONCILIATION_ENABLED` stays unset/off there
+by design). Instead, `apps/api/src/reconcile.ts` -- a standalone
+`NestFactory.createApplicationContext` entry point, same shape as
+`migrate-two-factor-keys.ts`/`provisioning-health.ts` -- runs one bounded
+`runOnce()` pass per invocation, triggered by a cPanel cron job. This
+avoids a long-lived background timer inside a process a hosting
+environment can restart/recycle at any time, in favor of a simple,
+observable, individually-logged unit of work per tick.
+
+`runOnce()`/`manualRetry()` are both wrapped in a real MySQL
+`GET_LOCK(...)`/`RELEASE_LOCK(...)` mutual-exclusion guard
+(`withReconciliationLock`, a dedicated single-connection `PrismaClient` so
+the lock isn't pinned to a connection the application's normal pool might
+recycle mid-hold). `GET_LOCK` uses a 0-second timeout -- non-blocking, so
+a second concurrent invocation (overlapping cron tick, an accidental
+second app instance, a manual trigger racing the scheduled one) returns
+an empty/`BUSY` result immediately rather than queueing or double-running
+the batch. A crashed process still releases the lock automatically when
+MySQL closes its connection. Verified by reading the deployed
+implementation directly, not just this description.

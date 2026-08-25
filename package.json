@@ -47,6 +47,7 @@
     "web-source:normalize": "node scripts/normalize-web-source-catalog.mjs",
     "figma:manifest": "node scripts/build-figma-asset-manifest.mjs",
     "deploy:cpanel:package": "npm run api:build && npm run web:build && node scripts/package-cpanel-deploy.mjs",
+    "security:scan-log-secrets": "node scripts/scan-secret-logging.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
