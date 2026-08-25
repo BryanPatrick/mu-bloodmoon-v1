@@ -2,440 +2,159 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="BloodMoon Launcher"
-        Width="1536"
-        Height="1024"
+        MinWidth="1024"
+        MinHeight="600"
         WindowStyle="None"
-        ResizeMode="NoResize"
+        ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="Manual"
-        Background="#050505"
+        Background="{StaticResource Brush.BackgroundVoid}"
         Loaded="Window_Loaded"
-        Closing="Window_Closing">
-  <Grid>
-    <Viewbox Stretch="Uniform">
-      <Grid Width="1536" Height="1024">
-        <Image Source="/Assets/launcher-shell-v2.png"
-               Stretch="Fill"
-               SnapsToDevicePixels="True" />
+        Closing="Window_Closing"
+        SizeChanged="Window_SizeChanged">
+  <Grid x:Name="RootGrid">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="60" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="40" />
+    </Grid.RowDefinitions>
 
-        <Canvas>
-          <Button Canvas.Left="0"
-                  Canvas.Top="0"
-                  Width="1335"
-                  Height="75"
-                  Style="{StaticResource HotspotButton}"
-                  ToolTip="Arraste para mover o launcher"
-                  PreviewMouseLeftButtonDown="DragArea_MouseLeftButtonDown" />
+    <!-- TOP FRAME: logo/drag area + window controls (Part: "preserve top frame; logo area; global window controls"). -->
+    <Grid Grid.Row="0" Background="{StaticResource Brush.BackgroundShell}">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <Button Grid.Column="0"
+              Style="{StaticResource HotspotButton}"
+              HorizontalContentAlignment="Left"
+              ToolTip="Arraste para mover o launcher"
+              PreviewMouseLeftButtonDown="DragArea_MouseLeftButtonDown">
+        <StackPanel Orientation="Horizontal" Margin="18,0,0,0">
+          <Image x:Name="BrandLogoImage" Width="28" Height="28" Stretch="Uniform" />
+          <TextBlock Text="BLOOD MOON"
+                     Margin="10,0,0,0"
+                     VerticalAlignment="Center"
+                     Foreground="{StaticResource Brush.TextPrimary}"
+                     FontFamily="{StaticResource Font.Display}"
+                     FontWeight="Bold"
+                     FontSize="{StaticResource FontSize.Lg}" />
+        </StackPanel>
+      </Button>
+      <StackPanel Grid.Column="1" Orientation="Horizontal">
+        <Button Width="48" Height="60" Style="{StaticResource HotspotButton}" ToolTip="Minimizar" Click="MinimizeButton_Click">
+          <TextBlock Text="—" Foreground="{StaticResource Brush.TextMuted}" FontSize="14" />
+        </Button>
+        <Button Width="48" Height="60" Style="{StaticResource HotspotButton}" ToolTip="Fechar" Click="CloseButton_Click">
+          <TextBlock Text="✕" Foreground="{StaticResource Brush.TextMuted}" FontSize="14" />
+        </Button>
+      </StackPanel>
+    </Grid>
 
-          <Button Canvas.Left="1350"
-                  Canvas.Top="19"
-                  Width="52"
-                  Height="52"
-                  Style="{StaticResource HotspotButton}"
-                  ToolTip="Configurações"
-                  Click="SettingsButton_Click" />
-          <Button Canvas.Left="1407"
-                  Canvas.Top="19"
-                  Width="54"
-                  Height="52"
-                  Style="{StaticResource HotspotButton}"
-                  ToolTip="Minimizar"
-                  Click="MinimizeButton_Click" />
-          <Button Canvas.Left="1464"
-                  Canvas.Top="19"
-                  Width="55"
-                  Height="52"
-                  Style="{StaticResource HotspotButton}"
-                  ToolTip="Fechar"
-                  Click="CloseButton_Click" />
+    <!-- BODY: fixed-width nav rail + expandable page host (Part J: WIDE hands extra space to content, not the nav). -->
+    <Grid Grid.Row="1">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition x:Name="NavColumn" Width="220" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
 
-          <Button x:Name="PlayButton"
-                  Canvas.Left="39"
-                  Canvas.Top="416"
-                  Width="522"
-                  Height="139"
-                  IsEnabled="False"
-                  Style="{StaticResource HotspotButton}"
-                  ToolTip="Jogar MU BloodMoon"
-                  Click="PlayButton_Click" />
-          <Button Canvas.Left="80"
-                  Canvas.Top="566"
-                  Width="440"
-                  Height="72"
-                  Style="{StaticResource HotspotButton}"
-                  ToolTip="Entrar no Discord"
-                  Tag="Discord"
-                  Click="SocialButton_Click" />
-          <Button Canvas.Left="80"
-                  Canvas.Top="651"
-                  Width="440"
-                  Height="77"
-                  Style="{StaticResource HotspotButton}"
-                  ToolTip="Abrir WhatsApp"
-                  Tag="Whatsapp"
-                  Click="SocialButton_Click" />
+      <Grid Grid.Column="0" Background="{StaticResource Brush.BackgroundShell}">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Margin="0,12,0,0">
+          <ToggleButton x:Name="NavHome" Tag="Home" Content="INÍCIO" Style="{StaticResource NavItem}" IsChecked="True" Click="Nav_Click" />
+          <ToggleButton x:Name="NavAccount" Tag="Account" Content="CONTA" Style="{StaticResource NavItem}" Click="Nav_Click" />
+          <ToggleButton x:Name="NavNews" Tag="News" Content="NOTÍCIAS" Style="{StaticResource NavItem}" Click="Nav_Click" />
+          <ToggleButton x:Name="NavEvents" Tag="Events" Content="EVENTOS" Style="{StaticResource NavItem}" Click="Nav_Click" />
+          <ToggleButton x:Name="NavRanking" Tag="Ranking" Content="RANKING" Style="{StaticResource NavItem}" Click="Nav_Click" />
+          <ToggleButton x:Name="NavStore" Tag="Store" Content="LOJA" Style="{StaticResource NavItem}" Click="Nav_Click" />
+          <ToggleButton x:Name="NavSettings" Tag="Settings" Content="CONFIGURAÇÕES" Style="{StaticResource NavItem}" Click="Nav_Click" />
+        </StackPanel>
 
-          <Button Canvas.Left="424"
-                  Canvas.Top="752"
-                  Width="116"
-                  Height="42"
-                  Style="{StaticResource HotspotButton}"
-                  ToolTip="Ver todas as notícias"
-                  Click="NewsButton_Click" />
-
-          <Grid Canvas.Left="76"
-                Canvas.Top="802"
-                Width="432"
-                Height="122"
-                IsHitTestVisible="False">
-            <Grid.RowDefinitions>
-              <RowDefinition Height="29" />
-              <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
-            <Grid>
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="78" />
-              </Grid.ColumnDefinitions>
-              <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Text="◆"
-                           Margin="0,0,8,0"
-                           Foreground="#B7131B"
-                           FontSize="9"
-                           VerticalAlignment="Center" />
-                <TextBlock x:Name="FeaturedTitleText"
-                           Foreground="#CFC3B8"
-                           FontFamily="Segoe UI"
-                           FontSize="13"
-                           TextTrimming="CharacterEllipsis"
-                           Text="Nenhuma notícia publicada ainda" />
-              </StackPanel>
-              <TextBlock x:Name="FeaturedDateText"
-                         Grid.Column="1"
-                         Foreground="#81756C"
-                         FontFamily="Segoe UI"
-                         FontSize="11"
-                         TextAlignment="Right"
-                         VerticalAlignment="Center" />
-            </Grid>
-
-            <ItemsControl x:Name="NewsItems" Grid.Row="1">
-              <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                  <Grid Height="29">
-                    <Grid.ColumnDefinitions>
-                      <ColumnDefinition Width="*" />
-                      <ColumnDefinition Width="78" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                      <TextBlock Text="◆"
-                                 Margin="0,0,8,0"
-                                 Foreground="#B7131B"
-                                 FontSize="9"
-                                 VerticalAlignment="Center" />
-                      <TextBlock Text="{Binding Title}"
-                                 Foreground="#B8ADA4"
-                                 FontFamily="Segoe UI"
-                                 FontSize="12"
-                                 TextTrimming="CharacterEllipsis" />
-                    </StackPanel>
-                    <TextBlock Grid.Column="1"
-                               Text="{Binding PublishedAt, StringFormat={}{0:dd/MM/yyyy}}"
-                               Foreground="#746B64"
-                               FontFamily="Segoe UI"
-                               FontSize="11"
-                               TextAlignment="Right"
-                               VerticalAlignment="Center" />
-                  </Grid>
-                </DataTemplate>
-              </ItemsControl.ItemTemplate>
-            </ItemsControl>
-          </Grid>
-
-          <TextBlock Canvas.Left="1215"
-                     Canvas.Top="982"
-                     Width="215"
-                     Foreground="#766D68"
-                     FontFamily="Segoe UI"
-                     FontSize="12"
-                     TextAlignment="Right"
-                     Text="© 2026 MU Online - Blood Moon" />
-
-          <Grid x:Name="ProgressOverlay"
-                Canvas.Left="48"
-                Canvas.Top="798"
-                Width="480"
-                Height="126"
-                Visibility="Collapsed"
-                Background="#F20A0807">
-            <Grid.RowDefinitions>
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-              <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <DockPanel Margin="14,12,14,5">
-              <TextBlock x:Name="ProgressStatusText"
-                         Foreground="#D9CCBD"
-                         FontFamily="Segoe UI"
-                         FontSize="13"
-                         Text="Cliente pronto" />
-              <TextBlock x:Name="ProgressPercentText"
-                         DockPanel.Dock="Right"
-                         Foreground="#E12626"
-                         FontFamily="Segoe UI Semibold"
-                         FontSize="19"
-                         Text="0%" />
-            </DockPanel>
-            <Border Grid.Row="1"
-                    Margin="14,5"
-                    Height="11"
-                    Background="#170F0C"
-                    BorderBrush="#51251D"
-                    BorderThickness="1">
-              <Grid>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition x:Name="ProgressFillColumn" Width="0*" />
-                  <ColumnDefinition x:Name="ProgressRemainderColumn" Width="100*" />
-                </Grid.ColumnDefinitions>
-                <Border Grid.Column="0" Background="#D71920" />
-              </Grid>
-            </Border>
-            <TextBlock x:Name="ProgressDetailText"
-                       Grid.Row="2"
-                       Margin="14,5,14,0"
-                       Foreground="#8F8277"
-                       FontFamily="Consolas"
-                       FontSize="10"
-                       TextTrimming="CharacterEllipsis"
-                       Text="Aguardando verificação" />
-          </Grid>
-
-          <Border x:Name="Toast"
-                  Canvas.Left="513"
-                  Canvas.Top="72"
-                  Width="510"
-                  Padding="16,11"
-                  Background="#F20B0908"
-                  BorderBrush="#7B2E25"
-                  BorderThickness="1"
-                  Visibility="Collapsed">
-            <TextBlock x:Name="ToastText"
-                       Foreground="#E8D8C8"
-                       FontFamily="Segoe UI Semibold"
-                       FontSize="13"
-                       TextAlignment="Center"
-                       TextWrapping="Wrap" />
-          </Border>
-
-          <Grid Visibility="Collapsed">
-            <TextBlock x:Name="FeaturedKindText" />
-            <TextBlock x:Name="FeaturedSummaryText" />
-            <TextBlock x:Name="OnlinePlayersText" />
-            <TextBlock x:Name="RealmText" />
-            <TextBlock x:Name="ServerStatusText" />
-            <TextBlock x:Name="ServerStatusDetailText" />
-            <TextBlock x:Name="CharacterNameText" />
-            <TextBlock x:Name="CharacterDetailText" />
-            <TextBlock x:Name="ClientVersionText" />
-            <TextBlock x:Name="CurrencyText" />
-            <ItemsControl x:Name="PatchNoteItems" />
-          </Grid>
-
-          <Grid x:Name="SettingsOverlay"
-                Canvas.Left="0"
-                Canvas.Top="0"
-                Width="1536"
-                Height="1024"
-                Background="#C9000000"
-                Visibility="Collapsed">
-            <Border Width="560"
-                    Padding="28"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Background="#FC0B0908"
-                    BorderBrush="#7E3B2D"
-                    BorderThickness="1">
-              <Grid>
-                <Grid.RowDefinitions>
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <DockPanel>
-                  <TextBlock Text="OPÇÕES DO JOGO"
-                             Foreground="#F0E4D6"
-                             FontFamily="Georgia"
-                             FontSize="22"
-                             FontWeight="Bold" />
-                  <Button DockPanel.Dock="Right"
-                          Width="34"
-                          Height="30"
-                          Content="X"
-                          Style="{StaticResource DialogButton}"
-                          Click="CloseSettingsButton_Click" />
-                </DockPanel>
-
-                <Grid Grid.Row="1" Margin="0,24,0,0">
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                  </Grid.ColumnDefinitions>
-                  <StackPanel Margin="0,0,10,0">
-                    <TextBlock Text="RESOLUÇÃO" Style="{StaticResource LauncherLabel}" />
-                    <ComboBox x:Name="ResolutionCombo" Margin="0,7,0,0" Height="34" SelectedIndex="4">
-                      <ComboBoxItem Content="800 x 600" />
-                      <ComboBoxItem Content="1024 x 768" />
-                      <ComboBoxItem Content="1280 x 1024" />
-                      <ComboBoxItem Content="1360 x 768" />
-                      <ComboBoxItem Content="1440 x 900" />
-                      <ComboBoxItem Content="1600 x 900" />
-                      <ComboBoxItem Content="1680 x 1050" />
-                      <ComboBoxItem Content="1920 x 1080" />
-                    </ComboBox>
-                  </StackPanel>
-                  <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                    <TextBlock Text="IDIOMA" Style="{StaticResource LauncherLabel}" />
-                    <ComboBox x:Name="LanguageCombo" Margin="0,7,0,0" Height="34" SelectedIndex="0">
-                      <ComboBoxItem Content="Português (BR)" Tag="Por" />
-                      <ComboBoxItem Content="English" Tag="Eng" />
-                      <ComboBoxItem Content="Español" Tag="Spn" />
-                    </ComboBox>
-                  </StackPanel>
-                </Grid>
-
-                <CheckBox x:Name="WindowModeCheck"
-                          Grid.Row="2"
-                          Margin="0,20,0,0"
-                          Foreground="#D7C6B5"
-                          Content="Executar em modo janela" />
-                <CheckBox x:Name="MusicCheck"
-                          Grid.Row="3"
-                          Margin="0,12,0,0"
-                          Foreground="#D7C6B5"
-                          Content="Música" />
-                <CheckBox x:Name="SoundCheck"
-                          Grid.Row="4"
-                          Margin="0,12,0,0"
-                          Foreground="#D7C6B5"
-                          Content="Efeitos sonoros" />
-
-                <Border Grid.Row="5"
-                        Margin="0,22,0,0"
-                        Padding="14"
-                        BorderBrush="#4E2B25"
-                        BorderThickness="1">
-                  <DockPanel>
-                    <StackPanel>
-                      <TextBlock x:Name="AccountGreetingText"
-                                 Foreground="#E7D6C3"
-                                 FontFamily="Georgia"
-                                 FontSize="15"
-                                 Text="Entre com sua conta BloodMoon" />
-                      <TextBlock x:Name="AccountEmailText"
-                                 Margin="0,4,0,0"
-                                 Foreground="#85796E"
-                                 FontSize="11"
-                                 Text="Use a mesma conta do portal." />
-                    </StackPanel>
-                    <Button x:Name="AccountActionButton"
-                            DockPanel.Dock="Right"
-                            Content="ENTRAR"
-                            Style="{StaticResource LauncherTextButton}"
-                            Click="AccountActionButton_Click" />
-                  </DockPanel>
-                </Border>
-
-                <StackPanel Grid.Row="6"
-                            Margin="0,24,0,0"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Right">
-                  <Button Content="VERIFICAR ARQUIVOS"
-                          Margin="0,0,10,0"
-                          Style="{StaticResource DialogButton}"
-                          Click="VerifyButton_Click" />
-                  <Button Content="BACKUP"
-                          Margin="0,0,10,0"
-                          Style="{StaticResource DialogButton}"
-                          Click="BackupButton_Click" />
-                  <Button Content="RESTAURAR"
-                          Margin="0,0,10,0"
-                          Style="{StaticResource DialogButton}"
-                          Click="RollbackButton_Click" />
-                  <Button Content="APLICAR"
-                          Style="{StaticResource DialogButton}"
-                          Click="ApplySettingsButton_Click" />
-                </StackPanel>
-              </Grid>
-            </Border>
-          </Grid>
-
-          <Grid x:Name="LoginOverlay"
-                Canvas.Left="0"
-                Canvas.Top="0"
-                Width="1536"
-                Height="1024"
-                Background="#D8000000"
-                Visibility="Collapsed">
-            <Border Width="520"
-                    Padding="30"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Background="#FC0B0908"
-                    BorderBrush="#7E3B2D"
-                    BorderThickness="1">
-              <Grid>
-                <Grid.RowDefinitions>
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="Auto" />
-                  <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <DockPanel>
-                  <StackPanel>
-                    <TextBlock Text="CONTA BLOODMOON"
-                               Foreground="#F0E4D6"
-                               FontFamily="Georgia"
-                               FontSize="22"
-                               FontWeight="Bold" />
-                    <TextBlock Margin="0,5,0,0"
-                               Foreground="#88796C"
-                               Text="Use a mesma conta do portal." />
-                  </StackPanel>
-                  <Button DockPanel.Dock="Right"
-                          Width="34"
-                          Height="30"
-                          Content="X"
-                          Style="{StaticResource DialogButton}"
-                          Click="CloseLoginButton_Click" />
-                </DockPanel>
-                <StackPanel Grid.Row="1" Margin="0,24,0,0">
-                  <TextBlock Text="USUÁRIO" Style="{StaticResource LauncherLabel}" />
-                  <TextBox x:Name="LoginUsernameBox" Margin="0,7,0,0" Height="38" Padding="10,8" />
-                </StackPanel>
-                <StackPanel Grid.Row="2" Margin="0,15,0,0">
-                  <TextBlock Text="SENHA" Style="{StaticResource LauncherLabel}" />
-                  <PasswordBox x:Name="LoginPasswordBox" Margin="0,7,0,0" Height="38" Padding="10,8" />
-                </StackPanel>
-                <StackPanel Grid.Row="3" Margin="0,15,0,0">
-                  <TextBlock Text="CÓDIGO 2FA (SE ATIVO)" Style="{StaticResource LauncherLabel}" />
-                  <TextBox x:Name="LoginTotpBox" Margin="0,7,0,0" Height="38" Padding="10,8" MaxLength="6" />
-                </StackPanel>
-                <Button Grid.Row="4"
-                        Margin="0,24,0,0"
-                        Content="ENTRAR"
-                        Style="{StaticResource DialogButton}"
-                        Click="LoginButton_Click" />
-              </Grid>
-            </Border>
-          </Grid>
-        </Canvas>
+        <Border Grid.Row="1" Margin="12" Padding="10" Background="{StaticResource Brush.BackgroundSurface}" BorderBrush="{StaticResource Brush.BorderStrong}" BorderThickness="1">
+          <DockPanel>
+            <Button x:Name="AccountActionButton" DockPanel.Dock="Bottom" Margin="0,8,0,0" Content="ENTRAR" Style="{StaticResource LauncherTextButton}" HorizontalAlignment="Left" Click="AccountActionButton_Click" />
+            <StackPanel>
+              <TextBlock x:Name="AccountGreetingText" Foreground="{StaticResource Brush.TextSecondary}" FontFamily="{StaticResource Font.Serif}" FontSize="13" Text="Entre com sua conta" />
+              <TextBlock x:Name="AccountEmailText" Margin="0,3,0,0" Foreground="{StaticResource Brush.TextFaint}" FontSize="10" TextWrapping="Wrap" Text="Use a mesma conta do portal." />
+            </StackPanel>
+          </DockPanel>
+        </Border>
       </Grid>
-    </Viewbox>
+
+      <ContentControl x:Name="PageHost" Grid.Column="1" />
+    </Grid>
+
+    <!-- BOTTOM: updater/status bar (Part: "preserve bottom updater/status area"). -->
+    <Grid Grid.Row="2" Background="{StaticResource Brush.BackgroundShell}">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="220" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <DockPanel Grid.Column="0" Margin="16,0" VerticalAlignment="Center">
+        <TextBlock x:Name="ProgressStatusText" Foreground="{StaticResource Brush.TextSecondary}" FontFamily="{StaticResource Font.Compact}" FontSize="11" Text="Cliente pronto" VerticalAlignment="Center" />
+        <TextBlock x:Name="ProgressDetailText" Margin="10,0,0,0" Foreground="{StaticResource Brush.TextFaint}" FontFamily="{StaticResource Font.Mono}" FontSize="9" TextTrimming="CharacterEllipsis" Text="Aguardando verificação" VerticalAlignment="Center" />
+      </DockPanel>
+      <Border Grid.Column="1" Height="8" Margin="0,0,16,0" VerticalAlignment="Center" Background="{StaticResource Brush.BackgroundSurface}" BorderBrush="{StaticResource Brush.BorderWarm}" BorderThickness="1">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="ProgressFillColumn" Width="0*" />
+            <ColumnDefinition x:Name="ProgressRemainderColumn" Width="100*" />
+          </Grid.ColumnDefinitions>
+          <Border Grid.Column="0" Background="{StaticResource Brush.Crimson}" />
+        </Grid>
+      </Border>
+      <TextBlock Grid.Column="2" Margin="0,0,16,0" VerticalAlignment="Center" Foreground="{StaticResource Brush.TextFaint}" FontFamily="{StaticResource Font.Compact}" FontSize="10" Text="© 2026 MU Online - Blood Moon" />
+    </Grid>
+
+    <!-- Toast -->
+    <Border x:Name="Toast"
+            Grid.Row="0" Grid.RowSpan="2"
+            VerticalAlignment="Top" HorizontalAlignment="Center"
+            Margin="0,70,0,0"
+            Padding="16,11"
+            Background="{StaticResource Brush.BackgroundPanel}"
+            BorderBrush="{StaticResource Brush.BorderCrimson}"
+            BorderThickness="1"
+            Visibility="Collapsed">
+      <TextBlock x:Name="ToastText" Foreground="{StaticResource Brush.TextPrimary}" FontFamily="{StaticResource Font.Ui}" FontSize="13" TextAlignment="Center" TextWrapping="Wrap" MaxWidth="480" />
+    </Border>
+
+    <!-- Login overlay -->
+    <Grid x:Name="LoginOverlay" Grid.Row="0" Grid.RowSpan="3" Background="#D8000000" Visibility="Collapsed">
+      <Border Width="420" Padding="26" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{StaticResource Brush.BackgroundPanel}" BorderBrush="{StaticResource Brush.BorderCrimson}" BorderThickness="1">
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+          <DockPanel>
+            <StackPanel>
+              <TextBlock Text="CONTA BLOODMOON" Foreground="{StaticResource Brush.TextPrimary}" FontFamily="{StaticResource Font.Display}" FontSize="20" FontWeight="Bold" />
+              <TextBlock Margin="0,4,0,0" Foreground="{StaticResource Brush.TextFaint}" FontSize="11" Text="Use a mesma conta do portal." />
+            </StackPanel>
+            <Button DockPanel.Dock="Right" Width="30" Height="28" Content="✕" Style="{StaticResource DialogButton}" Click="CloseLoginButton_Click" />
+          </DockPanel>
+          <StackPanel Grid.Row="1" Margin="0,20,0,0">
+            <TextBlock Text="USUÁRIO" Style="{StaticResource LauncherLabel}" />
+            <TextBox x:Name="LoginUsernameBox" Margin="0,6,0,0" Height="34" Padding="10,7" />
+          </StackPanel>
+          <StackPanel Grid.Row="2" Margin="0,12,0,0">
+            <TextBlock Text="SENHA" Style="{StaticResource LauncherLabel}" />
+            <PasswordBox x:Name="LoginPasswordBox" Margin="0,6,0,0" Height="34" Padding="10,7" />
+          </StackPanel>
+          <StackPanel Grid.Row="3" Margin="0,12,0,0">
+            <TextBlock Text="CÓDIGO 2FA (SE ATIVO)" Style="{StaticResource LauncherLabel}" />
+            <TextBox x:Name="LoginTotpBox" Margin="0,6,0,0" Height="34" Padding="10,7" MaxLength="6" />
+          </StackPanel>
+          <Button Grid.Row="4" Margin="0,20,0,0" Content="ENTRAR" Style="{StaticResource PrimaryButton}" Click="LoginButton_Click" />
+        </Grid>
+      </Border>
+    </Grid>
   </Grid>
 </Window>

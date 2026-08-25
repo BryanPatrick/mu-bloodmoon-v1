@@ -1,0 +1,80 @@
+<UserControl x:Class="BloodMoon.Launcher.Views.EventsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ScrollViewer Background="{StaticResource Brush.BackgroundVoid}" VerticalScrollBarVisibility="Auto">
+    <StackPanel Margin="24,20">
+      <Border x:Name="BannerBorder" Style="{StaticResource Card}" Padding="0" MinHeight="90" />
+
+      <Grid Margin="0,16,0,0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="1.4*" />
+          <ColumnDefinition Width="16" />
+          <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Style="{StaticResource Card}">
+          <StackPanel>
+            <TextBlock Text="EVENTO ATIVO" Style="{StaticResource LauncherSectionTitle}" />
+            <TextBlock x:Name="ActiveNameText" Margin="0,10,0,0" Foreground="{StaticResource Brush.TextPrimary}" FontFamily="{StaticResource Font.Display}" FontWeight="Bold" FontSize="20" />
+            <TextBlock x:Name="ActiveDescriptionText" Margin="0,6,0,0" Foreground="{StaticResource Brush.TextMuted}" FontSize="12" TextWrapping="Wrap" />
+            <TextBlock x:Name="ActiveCountdownText" Margin="0,10,0,0" Foreground="{StaticResource Brush.Crimson}" FontFamily="{StaticResource Font.Mono}" FontSize="16" FontWeight="Bold" />
+            <Button x:Name="ActiveGuideButton" Margin="0,12,0,0" Content="VER DETALHES" Style="{StaticResource LauncherTextButton}" HorizontalAlignment="Left" Click="Guide_Click" />
+          </StackPanel>
+        </Border>
+
+        <Border Grid.Column="2" Style="{StaticResource Card}">
+          <StackPanel>
+            <TextBlock Text="PRÓXIMOS EVENTOS" Style="{StaticResource LauncherSectionTitle}" />
+            <ItemsControl x:Name="UpcomingItems" Margin="0,10,0,0">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border Style="{StaticResource TableRow}">
+                    <Grid>
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                      </Grid.ColumnDefinitions>
+                      <TextBlock Text="{Binding Name}" Foreground="{StaticResource Brush.TextSecondary}" FontSize="12" TextTrimming="CharacterEllipsis" />
+                      <TextBlock Grid.Column="1" Text="{Binding Countdown}" Foreground="{StaticResource Brush.TextFaint}" FontSize="10" />
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <TextBlock x:Name="NoUpcomingText" Margin="0,10,0,0" Foreground="{StaticResource Brush.TextFaint}" FontSize="11" Visibility="Collapsed" />
+          </StackPanel>
+        </Border>
+      </Grid>
+
+      <Border Margin="0,16,0,0" Style="{StaticResource Card}">
+        <StackPanel>
+          <DockPanel>
+            <TextBlock Text="CALENDÁRIO" Style="{StaticResource LauncherSectionTitle}" />
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+              <Button Content="◀" Width="28" Style="{StaticResource LauncherTextButton}" Click="PreviousMonth_Click" />
+              <TextBlock x:Name="CalendarMonthText" Margin="10,0" VerticalAlignment="Center" Foreground="{StaticResource Brush.TextSecondary}" FontSize="12" />
+              <Button Content="▶" Width="28" Style="{StaticResource LauncherTextButton}" Click="NextMonth_Click" />
+            </StackPanel>
+          </DockPanel>
+          <ItemsControl x:Name="CalendarGrid" Margin="0,12,0,0">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <UniformGrid Columns="7" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border Margin="2" Padding="6" MinHeight="56" Background="{StaticResource Brush.BackgroundSurface}" BorderBrush="{StaticResource Brush.BorderSubtle}" BorderThickness="1" ToolTip="{Binding Tooltip}">
+                  <StackPanel>
+                    <TextBlock Text="{Binding Day}" Foreground="{StaticResource Brush.TextFaint}" FontSize="10" />
+                    <TextBlock Text="{Binding Summary}" Foreground="{StaticResource Brush.Crimson}" FontSize="9" TextWrapping="Wrap" />
+                  </StackPanel>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

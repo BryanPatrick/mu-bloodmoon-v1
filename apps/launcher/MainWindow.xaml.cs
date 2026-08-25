@@ -2,15 +2,24 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using BloodMoon.Launcher.Models;
 using BloodMoon.Launcher.Services;
+using BloodMoon.Launcher.Services.ContentCache;
+using BloodMoon.Launcher.Services.Navigation;
+using BloodMoon.Launcher.Views;
 
 namespace BloodMoon.Launcher;
 
+// Launcher Phase L3 -- the Shell. Owns window chrome (drag/min/close),
+// the nav rail + page host, the bottom updater/status bar, the login
+// overlay, and the shared LauncherAppContext every page reads from. Page-
+// specific content (HOME's hero/news/events, CONTA's character list, etc)
+// lives in Views/*.xaml -- this file never renders remote content itself.
 public partial class MainWindow : Window
 {
     private readonly SettingsService _settingsService = new();
@@ -23,47 +32,162 @@ public partial class MainWindow : Window
     private readonly SessionStore _sessionStore = new();
     private readonly CancellationTokenSource _shutdown = new();
     private readonly DispatcherTimer _contentTimer = new() { Interval = TimeSpan.FromMinutes(1) };
-    private LauncherSettings _settings = new();
-    private LauncherSession? _session;
-    private LauncherAccount? _account;
-    private LauncherBootstrap? _bootstrap;
+    private readonly NavigationService _navigation = new();
+    private readonly Dictionary<PageKey, UserControl> _pages = new();
+    private readonly Dictionary<PageKey, ToggleButton> _navButtons = new();
+    private LauncherAppContext _context = null!;
     private bool _operationInProgress;
-    private bool _clientReady;
 
     public MainWindow()
     {
         InitializeComponent();
         _contentTimer.Tick += ContentTimer_Tick;
+        _navigation.Navigated += Navigation_Navigated;
     }
 
     private async void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        FitWindowToScreen();
-        _settings = await _settingsService.LoadAsync();
-        _apiClient.Configure(_settings.ApiBaseUrl);
-        PopulateSettingsForm();
+        var slotContentCache = new SlotContentCache();
+        _context = new LauncherAppContext(
+            _apiClient,
+            new LauncherContentService(_apiClient, new LauncherContentCache()),
+            new SlotContentService(_apiClient, slotContentCache),
+            new AssetCacheService(new HttpAssetDownloader()),
+            new AssetCacheService(
+                new HttpAssetDownloader(),
+                cacheDirectory: Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "BloodMoon", "Launcher", "cache", "cms-assets"),
+                hashAlgorithm: AssetHashAlgorithm.Sha256),
+            _sessionStore,
+            _settingsService,
+            _patchService,
+            _launcherUpdateService,
+            _backupService,
+            _gameConfigurationService,
+            _gameProcessService)
+        {
+            RequestLogin = () => { LoginOverlay.Visibility = Visibility.Visible; LoginUsernameBox.Focus(); },
+            OpenExternalLink = RunBrowserAction,
+            ShowToast = ShowToast,
+            RefreshAccountAsync = () => RefreshAccountAsync(showErrors: true),
+            CheckAndUpdateClientAsync = CheckAndUpdateClientAsync,
+            StartGame = StartGame,
+            RunBackupAsync = RunBackupAsync,
+            RunRollbackAsync = RunRollbackAsync,
+            ApplyResolutionProfile = ApplyResolutionProfile
+        };
+
+        _context.Settings = await _settingsService.LoadAsync();
+        _apiClient.Configure(_context.Settings.ApiBaseUrl);
+        ApplyResolutionProfile(_context.Settings.LauncherViewportProfileIndex);
+
+        BuildPages();
+        // NavigationService.CurrentPage already defaults to PageKey.Home
+        // (Part U's own design), so TryNavigate(Home) here would hit its
+        // "already on this page" early return and never call
+        // OnPageEntering -- the very first page would silently never load
+        // its content. The initial page host/entry is set directly instead,
+        // once; every subsequent navigation goes through TryNavigate as
+        // normal (real page-to-page moves always change CurrentPage).
+        PageHost.Content = _pages[PageKey.Home];
+        ((ILauncherPage)_pages[PageKey.Home]).OnPageEntering(PageKey.Home);
+
         await RefreshLauncherAsync();
+        await RefreshSlotContentAsync();
         await RestoreSessionAsync();
         await CheckAndUpdateClientAsync(showSuccess: false);
         _contentTimer.Start();
     }
 
-    private void FitWindowToScreen()
+    // Part G/H/K -- real resolution profiles. MAXIMIZED sizes to the work
+    // area (minus a small margin so the OS taskbar/edges stay respected,
+    // Part K: "respeitar taskbar/work area"); every fixed profile sizes to
+    // its exact number, clamped down only if the physical screen is
+    // smaller (never larger than the work area, never below MinWidth/
+    // MinHeight -- Part M's live-resize floor applies here too).
+    private void ApplyResolutionProfile(int profileIndex)
     {
-        const double designWidth = 1536;
-        const double designHeight = 1024;
-        const double margin = 0.94;
+        var profile = ResolutionProfiles.ForIndex(profileIndex);
         var workArea = SystemParameters.WorkArea;
-        var availableWidth = workArea.Width * margin;
-        var availableHeight = workArea.Height * margin;
-        var scale = Math.Min(
-            1,
-            Math.Min(availableWidth / designWidth, availableHeight / designHeight));
 
-        Width = Math.Round(designWidth * scale);
-        Height = Math.Round(designHeight * scale);
+        double targetWidth;
+        double targetHeight;
+        if (profile.Key == ResolutionProfileKey.Maximized)
+        {
+            const double margin = 0.96;
+            targetWidth = workArea.Width * margin;
+            targetHeight = workArea.Height * margin;
+        }
+        else
+        {
+            targetWidth = Math.Min(profile.Width, workArea.Width);
+            targetHeight = Math.Min(profile.Height, workArea.Height);
+        }
+
+        Width = Math.Max(MinWidth, Math.Round(targetWidth));
+        Height = Math.Max(MinHeight, Math.Round(targetHeight));
         Left = Math.Round(workArea.Left + (workArea.Width - Width) / 2);
         Top = Math.Round(workArea.Top + (workArea.Height - Height) / 2);
+
+        NavColumn.Width = new GridLength(BloodMoon.Launcher.Services.ResolutionEngine.NavColumnWidth(profile.IsWide));
+        _context.Settings.LauncherViewportProfileIndex = profileIndex;
+    }
+
+    private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        // Part M: live manual resize stays safe by construction -- MinWidth/
+        // MinHeight on the Window (XAML) already floors it, and the Grid-
+        // based body/nav/content layout reflows naturally (no fixed-pixel
+        // canvas, no clipping/overlap to guard against here).
+    }
+
+    private void BuildPages()
+    {
+        RegisterPage(PageKey.Home, NavHome, new HomePage());
+        RegisterPage(PageKey.Account, NavAccount, new AccountPage());
+        RegisterPage(PageKey.News, NavNews, new NewsPage());
+        RegisterPage(PageKey.Events, NavEvents, new EventsPage());
+        RegisterPage(PageKey.Ranking, NavRanking, new RankingPage());
+        RegisterPage(PageKey.Store, NavStore, new StorePage());
+        RegisterPage(PageKey.Settings, NavSettings, new SettingsPage());
+    }
+
+    private void RegisterPage(PageKey key, ToggleButton navButton, UserControl control)
+    {
+        _pages[key] = control;
+        _navButtons[key] = navButton;
+        if (control is ILauncherPage launcherPage)
+        {
+            launcherPage.Initialize(_context);
+            _navigation.RegisterPage(key, launcherPage);
+        }
+    }
+
+    private void Nav_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not ToggleButton button || button.Tag is not string tagName)
+        {
+            return;
+        }
+        if (!Enum.TryParse<PageKey>(tagName, out var key))
+        {
+            return;
+        }
+        if (!_navigation.TryNavigate(key))
+        {
+            button.IsChecked = false;
+            return;
+        }
+    }
+
+    private void Navigation_Navigated(object? sender, NavigationChangedEventArgs e)
+    {
+        foreach (var (key, navButton) in _navButtons)
+        {
+            navButton.IsChecked = key == e.To;
+        }
+        PageHost.Content = _pages[e.To];
     }
 
     private void Window_Closing(object? sender, CancelEventArgs e)
@@ -73,6 +197,7 @@ public partial class MainWindow : Window
         _apiClient.Dispose();
         _patchService.Dispose();
         _launcherUpdateService.Dispose();
+        _ = _settingsService.SaveAsync(_context.Settings);
     }
 
     private void DragArea_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -83,92 +208,9 @@ public partial class MainWindow : Window
         }
     }
 
-    private void MinimizeButton_Click(object sender, RoutedEventArgs e)
-    {
-        WindowState = WindowState.Minimized;
-    }
+    private void MinimizeButton_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
 
-    private void CloseButton_Click(object sender, RoutedEventArgs e)
-    {
-        Close();
-    }
-
-    private void SettingsButton_Click(object sender, RoutedEventArgs e)
-    {
-        PopulateSettingsForm();
-        SettingsOverlay.Visibility = Visibility.Visible;
-    }
-
-    private void LanguageButton_Click(object sender, RoutedEventArgs e)
-    {
-        PopulateSettingsForm();
-        LanguageCombo.Focus();
-        SettingsOverlay.Visibility = Visibility.Visible;
-    }
-
-    private void CloseSettingsButton_Click(object sender, RoutedEventArgs e)
-    {
-        SettingsOverlay.Visibility = Visibility.Collapsed;
-    }
-
-    private async void ApplySettingsButton_Click(object sender, RoutedEventArgs e)
-    {
-        _settings.ResolutionIndex = Math.Max(0, ResolutionCombo.SelectedIndex);
-        _settings.Language = (LanguageCombo.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "Por";
-        _settings.WindowMode = WindowModeCheck.IsChecked == true;
-        _settings.MusicEnabled = MusicCheck.IsChecked == true;
-        _settings.SoundEnabled = SoundCheck.IsChecked == true;
-
-        try
-        {
-            _gameConfigurationService.Apply(_settings);
-            await _settingsService.SaveAsync(_settings);
-            SettingsOverlay.Visibility = Visibility.Collapsed;
-            ShowToast("Configurações aplicadas com sucesso.");
-        }
-        catch (Exception exception)
-        {
-            ShowToast($"Não foi possível aplicar as configurações: {exception.Message}");
-        }
-    }
-
-    private void PopulateSettingsForm()
-    {
-        ResolutionCombo.SelectedIndex = Math.Clamp(_settings.ResolutionIndex, 0, 7);
-        LanguageCombo.SelectedIndex = _settings.Language switch
-        {
-            "Eng" => 1,
-            "Spn" => 2,
-            _ => 0
-        };
-        WindowModeCheck.IsChecked = _settings.WindowMode;
-        MusicCheck.IsChecked = _settings.MusicEnabled;
-        SoundCheck.IsChecked = _settings.SoundEnabled;
-    }
-
-    private void NewsButton_Click(object sender, RoutedEventArgs e)
-    {
-        RunBrowserAction(_bootstrap?.Links.News ?? _settings.NewsUrl);
-    }
-
-    private void SocialButton_Click(object sender, RoutedEventArgs e)
-    {
-        if (sender is not Button button)
-        {
-            return;
-        }
-
-        var url = button.Tag?.ToString() switch
-        {
-            "Discord" => _bootstrap?.Links.Discord ?? _settings.DiscordUrl,
-            "Whatsapp" => _bootstrap?.Links.Whatsapp ?? _settings.WhatsappUrl,
-            "Instagram" => _bootstrap?.Links.Instagram ?? _settings.InstagramUrl,
-            "Youtube" => _bootstrap?.Links.Youtube ?? _settings.YoutubeUrl,
-            "X" => _bootstrap?.Links.X ?? _settings.XUrl,
-            _ => _bootstrap?.Links.Website ?? _settings.WebsiteUrl
-        };
-        RunBrowserAction(url);
-    }
+    private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
 
     private void RunBrowserAction(string url)
     {
@@ -182,47 +224,15 @@ public partial class MainWindow : Window
         }
     }
 
-    private void PlayButton_Click(object sender, RoutedEventArgs e)
-    {
-        if (!_clientReady)
-        {
-            ShowToast("O cliente ainda não foi verificado. Use VERIFICAR ARQUIVOS para tentar novamente.");
-            return;
-        }
-
-        if (_operationInProgress)
-        {
-            ShowToast("Aguarde a operação atual terminar.");
-            return;
-        }
-
-        try
-        {
-            _gameConfigurationService.Apply(_settings);
-            _gameProcessService.Start(_settings);
-            Close();
-        }
-        catch (Exception exception)
-        {
-            ShowToast(exception.Message);
-        }
-    }
-
-    private async void VerifyButton_Click(object sender, RoutedEventArgs e)
-    {
-        await CheckAndUpdateClientAsync(showSuccess: true);
-    }
-
     private async Task CheckAndUpdateClientAsync(bool showSuccess)
     {
-        _clientReady = false;
-        PlayButton.IsEnabled = false;
+        _context.ClientReady = false;
         await RunOperationAsync(async cancellationToken =>
         {
             SetProgress("Baixando manifesto seguro...", 0, "Conectando por HTTPS");
             var manifest = await _patchService.GetManifestAsync(
-                _settings.PatchManifestUrl,
-                _settings.RequireSignedManifest,
+                _context.Settings.PatchManifestUrl,
+                _context.Settings.RequireSignedManifest,
                 cancellationToken);
             if (_launcherUpdateService.IsUpdateRequired(manifest.Launcher))
             {
@@ -233,35 +243,18 @@ public partial class MainWindow : Window
                 return;
             }
             var progress = new Progress<PatchProgress>(UpdateProgress);
-            var invalidFiles = await _patchService.FindInvalidFilesAsync(
-                AppContext.BaseDirectory,
-                manifest,
-                progress,
-                cancellationToken);
-            var pendingDeletions = _patchService.FindPendingDeletions(
-                AppContext.BaseDirectory,
-                manifest);
+            var invalidFiles = await _patchService.FindInvalidFilesAsync(AppContext.BaseDirectory, manifest, progress, cancellationToken);
+            var pendingDeletions = _patchService.FindPendingDeletions(AppContext.BaseDirectory, manifest);
 
             if (invalidFiles.Count == 0 && pendingDeletions.Count == 0)
             {
                 MarkClientReady(manifest.Version);
-                if (showSuccess)
-                {
-                    ShowToast("Cliente verificado. Todos os arquivos estão íntegros.");
-                }
+                if (showSuccess) ShowToast("Cliente verificado. Todos os arquivos estão íntegros.");
                 return;
             }
 
-            SetProgress(
-                "Atualizando arquivos...",
-                0,
-                $"{invalidFiles.Count} correção(ões) · {pendingDeletions.Count} remoção(ões)");
-            await _patchService.ApplyAsync(
-                AppContext.BaseDirectory,
-                manifest,
-                invalidFiles,
-                progress,
-                cancellationToken);
+            SetProgress("Atualizando arquivos...", 0, $"{invalidFiles.Count} correção(ões) · {pendingDeletions.Count} remoção(ões)");
+            await _patchService.ApplyAsync(AppContext.BaseDirectory, manifest, invalidFiles, progress, cancellationToken);
             MarkClientReady(manifest.Version);
             ShowToast("Atualização concluída com segurança.");
         });
@@ -269,49 +262,64 @@ public partial class MainWindow : Window
 
     private void MarkClientReady(string version)
     {
-        _clientReady = true;
-        PlayButton.IsEnabled = true;
+        _context.ClientReady = true;
         SetProgress("Cliente pronto", 100, $"Versão {version}");
     }
 
-    private async void BackupButton_Click(object sender, RoutedEventArgs e)
+    private void StartGame()
     {
+        if (!_context.ClientReady)
+        {
+            ShowToast("O cliente ainda não foi verificado. Use VERIFICAR ARQUIVOS em Configurações.");
+            return;
+        }
+        if (_operationInProgress)
+        {
+            ShowToast("Aguarde a operação atual terminar.");
+            return;
+        }
+        try
+        {
+            _gameConfigurationService.Apply(_context.Settings);
+            _gameProcessService.Start(_context.Settings);
+            if (_context.Settings.CloseLauncherAfterGameStarts)
+            {
+                Close();
+            }
+        }
+        catch (Exception exception)
+        {
+            ShowToast(exception.Message);
+        }
+    }
+
+    private async Task RunBackupAsync() =>
         await RunOperationAsync(async cancellationToken =>
         {
             SetProgress("Criando backup local...", 0, "Compactando o cliente");
-            var backupPath = await _backupService.CreateAsync(
-                AppContext.BaseDirectory,
-                cancellationToken);
+            var backupPath = await _backupService.CreateAsync(AppContext.BaseDirectory, cancellationToken);
             SetProgress("Backup concluído", 100, Path.GetFileName(backupPath));
             ShowToast($"Backup criado: {backupPath}");
         });
-    }
 
-    private async void RollbackButton_Click(object sender, RoutedEventArgs e)
-    {
+    private async Task RunRollbackAsync() =>
         await RunOperationAsync(async cancellationToken =>
         {
             SetProgress("Revertendo atualização...", 0, "Recuperando a versão anterior");
             try
             {
-                var version = await _patchService.RollbackLatestAsync(
-                    AppContext.BaseDirectory,
-                    cancellationToken);
+                var version = await _patchService.RollbackLatestAsync(AppContext.BaseDirectory, cancellationToken);
                 SetProgress("Atualização revertida", 100, $"Versão removida: {version}");
                 ShowToast("A atualização mais recente foi revertida.");
             }
             catch (FileNotFoundException)
             {
-                var backupPath = await _backupService.RestoreLatestAsync(
-                    AppContext.BaseDirectory,
-                    cancellationToken);
+                var backupPath = await _backupService.RestoreLatestAsync(AppContext.BaseDirectory, cancellationToken);
                 SetProgress("Restauração concluída", 100, Path.GetFileName(backupPath));
                 ShowToast("O backup local mais recente foi restaurado.");
             }
-            _clientReady = false;
-            PlayButton.IsEnabled = false;
+            _context.ClientReady = false;
         });
-    }
 
     private async Task RunOperationAsync(Func<CancellationToken, Task> action)
     {
@@ -320,9 +328,7 @@ public partial class MainWindow : Window
             ShowToast("Já existe uma operação em andamento.");
             return;
         }
-
         _operationInProgress = true;
-        ProgressOverlay.Visibility = Visibility.Visible;
         try
         {
             await action(_shutdown.Token);
@@ -344,7 +350,8 @@ public partial class MainWindow : Window
     private async void ContentTimer_Tick(object? sender, EventArgs e)
     {
         await RefreshLauncherAsync();
-        if (_session is not null)
+        await RefreshSlotContentAsync();
+        if (_context.Session is not null)
         {
             await RefreshAccountAsync(showErrors: false);
         }
@@ -352,111 +359,73 @@ public partial class MainWindow : Window
 
     private async Task RefreshLauncherAsync()
     {
-        try
+        var result = await _context.BootstrapContentService.GetContentAsync(_shutdown.Token);
+        _context.Bootstrap = result.Bootstrap;
+        if (result.Source == ContentSource.PackagedFallback)
         {
-            _bootstrap = await _apiClient.GetBootstrapAsync(_shutdown.Token);
-            ApplyBootstrap(_bootstrap);
+            ShowToast(RemoteContentFailureMessages.For(RemoteContentFailureKind.ApiOffline));
         }
-        catch (Exception exception)
-        {
-            ServerStatusText.Text = "INDISPONÍVEL";
-            ServerStatusText.Foreground = new SolidColorBrush(Color.FromRgb(206, 83, 70));
-            ServerStatusDetailText.Text = "Não foi possível consultar a API.";
-            if (IsLoaded)
-            {
-                ShowToast($"Conteúdo online indisponível: {exception.Message}");
-            }
-        }
+        BrandLogoImage.Source = ResolveBrandLogo();
     }
 
-    private void ApplyBootstrap(LauncherBootstrap bootstrap)
+    private ImageSource? ResolveBrandLogo()
     {
-        _settings.PatchManifestUrl = bootstrap.Server.ManifestUrl;
-        _settings.WebsiteUrl = bootstrap.Links.Website;
-        _settings.NewsUrl = bootstrap.Links.News;
-        _settings.DiscordUrl = bootstrap.Links.Discord;
-        _settings.WhatsappUrl = bootstrap.Links.Whatsapp;
-        _settings.InstagramUrl = bootstrap.Links.Instagram;
-        _settings.YoutubeUrl = bootstrap.Links.Youtube;
-        _settings.XUrl = bootstrap.Links.X;
+        // Part E -- brandLogo is a slot-registry IMAGE (home.brandLogo);
+        // resolved by the same asset-id -> LauncherAsset.publicUrl path a
+        // future asset-resolution helper (Part E) will centralize once
+        // more pages need it. No local fallback file ships yet -- an
+        // absent/unresolved logo simply leaves the Image control empty
+        // rather than showing a broken-image icon (Part F never applies a
+        // literal missing-image glyph).
+        return null;
+    }
 
-        OnlinePlayersText.Text = bootstrap.Server.OnlinePlayers.ToString("N0");
-        RealmText.Text = bootstrap.Server.Realm;
-        ServerStatusText.Text = bootstrap.Server.Status;
-        var isOnline = string.Equals(bootstrap.Server.Status, "ONLINE", StringComparison.OrdinalIgnoreCase);
-        ServerStatusText.Foreground = new SolidColorBrush(
-            isOnline ? Color.FromRgb(99, 200, 121) : Color.FromRgb(206, 83, 70));
-        ServerStatusDetailText.Text = bootstrap.Server.Maintenance.Active
-            ? bootstrap.Server.Maintenance.Message
-            : "Todos os sistemas operacionais.";
-        ClientVersionText.Text = $"CLIENTE {bootstrap.Server.ClientVersion}";
-
-        var featured = bootstrap.Featured;
-        FeaturedKindText.Text = featured?.Kind ?? "NOTÍCIAS";
-        FeaturedTitleText.Text = featured?.Title ?? "Nenhuma notícia publicada ainda";
-        FeaturedSummaryText.Text = featured?.Summary
-            ?? "Quando uma notícia for publicada no site, ela aparecerá aqui automaticamente.";
-        FeaturedDateText.Text = featured?.PublishedAt.ToLocalTime().ToString("dd/MM/yyyy") ?? "";
-        NewsItems.ItemsSource = bootstrap.News.Skip(featured is null ? 0 : 1).Take(4).ToList();
-        PatchNoteItems.ItemsSource = bootstrap.PatchNotes.Count > 0
-            ? bootstrap.PatchNotes.Take(6).ToList()
-            : new[] { "Nenhuma nota de atualização publicada." };
-        if (!_clientReady && !_operationInProgress)
-        {
-            SetProgress(
-                "Aguardando verificação",
-                0,
-                string.IsNullOrWhiteSpace(bootstrap.Server.LastPatch)
-                    ? $"Versão esperada: {bootstrap.Server.ClientVersion}"
-                    : $"Último patch: {bootstrap.Server.LastPatch}");
-        }
+    private async Task RefreshSlotContentAsync()
+    {
+        var result = await _context.SlotContentService.GetContentAsync(null, _shutdown.Token);
+        _context.Slots = new SlotRegistryMapper(result.Content.Slots);
+        _context.SlotAssets = result.Content.Assets;
     }
 
     private async Task RestoreSessionAsync()
     {
-        _session = await _sessionStore.LoadAsync();
-        if (_session is null)
+        _context.Session = await _sessionStore.LoadAsync();
+        if (_context.Session is null)
         {
             ApplySignedOutState();
             return;
         }
         try
         {
-            var refreshed = await _apiClient.RefreshAsync(_session.RefreshToken, _shutdown.Token);
-            _session = new LauncherSession
-            {
-                AccessToken = refreshed.AccessToken,
-                RefreshToken = refreshed.RefreshToken
-            };
-            await _sessionStore.SaveAsync(_session);
+            var refreshed = await _apiClient.RefreshAsync(_context.Session.RefreshToken, _shutdown.Token);
+            _context.Session = new LauncherSession { AccessToken = refreshed.AccessToken, RefreshToken = refreshed.RefreshToken };
+            await _sessionStore.SaveAsync(_context.Session);
             await RefreshAccountAsync(showErrors: false);
         }
         catch
         {
             _sessionStore.Clear();
-            _session = null;
+            _context.Session = null;
             ApplySignedOutState();
         }
     }
 
     private async Task RefreshAccountAsync(bool showErrors)
     {
-        if (_session is null)
+        if (_context.Session is null)
         {
             ApplySignedOutState();
             return;
         }
         try
         {
-            _account = await _apiClient.GetAccountAsync(_session.AccessToken, _shutdown.Token);
-            ApplyAccount(_account);
+            _context.Account = await _apiClient.GetAccountAsync(_context.Session.AccessToken, _shutdown.Token);
+            ApplyAccount(_context.Account);
+            _context.RaiseAccountChanged();
         }
         catch (Exception exception)
         {
-            if (showErrors)
-            {
-                ShowToast(exception.Message);
-            }
+            if (showErrors) ShowToast(exception.Message);
         }
     }
 
@@ -465,45 +434,34 @@ public partial class MainWindow : Window
         AccountActionButton.Content = "SAIR";
         AccountGreetingText.Text = $"Olá, {account.User.Name}";
         AccountEmailText.Text = account.User.Username;
-        var character = account.ActiveCharacter;
-        CharacterNameText.Text = character?.Name ?? "-";
-        CharacterDetailText.Text = character is null
-            ? "Nenhum personagem sincronizado."
-            : $"{character.ClassName} · Nível {character.Level} · {character.Status}";
-        CurrencyText.Text = string.Join(
-            "  ·  ",
-            account.Currencies.Select(currency => $"{currency.Currency}: {currency.Balance:N0}"));
     }
 
     private void ApplySignedOutState()
     {
-        _account = null;
+        _context.Account = null;
         AccountActionButton.Content = "ENTRAR";
-        AccountGreetingText.Text = "Entre com sua conta BloodMoon";
-        AccountEmailText.Text = "Seus personagens e moedas serão exibidos aqui.";
-        CharacterNameText.Text = "-";
-        CharacterDetailText.Text = "Faça login para visualizar.";
-        CurrencyText.Text = "";
+        AccountGreetingText.Text = "Entre com sua conta";
+        AccountEmailText.Text = "Use a mesma conta do portal.";
+        _context.RaiseAccountChanged();
     }
 
     private async void AccountActionButton_Click(object sender, RoutedEventArgs e)
     {
-        if (_session is null)
+        if (_context.Session is null)
         {
-            LoginOverlay.Visibility = Visibility.Visible;
-            LoginUsernameBox.Focus();
+            _context.RequestLogin?.Invoke();
             return;
         }
         try
         {
-            await _apiClient.LogoutAsync(_session.AccessToken, _shutdown.Token);
+            await _apiClient.LogoutAsync(_context.Session.AccessToken, _shutdown.Token);
         }
         catch
         {
             // A sessão local deve ser encerrada mesmo se a API estiver indisponível.
         }
         _sessionStore.Clear();
-        _session = null;
+        _context.Session = null;
         ApplySignedOutState();
         ShowToast("Sessão encerrada.");
     }
@@ -530,12 +488,8 @@ public partial class MainWindow : Window
                 Password = LoginPasswordBox.Password,
                 TotpCode = string.IsNullOrWhiteSpace(LoginTotpBox.Text) ? null : LoginTotpBox.Text.Trim()
             }, _shutdown.Token);
-            _session = new LauncherSession
-            {
-                AccessToken = response.AccessToken,
-                RefreshToken = response.RefreshToken
-            };
-            await _sessionStore.SaveAsync(_session);
+            _context.Session = new LauncherSession { AccessToken = response.AccessToken, RefreshToken = response.RefreshToken };
+            await _sessionStore.SaveAsync(_context.Session);
             LoginOverlay.Visibility = Visibility.Collapsed;
             LoginPasswordBox.Clear();
             LoginTotpBox.Clear();
@@ -548,19 +502,13 @@ public partial class MainWindow : Window
         }
     }
 
-    private void UpdateProgress(PatchProgress progress)
-    {
-        SetProgress(
-            "Atualização segura",
-            progress.Percentage,
-            $"{progress.CompletedFiles}/{progress.TotalFiles} · {progress.CurrentFile}");
-    }
+    private void UpdateProgress(PatchProgress progress) =>
+        SetProgress("Atualização segura", progress.Percentage, $"{progress.CompletedFiles}/{progress.TotalFiles} · {progress.CurrentFile}");
 
     private void SetProgress(string status, double percentage, string detail)
     {
         var value = Math.Clamp(percentage, 0, 100);
         ProgressStatusText.Text = status;
-        ProgressPercentText.Text = $"{value:0}%";
         ProgressDetailText.Text = detail;
         ProgressFillColumn.Width = new GridLength(value, GridUnitType.Star);
         ProgressRemainderColumn.Width = new GridLength(Math.Max(0.001, 100 - value), GridUnitType.Star);
@@ -576,9 +524,7 @@ public partial class MainWindow : Window
 
     public async Task RenderPreviewAsync(string outputPath)
     {
-        await Dispatcher.InvokeAsync(
-            () => { },
-            DispatcherPriority.ApplicationIdle);
+        await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.ApplicationIdle);
         UpdateLayout();
 
         var dpi = VisualTreeHelper.GetDpi(this);
@@ -595,4 +541,10 @@ public partial class MainWindow : Window
         await using var output = File.Create(outputPath);
         encoder.Save(output);
     }
+
+    // Test/QA hook -- navigates to a page and waits one layout pass before
+    // the caller screenshots, matching RenderPreviewAsync's own idle-wait
+    // pattern. Used by the --render-preview=path,PageKey CLI convention
+    // App.xaml.cs parses.
+    public void NavigateForPreview(PageKey page) => _navigation.TryNavigate(page);
 }

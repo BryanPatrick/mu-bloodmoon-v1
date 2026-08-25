@@ -1,0 +1,82 @@
+<UserControl x:Class="BloodMoon.Launcher.Views.NewsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Grid Background="{StaticResource Brush.BackgroundVoid}">
+
+    <!-- LIST VIEW -->
+    <Grid x:Name="ListView">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+      <Grid Grid.Row="0" Margin="24,20,24,0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <StackPanel>
+          <TextBlock Text="NOTÍCIAS" Style="{StaticResource LauncherSectionTitle}" FontSize="22" />
+          <TextBlock Text="Fique por dentro das novidades do servidor" Margin="0,4,0,0" Foreground="{StaticResource Brush.TextMuted}" FontSize="12" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom">
+          <RadioButton x:Name="FilterTodas" Content="TODAS" GroupName="NewsFilter" Style="{StaticResource BmTabItem}" IsChecked="True" Checked="Filter_Changed" />
+          <RadioButton x:Name="FilterAtualizacoes" Content="ATUALIZAÇÕES" GroupName="NewsFilter" Style="{StaticResource BmTabItem}" Checked="Filter_Changed" />
+          <RadioButton x:Name="FilterEventos" Content="EVENTOS" GroupName="NewsFilter" Style="{StaticResource BmTabItem}" Checked="Filter_Changed" />
+        </StackPanel>
+      </Grid>
+
+      <ScrollViewer Grid.Row="1" Margin="24,16,24,20" VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+          <ItemsControl x:Name="NewsGrid">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <UniformGrid Columns="2" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border Style="{StaticResource Card}" Margin="0,0,12,12">
+                  <StackPanel>
+                    <Border Height="140" Background="{StaticResource Brush.BackgroundSurfaceAlt}" />
+                    <TextBlock Text="{Binding Kind}" Margin="0,10,0,0" Foreground="{StaticResource Brush.Crimson}" FontSize="9" FontWeight="Bold" />
+                    <TextBlock Text="{Binding Title}" Margin="0,4,0,0" Foreground="{StaticResource Brush.TextPrimary}" FontFamily="{StaticResource Font.Display}" FontWeight="Bold" FontSize="15" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Summary}" Margin="0,6,0,0" Foreground="{StaticResource Brush.TextMuted}" FontSize="11" TextWrapping="Wrap" MaxHeight="46" TextTrimming="CharacterEllipsis" />
+                    <Grid Margin="0,10,0,0">
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                      </Grid.ColumnDefinitions>
+                      <TextBlock Text="{Binding PublishedAt, StringFormat={}{0:dd/MM/yyyy}}" Foreground="{StaticResource Brush.TextFaint}" FontSize="10" VerticalAlignment="Center" />
+                      <Button Grid.Column="1" Content="VER RESUMO" Style="{StaticResource LauncherTextButton}" Click="OpenSummary_Click" />
+                    </Grid>
+                  </StackPanel>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+
+          <StackPanel Orientation="Horizontal" Margin="0,8,0,0" HorizontalAlignment="Center">
+            <Button Content="◀ ANTERIOR" Style="{StaticResource LauncherTextButton}" Margin="0,0,8,0" Click="PreviousPage_Click" />
+            <TextBlock x:Name="PageIndicatorText" VerticalAlignment="Center" Foreground="{StaticResource Brush.TextFaint}" FontSize="11" Margin="8,0" />
+            <Button Content="PRÓXIMA ▶" Style="{StaticResource LauncherTextButton}" Margin="8,0,0,0" Click="NextPage_Click" />
+          </StackPanel>
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+
+    <!-- SUMMARY (open) VIEW -->
+    <Grid x:Name="SummaryView" Visibility="Collapsed">
+      <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="24,20">
+        <StackPanel MaxWidth="720" HorizontalAlignment="Left">
+          <Button Content="← VOLTAR" Style="{StaticResource LauncherTextButton}" HorizontalAlignment="Left" Click="Back_Click" />
+          <Border Height="220" Margin="0,16,0,0" Background="{StaticResource Brush.BackgroundSurfaceAlt}" />
+          <TextBlock x:Name="SummaryCategoryText" Margin="0,14,0,0" Foreground="{StaticResource Brush.Crimson}" FontSize="10" FontWeight="Bold" />
+          <TextBlock x:Name="SummaryTitleText" Margin="0,4,0,0" Foreground="{StaticResource Brush.TextPrimary}" FontFamily="{StaticResource Font.Display}" FontWeight="Bold" FontSize="24" TextWrapping="Wrap" />
+          <TextBlock x:Name="SummaryDateText" Margin="0,6,0,0" Foreground="{StaticResource Brush.TextFaint}" FontSize="11" />
+          <TextBlock x:Name="SummaryBodyText" Margin="0,16,0,0" Foreground="{StaticResource Brush.TextSecondary}" FontSize="13" TextWrapping="Wrap" LineHeight="20" />
+          <Button x:Name="FullArticleButton" Content="VER NOTÍCIA COMPLETA" Margin="0,20,0,0" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left" Click="FullArticle_Click" />
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+  </Grid>
+</UserControl>

@@ -16,7 +16,15 @@ public interface ILauncherBootstrapSource
     Task<LauncherBootstrap> GetBootstrapAsync(CancellationToken cancellationToken);
 }
 
-public sealed class LauncherApiClient : IDisposable, ILauncherBootstrapSource
+// Same seam pattern for GET /launcher/content (Launcher Phase L3) --
+// SlotContentService depends on this, not LauncherApiClient directly, so
+// tests can inject a fake without a real HttpClient.
+public interface ISlotContentSource
+{
+    Task<LauncherContentPayload> GetContentAsync(string? page, CancellationToken cancellationToken);
+}
+
+public sealed class LauncherApiClient : IDisposable, ILauncherBootstrapSource, ISlotContentSource
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
     private readonly HttpClient _http = new() { Timeout = TimeSpan.FromSeconds(15) };
@@ -66,6 +74,58 @@ public sealed class LauncherApiClient : IDisposable, ILauncherBootstrapSource
 
     public Task<LauncherMeCharacters> GetMeCharactersAsync(string accessToken, CancellationToken cancellationToken) =>
         GetAsync<LauncherMeCharacters>("launcher/me/characters", accessToken, cancellationToken);
+
+    // Launcher Phase L3 -- CMS-published slot content (Part B), additive
+    // to GetBootstrapAsync above, never a replacement for it.
+    public Task<LauncherContentPayload> GetContentAsync(string? page, CancellationToken cancellationToken) =>
+        GetAsync<LauncherContentPayload>(
+            string.IsNullOrWhiteSpace(page) ? "launcher/content" : $"launcher/content?page={Uri.EscapeDataString(page)}",
+            null,
+            cancellationToken);
+
+    public Task<LauncherEventsResponse> GetEventsAsync(CancellationToken cancellationToken) =>
+        GetAsync<LauncherEventsResponse>("launcher/events", null, cancellationToken);
+
+    public Task<LauncherRankingsResponse> GetRankingsAsync(string? rankingType, CancellationToken cancellationToken) =>
+        GetAsync<LauncherRankingsResponse>(
+            string.IsNullOrWhiteSpace(rankingType) ? "launcher/rankings" : $"launcher/rankings?type={Uri.EscapeDataString(rankingType)}",
+            null,
+            cancellationToken);
+
+    public Task<ShopProductListResponse> GetStoreProductsAsync(CancellationToken cancellationToken) =>
+        GetAsync<ShopProductListResponse>("shop/products?pageSize=40", null, cancellationToken);
+
+    // The active-terms endpoint sends an empty (Content-Length: 0) body,
+    // not a JSON "null" literal, when no StorePurchaseTerms is configured
+    // yet -- ReadFromJsonAsync throws JsonException on an empty body, so
+    // this is handled explicitly rather than reusing GetAsync<T>.
+    public async Task<StorePurchaseTermsDto?> GetActiveTermsAsync(CancellationToken cancellationToken)
+    {
+        using var response = await _http.GetAsync($"{_baseUrl}/launcher/store/terms/active", cancellationToken);
+        await EnsureSuccessAsync(response, cancellationToken);
+        if (response.Content.Headers.ContentLength is null or 0)
+        {
+            return null;
+        }
+        var body = await response.Content.ReadAsStringAsync(cancellationToken);
+        if (string.IsNullOrWhiteSpace(body) || body.Trim() == "null")
+        {
+            return null;
+        }
+        return JsonSerializer.Deserialize<StorePurchaseTermsDto>(body, JsonOptions);
+    }
+
+    public async Task<PurchaseIntentDto> CreatePurchaseAsync(
+        string accessToken, CreatePurchasePayload payload, CancellationToken cancellationToken)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/shop/purchases")
+        {
+            Content = JsonContent.Create(payload, options: JsonOptions)
+        };
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        using var response = await _http.SendAsync(request, cancellationToken);
+        return await ReadAsync<PurchaseIntentDto>(response, cancellationToken);
+    }
 
     public async Task LogoutAsync(string accessToken, CancellationToken cancellationToken)
     {

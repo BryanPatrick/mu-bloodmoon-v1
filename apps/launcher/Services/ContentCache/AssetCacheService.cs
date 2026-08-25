@@ -52,14 +52,30 @@ public sealed class AssetCacheException(AssetValidationFailure failure, string m
 // on the API side), so this must hash with SHA-1 too, not an arbitrary
 // stronger algorithm, or a byte-identical file would never be recognized
 // as already cached.
+// Bootstrap's asset manifest hashes with ReferenceAsset.sha1 (Sha1, the
+// original/default here, unchanged for every existing caller/test). The
+// CMS Launcher Studio asset library (Launcher Phase L3) hashes with
+// LauncherAsset.sha256 instead -- a constructor-selectable algorithm
+// avoids a second near-duplicate cache class for that one difference.
+public enum AssetHashAlgorithm
+{
+    Sha1,
+    Sha256
+}
+
 public sealed class AssetCacheService
 {
     private readonly IAssetDownloader _downloader;
     private readonly string _cacheDirectory;
+    private readonly AssetHashAlgorithm _hashAlgorithm;
 
-    public AssetCacheService(IAssetDownloader downloader, string? cacheDirectory = null)
+    public AssetCacheService(
+        IAssetDownloader downloader,
+        string? cacheDirectory = null,
+        AssetHashAlgorithm hashAlgorithm = AssetHashAlgorithm.Sha1)
     {
         _downloader = downloader;
+        _hashAlgorithm = hashAlgorithm;
         _cacheDirectory = cacheDirectory ?? Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "BloodMoon", "Launcher", "cache", "assets");
@@ -127,8 +143,11 @@ public sealed class AssetCacheService
         return path;
     }
 
-    private static string ComputeHash(byte[] bytes) =>
-        Convert.ToHexString(SHA1.HashData(bytes)).ToLowerInvariant();
+    private string ComputeHash(byte[] bytes) => _hashAlgorithm switch
+    {
+        AssetHashAlgorithm.Sha256 => Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant(),
+        _ => Convert.ToHexString(SHA1.HashData(bytes)).ToLowerInvariant()
+    };
 
     private static string SanitizeFileName(string id)
     {

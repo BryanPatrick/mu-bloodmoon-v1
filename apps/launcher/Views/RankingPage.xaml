@@ -1,0 +1,74 @@
+<UserControl x:Class="BloodMoon.Launcher.Views.RankingPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ScrollViewer Background="{StaticResource Brush.BackgroundVoid}" VerticalScrollBarVisibility="Auto">
+    <StackPanel Margin="24,20">
+      <StackPanel Orientation="Horizontal">
+        <RadioButton x:Name="TypeMasterReset" Content="MASTER RESET" GroupName="RankingType" Style="{StaticResource BmTabItem}" IsChecked="True" Checked="RankingType_Changed" Tag="masterReset" />
+        <RadioButton x:Name="TypeResets" Content="RESETS" GroupName="RankingType" Style="{StaticResource BmTabItem}" Checked="RankingType_Changed" Tag="resets" />
+        <RadioButton x:Name="TypeLevel" Content="LEVEL" GroupName="RankingType" Style="{StaticResource BmTabItem}" Checked="RankingType_Changed" Tag="level" />
+      </StackPanel>
+
+      <!-- Podium: 4 2 1 3 5 -->
+      <Grid Margin="0,20,0,0">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="1.3*" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0" Style="{StaticResource Card}" Margin="4,30,4,0"><StackPanel HorizontalAlignment="Center"><TextBlock Text="4º" Foreground="{StaticResource Brush.TextMuted}" FontSize="14" HorizontalAlignment="Center" /><TextBlock x:Name="P4Name" Foreground="{StaticResource Brush.TextSecondary}" FontSize="12" HorizontalAlignment="Center" /><TextBlock x:Name="P4Value" Foreground="{StaticResource Brush.TextFaint}" FontSize="10" HorizontalAlignment="Center" /></StackPanel></Border>
+        <Border Grid.Column="1" Style="{StaticResource Card}" Margin="4,14,4,0" BorderBrush="{StaticResource Brush.BorderStrong}"><StackPanel HorizontalAlignment="Center"><TextBlock Text="2º" Foreground="{StaticResource Brush.TextMuted}" FontSize="16" HorizontalAlignment="Center" /><TextBlock x:Name="P2Name" Foreground="{StaticResource Brush.TextSecondary}" FontSize="13" HorizontalAlignment="Center" /><TextBlock x:Name="P2Value" Foreground="{StaticResource Brush.TextFaint}" FontSize="11" HorizontalAlignment="Center" /></StackPanel></Border>
+        <Border Grid.Column="2" Style="{StaticResource CardSelected}" Margin="4,0,4,0" BorderBrush="{StaticResource Brush.Gold}"><StackPanel HorizontalAlignment="Center" Margin="0,6"><TextBlock Text="1º" Foreground="{StaticResource Brush.Gold}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" /><TextBlock x:Name="P1Name" Foreground="{StaticResource Brush.TextPrimary}" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" /><TextBlock x:Name="P1Value" Foreground="{StaticResource Brush.Gold}" FontSize="12" HorizontalAlignment="Center" /></StackPanel></Border>
+        <Border Grid.Column="3" Style="{StaticResource Card}" Margin="4,14,4,0"><StackPanel HorizontalAlignment="Center"><TextBlock Text="3º" Foreground="{StaticResource Brush.TextMuted}" FontSize="16" HorizontalAlignment="Center" /><TextBlock x:Name="P3Name" Foreground="{StaticResource Brush.TextSecondary}" FontSize="13" HorizontalAlignment="Center" /><TextBlock x:Name="P3Value" Foreground="{StaticResource Brush.TextFaint}" FontSize="11" HorizontalAlignment="Center" /></StackPanel></Border>
+        <Border Grid.Column="4" Style="{StaticResource Card}" Margin="4,30,4,0"><StackPanel HorizontalAlignment="Center"><TextBlock Text="5º" Foreground="{StaticResource Brush.TextMuted}" FontSize="14" HorizontalAlignment="Center" /><TextBlock x:Name="P5Name" Foreground="{StaticResource Brush.TextSecondary}" FontSize="12" HorizontalAlignment="Center" /><TextBlock x:Name="P5Value" Foreground="{StaticResource Brush.TextFaint}" FontSize="10" HorizontalAlignment="Center" /></StackPanel></Border>
+      </Grid>
+
+      <Border Margin="0,20,0,0" Style="{StaticResource Card}">
+        <StackPanel>
+          <ItemsControl x:Name="TableItems">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Border Style="{StaticResource TableRow}">
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="50" />
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="140" />
+                      <ColumnDefinition Width="90" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding Rank}" Foreground="{StaticResource Brush.TextMuted}" FontSize="12" />
+                    <TextBlock Grid.Column="1" Text="{Binding CharacterName}" Foreground="{StaticResource Brush.TextPrimary}" FontSize="12" />
+                    <TextBlock Grid.Column="2" Text="{Binding CurrentClass}" Foreground="{StaticResource Brush.TextMuted}" FontSize="11" />
+                    <TextBlock Grid.Column="3" Text="{Binding Value}" Foreground="{StaticResource Brush.TextSecondary}" FontSize="12" TextAlignment="Right" />
+                  </Grid>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <Border x:Name="OwnRow" Style="{StaticResource TableRowOwn}" Margin="0,6,0,0" Visibility="Collapsed">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="140" />
+                <ColumnDefinition Width="90" />
+              </Grid.ColumnDefinitions>
+              <TextBlock x:Name="OwnRankText" Foreground="{StaticResource Brush.Gold}" FontSize="12" FontWeight="Bold" />
+              <TextBlock Grid.Column="1" x:Name="OwnNameText" Foreground="{StaticResource Brush.TextPrimary}" FontSize="12" FontWeight="Bold" />
+              <TextBlock Grid.Column="2" x:Name="OwnClassText" Foreground="{StaticResource Brush.TextMuted}" FontSize="11" />
+              <TextBlock Grid.Column="3" x:Name="OwnValueText" Foreground="{StaticResource Brush.Gold}" FontSize="12" TextAlignment="Right" />
+            </Grid>
+          </Border>
+
+          <StackPanel Orientation="Horizontal" Margin="0,12,0,0" HorizontalAlignment="Center">
+            <Button Content="◀ ANTERIOR" Style="{StaticResource LauncherTextButton}" Margin="0,0,8,0" Click="PreviousPage_Click" />
+            <TextBlock x:Name="PageIndicatorText" VerticalAlignment="Center" Foreground="{StaticResource Brush.TextFaint}" FontSize="11" Margin="8,0" />
+            <Button Content="PRÓXIMA ▶" Style="{StaticResource LauncherTextButton}" Margin="8,0,0,0" Click="NextPage_Click" />
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

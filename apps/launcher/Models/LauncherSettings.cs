@@ -32,4 +32,11 @@ public sealed class LauncherSettings
     public bool UiAnimationsEnabled { get; set; } = true;
     public bool PerformanceMode { get; set; }
     public int UiEffectsVolume { get; set; } = 10;
+
+    // Launcher Phase L3 (Part L) -- the LAUNCHER's own window/viewport
+    // resolution profile (ResolutionProfiles.All index), entirely separate
+    // from ResolutionIndex above (which is the MU game client's own
+    // in-game resolution, written to the game's registry config by
+    // GameConfigurationService and untouched by this phase).
+    public int LauncherViewportProfileIndex { get; set; }
 }

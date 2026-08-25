@@ -19,12 +19,12 @@ public sealed class AssetCacheServiceTests : IDisposable
 
     private static string Sha1Hex(byte[] bytes) => Convert.ToHexString(SHA1.HashData(bytes)).ToLowerInvariant();
 
-    private static LauncherAssetManifestEntry Entry(byte[] bytes, string id = "asset-1") => new()
+    private static LauncherAssetManifestEntry Entry(byte[] bytes, string id = "asset-1", string? hash = null) => new()
     {
         Id = id,
         Url = "https://cdn.example/asset.webp",
         ContentType = "image/webp",
-        Hash = Sha1Hex(bytes),
+        Hash = hash ?? Sha1Hex(bytes),
         Size = bytes.Length,
         Kind = "NEWS_IMAGE"
     };
@@ -107,5 +107,29 @@ public sealed class AssetCacheServiceTests : IDisposable
         var downloader = new HttpAssetDownloader();
         await Assert.ThrowsAsync<InvalidOperationException>(
             () => downloader.DownloadAsync("http://insecure.example/image.png", CancellationToken.None));
+    }
+
+    // Launcher Phase L3 -- the CMS asset library hashes with SHA-256
+    // (LauncherAsset.sha256), not bootstrap's SHA-1 (ReferenceAsset.sha1).
+    // A manifest entry carrying a SHA-1 hash must be rejected by a
+    // Sha256-mode cache, and vice versa -- proves the algorithm selection
+    // is real, not just accepted and ignored.
+    [Fact]
+    public async Task GetOrDownloadAsync_WithSha256Mode_AcceptsASha256HashAndRejectsASha1Hash()
+    {
+        var bytes = Encoding.UTF8.GetBytes("cms-asset-bytes");
+        var sha256Hex = Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
+        var sha1Hex = Sha1Hex(bytes);
+
+        var downloaderOk = new FakeAssetDownloader { Bytes = bytes };
+        var serviceOk = new AssetCacheService(downloaderOk, _dir, AssetHashAlgorithm.Sha256);
+        var path = await serviceOk.GetOrDownloadAsync(Entry(bytes, "cms-asset-1", sha256Hex), CancellationToken.None);
+        Assert.True(File.Exists(path));
+
+        var downloaderFail = new FakeAssetDownloader { Bytes = bytes };
+        var serviceFail = new AssetCacheService(downloaderFail, _dir, AssetHashAlgorithm.Sha256);
+        var ex = await Assert.ThrowsAsync<AssetCacheException>(
+            () => serviceFail.GetOrDownloadAsync(Entry(bytes, "cms-asset-2", sha1Hex), CancellationToken.None));
+        Assert.Equal(AssetValidationFailure.HashMismatch, ex.Failure);
     }
 }

@@ -1,0 +1,310 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <!--
+    Part AU—centralized control styles. Buttons/cards/tabs/tables/
+    tooltips/toggles/selects live here, once, instead of per-page inline
+    styling. HotspotButton/DialogButton/LauncherTextButton/
+    LauncherSectionTitle/LauncherLabel below are the pre-existing styles
+    from App.xaml, moved here verbatim (not redesigned) so App.xaml only
+    merges dictionaries instead of also declaring styles inline.
+  -->
+
+  <Style x:Key="HotspotButton" TargetType="Button">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Button">
+          <Border x:Name="Surface"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}">
+            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="Surface" Property="Background" Value="#221F0707" />
+              <Setter TargetName="Surface" Property="BorderBrush" Value="#66B21E1E" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+              <Setter TargetName="Surface" Property="Background" Value="#553A0606" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="DialogButton" TargetType="Button">
+    <Setter Property="Foreground" Value="{StaticResource Brush.TextPrimary}" />
+    <Setter Property="Background" Value="#24110E" />
+    <Setter Property="BorderBrush" Value="{StaticResource Brush.BorderCrimson}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Padding" Value="18,9" />
+    <Setter Property="FontFamily" Value="{StaticResource Font.Ui}" />
+    <Setter Property="Cursor" Value="Hand" />
+  </Style>
+
+  <Style x:Key="LauncherTextButton" TargetType="Button" BasedOn="{StaticResource DialogButton}">
+    <Setter Property="FontSize" Value="11" />
+    <Setter Property="Padding" Value="12,6" />
+    <Setter Property="Background" Value="{StaticResource Brush.BackgroundSurface}" />
+    <Setter Property="BorderBrush" Value="{StaticResource Brush.BorderWarm}" />
+  </Style>
+
+  <Style x:Key="LauncherSectionTitle" TargetType="TextBlock">
+    <Setter Property="Foreground" Value="{StaticResource Brush.TextSecondary}" />
+    <Setter Property="FontFamily" Value="{StaticResource Font.Display}" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="FontSize" Value="{StaticResource FontSize.Lg}" />
+  </Style>
+
+  <Style x:Key="LauncherLabel" TargetType="TextBlock">
+    <Setter Property="Foreground" Value="{StaticResource Brush.TextMuted}" />
+    <Setter Property="FontFamily" Value="{StaticResource Font.Ui}" />
+    <Setter Property="FontSize" Value="{StaticResource FontSize.Sm}" />
+  </Style>
+
+  <!-- Primary action (JOGAR / FINALIZAR COMPRA / ENTRAR). Strong crimson
+       presence, per "preserve strong primary-button presence." -->
+  <Style x:Key="PrimaryButton" TargetType="Button">
+    <Setter Property="Foreground" Value="{StaticResource Brush.TextPrimary}" />
+    <Setter Property="Background" Value="{StaticResource Brush.CrimsonDeep}" />
+    <Setter Property="BorderBrush" Value="{StaticResource Brush.CrimsonGlow}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Padding" Value="24,12" />
+    <Setter Property="FontFamily" Value="{StaticResource Font.Ui}" />
+    <Setter Property="FontSize" Value="{StaticResource FontSize.Lg}" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Button">
+          <Border x:Name="Surface"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}">
+            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="Surface" Property="Background" Value="{StaticResource Brush.Crimson}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter TargetName="Surface" Property="Background" Value="{StaticResource Brush.BackgroundSurfaceAlt}" />
+              <Setter TargetName="Surface" Property="BorderBrush" Value="{StaticResource Brush.BorderSubtle}" />
+              <Setter Property="Foreground" Value="{StaticResource Brush.TextFaint}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- Left navigation item—deep crimson internal illumination when
+       selected (IsChecked), matching the "only one selected page" rule. -->
+  <Style x:Key="NavItem" TargetType="ToggleButton">
+    <Setter Property="Foreground" Value="{StaticResource Brush.TextMuted}" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="FontFamily" Value="{StaticResource Font.Ui}" />
+    <Setter Property="FontSize" Value="{StaticResource FontSize.Md}" />
+    <Setter Property="Padding" Value="18,13" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ToggleButton">
+          <Grid>
+            <Border x:Name="Glow" Background="{StaticResource Brush.CrimsonGlowField}" Opacity="0" />
+            <Border x:Name="Bar" Width="3" HorizontalAlignment="Left" Background="{StaticResource Brush.Crimson}" Opacity="0" />
+            <ContentPresenter Margin="{TemplateBinding Padding}" VerticalAlignment="Center" />
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+              <Setter TargetName="Glow" Property="Opacity" Value="1" />
+              <Setter TargetName="Bar" Property="Opacity" Value="1" />
+              <Setter Property="Foreground" Value="{StaticResource Brush.TextPrimary}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter Property="Foreground" Value="{StaticResource Brush.TextSecondary}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- Card surface (news/event/store item). Header/art/description/footer
+       hierarchy is the caller's content layout; this only owns the
+       physical frame. -->
+  <Style x:Key="Card" TargetType="Border">
+    <Setter Property="Background" Value="{StaticResource Brush.BackgroundSurface}" />
+    <Setter Property="BorderBrush" Value="{StaticResource Brush.BorderStrong}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Padding" Value="12" />
+  </Style>
+
+  <Style x:Key="CardSelected" TargetType="Border" BasedOn="{StaticResource Card}">
+    <Setter Property="BorderBrush" Value="{StaticResource Brush.Crimson}" />
+    <Setter Property="Background" Value="{StaticResource Brush.BackgroundSurfaceAlt}" />
+  </Style>
+
+  <!-- Table row (used by ItemsControl templates, not DataGrid, matching
+       the existing NewsItems ItemsControl convention in MainWindow.xaml). -->
+  <Style x:Key="TableRow" TargetType="Border">
+    <Setter Property="BorderBrush" Value="{StaticResource Brush.BorderSubtle}" />
+    <Setter Property="BorderThickness" Value="0,0,0,1" />
+    <Setter Property="Padding" Value="10,8" />
+  </Style>
+
+  <Style x:Key="TableRowOwn" TargetType="Border" BasedOn="{StaticResource TableRow}">
+    <Setter Property="Background" Value="#1F1A0C" />
+    <Setter Property="BorderBrush" Value="{StaticResource Brush.Gold}" />
+  </Style>
+
+  <!-- Tabs (Configurações: JOGO/LAUNCHER/ATUALIZAÇÃO/ÁUDIO/DESEMPENHO). -->
+  <Style x:Key="BmTabItem" TargetType="RadioButton">
+    <Setter Property="Foreground" Value="{StaticResource Brush.TextMuted}" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="FontFamily" Value="{StaticResource Font.Ui}" />
+    <Setter Property="FontSize" Value="{StaticResource FontSize.Sm}" />
+    <Setter Property="Padding" Value="16,10" />
+    <Setter Property="Cursor" Value="Hand" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="RadioButton">
+          <Border x:Name="Surface" BorderThickness="0,0,0,2" BorderBrush="Transparent">
+            <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" />
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+              <Setter TargetName="Surface" Property="BorderBrush" Value="{StaticResource Brush.Crimson}" />
+              <Setter Property="Foreground" Value="{StaticResource Brush.TextPrimary}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- Toggle (settings switches). -->
+  <Style x:Key="BmToggle" TargetType="CheckBox">
+    <Setter Property="Foreground" Value="{StaticResource Brush.TextSecondary}" />
+    <Setter Property="FontFamily" Value="{StaticResource Font.Compact}" />
+    <Setter Property="FontSize" Value="{StaticResource FontSize.Sm}" />
+    <Setter Property="Cursor" Value="Hand" />
+  </Style>
+
+  <!-- Select (ComboBox)—Part AN explicitly calls out avoiding native
+       WPF chrome, so this is a real (not partial) ControlTemplate: dark
+       surface, crimson-accented dropdown arrow, dark popup/list—never
+       the native white/system-themed dropdown. -->
+  <SolidColorBrush x:Key="Brush.ComboBoxPopupBackground" Color="{StaticResource Color.BackgroundPanel}" />
+
+  <Style x:Key="BmComboBoxItem" TargetType="ComboBoxItem">
+    <Setter Property="Foreground" Value="{StaticResource Brush.TextSecondary}" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Padding" Value="10,7" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ComboBoxItem">
+          <Border x:Name="Surface" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+            <ContentPresenter />
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsHighlighted" Value="True">
+              <Setter TargetName="Surface" Property="Background" Value="{StaticResource Brush.BackgroundSurfaceAlt}" />
+              <Setter Property="Foreground" Value="{StaticResource Brush.TextPrimary}" />
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter TargetName="Surface" Property="Background" Value="{StaticResource Brush.BackgroundSurfaceAlt}" />
+              <Setter Property="Foreground" Value="{StaticResource Brush.Crimson}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Key="BmComboBox" TargetType="ComboBox">
+    <Setter Property="Background" Value="{StaticResource Brush.BackgroundSurface}" />
+    <Setter Property="Foreground" Value="{StaticResource Brush.TextPrimary}" />
+    <Setter Property="BorderBrush" Value="{StaticResource Brush.BorderStrong}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="FontFamily" Value="{StaticResource Font.Compact}" />
+    <Setter Property="FontSize" Value="{StaticResource FontSize.Sm}" />
+    <Setter Property="Padding" Value="10,7" />
+    <Setter Property="Height" Value="34" />
+    <Setter Property="ItemContainerStyle" Value="{StaticResource BmComboBoxItem}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ComboBox">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="30" />
+            </Grid.ColumnDefinitions>
+            <Border x:Name="Surface"
+                    Grid.ColumnSpan="2"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}" />
+            <ContentPresenter x:Name="ContentSite"
+                               Margin="{TemplateBinding Padding}"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left"
+                               Content="{TemplateBinding SelectionBoxItem}"
+                               ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                               IsHitTestVisible="False" />
+            <ToggleButton x:Name="Toggle"
+                          Grid.ColumnSpan="2"
+                          Background="Transparent"
+                          BorderThickness="0"
+                          Focusable="False"
+                          ClickMode="Press"
+                          IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+              <ToggleButton.Template>
+                <ControlTemplate TargetType="ToggleButton">
+                  <Border Background="Transparent">
+                    <Path Data="M 0 0 L 8 0 L 4 5 Z"
+                          Fill="{StaticResource Brush.TextMuted}"
+                          HorizontalAlignment="Right"
+                          Margin="0,0,11,0"
+                          VerticalAlignment="Center" />
+                  </Border>
+                </ControlTemplate>
+              </ToggleButton.Template>
+            </ToggleButton>
+            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="None">
+              <Border Background="{StaticResource Brush.ComboBoxPopupBackground}" BorderBrush="{StaticResource Brush.BorderStrong}" BorderThickness="1" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="240">
+                <ScrollViewer SnapsToDevicePixels="True">
+                  <ItemsPresenter />
+                </ScrollViewer>
+              </Border>
+            </Popup>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="Surface" Property="BorderBrush" Value="{StaticResource Brush.Crimson}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="Foreground" Value="{StaticResource Brush.TextFaint}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style TargetType="ToolTip">
+    <Setter Property="Background" Value="{StaticResource Brush.BackgroundPanel}" />
+    <Setter Property="Foreground" Value="{StaticResource Brush.TextSecondary}" />
+    <Setter Property="BorderBrush" Value="{StaticResource Brush.BorderStrong}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Padding" Value="8,5" />
+    <Setter Property="FontFamily" Value="{StaticResource Font.Compact}" />
+    <Setter Property="FontSize" Value="{StaticResource FontSize.Sm}" />
+  </Style>
+</ResourceDictionary>
