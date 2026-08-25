@@ -29,6 +29,35 @@ additive; see `docs/launcher/remote-content.md` for the client-side
 consumption model and `docs/launcher/remote-content-contract.md` for the
 full field-by-field shape.
 
+### `GET /launcher/content` *(new, Launcher Phase L3)*
+
+Resolved, published-only CMS slot content (`apps/api/.../launcher-studio/
+launcher-studio.types.ts`'s `LauncherContentResponse`) — additive to, not
+a replacement for, `GET /launcher/bootstrap` above. See
+`docs/launcher/cms-launcher-studio.md` (the CMS phase) and
+`docs/launcher/wpf-cms-binding.md` (this phase's WPF consumption) for the
+full contract and the asset-manifest addition this phase made to it.
+
+### `GET /launcher/events` *(new, Launcher Phase L3)*
+
+Active/upcoming/calendar events, `KnowledgeEntry` (kind `EVENT`,
+`launcherEnabled=true`)-sourced — the same real content the CMS Launcher
+Studio phase's admin-content module manages. See `docs/launcher/
+page-data-sources.md`.
+
+### `GET /launcher/rankings?type=masterReset|resets|level` *(new, Launcher Phase L3)*
+
+`AccountCharacter`-sourced ranking rows — the same honest, real,
+currently-available substitute `integrations-discord/discord.service.ts`'s
+`getRankings()` already uses (not the real MU Game Data Platform, which
+has no public leaderboard read path yet). See `docs/launcher/
+page-data-sources.md`.
+
+### `GET /launcher/store/terms/active` *(new, Launcher Phase L3)*
+
+The currently active `StorePurchaseTerms` version, or an empty body if
+none has been configured yet. See `docs/launcher/store-cart-terms.md`.
+
 ## Authenticated — the existing modern Portal session (JwtAuthGuard)
 
 ### `GET /launcher/account` *(existing, unchanged)*
