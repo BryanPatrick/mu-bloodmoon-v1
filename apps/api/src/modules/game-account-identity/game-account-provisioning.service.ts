@@ -60,7 +60,7 @@ export class GameAccountProvisioningService {
     await this.transport.create({
       commandId: stored.commandId, provisioningRequestId: identity.provisioningRequestId,
       commandType: 'CREATE_GAME_ACCOUNT', environment: process.env.GAME_COMMAND_ENVIRONMENT || 'production',
-      serverId: process.env.GAME_COMMAND_SERVER_ID || 'mu-primary', legacyLogin: stored.legacyLogin,
+      serverId: process.env.GAME_COMMAND_SERVER_ID || 'bloodmoon-s6', legacyLogin: stored.legacyLogin,
       expiresAt: stored.commandExpiresAt.toISOString(), credential: toEnvelope(stored)
     })
     return { commandId: stored.commandId, provisioningRequestId: identity.provisioningRequestId }

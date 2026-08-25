@@ -1,5 +1,5 @@
 import { Injectable, Logger, type OnModuleDestroy, type OnModuleInit } from '@nestjs/common'
-import type { GameAccountIdentity } from '@prisma/client'
+import { PrismaClient, type GameAccountIdentity } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
 import { GameAccountProvisioningService } from '../game-account-identity/game-account-provisioning.service'
 
@@ -22,7 +22,6 @@ const STALE_PROVISIONING_THRESHOLD_MS = 5 * 60_000
 const JITTER_RATIO = 0.2
 const DEFAULT_INTERVAL_MS = 30_000
 const RECONCILIATION_LOCK_NAME = 'bloodmoon:game-provisioning-reconciliation'
-const RECONCILIATION_LOCK_TIMEOUT_MS = 60_000
 
 export type ReconciliationOutcome =
   | 'DISPATCHED'
@@ -143,28 +142,39 @@ export class GameProvisioningReconciliationService implements OnModuleInit, OnMo
     return { provisioningStatus: updated.provisioningStatus }
   }
 
-  // MySQL named locks are connection-scoped. Keeping the lock query and the
-  // work inside one interactive Prisma transaction pins that connection for
-  // the full callback, while the provisioning operations continue to use the
-  // normal Prisma pool. This prevents overlapping ticks across Passenger
-  // processes without adding a migration or relying on a single-process
-  // hosting setting. A crashed process releases the lock when MySQL closes
-  // its connection.
+  // MySQL named locks are connection-scoped. A dedicated Prisma client with a
+  // one-connection pool pins GET_LOCK/RELEASE_LOCK to the same connection,
+  // while the provisioning work uses the application's normal Prisma pool.
+  // Do not hold an interactive transaction on the application client here:
+  // production cron can have a one-connection pool, which would deadlock the
+  // nested provisioning queries until the transaction timeout. A crashed
+  // process still releases the named lock when MySQL closes the connection.
   private async withReconciliationLock<T>(work: () => Promise<T>, whenBusy: () => T): Promise<T> {
-    return this.prisma.$transaction(async (lockConnection) => {
-      const rows = await lockConnection.$queryRaw<Array<{ acquired: number | bigint | null }>>`
+    const databaseUrl = process.env.DATABASE_URL
+    if (!databaseUrl) throw new Error('DATABASE_URL_NOT_CONFIGURED')
+
+    const lockUrl = new URL(databaseUrl)
+    lockUrl.searchParams.set('connection_limit', '1')
+    const lockClient = new PrismaClient({ datasources: { db: { url: lockUrl.toString() } } })
+    let acquired = false
+
+    try {
+      await lockClient.$connect()
+      const rows = await lockClient.$queryRaw<Array<{ acquired: number | bigint | null }>>`
         SELECT GET_LOCK(${RECONCILIATION_LOCK_NAME}, 0) AS acquired
       `
       if (Number(rows[0]?.acquired ?? 0) !== 1) return whenBusy()
+      acquired = true
 
-      try {
-        return await work()
-      } finally {
-        await lockConnection.$queryRaw`
+      return await work()
+    } finally {
+      if (acquired) {
+        await lockClient.$queryRaw`
           SELECT RELEASE_LOCK(${RECONCILIATION_LOCK_NAME})
         `
       }
-    }, { timeout: RECONCILIATION_LOCK_TIMEOUT_MS })
+      await lockClient.$disconnect()
+    }
   }
 
   // Part AN -- safe fields only: account reference, status, attempt count,
