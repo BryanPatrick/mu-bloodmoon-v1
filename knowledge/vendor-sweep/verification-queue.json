@@ -1,0 +1,112 @@
+{
+  "generatedAt": "2026-08-26T00:20:00Z",
+  "schema": {
+    "claimId": "references atomic-claims.json",
+    "priority": "HIGH | MEDIUM | LOW",
+    "verificationType": "file_read | schema_read | runtime_observation",
+    "target": "the specific file/table/behavior to check",
+    "safeMethod": "the read-only mechanism to use, referencing existing RemoteOps tooling",
+    "status": "QUEUED | IN_PROGRESS | DONE | BLOCKED",
+    "result": "string|null",
+    "evidenceRefs": "array of paths/hashes once DONE"
+  },
+  "items": [
+    {
+      "claimId": "CLAIM-004",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "Data/Item/ItemDrop.txt header + sample lines",
+      "safeMethod": "local read of the already-captured, byte-verified snapshot copy (Deploy/Predeploy-Snapshots/20260730-season6-scope-cleanup/.../Data/Item/ItemDrop.txt); no new RemoteOps call needed since this file was already confirmed identical to live production per docs/snapshot-differences.md",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- see CLAIM-002/CLAIM-003/CLAIM-004 and CONFLICT-001",
+      "evidenceRefs": ["Deploy/Predeploy-Snapshots/20260730-season6-scope-cleanup/workspace-binaries/muserver-extracted/MuServer-stage/Data/Item/ItemDrop.txt", "sha256:5e29e7cd66e42949613bb51baace0a9c9974decba0c408f1887d5c93a4ccabb2"]
+    },
+    {
+      "claimId": "CLAIM-006",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "Data/Custom/CustomBotStore.txt",
+      "safeMethod": "Part AA safe inventory tool (bm-remote inventory-json 'C:\\MuServer\\Data\\Custom') located the exact filename, then bm-remote download",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- 1 active NPC ('Luffen', live cash shop). See CLAIM-006, CLAIM-007, CLAIM-017.",
+      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/CustomBotStore.txt"]
+    },
+    {
+      "claimId": "CLAIM-008",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "Data/Custom/CustomBotTrader.txt",
+      "safeMethod": "same as CLAIM-006",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- structurally present, both entries Enabled=0 (disabled). See CLAIM-008, CLAIM-017.",
+      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/CustomBotTrader.txt"]
+    },
+    {
+      "claimId": "CLAIM-009",
+      "priority": "LOW",
+      "verificationType": "file_read",
+      "target": "Data/Custom/CustomBotTrader.txt -- count of active (non-commented) bot index entries, and whether a 30-instance cap is enforced or just a convention",
+      "safeMethod": "same as CLAIM-006",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- header comment states 'Max: 30 bots' (matches video); only 2 of 30 slots actually configured, both disabled.",
+      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/CustomBotTrader.txt"]
+    },
+    {
+      "claimId": "CLAIM-010",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "Data/Custom/CustomBotFusion.txt",
+      "safeMethod": "same as CLAIM-006",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- structurally present, both entries Enabled=0 (disabled). See CLAIM-010, CLAIM-017.",
+      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/CustomBotFusion.txt"]
+    },
+    {
+      "claimId": "CLAIM-011",
+      "priority": "LOW",
+      "verificationType": "file_read",
+      "target": "Data/Custom/CustomBotFusion.txt -- same-category-only restriction field",
+      "safeMethod": "same as CLAIM-006",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG, WITH CORRECTION -- real field is 'OnlySameType', not 'BotIndexOnly' (the video-transcript-based guess). See CLAIM-011.",
+      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/CustomBotFusion.txt"]
+    },
+    {
+      "claimId": "CLAIM-016",
+      "priority": "LOW",
+      "verificationType": "file_read",
+      "target": "Data/Custom/CustomBotBuffer.txt",
+      "safeMethod": "same as CLAIM-006 (discovered opportunistically, not originally queued -- no video source existed for it)",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- section 1 (bot placement) entirely commented out, zero active entries.",
+      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/CustomBotBuffer.txt"]
+    },
+    {
+      "claimId": "CLAIM-012",
+      "priority": "LOW",
+      "verificationType": "runtime_observation",
+      "target": "in-game hover-tooltip behavior on a dropped item",
+      "safeMethod": "NOT SAFE without a real client session against a real character -- no automated read-only path exists for this. Requires human observation or a dedicated QA pass, not RemoteOps.",
+      "status": "BLOCKED",
+      "result": "No safe automated verification path exists for client-rendered UI behavior.",
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-013",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "Data/GameMaster.txt -- presence and structure of a Section 1 (account-level whitelist), distinct from the already-confirmed Section 0 (GM commands)",
+      "safeMethod": "GameMaster.txt lives directly under Data/ (not Data/Custom/), so it wasn't covered by this session's 'C:\\MuServer\\Data\\Custom' inventory scope. bm-remote inventory 'C:\\MuServer\\Data' (non-recursive top level, or a second targeted call) would locate it -- deferred this session to keep the demonstration scope narrow.",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
+    }
+  ],
+  "summary": {
+    "total": 9,
+    "done": 6,
+    "queued": 2,
+    "blocked": 1,
+    "note": "CLAIM-014 and CLAIM-015 are intentionally absent from this queue -- CLAIM-014 is an operational/procedural claim (NOT_APPLICABLE verification per atomic-claims.json), and CLAIM-015 is explicitly OTHER_SERVER and must never be verified against Blood Moon (there is nothing to verify -- it is already correctly classified as not describing Blood Moon)."
+  }
+}

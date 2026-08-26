@@ -17,8 +17,9 @@
       "entities": ["CustomBotStore", "Data/Custom/"],
       "capturedAt": "2026-08-25T22:15:00Z",
       "sourceDate": "2023-08-07",
-      "confidence": "CONFIRMED_VENDOR_VIDEO",
-      "status": "BLOODMOON_LIKELY"
+      "confidence": "CONFIRMED_VENDOR_VIDEO + CONFIRMED_RUNTIME (verification)",
+      "status": "BLOODMOON_CONFIRMED",
+      "verifiedNote": "Phase 2 (2026-08-26): real Data/Custom/CustomBotStore.txt read directly -- 1 active NPC ('Luffen', live cash shop in Lorencia). See atomic-claims.json CLAIM-006/007/017."
     },
     {
       "id": "KI-002",
@@ -35,8 +36,9 @@
       "entities": ["CustomBotTrader", "Data/Custom/"],
       "capturedAt": "2026-08-25T22:20:00Z",
       "sourceDate": "2023-08-07",
-      "confidence": "CONFIRMED_VENDOR_VIDEO",
-      "status": "BLOODMOON_LIKELY"
+      "confidence": "CONFIRMED_VENDOR_VIDEO + CONFIRMED_RUNTIME (verification)",
+      "status": "BLOODMOON_CONFIRMED",
+      "verifiedNote": "Phase 2 (2026-08-26): real Data/Custom/CustomBotTrader.txt read directly -- present but Enabled=0 (disabled), essentially the vendor's own demo data. File LastWriteTimeUtc 2023-08-08, one day after this video's publish date. See atomic-claims.json CLAIM-008/009/017."
     },
     {
       "id": "KI-003",
@@ -53,8 +55,9 @@
       "entities": ["CustomBotFusion", "Data/Custom/CustomBotFusion"],
       "capturedAt": "2026-08-25T22:24:00Z",
       "sourceDate": "2022-05-19",
-      "confidence": "CONFIRMED_VENDOR_VIDEO",
-      "status": "BLOODMOON_LIKELY"
+      "confidence": "CONFIRMED_VENDOR_VIDEO + CONFIRMED_RUNTIME (verification)",
+      "status": "BLOODMOON_CONFIRMED",
+      "verifiedNote": "Phase 2 (2026-08-26): real Data/Custom/CustomBotFusion.txt read directly -- present but Enabled=0 (disabled). Real field name is 'OnlySameType', correcting this sweep's initial video-transcript-based guess of 'BotIndexOnly'. See atomic-claims.json CLAIM-010/011/017."
     },
     {
       "id": "KI-004",
@@ -71,9 +74,9 @@
       "entities": ["Data/Item/ItemDrop.txt"],
       "capturedAt": "2026-08-25T22:27:00Z",
       "sourceDate": "2023-01-19",
-      "confidence": "CONFIRMED_VENDOR_VIDEO",
-      "status": "UPSTREAM_MU",
-      "note": "NOT YET cross-checked against Blood Moon's own real ItemDrop.txt -- see reference-gap-manifest.json follow-up. Directly relevant to the already-tracked [[drop-rate-system]] entry in Knowledge/README.md."
+      "confidence": "CONFIRMED_VENDOR_VIDEO + CONFIRMED_RUNTIME (verification)",
+      "status": "BLOODMOON_CONFIRMED",
+      "note": "VERIFIED in Phase 2 (2026-08-26): Blood Moon's real Data/Item/ItemDrop.txt header row reads '...MonsterLevelMax DropRate_AL0 DropRate_AL1 DropRate_AL2 DropRate_AL3 Comment' -- an exact structural match. See atomic-claims.json CLAIM-002/003/004 and knowledge-conflicts.json CONFLICT-001 (the vendor's own ItemDrop.htm tutorial documents an older, pre-7.0 single-column format -- a version difference, not an error). The feature itself remains 100% commented-out/inert on Blood Moon (all 92 lines disabled, all rates 0)."
     },
     {
       "id": "KI-005",

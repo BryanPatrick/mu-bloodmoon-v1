@@ -1,0 +1,18 @@
+{
+  "generatedAt": "2026-08-26T00:15:00Z",
+  "conflicts": [
+    {
+      "id": "CONFLICT-001",
+      "subject": "Data/Item/ItemDrop.txt column structure",
+      "property": "number and naming of DropRate columns",
+      "claimA": { "claimId": "CLAIM-005", "value": "single 'DropRate' column", "source": "docs/vendor-tutorials-knowledge-extraction.md normalizing Research/Vendor/Tutorials/ItemDrop.htm" },
+      "claimB": { "claimId": "CLAIM-002", "value": "4 columns: DropRate_AL0, DropRate_AL1, DropRate_AL2, DropRate_AL3", "source": "real Data/Item/ItemDrop.txt, line 1, read directly this session" },
+      "classification": "VERSION_DIFFERENCE",
+      "reasoning": "The vendor's HTML tutorial (ItemDrop.htm) was captured and normalized before this sweep discovered the 'ItemDrop per vips - UPDATED 7.0' video (DqHAEmyQCjA), which describes the vendor adding exactly this 4-column VIP split. Blood Moon's real, live file already has the post-7.0 structure. The tutorial HTML simply documents an older engine build than what Blood Moon is currently running (or was seeded from) -- neither document is 'wrong,' they describe different points in the vendor's own version history.",
+      "resolution": "CLAIM-002 (real config, CONFIRMED_RUNTIME) is canonical for 'what Blood Moon's file actually looks like today.' CLAIM-005 stays recorded as historically accurate for the vendor's pre-7.0 documentation -- not deleted, not overwritten.",
+      "status": "RESOLVED",
+      "followUp": "docs/vendor-tutorials-knowledge-extraction.md's entry for ItemDrop.htm (line 517-521) should get an inline note pointing to this conflict and to the real 4-column structure, the next time that file is touched -- not done this session to avoid an unnecessary rewrite of an otherwise-stable, already-reviewed document."
+    }
+  ],
+  "note": "This is the only conflict identified this round. It was found specifically because Part K's targeted ItemDrop verification compared a real config read against BOTH a new video claim AND an old internal tutorial normalization at the same time. No corpus-wide conflict-detection pass (comparing all atomic-claims.json entries pairwise) has been run yet -- with only 15 claims recorded so far, pairwise comparison found nothing else to flag, but this will need re-running as more claims accumulate."
+}
