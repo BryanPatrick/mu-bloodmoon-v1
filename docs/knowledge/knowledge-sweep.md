@@ -35,14 +35,23 @@ This mirrors, and is meant to interoperate with, the existing `Knowledge/README.
 - Structured sweep outputs (manifests, index, wiki candidates): `mu-bloodmoon-v1/knowledge/vendor-sweep/` (inside git — distinct from `knowledge/equipment/` and `knowledge/audit/`, which are the pre-existing product-data and dedup-audit areas).
 - This methodology documentation: `mu-bloodmoon-v1/docs/knowledge/` (this folder).
 
+## Tooling
+
+There is no single `knowledge-sweep` CLI — the sweep is a set of manual browser-automation patterns (see [youtube-ingestion.md](youtube-ingestion.md)) plus the RemoteOps CLI (see [vps-ingestion.md](vps-ingestion.md)), plus a handful of small, focused Node scripts under `mu-bloodmoon-v1/scripts/`:
+
+- `knowledge-gap-report.mjs` — scans docs for reference-gap candidate phrases against the tracked manifest.
+- `knowledge-conflict-scan.mjs` — pairwise-compares `atomic-claims.json` entries that share an entity, flagging opposing `verificationStatus`/`bloodMoonStatus` pairs for human triage.
+- `knowledge-validate.mjs` — structural validation: every claim has its required fields and only enum-valid statuses; every graph edge references a real node or claim id.
+- `knowledge-query.mjs` — local search over the sweep's outputs: `query "<term>"` (tokenized AND search across claims/sources), `entity "<name>"` (graph node + all claims about it), `gaps`, `conflicts`, `unverified`, `wiki-ready`.
+
+Run any of them with `node scripts/<name>.mjs [args]` from `mu-bloodmoon-v1/`.
+
 ## Running another sweep
 
-There is no automated `knowledge-sweep` CLI yet — the tooling built alongside the first sweep (2026-08-25) is a set of manual browser-automation patterns (see [youtube-ingestion.md](youtube-ingestion.md)) plus the existing RemoteOps CLI (see [vps-ingestion.md](vps-ingestion.md)), not a single script. A future incremental sweep should:
-
-1. Re-read `knowledge/vendor-sweep/knowledge-index.json` and `reference-gap-manifest.json` to see what's already covered.
-2. Re-check `failure-manifest.json` for retryable failures (e.g. a transcript panel that failed to populate might work on retry).
+1. Re-read `knowledge/vendor-sweep/checkpoint.json`, `knowledge-index.json`, and `reference-gap-manifest.json` to see what's already covered.
+2. Re-check `failure-manifest.json` for retryable failures (e.g. a transcript panel that failed to populate might work on retry) — but see the caption-delivery-fault entries there first: not every stall is retryable-and-likely-to-resolve, some are a genuine per-video YouTube-side data gap.
 3. Only capture what's new or was previously blocked — never re-capture what's already RAW-complete.
-4. Update the manifests, don't replace them.
+4. Update the manifests, don't replace them. Re-run `knowledge-validate.mjs` and `knowledge-conflict-scan.mjs` after any batch of new claims.
 
 ## What this sweep explicitly did not touch
 

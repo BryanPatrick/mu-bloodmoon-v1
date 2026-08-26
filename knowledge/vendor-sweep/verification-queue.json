@@ -100,13 +100,73 @@
       "status": "QUEUED",
       "result": null,
       "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-020",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "Data/Custom/CustomMonster.txt",
+      "safeMethod": "bm-remote inventory-json 'C:\\MuServer\\Data\\Custom' located the exact filename (already catalogued in this session's first inventory run), then bm-remote download",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- RewardLevel/RewardPoints columns present, all 7 monster entries commented out (6th data point supporting the CLAIM-027 'present but inert' pattern).",
+      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/CustomMonster.txt"]
+    },
+    {
+      "claimId": "CLAIM-018",
+      "priority": "LOW",
+      "verificationType": "file_read",
+      "target": "Data/Custom/ -- exact CustomDropReward filename unconfirmed (not found under an obvious name in the Data/Custom inventory taken this session)",
+      "safeMethod": "Would need a full-name-list review of the 90 files in RemoteData/Inventory/data-custom-20260826.json, or a targeted search once more of the filenames are known",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-019",
+      "priority": "LOW",
+      "verificationType": "file_read",
+      "target": "Data/EventItemBagManager.txt",
+      "safeMethod": "This file lives directly under Data/, not Data/Custom/ -- not covered by this session's inventory scope (Data/Custom only). A `bm-remote inventory 'C:\\MuServer\\Data'` (non-recursive) call would locate/confirm it.",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-022",
+      "priority": "LOW",
+      "verificationType": "runtime_observation",
+      "target": "client-side keybind (J key opens Jewel Bank)",
+      "safeMethod": "NOT SAFE -- same limitation as CLAIM-012, no automated read-only path for client UI behavior",
+      "status": "BLOCKED",
+      "result": "No safe automated verification path exists for client-rendered UI behavior.",
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-023",
+      "priority": "LOW",
+      "verificationType": "file_read",
+      "target": "Data/Custom/ -- exact CustomEventTimer flag location unconfirmed",
+      "safeMethod": "Not found under an obvious name in this session's Data/Custom inventory -- may be a flag inside Common.dat or another already-known file rather than a dedicated file",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-024",
+      "priority": "LOW",
+      "verificationType": "file_read",
+      "target": "Data/Custom/ -- exact PvpAll config filename unconfirmed",
+      "safeMethod": "Not found under an obvious name in this session's Data/Custom inventory",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
     }
   ],
   "summary": {
-    "total": 9,
-    "done": 6,
-    "queued": 2,
-    "blocked": 1,
+    "total": 15,
+    "done": 7,
+    "queued": 6,
+    "blocked": 2,
     "note": "CLAIM-014 and CLAIM-015 are intentionally absent from this queue -- CLAIM-014 is an operational/procedural claim (NOT_APPLICABLE verification per atomic-claims.json), and CLAIM-015 is explicitly OTHER_SERVER and must never be verified against Blood Moon (there is nothing to verify -- it is already correctly classified as not describing Blood Moon)."
   }
 }
