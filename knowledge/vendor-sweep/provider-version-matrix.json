@@ -1,0 +1,24 @@
+{
+  "generatedAt": "2026-08-26T00:45:00Z",
+  "scope": "Maps ProjectGamers/eMuGS vendor update tags (as they appear in project-gamers-oficial video titles) to features/systems. Most rows are TITLE_INFERRED (parsed from the video title only, content not transcribed/verified) -- only rows for videos actually transcribed this sweep are CONTENT_VERIFIED.",
+  "versionRangeObserved": { "min": "1.6", "max": "8.9", "note": "Parsed from all 108 keyword-relevant video titles in _relevant.tsv; 58 of 108 carry an explicit ADDED/UPDATED X.Y tag, the remaining 50 are untagged general/topic titles." },
+  "entries": [
+    { "version": "ADDED 5.4", "feature": "Server Game Master Account Level", "source": "gfMqlKeQ360", "status": "CONTENT_VERIFIED", "claimId": "CLAIM-013" },
+    { "version": "ADDED 6.4", "feature": "Custom Bot Fusion", "source": "HFH8BhRZnUg", "status": "CONTENT_VERIFIED", "claimId": "CLAIM-010" },
+    { "version": "UPDATED 7.0", "feature": "ItemDrop.txt VIP-tier drop-rate columns", "source": "DqHAEmyQCjA", "status": "CONTENT_VERIFIED", "claimId": "CLAIM-004", "note": "Only entry cross-checked against Blood Moon's real config -- CONFIRMED. Blood Moon's real ItemDrop.txt structurally matches this version or later." },
+    { "version": "ADDED 7.6", "feature": "Custom Bot Store", "source": "6SGVxLyhG_8", "status": "CONTENT_VERIFIED", "claimId": "CLAIM-006" },
+    { "version": "ADDED 7.6", "feature": "Custom Bot Trader", "source": "gySFdaRrS8Q", "status": "CONTENT_VERIFIED", "claimId": "CLAIM-008" },
+    { "version": "ADDED 7.6", "feature": "Custom Fake Online", "source": "1-URdUaW4Tw", "status": "CONTENT_VERIFIED (prior session)", "claimId": null, "note": "Already fully documented via Research/Vendor/FakeOnline/ pipeline before this sweep." },
+    { "version": "ADDED 7.8", "feature": "Custom Info Drop Switch", "source": "EpUJmEBn16Y", "status": "CONTENT_VERIFIED", "claimId": "CLAIM-012" }
+  ],
+  "titleInferredOnly": [
+    "The remaining ~51 tagged-but-untranscribed titles in _relevant.tsv (versions spanning ADDED/UPDATED 4.2 through 8.9) are known only by title -- e.g. 'Custom Event Zombie - ADDED 8.9', 'Custom Monster HP - ADDED 8.8'. Feature NAME can be read directly off the title, but no config/behavior claim can be made without transcription. See Research/YouTube/project-gamers-oficial/_relevant.tsv for the full list."
+  ],
+  "bloodMoonProviderVersionStatus": {
+    "value": "LIKELY at-or-after UPDATED 7.0",
+    "confidence": "CONFIRMED for the lower bound (ItemDrop.txt structurally matches 7.0's described change); UNKNOWN for an upper bound -- no evidence yet rules out or confirms Blood Moon running anything from 7.0 up through the latest catalogued 8.9",
+    "reasoning": "The ONLY version-anchored real-config cross-check performed this round (CLAIM-004) shows Blood Moon's ItemDrop.txt already has the 7.0 structure. This is one data point, not a full version fingerprint -- Blood Moon could be running exactly 7.0, or any later version, since a config file's structure doesn't change again just because a later update adds unrelated features.",
+    "doNotClaim": "An exact version number for Blood Moon's engine build. Only 'at least 7.0' is evidenced.",
+    "nextStep": "Cross-check 2-3 more version-anchored claims (e.g. verification-queue.json's queued CLAIM-006/008/010/013 items) against real Blood Moon config once the Part AA safe-inventory tool can locate the exact Data/Custom/*.txt filenames -- each additional match/mismatch narrows the plausible version range."
+  }
+}
