@@ -1,0 +1,31 @@
+{
+  "generatedAt": "2026-08-26T03:00:00Z",
+  "schema": {
+    "progressionId": "string, PROG-NNN",
+    "stage": "short label",
+    "requirement": "the gating condition",
+    "target": "what it gates access to / what results",
+    "rewardOrBenefit": "string|null",
+    "sourceRefs": "array",
+    "evidenceType": "REAL_BLOODMOON_CONFIG | PROVIDER_TUTORIAL | ...",
+    "factStatus": "FACT | INFERENCE | RECOMMENDATION -- NEVER merged, exactly one per entry",
+    "confidence": "per docs/knowledge/source-authority.md",
+    "bloodMoonVerification": "CONFIRMED_BY_CONFIG | UNVERIFIED | NOT_APPLICABLE"
+  },
+  "entries": [
+    {
+      "progressionId": "PROG-001",
+      "stage": "Post-level-400 'build point' farming",
+      "requirement": "Character level >= 400 (vendor's suggested threshold, not a hard-coded engine limit)",
+      "target": "Access to a purpose-built 'build points' farming map, using CustomMonster.txt's RewardPoints column on specifically-configured monsters",
+      "rewardOrBenefit": "Accumulation of a custom 'points' currency (distinct from level/XP) via repeated monster kills, typically combined with open PvP on the same map for kill competition",
+      "sourceRefs": ["Research/YouTube/project-gamers-oficial/transcripts/LbNZ98OSjVg.pt.json, segments 4:19-4:43 (vendor's spoken recommendation)"],
+      "evidenceType": "PROVIDER_TUTORIAL",
+      "factStatus": "RECOMMENDATION",
+      "confidence": "CONFIRMED_VENDOR_VIDEO (that the vendor said this) -- NOT evidence that Blood Moon itself implements or follows this pattern",
+      "bloodMoonVerification": "NOT_APPLICABLE",
+      "notes": "This is the vendor's own generic advice for how server admins COULD use the RewardPoints feature, not a description of anything Blood Moon has actually built. Recorded as RECOMMENDATION tier specifically so it is never later mistaken for a FACT about Blood Moon's real progression system. CLAIM-020 (RewardPoints/RewardLevel columns exist and are real, confirmed via CustomMonster.txt) is the FACT this RECOMMENDATION is built on top of -- but the FACT only confirms the mechanism exists, not that Blood Moon uses it this way."
+    }
+  ],
+  "coverageNote": "Only 1 entry exists. This sweep found real config evidence for several systems (drop rates, event schedules, monster rosters) but essentially no evidence yet that directly answers progression questions like 'what level unlocks map X' or 'what is the intended gear/reset progression route' -- those would need either a real config field explicitly gating access by level/reset-count (none found so far; CustomEventPandora.txt's MinLevel/MaxLevel columns were both '*'  = any level, in the one example checked), or a vendor tutorial explicitly walking through a progression route (not yet transcribed -- see knowledge/vendor-sweep/event-video-inventory.json entries for rcL6fxy92Ss and HMmfyPerla8, both titled around 'ResetMin & ResetMax ... events', flagged HIGH priority specifically because they are the most likely source of real FACT-tier progression data currently sitting in the untranscribed queue). Per the explicit instruction not to invent recommendations where no evidence exists, this sweep does not fabricate additional entries to pad this list."
+}

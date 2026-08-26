@@ -35,12 +35,12 @@
       "whereReferenced": "docs/events-system.md:8",
       "sourceType": "YOUTUBE_VIDEO_SET",
       "expectedSource": "per-event tutorial video transcripts",
-      "rawPresent": false,
-      "normalizedPresent": false,
-      "derivedPresent": false,
-      "status": "OPEN",
+      "rawPresent": true,
+      "normalizedPresent": true,
+      "derivedPresent": true,
+      "status": "PARTIAL",
       "priority": "MEDIUM",
-      "detail": "Broad, unitemized claim -- the 399-video catalog (video-index.tsv) almost certainly contains individual per-event tutorials (Blood Castle, Devil Square, Chaos Castle, Illusion Temple, etc.) matched by title keyword, but none have been individually identified against docs/events-system.md's event list or transcribed. Concrete next step: grep video-index.tsv title column for event names, cross-reference against docs/events-system.md's event list, transcribe any HIGH-relevance matches not yet captured."
+      "detail": "RESOLVED (Phase 3, Part J): the broad, unitemized claim is now replaced by knowledge/vendor-sweep/event-video-inventory.json -- an explicit 44-video inventory (grepped from _relevant.tsv for 'event' in the title), each with a videoId/title/event/transcriptStatus/verificationPriority. 3 already transcribed, 3 more resolved via direct real-config reads (bypassing broken/unattempted transcripts entirely -- CLAIM-031/032/033), 39 remain untranscribed with explicit HIGH/MEDIUM/LOW priorities assigned (10 HIGH, notably 3 videos specifically about the EventItemBag system this sweep just reverse-engineered from raw config, and 2 about ResetMin/ResetMax event-entry requirements, directly relevant to progression work). Status is PARTIAL, not RESOLVED, because the underlying content gap (39 untranscribed videos) is itemized but not closed."
     },
     {
       "id": "GAP-004",
@@ -67,7 +67,21 @@
       "status": "RESOLVED",
       "priority": "LOW",
       "detail": "Grepped D:\\MU\\docs for youtube.com/@ and youtube.com/channel/ patterns. Confirmed exactly 4 channels ever referenced anywhere in the corpus: projectgamersoficial (target, swept), EuSanTiago (target, swept), mubloodmoon (Blood Moon's own channel, explicitly out-of-scope as 'not a vendor'), kaspis4080 (unrelated MU server, explicitly discarded). No unaudited channel references found."
+    },
+    {
+      "id": "GAP-006",
+      "reference": "Corpus-wide broken file-path references across docs/ (mu-bloodmoon-v1) and D:\\MU\\docs",
+      "whereReferenced": "scripts/knowledge-provenance-audit.mjs run, Phase 3, 2026-08-26",
+      "sourceType": "INTERNAL_DOC_REFERENCE",
+      "expectedSource": "the referenced file itself",
+      "rawPresent": false,
+      "normalizedPresent": true,
+      "derivedPresent": true,
+      "status": "RESOLVED",
+      "priority": "LOW",
+      "detail": "RESOLVES Part S (the previously twice-deferred exhaustive corpus audit): built and ran a real, mechanical scanner (scripts/knowledge-provenance-audit.mjs) over all .md files in both docs/ trees, extracting every file-path-shaped token (Research/, knowledge/, docs/, apps/, scripts/, references/, Tools/, catalog/ -- deliberately excluding Data/, which is an established shorthand for remote-VPS paths, not local files, and produces near-100% false positives if checked locally) and verifying each one resolves to a real file. Found 463 checkable references; 449 (97%) resolved correctly once the checker was fixed to also resolve relative to the mu-bloodmoon-v1/ repo root (an early version of this script had a real bug here, caught by its own results looking implausible -- apps/api/src/app.module.ts, a core file, was flagging as 'missing'). Of the 14 remaining candidates, ~5 are likely regex false positives (an ellipsis '...' in prose matched as part of a path; 4 references inside docs/agent-runtime/CODEX_EXECUTION_CONTRACT.md are almost certainly to Claude Code's own product documentation, not a local file). 9 are CONFIRMED real gaps (spot-checked 4 directly): docs/game-data/phase-2a-real-sql-report.md (referenced, does not exist), scripts/build-figma-asset-manifest.mjs (referenced, does not exist), docs/protocols/destructive-actions.md (referenced, does not exist), apps/api/src/main.js (should be main.ts -- a stale extension in the doc), plus 2 mock-data file references in docs/handoff/community-current-state.md, and a couple more in docs/source-map.md pointing at a Research/20260722/ decompiled-source snapshot that may have been cleaned up since that doc was written.",
+      "followUp": "None of these 9 gaps block current work -- they're all references FROM other docs TO missing targets, not missing RAW for this sweep's own subject matter. Left for the doc owners to fix or for a future pass to either restore/re-point the references. Full machine-readable output available by re-running `node scripts/knowledge-provenance-audit.mjs --json`."
     }
   ],
-  "coverageNote": "This sweep covers the YouTube dimension (Parts G-K) essentially completely for the 2 named target channels. It does NOT yet cover a full corpus-wide reference-graph scan of all 75+ docs in D:\\MU\\docs plus mu-bloodmoon-v1/docs/ for every 'see X' / 'reference Y' phrase -- that grep matched 60 files on common words (TODO, pendente, falta) which is too broad a signal to hand-triage exhaustively in one session. RECOMMENDATION for next round: run a stricter regex (only explicit cross-document citations, e.g. 'ver docs/X.md', 'conforme Y.md', file-path-shaped references) and triage the resulting (much smaller) hit list one by one."
+  "coverageNote": "This sweep covers the YouTube dimension (Parts G-K) essentially completely for the 2 named target channels. Part S's corpus-wide audit (GAP-006) is now genuinely complete for file-path-shaped references (463 checked mechanically, not by keyword-matching prose) -- this is real exhaustive coverage of ONE dimension (broken links), not of every possible provenance-gap type. It still does not (and a single automated pass realistically cannot) catch 'summary without raw' or 'claim without a named source' where the doc's prose never names a concrete file path -- that class of gap would require a human or LLM close-read of all 75+ docs' actual content, not just their citations, which remains future work if ever judged worth the cost relative to its value."
 }
