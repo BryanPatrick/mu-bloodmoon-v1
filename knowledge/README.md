@@ -18,6 +18,7 @@ Biblioteca canonica do projeto, organizada como uma estante editorial.
 - `topics/equipment/tutorials/<topico>/README.md`: prateleira de tutorial.
 - `audit/source-inventory.json`: inventario de dados locais.
 - `audit/redundancy-report.md`: candidatos de redundancia, sem exclusao automatica.
+- `vendor-sweep/`: saida estruturada do Knowledge Sweep (referencias externas/fornecedor — YouTube, VPS, tutoriais), distinta do catalogo de equipamentos acima. Ver `mu-bloodmoon-v1/docs/knowledge/knowledge-sweep.md` para a metodologia completa.
 
 ## Indice rapido
 

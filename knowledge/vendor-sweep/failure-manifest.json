@@ -1,0 +1,45 @@
+{
+  "generatedAt": "2026-08-25T22:47:00Z",
+  "failures": [
+    {
+      "source": "youtube:pPhK9sEABq4 (Custom OffAttack - UPDATED 5.8, project-gamers-oficial, 2021 upload)",
+      "operation": "transcript capture via browser 'Mostrar transcri\u00e7\u00e3o' button",
+      "reason": "No transcript button exists on the video's watch page -- YouTube never generated captions for this video (confirmed via explicit DOM existence check after expanding description, found:false). Prior yt-dlp attempt (earlier session) also failed for the same underlying reason.",
+      "retryable": false,
+      "lastAttempt": "2026-08-25 (prior turn in this session, per conversation summary)",
+      "nextAction": "None available through legitimate means. Metadata-only (title, upload date) stands as the permanent record. Do not attempt platform-restriction bypass."
+    },
+    {
+      "source": "youtube:W4ZprVUkkXw (Magic Gladiator de FOR\u00c7A build guide, @EuSanTiago)",
+      "operation": "transcript capture via browser 'Mostrar transcri\u00e7\u00e3o' button",
+      "reason": "Transcript panel opens (confirmed visibility=ENGAGEMENT_PANEL_VISIBILITY_EXPANDED) but never populates any segments, even after: waiting up to 5s, closing/reopening the panel, and a full page reload followed by a fresh click. Root cause undetermined -- may be a YouTube-side auto-caption generation delay/failure specific to this video, not a tooling bug (the same extraction code succeeded on multiple other videos before and after this one).",
+      "retryable": true,
+      "lastAttempt": "2026-08-25 (prior turn in this session)",
+      "nextAction": "Retry in a future sweep -- if auto-captions were still processing server-side, they may become available later. If it fails again after a genuine wait (hours/days), reclassify as NOT_AVAILABLE."
+    },
+    {
+      "source": "youtube:dXJbdbFn1LI (EE Midgame TOP build guide, @EuSanTiago)",
+      "operation": "transcript capture via browser 'Mostrar transcri\u00e7\u00e3o' button",
+      "reason": "No transcript button exists on the video's watch page at all (confirmed via explicit existence check, found:false), even after expanding the description first.",
+      "retryable": false,
+      "lastAttempt": "2026-08-25 (prior turn in this session)",
+      "nextAction": "None available through legitimate means. Metadata-only stands as the permanent record."
+    },
+    {
+      "source": "VPS incremental file-listing (Part D/AC of this sweep -- checking C:\\MuServer\\Tutoriais and other areas for files new since the 2026-08-17 full inventory)",
+      "operation": "recursive remote directory listing via RemoteOps",
+      "reason": "The only generic remote-listing primitive documented as having been used for the original full sweep (`Invoke-BloodMoonRemote`, an SSH-based function used directly by a prior/different session) is not exposed as a safe, documented subcommand of the current bm-remote.ps1 CLI -- its cheatsheet only exposes fixed operations (health, status, logs, hash, download, compare-file, snapshot-config, drop-config, fakeonline-show, config-list with a hardcoded 3-path list). Improvising an equivalent ad-hoc remote command against a live production VPS without a documented-safe pattern was judged out of scope for this session's authority.",
+      "retryable": true,
+      "lastAttempt": "2026-08-25T22:4x:00Z (this session, via bm-remote.ps1 config-list as the closest documented-safe substitute)",
+      "nextAction": "A future session with access to (or willing to add) a documented, reviewed, read-only 'list remote directory' RemoteOps subcommand (mirroring the existing hash/download/compare-file pattern) could re-run a lightweight recursive listing scoped to C:\\MuServer\\Tutoriais and any other high-value tutorial/config folders, diff file names+sizes+mtimes against the 2026-08-17 baseline in catalog/vps-inventory.json, and report NEW/CHANGED/REMOVED. Given the baseline is only 8 days old and was exhaustive, this is low urgency."
+    },
+    {
+      "source": "Corpus-wide reference-graph scan (Part B) across all 75+ docs in D:\\MU\\docs plus mu-bloodmoon-v1/docs/",
+      "operation": "exhaustive per-document scan for every 'see X' / 'reference Y' cross-citation",
+      "reason": "Not a capture failure -- a scope/budget decision. An initial grep for common gap-indicating words (TODO, pendente, falta, RAW_MISSING) matched 60 of ~75 files, too broad a signal to hand-triage exhaustively within this session. A narrower, more targeted pass (Part G-K's YouTube scope, plus specific high-confidence cross-references like docs/events-system.md and docs/common-dat-semantic-map.md) was completed instead -- see reference-gap-manifest.json.",
+      "retryable": true,
+      "lastAttempt": "2026-08-25T22:40:00Z (this session, targeted pass only)",
+      "nextAction": "A future session should run a stricter regex targeting only explicit file-path-shaped or document-name-shaped citations (e.g. 'ver docs/X.md', 'conforme Y.md'), which should produce a much smaller, more tractable hit list to triage one by one."
+    }
+  ]
+}

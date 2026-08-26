@@ -1,0 +1,39 @@
+{
+  "sweepId": "knowledge-sweep-2026-08-25",
+  "lastUpdatedUtc": "2026-08-25T22:55:00Z",
+  "status": "PARTIAL",
+  "completed": [
+    "Part A: repo/knowledge-structure audit (reused prior sessions' extensive existing corpus, did not re-audit from scratch)",
+    "Part D/AC (light): confirmed VPS baseline (2026-08-17) is complete and recent; ran documented bm-remote config-list as substitute incremental check; deeper incremental listing deferred (see failure-manifest.json)",
+    "Part G: confirmed exactly 2 target channels + 2 already-ruled-out non-targets, no unaudited channel references anywhere in corpus",
+    "Part H/I/J/K (project-gamers-oficial): all 9 originally-METADATA_ONLY priority videos resolved -- 7 captured this session, 1 already had RAW from a prior session, 1 confirmed permanently NOT_AVAILABLE (pPhK9sEABq4)",
+    "Part H/I/J/K (EuSanTiago): channel fully catalogued (3/3 videos), 1/3 transcribed, 2/3 NOT_AVAILABLE (1 retryable, 1 permanent)",
+    "Part P: EuSanTiago content correctly classified PROVIDER_SPECIFIC_OTHER_SERVER (RealMU), not promoted to Blood Moon knowledge",
+    "Part B (targeted, not exhaustive): reference-gap-manifest.json built from the YouTube-sweep gaps plus a targeted (not corpus-wide) phrase scan",
+    "Part AA: knowledge-index.json seeded with all newly-captured sources plus the FakeOnline reference pipeline",
+    "Part T: 4 wiki_candidates drafted (3 systems, 1 guide), all marked CANDIDATE with source references",
+    "Part AE: failure-manifest.json built (5 entries: 2 permanent transcript unavailability, 1 retryable transcript, 1 deferred VPS tooling gap, 1 deferred corpus-wide-scan scope decision)",
+    "Part AK: all 7 docs/knowledge/*.md files written",
+    "Part AB: 1 tooling script written and verified (scripts/knowledge-gap-report.mjs)",
+    "Part AD: this checkpoint"
+  ],
+  "notStarted": [
+    "Part B full corpus-wide reference-graph scan (75+ docs, close-read level rather than targeted grep)",
+    "Part C: systematic summary-only / RAW_MISSING audit across the full corpus (only spot-checked, not systematic)",
+    "Part L/M: formal normalization + atomic claim extraction as standalone documents (currently folded into each transcript's metadata header, not split out)",
+    "Part N: no conflicts found yet because cross-checking against real Blood Moon config (e.g. the ItemDrop.txt VIP-columns claim) has not been performed",
+    "Part Q/R/X/Y: deduplication pass, backfilled provenance links in the 75+ pre-existing docs, and stable content-addressed source IDs -- none attempted this round",
+    "Part S: knowledge-graph relations (MAP/ITEM/EVENT/CLASS/SYSTEM cross-links) -- not built",
+    "Part U: progression-knowledge entries -- none created (the one progression-adjacent source captured is explicitly out-of-scope for Blood Moon, see source-authority.md)",
+    "Part V/W: cross-reference against real Game Data Discovery schema / real accessible configs -- not performed (the ItemDrop.txt VIP-column claim is the one flagged candidate for this)",
+    "108 keyword-relevant project-gamers-oficial videos beyond the original 9 priority + 3 pre-existing = 12 transcribed; 96 relevant videos remain untranscribed"
+  ],
+  "resumeInstructions": [
+    "1. Read this checkpoint, knowledge-index.json, reference-gap-manifest.json, and failure-manifest.json first -- do not re-audit from scratch.",
+    "2. Run `node scripts/knowledge-gap-report.mjs` from mu-bloodmoon-v1/ for a fresh candidate scan; triage only the NOT-yet-tracked hits.",
+    "3. For further YouTube coverage: consult Research/YouTube/project-gamers-oficial/_relevant.tsv (108 rows) minus the 12 already in transcripts/ or transcripts-status.tsv -- prioritize by version-tag recency ('ADDED'/'UPDATED' + version number) same as this round's priority list did.",
+    "4. Retry the one retryable YouTube failure (W4ZprVUkkXw) before assuming it's permanently unavailable.",
+    "5. Cross-check KI-004 (ItemDrop.txt VIP columns) against Blood Moon's real Data/Item/ItemDrop.txt via RemoteOps hash/download -- this is the single highest-value pending verification.",
+    "6. Extend bm-remote.ps1 with a reviewed, read-only 'list directory' subcommand if a genuine incremental VPS file-listing need arises."
+  ]
+}

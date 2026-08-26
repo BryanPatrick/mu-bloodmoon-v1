@@ -1,0 +1,73 @@
+{
+  "generatedAt": "2026-08-25T22:45:00Z",
+  "scope": "TARGETED_SCAN, NOT_EXHAUSTIVE. This manifest covers (1) all reference gaps that motivated this specific sweep session (the 9 priority project-gamers-oficial videos + the 2 target YouTube channels), (2) gaps found via a keyword-based grep pass across D:\\MU\\docs for cross-reference phrases ('ver v\u00eddeo', 'ver tutorial dedicado', etc.), and (3) gaps already known from the prior session's docs\\vendor-video-index.md. It does NOT represent a line-by-line close-read of all 75+ top-level docs, nor of mu-bloodmoon-v1's own docs/ tree \u2014 that is a larger undertaking flagged as remaining work (see coverage note at bottom).",
+  "method": "grep across D:\\MU\\docs for reference-indicating phrases (see/ver v\u00eddeo, ver tutorial, conforme tutorial, TODO, pendente, RAW_MISSING, missing source, etc.), cross-checked each hit against Research/, RemoteData/, and Archives/ for a matching raw artifact.",
+  "gaps": [
+    {
+      "id": "GAP-001",
+      "reference": "9 high-priority project-gamers-oficial videos listed as METADATA_ONLY in docs/vendor-video-index.md (title known via video-index.tsv, content unknown because yt-dlp got blocked mid-sweep)",
+      "whereReferenced": "docs/vendor-video-index.md",
+      "sourceType": "YOUTUBE_VIDEO",
+      "expectedSource": "video transcript (RAW)",
+      "rawPresent": true,
+      "normalizedPresent": false,
+      "derivedPresent": false,
+      "status": "RESOLVED_7_OF_9",
+      "priority": "HIGH",
+      "detail": "1-URdUaW4Tw: RAW present (RemoteData/YouTube VTT, prior session) + full NORMALIZED/DERIVED pipeline (Research/Vendor/FakeOnline/). pPhK9sEABq4: TRANSCRIPT_NOT_AVAILABLE (no captions ever generated, confirmed no transcript button). 6SGVxLyhG_8, gySFdaRrS8Q, HFH8BhRZnUg, DqHAEmyQCjA, EpUJmEBn16Y, jXr8q_NGotQ, gfMqlKeQ360: RAW captured this session (Research/YouTube/project-gamers-oficial/transcripts/*.pt.json). NORMALIZED (topic/feature extraction) done inline in each transcript's metadata header but not yet split into standalone normalized docs -- see knowledge-index.json entries."
+    },
+    {
+      "id": "GAP-002",
+      "reference": "@EuSanTiago channel named as a priority sweep target in the task spec, alongside @projectgamersoficial",
+      "whereReferenced": "user task specification (this session), not a prior doc",
+      "sourceType": "YOUTUBE_CHANNEL",
+      "expectedSource": "channel catalog + transcripts",
+      "rawPresent": true,
+      "normalizedPresent": true,
+      "derivedPresent": true,
+      "status": "RESOLVED",
+      "priority": "HIGH",
+      "detail": "Channel has exactly 3 videos total (verified, not a scroll bug). 1/3 transcribed (qJ6Xp6o51C8). 2/3 TRANSCRIPT_NOT_AVAILABLE (W4ZprVUkkXw: panel opens but never populates after 4 attempts; dXJbdbFn1LI: no transcript button exists). Classified PROVIDER_SPECIFIC_OTHER_SERVER / UPSTREAM_MU -- content is RealMU-affiliated, not Blood Moon vendor material."
+    },
+    {
+      "id": "GAP-003",
+      "reference": "\"o canal do fornecedor (youtube.com/@projectgamersoficial) tem uma v\u00eddeo-aula dedicada para praticamente cada evento\"",
+      "whereReferenced": "docs/events-system.md:8",
+      "sourceType": "YOUTUBE_VIDEO_SET",
+      "expectedSource": "per-event tutorial video transcripts",
+      "rawPresent": false,
+      "normalizedPresent": false,
+      "derivedPresent": false,
+      "status": "OPEN",
+      "priority": "MEDIUM",
+      "detail": "Broad, unitemized claim -- the 399-video catalog (video-index.tsv) almost certainly contains individual per-event tutorials (Blood Castle, Devil Square, Chaos Castle, Illusion Temple, etc.) matched by title keyword, but none have been individually identified against docs/events-system.md's event list or transcribed. Concrete next step: grep video-index.tsv title column for event names, cross-reference against docs/events-system.md's event list, transcribe any HIGH-relevance matches not yet captured."
+    },
+    {
+      "id": "GAP-004",
+      "reference": "\"Liga/desliga o sistema de verifica\u00e7\u00e3o de velocidade de skill (HackSkillSpeedCheck.txt, ver tutorial dedicado)\"",
+      "whereReferenced": "docs/common-dat-semantic-map.md:246 (SpeedHackSkillSwitch row)",
+      "sourceType": "VENDOR_TUTORIAL",
+      "expectedSource": "HackSkillSpeedCheck tutorial document",
+      "rawPresent": true,
+      "normalizedPresent": true,
+      "derivedPresent": true,
+      "status": "RESOLVED",
+      "priority": "LOW",
+      "detail": "Already captured pre-session: Research/Vendor/Tutorials/HackSkillSpeedCheck.htm, hash-verified in manifest.json, normalized in docs/vendor-tutorials-knowledge-extraction.md. This gap was already closed before this sweep started -- listed here to document that the cross-check was performed, not to flag new work."
+    },
+    {
+      "id": "GAP-005",
+      "reference": "Broad claim in this session's own task spec: 'existing project references for any additional explicitly-referenced channels/videos' beyond the 2 named targets",
+      "whereReferenced": "user task specification (Part G)",
+      "sourceType": "YOUTUBE_CHANNEL",
+      "expectedSource": "N/A -- verification task, not a capture task",
+      "rawPresent": null,
+      "normalizedPresent": null,
+      "derivedPresent": null,
+      "status": "RESOLVED",
+      "priority": "LOW",
+      "detail": "Grepped D:\\MU\\docs for youtube.com/@ and youtube.com/channel/ patterns. Confirmed exactly 4 channels ever referenced anywhere in the corpus: projectgamersoficial (target, swept), EuSanTiago (target, swept), mubloodmoon (Blood Moon's own channel, explicitly out-of-scope as 'not a vendor'), kaspis4080 (unrelated MU server, explicitly discarded). No unaudited channel references found."
+    }
+  ],
+  "coverageNote": "This sweep covers the YouTube dimension (Parts G-K) essentially completely for the 2 named target channels. It does NOT yet cover a full corpus-wide reference-graph scan of all 75+ docs in D:\\MU\\docs plus mu-bloodmoon-v1/docs/ for every 'see X' / 'reference Y' phrase -- that grep matched 60 files on common words (TODO, pendente, falta) which is too broad a signal to hand-triage exhaustively in one session. RECOMMENDATION for next round: run a stricter regex (only explicit cross-document citations, e.g. 'ver docs/X.md', 'conforme Y.md', file-path-shaped references) and triage the resulting (much smaller) hit list one by one."
+}
