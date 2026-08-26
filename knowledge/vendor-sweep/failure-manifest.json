@@ -26,12 +26,20 @@
       "nextAction": "None available through legitimate means. Metadata-only stands as the permanent record."
     },
     {
-      "source": "VPS incremental file-listing (Part D/AC of this sweep -- checking C:\\MuServer\\Tutoriais and other areas for files new since the 2026-08-17 full inventory)",
+      "source": "VPS incremental file-listing (Part D/AC of Phase 1 -- checking C:\\MuServer\\Tutoriais and other areas for files new since the 2026-08-17 full inventory)",
       "operation": "recursive remote directory listing via RemoteOps",
-      "reason": "The only generic remote-listing primitive documented as having been used for the original full sweep (`Invoke-BloodMoonRemote`, an SSH-based function used directly by a prior/different session) is not exposed as a safe, documented subcommand of the current bm-remote.ps1 CLI -- its cheatsheet only exposes fixed operations (health, status, logs, hash, download, compare-file, snapshot-config, drop-config, fakeonline-show, config-list with a hardcoded 3-path list). Improvising an equivalent ad-hoc remote command against a live production VPS without a documented-safe pattern was judged out of scope for this session's authority.",
+      "reason": "RESOLVED in Phase 2, Part AA: bm-remote.ps1 was extended with a new, allowlisted, read-only `inventory`/`inventory-json` subcommand (Get-BloodMoonInventory, Test-BloodMoonInventoryPathAllowed in the RemoteOps module), restricted to InventoryAllowedRoots in config\\remoteops.json (Data, Tutoriais, GameServer\\DATA, GameServerCS\\DATA). Path-safety logic covered by 21 passing unit tests (Tools/RemoteOps/tests/test-inventory-safety.ps1, no SSH required). Demonstrated live and safely against C:\\MuServer\\Data\\Custom (90 files catalogued, RemoteData/Inventory/data-custom-20260826.json).",
+      "retryable": false,
+      "lastAttempt": "2026-08-26 (Phase 2, this session)",
+      "nextAction": "RESOLVED. GameMaster.txt (needed for CLAIM-013 verification) lives under Data/ directly, not Data/Custom/ -- a second `bm-remote inventory 'C:\\MuServer\\Data'` call (non-recursive or scoped) would locate it; deferred this session to keep the live-tool demonstration narrowly scoped."
+    },
+    {
+      "source": "youtube:A2BcRITQjxc, QJclT4HLaMg, ras-LWKglMM (project-gamers-oficial, 3 consecutive videos attempted in the ADDED 8.8/8.9 batch, Phase 2)",
+      "operation": "transcript capture via browser 'Mostrar transcri\u00e7\u00e3o' button",
+      "reason": "All 3 consecutive videos in this batch showed the SAME stall pattern: the transcript engagement panel exists in the DOM but stays stuck on its loading spinner (visibility=ENGAGEMENT_PANEL_VISIBILITY_HIDDEN, innerHTML shows an active tp-yt-paper-spinner) for 8+ seconds, never populating segments -- a materially different, more persistent failure than the earlier isolated single-video stalls (e.g. W4ZprVUkkXw). Given this happened on 3/3 consecutive attempts in the SAME browser session, after this session had already made many prior successful transcript-panel requests (12 successful captures across Phase 1), the likely explanation is client-side rate-limiting or throttling of the transcript-fetch XHR by YouTube after sustained use, rather than 3 coincidentally caption-less videos.",
       "retryable": true,
-      "lastAttempt": "2026-08-25T22:4x:00Z (this session, via bm-remote.ps1 config-list as the closest documented-safe substitute)",
-      "nextAction": "A future session with access to (or willing to add) a documented, reviewed, read-only 'list remote directory' RemoteOps subcommand (mirroring the existing hash/download/compare-file pattern) could re-run a lightweight recursive listing scoped to C:\\MuServer\\Tutoriais and any other high-value tutorial/config folders, diff file names+sizes+mtimes against the 2026-08-17 baseline in catalog/vps-inventory.json, and report NEW/CHANGED/REMOVED. Given the baseline is only 8 days old and was exhaustive, this is low urgency."
+      "lastAttempt": "2026-08-26 (Phase 2, this session)",
+      "nextAction": "A future sweep session should attempt these 3 videos FIRST (before making other transcript requests in the same browser session), or space transcript requests out with deliberate delays, to test the rate-limiting hypothesis. Do not conclude these videos lack captions without a fresh-session retry."
     },
     {
       "source": "Corpus-wide reference-graph scan (Part B) across all 75+ docs in D:\\MU\\docs plus mu-bloodmoon-v1/docs/",

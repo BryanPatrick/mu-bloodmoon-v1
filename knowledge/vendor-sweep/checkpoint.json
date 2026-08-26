@@ -1,39 +1,52 @@
 {
   "sweepId": "knowledge-sweep-2026-08-25",
-  "lastUpdatedUtc": "2026-08-25T22:55:00Z",
+  "lastUpdatedUtc": "2026-08-26T01:00:00Z",
   "status": "PARTIAL",
-  "completed": [
-    "Part A: repo/knowledge-structure audit (reused prior sessions' extensive existing corpus, did not re-audit from scratch)",
-    "Part D/AC (light): confirmed VPS baseline (2026-08-17) is complete and recent; ran documented bm-remote config-list as substitute incremental check; deeper incremental listing deferred (see failure-manifest.json)",
-    "Part G: confirmed exactly 2 target channels + 2 already-ruled-out non-targets, no unaudited channel references anywhere in corpus",
-    "Part H/I/J/K (project-gamers-oficial): all 9 originally-METADATA_ONLY priority videos resolved -- 7 captured this session, 1 already had RAW from a prior session, 1 confirmed permanently NOT_AVAILABLE (pPhK9sEABq4)",
-    "Part H/I/J/K (EuSanTiago): channel fully catalogued (3/3 videos), 1/3 transcribed, 2/3 NOT_AVAILABLE (1 retryable, 1 permanent)",
-    "Part P: EuSanTiago content correctly classified PROVIDER_SPECIFIC_OTHER_SERVER (RealMU), not promoted to Blood Moon knowledge",
-    "Part B (targeted, not exhaustive): reference-gap-manifest.json built from the YouTube-sweep gaps plus a targeted (not corpus-wide) phrase scan",
-    "Part AA: knowledge-index.json seeded with all newly-captured sources plus the FakeOnline reference pipeline",
-    "Part T: 4 wiki_candidates drafted (3 systems, 1 guide), all marked CANDIDATE with source references",
-    "Part AE: failure-manifest.json built (5 entries: 2 permanent transcript unavailability, 1 retryable transcript, 1 deferred VPS tooling gap, 1 deferred corpus-wide-scan scope decision)",
-    "Part AK: all 7 docs/knowledge/*.md files written",
-    "Part AB: 1 tooling script written and verified (scripts/knowledge-gap-report.mjs)",
-    "Part AD: this checkpoint"
+  "phase1Completed": [
+    "Part A: repo/knowledge-structure audit (reused prior sessions' extensive existing corpus)",
+    "Part G/H/I/J/K: YouTube sweep of both target channels -- all 9 priority project-gamers-oficial videos resolved (7 captured, 1 pre-existing, 1 permanently unavailable); EuSanTiago fully catalogued (1/3 transcribed, 2/3 unavailable)",
+    "Part P: EuSanTiago content correctly classified PROVIDER_SPECIFIC_OTHER_SERVER, excluded from Blood Moon knowledge",
+    "Part B (targeted): reference-gap-manifest.json",
+    "Part T: 4 wiki_candidates drafted",
+    "Part AE: failure-manifest.json",
+    "Part AK: 7 docs/knowledge/*.md files",
+    "Part AB: scripts/knowledge-gap-report.mjs"
+  ],
+  "phase2Completed": [
+    "Part A: resumed from checkpoint without re-auditing",
+    "Part K (PRIORITY): ItemDrop.txt VIP-columns claim CONFIRMED_BY_CONFIG -- real file header exactly matches the video's described post-7.0 structure. See atomic-claims.json CLAIM-002/003/004, knowledge-conflicts.json CONFLICT-001 (vendor's own older tutorial doc predates the file's current structure -- VERSION_DIFFERENCE, not an error)",
+      "Part F/G: atomic-claims.json built -- 17 atomic, single-fact claims with full schema (statement/source/authority/entities/bloodMoonStatus/verificationStatus/confidence)",
+      "Part J: verification-queue.json -- 9 items, 6 DONE, 2 QUEUED, 1 BLOCKED (no safe read-only path for client-UI behavior)",
+      "Part E: 8 standalone NORMALIZED artifacts (knowledge/vendor-sweep/normalized/youtube/<videoId>.md), separate from RAW metadata headers",
+      "Part Q/R: knowledge-graph.json -- 24 nodes, 33 edges (SYSTEM/CONFIG/GUIDE/SOURCE types; no MAP/MONSTER/ITEM/EVENT yet -- no evidence gathered for those types this round)",
+      "Part O/P: provider-version-matrix.json -- 7 content-verified version anchors, 1 (ItemDrop 7.0) cross-checked against real Blood Moon config; bloodMoonProviderVersionStatus = 'LIKELY at-or-after UPDATED 7.0' (one data point, not a full fingerprint)",
+      "Part AA: safe VPS directory inventory tool built and used live -- Get-BloodMoonInventory/Test-BloodMoonInventoryPathAllowed added to BloodMoon.RemoteOps.psm1, bm-remote inventory/inventory-json subcommands, InventoryAllowedRoots allowlist in remoteops.json (Data, Tutoriais, GameServer\\DATA, GameServerCS\\DATA), redacts (not omits) secret-suggestive filenames, opt-in bounded hashing",
+      "Part AB (diff): ran inventory against C:\\MuServer\\Data\\Custom live -- 90 files catalogued (RemoteData/Inventory/data-custom-20260826.json); no 2026-08-17 baseline existed for this specific subfolder to diff against (the 2026-08-17 sweep covered source-code-hunt patterns across broader paths, not a full Data/Custom file listing), so this is establishing a first baseline for this folder rather than a diff",
+      "Part AC: downloaded and read 4 real config files found via the inventory (CustomBotStore.txt, CustomBotTrader.txt, CustomBotFusion.txt, CustomBotBuffer.txt) -- CONFIRMED_BY_CONFIG for CLAIM-006/008/009/010/011/016/017, including 1 genuine correction (OnlySameType, not BotIndexOnly) and 1 major finding (only Store is actually active; Trader/Fusion/Buffer are deployed-but-disabled)",
+      "Part AH: knowledge-conflicts.json -- 1 conflict recorded and resolved (CONFLICT-001, VERSION_DIFFERENCE)",
+      "Part AI/AJ: 3 of 4 wiki_candidates upgraded from CANDIDATE to READY_FOR_REVIEW with readiness scores; 1 (data-folder-taxonomy) at NEEDS_VERIFICATION",
+      "Part AD (light): checked for duplicate videoIds and byte-identical transcript files across the whole YouTube corpus -- none found",
+      "Part AN: 21 unit tests for the inventory path-safety logic (Tools/RemoteOps/tests/test-inventory-safety.ps1), all passing, no SSH required",
+      "Part C (partial): attempted 3 more project-gamers-oficial videos (A2BcRITQjxc, QJclT4HLaMg, ras-LWKglMM) -- all 3 hit a new, distinct failure pattern (transcript panel stuck loading, not the earlier 'no button' pattern), suspected session-level rate-limiting after 12 successful captures across this session -- recorded as a single batch failure, retryable"
   ],
   "notStarted": [
     "Part B full corpus-wide reference-graph scan (75+ docs, close-read level rather than targeted grep)",
-    "Part C: systematic summary-only / RAW_MISSING audit across the full corpus (only spot-checked, not systematic)",
-    "Part L/M: formal normalization + atomic claim extraction as standalone documents (currently folded into each transcript's metadata header, not split out)",
-    "Part N: no conflicts found yet because cross-checking against real Blood Moon config (e.g. the ItemDrop.txt VIP-columns claim) has not been performed",
-    "Part Q/R/X/Y: deduplication pass, backfilled provenance links in the 75+ pre-existing docs, and stable content-addressed source IDs -- none attempted this round",
-    "Part S: knowledge-graph relations (MAP/ITEM/EVENT/CLASS/SYSTEM cross-links) -- not built",
-    "Part U: progression-knowledge entries -- none created (the one progression-adjacent source captured is explicitly out-of-scope for Blood Moon, see source-authority.md)",
-    "Part V/W: cross-reference against real Game Data Discovery schema / real accessible configs -- not performed (the ItemDrop.txt VIP-column claim is the one flagged candidate for this)",
-    "108 keyword-relevant project-gamers-oficial videos beyond the original 9 priority + 3 pre-existing = 12 transcribed; 96 relevant videos remain untranscribed"
+    "Part L/M: normalization/claims exist but weren't cross-validated against every pre-existing doc in the corpus for consistency",
+    "Part S: MAP/ITEM/EVENT/CLASS entity types in the knowledge graph -- zero evidence gathered for these types this round (all new evidence was SYSTEM/CONFIG)",
+    "Part U/Y/Z: progression knowledge and progression graph -- still empty; the only progression-adjacent source (EuSanTiago) is explicitly excluded",
+    "Part V/W: broader real-config/real-schema cross-checks beyond ItemDrop.txt and the 4 bot configs -- CLAIM-013 (GameMaster.txt section 1) remains queued",
+    "Part AF: provenance backfill into the 75+ pre-existing docs (e.g. adding a note to docs/vendor-tutorials-knowledge-extraction.md's ItemDrop.htm entry pointing at CONFLICT-001) -- deliberately deferred to avoid an unnecessary rewrite of a stable document",
+    "Part AM: a dedicated 'knowledge query' CLI tool (knowledge query/entity/gaps/conflicts/unverified/wiki-ready) -- not built; scripts/knowledge-gap-report.mjs covers only the gap-scan piece",
+    "96 of 108 keyword-relevant project-gamers-oficial videos remain untranscribed (12 done: 3 pre-existing + 1 FakeOnline + 8 from this session's two phases)"
   ],
   "resumeInstructions": [
-    "1. Read this checkpoint, knowledge-index.json, reference-gap-manifest.json, and failure-manifest.json first -- do not re-audit from scratch.",
-    "2. Run `node scripts/knowledge-gap-report.mjs` from mu-bloodmoon-v1/ for a fresh candidate scan; triage only the NOT-yet-tracked hits.",
-    "3. For further YouTube coverage: consult Research/YouTube/project-gamers-oficial/_relevant.tsv (108 rows) minus the 12 already in transcripts/ or transcripts-status.tsv -- prioritize by version-tag recency ('ADDED'/'UPDATED' + version number) same as this round's priority list did.",
-    "4. Retry the one retryable YouTube failure (W4ZprVUkkXw) before assuming it's permanently unavailable.",
-    "5. Cross-check KI-004 (ItemDrop.txt VIP columns) against Blood Moon's real Data/Item/ItemDrop.txt via RemoteOps hash/download -- this is the single highest-value pending verification.",
-    "6. Extend bm-remote.ps1 with a reviewed, read-only 'list directory' subcommand if a genuine incremental VPS file-listing need arises."
+    "1. Read this checkpoint, atomic-claims.json, knowledge-graph.json, verification-queue.json, knowledge-conflicts.json, and failure-manifest.json first -- do not re-audit from scratch.",
+    "2. Run `node scripts/knowledge-gap-report.mjs` from mu-bloodmoon-v1/ for a fresh candidate scan.",
+    "3. Run `Tools/RemoteOps/tests/test-inventory-safety.ps1` to confirm the inventory tool's safety logic still passes before using it.",
+    "4. Test the rate-limiting hypothesis from the last failure-manifest.json entry: attempt A2BcRITQjxc/QJclT4HLaMg/ras-LWKglMM FIRST in a fresh browser session, before any other transcript requests, and see if they succeed.",
+    "5. Verify CLAIM-013 (GameMaster.txt account-level whitelist) via `bm-remote inventory 'C:\\MuServer\\Data'` (non-recursive) to locate the file, then download+read.",
+    "6. For further YouTube coverage: consult Research/YouTube/project-gamers-oficial/_relevant.tsv (108 rows) minus transcripts-status.tsv's captured/attempted rows -- continue by version-tag recency.",
+    "7. Once >5-10 more claims exist, re-run a pairwise conflict scan across atomic-claims.json (Part AG) -- only 17 claims exist now, too few for the effort to be worthwhile yet.",
+    "8. Consider extending the knowledge graph to MAP/ITEM/EVENT/MONSTER entities once a video or config source actually provides that kind of evidence -- do not synthesize entities without a source."
   ]
 }

@@ -1,9 +1,16 @@
 ---
-status: CANDIDATE (orientation reference — safe to promote as-is once cross-checked against the real Blood Moon Data/ tree, since it is descriptive, not a config change)
+status: NEEDS_VERIFICATION
 category: guides
 confidence: CONFIRMED_VENDOR_VIDEO
 source: Research/YouTube/project-gamers-oficial/transcripts/jXr8q_NGotQ.pt.json
 bloodMoonStatus: UPSTREAM_MU
+readiness:
+  rawCoverage: MEDIUM (1 video source only)
+  sourceCount: 1
+  bloodMoonVerification: PARTIALLY_CONFIRMED_BY_CONFIG
+  conflictStatus: NONE
+  readiness: NEEDS_VERIFICATION
+  note: "Part of this taxonomy is now independently confirmed by this sweep's own real-config reads -- Data/Custom/ contains 90 real files including CustomBotStore.txt/CustomBotTrader.txt/CustomBotFusion.txt/CustomBotBuffer.txt (see RemoteData/Inventory/data-custom-20260826.json), matching the video's description. The Command/Event/Monster/Item folder claims remain video-only, not yet independently re-verified against the real Data/ tree."
 ---
 
 # GameServer Data/ folder taxonomy (vendor orientation)

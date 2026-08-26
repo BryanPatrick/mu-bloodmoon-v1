@@ -1,12 +1,20 @@
 ---
-status: CANDIDATE (not published — requires cross-check against Blood Moon's own Data/Custom/CustomBotTrader before promotion)
+status: READY_FOR_REVIEW
 category: systems
-confidence: CONFIRMED_VENDOR_VIDEO
-source: Research/YouTube/project-gamers-oficial/transcripts/gySFdaRrS8Q.pt.json
-bloodMoonStatus: BLOODMOON_LIKELY
+confidence: CONFIRMED_RUNTIME
+source: Research/YouTube/project-gamers-oficial/transcripts/gySFdaRrS8Q.pt.json + Data/Custom/CustomBotTrader.txt (real config, read 2026-08-26)
+bloodMoonStatus: BLOODMOON_CONFIRMED
+readiness:
+  rawCoverage: HIGH
+  sourceCount: 2 (1 PROVIDER_TUTORIAL, 1 REAL_BLOODMOON_CONFIG)
+  bloodMoonVerification: CONFIRMED_BY_CONFIG
+  conflictStatus: NONE
+  readiness: READY_FOR_REVIEW
 ---
 
 # Custom Bot Trader ("Mix")
+
+**Verified against real config 2026-08-26**: present on Blood Moon as `Data/Custom/CustomBotTrader.txt`, but both configured entries (BotTrade1, BotTrade2) have `Enabled=0` — the feature is deployed but currently switched off. The mix data itself ("WingBK" 50% success, "WingBK2" 100% success) is essentially the vendor's own demo/template data, matching the tutorial's live example almost exactly — file `LastWriteTimeUtc` is 2023-08-08, one day after the tutorial's 2023-08-07 publish date, strongly suggesting it was deployed right when the vendor released it and never customized. See `atomic-claims.json` CLAIM-008/009/017.
 
 A static NPC that trades a specific input item for a specific output item, gated by a configurable success percentage — the vendor calls this a "mix" system. Distinct from [[custom-bot-fusion]] (which transfers *options between two player-supplied items*): Trader exchanges a player's item for a *fixed, pre-configured* reward item.
 

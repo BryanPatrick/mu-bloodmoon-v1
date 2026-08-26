@@ -12,19 +12,22 @@ A complete filesystem inventory of the VPS (`WIN-K82J9TU944D`, Windows Server 20
 
 **49 vendor tutorial files** were copied from `C:\MuServer\Tutoriais\` with full SHA-256 remote+local hash verification, landing at `Research/Vendor/Tutorials/` (27 `.htm`, 3 `.html`, 6 `.png`, 2 `.rtf`, 11 `.txt`, plus a `manifest.json` recording each file's verified hash match). 43 of 49 have been read and normalized into `docs/vendor-tutorials-knowledge-extraction.md`.
 
-## What the current tooling actually exposes
+## What the current tooling exposes
 
-`D:\MU\Tools\RemoteOps\bm-remote.ps1` (see `CHEATSHEET.md`) exposes a fixed set of documented, reviewed subcommands: `health`, `status`, `muserver-status`, `processes`, `services`, `ports`, `logs <target>`, `download-logs`, `config-list` (a **hardcoded** 3-path list — `Common.dat` ×2, `CustomFakeOnline.txt` — not a generic directory listing), `hash <path>`, `download <path> <dest>`, `compare-file`, `snapshot-config`, `drop-config`, `fakeonline-show`. `bm-sql.ps1` exposes SELECT-only SQL access.
+`D:\MU\Tools\RemoteOps\bm-remote.ps1` (see `CHEATSHEET.md`) exposes a fixed set of documented, reviewed subcommands: `health`, `status`, `muserver-status`, `processes`, `services`, `ports`, `logs <target>`, `download-logs`, `config-list` (a hardcoded 3-path list — `Common.dat` ×2, `CustomFakeOnline.txt`), `hash <path>`, `download <path> <dest>`, `compare-file`, `snapshot-config`, `drop-config`, `fakeonline-show`. `bm-sql.ps1` exposes SELECT-only SQL access.
 
-**There is currently no documented, reviewed, generic "list an arbitrary remote directory" subcommand.** The 2026-08-17 full inventory used a lower-level primitive (`Invoke-BloodMoonRemote`) directly, in a different session, with careful small-batch discipline to avoid hanging the SSH connection. That primitive is not exposed as a safe CLI command today.
+**As of 2026-08-26, a safe, allowlisted, recursive directory-listing subcommand exists**: `bm-remote inventory <root>` (table output) and `bm-remote inventory-json <root>` (JSON, for piping to a file), with an optional `-hash` flag for opt-in SHA-256 hashing (skipped above `InventoryMaxHashBytes`, currently 50MB). `<root>` must be exactly one of, or a genuine subdirectory of, the roots listed in `InventoryAllowedRoots` in `config\remoteops.json` (currently `Data`, `Tutoriais`, `GameServer\DATA`, `GameServerCS\DATA` — deliberately excludes user profiles, `ProgramData`, and log directories, which have their own dedicated read paths already). Path validation (`Test-BloodMoonInventoryPathAllowed` in the RemoteOps module) rejects wildcards, `..` traversal, and control characters outright, and is covered by 21 unit tests in `Tools\RemoteOps\tests\test-inventory-safety.ps1` that run without any SSH connection. Filenames matching `InventoryDenyNamePatterns` (password/secret/credential/token-suggestive) are redacted in the output (extension/size/mtime kept, name replaced) rather than omitted, matching the sanitize-not-omit convention used elsewhere in this tooling. Reparse points (junctions) are listed but never recursed into, avoiding the recursion-loop risk documented in the original 2026-08-17 inventory's batch log.
+
+To extend the allowlist to a new root, add it to `InventoryAllowedRoots` in `config\remoteops.json` — a one-line, reviewable change — rather than bypassing the tool.
 
 ## Incremental sweeps
 
 Given the full 2026-08-17 baseline is comprehensive and (as of any given sweep) only days-to-weeks old, an incremental VPS check should be **light**, not a re-run of the full 15-batch inventory:
 
-1. Re-run the fixed, documented `bm-remote config-list` and `bm-remote hash <path>` commands against the highest-value known paths (`C:\MuServer\Data\Custom\*.txt`, `C:\MuServer\Tutoriais\`) and diff hashes against `catalog/vps-inventory.json` / `Research/Vendor/Tutorials/manifest.json`.
-2. If a genuine need arises for new generic directory listing (e.g. checking whether new files have appeared in `Tutoriais\`), that requires either extending `bm-remote.ps1` with a new, reviewed, read-only "list directory" subcommand (mirroring the shape of `hash`/`download`), or a future session repeating the original small-sub-batch `Invoke-BloodMoonRemote` approach with the same hang-avoidance discipline documented in `docs/vps-inventory-batch-log.md`.
-3. Never attempt an ad-hoc, undocumented remote command against the live production VPS to work around the above — extend the tooling first, or defer.
+1. Run `bm-remote inventory-json <root>` against the highest-value known paths (`C:\MuServer\Data\Custom`, `C:\MuServer\Tutoriais`) and diff the resulting name/size/mtime/hash list against the previous capture (e.g. `RemoteData/Inventory/*.json` from a prior run) or against `catalog/vps-inventory.json` / `Research/Vendor/Tutorials/manifest.json`.
+2. Classify each entry NEW / CHANGED (size or mtime differs) / UNCHANGED / REMOVED (present in the old capture, absent in the new one).
+3. For anything NEW or CHANGED that looks like a tutorial or config file, follow the normal RAW capture path (`bm-remote download`, hash-verify, land under `Research/Vendor/` or `RemoteData/`).
+4. Never attempt an ad-hoc, undocumented remote command against the live production VPS to work around the allowlist — extend `InventoryAllowedRoots` first, with a reviewed, deliberate change.
 
 ## Secrets
 
