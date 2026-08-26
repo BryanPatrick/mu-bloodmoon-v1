@@ -1,0 +1,271 @@
+{
+  "generatedAt": "2026-08-26T20:02:20.981Z",
+  "generatedBy": "scripts/knowledge-canonical-facts.mjs -- derived mechanically from atomic-claims.json, do not hand-edit, re-run instead",
+  "rule": "A claim qualifies as canonical only when verificationStatus starts with CONFIRMED_BY_ (config/schema/runtime evidence). PROVIDER_TUTORIAL or COMMUNITY_TUTORIAL sourceAuthority alone, however plausible, is explicitly insufficient -- see docs/knowledge/source-authority.md.",
+  "canonicalFactCount": 22,
+  "totalClaims": 34,
+  "canonicalFacts": [
+    {
+      "claimId": "CLAIM-001",
+      "statement": "Data/Item/ItemDrop.txt is a real file present in Blood Moon's actual server distribution.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "ItemDrop.txt"
+      ],
+      "topic": "drop-system",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-002",
+      "statement": "Blood Moon's real ItemDrop.txt header row has 4 separate DropRate columns named DropRate_AL0, DropRate_AL1, DropRate_AL2, DropRate_AL3 (one per account/VIP tier), not a single DropRate column.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "ItemDrop.txt",
+        "DropRate_AL0",
+        "DropRate_AL1",
+        "DropRate_AL2",
+        "DropRate_AL3"
+      ],
+      "topic": "drop-system",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-003",
+      "statement": "All 92 data lines in Blood Moon's real ItemDrop.txt are commented out (prefixed //), and every DropRate_AL0..AL3 value shown is 0 -- the per-item VIP drop-rate table is entirely inert/unused on Blood Moon.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "ItemDrop.txt"
+      ],
+      "topic": "drop-system",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-004",
+      "statement": "The ProjectGamers/eMuGS vendor engine added 4 VIP-tier DropRate columns to ItemDrop.txt (replacing a single DropRate column) in an update the vendor labeled 7.0.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "ItemDrop.txt"
+      ],
+      "topic": "drop-system",
+      "confidence": "CONFIRMED_VENDOR_VIDEO (claim) + CONFIRMED_RUNTIME (verification)"
+    },
+    {
+      "claimId": "CLAIM-006",
+      "statement": "Custom Bot Store is a static NPC that sells a fixed list of items for zen and/or Cash, configured via Data/Custom/ text files.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomBotStore"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-008",
+      "statement": "Custom Bot Trader exchanges one player item for a fixed, pre-configured reward item, gated by a configurable success-rate percentage; on failure the input item is lost with no refund.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomBotTrader"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-009",
+      "statement": "Custom Bot Trader supports a maximum of 30 bot instances of that type per server.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomBotTrader",
+        "CustomBotBuffer",
+        "CustomBotFusion"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (comment present) / CONFIRMED_VENDOR_VIDEO (30 is the actual enforced max, not just documented)"
+    },
+    {
+      "claimId": "CLAIM-010",
+      "statement": "Custom Bot Fusion transfers Luck/Skill/Excellent-option rolls from a source item to a target item, at a configurable success rate; on success the source item loses its transferred options.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomBotFusion"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-011",
+      "statement": "Custom Bot Fusion's real config field is named OnlySameType (not 'BotIndexOnly' as this sweep's initial transcript-based normalization guessed) -- when 1, restricts fusion to items of the same equipment category (e.g. sword-with-sword only); when 0, any category may be mixed. A separate DestinyLower flag additionally restricts fusion to cases where the destination item's level is within +/-10 of the source item's level.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomBotFusion",
+        "OnlySameType",
+        "DestinyLower"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-013",
+      "statement": "The vendor's GameMaster.txt file has a Section 1 (in addition to the existing GM-commands Section 0) that whitelists specific account logins, by account level, for access to a specific Game Server instance.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "GameMaster.txt",
+        "Common.dat"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-016",
+      "statement": "Blood Moon's real Data/Custom/CustomBotBuffer.txt has its entire bot-placement table (section 1) commented out -- zero active buffer-bot entries, even though the cost/item-requirement/skill sections (2-4) below it are fully configured with 6 class-specific buffer templates (SM/BK/ELF/DL/SUM/RF).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomBotBuffer"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-017",
+      "statement": "Of the 4 vendor static-NPC bot systems present on Blood Moon (Store, Trader, Fusion, Buffer), only CustomBotStore is currently deployed active (1 live NPC, 'Luffen', a cash shop in Lorencia). Trader, Fusion, and Buffer all exist as configured files but have zero active/enabled entries.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomBotStore",
+        "CustomBotTrader",
+        "CustomBotFusion",
+        "CustomBotBuffer"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-019",
+      "statement": "Update 6.8 extends the EventItemBag end-of-event drop mechanism (already used by Blood Castle and Illusion Temple) to Devil Square, adding 7 configurable sub-indices (one per Devil Square level/stage).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "EventItemBag",
+        "DevilSquare"
+      ],
+      "topic": "drop-system",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-020",
+      "statement": "Update 6.9 adds 'Reward Level' and 'Reward Points' columns to CustomMonster.txt, letting a specific monster grant direct character levels or a custom points currency on kill, in addition to the pre-existing Quest/GoblinPoint/Reset/MasterReset reward columns.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomMonster.txt",
+        "RewardLevel",
+        "RewardPoints"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-027",
+      "statement": "Across every vendor-provided Data/Custom system independently verified against Blood Moon's real config so far (ItemDrop.txt, CustomBotTrader.txt, CustomBotFusion.txt, CustomBotBuffer.txt, CustomMonster.txt), the file is present with the correct/current column structure but every configured data row is commented out or Enabled=0 -- only CustomBotStore.txt (CLAIM-006/017) is an exception, with 1 genuinely active entry.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "ItemDrop.txt",
+        "CustomBotTrader",
+        "CustomBotFusion",
+        "CustomBotBuffer",
+        "CustomMonster.txt"
+      ],
+      "topic": "operations",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-028",
+      "statement": "Blood Moon's real Data/EventItemBagManager.txt (150 lines) is a flat index mapping 148 reward-bag entries to ItemIndex/ItemLevel/MonsterClass/SpecialValue/DropMap criteria, each referencing an individually-named file in a separate Data/EventItemBag/ folder (also 148 files, indices 000-147).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "EventItemBagManager.txt",
+        "EventItemBag"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-029",
+      "statement": "All 7 custom monster indices in Data/Custom/CustomMonster.txt (275, 361, 459, 561, 295, 801, 802) can be identified by name via cross-reference with EventItemBagManager.txt's MonsterClass column: Kundun, Nightmare, Selupan, Medusa, Erohim, Boss Farao, and Boss BloodMoon respectively.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "Kundun",
+        "Nightmare",
+        "Selupan",
+        "Medusa",
+        "Erohim",
+        "Boss Farao",
+        "Boss BloodMoon"
+      ],
+      "topic": "monsters",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-030",
+      "statement": "Data/EventItemBag/147 - Boss BloodMoon.txt (MonsterClass 802) is a byte-identical copy of Data/EventItemBag/146 - Boss Farao.txt (MonsterClass 801), including an internal EventName field that still reads \"Boss Farao\" and an empty item-reward section (zero items configured to drop from either boss).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "Boss BloodMoon",
+        "Boss Farao"
+      ],
+      "topic": "monsters",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-031",
+      "statement": "Blood Moon's real Data/Custom/CustomEventZombie.txt configures a daily 02:45 event (10-minute duration) with 4 monster waves (indices 14, 15, 55, 515) on Map 1, a 100%-rate cure-item drop (Type 14, Index 8) at the same coordinates as wave 3's spawn point, a Cash/Gold/PcPoint reward, and an entry NPC (class 380) on Map 0.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventZombie",
+        "Skeleton King",
+        "Map 1",
+        "Map 0"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-032",
+      "statement": "Blood Moon's real Data/Custom/CustomEventPandora.txt configures a daily 20:00 'Pandora Event' on Map 40 for 2-20 players of any class, where players' skins change to MonsterClass 55 (Skeleton King), in a bounded area, rewarding 100 Cash.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventPandora",
+        "Map 40"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-033",
+      "statement": "Blood Moon's real Data/Custom/CustomEventStopOrDie.txt configures a red-light/green-light style event on Map 1 with a 60s lobby, 30s countdown, randomized 4-8 second move windows, a 900ms stop-grace period, and a 500/500/500 Cash/Gold/PcPoint reward, entered via an NPC (class 684) at Map 1 coordinates (22,41).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventStopOrDie",
+        "Map 1"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-034",
+      "statement": "4 entries in EventItemBagManager.txt (indices 102-105, Shining/Elegant/Steel/Old Jewelry Case) are commented out with a leading //, disabling them at the index-table level, even though their corresponding individual Data/EventItemBag/102-105 *.txt files still exist on disk.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "Shining Jewelry Case",
+        "Elegant Jewelry Case",
+        "Steel Jewelry Case",
+        "Old Jewelry Case"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME"
+    }
+  ],
+  "explicitlyNotCanonical_contradicted": [
+    {
+      "claimId": "CLAIM-005",
+      "statement": "The vendor's own ItemDrop.htm tutorial document (as normalized in docs/vendor-tutorials-knowledge-extraction.md) lists ItemDrop.txt's fields as a single 'DropRate' column, not 4 VIP-tier columns.",
+      "evidenceBasis": "CONTRADICTED_BY_CONFIG"
+    }
+  ]
+}

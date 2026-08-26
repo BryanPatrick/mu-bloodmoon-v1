@@ -7,9 +7,13 @@
 // Usage:
 //   node scripts/knowledge-query.mjs query "ItemDrop VIP"
 //   node scripts/knowledge-query.mjs entity "CustomBotStore"
+//   node scripts/knowledge-query.mjs entity map | monster | item | event | npc | system | config
 //   node scripts/knowledge-query.mjs gaps
 //   node scripts/knowledge-query.mjs conflicts
 //   node scripts/knowledge-query.mjs unverified
+//   node scripts/knowledge-query.mjs verified
+//   node scripts/knowledge-query.mjs disabled-systems
+//   node scripts/knowledge-query.mjs progression
 //   node scripts/knowledge-query.mjs wiki-ready
 import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { join, extname } from 'node:path'
@@ -47,8 +51,11 @@ function cmdQuery(term) {
   }
 }
 
+const ENTITY_TYPE_KEYWORDS = new Set(['map', 'monster', 'item', 'event', 'npc', 'system', 'config'])
+
 function cmdEntity(name) {
-  if (!name) { console.error('Usage: knowledge-query.mjs entity "<entity name>"'); process.exit(1) }
+  if (!name) { console.error('Usage: knowledge-query.mjs entity "<entity name>" | entity <map|monster|item|event|npc|system|config>'); process.exit(1) }
+  if (ENTITY_TYPE_KEYWORDS.has(name.toLowerCase())) return cmdEntityOfType(name)
   const needle = name.toLowerCase()
   const claims = load('atomic-claims.json', { claims: [] }).claims
   const graph = load('knowledge-graph.json', { nodes: [], edges: [] })
@@ -89,6 +96,44 @@ function cmdUnverified() {
   for (const c of unverified) console.log(`[${c.claimId}] ${c.statement}`)
 }
 
+function cmdEntityOfType(type) {
+  const typeMap = { map: 'MAP', monster: 'MONSTER', item: 'ITEM', event: 'EVENT', npc: 'NPC', system: 'SYSTEM', config: 'CONFIG' }
+  const wanted = typeMap[type?.toLowerCase()]
+  if (!wanted) { console.error(`Usage: knowledge-query.mjs entity <${Object.keys(typeMap).join('|')}>`); process.exit(1) }
+  const graph = load('knowledge-graph.json', { nodes: [] })
+  const nodes = graph.nodes.filter(n => n.type === wanted)
+  console.log(`${wanted} entities -- ${nodes.length} total\n`)
+  for (const n of nodes) console.log(`[${n.id}] ${n.name}${n.bloodMoonStatus ? ' (' + n.bloodMoonStatus + ')' : ''}`)
+  if (nodes.length === 0) {
+    console.log(`(none in the graph yet -- for a fuller MONSTER/ITEM/EVENT roster including entries not promoted to individual graph nodes, see knowledge/vendor-sweep/entities/gameplay-entities.json)`)
+  }
+}
+
+function cmdVerified() {
+  const claims = load('atomic-claims.json', { claims: [] }).claims
+  const verified = claims.filter(c => c.verificationStatus?.startsWith('CONFIRMED_'))
+  console.log(`Verified claims (CONFIRMED_BY_*) -- ${verified.length} of ${claims.length}\n`)
+  for (const c of verified) console.log(`[${c.claimId}] ${c.statement} (${c.verificationStatus})`)
+}
+
+function cmdDisabledSystems() {
+  const claims = load('atomic-claims.json', { claims: [] }).claims
+  const needle = /disab|inert|commented|enabled\s*=\s*0|zero active/i
+  const hits = claims.filter(c => needle.test(c.statement) || needle.test(c.notes || ''))
+  console.log(`Claims describing a disabled/inert system state -- ${hits.length} of ${claims.length}\n`)
+  for (const c of hits) console.log(`[${c.claimId}] ${c.statement}`)
+  console.log(`\nReminder (per this sweep's explicit hypothesis-generalization rule): this is a per-file PATTERN_OBSERVED list, not evidence of a general Blood Moon policy. See CLAIM-027's note for the counter-evidence found among event configs.`)
+}
+
+function cmdProgression() {
+  const p = load('progression-entries.json', { entries: [] })
+  console.log(`Progression entries -- ${p.entries.length} total\n`)
+  for (const e of p.entries) {
+    console.log(`[${e.progressionId}] (${e.factStatus}) ${e.stage}: ${e.requirement} -> ${e.target}`)
+  }
+  if (p.entries.length === 0) console.log('(none yet -- no sufficient real evidence found for a formal progression entry)')
+}
+
 function cmdWikiReady() {
   const dir = join(ROOT, 'wiki_candidates')
   if (!existsSync(dir)) { console.log('No wiki_candidates directory found.'); return }
@@ -119,9 +164,12 @@ function main() {
     case 'gaps': return cmdGaps()
     case 'conflicts': return cmdConflicts()
     case 'unverified': return cmdUnverified()
+    case 'verified': return cmdVerified()
+    case 'disabled-systems': return cmdDisabledSystems()
+    case 'progression': return cmdProgression()
     case 'wiki-ready': return cmdWikiReady()
     default:
-      console.log('Usage: node scripts/knowledge-query.mjs <query "term"|entity "name"|gaps|conflicts|unverified|wiki-ready>')
+      console.log('Usage: node scripts/knowledge-query.mjs <query "term"|entity "name"|entity <map|monster|item|event|npc|system|config>|gaps|conflicts|unverified|verified|disabled-systems|progression|wiki-ready>')
       process.exit(cmd ? 1 : 0)
   }
 }

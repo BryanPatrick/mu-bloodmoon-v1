@@ -42,9 +42,13 @@ There is no single `knowledge-sweep` CLI — the sweep is a set of manual browse
 - `knowledge-gap-report.mjs` — scans docs for reference-gap candidate phrases against the tracked manifest.
 - `knowledge-conflict-scan.mjs` — pairwise-compares `atomic-claims.json` entries that share an entity, flagging opposing `verificationStatus`/`bloodMoonStatus` pairs for human triage.
 - `knowledge-validate.mjs` — structural validation: every claim has its required fields and only enum-valid statuses; every graph edge references a real node or claim id.
-- `knowledge-query.mjs` — local search over the sweep's outputs: `query "<term>"` (tokenized AND search across claims/sources), `entity "<name>"` (graph node + all claims about it), `gaps`, `conflicts`, `unverified`, `wiki-ready`.
+- `knowledge-query.mjs` — local search over the sweep's outputs: `query "<term>"` (tokenized AND search across claims/sources), `entity "<name>"` (graph node + all claims about it) or `entity <map|monster|item|event|npc|system|config>` (list all of one type), `gaps`, `conflicts`, `unverified`, `verified`, `disabled-systems`, `progression`, `wiki-ready`.
+- `knowledge-provenance-audit.mjs` — mechanically checks every file-path-shaped reference in the doc corpus (`docs/`, both `D:\MU\docs` and this repo's own) against the real filesystem, catching stale/broken cross-references a phrase-search can't. Deliberately ignores `Data/...` references (an established shorthand for the *remote* VPS path, not a local file).
+- `knowledge-canonical-facts.mjs [--write]` — derives the canonical-fact layer (Part W): every claim whose `verificationStatus` starts with `CONFIRMED_BY_`, i.e. checked against a real Blood Moon source. A provider-tutorial-only claim never qualifies, no matter how plausible. Generated, not hand-maintained, into `knowledge/vendor-sweep/canonical-facts.json`.
+- `knowledge-provenance-report.mjs [--write]` — for every cataloged source in `knowledge-index.json`, reports COMPLETE/PARTIAL/MISSING across the RAW→NORMALIZED→CLAIMS→VERIFICATION→GRAPH→WIKI pipeline, cross-referencing the other sweep files rather than being hand-maintained. Into `knowledge/vendor-sweep/provenance-report.json`.
+- `knowledge-tools-test.mjs` — integration test for this whole suite; runs each tool against the real sweep data and checks real invariants (not just "did it crash").
 
-Run any of them with `node scripts/<name>.mjs [args]` from `mu-bloodmoon-v1/`.
+Run any of them with `node scripts/<name>.mjs [args]` from `mu-bloodmoon-v1/`. Prefer the `--write` generator scripts over hand-editing their output files — this project has already hit real drift bugs from hand-maintained counts/cross-references (see `knowledge/vendor-sweep/checkpoint.json`'s Phase 3 notes for two concrete examples caught by these same tools).
 
 ## Running another sweep
 

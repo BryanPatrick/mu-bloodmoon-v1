@@ -1,0 +1,179 @@
+{
+  "generatedAt": "2026-08-26T20:03:34.570Z",
+  "generatedBy": "scripts/knowledge-provenance-report.mjs -- derived mechanically from knowledge-index.json, atomic-claims.json, knowledge-graph.json, and wiki_candidates/, do not hand-edit",
+  "scope": "14 cataloged sources (knowledge-index.json). Does NOT cover the underlying 75+ prior-session docs corpus, which predates this sweep's index and uses its own provenance conventions (see Knowledge/README.md's EVIDENCE/KNOWLEDGE/OPERATIONS model instead).",
+  "perSource": [
+    {
+      "id": "KI-001",
+      "title": "Custom Bot Store (NPC vendor system)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "PARTIAL",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "PARTIAL",
+      "GRAPH": "COMPLETE",
+      "WIKI": "COMPLETE"
+    },
+    {
+      "id": "KI-002",
+      "title": "Custom Bot Trader (item-mix/combine system)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "PARTIAL",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "COMPLETE",
+      "GRAPH": "COMPLETE",
+      "WIKI": "COMPLETE"
+    },
+    {
+      "id": "KI-003",
+      "title": "Custom Bot Fusion (option-transfer fusion system)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "PARTIAL",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "COMPLETE",
+      "GRAPH": "COMPLETE",
+      "WIKI": "COMPLETE"
+    },
+    {
+      "id": "KI-004",
+      "title": "ItemDrop.txt VIP-tier drop-rate columns (update 7.0)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "COMPLETE",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "COMPLETE",
+      "GRAPH": "COMPLETE",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-005",
+      "title": "Custom Info Drop Switch (ground-item tooltip on/off toggle)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "COMPLETE",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "COMPLETE",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-006",
+      "title": "Primeiras Configurações do Servidor -- full Data/ folder taxonomy + Command/Event/Custom copy-between-servers warning",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "COMPLETE",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "COMPLETE",
+      "WIKI": "COMPLETE"
+    },
+    {
+      "id": "KI-007",
+      "title": "Server Game Master Account Level (per-account whitelist for test Game Servers)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "COMPLETE",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "COMPLETE",
+      "GRAPH": "COMPLETE",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-008",
+      "title": "EuSanTiago / RealMU upgrade session (Legendary Craft, Elite upgrade, Shiny Imperial, Tol, Blaz)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "COMPLETE",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "COMPLETE",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-009",
+      "title": "CustomFakeOnline system -- full RAW->SANITIZED->NORMALIZED pipeline (pre-existing, verified this session)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "COMPLETE",
+      "CLAIMS": "MISSING",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-010",
+      "title": "Custom Drop Reward (Season 6.17)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "COMPLETE",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-011",
+      "title": "Devil Square end-of-event drop via EventItemBag",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "COMPLETE",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "COMPLETE",
+      "GRAPH": "MISSING",
+      "WIKI": "COMPLETE"
+    },
+    {
+      "id": "KI-012",
+      "title": "CustomMonster.txt Reward Level / Reward Points columns",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "COMPLETE",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "PARTIAL",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-013",
+      "title": "Jewel Bank shortcut change + Event Timer panel",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "COMPLETE",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-014",
+      "title": "Custom Event PvP All (kill-all)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "COMPLETE",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    }
+  ],
+  "tallies": {
+    "RAW": {
+      "COMPLETE": 14,
+      "PARTIAL": 0,
+      "MISSING": 0
+    },
+    "NORMALIZED": {
+      "COMPLETE": 11,
+      "PARTIAL": 3,
+      "MISSING": 0
+    },
+    "CLAIMS": {
+      "COMPLETE": 13,
+      "PARTIAL": 0,
+      "MISSING": 1
+    },
+    "VERIFICATION": {
+      "COMPLETE": 5,
+      "PARTIAL": 2,
+      "MISSING": 7
+    },
+    "GRAPH": {
+      "COMPLETE": 8,
+      "PARTIAL": 0,
+      "MISSING": 6
+    },
+    "WIKI": {
+      "COMPLETE": 5,
+      "PARTIAL": 0,
+      "MISSING": 9
+    }
+  }
+}

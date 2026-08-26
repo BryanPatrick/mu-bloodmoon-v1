@@ -1,58 +1,46 @@
 {
   "sweepId": "knowledge-sweep-2026-08-25",
-  "lastUpdatedUtc": "2026-08-26T01:55:00Z",
+  "lastUpdatedUtc": "2026-08-26T03:15:00Z",
   "status": "PARTIAL",
   "phase1Completed": [
-    "Part A: repo/knowledge-structure audit (reused prior sessions' extensive existing corpus)",
-    "Part G/H/I/J/K: YouTube sweep of both target channels -- all 9 priority project-gamers-oficial videos resolved (7 captured, 1 pre-existing, 1 permanently unavailable); EuSanTiago fully catalogued (1/3 transcribed, 2/3 unavailable)",
-    "Part P: EuSanTiago content correctly classified PROVIDER_SPECIFIC_OTHER_SERVER, excluded from Blood Moon knowledge",
-    "Part B (targeted): reference-gap-manifest.json",
-    "Part T: 4 wiki_candidates drafted",
-    "Part AE: failure-manifest.json",
-    "Part AK: 7 docs/knowledge/*.md files",
-    "Part AB: scripts/knowledge-gap-report.mjs"
+    "Part A: repo/knowledge-structure audit; Part G/H/I/J/K: YouTube sweep both target channels (9 priority videos resolved, EuSanTiago catalogued); Part P: EuSanTiago classified PROVIDER_SPECIFIC_OTHER_SERVER; Part B (targeted): reference-gap-manifest.json; Part T: 4 wiki_candidates; Part AE: failure-manifest.json; Part AK: 7 docs/knowledge/*.md; Part AB: knowledge-gap-report.mjs"
   ],
   "phase2Completed": [
-    "Part K (PRIORITY): ItemDrop.txt VIP-columns claim CONFIRMED_BY_CONFIG",
-    "Part F/G: atomic-claims.json (17 claims by end of phase2 initial pass)",
-    "Part J: verification-queue.json",
-    "Part E: 8 standalone NORMALIZED artifacts",
-    "Part Q/R: knowledge-graph.json (24 nodes, 33 edges by end of initial pass)",
-    "Part O/P: provider-version-matrix.json",
-    "Part AA: safe VPS directory inventory tool built and used live",
-    "Part AC: downloaded and read 4 real config files (CustomBotStore/Trader/Fusion/Buffer.txt)",
-    "Part AH: knowledge-conflicts.json, CONFLICT-001",
-    "Part AI/AJ: 3 of 4 wiki_candidates upgraded to READY_FOR_REVIEW",
-    "Part AD (light): dedup check, none found",
-    "Part AN (partial): 21 unit tests for inventory path-safety"
+    "Part K (PRIORITY): ItemDrop.txt VIP-columns CONFIRMED_BY_CONFIG; Part F/G: atomic-claims.json (17 claims); Part J: verification-queue.json; Part E: 8 normalized artifacts; Part Q/R: knowledge-graph.json (24 nodes/33 edges); Part O/P: provider-version-matrix.json; Part AA: safe VPS inventory tool (bm-remote inventory/inventory-json); Part AC: 4 real bot configs read; Part AH: CONFLICT-001; Part AI/AJ: 3/4 wiki_candidates READY_FOR_REVIEW; Part AN: 21 inventory safety tests. Continuation: rate-limiting hypothesis refuted, 5 more transcripts (total 17), CustomMonster.txt verified, CLAIM-027 pattern flagged, knowledge-conflict-scan.mjs + knowledge-query.mjs + knowledge-validate.mjs built and tested."
   ],
-  "phase2ContinuationCompleted": [
-    "Rate-limiting hypothesis (from phase2's failure-manifest note) TESTED AND REFUTED: retried the 3 stuck videos as the FIRST requests of a fresh session -- still stuck. Root-caused precisely instead: read window.ytInitialPlayerResponse.captions directly, found the caption track IS registered (pt/asr) but fetching its own official timedtext URL (all 4 format variants) returns HTTP 200 with an EMPTY body. This is a genuine YouTube-side caption-delivery fault, not a tooling issue, not rate-limiting, and (after testing a 2022 video with the same fault) not purely upload-recency either -- roughly random per-video, ~40-60% observed failure rate this session.",
-    "yt-dlp checked and confirmed not installed -- deliberately did not install it to route around the above fault, consistent with this project's established precedent against adding new tooling/proxies to bypass a YouTube restriction",
-    "Part C continued: 5 more successful transcripts (Mxanjz4Ml3E, DUK52xHToK0, LbNZ98OSjVg, lRhePn4cLZ0, qil3Pw1VkGg -- all 2022 uploads), bringing total YouTube transcripts to 17 (12 from before + 5 new). 4 more failed with the diagnosed caption-delivery fault (A2BcRITQjxc, QJclT4HLaMg, ivDj7I9elZA, fkaG0dVg2w0)",
-    "Part D per-video pipeline run immediately for all 5 new transcripts: normalized/youtube/*.md (5 new files) + atomic-claims.json (9 new claims: CLAIM-018 through CLAIM-026) + knowledge-index.json (KI-010 through KI-014) + knowledge-graph.json (first real EVENT/MONSTER-adjacent/CURRENCY entities: EVENT-devil-square, EVENT-pvp-all, CONFIG-custom-monster-txt, CURRENCY-ruud, plus 4 new SYSTEM nodes)",
-    "Part AC continued: downloaded and read the REAL Data/Custom/CustomMonster.txt (found in the earlier inventory, modified 11 days before this sweep) -- CONFIRMED_BY_CONFIG for CLAIM-020, upgraded to BLOODMOON_CONFIRMED. Revealed a much richer column set than the video showed.",
-    "CLAIM-027 added: synthesis claim -- 5 of 6 independently-verified Data/Custom-family files show the exact same 'present but 100% disabled/commented' pattern (only CustomBotStore is genuinely live). Strong enough signal now to flag as a real operational characteristic, not coincidence.",
-    "Part AG (systematic, finally with enough claims to be worthwhile): scripts/knowledge-conflict-scan.mjs built and run against 27 claims -- found only the already-known CONFLICT-001 cluster (5 claim pairs, all the same underlying disagreement), recorded as alsoInvolvedClaims rather than duplicate conflict entries. No new conflicts.",
-    "Part AM: scripts/knowledge-query.mjs built with all 6 requested subcommands (query/entity/gaps/conflicts/unverified/wiki-ready), tested live against real data, one bug found and fixed (query was doing exact-phrase match instead of tokenized AND search)",
-    "Part AN continued: scripts/knowledge-validate.mjs built (claim schema + enum validation, graph node/edge integrity, duplicate-id detection) -- verified it actually catches injected errors (duplicate claimId, invalid enum) via a disposable test copy, not just that it runs clean against good data",
-    "docs/knowledge/knowledge-sweep.md updated with a Tooling section documenting all 4 scripts"
+  "phase3Completed": [
+    "Part A (PRIORITY): verified all 5 pending config systems via real VPS reads. FOUND: EventItemBagManager.txt (Data/EventItemBagManager.txt + Data/EventItemBag/ folder, 148 files), GameMaster.txt (real path Data/Util/GameMaster.txt, NOT Data/GameMaster.txt), CustomEventZombie.txt, CustomEventPandora.txt, CustomEventStopOrDie.txt (all in Data/Custom/). NOT FOUND under any matched name: CustomDropReward, dedicated CustomEventTimer file, dedicated PvpAll file -- all remain queued.",
+    "Part B: EventItemBagManager location resolved -- it's a flat 150-line index at Data/EventItemBagManager.txt (NOT inside Data/Custom/), referencing 148 individually-named files in a sibling Data/EventItemBag/ folder. Two-level structure, more than the prior docs/drop-rate-system.json reference described.",
+    "Part C: enabled/disabled state recorded per system, never conflating file-exists with feature-enabled. Zombie/Pandora/StopOrDie events have NO per-entry enable flag at all (structurally different from the Bot family) -- recorded as UNKNOWN, not assumed enabled or disabled.",
+    "IMPORTANT HYPOTHESIS RULE followed explicitly: CLAIM-027 updated with counter-evidence (event configs do NOT show the 'disabled' pattern) -- the finding stays PATTERN_OBSERVED for the specific file family checked, not generalized to a BLOODMOON_POLICY.",
+    "Part D: 4 new wiki_candidates (Custom Zombie Event, Pandora Event, Stop Or Die, Devil Square EventItemBag) -- 8 total, 7 READY_FOR_REVIEW.",
+    "Part E/F/G/H/M: FIRST real MAP/MONSTER/ITEM/NPC entities built, all from real config (knowledge/vendor-sweep/entities/gameplay-entities.json) -- 8 monster identities (7 cross-referenced across 2 independent files: Kundun/Nightmare/Selupan/Medusa/Erohim/Boss Farao/Boss BloodMoon, plus Skeleton King, plus a 19-boss 'Golden series' bundle), 17 item identities, 3 numeric-only maps (0/1/40, no names -- explicitly not guessed from generic MU memory), 2 NPCs, 11 event groupings. Headline finding: 'Boss BloodMoon' (MonsterClass 802) is a real, distinct custom boss but its reward config is an unedited copy of 'Boss Farao' (801), including an internal EventName field still reading 'Boss Farao' -- flagged as an in-progress feature, not resolved further.",
+    "Part M: closest verified MAP->MONSTER->ITEM chain found and documented with explicit FACT/INFERENCE separation (map+monster spawn coords vs. item drop coords match exactly at Map 1/78,191 -- FACT; that the monster's death causes the drop -- INFERENCE, not stated explicitly in the config).",
+    "Part J/GAP-003: event-video-inventory.json built -- 44 event-titled videos itemized with priority, replacing the prior broad unitemized claim. GAP-003 updated OPEN->PARTIAL.",
+    "Part S (explicitly told not to defer again -- DELIVERED): scripts/knowledge-provenance-audit.mjs, a real mechanical broken-reference scanner across the full docs corpus. Found and fixed 2 real bugs in the script itself during development (a Data/-prefix false-positive flood, a repo-root resolution bug), then found 9 genuine broken doc references (GAP-006), 4 confirmed by direct spot-check.",
+    "Part T: scripts/knowledge-provenance-report.mjs -- derives COMPLETE/PARTIAL/MISSING per pipeline stage per source. Its first real run caught a genuine bug: knowledge-index.json had normalizedArtifact=null for 5 entries whose normalized files actually existed on disk -- fixed.",
+    "Part W: scripts/knowledge-canonical-facts.mjs -- 22 canonical facts derived (CONFIRMED_BY_* only, provider-tutorial-alone explicitly excluded per the rule).",
+    "Part X/Y: PROVIDER_DESCRIBES vs BLOODMOON_REAL_STATE kept explicit and separate throughout (see every wiki_candidate's structure and CLAIM-027's note).",
+    "Part K/L: progression-entries.json started -- 1 entry (PROG-001), correctly tiered as RECOMMENDATION (not FACT), with an honest coverageNote explaining why more weren't fabricated.",
+    "Part Z: knowledge-query.mjs extended with entity <type>, verified, disabled-systems, progression subcommands.",
+    "Part AA: scripts/knowledge-tools-test.mjs -- 8 integration checks across the whole tooling suite, all passing, including 2 regression guards for the bugs found this session.",
+    "Part U (light): dedup re-checked (videoIds, transcript sha256, claimIds) -- all clean. Content addressing: claimId/KI-id/videoId scheme already stable; sha256 recorded for the ItemDrop.txt evidence chain."
   ],
   "notStarted": [
-    "Part B full corpus-wide reference-graph scan (75+ docs, close-read level rather than targeted grep)",
-    "Part S: MAP/ITEM/CLASS/NPC/QUEST/SKILL/DB_TABLE/COMMAND entity types in the knowledge graph -- still no evidence gathered for these",
-    "Part U/Y/Z: progression knowledge and progression graph -- still empty; only progression-adjacent source (EuSanTiago) explicitly excluded, and CLAIM-021 (build-point maps) is a vendor recommendation, not a Blood-Moon-specific progression fact",
-    "Part V/W: broader real-config cross-checks -- CLAIM-013 (GameMaster.txt), CLAIM-018/019/023/024 (exact filenames for DropReward/EventItemBag/EventTimer/PvpAll not yet located in the Data/Custom inventory) remain queued",
-    "Part AF: provenance backfill into the 75+ pre-existing docs -- still deliberately deferred",
-    "89 of 108 - now more like ~91 of 108 - keyword-relevant project-gamers-oficial videos remain untranscribed (17 done total across both phases)"
+    "CustomDropReward, dedicated CustomEventTimer file, and PvpAll real filenames still not located (CLAIM-018/023/024 remain QUEUED) -- not found under any guessed name in the 90-file Data/Custom listing; may need the video transcripts after all, or live under an unexpected name.",
+    "39 of 44 event-titled videos remain untranscribed (event-video-inventory.json has the priorities).",
+    "MAP/EVENT names still numeric-ID-only (0, 1, 40) -- no source has confirmed what these numbers correspond to.",
+    "No FACT-tier progression entries yet (only 1 RECOMMENDATION-tier entry) -- the 2 HIGH-priority 'ResetMin & ResetMax' videos (rcL6fxy92Ss, HMmfyPerla8) in event-video-inventory.json are the most likely source.",
+    "Part AB/AC not extended to the other 85 of 90 Data/Custom files -- CLAIM-027's pattern claim rests on a small, non-random sample.",
+    "provenance-report.json's MISSING counts (7 VERIFICATION, 6 GRAPH, 9 WIKI) are real, honest gaps, not further bugs -- e.g. KI-009 (FakeOnline) predates the atomic-claims model and has no CLAIM-* entries pointing at it yet."
   ],
   "resumeInstructions": [
-    "1. Read this checkpoint, atomic-claims.json, knowledge-graph.json, verification-queue.json, knowledge-conflicts.json, and failure-manifest.json first -- do not re-audit from scratch.",
-    "2. Run `node scripts/knowledge-gap-report.mjs`, `node scripts/knowledge-conflict-scan.mjs`, and `node scripts/knowledge-validate.mjs` from mu-bloodmoon-v1/ for a fresh status check before adding anything new.",
-    "3. Do NOT re-test the rate-limiting hypothesis -- it's refuted. The 4 NOT_AVAILABLE videos this round (A2BcRITQjxc, QJclT4HLaMg, ras-LWKglMM, ivDj7I9elZA, fkaG0dVg2w0) have a diagnosed root cause (empty timedtext response despite a registered caption track) that a future sweep can only fix by waiting and retrying later, not by changing tooling/ordering/session freshness.",
-    "4. For further YouTube coverage: consult Research/YouTube/project-gamers-oficial/_relevant.tsv (108 rows) minus transcripts-status.tsv's captured/attempted rows. Given the ~40-60% observed per-video failure rate is roughly random (not predictable by age or version), there's no strong reason left to reorder by anything other than the original spec priority (newest version tag first, then systems > events > items/drops > maps/monsters > progression > commands > general).",
-    "5. Verify CLAIM-013 (GameMaster.txt), CLAIM-018/019/023/024 (exact Data/Custom filenames unconfirmed) via `bm-remote inventory` once their real filenames are known -- check RemoteData/Inventory/data-custom-20260826.json first (90 files already catalogued) before assuming a new inventory call is needed.",
-    "6. Once real config sources exist for a MAP or MONSTER or ITEM (not just a config-file-level SYSTEM claim), start the first MAP/ITEM/MONSTER graph nodes -- do not synthesize entities without a source.",
-    "7. `node scripts/knowledge-query.mjs entity \"<name>\"` is the fastest way to check what's already known about something before re-researching it."
+    "1. Read this checkpoint, atomic-claims.json, knowledge-graph.json, entities/gameplay-entities.json, event-video-inventory.json, and canonical-facts.json first.",
+    "2. Run `node scripts/knowledge-tools-test.mjs` -- if anything fails, fix the DATA (not the test) unless the test itself is proven wrong.",
+    "3. Re-run `node scripts/knowledge-canonical-facts.mjs --write` and `node scripts/knowledge-provenance-report.mjs --write` after adding any new claims -- they're generators, never hand-edit their output files directly.",
+    "4. For CustomDropReward/CustomEventTimer/PvpAll: try transcribing lWclobV5zm8 ('Custom Event Time - UPDATED 6.6') and KTO4Zk_Qxt8 ('Custom Event Time Text Monster Model - UPDATED 8.1') first -- their titles suggest they may finally resolve the CustomEventTimer filename gap.",
+    "5. For progression: prioritize rcL6fxy92Ss and HMmfyPerla8 (ResetMin/ResetMax videos) -- these are the best current lead for real FACT-tier progression data.",
+    "6. Before building new MAP/EVENT entity names, check whether any captured source (video or config) ever states a map's name alongside its numeric ID -- do not guess from general MU knowledge.",
+    "7. `node scripts/knowledge-query.mjs entity <type>` and `node scripts/knowledge-query.mjs progression` are the fastest way to see current coverage before doing new work."
   ]
 }
