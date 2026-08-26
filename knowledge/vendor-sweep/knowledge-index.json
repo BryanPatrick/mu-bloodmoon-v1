@@ -12,9 +12,21 @@
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/6SGVxLyhG_8.pt.json",
       "normalizedArtifact": null,
-      "derivedArtifacts": ["mu-bloodmoon-v1/knowledge/vendor-sweep/wiki_candidates/systems/custom-bot-store.md"],
-      "tags": ["bot", "npc", "shop", "cash-shop", "zen", "wcoin"],
-      "entities": ["CustomBotStore", "Data/Custom/"],
+      "derivedArtifacts": [
+        "mu-bloodmoon-v1/knowledge/vendor-sweep/wiki_candidates/systems/custom-bot-store.md"
+      ],
+      "tags": [
+        "bot",
+        "npc",
+        "shop",
+        "cash-shop",
+        "zen",
+        "wcoin"
+      ],
+      "entities": [
+        "CustomBotStore",
+        "Data/Custom/"
+      ],
       "capturedAt": "2026-08-25T22:15:00Z",
       "sourceDate": "2023-08-07",
       "confidence": "CONFIRMED_VENDOR_VIDEO + CONFIRMED_RUNTIME (verification)",
@@ -31,9 +43,21 @@
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/gySFdaRrS8Q.pt.json",
       "normalizedArtifact": null,
-      "derivedArtifacts": ["mu-bloodmoon-v1/knowledge/vendor-sweep/wiki_candidates/systems/custom-bot-trader.md"],
-      "tags": ["bot", "npc", "mix", "combine", "rng", "success-rate"],
-      "entities": ["CustomBotTrader", "Data/Custom/"],
+      "derivedArtifacts": [
+        "mu-bloodmoon-v1/knowledge/vendor-sweep/wiki_candidates/systems/custom-bot-trader.md"
+      ],
+      "tags": [
+        "bot",
+        "npc",
+        "mix",
+        "combine",
+        "rng",
+        "success-rate"
+      ],
+      "entities": [
+        "CustomBotTrader",
+        "Data/Custom/"
+      ],
       "capturedAt": "2026-08-25T22:20:00Z",
       "sourceDate": "2023-08-07",
       "confidence": "CONFIRMED_VENDOR_VIDEO + CONFIRMED_RUNTIME (verification)",
@@ -50,9 +74,22 @@
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/HFH8BhRZnUg.pt.json",
       "normalizedArtifact": null,
-      "derivedArtifacts": ["mu-bloodmoon-v1/knowledge/vendor-sweep/wiki_candidates/systems/custom-bot-fusion.md"],
-      "tags": ["bot", "npc", "fusion", "luck", "skill", "excellent", "ancient"],
-      "entities": ["CustomBotFusion", "Data/Custom/CustomBotFusion"],
+      "derivedArtifacts": [
+        "mu-bloodmoon-v1/knowledge/vendor-sweep/wiki_candidates/systems/custom-bot-fusion.md"
+      ],
+      "tags": [
+        "bot",
+        "npc",
+        "fusion",
+        "luck",
+        "skill",
+        "excellent",
+        "ancient"
+      ],
+      "entities": [
+        "CustomBotFusion",
+        "Data/Custom/CustomBotFusion"
+      ],
       "capturedAt": "2026-08-25T22:24:00Z",
       "sourceDate": "2022-05-19",
       "confidence": "CONFIRMED_VENDOR_VIDEO + CONFIRMED_RUNTIME (verification)",
@@ -68,10 +105,17 @@
       "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/DqHAEmyQCjA.pt.json",
-      "normalizedArtifact": null,
+      "normalizedArtifact": "knowledge/vendor-sweep/normalized/youtube/DqHAEmyQCjA.md",
       "derivedArtifacts": [],
-      "tags": ["drop-rate", "vip", "itemdrop", "economy"],
-      "entities": ["Data/Item/ItemDrop.txt"],
+      "tags": [
+        "drop-rate",
+        "vip",
+        "itemdrop",
+        "economy"
+      ],
+      "entities": [
+        "Data/Item/ItemDrop.txt"
+      ],
       "capturedAt": "2026-08-25T22:27:00Z",
       "sourceDate": "2023-01-19",
       "confidence": "CONFIRMED_VENDOR_VIDEO + CONFIRMED_RUNTIME (verification)",
@@ -87,10 +131,17 @@
       "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/EpUJmEBn16Y.pt.json",
-      "normalizedArtifact": null,
+      "normalizedArtifact": "knowledge/vendor-sweep/normalized/youtube/EpUJmEBn16Y.md",
       "derivedArtifacts": [],
-      "tags": ["ui", "client-side", "tooltip", "getiteminfo"],
-      "entities": ["GetItemInfo"],
+      "tags": [
+        "ui",
+        "client-side",
+        "tooltip",
+        "getiteminfo"
+      ],
+      "entities": [
+        "GetItemInfo"
+      ],
       "capturedAt": "2026-08-25T22:30:00Z",
       "sourceDate": "2024-01-11",
       "confidence": "CONFIRMED_VENDOR_VIDEO",
@@ -105,10 +156,22 @@
       "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/jXr8q_NGotQ.pt.json",
-      "normalizedArtifact": null,
-      "derivedArtifacts": ["mu-bloodmoon-v1/knowledge/vendor-sweep/wiki_candidates/guides/data-folder-taxonomy.md"],
-      "tags": ["orientation", "data-folder", "operator-warning", "deploy-safety"],
-      "entities": ["GameServer/Data/", "Command", "Event", "Custom"],
+      "normalizedArtifact": "knowledge/vendor-sweep/normalized/youtube/jXr8q_NGotQ.md",
+      "derivedArtifacts": [
+        "mu-bloodmoon-v1/knowledge/vendor-sweep/wiki_candidates/guides/data-folder-taxonomy.md"
+      ],
+      "tags": [
+        "orientation",
+        "data-folder",
+        "operator-warning",
+        "deploy-safety"
+      ],
+      "entities": [
+        "GameServer/Data/",
+        "Command",
+        "Event",
+        "Custom"
+      ],
       "capturedAt": "2026-08-25T22:34:00Z",
       "sourceDate": "2021-06-29",
       "confidence": "CONFIRMED_VENDOR_VIDEO",
@@ -124,10 +187,18 @@
       "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/gfMqlKeQ360.pt.json",
-      "normalizedArtifact": null,
+      "normalizedArtifact": "knowledge/vendor-sweep/normalized/youtube/gfMqlKeQ360.md",
       "derivedArtifacts": [],
-      "tags": ["gamemaster", "access-control", "test-server", "whitelist"],
-      "entities": ["GameMaster.txt", "Common.dat"],
+      "tags": [
+        "gamemaster",
+        "access-control",
+        "test-server",
+        "whitelist"
+      ],
+      "entities": [
+        "GameMaster.txt",
+        "Common.dat"
+      ],
       "capturedAt": "2026-08-25T22:38:00Z",
       "sourceDate": "2021-02-05",
       "confidence": "CONFIRMED_VENDOR_VIDEO",
@@ -142,10 +213,22 @@
       "season": null,
       "provider": "RealMU (via EuSanTiago, sponsored content)",
       "rawArtifact": "Research/YouTube/eusantiago/transcripts/qJ6Xp6o51C8.pt.json",
-      "normalizedArtifact": null,
+      "normalizedArtifact": "knowledge/vendor-sweep/normalized/youtube/qJ6Xp6o51C8.md",
       "derivedArtifacts": [],
-      "tags": ["upgrade", "legendary-craft", "elite", "rng", "other-server"],
-      "entities": ["Legendary Craft", "Elite", "Shiny Imperial", "Tol", "Blaz"],
+      "tags": [
+        "upgrade",
+        "legendary-craft",
+        "elite",
+        "rng",
+        "other-server"
+      ],
+      "entities": [
+        "Legendary Craft",
+        "Elite",
+        "Shiny Imperial",
+        "Tol",
+        "Blaz"
+      ],
       "capturedAt": "2026-08-25T22:00:00Z",
       "sourceDate": "2026-08-25",
       "confidence": "PROBABLE",
@@ -162,9 +245,17 @@
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/Vendor/FakeOnline/custom-fake-online-video-transcript.pt-orig.vtt",
       "normalizedArtifact": "Research/Vendor/FakeOnline/custom-fake-online.json, custom-fake-online.md, field-reference.md",
-      "derivedArtifacts": ["Knowledge/Systems/custom-fake-online (README/KNOWLEDGE/OPERATIONS, READY/READY/PARTIAL per Knowledge/README.md)"],
-      "tags": ["fake-online", "bot-runtime", "already-established"],
-      "entities": ["CustomFakeOnline.txt"],
+      "derivedArtifacts": [
+        "Knowledge/Systems/custom-fake-online (README/KNOWLEDGE/OPERATIONS, READY/READY/PARTIAL per Knowledge/README.md)"
+      ],
+      "tags": [
+        "fake-online",
+        "bot-runtime",
+        "already-established"
+      ],
+      "entities": [
+        "CustomFakeOnline.txt"
+      ],
       "capturedAt": "prior session",
       "sourceDate": "2022",
       "confidence": "CONFIRMED_VENDOR_VIDEO",
@@ -182,8 +273,15 @@
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/Mxanjz4Ml3E.pt.json",
       "normalizedArtifact": "knowledge/vendor-sweep/normalized/youtube/Mxanjz4Ml3E.md",
       "derivedArtifacts": [],
-      "tags": ["drop-system", "currency", "ruud"],
-      "entities": ["CustomDropReward", "Ruud"],
+      "tags": [
+        "drop-system",
+        "currency",
+        "ruud"
+      ],
+      "entities": [
+        "CustomDropReward",
+        "Ruud"
+      ],
       "capturedAt": "2026-08-26T01:20:00Z",
       "sourceDate": "2022-09-20",
       "confidence": "CONFIRMED_VENDOR_VIDEO",
@@ -200,8 +298,15 @@
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/DUK52xHToK0.pt.json",
       "normalizedArtifact": "knowledge/vendor-sweep/normalized/youtube/DUK52xHToK0.md",
       "derivedArtifacts": [],
-      "tags": ["drop-system", "events", "devil-square"],
-      "entities": ["EventItemBag", "DevilSquare"],
+      "tags": [
+        "drop-system",
+        "events",
+        "devil-square"
+      ],
+      "entities": [
+        "EventItemBag",
+        "DevilSquare"
+      ],
       "capturedAt": "2026-08-26T01:24:00Z",
       "sourceDate": "2022-10-18",
       "confidence": "CONFIRMED_VENDOR_VIDEO",
@@ -218,8 +323,16 @@
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/LbNZ98OSjVg.pt.json",
       "normalizedArtifact": "knowledge/vendor-sweep/normalized/youtube/LbNZ98OSjVg.md",
       "derivedArtifacts": [],
-      "tags": ["monster", "progression", "build-points"],
-      "entities": ["CustomMonster.txt", "Reward Level", "Reward Points"],
+      "tags": [
+        "monster",
+        "progression",
+        "build-points"
+      ],
+      "entities": [
+        "CustomMonster.txt",
+        "Reward Level",
+        "Reward Points"
+      ],
       "capturedAt": "2026-08-26T01:28:00Z",
       "sourceDate": "2022-12-30",
       "confidence": "CONFIRMED_VENDOR_VIDEO",
@@ -237,8 +350,15 @@
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/lRhePn4cLZ0.pt.json",
       "normalizedArtifact": "knowledge/vendor-sweep/normalized/youtube/lRhePn4cLZ0.md",
       "derivedArtifacts": [],
-      "tags": ["ui", "client", "events"],
-      "entities": ["CustomJewelBank", "CustomEventTimer"],
+      "tags": [
+        "ui",
+        "client",
+        "events"
+      ],
+      "entities": [
+        "CustomJewelBank",
+        "CustomEventTimer"
+      ],
       "capturedAt": "2026-08-26T01:35:00Z",
       "sourceDate": "2022-03-19",
       "confidence": "CONFIRMED_VENDOR_VIDEO",
@@ -255,8 +375,14 @@
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/qil3Pw1VkGg.pt.json",
       "normalizedArtifact": "knowledge/vendor-sweep/normalized/youtube/qil3Pw1VkGg.md",
       "derivedArtifacts": [],
-      "tags": ["events", "pvp", "ranking"],
-      "entities": ["CustomEventPvpAll"],
+      "tags": [
+        "events",
+        "pvp",
+        "ranking"
+      ],
+      "entities": [
+        "CustomEventPvpAll"
+      ],
       "capturedAt": "2026-08-26T01:40:00Z",
       "sourceDate": "2022-08-18",
       "confidence": "CONFIRMED_VENDOR_VIDEO",
