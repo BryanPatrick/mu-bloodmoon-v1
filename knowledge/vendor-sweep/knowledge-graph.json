@@ -28,7 +28,16 @@
     { "id": "SRC-real-config", "type": "SOURCE", "name": "real ItemDrop.txt (direct read, this session)", "sourceAuthority": "REAL_BLOODMOON_CONFIG" },
     { "id": "SRC-vendor-itemdrop-htm", "type": "SOURCE", "name": "ItemDrop.htm (vendor tutorial doc)", "sourceAuthority": "PROVIDER_DOCUMENTATION" },
     { "id": "OTHER-legendary-craft", "type": "SYSTEM", "name": "Legendary Craft", "bloodMoonStatus": "OTHER_SERVER" },
-    { "id": "OTHER-elite-upgrade", "type": "SYSTEM", "name": "Elite upgrade", "bloodMoonStatus": "OTHER_SERVER" }
+    { "id": "OTHER-elite-upgrade", "type": "SYSTEM", "name": "Elite upgrade", "bloodMoonStatus": "OTHER_SERVER" },
+    { "id": "SYS-drop-reward", "type": "SYSTEM", "name": "CustomDropReward", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-jewel-bank", "type": "SYSTEM", "name": "CustomJewelBank", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-event-timer", "type": "SYSTEM", "name": "CustomEventTimer", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-pvp-all", "type": "SYSTEM", "name": "CustomEventPvpAll", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "EVENT-devil-square", "type": "EVENT", "name": "Devil Square", "bloodMoonStatus": "UPSTREAM_MU", "note": "Blood Moon confirmed to run this event per docs/events-system.md; the specific EventItemBag end-drop extension (CLAIM-019) is BLOODMOON_LIKELY, unverified" },
+    { "id": "EVENT-pvp-all", "type": "EVENT", "name": "PvP All (kill-all)", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "CONFIG-custom-monster-txt", "type": "CONFIG", "name": "Data/Custom/CustomMonster.txt", "bloodMoonStatus": "BLOODMOON_LIKELY", "note": "Distinct from the already-CONFIRMED Data/Monster/Monster.txt covered by SYS-drop-rate-system" },
+    { "id": "CONFIG-event-item-bag", "type": "CONFIG", "name": "Data/EventItemBagManager.txt", "bloodMoonStatus": "BLOODMOON_CONFIRMED", "note": "Pre-existing known real file, per drop-rate-system.json relations.related_configs" },
+    { "id": "CURRENCY-ruud", "type": "CURRENCY", "name": "Ruud", "bloodMoonStatus": "UPSTREAM_MU", "note": "Standard MU Online Season 6+ currency; BLOODMOON_LIKELY that Blood Moon uses it since it runs Season 6 content, not independently confirmed by this claim" }
   ],
   "edges": [
     { "from": "SYS-bot-store", "type": "CONFIGURED_BY", "to": "CFG-data-custom" },
@@ -66,7 +75,15 @@
     { "from": "SRC-vendor-itemdrop-htm", "type": "SUPPORTS_CLAIM", "to": "CLAIM-005" },
     { "from": "CLAIM-005", "type": "CONFLICTS_WITH", "to": "CLAIM-002" },
     { "from": "OTHER-legendary-craft", "type": "DESCRIBED_BY", "to": "SRC-KI-008" },
-    { "from": "OTHER-elite-upgrade", "type": "DESCRIBED_BY", "to": "SRC-KI-008" }
+    { "from": "OTHER-elite-upgrade", "type": "DESCRIBED_BY", "to": "SRC-KI-008" },
+    { "from": "SYS-drop-reward", "type": "AFFECTS_SYSTEM", "to": "CURRENCY-ruud" },
+    { "from": "SYS-pvp-all", "type": "CONFIGURED_BY", "to": "CFG-data-custom" },
+    { "from": "SYS-pvp-all", "type": "PART_OF", "to": "EVENT-pvp-all" },
+    { "from": "EVENT-devil-square", "type": "AFFECTS_SYSTEM", "to": "CONFIG-event-item-bag" },
+    { "from": "CONFIG-custom-monster-txt", "type": "CONFIGURED_BY", "to": "CFG-data-custom" },
+    { "from": "CONFIG-custom-monster-txt", "type": "RELATED_TO", "to": "SYS-drop-rate-system" },
+    { "from": "SRC-real-config", "type": "SUPPORTS_CLAIM", "to": "CLAIM-016" },
+    { "from": "SRC-real-config", "type": "SUPPORTS_CLAIM", "to": "CLAIM-017" }
   ],
-  "note": "CLAIM-* ids referenced as edge endpoints are NOT duplicated as separate nodes here to avoid redundancy with atomic-claims.json -- treat them as a second node namespace (claims) that this graph references but atomic-claims.json owns. A future iteration of this tool could inline claim summaries as node objects if cross-file lookups prove inconvenient. No MAP/MONSTER/ITEM/EVENT/CLASS entities exist yet -- this round's evidence covers only SYSTEM/CONFIG/GUIDE/SOURCE, consistent with the coverage gap already flagged in checkpoint.json (Maps/Monsters/Items/Events/Progression remain weak)."
+  "note": "CLAIM-* ids referenced as edge endpoints are NOT duplicated as separate nodes here to avoid redundancy with atomic-claims.json -- treat them as a second node namespace (claims) that this graph references but atomic-claims.json owns. First MONSTER-adjacent (CONFIG-custom-monster-txt) and EVENT (EVENT-devil-square, EVENT-pvp-all) and CURRENCY (CURRENCY-ruud) entities added this round, seeded from real video evidence (Part C batch of 5 successful transcripts). Still no MAP/ITEM/CLASS/NPC/QUEST/SKILL/DB_TABLE/COMMAND entities -- no evidence gathered for those types yet."
 }
