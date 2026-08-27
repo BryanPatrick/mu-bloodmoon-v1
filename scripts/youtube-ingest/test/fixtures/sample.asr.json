@@ -1,0 +1,29 @@
+{
+  "asrModel": "medium",
+  "asrEngine": "faster-whisper (ctranslate2, CPU, int8)",
+  "language": "pt",
+  "detectedLanguage": "pt",
+  "languageProbability": 0.98,
+  "audioDurationSec": 12.5,
+  "modelLoadTimeSec": 2.1,
+  "transcribeTimeSec": 8.3,
+  "processingRatio": 0.664,
+  "confidenceClassification": "HIGH",
+  "segmentCount": 2,
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 4.2,
+      "text": "e aí galera, beleza, é o teste de fixture",
+      "avg_logprob": -0.2,
+      "no_speech_prob": 0.02
+    },
+    {
+      "start": 4.2,
+      "end": 9.8,
+      "text": "aqui a nova custom que estamos testando",
+      "avg_logprob": -0.25,
+      "no_speech_prob": 0.04
+    }
+  ]
+}

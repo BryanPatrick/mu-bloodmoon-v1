@@ -65,3 +65,19 @@ work/postgres.log
 *.local
 .DS_Store
 Thumbs.db
+
+# YouTube ingestion pipeline (scripts/youtube-ingest/) -- only the pipeline
+# SOURCE is versioned. Runtime binaries, the embedded Python distribution,
+# ASR models, and any downloaded audio/video/caption files are per-machine
+# tooling, never committed. Real transcript output lives outside this repo
+# entirely (see YOUTUBE_INGEST_RESEARCH_ROOT in the tool's README), so this
+# is a defensive backstop, not the primary boundary.
+# (scoped to this directory only, not **/*.vtt -- test/fixtures/*.vtt below stays tracked)
+scripts/youtube-ingest/bin/
+scripts/youtube-ingest/python/
+scripts/youtube-ingest/python-installer/
+scripts/youtube-ingest/temp-audio/
+scripts/youtube-ingest/*.mp3
+scripts/youtube-ingest/*.wav
+scripts/youtube-ingest/*.vtt
+scripts/youtube-ingest/*.asr.json

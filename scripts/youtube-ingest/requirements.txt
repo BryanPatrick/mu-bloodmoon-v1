@@ -1,0 +1,10 @@
+# Python dependency for transcribe.py (local ASR fallback path only --
+# not needed for the primary official-captions path, which is pure Node).
+#
+# Versions below are what was actually installed and exercised in this
+# project's embeddable Python 3.11.9 environment as of 2026-08-27 -- not a
+# strict pin, just an honest record of a known-working combination.
+# ctranslate2/onnxruntime/tokenizers/huggingface_hub are faster-whisper's own
+# transitive dependencies, listed here only for reference; installing
+# faster-whisper alone via pip resolves all of them.
+faster-whisper==1.2.1
