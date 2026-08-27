@@ -77,15 +77,27 @@ PY
 
 echo "Starting production backup at $(date -Iseconds)."
 export MYSQL_PWD="$DB_PASSWORD"
+# Blood Moon uses none of MySQL's Events, Triggers, or stored
+# Routines/Functions -- confirmed by an exhaustive grep across every
+# migration.sql in apps/api/prisma/migrations/ (36 migrations, zero CREATE
+# EVENT / CREATE TRIGGER / CREATE PROCEDURE / CREATE FUNCTION statements)
+# and by this project's own established fact that it has no in-database or
+# in-process scheduling at all (relies entirely on external cron invoking
+# npm scripts, see docs/marketplace.md and game-provisioning reconciliation).
+# --skip-events in particular avoids requiring the SHOW EVENTS/EVENT
+# privilege on the production application DB user, which it does not have
+# and does not need -- least privilege, not an oversight. If any of these
+# MySQL-side objects are ever deliberately introduced, flip the matching
+# flag back on at that time, not before.
 mysqldump \
   --host="$DB_HOST" \
   --port="$DB_PORT" \
   --user="$DB_USER" \
   --single-transaction \
   --quick \
-  --routines \
-  --triggers \
-  --events \
+  --skip-routines \
+  --skip-triggers \
+  --skip-events \
   --hex-blob \
   --default-character-set=utf8mb4 \
   "$DB_NAME" | gzip -9 > "$run_dir/database.sql.gz"

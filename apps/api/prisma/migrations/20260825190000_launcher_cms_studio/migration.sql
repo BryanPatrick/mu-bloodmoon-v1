@@ -4,7 +4,7 @@
 -- additive fields, for the reasoning behind each addition.
 
 -- AlterTable
-ALTER TABLE `knowledgeentry` ADD COLUMN `body` LONGTEXT NULL,
+ALTER TABLE `KnowledgeEntry` ADD COLUMN `body` LONGTEXT NULL,
     ADD COLUMN `calendarEnabled` BOOLEAN NOT NULL DEFAULT false,
     ADD COLUMN `entryInfo` TEXT NULL,
     ADD COLUMN `eventEndsAt` DATETIME(3) NULL,
@@ -15,7 +15,7 @@ ALTER TABLE `knowledgeentry` ADD COLUMN `body` LONGTEXT NULL,
     ADD COLUMN `recommendedLevel` VARCHAR(60) NULL;
 
 -- AlterTable
-ALTER TABLE `purchaseintent` ADD COLUMN `termsAcceptedAt` DATETIME(3) NULL,
+ALTER TABLE `PurchaseIntent` ADD COLUMN `termsAcceptedAt` DATETIME(3) NULL,
     ADD COLUMN `termsVersion` INTEGER NULL;
 
 -- CreateTable

@@ -4,10 +4,18 @@
 
 A rotina `deploy/scripts/cpanel-production-backup.sh` gera:
 
-- dump consistente do MySQL/MariaDB, incluindo procedures, triggers e events;
+- dump consistente do MySQL/MariaDB (schema + dados de todas as tabelas);
 - arquivo compactado somente dos diretorios mutaveis que existirem;
 - checksums SHA-256 e manifesto de cada execucao;
 - log separado e bloqueio contra duas execucoes simultaneas.
+
+O dump usa `--skip-routines --skip-triggers --skip-events` deliberadamente: o
+projeto nao usa nenhum desses recursos do lado do banco (confirmado por
+auditoria em toda a historico de migrations) e `--events` especificamente
+exigiria o privilegio `EVENT`/`SHOW EVENTS`, que o usuario de aplicacao de
+producao nao tem e nao precisa ter -- menor privilegio, nao uma omissao. Se
+algum desses recursos for adotado deliberadamente no futuro, reative a flag
+correspondente nesse momento.
 
 O codigo da API e do site continua protegido pelo Git e pelos pacotes de deploy. Um backup completo do cPanel deve ser criado antes de mudancas grandes, mas nao deve permanecer na conta: a cota atual de 2 GB nao comporta retencao de backups completos.
 
