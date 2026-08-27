@@ -24,14 +24,24 @@
       "sourceId": "real-config-read",
       "sourceAuthority": "REAL_BLOODMOON_CONFIG",
       "sourceLocation": "Deploy/Predeploy-Snapshots/20260730-season6-scope-cleanup/.../Data/Item/ItemDrop.txt (confirmed byte-identical to live production 2026-08-17 and to a 2026-08-16/17 14-day-apart comparison, per docs/snapshot-differences.md and docs/configuration-history.md)",
-      "entityTypes": ["CONFIG", "SYSTEM"],
-      "entities": ["ItemDrop.txt"],
+      "entityTypes": [
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "entities": [
+        "ItemDrop.txt"
+      ],
       "topic": "drop-system",
       "season": null,
       "providerVersion": null,
       "bloodMoonStatus": "BLOODMOON_CONFIRMED",
       "verificationStatus": "CONFIRMED_BY_CONFIG",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/Item/ItemDrop.txt" }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Item/ItemDrop.txt"
+        }
+      ],
       "confidence": "CONFIRMED_RUNTIME",
       "notes": "sha256 5e29e7cd66e42949613bb51baace0a9c9974decba0c408f1887d5c93a4ccabb2 (local copy read this session)"
     },
@@ -41,14 +51,29 @@
       "sourceId": "real-config-read",
       "sourceAuthority": "REAL_BLOODMOON_CONFIG",
       "sourceLocation": "Data/Item/ItemDrop.txt, line 1 (header comment)",
-      "entityTypes": ["CONFIG", "SYSTEM"],
-      "entities": ["ItemDrop.txt", "DropRate_AL0", "DropRate_AL1", "DropRate_AL2", "DropRate_AL3"],
+      "entityTypes": [
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "entities": [
+        "ItemDrop.txt",
+        "DropRate_AL0",
+        "DropRate_AL1",
+        "DropRate_AL2",
+        "DropRate_AL3"
+      ],
       "topic": "drop-system",
       "season": null,
       "providerVersion": "at or after ADDED/UPDATED 7.0 (see CLAIM-004)",
       "bloodMoonStatus": "BLOODMOON_CONFIRMED",
       "verificationStatus": "CONFIRMED_BY_CONFIG",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/Item/ItemDrop.txt", "line": 1 }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Item/ItemDrop.txt",
+          "line": 1
+        }
+      ],
       "confidence": "CONFIRMED_RUNTIME",
       "notes": "Directly read this session, ground truth, not inferred."
     },
@@ -58,14 +83,24 @@
       "sourceId": "real-config-read",
       "sourceAuthority": "REAL_BLOODMOON_CONFIG",
       "sourceLocation": "Data/Item/ItemDrop.txt, lines 2-93",
-      "entityTypes": ["CONFIG", "SYSTEM"],
-      "entities": ["ItemDrop.txt"],
+      "entityTypes": [
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "entities": [
+        "ItemDrop.txt"
+      ],
       "topic": "drop-system",
       "season": null,
       "providerVersion": null,
       "bloodMoonStatus": "BLOODMOON_CONFIRMED",
       "verificationStatus": "CONFIRMED_BY_CONFIG",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/Item/ItemDrop.txt" }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Item/ItemDrop.txt"
+        }
+      ],
       "confidence": "CONFIRMED_RUNTIME",
       "notes": "Matches the prior session's independent finding in docs/drop-system-analysis.md (\"100% desativada\") -- now directly re-confirmed by reading the raw file this session rather than trusting the paraphrase alone."
     },
@@ -75,14 +110,25 @@
       "sourceId": "KI-004",
       "sourceAuthority": "PROVIDER_TUTORIAL",
       "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/DqHAEmyQCjA.pt.json, segments 0:00-2:16",
-      "entityTypes": ["SYSTEM", "CONFIG"],
-      "entities": ["ItemDrop.txt"],
+      "entityTypes": [
+        "SYSTEM",
+        "CONFIG"
+      ],
+      "entities": [
+        "ItemDrop.txt"
+      ],
       "topic": "drop-system",
       "season": null,
       "providerVersion": "UPDATED 7.0",
       "bloodMoonStatus": "BLOODMOON_CONFIRMED",
       "verificationStatus": "CONFIRMED_BY_CONFIG",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/Item/ItemDrop.txt", "line": 1 }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Item/ItemDrop.txt",
+          "line": 1
+        }
+      ],
       "confidence": "CONFIRMED_VENDOR_VIDEO (claim) + CONFIRMED_RUNTIME (verification)",
       "notes": "VERIFIED this session: Blood Moon's real file header exactly matches this claim's described post-update structure (see CLAIM-002). This is the ITEMDROP_CLAIM = CONFIRMED result from Phase 2 Part K."
     },
@@ -92,14 +138,25 @@
       "sourceId": "vendor-tutorial-normalization",
       "sourceAuthority": "PROVIDER_DOCUMENTATION",
       "sourceLocation": "docs/vendor-tutorials-knowledge-extraction.md:517-521, normalizing Research/Vendor/Tutorials/ItemDrop.htm",
-      "entityTypes": ["CONFIG", "SYSTEM"],
-      "entities": ["ItemDrop.txt"],
+      "entityTypes": [
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "entities": [
+        "ItemDrop.txt"
+      ],
       "topic": "drop-system",
       "season": null,
       "providerVersion": "pre-7.0 (inferred from column mismatch, see CONFLICT-001)",
       "bloodMoonStatus": "LEGACY",
       "verificationStatus": "CONTRADICTED_BY_CONFIG",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/Item/ItemDrop.txt", "line": 1 }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Item/ItemDrop.txt",
+          "line": 1
+        }
+      ],
       "confidence": "CONFIRMED_VENDOR_DOC (as a claim about the tutorial's content) / the claim itself is now known stale relative to the real file",
       "notes": "See CONFLICT-001 in knowledge-conflicts.json. This is a genuine version-difference finding, not an error in either document -- the tutorial HTML simply predates the 7.0 column change that the real file already reflects."
     },
@@ -109,14 +166,24 @@
       "sourceId": "KI-001",
       "sourceAuthority": "PROVIDER_TUTORIAL",
       "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/6SGVxLyhG_8.pt.json, segments 0:01-1:44",
-      "entityTypes": ["SYSTEM", "NPC"],
-      "entities": ["CustomBotStore"],
+      "entityTypes": [
+        "SYSTEM",
+        "NPC"
+      ],
+      "entities": [
+        "CustomBotStore"
+      ],
       "topic": "systems",
       "season": null,
       "providerVersion": "ADDED 7.6",
       "bloodMoonStatus": "BLOODMOON_CONFIRMED",
       "verificationStatus": "CONFIRMED_BY_CONFIG",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/Custom/CustomBotStore.txt" }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomBotStore.txt"
+        }
+      ],
       "confidence": "CONFIRMED_RUNTIME",
       "notes": "VERIFIED 2026-08-26: real file downloaded and read. Bot index 0 ('Luffen', '.::CASH STORE::.') is ACTIVE (not commented), placed at map 0 (Lorencia), coords 141/134 -- this is a genuinely LIVE, deployed feature on Blood Moon, not just a template. Also refines CLAIM-007's slot mapping: real header confirms slot 2 = Helm (the video was unclear on this slot)."
     },
@@ -126,14 +193,23 @@
       "sourceId": "KI-001",
       "sourceAuthority": "PROVIDER_TUTORIAL",
       "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/6SGVxLyhG_8.pt.json, segments 4:21-4:46",
-      "entityTypes": ["SYSTEM"],
-      "entities": ["CustomBotStore"],
+      "entityTypes": [
+        "SYSTEM"
+      ],
+      "entities": [
+        "CustomBotStore"
+      ],
       "topic": "systems",
       "season": null,
       "providerVersion": "ADDED 7.6",
       "bloodMoonStatus": "BLOODMOON_LIKELY",
       "verificationStatus": "UNVERIFIED",
-      "verificationTargets": [{ "type": "runtime_observation", "path": "a configured Blood Moon CustomBotStore instance, if one exists" }],
+      "verificationTargets": [
+        {
+          "type": "runtime_observation",
+          "path": "a configured Blood Moon CustomBotStore instance, if one exists"
+        }
+      ],
       "confidence": "CONFIRMED_VENDOR_VIDEO",
       "notes": "Demonstrated live in the video (3 configured wings rendered as only 2)."
     },
@@ -143,14 +219,24 @@
       "sourceId": "KI-002",
       "sourceAuthority": "PROVIDER_TUTORIAL",
       "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/gySFdaRrS8Q.pt.json, segments 0:01-8:43",
-      "entityTypes": ["SYSTEM", "NPC"],
-      "entities": ["CustomBotTrader"],
+      "entityTypes": [
+        "SYSTEM",
+        "NPC"
+      ],
+      "entities": [
+        "CustomBotTrader"
+      ],
       "topic": "systems",
       "season": null,
       "providerVersion": "ADDED 7.6",
       "bloodMoonStatus": "BLOODMOON_CONFIRMED",
       "verificationStatus": "CONFIRMED_BY_CONFIG",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/Custom/CustomBotTrader.txt" }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomBotTrader.txt"
+        }
+      ],
       "confidence": "CONFIRMED_RUNTIME",
       "notes": "VERIFIED 2026-08-26: real file downloaded and read. Both configured bots (BotTrade1, BotTrade2) have Enabled=0 -- structurally present but currently DISABLED on Blood Moon. Real mix data ('WingBK' 50% success, 'WingBK2' 100% success) is essentially the vendor's own demo/template data, matching the video's live example almost exactly -- suggests this was deployed but never customized or turned on. File LastWriteTimeUtc = 2023-08-08T05:14:32Z, one day after the tutorial video's 2023-08-07 publish date."
     },
@@ -160,14 +246,26 @@
       "sourceId": "KI-002",
       "sourceAuthority": "PROVIDER_TUTORIAL",
       "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/gySFdaRrS8Q.pt.json, segment 1:22",
-      "entityTypes": ["SYSTEM"],
-      "entities": ["CustomBotTrader", "CustomBotBuffer", "CustomBotFusion"],
+      "entityTypes": [
+        "SYSTEM"
+      ],
+      "entities": [
+        "CustomBotTrader",
+        "CustomBotBuffer",
+        "CustomBotFusion"
+      ],
       "topic": "systems",
       "season": null,
       "providerVersion": "ADDED 7.6",
       "bloodMoonStatus": "BLOODMOON_LIKELY",
       "verificationStatus": "CONFIRMED_BY_CONFIG",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/Custom/CustomBotTrader.txt", "line": 2 }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomBotTrader.txt",
+          "line": 2
+        }
+      ],
       "confidence": "CONFIRMED_RUNTIME (comment present) / CONFIRMED_VENDOR_VIDEO (30 is the actual enforced max, not just documented)",
       "notes": "Vendor states the same 30-instance cap applies to CustomBotTrader, CustomBotBuffer, and CustomBotFusion. The real CustomBotTrader.txt's own header comment confirms 'BotIndex = Index do bot, Max: 30 bots', matching the video -- though only 2 of the 30 possible slots are actually configured on Blood Moon."
     },
@@ -177,14 +275,24 @@
       "sourceId": "KI-003",
       "sourceAuthority": "PROVIDER_TUTORIAL",
       "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/HFH8BhRZnUg.pt.json, segments 0:32-9:41",
-      "entityTypes": ["SYSTEM", "NPC"],
-      "entities": ["CustomBotFusion"],
+      "entityTypes": [
+        "SYSTEM",
+        "NPC"
+      ],
+      "entities": [
+        "CustomBotFusion"
+      ],
       "topic": "systems",
       "season": null,
       "providerVersion": "ADDED 6.4",
       "bloodMoonStatus": "BLOODMOON_CONFIRMED",
       "verificationStatus": "CONFIRMED_BY_CONFIG",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/Custom/CustomBotFusion.txt" }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomBotFusion.txt"
+        }
+      ],
       "confidence": "CONFIRMED_RUNTIME",
       "notes": "VERIFIED 2026-08-26: real file downloaded and read. Both configured bots (BotFusion1 at Lost Tower, BotFusion2 at Lorencia) have Enabled=0 -- structurally present but currently DISABLED on Blood Moon, same pattern as CustomBotTrader. File also preserves a raw text-encoding artifact worth keeping as-is: the Portuguese balloon text 'Fusão de Items Losttower' has a corrupted accent byte on disk ('Fus?o'), genuinely present in the file, not a transcription error on this sweep's part."
     },
@@ -194,14 +302,27 @@
       "sourceId": "KI-003 (original claim) + real-config-read (correction)",
       "sourceAuthority": "REAL_BLOODMOON_CONFIG",
       "sourceLocation": "Data/Custom/CustomBotFusion.txt, section 5 header comment: 'AcceptOnlySameType = Only Accept for example Swords with Swords, and not Swords with Axes' / 'OnlyIfDestinyLower = Only Accept if destiny item level is lower or equals than source item level +10 and -10'",
-      "entityTypes": ["SYSTEM", "CONFIG"],
-      "entities": ["CustomBotFusion", "OnlySameType", "DestinyLower"],
+      "entityTypes": [
+        "SYSTEM",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomBotFusion",
+        "OnlySameType",
+        "DestinyLower"
+      ],
       "topic": "systems",
       "season": null,
       "providerVersion": "ADDED 6.4",
       "bloodMoonStatus": "BLOODMOON_CONFIRMED",
       "verificationStatus": "CONFIRMED_BY_CONFIG",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/Custom/CustomBotFusion.txt", "line": "56-63" }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomBotFusion.txt",
+          "line": "56-63"
+        }
+      ],
       "confidence": "CONFIRMED_RUNTIME",
       "notes": "CORRECTION, not a source conflict: the original claim's field name came from an imperfect YouTube auto-transcript ('Bolt index... only semi') that this sweep interpreted as 'BotIndexOnly'. The real file confirms the actual field is 'OnlySameType', and reveals a second related field (DestinyLower) the video's audio didn't clearly convey. This is a good example of why real-config verification matters even for claims that already sounded plausible."
     },
@@ -211,14 +332,24 @@
       "sourceId": "KI-005",
       "sourceAuthority": "PROVIDER_TUTORIAL",
       "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/EpUJmEBn16Y.pt.json, segments 0:33-2:24",
-      "entityTypes": ["SYSTEM"],
-      "entities": ["CustomInfoDropSwitch", "GetItemInfo"],
+      "entityTypes": [
+        "SYSTEM"
+      ],
+      "entities": [
+        "CustomInfoDropSwitch",
+        "GetItemInfo"
+      ],
       "topic": "systems",
       "season": null,
       "providerVersion": "ADDED 7.8 (toggle); underlying feature added 7.6 or 7.7",
       "bloodMoonStatus": "BLOODMOON_LIKELY",
       "verificationStatus": "UNVERIFIED",
-      "verificationTargets": [{ "type": "runtime_observation", "path": "hover over a dropped item in-game" }],
+      "verificationTargets": [
+        {
+          "type": "runtime_observation",
+          "path": "hover over a dropped item in-game"
+        }
+      ],
       "confidence": "CONFIRMED_VENDOR_VIDEO",
       "notes": null
     },
@@ -228,14 +359,25 @@
       "sourceId": "KI-007",
       "sourceAuthority": "PROVIDER_TUTORIAL",
       "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/gfMqlKeQ360.pt.json, segments 0:16-2:03",
-      "entityTypes": ["SYSTEM", "CONFIG"],
-      "entities": ["GameMaster.txt", "Common.dat"],
+      "entityTypes": [
+        "SYSTEM",
+        "CONFIG"
+      ],
+      "entities": [
+        "GameMaster.txt",
+        "Common.dat"
+      ],
       "topic": "systems",
       "season": null,
       "providerVersion": "ADDED 5.4",
       "bloodMoonStatus": "BLOODMOON_CONFIRMED",
       "verificationStatus": "CONFIRMED_BY_CONFIG",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/Util/GameMaster.txt" }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Util/GameMaster.txt"
+        }
+      ],
       "confidence": "CONFIRMED_RUNTIME",
       "notes": "VERIFIED 2026-08-26 (Phase 3): real file located at Data/Util/GameMaster.txt (NOT Data/GameMaster.txt as the video/prior assumption implied -- Part B's location caveat was warranted). Section 0 (Account/Name/Level) and Section 1 (Account/Level) both present with 4 real GM test accounts (teste/teste1/teste2/teste3, characters Trakinas/Bryan/Lucas/EtheriusZ, levels 1-2). Structure matches the video's description exactly -- confirms CLAIM-013 in full."
     },
@@ -245,8 +387,15 @@
       "sourceId": "KI-006",
       "sourceAuthority": "PROVIDER_TUTORIAL",
       "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/jXr8q_NGotQ.pt.json, segments 5:00-6:18",
-      "entityTypes": ["GUIDE", "CONFIG"],
-      "entities": ["Data/Command", "Data/Event", "Data/Custom"],
+      "entityTypes": [
+        "GUIDE",
+        "CONFIG"
+      ],
+      "entities": [
+        "Data/Command",
+        "Data/Event",
+        "Data/Custom"
+      ],
       "topic": "operations",
       "season": null,
       "providerVersion": null,
@@ -262,8 +411,17 @@
       "sourceId": "KI-008",
       "sourceAuthority": "COMMUNITY_TUTORIAL",
       "sourceLocation": "Research/YouTube/eusantiago/channel-index.jsonl (channel's own video description, sponsor disclosure)",
-      "entityTypes": ["SYSTEM", "SOURCE"],
-      "entities": ["Legendary Craft", "Elite", "Shiny Imperial", "Tol", "Blaz"],
+      "entityTypes": [
+        "SYSTEM",
+        "SOURCE"
+      ],
+      "entities": [
+        "Legendary Craft",
+        "Elite",
+        "Shiny Imperial",
+        "Tol",
+        "Blaz"
+      ],
       "topic": "progression",
       "season": null,
       "providerVersion": null,
@@ -279,14 +437,24 @@
       "sourceId": "real-config-read",
       "sourceAuthority": "REAL_BLOODMOON_CONFIG",
       "sourceLocation": "Data/Custom/CustomBotBuffer.txt, section 1 (lines 11-19, all //-prefixed)",
-      "entityTypes": ["SYSTEM", "CONFIG"],
-      "entities": ["CustomBotBuffer"],
+      "entityTypes": [
+        "SYSTEM",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomBotBuffer"
+      ],
       "topic": "systems",
       "season": null,
       "providerVersion": null,
       "bloodMoonStatus": "BLOODMOON_CONFIRMED",
       "verificationStatus": "CONFIRMED_BY_CONFIG",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/Custom/CustomBotBuffer.txt" }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomBotBuffer.txt"
+        }
+      ],
       "confidence": "CONFIRMED_RUNTIME",
       "notes": "Discovered opportunistically this session while verifying the sibling Store/Trader/Fusion configs -- no video transcript exists yet for CustomBotBuffer beyond the 3 pre-existing project-gamers-oficial transcripts from an earlier session (sK5QGl2ykQc, per transcripts-status.tsv), so this claim has no KI-* video source, only the real config."
     },
@@ -296,8 +464,15 @@
       "sourceId": "real-config-read",
       "sourceAuthority": "REAL_BLOODMOON_CONFIG",
       "sourceLocation": "Data/Custom/CustomBotStore.txt, CustomBotTrader.txt, CustomBotFusion.txt, CustomBotBuffer.txt (all read this session)",
-      "entityTypes": ["SYSTEM"],
-      "entities": ["CustomBotStore", "CustomBotTrader", "CustomBotFusion", "CustomBotBuffer"],
+      "entityTypes": [
+        "SYSTEM"
+      ],
+      "entities": [
+        "CustomBotStore",
+        "CustomBotTrader",
+        "CustomBotFusion",
+        "CustomBotBuffer"
+      ],
       "topic": "systems",
       "season": null,
       "providerVersion": null,
@@ -313,14 +488,24 @@
       "sourceId": "KI-010",
       "sourceAuthority": "PROVIDER_TUTORIAL",
       "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/Mxanjz4Ml3E.pt.json, segments 0:00-2:03",
-      "entityTypes": ["SYSTEM"],
-      "entities": ["CustomDropReward", "Ruud"],
+      "entityTypes": [
+        "SYSTEM"
+      ],
+      "entities": [
+        "CustomDropReward",
+        "Ruud"
+      ],
       "topic": "drop-system",
       "season": "6.17",
       "providerVersion": "ADDED 6.8",
       "bloodMoonStatus": "BLOODMOON_LIKELY",
       "verificationStatus": "UNVERIFIED",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/Custom/ (exact CustomDropReward filename unconfirmed)" }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/ (exact CustomDropReward filename unconfirmed)"
+        }
+      ],
       "confidence": "CONFIRMED_VENDOR_VIDEO",
       "notes": null
     },
@@ -330,14 +515,26 @@
       "sourceId": "KI-011",
       "sourceAuthority": "PROVIDER_TUTORIAL",
       "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/DUK52xHToK0.pt.json, segments 0:01-1:32",
-      "entityTypes": ["SYSTEM", "EVENT", "CONFIG"],
-      "entities": ["EventItemBag", "DevilSquare"],
+      "entityTypes": [
+        "SYSTEM",
+        "EVENT",
+        "CONFIG"
+      ],
+      "entities": [
+        "EventItemBag",
+        "DevilSquare"
+      ],
       "topic": "drop-system",
       "season": null,
       "providerVersion": "ADDED 6.8",
       "bloodMoonStatus": "BLOODMOON_CONFIRMED",
       "verificationStatus": "CONFIRMED_BY_CONFIG",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/EventItemBagManager.txt" }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/EventItemBagManager.txt"
+        }
+      ],
       "confidence": "CONFIRMED_RUNTIME",
       "notes": "VERIFIED 2026-08-26 (Phase 3): downloaded and read the full 150-line file. Confirms exactly 7 Devil Square sub-indices (indices 137-143, SpecialValue 70-76), matching the video precisely. Also discovered EventItemBagManager.txt is a single flat index file at Data/EventItemBagManager.txt (13,136 bytes, 148 rows) referencing individual per-reward files in a SEPARATE Data/EventItemBag/ folder (148 files, indices 000-147) -- a two-level structure not fully described by the earlier docs/drop-rate-system.json reference. See knowledge/vendor-sweep/entities/gameplay-entities.json for the full extracted roster (17 monster identities, 17 item identities, 11 event groupings)."
     },
@@ -347,14 +544,28 @@
       "sourceId": "KI-012",
       "sourceAuthority": "PROVIDER_TUTORIAL",
       "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/LbNZ98OSjVg.pt.json, segments 0:08-1:39",
-      "entityTypes": ["SYSTEM", "MONSTER", "CONFIG"],
-      "entities": ["CustomMonster.txt", "RewardLevel", "RewardPoints"],
+      "entityTypes": [
+        "SYSTEM",
+        "MONSTER",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomMonster.txt",
+        "RewardLevel",
+        "RewardPoints"
+      ],
       "topic": "systems",
       "season": null,
       "providerVersion": "UPDATED 6.9",
       "bloodMoonStatus": "BLOODMOON_CONFIRMED",
       "verificationStatus": "CONFIRMED_BY_CONFIG",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/Custom/CustomMonster.txt", "line": 1 }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomMonster.txt",
+          "line": 1
+        }
+      ],
       "confidence": "CONFIRMED_RUNTIME",
       "notes": "VERIFIED 2026-08-26 (Phase 2 continuation): real file downloaded (modified 2026-08-15, 11 days before this sweep) and read. Header confirms RewardLevel and RewardPoints columns exactly as described, plus reveals a much richer column set the video didn't demo: MapNumber, MaxLife, DamageMin/Max, Defense, AttackRate, DefenseRate, ExperienceRate, KillMessage, InfoMessage, SummonMonster, SummonMonsterCount, RewardValue1-3, RewardReset, RewardMasterReser (sic, real typo in the file), AlertMessageAttackSwitch/Time. All 7 configured monster entries (custom indices 275/361/459/561/295/801/802) are commented out -- 100% inert, matching the SAME 'present but disabled' pattern independently found in ItemDrop.txt, CustomBotTrader, CustomBotFusion, and CustomBotBuffer (5th confirmed instance of this pattern -- see CLAIM-017's note, worth treating as an established Blood Moon operational characteristic now, not a coincidence)."
     },
@@ -364,8 +575,12 @@
       "sourceId": "KI-012",
       "sourceAuthority": "PROVIDER_TUTORIAL",
       "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/LbNZ98OSjVg.pt.json, segments 4:19-4:43",
-      "entityTypes": ["GUIDE"],
-      "entities": ["Reward Points"],
+      "entityTypes": [
+        "GUIDE"
+      ],
+      "entities": [
+        "Reward Points"
+      ],
       "topic": "progression",
       "season": null,
       "providerVersion": "UPDATED 6.9",
@@ -381,14 +596,23 @@
       "sourceId": "KI-013",
       "sourceAuthority": "PROVIDER_TUTORIAL",
       "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/lRhePn4cLZ0.pt.json, segments 0:57-1:15",
-      "entityTypes": ["SYSTEM"],
-      "entities": ["CustomJewelBank"],
+      "entityTypes": [
+        "SYSTEM"
+      ],
+      "entities": [
+        "CustomJewelBank"
+      ],
       "topic": "systems",
       "season": null,
       "providerVersion": "UPDATED 6.1",
       "bloodMoonStatus": "BLOODMOON_LIKELY",
       "verificationStatus": "UNVERIFIED",
-      "verificationTargets": [{ "type": "runtime_observation", "path": "client-side keybind, no safe automated check" }],
+      "verificationTargets": [
+        {
+          "type": "runtime_observation",
+          "path": "client-side keybind, no safe automated check"
+        }
+      ],
       "confidence": "CONFIRMED_VENDOR_VIDEO",
       "notes": "Client-side UI behavior -- same verification limitation as CLAIM-012 (no safe read-only path)."
     },
@@ -398,14 +622,24 @@
       "sourceId": "KI-013",
       "sourceAuthority": "PROVIDER_TUTORIAL",
       "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/lRhePn4cLZ0.pt.json, segments 3:53-4:21",
-      "entityTypes": ["SYSTEM", "CONFIG"],
-      "entities": ["CustomEventTimer"],
+      "entityTypes": [
+        "SYSTEM",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomEventTimer"
+      ],
       "topic": "systems",
       "season": null,
       "providerVersion": "UPDATED 6.1",
       "bloodMoonStatus": "BLOODMOON_LIKELY",
       "verificationStatus": "UNVERIFIED",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/Custom/ (CustomEventTimer flag location unconfirmed)" }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/ (CustomEventTimer flag location unconfirmed)"
+        }
+      ],
       "confidence": "CONFIRMED_VENDOR_VIDEO",
       "notes": null
     },
@@ -415,14 +649,24 @@
       "sourceId": "KI-014",
       "sourceAuthority": "PROVIDER_TUTORIAL",
       "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/qil3Pw1VkGg.pt.json, segments 3:33-4:44",
-      "entityTypes": ["SYSTEM", "EVENT"],
-      "entities": ["CustomEventPvpAll"],
+      "entityTypes": [
+        "SYSTEM",
+        "EVENT"
+      ],
+      "entities": [
+        "CustomEventPvpAll"
+      ],
       "topic": "events",
       "season": null,
       "providerVersion": "ADDED 6.6",
       "bloodMoonStatus": "BLOODMOON_LIKELY",
       "verificationStatus": "UNVERIFIED",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/Custom/ (exact PvpAll config filename unconfirmed)" }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/ (exact PvpAll config filename unconfirmed)"
+        }
+      ],
       "confidence": "CONFIRMED_VENDOR_VIDEO",
       "notes": "Demonstrated live: 2 characters could not damage each other after joining but before the GM started the event."
     },
@@ -432,14 +676,23 @@
       "sourceId": "KI-014",
       "sourceAuthority": "PROVIDER_TUTORIAL",
       "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/qil3Pw1VkGg.pt.json, segments 1:12-1:32",
-      "entityTypes": ["SYSTEM"],
-      "entities": ["CustomEventPvpAll"],
+      "entityTypes": [
+        "SYSTEM"
+      ],
+      "entities": [
+        "CustomEventPvpAll"
+      ],
       "topic": "events",
       "season": null,
       "providerVersion": "ADDED 6.6",
       "bloodMoonStatus": "BLOODMOON_LIKELY",
       "verificationStatus": "UNVERIFIED",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/Custom/ (exact PvpAll config filename unconfirmed)" }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/ (exact PvpAll config filename unconfirmed)"
+        }
+      ],
       "confidence": "CONFIRMED_VENDOR_VIDEO",
       "notes": "Demonstrated live and matched exactly: 4 kills + 1 death = 7 points (8-1); 1 kill + 4 deaths = 0 or negative, displayed as no ranking."
     },
@@ -449,14 +702,24 @@
       "sourceId": "KI-014",
       "sourceAuthority": "PROVIDER_TUTORIAL",
       "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/qil3Pw1VkGg.pt.json, segments 2:03-2:43",
-      "entityTypes": ["SYSTEM", "CURRENCY"],
-      "entities": ["CustomEventPvpAll"],
+      "entityTypes": [
+        "SYSTEM",
+        "CURRENCY"
+      ],
+      "entities": [
+        "CustomEventPvpAll"
+      ],
       "topic": "events",
       "season": null,
       "providerVersion": "ADDED 6.6",
       "bloodMoonStatus": "BLOODMOON_LIKELY",
       "verificationStatus": "UNVERIFIED",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/Custom/ (exact PvpAll config filename unconfirmed)" }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/ (exact PvpAll config filename unconfirmed)"
+        }
+      ],
       "confidence": "CONFIRMED_VENDOR_VIDEO",
       "notes": "Exact currency names uncertain due to ASR transcription quality on this segment ('Arranquei honra' likely a mistranscription of a ranking/honor currency name) -- flagged as lower-confidence on the specific currency names, though the mechanism itself (multi-currency, per-rank reward) is clear."
     },
@@ -466,8 +729,16 @@
       "sourceId": "real-config-read (synthesis across CLAIM-003/008/010/016/020)",
       "sourceAuthority": "REAL_BLOODMOON_CONFIG",
       "sourceLocation": "Data/Item/ItemDrop.txt, Data/Custom/CustomBotTrader.txt, CustomBotFusion.txt, CustomBotBuffer.txt, CustomMonster.txt -- all read directly this session",
-      "entityTypes": ["SYSTEM"],
-      "entities": ["ItemDrop.txt", "CustomBotTrader", "CustomBotFusion", "CustomBotBuffer", "CustomMonster.txt"],
+      "entityTypes": [
+        "SYSTEM"
+      ],
+      "entities": [
+        "ItemDrop.txt",
+        "CustomBotTrader",
+        "CustomBotFusion",
+        "CustomBotBuffer",
+        "CustomMonster.txt"
+      ],
       "topic": "operations",
       "season": null,
       "providerVersion": null,
@@ -483,14 +754,29 @@
       "sourceId": "KI-015",
       "sourceAuthority": "PROVIDER_TUTORIAL",
       "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/HMmfyPerla8.pt.json, segments 0:00-3:29",
-      "entityTypes": ["SYSTEM", "EVENT"],
-      "entities": ["ResetMin", "ResetMax", "Blood Castle", "Chaos Castle", "Devil Square", "Illusion Temple"],
+      "entityTypes": [
+        "SYSTEM",
+        "EVENT"
+      ],
+      "entities": [
+        "ResetMin",
+        "ResetMax",
+        "Blood Castle",
+        "Chaos Castle",
+        "Devil Square",
+        "Illusion Temple"
+      ],
       "topic": "progression",
       "season": null,
       "providerVersion": "update 2.0.1.6",
       "bloodMoonStatus": "BLOODMOON_LIKELY",
       "verificationStatus": "UNVERIFIED",
-      "verificationTargets": [{ "type": "file_read", "path": "Data/EventItemBag/012-026 (Blood Castle/Chaos Castle files) or the events' own config -- exact ResetMin/ResetMax field location not yet located" }],
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/EventItemBag/012-026 (Blood Castle/Chaos Castle files) or the events' own config -- exact ResetMin/ResetMax field location not yet located"
+        }
+      ],
       "confidence": "CONFIRMED_VENDOR_VIDEO",
       "notes": "First FACT-tier (not RECOMMENDATION-tier) progression mechanism found in this sweep -- see progression-entries.json PROG-002. Demonstrated live with illustrative values (21-99), not real Blood Moon data -- whether Blood Moon actually sets non-default ResetMin/ResetMax on any of its 4 affected events remains unverified."
     },
@@ -500,8 +786,14 @@
       "sourceId": "real-config-read",
       "sourceAuthority": "REAL_BLOODMOON_CONFIG",
       "sourceLocation": "Data/EventItemBagManager.txt (full file); Data/EventItemBag/ (directory listing, 148 files)",
-      "entityTypes": ["CONFIG", "SYSTEM"],
-      "entities": ["EventItemBagManager.txt", "EventItemBag"],
+      "entityTypes": [
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "entities": [
+        "EventItemBagManager.txt",
+        "EventItemBag"
+      ],
       "topic": "systems",
       "season": null,
       "providerVersion": null,
@@ -517,8 +809,18 @@
       "sourceId": "real-config-read (cross-reference)",
       "sourceAuthority": "REAL_BLOODMOON_CONFIG",
       "sourceLocation": "Data/Custom/CustomMonster.txt lines 2-8 (InfoMessage column) cross-referenced with Data/EventItemBagManager.txt lines 34,35,50,69,108,148,149 (MonsterClass column, matching comment names)",
-      "entityTypes": ["MONSTER"],
-      "entities": ["Kundun", "Nightmare", "Selupan", "Medusa", "Erohim", "Boss Farao", "Boss BloodMoon"],
+      "entityTypes": [
+        "MONSTER"
+      ],
+      "entities": [
+        "Kundun",
+        "Nightmare",
+        "Selupan",
+        "Medusa",
+        "Erohim",
+        "Boss Farao",
+        "Boss BloodMoon"
+      ],
       "topic": "monsters",
       "season": null,
       "providerVersion": null,
@@ -534,8 +836,14 @@
       "sourceId": "real-config-read",
       "sourceAuthority": "REAL_BLOODMOON_CONFIG",
       "sourceLocation": "Data/EventItemBag/147 - Boss BloodMoon.txt, Data/EventItemBag/146 - Boss Farao.txt (both read in full, both 228 bytes)",
-      "entityTypes": ["MONSTER", "CONFIG"],
-      "entities": ["Boss BloodMoon", "Boss Farao"],
+      "entityTypes": [
+        "MONSTER",
+        "CONFIG"
+      ],
+      "entities": [
+        "Boss BloodMoon",
+        "Boss Farao"
+      ],
       "topic": "monsters",
       "season": null,
       "providerVersion": null,
@@ -551,8 +859,19 @@
       "sourceId": "real-config-read",
       "sourceAuthority": "REAL_BLOODMOON_CONFIG",
       "sourceLocation": "Data/Custom/CustomEventZombie.txt (full file, 38 lines)",
-      "entityTypes": ["EVENT", "MONSTER", "ITEM", "NPC", "MAP"],
-      "entities": ["CustomEventZombie", "Skeleton King", "Map 1", "Map 0"],
+      "entityTypes": [
+        "EVENT",
+        "MONSTER",
+        "ITEM",
+        "NPC",
+        "MAP"
+      ],
+      "entities": [
+        "CustomEventZombie",
+        "Skeleton King",
+        "Map 1",
+        "Map 0"
+      ],
       "topic": "events",
       "season": null,
       "providerVersion": null,
@@ -568,8 +887,14 @@
       "sourceId": "real-config-read",
       "sourceAuthority": "REAL_BLOODMOON_CONFIG",
       "sourceLocation": "Data/Custom/CustomEventPandora.txt (full file, 19 lines)",
-      "entityTypes": ["EVENT", "MAP"],
-      "entities": ["CustomEventPandora", "Map 40"],
+      "entityTypes": [
+        "EVENT",
+        "MAP"
+      ],
+      "entities": [
+        "CustomEventPandora",
+        "Map 40"
+      ],
       "topic": "events",
       "season": null,
       "providerVersion": null,
@@ -585,8 +910,15 @@
       "sourceId": "real-config-read",
       "sourceAuthority": "REAL_BLOODMOON_CONFIG",
       "sourceLocation": "Data/Custom/CustomEventStopOrDie.txt (full file, 9 lines)",
-      "entityTypes": ["EVENT", "NPC", "MAP"],
-      "entities": ["CustomEventStopOrDie", "Map 1"],
+      "entityTypes": [
+        "EVENT",
+        "NPC",
+        "MAP"
+      ],
+      "entities": [
+        "CustomEventStopOrDie",
+        "Map 1"
+      ],
       "topic": "events",
       "season": null,
       "providerVersion": null,
@@ -602,8 +934,16 @@
       "sourceId": "real-config-read",
       "sourceAuthority": "REAL_BLOODMOON_CONFIG",
       "sourceLocation": "Data/EventItemBagManager.txt lines 104-107",
-      "entityTypes": ["ITEM", "CONFIG"],
-      "entities": ["Shining Jewelry Case", "Elegant Jewelry Case", "Steel Jewelry Case", "Old Jewelry Case"],
+      "entityTypes": [
+        "ITEM",
+        "CONFIG"
+      ],
+      "entities": [
+        "Shining Jewelry Case",
+        "Elegant Jewelry Case",
+        "Steel Jewelry Case",
+        "Old Jewelry Case"
+      ],
       "topic": "systems",
       "season": null,
       "providerVersion": null,
@@ -612,6 +952,89 @@
       "verificationTargets": [],
       "confidence": "CONFIRMED_RUNTIME",
       "notes": "A different mechanism of 'disabled' than CLAIM-027's Enabled=0 flags or fully-commented sections -- here, individual rows within an otherwise-active index table are selectively disabled. Reinforces that 'disabled' takes multiple distinct forms across Blood Moon's config files and each needs to be checked on its own terms, not assumed."
+    },
+    {
+      "claimId": "CLAIM-036",
+      "statement": "Update 8.0 adds an audit-log feature (activated in Common.dat, requires a server restart) that records every EventItemBag-triggered drop: EventItemBag name, account, character name, item dropped by the player, and item received as reward -- specifically built to let admins verify player claims of not receiving a drop.",
+      "sourceId": "KI-016",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/dxHssh3PLAQ.pt.json, segments 0:01-4:34",
+      "entityTypes": [
+        "SYSTEM",
+        "CONFIG"
+      ],
+      "entities": [
+        "EventItemBag",
+        "Common.dat"
+      ],
+      "topic": "systems",
+      "season": null,
+      "providerVersion": "ADDED 8.0",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "GameServer/DATA/GameServerInfo - Common.dat (a new flag near the already-known EventItemBag section)"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Demonstrated live: dropping numbered custom Box items (matching the same Box-item pattern already seen in CLAIM-018/Mxanjz4Ml3E) triggers logged EventItemBag rewards (Old Off Salamander, Splinter, Spirit Gloves, Bronze items). This is a DIFFERENT feature than initially assumed from the title -- not a deeper explanation of EventItemBagManager.txt columns, but an anti-fraud audit log layered on top of the existing drop mechanism."
+    },
+    {
+      "claimId": "CLAIM-037",
+      "statement": "Update 7.1 added a DropMap column to EventItemBagManager.txt, letting an admin restrict which specific map an EventItemBag reward is allowed to drop on, to avoid item clutter on unrelated maps (e.g. an Arena kill dropping the same reward as a specific field-boss kill).",
+      "sourceId": "KI-017",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/b5S00cPpUBg.pt.json, segments 0:01-1:59",
+      "entityTypes": [
+        "SYSTEM",
+        "CONFIG"
+      ],
+      "entities": [
+        "EventItemBagManager.txt",
+        "DropMap"
+      ],
+      "topic": "systems",
+      "season": null,
+      "providerVersion": "UPDATED 7.1",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/EventItemBagManager.txt",
+          "line": 1
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO (semantics) + CONFIRMED_RUNTIME (column existence, already read directly this sweep)",
+      "notes": "The DropMap column itself was already read directly from the real file in an earlier round (CLAIM-028) but its PURPOSE was unknown until this video -- this claim adds the semantic explanation. UNRESOLVED DISCREPANCY, deliberately not silently resolved: the video demonstrates using EventItemBag index 32 for a monster called \"Condor\", but this sweep's own direct reading of the real, current EventItemBagManager.txt shows index 32 = MonsterClass 275 (\"Kundun\", per CLAIM-029). Either (a) this 2023-03-02 video shows an older/different index layout than the file's current state, or (b) an ASR/transcription imprecision. Not resolved -- flagged for a human or a future direct comparison against an older Blood Moon config snapshot if one exists."
+    },
+    {
+      "claimId": "CLAIM-038",
+      "statement": "The CustomOffAttack feature makes a summoned pet auto-attack any monster within a configurable percentage-based range of its owner, using a command toggle (spoken as /attack and /offattack), and auto-disconnects the pet after a configurable idle timer (demonstrated as 2 minutes).",
+      "sourceId": "KI-018",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/pPhK9sEABq4.pt.json (LOCAL ASR transcript), segments across the full ~299s video",
+      "entityTypes": [
+        "SYSTEM"
+      ],
+      "entities": [
+        "CustomOffAttack"
+      ],
+      "topic": "systems",
+      "season": null,
+      "providerVersion": "UPDATED 5.8",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/ (exact CustomOffAttack filename not yet located)"
+        }
+      ],
+      "confidence": "LOCAL_ASR_HIGH (per this project confidence pipeline -- HIGH-confidence ASR informs a BLOODMOON_LIKELY-tier claim, but is explicitly NOT sufficient alone for BLOODMOON_CONFIRMED)",
+      "notes": "This is the first claim in this entire multi-phase sweep sourced from LOCAL ASR rather than an official YouTube caption or a real config read -- this specific video has no official captions of any kind (confirmed independently 3 times: browser panel had no button, yt-dlp official-caption fetch failed twice under different configurations). Recovered via the audio-extraction + faster-whisper fallback pipeline (medium model, CPU, processingRatio=1.195, avg confidence HIGH). Demonstrates a summoned pet auto-attacking within a 12%-range example configuration and auto-disconnecting after a 2-minute idle timer."
     }
   ]
 }

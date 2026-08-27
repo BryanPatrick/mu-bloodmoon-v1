@@ -400,13 +400,98 @@
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/HMmfyPerla8.pt.json",
       "normalizedArtifact": "knowledge/vendor-sweep/normalized/youtube/HMmfyPerla8.md",
       "derivedArtifacts": [],
-      "tags": ["progression", "reset", "events"],
-      "entities": ["ResetMin", "ResetMax"],
+      "tags": [
+        "progression",
+        "reset",
+        "events"
+      ],
+      "entities": [
+        "ResetMin",
+        "ResetMax"
+      ],
       "capturedAt": "2026-08-26T03:35:00Z",
       "sourceDate": "2018-11-03",
       "confidence": "CONFIRMED_VENDOR_VIDEO",
       "status": "BLOODMOON_LIKELY",
       "note": "First FACT-tier progression source in this sweep -- see progression-entries.json PROG-002 and CLAIM-035."
+    },
+    {
+      "id": "KI-016",
+      "title": "EventItemBag drop audit log",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/dxHssh3PLAQ.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "eventitembag",
+        "logging",
+        "anti-fraud"
+      ],
+      "entities": [
+        "EventItemBag",
+        "Common.dat"
+      ],
+      "capturedAt": "2026-08-27T01:05:59Z",
+      "sourceDate": "2024-05-22",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Captured via the new yt-dlp official-caption pipeline, not the browser method."
+    },
+    {
+      "id": "KI-017",
+      "title": "EventItemBagManager DropMap column semantics",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/b5S00cPpUBg.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "eventitembag",
+        "drop-system",
+        "maps"
+      ],
+      "entities": [
+        "EventItemBagManager.txt",
+        "DropMap"
+      ],
+      "capturedAt": "2026-08-27T01:08:46Z",
+      "sourceDate": "2023-03-02",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_CONFIRMED",
+      "note": "Captured via yt-dlp. Contains an unresolved index/monster discrepancy vs. the real file, deliberately flagged not silently resolved -- see CLAIM-037."
+    },
+    {
+      "id": "KI-018",
+      "title": "CustomOffAttack pet auto-attack system",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/pPhK9sEABq4.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "offattack",
+        "pet",
+        "summoner",
+        "local-asr"
+      ],
+      "entities": [
+        "CustomOffAttack"
+      ],
+      "capturedAt": "2026-08-27T01:35:00Z",
+      "sourceDate": "2021",
+      "confidence": "LOCAL_ASR_HIGH",
+      "status": "BLOODMOON_LIKELY",
+      "note": "FIRST source in this entire sweep captured via local ASR (faster-whisper), not an official caption. This video has no official YouTube captions of any kind -- confirmed by 3 independent methods. See CLAIM-038."
     }
   ]
 }

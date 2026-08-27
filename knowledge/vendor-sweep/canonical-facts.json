@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-27T00:50:35.811Z",
+  "generatedAt": "2026-08-27T01:34:23.272Z",
   "generatedBy": "scripts/knowledge-canonical-facts.mjs -- derived mechanically from atomic-claims.json, do not hand-edit, re-run instead",
   "rule": "A claim qualifies as canonical only when verificationStatus starts with CONFIRMED_BY_ (config/schema/runtime evidence). PROVIDER_TUTORIAL or COMMUNITY_TUTORIAL sourceAuthority alone, however plausible, is explicitly insufficient -- see docs/knowledge/source-authority.md.",
-  "canonicalFactCount": 22,
-  "totalClaims": 35,
+  "canonicalFactCount": 23,
+  "totalClaims": 38,
   "canonicalFacts": [
     {
       "claimId": "CLAIM-001",
@@ -259,6 +259,17 @@
       ],
       "topic": "systems",
       "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-037",
+      "statement": "Update 7.1 added a DropMap column to EventItemBagManager.txt, letting an admin restrict which specific map an EventItemBag reward is allowed to drop on, to avoid item clutter on unrelated maps (e.g. an Arena kill dropping the same reward as a specific field-boss kill).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "EventItemBagManager.txt",
+        "DropMap"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_VENDOR_VIDEO (semantics) + CONFIRMED_RUNTIME (column existence, already read directly this sweep)"
     }
   ],
   "explicitlyNotCanonical_contradicted": [

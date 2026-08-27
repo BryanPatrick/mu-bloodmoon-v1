@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-27T00:50:35.967Z",
+  "generatedAt": "2026-08-27T01:34:23.432Z",
   "generatedBy": "scripts/knowledge-provenance-report.mjs -- derived mechanically from knowledge-index.json, atomic-claims.json, knowledge-graph.json, and wiki_candidates/, do not hand-edit",
-  "scope": "15 cataloged sources (knowledge-index.json). Does NOT cover the underlying 75+ prior-session docs corpus, which predates this sweep's index and uses its own provenance conventions (see Knowledge/README.md's EVIDENCE/KNOWLEDGE/OPERATIONS model instead).",
+  "scope": "18 cataloged sources (knowledge-index.json). Does NOT cover the underlying 75+ prior-session docs corpus, which predates this sweep's index and uses its own provenance conventions (see Knowledge/README.md's EVIDENCE/KNOWLEDGE/OPERATIONS model instead).",
   "perSource": [
     {
       "id": "KI-001",
@@ -152,38 +152,68 @@
       "VERIFICATION": "MISSING",
       "GRAPH": "MISSING",
       "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-016",
+      "title": "EventItemBag drop audit log",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-017",
+      "title": "EventItemBagManager DropMap column semantics",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "COMPLETE",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-018",
+      "title": "CustomOffAttack pet auto-attack system",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
     }
   ],
   "tallies": {
     "RAW": {
-      "COMPLETE": 15,
+      "COMPLETE": 18,
       "PARTIAL": 0,
       "MISSING": 0
     },
     "NORMALIZED": {
       "COMPLETE": 12,
       "PARTIAL": 3,
-      "MISSING": 0
+      "MISSING": 3
     },
     "CLAIMS": {
-      "COMPLETE": 14,
+      "COMPLETE": 17,
       "PARTIAL": 0,
       "MISSING": 1
     },
     "VERIFICATION": {
-      "COMPLETE": 5,
+      "COMPLETE": 6,
       "PARTIAL": 2,
-      "MISSING": 8
+      "MISSING": 10
     },
     "GRAPH": {
       "COMPLETE": 8,
       "PARTIAL": 0,
-      "MISSING": 7
+      "MISSING": 10
     },
     "WIKI": {
       "COMPLETE": 5,
       "PARTIAL": 0,
-      "MISSING": 10
+      "MISSING": 13
     }
   }
 }
