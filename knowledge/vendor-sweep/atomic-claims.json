@@ -2594,6 +2594,2283 @@
       "verificationTargets": [],
       "confidence": "CONFIRMED_RUNTIME",
       "notes": "RESOLUTION of the CLAIM-037 discrepancy: Blood Moon's CURRENT real state is unambiguous (Kundun, double-confirmed by both the MonsterClass value and the inline comment). Root cause of the video's \"Condor\" naming could not be determined from available evidence -- no archived older snapshot of this file was available to check for a genuine past re-index (VERSION_CHANGE), so it remains equally plausible this was a presenter naming error during the 2023 recording (PROVIDER_PRESENTER_ERROR). Classified UNKNOWN_ROOT_CAUSE / BLOODMOON_CURRENT_STATE_CONFIRMED rather than left as an open question -- the actionable fact (what Blood Moon actually has today) is settled either way."
+    },
+    {
+      "claimId": "CLAIM-100",
+      "statement": "Update 2.0.1.7 upgrades the vendor's ResetMin/ResetMax event-entry gate (previously a single global pair per event, per the 2.0.1.6 version documented in CLAIM-035) to an independently configurable Min/Max reset pair for EACH sub-event index -- e.g. up to 8 separate pairs for Blood Castle's 8 sub-levels, plus one pair per sub-level of Chaos Castle, Devil Square, and Illusion Temple.",
+      "sourceId": "KI-042",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/rcL6fxy92Ss.pt.json, segments 0:00-1:41",
+      "entityTypes": [
+        "SYSTEM",
+        "EVENT",
+        "PROGRESSION"
+      ],
+      "entities": [
+        "ResetMin",
+        "ResetMax",
+        "Blood Castle",
+        "Chaos Castle",
+        "Devil Square",
+        "Illusion Temple"
+      ],
+      "topic": "progression",
+      "season": null,
+      "providerVersion": "UPDATED 2.0.1.7",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "GameServer/DATA/GameServerInfo - Event.dat, all 4 castle-event sections"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Cross-referenced against CLAIM-035's Phase 6 real-config verification, which already confirmed this exact per-sub-level field structure (BloodCastle1MinReset..BloodCastle8MaxReset, ChaosCastle 1-7, DevilSquare 1-7, IllusionTemple 1-6) exists in Blood Moon's real Event.dat -- this video is the vendor's own tutorial for that same feature, supplying the version-history context (2.0.1.6 -> 2.0.1.7 granularity upgrade) that CLAIM-035 did not capture. ASR audio is degraded on the exact Blood Castle sub-event count spoken (transcribed nonsensically as \"de 1 até 18\"); read here as 1-8 to match CLAIM-035's independently confirmed 8-sub-event count rather than the literal garbled transcription."
+    },
+    {
+      "claimId": "CLAIM-101",
+      "statement": "The vendor's admin panel exposes two independent per-event enable checkboxes -- \"requires Reset\" and \"requires Master Reset\" -- so a server operator can gate a given castle-family sub-event by ordinary reset count, master-reset count, both, or neither.",
+      "sourceId": "KI-042",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/rcL6fxy92Ss.pt.json, segments 0:57-1:41",
+      "entityTypes": [
+        "SYSTEM",
+        "PROGRESSION"
+      ],
+      "entities": [
+        "ResetMin",
+        "ResetMax"
+      ],
+      "topic": "progression",
+      "season": null,
+      "providerVersion": "UPDATED 2.0.1.7",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "GameServer/DATA/GameServerInfo - Event.dat, all 4 castle-event sections"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Cross-referenced against CLAIM-035's Phase 6 finding of separate BloodCastleResetSwitch and BloodCastleMasterResetSwitch-style flag pairs (and equivalents for the other 3 castle-family events) -- confirms the two checkboxes shown in this video's admin UI map onto genuinely separate real config flags on Blood Moon, not one combined toggle."
+    },
+    {
+      "claimId": "CLAIM-102",
+      "statement": "If the Reset (or Master Reset) requirement is enabled for an event family, every individual sub-event index must have an explicit Min/Max reset value configured -- leaving any sub-index at its default 0/0 makes that specific sub-event impossible to enter, because the game then demands \"0 resets\" as a literal minimum that no character, including brand-new ones, can be recognized as satisfying.",
+      "sourceId": "KI-042",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/rcL6fxy92Ss.pt.json, segments 1:41-2:23",
+      "entityTypes": [
+        "SYSTEM",
+        "OPERATIONAL_WARNING"
+      ],
+      "entities": [
+        "ResetMin",
+        "ResetMax"
+      ],
+      "topic": "progression",
+      "season": null,
+      "providerVersion": "UPDATED 2.0.1.7",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "A generic engine/admin-tool validation quirk, not gameplay content -- applies identically to any server running this engine version, so classified PROVIDER_SPECIFIC rather than a Blood-Moon-specific fact. Operationally relevant to Blood Moon: CLAIM-035 confirms all 4 castle-family Reset/MasterReset switches are currently OFF with every sub-index at 0/0, so this exact lockout is not currently occurring live, but would trigger immediately if an admin ever enabled one of these switches without first configuring every sub-index."
+    },
+    {
+      "claimId": "CLAIM-103",
+      "statement": "The video demonstrates the reset-count gate enforced in real time with no server restart: a test character below the configured minimum reset count is denied event entry, and the same character is admitted immediately once its reset count is raised to meet the configured minimum.",
+      "sourceId": "KI-042",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/rcL6fxy92Ss.pt.json, segments 2:53-4:34",
+      "entityTypes": [
+        "SYSTEM",
+        "EVENT"
+      ],
+      "entities": [
+        "ResetMin",
+        "ResetMax"
+      ],
+      "topic": "progression",
+      "season": null,
+      "providerVersion": "UPDATED 2.0.1.7",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "runtime_observation",
+          "path": "a Blood Moon castle-family event with its Reset/MasterReset switch actually turned on, if one is ever enabled"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Consistent with CLAIM-035's already-confirmed 'checked at join time, not just displayed' finding, but this uses illustrative vendor demo data (test character, arbitrary reset counts), not Blood Moon's own live data -- and CLAIM-035 confirms this gate is currently switched off for all 4 events on Blood Moon, so this exact interaction is not presently observable on the live server."
+    },
+    {
+      "claimId": "CLAIM-104",
+      "statement": "The command demonstrated in this video (called 'Comando Evento Start' / 'Command Start Event' by the vendor) is a GM-only command that opens a generic, unnamed event join-window; players enroll by typing /participar before the window's configured duration expires -- this join keyword corresponds to the real JoinEventXxxSyntax entry literally named 'EventGM' in the actual Blood Moon Command.dat (one of the 10 real, populated entries independently confirmed in CLAIM-049's Phase 6 verification), distinct from the separate /openevent system covered by CLAIM-048.",
+      "sourceId": "KI-043",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/o3h4PQ8Y8Kc.pt.json, segments 0:00-1:26",
+      "entityTypes": [
+        "COMMAND",
+        "EVENT"
+      ],
+      "entities": [
+        "StartEvent",
+        "JoinEvent",
+        "EventGM"
+      ],
+      "topic": "commands",
+      "season": null,
+      "providerVersion": "UPDATED 2.0.1.7",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "GameServer/DATA/GameServerInfo - Command.dat, JoinEventXxxSyntax registry"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Cross-referenced against CLAIM-049 (Phase 6), which read the real JoinEventXxxSyntax registry in full and found exactly 10 entries including 'EventGM' -- a naming match specific enough (not a common word, not shared with any other catalogued event) to treat as the same real command family, not a coincidence. This is a different, older, more primitive command than the /openevent GM panel covered by CLAIM-048 (see CLAIM-106)."
+    },
+    {
+      "claimId": "CLAIM-105",
+      "statement": "The Start Event command is gated by a configurable minimum GM level and takes a configurable open-duration parameter in seconds (demonstrated with example values from roughly 10 up to 50-59 seconds); players who type /participar before the window's timer expires are enrolled in the event, and any player who does not is excluded.",
+      "sourceId": "KI-043",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/o3h4PQ8Y8Kc.pt.json, segments 0:00-2:23",
+      "entityTypes": [
+        "COMMAND",
+        "EVENT"
+      ],
+      "entities": [
+        "StartEvent",
+        "JoinEvent"
+      ],
+      "topic": "commands",
+      "season": null,
+      "providerVersion": "UPDATED 2.0.1.7",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "GameServer/DATA/GameServerInfo - Command.dat, EventGM command section (GM level / duration fields)"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "The command's existence and enabled state on Blood Moon is confirmed by cross-reference (see CLAIM-104), but the specific GM-level threshold and duration values shown here are illustrative demo values from the vendor's own test server, not read from Blood Moon's real Command.dat -- so the mechanism is BLOODMOON_LIKELY rather than CONFIRMED for these specific parameter values."
+    },
+    {
+      "claimId": "CLAIM-106",
+      "statement": "As of this video (engine update 2.0.1.7, 2018), the Start Event command only supports opening a generic/manual event window (demonstrated as a stand-in for a Kill-All/Mata-Mata scenario, avoiding the need to manually /move every participant) -- it does not yet support directly starting named events like Blood Castle, Illusion Temple, or Chaos Castle; the vendor explicitly states that capability is planned for a future update.",
+      "sourceId": "KI-043",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/o3h4PQ8Y8Kc.pt.json, segments 2:23-2:51",
+      "entityTypes": [
+        "COMMAND",
+        "EVENT"
+      ],
+      "entities": [
+        "StartEvent",
+        "OpenEvent",
+        "Blood Castle",
+        "Illusion Temple",
+        "Chaos Castle"
+      ],
+      "topic": "commands",
+      "season": null,
+      "providerVersion": "UPDATED 2.0.1.7",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "A vendor engine version-history fact, not a Blood-Moon-specific config claim. Notable as the likely origin point of the far more capable /openevent GM panel later documented in CLAIM-048 (ADDED 8.2), whose real StartEventXxxSyntax registry does include BloodCastle, ChaosCastle, DevilSquare, and IllusionTemple among its 31 entries -- i.e. the roadmap item promised in this 2018 video appears to have shipped by the time of that later update, under a separate command system (/openevent) rather than as an extension of this exact Start Event command."
+    },
+    {
+      "claimId": "CLAIM-107",
+      "statement": "This tutorial video's demonstrated Custom Event Zombie configuration values -- daily 02:45 schedule, 10-minute duration, entry NPC class 380 on Map 0 near coordinates (140,140), 4 monster waves, and a Cash/Gold/PcPoint reward -- are identical to Blood Moon's own real, already-confirmed Data/Custom/CustomEventZombie.txt values (CLAIM-031), strongly suggesting this video's demo server is Blood Moon's own live configuration (or shares an identical config origin) rather than generic vendor sample/template data.",
+      "sourceId": "KI-044",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/A2BcRITQjxc.pt.json, segments 1:47-5:21",
+      "entityTypes": [
+        "EVENT",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomEventZombie",
+        "Map 0",
+        "Map 1"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED 8.9",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventZombie.txt"
+        }
+      ],
+      "confidence": "CONFIRMED_RUNTIME (parameter match) + CONFIRMED_VENDOR_VIDEO (video content)",
+      "notes": "Direct cross-reference to CLAIM-031, which read Blood Moon's real CustomEventZombie.txt this sweep (38 lines): schedule, NPC class/map, wave count, and reward-currency types match exactly. This is the strongest possible corroboration available without re-reading the live file this session (not present in this worktree) -- the transcript that CLAIM-031's notes previously said 'could not be captured' has since become available (captured via yt-dlp per this file's own metadata), closing that earlier gap."
+    },
+    {
+      "claimId": "CLAIM-108",
+      "statement": "In the Zombie event, a player killed by any zombie-wave monster becomes 'infected' (skin changes and the on-screen status flips from 'healthy' to an infected/flashing state) rather than being removed from the event; the infected player must find and click a ground-dropped antidote item to cure themselves. A player still infected when the event's fixed duration expires receives no reward at all, even though they were never disconnected or removed from the event area -- only players who are never infected, or who cure themselves before time runs out, qualify for the reward.",
+      "sourceId": "KI-044",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/A2BcRITQjxc.pt.json, segments 0:00-0:45, 6:48-10:23",
+      "entityTypes": [
+        "EVENT"
+      ],
+      "entities": [
+        "CustomEventZombie"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED 8.9",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "runtime_observation",
+          "path": "a live Blood Moon Zombie event, if scheduled and observed by a GM/player this sweep"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "The infection/cure/no-reward-if-infected rule is hardcoded engine behavior, not visible in the static .txt config CLAIM-031 read, so it cannot be confirmed by that file alone -- but CLAIM-107's exact parameter match makes it very likely this is exactly how Blood Moon's own Zombie event behaves, not just a generic demo. Kept at BLOODMOON_LIKELY rather than CONFIRMED per this sweep's rule against inferring runtime behavior from config text alone."
+    },
+    {
+      "claimId": "CLAIM-109",
+      "statement": "The Zombie event has a dedicated top-10 (configurable) live ranking display (toggled separately via a 'Custom Ranking Zombie' switch) showing infected status, event start time, and each participating player's kill count; each new monster wave triggers a screen-darkening/flashing visual effect described by the presenter as a deliberate 'nostalgia' touch.",
+      "sourceId": "KI-044",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/A2BcRITQjxc.pt.json, segments 1:03-1:25, 7:44-8:19, 10:43-11:03",
+      "entityTypes": [
+        "EVENT",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomEventZombie",
+        "CustomRankingZombie"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED 8.9",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomRankingZombie.txt or equivalent ranking-toggle config, if present"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "The ranking display is a separately toggled feature from the event itself (its own switch, not covered by CLAIM-031's read of CustomEventZombie.txt alone) -- whether Blood Moon has this specific ranking toggle enabled is not verified this session. Useful detail for a player-facing Event Help Center entry regardless of the toggle's current state, since the underlying Zombie event itself is confirmed real (CLAIM-031/CLAIM-107)."
+    },
+    {
+      "claimId": "CLAIM-110",
+      "statement": "The antidote (cure) item drop is configured at a single fixed coordinate matching the spawn point of a later/stronger wave (the presenter specifically ties its drop location to where the 'Skeleton King'-class wave spawns), rather than dropping wherever a player is infected -- the presenter notes multiple drop locations could be configured but chose one for simplicity in the demo.",
+      "sourceId": "KI-044",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/A2BcRITQjxc.pt.json, segments 3:07-3:51",
+      "entityTypes": [
+        "EVENT",
+        "ITEM"
+      ],
+      "entities": [
+        "CustomEventZombie"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED 8.9",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventZombie.txt"
+        }
+      ],
+      "confidence": "CONFIRMED_RUNTIME (coordinate match) + CONFIRMED_VENDOR_VIDEO",
+      "notes": "Matches CLAIM-031's finding of a 100%-rate cure-item drop (Type 14, Index 8) 'at the same coordinates as wave 3's spawn point' -- this video clarifies that fixed-location design choice is deliberate (tied to a specific wave's spawn, chosen for demo simplicity, multiple locations are supported) rather than an oversight."
+    },
+    {
+      "claimId": "CLAIM-111",
+      "statement": "The Pandora event is a king-of-the-hill 'hold the skin' PvP mode: a single special monster (configurable class/skin) spawns once; whoever lands the kill instantly takes on that monster's skin/appearance, and any other player who then kills the current skin-holder steals the skin for themselves. Whoever is holding the skin when the event's timer expires wins and receives the configured Cash/Gold/PcPoint reward. An optional configurable max-deaths threshold can eliminate a player from the event after losing the skin N times (e.g. 3), or the admin can leave it unlimited so the skin simply keeps changing hands until time runs out.",
+      "sourceId": "KI-045",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/ivDj7I9elZA.pt.json, segments 2:34-2:54, 7:39-9:19",
+      "entityTypes": [
+        "EVENT"
+      ],
+      "entities": [
+        "CustomEventPandora"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED 8.8",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "runtime_observation",
+          "path": "a live Blood Moon Pandora event, if scheduled and observed by a GM/player this sweep"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "The skin-steal PvP RULE is hardcoded engine behavior, not visible in the static CustomEventPandora.txt that CLAIM-032 already read, so it isn't independently confirmed for Blood Moon this session -- but CLAIM-112's exact parameter match (map, monster class, reward amount) makes it highly likely this is exactly how Blood Moon's own Pandora event plays out. The max-deaths threshold's actual configured value on Blood Moon is unknown (not part of CLAIM-032's recorded fields)."
+    },
+    {
+      "claimId": "CLAIM-112",
+      "statement": "This tutorial video's demonstrated Custom Event Pandora configuration -- Map 40, MonsterClass 55 (Skeleton King skin), and a 100 Cash reward for the winner -- is identical to Blood Moon's own real, already-confirmed Data/Custom/CustomEventPandora.txt values (CLAIM-032), strongly suggesting this video's demo server is Blood Moon's own live configuration (or shares an identical config origin) rather than generic vendor sample/template data.",
+      "sourceId": "KI-045",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/ivDj7I9elZA.pt.json, segments 2:12-2:34, 6:53-7:17, 9:19-9:38",
+      "entityTypes": [
+        "EVENT",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomEventPandora",
+        "Map 40"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED 8.8",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventPandora.txt"
+        }
+      ],
+      "confidence": "CONFIRMED_RUNTIME (parameter match) + CONFIRMED_VENDOR_VIDEO",
+      "notes": "Direct cross-reference to CLAIM-032. Same pattern as CLAIM-107 for the Zombie event: the vendor tutorial's demo values match Blood Moon's real deployed config exactly, not just structurally but on specific numbers (100 Cash, Map 40, MonsterClass 55)."
+    },
+    {
+      "claimId": "CLAIM-113",
+      "statement": "Joining the Pandora event lobby (via /participar pandora before the join window closes) immediately flags the player as PK-restricted -- they cannot attack or be attacked -- until the event officially starts; this prevents players from fighting inside the waiting area before the skin-monster spawns.",
+      "sourceId": "KI-045",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/ivDj7I9elZA.pt.json, segments 5:13-5:54",
+      "entityTypes": [
+        "EVENT"
+      ],
+      "entities": [
+        "CustomEventPandora"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED 8.8",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Generic engine lobby-safety behavior demonstrated live for this event; not captured in CLAIM-032's static file read, and not independently verified against Blood Moon's runtime this session."
+    },
+    {
+      "claimId": "CLAIM-114",
+      "statement": "As of update 8.8, the Custom Event Stop Or Die does NOT support automatic time-of-day scheduling -- the presenter states he was unable to finish that part before shipping the update due to unrelated 8.7 bugfix work, so Stop Or Die must be started manually via a GM /start-type command -- whereas the sibling Pandora event shipped in the same update does support automatic scheduled starts.",
+      "sourceId": "KI-045",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/ivDj7I9elZA.pt.json, segments 0:01-2:12",
+      "entityTypes": [
+        "EVENT"
+      ],
+      "entities": [
+        "CustomEventStopOrDie",
+        "CustomEventPandora"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED 8.8",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventStopOrDie.txt"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Corroborated by absence: CLAIM-033's read of Blood Moon's real CustomEventStopOrDie.txt (9 lines) records no daily-schedule field at all, unlike CLAIM-031 (Zombie, daily 02:45) and CLAIM-032 (Pandora, daily 20:00) which both have one -- consistent with this video's claim that Stop Or Die shipped without the scheduling feature in this update. Useful operational note: on Blood Moon, Stop Or Die can only run when a GM manually starts it, not on autopilot."
+    },
+    {
+      "claimId": "CLAIM-115",
+      "statement": "The Pandora skin-monster's spawn coordinate can be configured either as a single fixed point on the event map, or left using the map's default random-spawn behavior (compared explicitly by the presenter to the existing Invasion Manager system's random-spawn design) -- the presenter recommends random spawn so players must search the map for the monster, adding a competitive element, rather than everyone rushing a known fixed point.",
+      "sourceId": "KI-045",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/ivDj7I9elZA.pt.json, segments 4:15-4:54",
+      "entityTypes": [
+        "EVENT",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomEventPandora",
+        "InvasionManager"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED 8.8",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "A generic engine config option/design-recommendation, not itself a claim about Blood Moon's specific choice -- CLAIM-032 does not record which of the two spawn modes Blood Moon actually uses. Cross-references CLAIM-048's confirmed real-config catalogue entry for InvasionManager as an existing, separately-verified system on Blood Moon."
+    },
+    {
+      "claimId": "CLAIM-116",
+      "statement": "Stop Or Die is a 'red light, green light' event (explicitly modeled on the Brazilian children's game 'batatinha frita 1, 2, 3', with recreated Squid-Game-style audio cues): any player who moves during the 'stop' phase is immediately eliminated from the event. As shipped in update 8.8, only the single LAST player still standing (uneliminated) wins and receives the Cash reward -- the presenter explicitly states that in a future update he plans to change this so that every player who successfully crosses the finish line and clicks the reward NPC (not just the sole survivor) is rewarded.",
+      "sourceId": "KI-046",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/qw4GrxEjykI.pt.json, segments 0:01-0:34, 6:13-7:24",
+      "entityTypes": [
+        "EVENT"
+      ],
+      "entities": [
+        "CustomEventStopOrDie"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED 8.8",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "runtime_observation",
+          "path": "a live Blood Moon Stop Or Die event, if GM-started and observed by a player this sweep"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "The last-survivor-only win condition is hardcoded engine behavior as of the 8.8 build, not visible in the static CustomEventStopOrDie.txt that CLAIM-033 already read -- whether Blood Moon is still running the exact 8.8 build (single-winner) or a later build with the promised 'everyone who crosses' behavior is unknown this session; do not assume the newer behavior without checking Blood Moon's actual installed provider version."
+    },
+    {
+      "claimId": "CLAIM-117",
+      "statement": "Stop Or Die requires a minimum of 2 players to start (cannot run solo) and has a configurable maximum player cap (demonstrated at 20); as of update 8.8 it must be manually opened by a GM via /openevent (no automatic time-of-day schedule exists for it).",
+      "sourceId": "KI-046",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/qw4GrxEjykI.pt.json, segments 0:52-1:08, 4:26-4:44, 7:04-7:24",
+      "entityTypes": [
+        "EVENT"
+      ],
+      "entities": [
+        "CustomEventStopOrDie"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED 8.8",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventStopOrDie.txt"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "The manual-start-only claim is now double-corroborated: this video states it directly from the Stop Or Die side, and CLAIM-114 already recorded the same fact stated from the companion Pandora video, both consistent with CLAIM-033's real config showing no daily-schedule field for this event on Blood Moon. The min-2/max-20 player counts themselves are not independently confirmed against Blood Moon's real file this session."
+    },
+    {
+      "claimId": "CLAIM-118",
+      "statement": "Stop Or Die's waiting-area entry gate uses the same coordinate as the vendor's existing Racer (dungeon race) event's starting-line gate -- the presenter reused that map/coordinate deliberately rather than choosing a new one.",
+      "sourceId": "KI-046",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/qw4GrxEjykI.pt.json, segments 2:33-2:54",
+      "entityTypes": [
+        "EVENT",
+        "MAP"
+      ],
+      "entities": [
+        "CustomEventStopOrDie",
+        "Racer"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED 8.8",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "A vendor demo-server layout choice (map reuse), not itself a claim about what Blood Moon configured. Cross-references CLAIM-048, which independently confirmed 'Racer' as a real, catalogued event type in Blood Moon's own StartEventXxxSyntax registry -- so both events these two demo maps refer to are real systems on Blood Moon, even though this specific shared-coordinate detail is unverified."
+    },
+    {
+      "claimId": "CLAIM-119",
+      "statement": "The vendor explicitly warns admins NOT to alter the event's phase-timing values in config, because those numbers are pre-synced to the bundled 'batatinha frita' / 'stop' audio cue files -- changing the timing without also re-syncing the audio would desync the spoken cues from the actual stop/go windows.",
+      "sourceId": "KI-046",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/qw4GrxEjykI.pt.json, segments 2:10-2:33",
+      "entityTypes": [
+        "EVENT",
+        "OPERATIONAL_WARNING"
+      ],
+      "entities": [
+        "CustomEventStopOrDie"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED 8.8",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "A generic engine/config caution applicable to any server using this event, not a Blood-Moon-specific fact. Useful only if Blood Moon admins ever consider retuning this event's pacing."
+    },
+    {
+      "claimId": "CLAIM-120",
+      "statement": "Entering Battle Royale via its entry NPC temporarily strips the player's equipped items and stat-derived status (but explicitly NOT their level or reset count, since some possible drop items carry level requirements) into safe storage, and grants a pool of stat points to redistribute for the match. All original items and status are automatically restored the moment the player leaves the event, is eliminated, or the event ends -- there is no risk of permanently losing gear by participating.",
+      "sourceId": "KI-047",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/tcPkQYfmSx4.pt.json, segments 2:24-3:38, 8:19-9:55",
+      "entityTypes": [
+        "EVENT"
+      ],
+      "entities": [
+        "CustomEventBattleRoyale"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED 4.2",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventBattleRoyale.txt"
+        },
+        {
+          "type": "runtime_observation",
+          "path": "a live Blood Moon Battle Royale event, if observed this sweep"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Hardcoded engine behavior, not previously read from a real Blood Moon config file this sweep -- no prior claim documents Blood Moon's actual CustomEventBattleRoyale.txt content, only that the event type itself is real per CLAIM-121."
+    },
+    {
+      "claimId": "CLAIM-121",
+      "statement": "Battle Royale is joined exclusively by clicking a dedicated entry NPC on the map -- there is no /participar (join) command for it, unlike most other custom events shown in this sweep.",
+      "sourceId": "KI-047",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/tcPkQYfmSx4.pt.json, segments 0:23-0:45, 2:24-2:50",
+      "entityTypes": [
+        "EVENT",
+        "COMMAND"
+      ],
+      "entities": [
+        "CustomEventBattleRoyale",
+        "JoinEvent"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED 4.2",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "GameServer/DATA/GameServerInfo - Command.dat, JoinEventXxxSyntax registry"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Direct match to CLAIM-079/CLAIM-049's Phase 6 finding that Battle Royale is confirmed ABSENT from Blood Moon's real 10-entry JoinEventXxxSyntax registry and requires NPC-click entry -- this video is independent corroboration from the vendor's own tutorial of exactly that same design."
+    },
+    {
+      "claimId": "CLAIM-122",
+      "statement": "During Battle Royale, weapon/equipment items drop randomly around the event map at a configurable interval (demonstrated at roughly once per minute) for the configured event duration (demonstrated at 3 minutes, presenter notes 10-15+ minutes is realistic for live use); the specific item pool for these drops is defined in a separate EventItemBag config entry (default demo pool: weapons, shields, and a few other categories) rather than in the main event config file. PvP damage is not enabled until the first item drop occurs.",
+      "sourceId": "KI-047",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/tcPkQYfmSx4.pt.json, segments 1:08-1:35, 2:00-2:24, 6:26-7:41",
+      "entityTypes": [
+        "EVENT",
+        "ITEM",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomEventBattleRoyale",
+        "EventItemBag"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED 4.2",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/EventItemBag.txt or equivalent, if present"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "No prior claim documents Blood Moon's actual configured item pool, drop interval, or duration for this event -- these are the vendor's own demo defaults, not confirmed live values."
+    },
+    {
+      "claimId": "CLAIM-123",
+      "statement": "GMs open Battle Royale through the same indexed /openevent-style command menu used for other events, selecting Battle Royale's numeric index from a list (the video's own on-screen example maps index '0' to Battle Royale for demonstration).",
+      "sourceId": "KI-047",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/tcPkQYfmSx4.pt.json, segments 3:38-4:38",
+      "entityTypes": [
+        "EVENT",
+        "COMMAND"
+      ],
+      "entities": [
+        "CustomEventBattleRoyale",
+        "OpenEvent"
+      ],
+      "topic": "commands",
+      "season": null,
+      "providerVersion": "ADDED 4.2",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "GameServer/DATA/GameServerInfo - CommandGM.dat, StartEventXxxSyntax registry"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Cross-references CLAIM-048's confirmed finding that 'Royale' is a real entry in Blood Moon's actual StartEventXxxSyntax registry under the /openevent system (CommandOpenEventSwitch=1, ENABLED). The specific index number '0' shown in this older (4.2-era) video's UI is illustrative only and not confirmed to match Blood Moon's current real index ordering -- indices are highly likely to have shifted across the many engine versions between ADDED 4.2 and the ADDED 8.2 GM panel documented in CLAIM-048."
+    },
+    {
+      "claimId": "CLAIM-124",
+      "statement": "Drop Npc is entered exclusively by clicking a dedicated map NPC, closing to new entrants once a GM opens the specific instance -- there is no /participar (join) command for it, matching the same NPC-only entry pattern already seen for Battle Royale.",
+      "sourceId": "KI-048",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/zzh166VKwGk.pt.json, segments 1:30-1:56, 4:18-5:34",
+      "entityTypes": [
+        "EVENT",
+        "COMMAND"
+      ],
+      "entities": [
+        "CustomEventDropNpc",
+        "JoinEvent"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "UPDATED 4.2",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "GameServer/DATA/GameServerInfo - Command.dat, JoinEventXxxSyntax registry"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Direct match to CLAIM-079/CLAIM-049's Phase 6 finding that DropNpc is confirmed ABSENT from Blood Moon's real 10-entry JoinEventXxxSyntax registry and requires NPC-click entry -- independent corroboration from this vendor tutorial."
+    },
+    {
+      "claimId": "CLAIM-125",
+      "statement": "Drop Npc is architecturally a copy of the vendor's existing Custom Arena system with 4 columns added (Map, DropX, DropY, DropRange) for the item-drop functionality; it supports up to roughly 30 independently configured event instances across different maps (demonstrated as 'Drop 01' selected from an /openevent index list), and each instance's entry NPC must be separately registered as an NPC (not a monster) in Monster.txt, with the map/coordinates matching exactly between that registration and the event's own Data/Custom config -- a mismatch there silently breaks the NPC.",
+      "sourceId": "KI-048",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/zzh166VKwGk.pt.json, segments 0:21-1:04, 2:12-2:38",
+      "entityTypes": [
+        "EVENT",
+        "CONFIG",
+        "OPERATIONAL_WARNING"
+      ],
+      "entities": [
+        "CustomEventDropNpc",
+        "CustomArena"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "UPDATED 4.2",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Vendor engine architecture/config-setup fact, not itself a claim about which of the ~30 possible instances Blood Moon actually has configured or how many. The NPC/Monster.txt coordinate-match requirement is a genuine operational footgun worth flagging for anyone administering this event on Blood Moon."
+    },
+    {
+      "claimId": "CLAIM-126",
+      "statement": "During Drop Npc, items drop on a timed schedule within the event's total duration (demonstrated: drops occur roughly in the first 0-60 seconds of a 3-minute round, tapering off, with no further drops in the final minute); dropped items can be configured with limited durability/duration and automatically disappear once that time elapses; players can fight each other for drops, but PvP damage is locked during the pre-round waiting phase and only unlocks once the timed round itself begins (not merely upon entering the waiting area).",
+      "sourceId": "KI-048",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/zzh166VKwGk.pt.json, segments 2:56-4:18, 5:34-6:39",
+      "entityTypes": [
+        "EVENT",
+        "ITEM"
+      ],
+      "entities": [
+        "CustomEventDropNpc"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "UPDATED 4.2",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventDropNpc.txt"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "No prior claim documents Blood Moon's real configured drop schedule, item durability settings, or which of the (up to 30) possible instances are actually deployed. The lobby-locked/round-unlocked PvP pattern is now consistent with CLAIM-113 (Pandora) and CLAIM-122 (Battle Royale) -- likely a shared engine-wide convention across this vendor's PvP-style events, still not independently confirmed against Blood Moon runtime."
+    },
+    {
+      "claimId": "CLAIM-127",
+      "statement": "Drop Npc kill counts and item pickups are both recorded to a ranking that is written to the SQL database, explicitly so a server operator can surface it on their own website -- this is presented as a built-in website-integration hook, not just an in-game display.",
+      "sourceId": "KI-048",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/zzh166VKwGk.pt.json, segments 2:56-3:17",
+      "entityTypes": [
+        "EVENT",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomEventDropNpc"
+      ],
+      "topic": "systems",
+      "season": null,
+      "providerVersion": "UPDATED 4.2",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Generic vendor tooling/website-integration capability, not gameplay content -- whether Blood Moon's own website actually surfaces this ranking table is unknown and out of scope for this sweep."
+    },
+    {
+      "claimId": "CLAIM-128",
+      "statement": "Drop Npc's player capacity is configurable with a demonstrated minimum of 2 and maximum of 100; the presenter notes the minimum can technically be set to 1 but advises against it since a PvP-style event with only one participant has nothing to fight.",
+      "sourceId": "KI-048",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/zzh166VKwGk.pt.json, segments 3:59-4:18",
+      "entityTypes": [
+        "EVENT"
+      ],
+      "entities": [
+        "CustomEventDropNpc"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "UPDATED 4.2",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventDropNpc.txt"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Demo default values, not confirmed to match whatever Blood Moon's own deployed instance(s), if any, actually use."
+    },
+    {
+      "claimId": "CLAIM-129",
+      "statement": "BBB is a trivia/Q&A event joined by typing /participar bbb, which teleports the player into a dedicated event map/coordinate -- but this command only works once the event round has actually started, not during the pre-start countdown window (typing it during the 'starts in 2 minutes' announcement does nothing).",
+      "sourceId": "KI-049",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/7S-GtB91E6Y.pt.json, segments 3:04-4:16",
+      "entityTypes": [
+        "EVENT",
+        "COMMAND"
+      ],
+      "entities": [
+        "CustomEventBBB",
+        "JoinEvent"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "GameServer/DATA/GameServerInfo - Command.dat, JoinEventXxxSyntax registry"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Cross-references CLAIM-049's Phase 6 finding that 'BBB' is one of the real, populated 10 entries in Blood Moon's actual JoinEventXxxSyntax registry -- unlike Battle Royale/DropNpc (NPC-only, CLAIM-121/CLAIM-124), BBB really is /participar-joinable on Blood Moon, matching this video exactly."
+    },
+    {
+      "claimId": "CLAIM-130",
+      "statement": "Answering the configured question incorrectly permanently eliminates the player from that round of BBB -- the event server explicitly rejects repeated re-entry attempts with an 'already disqualified' message, demonstrated live across many repeated tries, not just a one-time kick.",
+      "sourceId": "KI-049",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/7S-GtB91E6Y.pt.json, segments 1:19-1:39, 5:20-5:39",
+      "entityTypes": [
+        "EVENT"
+      ],
+      "entities": [
+        "CustomEventBBB"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventBBB.txt"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Hardcoded engine behavior, not confirmed against Blood Moon's actual deployed question set or runtime -- no prior claim documents Blood Moon's real CustomEventBBB.txt content."
+    },
+    {
+      "claimId": "CLAIM-131",
+      "statement": "BBB supports independently toggleable currency and item rewards for the winner (the item reward drawing from the same EventItemBag mechanism the presenter says is shared with the Quiz event), and every player-facing event message (elimination text, victory text, prompts) is a configurable, freely editable string.",
+      "sourceId": "KI-049",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/7S-GtB91E6Y.pt.json, segments 0:00-0:53, 6:10-6:31",
+      "entityTypes": [
+        "EVENT",
+        "ITEM",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomEventBBB",
+        "EventItemBag",
+        "CustomEventQuiz"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventBBB.txt"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Confirms BBB and Quiz share the same EventItemBag item-reward mechanism at the engine level (relevant when the Quiz video, HmagyvjHllU, is processed) -- but Blood Moon's actual configured reward amounts/items for BBB are unverified."
+    },
+    {
+      "claimId": "CLAIM-132",
+      "statement": "The event map shown in this demo is a custom client-side map the presenter personally downloaded from the internet and installed into his own test client/server -- he states he will link the download in a different video's description, making clear this specific map is his own creative addition, not a stock asset shipped with the vendor engine.",
+      "sourceId": "KI-049",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/7S-GtB91E6Y.pt.json, segments 2:19-2:39",
+      "entityTypes": [
+        "MAP"
+      ],
+      "entities": [
+        "CustomEventBBB"
+      ],
+      "topic": "maps",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Explicitly the tutorial creator's own personal demo setup, not vendor-shipped content and not a claim about what map Blood Moon uses for its own BBB event, if any."
+    },
+    {
+      "claimId": "CLAIM-133",
+      "statement": "Unlike BBB (CLAIM-129, which requires physically entering a dedicated event map via /participar bbb), Quiz is a global broadcast trivia event with no physical join step at all -- the question is announced to all online players wherever they are, and anyone can answer directly via a chat command without first moving to any location.",
+      "sourceId": "KI-050",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/HmagyvjHllU.pt.json, segments 0:00-0:24, 3:39-4:27",
+      "entityTypes": [
+        "EVENT",
+        "COMMAND"
+      ],
+      "entities": [
+        "CustomEventQuiz",
+        "JoinEvent"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "GameServer/DATA/GameServerInfo - Command.dat, JoinEventXxxSyntax registry"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Corroborated by absence: CLAIM-049's Phase 6 read of Blood Moon's real JoinEventXxxSyntax registry lists exactly 10 entries and 'Quiz' is NOT among them -- consistent with this video's claim that Quiz has no physical join step needing a registered join-command syntax, unlike BBB, TvT, StopOrDie, Pandora, etc. which are all present in that list."
+    },
+    {
+      "claimId": "CLAIM-134",
+      "statement": "Quiz is won by whichever player answers correctly first (a speed contest, not an elimination contest); an incorrect answer is simply rejected with a 'wrong answer' message and the player may keep guessing again immediately -- there is no permanent disqualification for a wrong guess, in direct contrast to BBB's confirmed permanent-elimination-on-wrong-answer rule (CLAIM-130).",
+      "sourceId": "KI-050",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/HmagyvjHllU.pt.json, segments 0:00-0:24, 4:51-5:16",
+      "entityTypes": [
+        "EVENT"
+      ],
+      "entities": [
+        "CustomEventQuiz",
+        "CustomEventBBB"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventQuiz.txt"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Hardcoded engine behavior contrasting two sibling events; no prior claim documents Blood Moon's actual CustomEventQuiz.txt content or confirms this exact scoring rule against Blood Moon's runtime."
+    },
+    {
+      "claimId": "CLAIM-135",
+      "statement": "Quiz supports 4 currency reward options (Cash, Gold, WCoin, GoblinPoint) plus an optional item reward via the same EventItemBag mechanism used by BBB (CLAIM-131), with the question text randomly selected each run from a configured pool of multiple question/answer pairs; if no one answers correctly before the round's timer expires, no reward is given and the event simply becomes eligible to announce a different question next time.",
+      "sourceId": "KI-050",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/HmagyvjHllU.pt.json, segments 0:24-2:27, 5:16-5:37",
+      "entityTypes": [
+        "EVENT",
+        "ITEM",
+        "CURRENCY",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomEventQuiz",
+        "EventItemBag"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventQuiz.txt"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Blood Moon's actual configured question pool, reward currency choice, and amounts are unverified this session -- 'Quiz' itself is confirmed as a real event type via CLAIM-048's StartEventXxxSyntax registry read, but its specific content is not."
+    },
+    {
+      "claimId": "CLAIM-136",
+      "statement": "In Hide And Seek, a GM hides their character somewhere on the map and players must physically locate that character and successfully open a trade window with them to win -- attacking or NPC interaction are not the win condition, finding-and-trading is. The moment a player successfully trades with the hidden GM, the event auto-announces the winner server-wide and drops the reward item on the ground for them.",
+      "sourceId": "KI-051",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/Q7lb3HJ-iBs.pt.json, segments 0:00-0:34, 1:22-2:19",
+      "entityTypes": [
+        "EVENT"
+      ],
+      "entities": [
+        "CustomEventHideAndSeek"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventHideAndSeek.txt, if present"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "No prior claim documents Blood Moon's actual configured Hide And Seek content or confirms this find-and-trade mechanic against Blood Moon's runtime -- the trade-based win condition is hardcoded engine behavior, not visible in any config file."
+    },
+    {
+      "claimId": "CLAIM-137",
+      "statement": "A GM starts Hide And Seek via the same indexed /openevent-style command used for other events (demonstrated as /abrirevento 0 'esconde-esconde'), with a configurable duration (demonstrated at 10 minutes).",
+      "sourceId": "KI-051",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/Q7lb3HJ-iBs.pt.json, segments 1:22-1:53",
+      "entityTypes": [
+        "EVENT",
+        "COMMAND"
+      ],
+      "entities": [
+        "CustomEventHideAndSeek",
+        "OpenEvent"
+      ],
+      "topic": "commands",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "GameServer/DATA/GameServerInfo - CommandGM.dat, StartEventXxxSyntax registry"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Cross-references CLAIM-048's confirmed finding that 'HideAndSeek' is a real entry in Blood Moon's actual StartEventXxxSyntax registry (CommandOpenEventSwitch=1, ENABLED) -- the demonstrated duration value itself is not confirmed to match Blood Moon's real config."
+    },
+    {
+      "claimId": "CLAIM-138",
+      "statement": "Hide And Seek supports independently toggleable currency and item rewards that can both be enabled simultaneously for the same win (not mutually exclusive), with the reward log visible in the server's own admin/console output.",
+      "sourceId": "KI-051",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/Q7lb3HJ-iBs.pt.json, segments 0:34-1:22, 2:19-2:51",
+      "entityTypes": [
+        "EVENT",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomEventHideAndSeek"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Audio quality on the exact demonstrated reward amounts is degraded (numbers spoken sound like '11, 21, 31' but are not reliably transcribable) -- deliberately not recorded as a specific value claim to avoid fabricating precision the source doesn't actually support."
+    },
+    {
+      "claimId": "CLAIM-139",
+      "statement": "Run And Catch ('pega-pega'/tag) is a PvP elimination event where a single hit landed on another participant instantly eliminates that player (moving them out of the event area, to Lorencia) -- no health bar or multi-hit exchange is needed, just one successful tap. The last remaining un-tagged player wins and receives the configured reward.",
+      "sourceId": "KI-052",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/ZEsn5eEg3AI.pt.json, segments 1:16-2:32, 3:03-3:29",
+      "entityTypes": [
+        "EVENT"
+      ],
+      "entities": [
+        "CustomEventRunAndCatch"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventRunAndCatch.txt, if present"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "One-hit-elimination is hardcoded engine behavior, not visible in any config text file -- no prior claim documents Blood Moon's real CustomEventRunAndCatch.txt content or confirms this mechanic against Blood Moon's runtime."
+    },
+    {
+      "claimId": "CLAIM-140",
+      "statement": "Run And Catch is opened by a GM via the indexed /openevent command and joined by players via /participar, with configurable minimum GM-command permission, a join-window duration, and a maximum overall event duration.",
+      "sourceId": "KI-052",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/ZEsn5eEg3AI.pt.json, segments 0:00-0:24, 1:16-1:57",
+      "entityTypes": [
+        "EVENT",
+        "COMMAND"
+      ],
+      "entities": [
+        "CustomEventRunAndCatch",
+        "OpenEvent",
+        "JoinEvent"
+      ],
+      "topic": "commands",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "GameServer/DATA/GameServerInfo - Command.dat, StartEventXxxSyntax and JoinEventXxxSyntax registries"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Cross-references CLAIM-048 and CLAIM-049's Phase 6 findings that 'RunAndCatch' is a real, populated entry in BOTH Blood Moon's actual StartEventXxxSyntax and JoinEventXxxSyntax registries -- one of the events joinable by command rather than requiring an NPC, matching this video exactly."
+    },
+    {
+      "claimId": "CLAIM-141",
+      "statement": "Run And Catch's currency reward config offers a choice among 3 currency options and an independently toggleable item reward; the presenter states this same reward-toggle option was added in the same update batch to Absorption and Russian Roulette as well.",
+      "sourceId": "KI-052",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/ZEsn5eEg3AI.pt.json, segments 0:24-1:00",
+      "entityTypes": [
+        "EVENT",
+        "CONFIG",
+        "CURRENCY"
+      ],
+      "entities": [
+        "CustomEventRunAndCatch",
+        "CustomEventAbsorption",
+        "CustomEventRussianRoulette"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Useful forward cross-link: confirms the Absorption and Russian Roulette videos in this same sweep batch should show a structurally similar reward-toggle config, per the vendor's own stated release notes. Exact currency identities (which 3 options) are not clearly transcribable from this segment's audio."
+    },
+    {
+      "claimId": "CLAIM-142",
+      "statement": "NpcCrazy is not a competitive PvP/PvE event but a scheduled temporary-shop system: at a configured day/time, a shop NPC (with its own item catalog, configured the same way as a normal vendor NPC, and clonable/duplicable to sell different item sets) spawns at a chosen map/coordinate, remains purchasable for a configured duration (demonstrated at 1 minute), and then automatically despawns -- after which nothing can be bought from it until its next scheduled occurrence.",
+      "sourceId": "KI-053",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/GQpifIFKxWA.pt.json, segments 0:00-0:55, 2:31-3:42, 5:33-6:33",
+      "entityTypes": [
+        "SYSTEM",
+        "NPC"
+      ],
+      "entities": [
+        "CustomNpcCrazy"
+      ],
+      "topic": "systems",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomNpcCrazy.txt, if present"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "No prior claim documents Blood Moon's real CustomNpcCrazy.txt content, whether this feature is even enabled, or what it sells if so."
+    },
+    {
+      "claimId": "CLAIM-143",
+      "statement": "NpcCrazy is built as an extension of the existing Invasion Manager scheduling system -- it reuses Invasion Manager's sequence/index numbering to reserve a slot (demonstrated as index 10) and draws its spawn/despawn announcement text from Invasion Manager's pool of ~100 reserved message-string slots (documented range 680-779) -- rather than being registered as its own independent GM-triggerable event.",
+      "sourceId": "KI-053",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/GQpifIFKxWA.pt.json, segments 1:20-1:41, 3:42-4:04",
+      "entityTypes": [
+        "SYSTEM",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomNpcCrazy",
+        "InvasionManager"
+      ],
+      "topic": "systems",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "GameServer/DATA/GameServerInfo - CommandGM.dat, StartEventXxxSyntax registry"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Corroborated by absence: CLAIM-048's Phase 6 read of Blood Moon's real StartEventXxxSyntax registry lists 31 entries including 'InvasionManager' itself, but NOT 'NpcCrazy' -- consistent with this video's claim that NpcCrazy is a schedule-only extension of Invasion Manager rather than its own /openevent-triggerable event."
+    },
+    {
+      "claimId": "CLAIM-144",
+      "statement": "The presenter explicitly frames NpcCrazy as a flexible admin-automation tool -- not a single fixed event but a template server operators can duplicate and rename to run any number of independent, differently-themed scheduled 'special shop' mini-events -- specifically so an admin does not need to be online at the trigger time; it fires automatically per its configured schedule.",
+      "sourceId": "KI-053",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/GQpifIFKxWA.pt.json, segments 0:32-0:55, 6:33-7:12",
+      "entityTypes": [
+        "SYSTEM"
+      ],
+      "entities": [
+        "CustomNpcCrazy"
+      ],
+      "topic": "systems",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "A vendor design-philosophy/admin-tooling statement, not a claim about what Blood Moon has actually configured with this tool, if anything."
+    },
+    {
+      "claimId": "CLAIM-145",
+      "statement": "Absorption uses the exact same underlying random-elimination mechanic as Russian Roulette (explicitly stated by the presenter as sharing 'the same pattern'): each round, one participant is randomly selected from those remaining and either eliminated ('absorbed', moved to Lorencia) or spared, with the elimination odds becoming roughly 50/50 as the field narrows to 2 players. The last player never absorbed wins the configured Cash/Gold/PcPoint reward (demonstrated as 10/10/10).",
+      "sourceId": "KI-054",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/xL2edt5ePkw.pt.json, segments 0:00-0:44, 2:10-3:46",
+      "entityTypes": [
+        "EVENT"
+      ],
+      "entities": [
+        "CustomEventAbsorption",
+        "CustomEventRussianRoulette"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventAbsorption.txt, if present"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Hardcoded random-elimination engine behavior, not visible in a static config file -- no prior claim documents Blood Moon's real CustomEventAbsorption.txt content. The claimed identical mechanic with Russian Roulette should be checked against that video (cBkzq54U_xU) when processed for consistency."
+    },
+    {
+      "claimId": "CLAIM-146",
+      "statement": "Absorption is opened by a GM via a (renameable) /openevent-style command and joined by players via a (renameable) /participar command, with all in-event announcement messages independently configurable text strings.",
+      "sourceId": "KI-054",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/xL2edt5ePkw.pt.json, segments 1:09-1:42, 2:46-2:46",
+      "entityTypes": [
+        "EVENT",
+        "COMMAND"
+      ],
+      "entities": [
+        "CustomEventAbsorption",
+        "OpenEvent",
+        "JoinEvent"
+      ],
+      "topic": "commands",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "GameServer/DATA/GameServerInfo - Command.dat, StartEventXxxSyntax and JoinEventXxxSyntax registries"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Cross-references CLAIM-048 and CLAIM-049's Phase 6 findings that 'Absorption' is a real, populated entry in BOTH Blood Moon's actual StartEventXxxSyntax and JoinEventXxxSyntax registries -- confirms this event really is both GM-startable and player-joinable by command on Blood Moon, matching this video."
+    },
+    {
+      "claimId": "CLAIM-147",
+      "statement": "Russian Roulette is not a passive/automatic randomizer -- the GM must manually target and /trade a specific remaining participant each round to trigger that player's elimination check ('spinning the cylinder'); a survived trade leaves that player in and the GM moves to another remaining player, repeating round by round until only one player is left as the winner. The presenter states survival odds shrink as more players remain in a given round (explicitly: roughly 50% with 2 players left, lower with 3, lower still beyond that).",
+      "sourceId": "KI-055",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/cBkzq54U_xU.pt.json, segments 3:12-4:29, 5:16-5:47",
+      "entityTypes": [
+        "EVENT"
+      ],
+      "entities": [
+        "CustomEventRussianRoulette",
+        "CustomEventAbsorption"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventRussianRoulette.txt, if present"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Refines CLAIM-145 (Absorption), which described the sibling mechanic more loosely as 'random selection' -- this video makes clear the GM's manual /trade action is what actually triggers each round's elimination check for both events, not a passive background randomizer. Hardcoded engine behavior, not visible in any static config file."
+    },
+    {
+      "claimId": "CLAIM-148",
+      "statement": "Russian Roulette requires a minimum of 2 participants to run -- the video demonstrates that attempting to start the event with only 1 player results in the event being automatically cancelled -- with a configurable maximum (demonstrated at 10).",
+      "sourceId": "KI-055",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/cBkzq54U_xU.pt.json, segments 1:47-2:44",
+      "entityTypes": [
+        "EVENT"
+      ],
+      "entities": [
+        "CustomEventRussianRoulette"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventRussianRoulette.txt, if present"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Consistent with the same minimum-2-players pattern already observed for Drop Npc (CLAIM-128) and Stop Or Die (CLAIM-117) -- likely a shared engine-wide convention for this vendor's multiplayer elimination events, not independently confirmed for this specific event on Blood Moon."
+    },
+    {
+      "claimId": "CLAIM-149",
+      "statement": "Russian Roulette is opened by a GM via a (renameable) /openevent-style command and joined by players via a (renameable) /participar command.",
+      "sourceId": "KI-055",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/cBkzq54U_xU.pt.json, segments 0:51-1:15, 1:47-2:44",
+      "entityTypes": [
+        "EVENT",
+        "COMMAND"
+      ],
+      "entities": [
+        "CustomEventRussianRoulette",
+        "OpenEvent",
+        "JoinEvent"
+      ],
+      "topic": "commands",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "GameServer/DATA/GameServerInfo - Command.dat, StartEventXxxSyntax and JoinEventXxxSyntax registries"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Cross-references CLAIM-048 and CLAIM-049's Phase 6 findings that 'Russian' (Russian Roulette) is a real, populated entry in BOTH Blood Moon's actual StartEventXxxSyntax and JoinEventXxxSyntax registries."
+    },
+    {
+      "claimId": "CLAIM-150",
+      "statement": "The presenter recommends hosting Russian Roulette on a map with no return path after death (citing Lost Tower as an example) so eliminated players cannot wander back into the event area -- he notes this is only a tidiness recommendation, not a functional requirement, since an eliminated player physically re-entering the area has no gameplay effect (they're already excluded from the participant/elimination tracking regardless of location).",
+      "sourceId": "KI-055",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/cBkzq54U_xU.pt.json, segments 6:12-6:33",
+      "entityTypes": [
+        "EVENT",
+        "MAP"
+      ],
+      "entities": [
+        "CustomEventRussianRoulette"
+      ],
+      "topic": "maps",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "A vendor admin best-practice tip, not a claim about which map Blood Moon actually uses for its own Russian Roulette instance, if any."
+    },
+    {
+      "claimId": "CLAIM-151",
+      "statement": "When TvT starts, the server automatically splits all waiting participants evenly into two teams (e.g. 10 players -> 5 per side) and moves each team to its own separate spawn gate/coordinate so the two teams do not spawn together. Players who die can respawn and keep fighting (death is not permanent elimination, unlike Run And Catch/Absorption/Russian Roulette); the winner is whichever team accumulates more kill points by the time the event ends, and every member of the winning team -- not just a single MVP -- receives the configured reward.",
+      "sourceId": "KI-056",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/h_6b8VC85ok.pt.json, segments 1:45-2:06, 5:15-5:48, 6:34-8:34",
+      "entityTypes": [
+        "EVENT"
+      ],
+      "entities": [
+        "CustomEventTvT"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventTvT.txt, if present"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Hardcoded engine behavior, not visible in any static config file -- no prior claim documents Blood Moon's real CustomEventTvT.txt content. Distinct win-condition family from the other events in this sweep (points/kills-based team scoring rather than elimination or first-correct-answer)."
+    },
+    {
+      "claimId": "CLAIM-152",
+      "statement": "TvT's entry requirement can include a specific item and quantity the player must hold to join (in addition to the usual level/reset/master-reset/class filters seen on other events), and the event supports BOTH an automatic scheduled start time AND a GM-triggered immediate manual start at the same time -- a GM can force-start the event early even while it has a future scheduled time configured, without disabling that schedule.",
+      "sourceId": "KI-056",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/h_6b8VC85ok.pt.json, segments 1:19-1:45, 2:29-2:48",
+      "entityTypes": [
+        "EVENT",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomEventTvT"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventTvT.txt, if present"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Notable contrast with Stop Or Die, which per CLAIM-114/CLAIM-117 has NO automatic schedule at all (manual-only) as of update 8.8 -- TvT (an older, pre-8.x feature) supports both modes simultaneously, showing schedule-vs-manual support varies per event rather than being a fixed engine-wide rule."
+    },
+    {
+      "claimId": "CLAIM-153",
+      "statement": "TvT is opened by a GM via a (renameable) /openevent tvt command and joined by players via a (renameable) /participar command.",
+      "sourceId": "KI-056",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/h_6b8VC85ok.pt.json, segments 3:16-3:47, 4:11-4:32",
+      "entityTypes": [
+        "EVENT",
+        "COMMAND"
+      ],
+      "entities": [
+        "CustomEventTvT",
+        "OpenEvent",
+        "JoinEvent"
+      ],
+      "topic": "commands",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "GameServer/DATA/GameServerInfo - Command.dat, StartEventXxxSyntax and JoinEventXxxSyntax registries"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Cross-references CLAIM-048 and CLAIM-049's Phase 6 findings that 'TvT' is a real, populated entry in BOTH Blood Moon's actual StartEventXxxSyntax and JoinEventXxxSyntax registries."
+    },
+    {
+      "claimId": "CLAIM-154",
+      "statement": "TvT requires a minimum of 2 players to run, with a configurable maximum the presenter states is hard-capped by the game server at 40 total participants (20 per team) -- he sets the demo's max to 20 total (10 per team) as a lower, more conservative default.",
+      "sourceId": "KI-056",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/h_6b8VC85ok.pt.json, segments 8:55-9:32",
+      "entityTypes": [
+        "EVENT"
+      ],
+      "entities": [
+        "CustomEventTvT"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomEventTvT.txt, if present"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "The 40-user ceiling is described as a GameServer-level engine limit, not specific to Blood Moon's own configuration choice; Blood Moon's actual configured max for TvT (if this event is even deployed there) is unverified."
+    },
+    {
+      "claimId": "CLAIM-155",
+      "statement": "This video's 'Mata-Mata' event is architecturally UNRELATED to the separately-confirmed dedicated 'Kill All Event (Mata-Mata Geral)' system documented in CLAIM-024/025/026 (EventKillAllSwitch, StartEventKillAllSyntax=PvPAll) -- it is instead one configurable preset within the generic Custom Arena system (CustomArena.txt), alongside sibling presets 'Sobrevivência' (Survival) and 'Resta 1' (Last One Standing) created in the very same batch. Both vendor features happen to share the Portuguese name 'Mata-Mata' in different materials, but are two distinct systems with separate config files and separate command registrations.",
+      "sourceId": "KI-057",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/orGfLJpTEug.pt.json, segments 0:00-0:46, 2:31-3:09",
+      "entityTypes": [
+        "EVENT",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomArena",
+        "CustomEventPvpAll"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (2019, pre-8.x era)",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "A deliberate disambiguation flag for future sweep work: do not conflate this video's Custom-Arena-based 'Mata-Mata' preset with the dedicated Kill All Event system just because both are called 'Mata-Mata' in Portuguese vendor material -- they are different features with different real config sections."
+    },
+    {
+      "claimId": "CLAIM-156",
+      "statement": "Custom Arena supports up to roughly 30 independently configured event instances (this video pre-creates the first 10, index 0-9); each instance carries its own win-condition preset -- 'Mata-Mata' (no death limit, most kills by the time duration ends wins), 'Sobrevivência' (3 deaths eliminates a player from that round), 'Resta 1' (a single death eliminates a player -- literally 'only 1 remains'), plus same-class-restricted variants -- and each can independently set its own schedule, level/reset/master-reset/class entry requirements, and reward (currency + a configurable buff-item 'effect' + a direct item payout).",
+      "sourceId": "KI-057",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/orGfLJpTEug.pt.json, segments 0:00-2:13",
+      "entityTypes": [
+        "EVENT",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomArena"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (2019, pre-8.x era)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "GameServer/DATA/GameServerInfo - CommandGM.dat, StartEventXxxSyntax registry"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Cross-references CLAIM-048's Phase 6 finding, which independently confirmed Blood Moon's real GM panel exposes '10 town Arenas (index 0-9)' -- an exact match to this video's demonstrated 10 pre-created Arena instances (index 0-9), strong evidence the same underlying Custom Arena architecture is deployed and enabled on Blood Moon. The specific win-condition preset assigned to each of Blood Moon's own 10 indices, and their individual reward values, remain unverified."
+    },
+    {
+      "claimId": "CLAIM-157",
+      "statement": "Starting a Custom Arena instance requires GM permission checked server-side against entries in GameMaster.txt (not merely a hidden client-side menu option), via a command requiring an explicit numeric index argument (e.g. /arena 1) -- omitting the index causes the command to fail to parse correctly rather than defaulting to a sensible instance.",
+      "sourceId": "KI-057",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/orGfLJpTEug.pt.json, segments 3:33-4:54",
+      "entityTypes": [
+        "EVENT",
+        "COMMAND",
+        "OPERATIONAL_WARNING"
+      ],
+      "entities": [
+        "CustomArena"
+      ],
+      "topic": "commands",
+      "season": null,
+      "providerVersion": "ADDED (2019, pre-8.x era)",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Generic engine command-syntax/permission-architecture fact, not itself a Blood-Moon-specific claim, though relevant to any Blood Moon GM using this command."
+    },
+    {
+      "claimId": "CLAIM-158",
+      "statement": "A Custom Arena winner must have at least one empty inventory slot to actually receive the configured item reward -- the video shows an explicit in-game message stating the inventory needs to be empty (or have space) for the item payout to succeed, implying a full inventory can cause the item portion of the reward to fail even though the win itself is still recorded.",
+      "sourceId": "KI-057",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/orGfLJpTEug.pt.json, segments 7:18-7:44",
+      "entityTypes": [
+        "EVENT",
+        "ITEM",
+        "OPERATIONAL_WARNING"
+      ],
+      "entities": [
+        "CustomArena"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (2019, pre-8.x era)",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "A generic engine reward-delivery quirk worth flagging for a player-facing help note ('keep inventory space free before finishing an Arena event'), not itself a claim about Blood Moon's specific configuration."
+    },
+    {
+      "claimId": "CLAIM-159",
+      "statement": "The presenter notes several MU Online classes are only available starting at specific vendor client/season versions -- Rage Fighter only from Season 16, Summoner only from Season 14+, and a further class only from Season 12+ (also present in a 'Season 99' custom build) -- relevant context for which classes a Custom Arena same-class-restricted preset can actually support on a given server build.",
+      "sourceId": "KI-057",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/orGfLJpTEug.pt.json, segments 0:24-0:46",
+      "entityTypes": [
+        "CLASS"
+      ],
+      "entities": [
+        "Rage Fighter",
+        "Summoner"
+      ],
+      "topic": "systems",
+      "season": null,
+      "providerVersion": null,
+      "bloodMoonStatus": "UPSTREAM_MU",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO (LOW -- the third class name and 'Season 99' reference are poorly transcribed by ASR and not confidently identifiable)",
+      "notes": "Generic MU Online class/season-availability lore, unrelated to any Blood-Moon-specific configuration choice. Included only as background context for interpreting Custom Arena's class-restricted presets; not a claim about which classes Blood Moon itself has enabled."
+    },
+    {
+      "claimId": "CLAIM-160",
+      "statement": "A server-wide 'Custom HP Bar Type' switch controls monster HP-bar display in 3 modes: 0 disables HP bars entirely (no monster shows one), 1 is the classic default -- a plain black bar shown above every single monster on screen -- and 2 is an alternate bar style that visually empties/changes color as the monster loses HP; the presenter states mode 2 is essentially never used by any server operator he's aware of.",
+      "sourceId": "KI-058",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/ras-LWKglMM.pt.json, segments 1:01-1:46",
+      "entityTypes": [
+        "MONSTER",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomMonsterHP"
+      ],
+      "topic": "monsters",
+      "season": null,
+      "providerVersion": "ADDED 8.8",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "GameServer/DATA/GameServerInfo.dat or equivalent, 'Custom HP Bar Type' field"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Which of the 3 modes Blood Moon actually has set is unverified this session -- no prior claim documents this specific config field's value."
+    },
+    {
+      "claimId": "CLAIM-161",
+      "statement": "New in update 8.8: a monster-index whitelist (CustomMonsterHP config, listed by sequential index -> MonsterClass number) lets an admin restrict the classic HP bar to specific monsters only -- typically bosses -- instead of showing it on every monster server-wide; the presenter cites player complaints that dense monster clusters with HP bars on every unit made it hard to see/click dropped items on the ground as the motivating reason. Bar position auto-adjusts based on monster sprite size (small monsters show the bar above their sprite, large monsters show it centered lower on their sprite), and both the filled and background bar colors are independently customizable.",
+      "sourceId": "KI-058",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/ras-LWKglMM.pt.json, segments 0:01-0:38, 1:46-2:32, 3:39-4:40",
+      "entityTypes": [
+        "MONSTER",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomMonsterHP"
+      ],
+      "topic": "monsters",
+      "season": null,
+      "providerVersion": "ADDED 8.8",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomMonsterHP.txt, if present"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "No prior claim documents Blood Moon's real CustomMonsterHP.txt content or whether this whitelist feature is even enabled there. The item-pickup-interference complaint is a plausible, concrete player-facing motivation worth keeping in mind for support content even without config confirmation."
+    },
+    {
+      "claimId": "CLAIM-162",
+      "statement": "The video's demo whitelist configures exactly 2 boss-tier monsters to show the HP bar: Kundun (MonsterClass 275) and Selupan (MonsterClass 459).",
+      "sourceId": "KI-058",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/ras-LWKglMM.pt.json, segments 2:10-2:32, 2:55-3:16",
+      "entityTypes": [
+        "MONSTER",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomMonsterHP",
+        "Kundun",
+        "Selupan"
+      ],
+      "topic": "monsters",
+      "season": null,
+      "providerVersion": "ADDED 8.8",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomMonsterHP.txt, if present"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Kundun (MonsterClass 275) is already independently confirmed as a real Blood Moon boss via CLAIM-096 (CustomMonsterTime.txt, spawning on Map 36) -- a plausible, natural candidate for a bosses-only HP-bar whitelist -- but that claim is about a different config file (monster scheduling, not HP-bar display), so it does NOT confirm Blood Moon actually has this specific HP-bar whitelist entry configured. Kept at BLOODMOON_LIKELY rather than CONFIRMED to avoid conflating the two separate config systems."
+    },
+    {
+      "claimId": "CLAIM-163",
+      "statement": "Custom Monster Time adds a new tab to the player-facing H-key info panel specifically for fixed-respawn-timer world bosses (e.g. Dark Elf, Erohim, Kalima-area Kundun) that don't otherwise appear anywhere in that panel, unlike scheduled castle-family events or invasion-style monsters which already announce themselves. A tracked boss's countdown only starts appearing once a player actually kills it for the first time since the last server restart -- the underlying respawn duration is read from that monster's own existing regen-time column in Monster.txt (converted from seconds), not re-entered separately. This countdown state is NOT persistent: it resets to empty on server restart or a monster/data reload, since nothing has 'died' yet in the new session.",
+      "sourceId": "KI-059",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/BaAxyG7Pio8.pt.json, segments 0:01-1:00, 5:05-6:37, 7:14-7:52",
+      "entityTypes": [
+        "MONSTER",
+        "SYSTEM"
+      ],
+      "entities": [
+        "CustomMonsterTime"
+      ],
+      "topic": "monsters",
+      "season": null,
+      "providerVersion": "ADDED 7.1",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "runtime_observation",
+          "path": "the H-key panel's boss-timer tab on a live Blood Moon session, if observed this sweep"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "The underlying CustomMonsterTime.txt monster-to-map mapping is already independently confirmed real for Blood Moon via CLAIM-096, but this claim is specifically about the H-key UI/countdown mechanism layered on top of that file, which is hardcoded engine behavior not visible in the static config -- not independently confirmed against Blood Moon's runtime this session."
+    },
+    {
+      "claimId": "CLAIM-164",
+      "statement": "Custom Monster Time is defined across two index-aligned config sections that must stay in sync: a GameServerInfo 'Custom Event Time' registry (extended from 55 to 70 total slots as of update 7.1, i.e. 15 new slots added) that sets each slot's display name for the H-key tab, and a separate Custom Monster Time file using the same index numbers to map each slot to an actual MonsterClass number -- an admin only needs to fill in the monster class per index; the index numbers themselves are fixed and should not be edited.",
+      "sourceId": "KI-059",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/BaAxyG7Pio8.pt.json, segments 1:18-1:44, 2:23-3:21",
+      "entityTypes": [
+        "MONSTER",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomMonsterTime"
+      ],
+      "topic": "monsters",
+      "season": null,
+      "providerVersion": "ADDED 7.1",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Generic engine config architecture, not itself a claim about which of the 70 possible slots Blood Moon has actually populated (CLAIM-096 already shows only 5 active + 2 commented rows are configured, well under the 70-slot ceiling)."
+    },
+    {
+      "claimId": "CLAIM-165",
+      "statement": "Selupan is deliberately excluded from Custom Monster Time's default tracked-boss preset, because its invasion spawn already broadcasts a server-wide announcement to all players when it appears, making a separate respawn countdown redundant for that specific monster.",
+      "sourceId": "KI-059",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/BaAxyG7Pio8.pt.json, segments 1:44-2:23",
+      "entityTypes": [
+        "MONSTER"
+      ],
+      "entities": [
+        "CustomMonsterTime",
+        "Selupan"
+      ],
+      "topic": "monsters",
+      "season": null,
+      "providerVersion": "ADDED 7.1",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomMonsterTime.txt"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Directly corroborated by CLAIM-096: Blood Moon's real CustomMonsterTime.txt has a Selupan/Map 58 row present but COMMENTED OUT (inactive), exactly consistent with this video's stated design rationale for leaving Selupan out of the default tracked-boss set."
+    },
+    {
+      "claimId": "CLAIM-166",
+      "statement": "The video's default 9-entry Custom Monster Time preset (as of update 7.1) includes Erohim among its tracked world bosses.",
+      "sourceId": "KI-059",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/BaAxyG7Pio8.pt.json, segments 0:23-0:46, 1:44-2:03",
+      "entityTypes": [
+        "MONSTER"
+      ],
+      "entities": [
+        "CustomMonsterTime",
+        "Erohim"
+      ],
+      "topic": "monsters",
+      "season": null,
+      "providerVersion": "ADDED 7.1",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomMonsterTime.txt"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Matches CLAIM-096's confirmed real active row for MonsterClass 295 (Erohim) on Map 31 in Blood Moon's own CustomMonsterTime.txt -- direct corroboration. Only 3 of the video's stated 9 default entries were clearly transcribable (Erohim, Dark Elf, a Kalima-area Kundun-type boss); the remaining 6 are not confidently identifiable from this audio and are not claimed here."
+    },
+    {
+      "claimId": "CLAIM-167",
+      "statement": "Custom Map Up Level lets an admin set a per-map experience ceiling by Level, Reset count, and/or Master Reset count: once a player's own value meets or exceeds the map's configured cap for any enabled dimension, killing monsters on that map still succeeds (the kill registers, presumably drops still occur) but grants zero experience, and the game shows a message telling the player they cannot exceed the configured limit and must move to a different map to keep progressing. Moving to a different, unrestricted (or differently-capped) map immediately restores normal leveling.",
+      "sourceId": "KI-060",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/VV2J_60gXBQ.pt.json, segments 0:00-0:23, 1:15-2:36, 2:36-3:28",
+      "entityTypes": [
+        "MAP",
+        "PROGRESSION"
+      ],
+      "entities": [
+        "CustomMapUpLevel"
+      ],
+      "topic": "maps",
+      "season": null,
+      "providerVersion": "ADDED (UPDATE 4.1)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomMapUpLevel.txt, if present"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "No prior claim documents whether Blood Moon uses this feature or which maps/caps, if any, are configured. The zero-exp-but-kill-still-succeeds behavior is hardcoded engine logic, not visible in a static config read."
+    },
+    {
+      "claimId": "CLAIM-168",
+      "statement": "Each of Custom Map Up Level's 3 cap dimensions (Level, Reset, Master Reset) can be independently enabled or disabled per map -- a value of -1 in a given field means 'no requirement' for that specific dimension, so a map's restriction can be based on Level alone, Reset alone, Master Reset alone, or any combination, by leaving the unwanted dimensions at -1.",
+      "sourceId": "KI-060",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/VV2J_60gXBQ.pt.json, segments 3:51-4:41",
+      "entityTypes": [
+        "MAP",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomMapUpLevel"
+      ],
+      "topic": "maps",
+      "season": null,
+      "providerVersion": "ADDED (UPDATE 4.1)",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Consistent with the same -1-disables-check convention already confirmed for the ResetMin/ResetMax event-entry gate in CLAIM-035 -- appears to be a shared, engine-wide config convention across multiple unrelated vendor features, not specific to this one system."
+    },
+    {
+      "claimId": "CLAIM-169",
+      "statement": "Custom Map Pk lets an admin list specific maps where simply entering the map auto-flags the character as PK (killer status), regardless of actual kill history -- the normal /pk-clear command is explicitly blocked from working while standing on one of these listed maps. The flag can only be removed by killing monsters on that same map (the standard PK-decay-via-kills mechanic still functions there) or by leaving through a portal/gate to a different map, which immediately clears the flag since it does not persist once the player is off the listed map. If no maps are added to the config, the feature has no effect and default server behavior is unchanged.",
+      "sourceId": "KI-061",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/HLtXKRSqyrQ.pt.json, segments 0:01-0:56, 1:43-3:23",
+      "entityTypes": [
+        "MAP",
+        "SYSTEM"
+      ],
+      "entities": [
+        "CustomMapPk"
+      ],
+      "topic": "maps",
+      "season": null,
+      "providerVersion": "ADDED (UPDATE 4.1)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomMapPk.txt, if present"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "No prior claim documents whether Blood Moon uses this feature or which maps, if any, are configured. Hardcoded engine behavior (auto-PK-on-entry, blocked pk-clear command) not visible in a static config read. Useful as a player-support explanation for an otherwise confusing 'why am I suddenly flagged as a killer' scenario, if Blood Moon has this enabled anywhere."
+    },
+    {
+      "claimId": "CLAIM-170",
+      "statement": "The presenter states Custom Map Pk was built as a bespoke feature at a specific paying client's request, intended for constructing custom PvP-flagged event maps, often combined with a separate PK item-drop-on-death system.",
+      "sourceId": "KI-061",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/HLtXKRSqyrQ.pt.json, segments 0:01-1:21",
+      "entityTypes": [
+        "MAP",
+        "SYSTEM"
+      ],
+      "entities": [
+        "CustomMapPk"
+      ],
+      "topic": "maps",
+      "season": null,
+      "providerVersion": "ADDED (UPDATE 4.1)",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Vendor development-history context, not a claim about Blood Moon's own use of this feature."
+    },
+    {
+      "claimId": "CLAIM-171",
+      "statement": "This update adds an item-duration/expiry parameter (in seconds) to /make, /makeset, and /drop -- an item created with a non-zero duration (demonstrated at 120s = 2 minutes) automatically disappears once that countdown elapses, whether it's sitting in the target's inventory or dropped on the ground. The presenter states this duration mechanic only functions on Season 6/8-family clients; it does not work on Season 4 clients, where the field must be left at 0 since the underlying item-expiry protocol feature doesn't exist in that older client.",
+      "sourceId": "KI-062",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/M7KLqCfcb9I.pt.json, segments 0:00-0:30, 1:19-2:35, 3:31-4:07",
+      "entityTypes": [
+        "COMMAND",
+        "ITEM"
+      ],
+      "entities": [
+        "Make",
+        "MakeSet",
+        "Drop"
+      ],
+      "topic": "commands",
+      "season": null,
+      "providerVersion": "UPDATED (undated, distinct from the 6.5 Type-0/1 update in CLAIM-078)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "runtime_observation",
+          "path": "a GM using /make, /makeset, or /drop with a non-zero duration on Blood Moon, if observed this sweep"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "A distinct, separate enhancement from CLAIM-078's Type 0/1 shorthand feature (both are real, independent updates to the same 3 commands, at different times) -- do not conflate the two. Which client season Blood Moon actually runs (relevant to whether this duration feature even works there) is not established by this claim alone."
+    },
+    {
+      "claimId": "CLAIM-172",
+      "statement": "/makeset takes only an item category and index (creating a full armor set matched to the target's class, no separate quantity parameter, since a 'set' is inherently the complete piece group); /make takes an explicit leading quantity parameter to create N copies of a single specified item; /drop mirrors /make's exact parameter list but places the resulting item(s) on the ground at the target's location instead of directly into their inventory.",
+      "sourceId": "KI-062",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/M7KLqCfcb9I.pt.json, segments 1:19-1:43, 2:35-3:52",
+      "entityTypes": [
+        "COMMAND",
+        "ITEM"
+      ],
+      "entities": [
+        "Make",
+        "MakeSet",
+        "Drop"
+      ],
+      "topic": "commands",
+      "season": null,
+      "providerVersion": "UPDATED (undated, distinct from the 6.5 Type-0/1 update in CLAIM-078)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Complements CLAIM-078, which already confirms these 3 commands are real vendor features with a Type 0 (verbose)/Type 1 (shorthand) mode -- this claim documents the underlying baseline parameter ordering the Type 0 mode uses, at the level of detail CLAIM-078 didn't capture."
+    },
+    {
+      "claimId": "CLAIM-173",
+      "statement": "Custom Pk Drop Item makes a PK-flagged player who is killed by another player drop one of their currently equipped items on the ground (falling back to an inventory item if nothing is equipped); it is scoped configurably by VIP/non-VIP account status and a minimum level threshold, and separately toggleable for Excellent, Harmony, Ancient, and high-option ('+380'-style) item categories. Dropped items have a pickup-priority delay window (only certain players, e.g. the killer, can grab it immediately) before becoming free-for-all to anyone nearby; if nobody picks it up within that window, the item is simply lost rather than returned to the original owner.",
+      "sourceId": "KI-063",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/u_daoxwEfTA.pt.json, segments 0:00-0:50, 1:52-2:42",
+      "entityTypes": [
+        "ITEM",
+        "SYSTEM"
+      ],
+      "entities": [
+        "CustomPkDropItem"
+      ],
+      "topic": "drop-system",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomPkDropItem.txt, if present"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "No prior claim documents whether Blood Moon uses this feature or its configured thresholds/scope. This is a real-money-relevant, potentially controversial mechanic (permanent gear loss for PKers) worth flagging clearly to players if Blood Moon has it enabled anywhere -- currently unverified."
+    },
+    {
+      "claimId": "CLAIM-174",
+      "statement": "Repeated kills against the same PK-flagged target can strip ALL of their currently equipped gear across successive deaths, one item per kill -- the video demonstrates this live across roughly 6 consecutive kills (wings, gloves, a weapon, and more), leaving the target with nothing equipped by the end.",
+      "sourceId": "KI-063",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/u_daoxwEfTA.pt.json, segments 3:33-5:29",
+      "entityTypes": [
+        "ITEM",
+        "SYSTEM"
+      ],
+      "entities": [
+        "CustomPkDropItem"
+      ],
+      "topic": "drop-system",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Confirms the mechanic can fully strip a character's gear given enough consecutive deaths, not just a single item -- an important severity detail for any player-facing warning about this feature, if Blood Moon has it enabled."
+    },
+    {
+      "claimId": "CLAIM-175",
+      "statement": "The feature broadcasts a server-wide chat log naming the victim's character and the item that dropped; the presenter acknowledges a known display bug where the item's proper name does not render correctly in that broadcast message, stating he will fix it in a future update.",
+      "sourceId": "KI-063",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/u_daoxwEfTA.pt.json, segments 5:29-5:56",
+      "entityTypes": [
+        "ITEM",
+        "SYSTEM"
+      ],
+      "entities": [
+        "CustomPkDropItem"
+      ],
+      "topic": "drop-system",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "A known engine bug at the time of this video, not a Blood-Moon-specific fact -- whether it was ever fixed in a later vendor build, or whether Blood Moon is even affected (feature usage unverified), is unknown this session."
+    },
+    {
+      "claimId": "CLAIM-176",
+      "statement": "Adding a fully custom monster or NPC (with its own custom 3D model file) requires matching, hand-synced entries across at least 3 separate places, all using the same reserved index range starting at 680: (1) a GameServerInfo 'Custom Monster/Pet' registration (model file path, BMD model number, recommended default scale 1.0), (2) an entry in the game server's own Monster.txt at the same index, where NPCs are STRICTLY required to have Level=0 (monsters can range roughly 1-400), and (3) client-side NPC-name text files whose location and count vary by client build -- a Season 6 client keeps one combined name file, while Season 14/18 clients split names across 3 separate per-language files (e.g. Korean/English/Spanish variants) that must ALL be edited identically, or players using a client set to a different language than the one the admin edited will see broken/missing names.",
+      "sourceId": "KI-064",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/CfVxdXykC6k.pt.json, segments 0:19-2:38, 3:07-4:06",
+      "entityTypes": [
+        "MONSTER",
+        "NPC",
+        "CONFIG",
+        "OPERATIONAL_WARNING"
+      ],
+      "entities": [
+        "CustomMonster"
+      ],
+      "topic": "monsters",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style, 'HOT' release)",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "A deep vendor content-authoring pipeline description, not itself a claim about which custom monsters/NPCs Blood Moon has actually added. The multi-file-sync requirement echoes the same general pattern already flagged for Drop Npc's entry NPC registration in CLAIM-125 (map/coordinate must match across files) -- this video shows the same class of footgun extends much further, into client-side language-specific files too."
+    },
+    {
+      "claimId": "CLAIM-177",
+      "statement": "Registering a custom NPC into a shop (via the vendor's Shop Manager / 'Shop Manejo' tool) requires an index, the NPC/monster model number, the target shop number, and a map+coordinate that must match the coordinate used in that NPC's own Monster.txt spawn definition -- the same map/coordinate consistency requirement seen elsewhere in this sweep for other NPC-based custom systems.",
+      "sourceId": "KI-064",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/CfVxdXykC6k.pt.json, segments 4:06-6:09",
+      "entityTypes": [
+        "NPC",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomMonster",
+        "ShopManager"
+      ],
+      "topic": "systems",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style, 'HOT' release)",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Generic engine tooling architecture, not a claim about which of Blood Moon's real shop NPCs (if any) were added this way. Demonstrated live end-to-end in the video: 3 new custom shop NPCs plus one standalone custom-modeled monster were successfully created and functioned with standard AI (took damage, attacked, died normally)."
+    },
+    {
+      "claimId": "CLAIM-179",
+      "statement": "Event Tropa extends the vendor's existing Custom Monster/Invasion Manager system with 2 new config columns -- SummonMonster (a monster index) and its quantity -- so that killing the tracked boss automatically summons N helper monsters of the configured type (with a 'the boss is not alone' server message), which the player must also defeat. The update also expands the reward from 2 to 3 independently configurable currency slots (demonstrated paying WCoin, GoblinPoint, and PcPoint together per boss kill).",
+      "sourceId": "KI-065",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/Qsy9gEioHw4.pt.json, segments 0:00-1:05, 2:15-2:38",
+      "entityTypes": [
+        "EVENT",
+        "MONSTER",
+        "CURRENCY",
+        "CONFIG"
+      ],
+      "entities": [
+        "EventTropa",
+        "InvasionManager",
+        "Selupan",
+        "Kundun"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomMonster.txt, SummonMonster/SummonQuantity columns"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Builds directly on the Invasion Manager system, which CLAIM-048 already confirms is a real, catalogued entry in Blood Moon's actual StartEventXxxSyntax registry -- but whether Blood Moon has configured 'Event Tropa' specifically (this particular summon-helpers preset) is unverified. Both demo monsters (Selupan, Kundun) are independently confirmed real Blood Moon monster entities via CLAIM-096, though that claim is about a different config file (CustomMonsterTime.txt) and doesn't confirm this event."
+    },
+    {
+      "claimId": "CLAIM-180",
+      "statement": "Independent of the summon-helpers mechanic, the tracked boss itself also self-respawns after a short configurable delay (demonstrated at 40 seconds) and keeps doing so until the event's total configured duration elapses (demonstrated at 12 minutes), after which it stops respawning and the event ends automatically; the presenter notes a delay of 0 is also supported.",
+      "sourceId": "KI-065",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/Qsy9gEioHw4.pt.json, segments 1:05-1:26, 2:08-3:19, 4:34-4:56",
+      "entityTypes": [
+        "EVENT",
+        "MONSTER"
+      ],
+      "entities": [
+        "EventTropa"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Hardcoded engine behavior of the underlying Invasion Manager scheduling system, not confirmed against Blood Moon's actual configured respawn delay or event duration for any real deployed instance."
+    },
+    {
+      "claimId": "CLAIM-181",
+      "statement": "MuMaker is a Microsoft Access database GUI (requires MS Office installed) for adding new items to the server's item database via its 'Categories' table: a new row needs a unique item type+index combination (must not duplicate an existing one), a name, a size value, a durability value (the presenter recommends always setting 255 when the item type doesn't actually use durability), and excellent/option-related flags, with two name-related fields conventionally kept in ALL CAPS. Assigning a custom client-side icon/image number is possible but explicitly NOT recommended by the presenter as unnecessary added complexity for most items -- reusing an existing item's icon number is the simpler default.",
+      "sourceId": "KI-066",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/etbGEpJdmRQ.pt.json, segments 0:00-2:38",
+      "entityTypes": [
+        "ITEM",
+        "CONFIG"
+      ],
+      "entities": [
+        "MuMaker"
+      ],
+      "topic": "systems",
+      "season": null,
+      "providerVersion": null,
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Pure internal GM/admin database-tooling tutorial (a generic Microsoft Access GUI walkthrough) -- reveals nothing about which items Blood Moon has actually added or its item roster. Not player-facing in any way."
+    },
+    {
+      "claimId": "CLAIM-182",
+      "statement": "The server-side Data/Item.txt file's structure and location is identical across Season 14, Season 16, and Season 18 client builds -- adding a new item server-side is done exactly the same way regardless of which client season the server targets. What differs between seasons is entirely on the CLIENT side, which requires different, non-interchangeable editing toolchains per season.",
+      "sourceId": "KI-067",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/-JKSgUY9-3Y.pt.json, segments 0:00-0:58, 4:06-4:39",
+      "entityTypes": [
+        "ITEM",
+        "CONFIG"
+      ],
+      "entities": [
+        "Item.txt"
+      ],
+      "topic": "systems",
+      "season": null,
+      "providerVersion": null,
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Generic engine architecture fact about how item data is organized across client seasons, not a claim about Blood Moon's own item roster or which season it targets."
+    },
+    {
+      "claimId": "CLAIM-183",
+      "statement": "New custom wing items must have their index numbering start at 140 (not 130 or 131) to avoid conflicting with existing/reserved indices; the engine supports up to roughly 40 configurable custom wing slots in total.",
+      "sourceId": "KI-067",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/-JKSgUY9-3Y.pt.json, segments 2:29-3:40",
+      "entityTypes": [
+        "ITEM",
+        "OPERATIONAL_WARNING"
+      ],
+      "entities": [
+        "Item.txt"
+      ],
+      "topic": "items",
+      "season": null,
+      "providerVersion": null,
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO (MEDIUM -- exact index range boundaries are degraded in the audio, only the '140, not 130/131' starting point and the roughly-40-slot ceiling are confidently transcribable)",
+      "notes": "A generic engine numbering-convention footgun, not a claim about which wing indices Blood Moon actually has populated."
+    },
+    {
+      "claimId": "CLAIM-184",
+      "statement": "Client-side item editing requires season-specific, non-interchangeable toolchains: Season 14 uses one direct item.bmd editor tool; Season 16 and Season 18 instead require a separate decrypt/re-encrypt toolchain that converts item.bmd to an editable item.txt and back, applied per-language folder (all language copies must be kept synchronized via copy-and-rename so players on any client language see correct data) -- and Season 18 additionally requires editing one further related data file that Season 16 does not need. Separately, a 'Custom Item' config section (GameServerInfo) sets the item's display color (RGB) and a filename-reference number that must exactly match the number used in the corresponding item.bmd/txt entry.",
+      "sourceId": "KI-067",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/-JKSgUY9-3Y.pt.json, segments 4:39-14:10",
+      "entityTypes": [
+        "ITEM",
+        "CONFIG",
+        "OPERATIONAL_WARNING"
+      ],
+      "entities": [
+        "Item.txt",
+        "CustomItem"
+      ],
+      "topic": "systems",
+      "season": null,
+      "providerVersion": null,
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Deep vendor content-authoring tooling knowledge, explicitly flagged by the presenter as a common source of confusion among his own viewers (mixing up the Season 14 tool with the Season 16/18 tool). Not player-facing and not a claim about Blood Moon's specific item content."
+    },
+    {
+      "claimId": "CLAIM-185",
+      "statement": "Custom Item Drop Requirement gates whether a PLAYER can voluntarily drop (throw to the ground) a specific configured item, based on independently configurable Player Level, Master Level (only meaningful on client versions 4.6+, left at 0 otherwise), Reset count, and Master Reset count thresholds per item entry -- a value of 0 in any of these fields means 'no requirement' for that dimension. If the player fails to meet any enabled threshold, the drop action is blocked with an in-game message stating the specific requirement not met; meeting it allows the drop to succeed immediately (demonstrated live: raising a custom Box+1 item's level requirement to 401 blocked a level-400 character from dropping it, then lowering the requirement to 400 let the same drop succeed).",
+      "sourceId": "KI-068",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/zJRrsKWKcUc.pt.srt, segments 0:01-0:24, 1:41-3:08, 3:29-4:40",
+      "entityTypes": [
+        "ITEM",
+        "DROP",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomItemDropRequirement"
+      ],
+      "topic": "drop-system",
+      "season": null,
+      "providerVersion": "ADDED 8.7",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomItemDropRequirement.txt, if present"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "This video's transcript was only available as a raw .srt caption file (Research/YouTube/project-gamers-oficial/transcripts/zJRrsKWKcUc.pt.srt), not the usual .pt.json format the rest of this sweep used -- same channel/pipeline, read in full, same evidentiary standing as the .json-sourced claims elsewhere in this file. The -0-disables-dimension convention matches the same pattern already noted for Custom Map Up Level in CLAIM-168, reinforcing it as a shared engine-wide config idiom. No prior claim documents Blood Moon's actual configured item-drop requirements, if any."
+    },
+    {
+      "claimId": "CLAIM-186",
+      "statement": "Each Custom Item Drop Requirement entry independently toggles whether Free, VIP1, VIP2, and VIP3 accounts are even subject to that item's requirement at all -- in the demo, only Free-tier accounts are gated (VIP1/VIP2/VIP3 fields left at 0, meaning those tiers are fully exempt and can drop the item regardless of level/reset).",
+      "sourceId": "KI-068",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/zJRrsKWKcUc.pt.srt, segments 3:08-3:29",
+      "entityTypes": [
+        "ITEM",
+        "DROP",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomItemDropRequirement"
+      ],
+      "topic": "drop-system",
+      "season": null,
+      "providerVersion": "ADDED 8.7",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Custom/CustomItemDropRequirement.txt, if present"
+        }
+      ],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "A VIP-bypass design pattern worth knowing for player support if Blood Moon has this feature enabled and a player asks why a VIP account can drop something a Free account cannot -- unverified whether Blood Moon actually configures VIP exemptions this way for any item."
+    },
+    {
+      "claimId": "CLAIM-187",
+      "statement": "Custom Item Drop Requirement follows the same two-file architecture seen elsewhere in this vendor's Data/Custom systems: a master on/off switch in the GameServerInfo Custom config, plus the actual per-item requirement table in a separate Data/Custom file.",
+      "sourceId": "KI-068",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/zJRrsKWKcUc.pt.srt, segments 0:46-1:13",
+      "entityTypes": [
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "entities": [
+        "CustomItemDropRequirement"
+      ],
+      "topic": "systems",
+      "season": null,
+      "providerVersion": "ADDED 8.7",
+      "bloodMoonStatus": "PROVIDER_SPECIFIC",
+      "verificationStatus": "NOT_APPLICABLE",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Consistent with the master-switchboard architecture already confirmed real on Blood Moon via CLAIM-092 (GameServer/DATA/GameServerInfo - Custom.dat, ~758 lines of CustomXxxSwitch flags for nearly every Data/Custom feature) -- this item's specific switch almost certainly exists somewhere in that already-read file, but its actual on/off state on Blood Moon was not specifically recorded in CLAIM-092's notes and is not re-verified this session, so this claim is architectural only, not a state claim."
+    },
+    {
+      "claimId": "CLAIM-178",
+      "statement": "Event Tropa's boss respawn-delay field can be set to 0 to produce an alternate, non-repeating mode: the boss dies once, summons its configured helper monsters one time, and the event effectively concludes after that single cycle rather than the boss regenerating repeatedly until the event's total configured duration elapses (the repeating-regeneration behavior CLAIM-180 demonstrates live uses a non-zero delay, e.g. 40 seconds).",
+      "sourceId": "KI-065",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/Qsy9gEioHw4.pt.json, segments 3:00-3:19, 4:34-4:56",
+      "entityTypes": [
+        "EVENT",
+        "MONSTER",
+        "CONFIG"
+      ],
+      "entities": [
+        "EventTropa"
+      ],
+      "topic": "events",
+      "season": null,
+      "providerVersion": "ADDED (undated, pre-8.x era per video style)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "Backfilled: this claim was extracted from the same Event Tropa video as CLAIM-179/CLAIM-180 (KI-065) but was accidentally skipped when that batch was first written, leaving a gap at CLAIM-178 in the sequential numbering -- added now from the same already-read transcript segments rather than left as an unexplained skipped number. Hardcoded engine behavior, not confirmed against Blood Moon's actual configuration for this event."
     }
   ]
 }

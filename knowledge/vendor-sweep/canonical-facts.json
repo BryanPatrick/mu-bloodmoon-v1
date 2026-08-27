@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-27T13:50:23.196Z",
+  "generatedAt": "2026-08-27T23:55:42.810Z",
   "generatedBy": "scripts/knowledge-canonical-facts.mjs -- derived mechanically from atomic-claims.json, do not hand-edit, re-run instead",
   "rule": "A claim qualifies as canonical only when verificationStatus starts with CONFIRMED_BY_ (config/schema/runtime evidence). PROVIDER_TUTORIAL or COMMUNITY_TUTORIAL sourceAuthority alone, however plausible, is explicitly insufficient -- see docs/knowledge/source-authority.md.",
-  "canonicalFactCount": 66,
-  "totalClaims": 99,
+  "canonicalFactCount": 88,
+  "totalClaims": 187,
   "canonicalFacts": [
     {
       "claimId": "CLAIM-001",
@@ -718,6 +718,255 @@
       ],
       "topic": "monsters",
       "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-100",
+      "statement": "Update 2.0.1.7 upgrades the vendor's ResetMin/ResetMax event-entry gate (previously a single global pair per event, per the 2.0.1.6 version documented in CLAIM-035) to an independently configurable Min/Max reset pair for EACH sub-event index -- e.g. up to 8 separate pairs for Blood Castle's 8 sub-levels, plus one pair per sub-level of Chaos Castle, Devil Square, and Illusion Temple.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "ResetMin",
+        "ResetMax",
+        "Blood Castle",
+        "Chaos Castle",
+        "Devil Square",
+        "Illusion Temple"
+      ],
+      "topic": "progression",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-101",
+      "statement": "The vendor's admin panel exposes two independent per-event enable checkboxes -- \"requires Reset\" and \"requires Master Reset\" -- so a server operator can gate a given castle-family sub-event by ordinary reset count, master-reset count, both, or neither.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "ResetMin",
+        "ResetMax"
+      ],
+      "topic": "progression",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-104",
+      "statement": "The command demonstrated in this video (called 'Comando Evento Start' / 'Command Start Event' by the vendor) is a GM-only command that opens a generic, unnamed event join-window; players enroll by typing /participar before the window's configured duration expires -- this join keyword corresponds to the real JoinEventXxxSyntax entry literally named 'EventGM' in the actual Blood Moon Command.dat (one of the 10 real, populated entries independently confirmed in CLAIM-049's Phase 6 verification), distinct from the separate /openevent system covered by CLAIM-048.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "StartEvent",
+        "JoinEvent",
+        "EventGM"
+      ],
+      "topic": "commands",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-107",
+      "statement": "This tutorial video's demonstrated Custom Event Zombie configuration values -- daily 02:45 schedule, 10-minute duration, entry NPC class 380 on Map 0 near coordinates (140,140), 4 monster waves, and a Cash/Gold/PcPoint reward -- are identical to Blood Moon's own real, already-confirmed Data/Custom/CustomEventZombie.txt values (CLAIM-031), strongly suggesting this video's demo server is Blood Moon's own live configuration (or shares an identical config origin) rather than generic vendor sample/template data.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventZombie",
+        "Map 0",
+        "Map 1"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_RUNTIME (parameter match) + CONFIRMED_VENDOR_VIDEO (video content)"
+    },
+    {
+      "claimId": "CLAIM-110",
+      "statement": "The antidote (cure) item drop is configured at a single fixed coordinate matching the spawn point of a later/stronger wave (the presenter specifically ties its drop location to where the 'Skeleton King'-class wave spawns), rather than dropping wherever a player is infected -- the presenter notes multiple drop locations could be configured but chose one for simplicity in the demo.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventZombie"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_RUNTIME (coordinate match) + CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-112",
+      "statement": "This tutorial video's demonstrated Custom Event Pandora configuration -- Map 40, MonsterClass 55 (Skeleton King skin), and a 100 Cash reward for the winner -- is identical to Blood Moon's own real, already-confirmed Data/Custom/CustomEventPandora.txt values (CLAIM-032), strongly suggesting this video's demo server is Blood Moon's own live configuration (or shares an identical config origin) rather than generic vendor sample/template data.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventPandora",
+        "Map 40"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_RUNTIME (parameter match) + CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-114",
+      "statement": "As of update 8.8, the Custom Event Stop Or Die does NOT support automatic time-of-day scheduling -- the presenter states he was unable to finish that part before shipping the update due to unrelated 8.7 bugfix work, so Stop Or Die must be started manually via a GM /start-type command -- whereas the sibling Pandora event shipped in the same update does support automatic scheduled starts.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventStopOrDie",
+        "CustomEventPandora"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-117",
+      "statement": "Stop Or Die requires a minimum of 2 players to start (cannot run solo) and has a configurable maximum player cap (demonstrated at 20); as of update 8.8 it must be manually opened by a GM via /openevent (no automatic time-of-day schedule exists for it).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventStopOrDie"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-121",
+      "statement": "Battle Royale is joined exclusively by clicking a dedicated entry NPC on the map -- there is no /participar (join) command for it, unlike most other custom events shown in this sweep.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventBattleRoyale",
+        "JoinEvent"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-123",
+      "statement": "GMs open Battle Royale through the same indexed /openevent-style command menu used for other events, selecting Battle Royale's numeric index from a list (the video's own on-screen example maps index '0' to Battle Royale for demonstration).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventBattleRoyale",
+        "OpenEvent"
+      ],
+      "topic": "commands",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-124",
+      "statement": "Drop Npc is entered exclusively by clicking a dedicated map NPC, closing to new entrants once a GM opens the specific instance -- there is no /participar (join) command for it, matching the same NPC-only entry pattern already seen for Battle Royale.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventDropNpc",
+        "JoinEvent"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-129",
+      "statement": "BBB is a trivia/Q&A event joined by typing /participar bbb, which teleports the player into a dedicated event map/coordinate -- but this command only works once the event round has actually started, not during the pre-start countdown window (typing it during the 'starts in 2 minutes' announcement does nothing).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventBBB",
+        "JoinEvent"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-133",
+      "statement": "Unlike BBB (CLAIM-129, which requires physically entering a dedicated event map via /participar bbb), Quiz is a global broadcast trivia event with no physical join step at all -- the question is announced to all online players wherever they are, and anyone can answer directly via a chat command without first moving to any location.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventQuiz",
+        "JoinEvent"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-137",
+      "statement": "A GM starts Hide And Seek via the same indexed /openevent-style command used for other events (demonstrated as /abrirevento 0 'esconde-esconde'), with a configurable duration (demonstrated at 10 minutes).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventHideAndSeek",
+        "OpenEvent"
+      ],
+      "topic": "commands",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-140",
+      "statement": "Run And Catch is opened by a GM via the indexed /openevent command and joined by players via /participar, with configurable minimum GM-command permission, a join-window duration, and a maximum overall event duration.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventRunAndCatch",
+        "OpenEvent",
+        "JoinEvent"
+      ],
+      "topic": "commands",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-143",
+      "statement": "NpcCrazy is built as an extension of the existing Invasion Manager scheduling system -- it reuses Invasion Manager's sequence/index numbering to reserve a slot (demonstrated as index 10) and draws its spawn/despawn announcement text from Invasion Manager's pool of ~100 reserved message-string slots (documented range 680-779) -- rather than being registered as its own independent GM-triggerable event.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomNpcCrazy",
+        "InvasionManager"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-146",
+      "statement": "Absorption is opened by a GM via a (renameable) /openevent-style command and joined by players via a (renameable) /participar command, with all in-event announcement messages independently configurable text strings.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventAbsorption",
+        "OpenEvent",
+        "JoinEvent"
+      ],
+      "topic": "commands",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-149",
+      "statement": "Russian Roulette is opened by a GM via a (renameable) /openevent-style command and joined by players via a (renameable) /participar command.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventRussianRoulette",
+        "OpenEvent",
+        "JoinEvent"
+      ],
+      "topic": "commands",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-153",
+      "statement": "TvT is opened by a GM via a (renameable) /openevent tvt command and joined by players via a (renameable) /participar command.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventTvT",
+        "OpenEvent",
+        "JoinEvent"
+      ],
+      "topic": "commands",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-156",
+      "statement": "Custom Arena supports up to roughly 30 independently configured event instances (this video pre-creates the first 10, index 0-9); each instance carries its own win-condition preset -- 'Mata-Mata' (no death limit, most kills by the time duration ends wins), 'Sobrevivência' (3 deaths eliminates a player from that round), 'Resta 1' (a single death eliminates a player -- literally 'only 1 remains'), plus same-class-restricted variants -- and each can independently set its own schedule, level/reset/master-reset/class entry requirements, and reward (currency + a configurable buff-item 'effect' + a direct item payout).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomArena"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-165",
+      "statement": "Selupan is deliberately excluded from Custom Monster Time's default tracked-boss preset, because its invasion spawn already broadcasts a server-wide announcement to all players when it appears, making a separate respawn countdown redundant for that specific monster.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomMonsterTime",
+        "Selupan"
+      ],
+      "topic": "monsters",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-166",
+      "statement": "The video's default 9-entry Custom Monster Time preset (as of update 7.1) includes Erohim among its tracked world bosses.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomMonsterTime",
+        "Erohim"
+      ],
+      "topic": "monsters",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
     }
   ],
   "explicitlyNotCanonical_contradicted": [

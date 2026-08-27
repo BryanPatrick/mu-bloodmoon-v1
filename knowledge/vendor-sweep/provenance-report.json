@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-27T13:50:23.369Z",
+  "generatedAt": "2026-08-27T23:55:43.026Z",
   "generatedBy": "scripts/knowledge-provenance-report.mjs -- derived mechanically from knowledge-index.json, atomic-claims.json, knowledge-graph.json, and wiki_candidates/, do not hand-edit",
-  "scope": "41 cataloged sources (knowledge-index.json). Does NOT cover the underlying 75+ prior-session docs corpus, which predates this sweep's index and uses its own provenance conventions (see Knowledge/README.md's EVIDENCE/KNOWLEDGE/OPERATIONS model instead).",
+  "scope": "68 cataloged sources (knowledge-index.json). Does NOT cover the underlying 75+ prior-session docs corpus, which predates this sweep's index and uses its own provenance conventions (see Knowledge/README.md's EVIDENCE/KNOWLEDGE/OPERATIONS model instead).",
   "perSource": [
     {
       "id": "KI-001",
@@ -412,38 +412,308 @@
       "VERIFICATION": "COMPLETE",
       "GRAPH": "MISSING",
       "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-042",
+      "title": "ResetMin & ResetMax Entry to Events (2.0.1.7 update)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "PARTIAL",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-043",
+      "title": "Command Start Event (generic GM-opened event, 2.0.1.7)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "PARTIAL",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-044",
+      "title": "Custom Event Zombie (infection/antidote mechanic walkthrough)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "PARTIAL",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-045",
+      "title": "Custom Event Pandora (hold-the-skin PvP walkthrough)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "PARTIAL",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-046",
+      "title": "Custom Event Stop Or Die (red light green light walkthrough)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "PARTIAL",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-047",
+      "title": "Custom Event Battle Royale (item-drop last-survivor walkthrough)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "PARTIAL",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-048",
+      "title": "Custom Event Drop Npc (Arena-based item-drop PvP walkthrough)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "PARTIAL",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-049",
+      "title": "Custom Event BBB (trivia elimination walkthrough)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "PARTIAL",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-050",
+      "title": "Custom Event Quiz (global broadcast trivia walkthrough)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "PARTIAL",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-051",
+      "title": "Custom Event Hide And Seek (find-the-GM walkthrough)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "PARTIAL",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-052",
+      "title": "Custom Event Run And Catch (one-hit tag walkthrough)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "PARTIAL",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-053",
+      "title": "Custom Event NpcCrazy (scheduled temporary-shop tool)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "PARTIAL",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-054",
+      "title": "Custom Event Absorption (random-elimination walkthrough)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "PARTIAL",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-055",
+      "title": "Custom Event Russian Roulette (GM-trade elimination walkthrough)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "PARTIAL",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-056",
+      "title": "Custom Event Team vs Team (auto-split team-score walkthrough)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "PARTIAL",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-057",
+      "title": "Custom Arena multi-preset walkthrough (Mata-Mata, Sobrevivencia, Resta 1)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "PARTIAL",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-058",
+      "title": "Custom Monster HP (boss-only HP bar whitelist)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-059",
+      "title": "Custom Monster Time (H-key boss respawn countdown)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "PARTIAL",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-060",
+      "title": "Custom Map Up Level (per-map EXP ceiling)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-061",
+      "title": "Custom Map Pk (auto-PK-on-entry map list)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-062",
+      "title": "Command MakeSet, Make, Drop (item-duration update)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-063",
+      "title": "Custom Pk Drop Item (anti-griefer equipment-drop punishment)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-064",
+      "title": "Custom Monster & Npc (custom model authoring pipeline)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-065",
+      "title": "Event Tropa (Invasion Manager summon-helpers extension)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-066",
+      "title": "Adicionando Item MuMaker (Access-based item editor tutorial)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-067",
+      "title": "Adicionando Item MuServer e Cliente (server/client item pipeline)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-068",
+      "title": "Custom Item Drop Requirement (level/reset/VIP drop gate)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
     }
   ],
   "tallies": {
     "RAW": {
-      "COMPLETE": 41,
+      "COMPLETE": 68,
       "PARTIAL": 0,
       "MISSING": 0
     },
     "NORMALIZED": {
       "COMPLETE": 12,
       "PARTIAL": 3,
-      "MISSING": 26
+      "MISSING": 53
     },
     "CLAIMS": {
-      "COMPLETE": 40,
+      "COMPLETE": 67,
       "PARTIAL": 0,
       "MISSING": 1
     },
     "VERIFICATION": {
       "COMPLETE": 20,
-      "PARTIAL": 6,
-      "MISSING": 15
+      "PARTIAL": 23,
+      "MISSING": 25
     },
     "GRAPH": {
       "COMPLETE": 8,
       "PARTIAL": 0,
-      "MISSING": 33
+      "MISSING": 60
     },
     "WIKI": {
       "COMPLETE": 11,
       "PARTIAL": 0,
-      "MISSING": 30
+      "MISSING": 57
     }
   }
 }

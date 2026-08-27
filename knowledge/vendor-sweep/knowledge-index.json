@@ -504,8 +504,14 @@
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/TDL051DxNw8.pt.json",
       "normalizedArtifact": null,
       "derivedArtifacts": [],
-      "tags": ["events", "auction", "economy"],
-      "entities": ["CustomAuctionEvent"],
+      "tags": [
+        "events",
+        "auction",
+        "economy"
+      ],
+      "entities": [
+        "CustomAuctionEvent"
+      ],
       "capturedAt": "2026-08-27T01:01:59Z",
       "sourceDate": "2025-09-12",
       "confidence": "CONFIRMED_VENDOR_VIDEO",
@@ -523,8 +529,14 @@
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/lTT6Ibij7Zw.pt.json",
       "normalizedArtifact": null,
       "derivedArtifacts": [],
-      "tags": ["events", "race", "map"],
-      "entities": ["CustomEventRacer"],
+      "tags": [
+        "events",
+        "race",
+        "map"
+      ],
+      "entities": [
+        "CustomEventRacer"
+      ],
       "capturedAt": "2026-08-27T01:02:07Z",
       "sourceDate": "2025-09-11",
       "confidence": "CONFIRMED_VENDOR_VIDEO",
@@ -542,8 +554,14 @@
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/ZpyDXTnk4s0.pt.json",
       "normalizedArtifact": null,
       "derivedArtifacts": [],
-      "tags": ["events", "pvp", "tournament"],
-      "entities": ["CustomEventKillVsKill"],
+      "tags": [
+        "events",
+        "pvp",
+        "tournament"
+      ],
+      "entities": [
+        "CustomEventKillVsKill"
+      ],
       "capturedAt": "2026-08-27T01:02:15Z",
       "sourceDate": "2025-04-16",
       "confidence": "CONFIRMED_VENDOR_VIDEO",
@@ -561,8 +579,17 @@
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/R9jc0kFIlb4.pt.json",
       "normalizedArtifact": null,
       "derivedArtifacts": [],
-      "tags": ["ui", "gm-tools", "events", "command"],
-      "entities": ["OpenEvent", "JoinEvent", "GameMaster.txt"],
+      "tags": [
+        "ui",
+        "gm-tools",
+        "events",
+        "command"
+      ],
+      "entities": [
+        "OpenEvent",
+        "JoinEvent",
+        "GameMaster.txt"
+      ],
       "capturedAt": "2026-08-27T01:02:48Z",
       "sourceDate": "2024-11-05",
       "confidence": "CONFIRMED_VENDOR_VIDEO",
@@ -580,8 +607,14 @@
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/KTO4Zk_Qxt8.pt.json",
       "normalizedArtifact": null,
       "derivedArtifacts": [],
-      "tags": ["ui", "events", "config"],
-      "entities": ["CustomEventTime"],
+      "tags": [
+        "ui",
+        "events",
+        "config"
+      ],
+      "entities": [
+        "CustomEventTime"
+      ],
       "capturedAt": "2026-08-27T01:05:29Z",
       "sourceDate": "2024-08-05",
       "confidence": "CONFIRMED_VENDOR_VIDEO",
@@ -591,201 +624,1203 @@
     {
       "id": "KI-024",
       "title": "Custom Map Requirement (item/currency toll to move maps)",
-      "sourceType": "YOUTUBE_VIDEO", "sourceAuthority": "PROVIDER_TUTORIAL", "category": "systems", "season": null,
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/RAg7M8JqSHM.pt.json",
-      "normalizedArtifact": null, "derivedArtifacts": [],
-      "tags": ["map", "economy", "config"], "entities": ["CustomMapRequirement"],
-      "capturedAt": "2026-08-27T01:05:49Z", "sourceDate": "2024-05-22",
-      "confidence": "CONFIRMED_VENDOR_VIDEO", "status": "BLOODMOON_LIKELY",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "map",
+        "economy",
+        "config"
+      ],
+      "entities": [
+        "CustomMapRequirement"
+      ],
+      "capturedAt": "2026-08-27T01:05:49Z",
+      "sourceDate": "2024-05-22",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
       "note": "Phase 5 bulk pass."
     },
     {
       "id": "KI-025",
       "title": "Custom Info Event Defaults Requirement (castle-event tooltip)",
-      "sourceType": "YOUTUBE_VIDEO", "sourceAuthority": "PROVIDER_TUTORIAL", "category": "events", "season": null,
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/DlukUjAW_Ko.pt.json",
-      "normalizedArtifact": null, "derivedArtifacts": [],
-      "tags": ["ui", "events", "progression"], "entities": ["ResetMin", "ResetMax"],
-      "capturedAt": "2026-08-27T01:06:09Z", "sourceDate": "2024-04-07",
-      "confidence": "CONFIRMED_VENDOR_VIDEO", "status": "BLOODMOON_LIKELY",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "ui",
+        "events",
+        "progression"
+      ],
+      "entities": [
+        "ResetMin",
+        "ResetMax"
+      ],
+      "capturedAt": "2026-08-27T01:06:09Z",
+      "sourceDate": "2024-04-07",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
       "note": "Phase 5 bulk pass. Directly extends the ResetMin/ResetMax progression mechanism (CLAIM-035)."
     },
     {
       "id": "KI-026",
       "title": "Custom Info Drop Item, FPS/MS monitor, Command Window, Show Level Patent",
-      "sourceType": "YOUTUBE_VIDEO", "sourceAuthority": "PROVIDER_TUTORIAL", "category": "systems", "season": null,
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/XZMNP5xMfKY.pt.json",
-      "normalizedArtifact": null, "derivedArtifacts": [],
-      "tags": ["ui", "client", "anti-cheat"], "entities": ["GetMyInfo"],
-      "capturedAt": "2026-08-27T01:06:20Z", "sourceDate": "2023-10-19",
-      "confidence": "CONFIRMED_VENDOR_VIDEO", "status": "BLOODMOON_LIKELY",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "ui",
+        "client",
+        "anti-cheat"
+      ],
+      "entities": [
+        "GetMyInfo"
+      ],
+      "capturedAt": "2026-08-27T01:06:20Z",
+      "sourceDate": "2023-10-19",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
       "note": "Phase 5 bulk pass. 5 distinct small features bundled in one video (item tooltip, FPS/MS monitor, disabled FPS-limit feature, command window, level-only hover mode)."
     },
     {
       "id": "KI-027",
       "title": "Custom Event Entry Level (per-event level range override)",
-      "sourceType": "YOUTUBE_VIDEO", "sourceAuthority": "PROVIDER_TUTORIAL", "category": "events", "season": null,
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/UeNNFBW8P9E.pt.json",
-      "normalizedArtifact": null, "derivedArtifacts": [],
-      "tags": ["events", "progression", "class"], "entities": ["CustomEventEntryLevel"],
-      "capturedAt": "2026-08-27T01:06:40Z", "sourceDate": "2023-10-19",
-      "confidence": "CONFIRMED_VENDOR_VIDEO", "status": "BLOODMOON_LIKELY",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "progression",
+        "class"
+      ],
+      "entities": [
+        "CustomEventEntryLevel"
+      ],
+      "capturedAt": "2026-08-27T01:06:40Z",
+      "sourceDate": "2023-10-19",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
       "note": "Phase 5 bulk pass."
     },
     {
       "id": "KI-028",
       "title": "Event Run And Catch (pega-pega) Auto Skin",
-      "sourceType": "YOUTUBE_VIDEO", "sourceAuthority": "PROVIDER_TUTORIAL", "category": "events", "season": null,
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/0uqVGJzsYwU.pt.json",
-      "normalizedArtifact": null, "derivedArtifacts": [],
-      "tags": ["events", "cosmetic"], "entities": ["EVENT-run-and-catch"],
-      "capturedAt": "2026-08-27T01:08:14Z", "sourceDate": "2023-03-29",
-      "confidence": "CONFIRMED_VENDOR_VIDEO", "status": "BLOODMOON_LIKELY",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "cosmetic"
+      ],
+      "entities": [
+        "EVENT-run-and-catch"
+      ],
+      "capturedAt": "2026-08-27T01:08:14Z",
+      "sourceDate": "2023-03-29",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
       "note": "Phase 5 bulk pass."
     },
     {
       "id": "KI-029",
       "title": "New Custom Monster And Npc (item-set visual system rework)",
-      "sourceType": "YOUTUBE_VIDEO", "sourceAuthority": "PROVIDER_TUTORIAL", "category": "systems", "season": null,
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/TPS3xmESYRc.pt.json",
-      "normalizedArtifact": null, "derivedArtifacts": [],
-      "tags": ["monster", "npc", "config"], "entities": ["CustomMonster.txt", "CustomMonsterSkill.txt"],
-      "capturedAt": "2026-08-27T01:08:25Z", "sourceDate": "2023-03-29",
-      "confidence": "CONFIRMED_VENDOR_VIDEO", "status": "BLOODMOON_LIKELY",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "monster",
+        "npc",
+        "config"
+      ],
+      "entities": [
+        "CustomMonster.txt",
+        "CustomMonsterSkill.txt"
+      ],
+      "capturedAt": "2026-08-27T01:08:25Z",
+      "sourceDate": "2023-03-29",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
       "note": "Phase 5 bulk pass. Most detailed MONSTER/NPC-system source in this sweep -- the item-set-based visual system (Type 3/4) is a distinctive, non-generic mechanic worth cross-checking against real Blood Moon CustomMonster.txt entries in a future verification pass (this sweep's real-config read of CustomMonster.txt, CLAIM-020, did not decode the Type field's meaning)."
     },
     {
-      "id": "KI-030", "title": "Custom Guild vs Guild Event (throne-capture rework)",
-      "sourceType": "YOUTUBE_VIDEO", "sourceAuthority": "PROVIDER_TUTORIAL", "category": "events", "season": null,
+      "id": "KI-030",
+      "title": "Custom Guild vs Guild Event (throne-capture rework)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/IquX3gNZIpw.pt.json",
-      "normalizedArtifact": null, "derivedArtifacts": [],
-      "tags": ["events", "guild", "pvp"], "entities": ["CustomGuildVsGuild"],
-      "capturedAt": "2026-08-27T01:09:16Z", "sourceDate": "2022-11-08",
-      "confidence": "CONFIRMED_VENDOR_VIDEO", "status": "BLOODMOON_LIKELY",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "guild",
+        "pvp"
+      ],
+      "entities": [
+        "CustomGuildVsGuild"
+      ],
+      "capturedAt": "2026-08-27T01:09:16Z",
+      "sourceDate": "2022-11-08",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
       "note": "Phase 5 bulk pass."
     },
     {
-      "id": "KI-031", "title": "Custom Monster reward (Reset/Master Reset on kill, live demo)",
-      "sourceType": "YOUTUBE_VIDEO", "sourceAuthority": "PROVIDER_TUTORIAL", "category": "systems", "season": null,
+      "id": "KI-031",
+      "title": "Custom Monster reward (Reset/Master Reset on kill, live demo)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/okCpQ3tya-M.pt.json",
-      "normalizedArtifact": null, "derivedArtifacts": [],
-      "tags": ["monster", "progression", "reward"], "entities": ["CustomMonster.txt"],
-      "capturedAt": "2026-08-27T01:09:37Z", "sourceDate": "2022-09-06",
-      "confidence": "CONFIRMED_VENDOR_VIDEO", "status": "BLOODMOON_LIKELY",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "monster",
+        "progression",
+        "reward"
+      ],
+      "entities": [
+        "CustomMonster.txt"
+      ],
+      "capturedAt": "2026-08-27T01:09:37Z",
+      "sourceDate": "2022-09-06",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
       "note": "Phase 5 bulk pass. ASR quality on this video is degraded (unclear speech); claims kept conservative. Directly extends CLAIM-020's RewardLevel/RewardPoints finding with a live before/after demonstration of Reset/MasterReset rewards specifically."
     },
     {
-      "id": "KI-032", "title": "Custom Event PvP 1x1 (GM-curated duel)",
-      "sourceType": "YOUTUBE_VIDEO", "sourceAuthority": "PROVIDER_TUTORIAL", "category": "events", "season": null,
+      "id": "KI-032",
+      "title": "Custom Event PvP 1x1 (GM-curated duel)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/pUfPrwJjtcY.pt.json",
-      "normalizedArtifact": null, "derivedArtifacts": [],
-      "tags": ["events", "pvp"], "entities": ["CustomEventPvP1x1"],
-      "capturedAt": "2026-08-27T01:09:47Z", "sourceDate": "2022-08-18",
-      "confidence": "CONFIRMED_VENDOR_VIDEO", "status": "BLOODMOON_LIKELY",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "pvp"
+      ],
+      "entities": [
+        "CustomEventPvP1x1"
+      ],
+      "capturedAt": "2026-08-27T01:09:47Z",
+      "sourceDate": "2022-08-18",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
       "note": "Phase 5 bulk pass. Distinct from CustomEventKillVsKill (CLAIM-045) -- this is a single GM-curated duel, not an automated bracket."
     },
     {
-      "id": "KI-033", "title": "Custom Event Time (H-panel: Crywolf/Castle Siege entries + monster-count column)",
-      "sourceType": "YOUTUBE_VIDEO", "sourceAuthority": "PROVIDER_TUTORIAL", "category": "systems", "season": null,
+      "id": "KI-033",
+      "title": "Custom Event Time (H-panel: Crywolf/Castle Siege entries + monster-count column)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/lWclobV5zm8.pt.json",
-      "normalizedArtifact": null, "derivedArtifacts": [],
-      "tags": ["ui", "events", "castle-siege"], "entities": ["CustomEventTime"],
-      "capturedAt": "2026-08-26T03:25:00Z", "sourceDate": "2022-08-17",
-      "confidence": "CONFIRMED_VENDOR_VIDEO", "status": "BLOODMOON_LIKELY",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "ui",
+        "events",
+        "castle-siege"
+      ],
+      "entities": [
+        "CustomEventTime"
+      ],
+      "capturedAt": "2026-08-26T03:25:00Z",
+      "sourceDate": "2022-08-17",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
       "note": "Transcript file already carried pre-filled analysis fields (topic/feature/configPath/behaviorConfirmed/crossReference) from an earlier phase of this sweep but had never been promoted to a formal KI/CLAIM entry -- done now in Phase 5. Directly corroborates CLAIM-023/051's CustomEventTime.txt filename finding."
     },
     {
-      "id": "KI-034", "title": "Command Make, Drop And MakeSet (Type 0/1 shorthand rework)",
-      "sourceType": "YOUTUBE_VIDEO", "sourceAuthority": "PROVIDER_TUTORIAL", "category": "commands", "season": null,
+      "id": "KI-034",
+      "title": "Command Make, Drop And MakeSet (Type 0/1 shorthand rework)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "commands",
+      "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/qqtrBciJ3n8.pt.json",
-      "normalizedArtifact": null, "derivedArtifacts": [],
-      "tags": ["command", "item"], "entities": ["Make", "MakeSet", "Drop"],
-      "capturedAt": "2026-08-27T01:09:57Z", "sourceDate": "2022-06-17",
-      "confidence": "CONFIRMED_VENDOR_VIDEO", "status": "BLOODMOON_LIKELY",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "command",
+        "item"
+      ],
+      "entities": [
+        "Make",
+        "MakeSet",
+        "Drop"
+      ],
+      "capturedAt": "2026-08-27T01:09:57Z",
+      "sourceDate": "2022-06-17",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
       "note": "Phase 5 bulk pass."
     },
     {
-      "id": "KI-035", "title": "Command Open Event And Join (per-event command-scope rules)",
-      "sourceType": "YOUTUBE_VIDEO", "sourceAuthority": "PROVIDER_TUTORIAL", "category": "commands", "season": null,
+      "id": "KI-035",
+      "title": "Command Open Event And Join (per-event command-scope rules)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "commands",
+      "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/ptFi5mX0eFU.pt.json",
-      "normalizedArtifact": null, "derivedArtifacts": [],
-      "tags": ["command", "events"], "entities": ["OpenEvent", "JoinEvent"],
-      "capturedAt": "2026-08-27T01:10:07Z", "sourceDate": "2022-06-03",
-      "confidence": "CONFIRMED_VENDOR_VIDEO", "status": "BLOODMOON_LIKELY",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "command",
+        "events"
+      ],
+      "entities": [
+        "OpenEvent",
+        "JoinEvent"
+      ],
+      "capturedAt": "2026-08-27T01:10:07Z",
+      "sourceDate": "2022-06-03",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
       "note": "Phase 5 bulk pass. One segment of this video (Castle-Siege-only command scope) was too ASR-garbled to extract confidently and was deliberately left out of atomic-claims.json per the hallucination guard."
     },
     {
-      "id": "KI-036", "title": "Custom Guild Map Move (guild-exclusive maps)",
-      "sourceType": "YOUTUBE_VIDEO", "sourceAuthority": "PROVIDER_TUTORIAL", "category": "systems", "season": null,
+      "id": "KI-036",
+      "title": "Custom Guild Map Move (guild-exclusive maps)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/4KNQFhiBLpE.pt.json",
-      "normalizedArtifact": null, "derivedArtifacts": [],
-      "tags": ["map", "guild"], "entities": ["CustomGuildMapMove"],
-      "capturedAt": "2026-08-27T01:10:17Z", "sourceDate": "2022-04-30",
-      "confidence": "CONFIRMED_VENDOR_VIDEO", "status": "BLOODMOON_LIKELY", "note": "Phase 5 bulk pass."
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "map",
+        "guild"
+      ],
+      "entities": [
+        "CustomGuildMapMove"
+      ],
+      "capturedAt": "2026-08-27T01:10:17Z",
+      "sourceDate": "2022-04-30",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Phase 5 bulk pass."
     },
     {
-      "id": "KI-037", "title": "Custom Event Time Settings (original 5.7 H-panel: Invasion Manager + Custom Arena)",
-      "sourceType": "YOUTUBE_VIDEO", "sourceAuthority": "PROVIDER_TUTORIAL", "category": "systems", "season": null,
+      "id": "KI-037",
+      "title": "Custom Event Time Settings (original 5.7 H-panel: Invasion Manager + Custom Arena)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/yVXjMheH9qY.pt.json",
-      "normalizedArtifact": null, "derivedArtifacts": [],
-      "tags": ["ui", "events", "config"], "entities": ["CustomEventTime", "InvasionManager"],
-      "capturedAt": "2026-08-27T01:10:47Z", "sourceDate": "2021-03-26",
-      "confidence": "CONFIRMED_VENDOR_VIDEO", "status": "BLOODMOON_LIKELY",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "ui",
+        "events",
+        "config"
+      ],
+      "entities": [
+        "CustomEventTime",
+        "InvasionManager"
+      ],
+      "capturedAt": "2026-08-27T01:10:47Z",
+      "sourceDate": "2021-03-26",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
       "note": "Phase 5 bulk pass. This is the ORIGINAL (5.7) version of the H-panel feature that CLAIM-023/051/076 describe later updates to."
     },
     {
-      "id": "KI-038", "title": "Custom Monster Skill (attack visual-effect assignment)",
-      "sourceType": "YOUTUBE_VIDEO", "sourceAuthority": "PROVIDER_TUTORIAL", "category": "systems", "season": null,
+      "id": "KI-038",
+      "title": "Custom Monster Skill (attack visual-effect assignment)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/VAH2rMXnBmU.pt.json",
-      "normalizedArtifact": null, "derivedArtifacts": [],
-      "tags": ["monster", "skill"], "entities": ["CustomMonsterSkill.txt"],
-      "capturedAt": "2026-08-27T01:10:57Z", "sourceDate": "2021-02-12",
-      "confidence": "CONFIRMED_VENDOR_VIDEO", "status": "BLOODMOON_LIKELY", "note": "Phase 5 bulk pass."
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "monster",
+        "skill"
+      ],
+      "entities": [
+        "CustomMonsterSkill.txt"
+      ],
+      "capturedAt": "2026-08-27T01:10:57Z",
+      "sourceDate": "2021-02-12",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Phase 5 bulk pass."
     },
     {
-      "id": "KI-039", "title": "Custom Event Capture The Flag (2-team CTF)",
-      "sourceType": "YOUTUBE_VIDEO", "sourceAuthority": "PROVIDER_TUTORIAL", "category": "events", "season": null,
+      "id": "KI-039",
+      "title": "Custom Event Capture The Flag (2-team CTF)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/fHttxHWnTR8.pt.json",
-      "normalizedArtifact": null, "derivedArtifacts": [],
-      "tags": ["events", "pvp", "team"], "entities": ["CustomCaptureTheFlag"],
-      "capturedAt": "2026-08-27T01:11:08Z", "sourceDate": "2021-02-05",
-      "confidence": "CONFIRMED_VENDOR_VIDEO", "status": "BLOODMOON_LIKELY", "note": "Phase 5 bulk pass."
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "pvp",
+        "team"
+      ],
+      "entities": [
+        "CustomCaptureTheFlag"
+      ],
+      "capturedAt": "2026-08-27T01:11:08Z",
+      "sourceDate": "2021-02-05",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Phase 5 bulk pass."
     },
     {
-      "id": "KI-040", "title": "Custom Event Robber (item-stealing monster)",
-      "sourceType": "YOUTUBE_VIDEO", "sourceAuthority": "PROVIDER_TUTORIAL", "category": "events", "season": null,
+      "id": "KI-040",
+      "title": "Custom Event Robber (item-stealing monster)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/83XTOql1g1g.pt.json",
-      "normalizedArtifact": null, "derivedArtifacts": [],
-      "tags": ["events", "monster", "pk"], "entities": ["CustomEventRobber"],
-      "capturedAt": "2026-08-27T01:11:28Z", "sourceDate": "2020-08-25",
-      "confidence": "CONFIRMED_VENDOR_VIDEO", "status": "BLOODMOON_LIKELY", "note": "Phase 5 bulk pass."
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "monster",
+        "pk"
+      ],
+      "entities": [
+        "CustomEventRobber"
+      ],
+      "capturedAt": "2026-08-27T01:11:28Z",
+      "sourceDate": "2020-08-25",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Phase 5 bulk pass."
     },
     {
-      "id": "KI-041", "title": "Custom Event Quickly / Veloz (quick-click NPC reward)",
-      "sourceType": "YOUTUBE_VIDEO", "sourceAuthority": "PROVIDER_TUTORIAL", "category": "events", "season": null,
+      "id": "KI-041",
+      "title": "Custom Event Quickly / Veloz (quick-click NPC reward)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
       "provider": "ProjectGamers/eMuGS",
       "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/lu1uu1UJc3E.pt.json",
-      "normalizedArtifact": null, "derivedArtifacts": [],
-      "tags": ["events", "npc", "vip"], "entities": ["CustomEventOnClick"],
-      "capturedAt": "2026-08-27T01:11:38Z", "sourceDate": "2020-07-12",
-      "confidence": "CONFIRMED_VENDOR_VIDEO", "status": "BLOODMOON_LIKELY", "note": "Phase 5 bulk pass."
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "npc",
+        "vip"
+      ],
+      "entities": [
+        "CustomEventOnClick"
+      ],
+      "capturedAt": "2026-08-27T01:11:38Z",
+      "sourceDate": "2020-07-12",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Phase 5 bulk pass."
+    },
+    {
+      "id": "KI-042",
+      "title": "ResetMin & ResetMax Entry to Events (2.0.1.7 update)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "progression",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/rcL6fxy92Ss.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "progression",
+        "reset",
+        "masterreset",
+        "events",
+        "castle-family"
+      ],
+      "entities": [
+        "ResetMin",
+        "ResetMax",
+        "Blood Castle",
+        "Chaos Castle",
+        "Devil Square",
+        "Illusion Temple"
+      ],
+      "capturedAt": "2026-08-27T00:00:00Z",
+      "sourceDate": "2018-11-29",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Update/re-upload of the 2.0.1.6 ResetMin/ResetMax video already indexed as KI-015 (CLAIM-035) -- this one documents the 2.0.1.7 upgrade to per-sub-event-index granularity, the two-checkbox (Reset vs Master Reset) admin UI, and a 0/0-default lockout footgun. Two of its four claims (CLAIM-100, CLAIM-101) cross-reference to BLOODMOON_CONFIRMED via CLAIM-035's real-config verification; the others are PROVIDER_SPECIFIC/BLOODMOON_LIKELY. See CLAIM-100 through CLAIM-103."
+    },
+    {
+      "id": "KI-043",
+      "title": "Command Start Event (generic GM-opened event, 2.0.1.7)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "commands",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/o3h4PQ8Y8Kc.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "commands",
+        "events",
+        "gm-tools",
+        "join-event"
+      ],
+      "entities": [
+        "StartEvent",
+        "JoinEvent",
+        "EventGM"
+      ],
+      "capturedAt": "2026-08-27T00:05:00Z",
+      "sourceDate": "2018-11-29",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Names and demonstrates the generic 'EventGM' command family that CLAIM-049 (Phase 6) later independently confirmed is real and populated in Blood Moon's actual Command.dat JoinEventXxxSyntax registry -- a strong naming cross-reference (CLAIM-104), though the specific GM-level/duration parameter values shown are illustrative vendor demo data, not read from Blood Moon's own config. See CLAIM-104 through CLAIM-106."
+    },
+    {
+      "id": "KI-044",
+      "title": "Custom Event Zombie (infection/antidote mechanic walkthrough)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/A2BcRITQjxc.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "zombie",
+        "pve",
+        "infection",
+        "ranking"
+      ],
+      "entities": [
+        "CustomEventZombie",
+        "CustomRankingZombie"
+      ],
+      "capturedAt": "2026-08-27T00:10:00Z",
+      "sourceDate": "2026-08-01",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Full live walkthrough of the same event already partly confirmed via real config in CLAIM-031 -- every demonstrated config parameter (schedule, NPC, wave count, reward types) matches Blood Moon's real file exactly (CLAIM-107), and this video adds the player-facing infection/cure/ranking mechanics that a static config read cannot show. High value for a player-facing Event Help Center entry. See CLAIM-107 through CLAIM-110."
+    },
+    {
+      "id": "KI-045",
+      "title": "Custom Event Pandora (hold-the-skin PvP walkthrough)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/ivDj7I9elZA.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "pandora",
+        "pvp",
+        "king-of-the-hill"
+      ],
+      "entities": [
+        "CustomEventPandora",
+        "CustomEventStopOrDie"
+      ],
+      "capturedAt": "2026-08-27T00:15:00Z",
+      "sourceDate": "2026-05-19",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Full live walkthrough of the event already partly confirmed via real config in CLAIM-032 -- demonstrated map, monster class, and reward amount match Blood Moon's real file exactly (CLAIM-112), and this video adds the player-facing skin-steal PvP mechanic and lobby PK-flag behavior a static config read cannot show. Also yields a useful cross-reference confirming Stop Or Die lacks automatic scheduling (CLAIM-114). High value for a player-facing Event Help Center entry. See CLAIM-111 through CLAIM-115."
+    },
+    {
+      "id": "KI-046",
+      "title": "Custom Event Stop Or Die (red light green light walkthrough)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/qw4GrxEjykI.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "stop-or-die",
+        "red-light-green-light",
+        "pve"
+      ],
+      "entities": [
+        "CustomEventStopOrDie",
+        "Racer"
+      ],
+      "capturedAt": "2026-08-27T00:20:00Z",
+      "sourceDate": "2026-05-19",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Full live walkthrough of the event already partly confirmed via real config in CLAIM-033. Reveals the important, easy-to-assume-wrong nuance that only the single last survivor wins as shipped in 8.8 (not all who cross), and double-corroborates CLAIM-114's finding that Stop Or Die has no automatic schedule on Blood Moon. See CLAIM-116 through CLAIM-119."
+    },
+    {
+      "id": "KI-047",
+      "title": "Custom Event Battle Royale (item-drop last-survivor walkthrough)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/tcPkQYfmSx4.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "battle-royale",
+        "pvp",
+        "item-drop"
+      ],
+      "entities": [
+        "CustomEventBattleRoyale",
+        "EventItemBag",
+        "OpenEvent"
+      ],
+      "capturedAt": "2026-08-27T00:25:00Z",
+      "sourceDate": "2020-06-16",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "First video-sourced detail on this event's actual mechanics (gear-stash-and-restore safety, timed random item drops from a separate EventItemBag pool, PvP unlocking at first drop) -- no prior claim had read Blood Moon's real CustomEventBattleRoyale.txt. Entry-via-NPC-only and /openevent index selection both cross-reference cleanly to CLAIM-048/CLAIM-079's confirmed real Command.dat findings. See CLAIM-120 through CLAIM-123."
+    },
+    {
+      "id": "KI-048",
+      "title": "Custom Event Drop Npc (Arena-based item-drop PvP walkthrough)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/zzh166VKwGk.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "drop-npc",
+        "pvp",
+        "item-drop",
+        "arena"
+      ],
+      "entities": [
+        "CustomEventDropNpc",
+        "CustomArena"
+      ],
+      "capturedAt": "2026-08-27T00:30:00Z",
+      "sourceDate": "2020-06-03",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Explicit re-upload/official replacement of an older video the presenter states he is deleting. NPC-only entry cross-references cleanly to CLAIM-079/CLAIM-049's confirmed real Command.dat findings (CLAIM-124). Adds new detail on timed item drops, item durability, PvP lobby-lock, and SQL/website ranking integration not previously documented for this event. See CLAIM-124 through CLAIM-128."
+    },
+    {
+      "id": "KI-049",
+      "title": "Custom Event BBB (trivia elimination walkthrough)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/7S-GtB91E6Y.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "bbb",
+        "trivia",
+        "quiz",
+        "elimination"
+      ],
+      "entities": [
+        "CustomEventBBB",
+        "CustomEventQuiz",
+        "EventItemBag"
+      ],
+      "capturedAt": "2026-08-27T00:35:00Z",
+      "sourceDate": "2020-01-29",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "/participar bbb entry-command cross-references cleanly to CLAIM-049's confirmed real JoinEventXxxSyntax registry entry (CLAIM-129). Presenter explicitly ties this event's item-reward mechanism to the same one used by Quiz (relevant cross-link when HmagyvjHllU is processed). See CLAIM-129 through CLAIM-132."
+    },
+    {
+      "id": "KI-050",
+      "title": "Custom Event Quiz (global broadcast trivia walkthrough)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/HmagyvjHllU.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "quiz",
+        "trivia",
+        "broadcast"
+      ],
+      "entities": [
+        "CustomEventQuiz",
+        "CustomEventBBB",
+        "EventItemBag"
+      ],
+      "capturedAt": "2026-08-27T00:40:00Z",
+      "sourceDate": "2020-01-29",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Sibling video to BBB (KI-049), uploaded the same day. The no-join-step design cross-references cleanly by absence to CLAIM-049's confirmed real JoinEventXxxSyntax registry (CLAIM-133). Clarifies an important player-facing contrast with BBB: no permanent elimination on a wrong guess. See CLAIM-133 through CLAIM-135."
+    },
+    {
+      "id": "KI-051",
+      "title": "Custom Event Hide And Seek (find-the-GM walkthrough)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/Q7lb3HJ-iBs.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "hide-and-seek",
+        "gm-event"
+      ],
+      "entities": [
+        "CustomEventHideAndSeek",
+        "OpenEvent"
+      ],
+      "capturedAt": "2026-08-27T00:45:00Z",
+      "sourceDate": "2020-01-13",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Short, thin-content video (51 segments) -- core find-and-trade mechanic and /openevent start command captured; /openevent usage cross-references cleanly to CLAIM-048's confirmed real StartEventXxxSyntax registry (CLAIM-137). Exact reward amounts not recorded due to degraded audio. See CLAIM-136 through CLAIM-138."
+    },
+    {
+      "id": "KI-052",
+      "title": "Custom Event Run And Catch (one-hit tag walkthrough)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/ZEsn5eEg3AI.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "run-and-catch",
+        "tag",
+        "pvp",
+        "elimination"
+      ],
+      "entities": [
+        "CustomEventRunAndCatch",
+        "OpenEvent",
+        "JoinEvent"
+      ],
+      "capturedAt": "2026-08-27T00:50:00Z",
+      "sourceDate": "2020-01-13",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Uploaded same day as Hide And Seek (KI-051), part of the same release batch as Absorption and Russian Roulette per the presenter's own statement (CLAIM-141), useful forward cross-link for those two videos. Command usage cross-references cleanly to CLAIM-048/CLAIM-049's confirmed real Command.dat registries (CLAIM-140). See CLAIM-139 through CLAIM-141."
+    },
+    {
+      "id": "KI-053",
+      "title": "Custom Event NpcCrazy (scheduled temporary-shop tool)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/GQpifIFKxWA.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "systems",
+        "npc-crazy",
+        "invasion-manager",
+        "shop",
+        "admin-tooling"
+      ],
+      "entities": [
+        "CustomNpcCrazy",
+        "InvasionManager"
+      ],
+      "capturedAt": "2026-08-27T00:55:00Z",
+      "sourceDate": "2019-12-27",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Despite being listed under 'events' in the priority queue, this is architecturally a scheduled temporary-shop-NPC admin tool built on top of Invasion Manager, not a competitive PvP/PvE event -- absent from CLAIM-048's confirmed 31-entry StartEventXxxSyntax registry (which does include InvasionManager itself), consistent with it being schedule-only rather than GM-triggerable (CLAIM-143). Support/wiki classification: primarily internal/GM admin tooling, with only minor player-facing relevance (players may notice a temporary vendor NPC appear/disappear). See CLAIM-142 through CLAIM-144."
+    },
+    {
+      "id": "KI-054",
+      "title": "Custom Event Absorption (random-elimination walkthrough)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/xL2edt5ePkw.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "absorption",
+        "russian-roulette",
+        "elimination"
+      ],
+      "entities": [
+        "CustomEventAbsorption",
+        "CustomEventRussianRoulette"
+      ],
+      "capturedAt": "2026-08-27T01:00:00Z",
+      "sourceDate": "2019-12-27",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Presenter explicitly states this shares Russian Roulette's exact mechanic (useful cross-check when cBkzq54U_xU is processed). Command usage cross-references cleanly to CLAIM-048/CLAIM-049's confirmed real Command.dat registries (CLAIM-146). Third of three same-day event videos (with Hide And Seek, Run And Catch) from this release batch. See CLAIM-145 and CLAIM-146."
+    },
+    {
+      "id": "KI-055",
+      "title": "Custom Event Russian Roulette (GM-trade elimination walkthrough)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/cBkzq54U_xU.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "russian-roulette",
+        "absorption",
+        "elimination"
+      ],
+      "entities": [
+        "CustomEventRussianRoulette",
+        "CustomEventAbsorption",
+        "OpenEvent",
+        "JoinEvent"
+      ],
+      "capturedAt": "2026-08-27T01:05:00Z",
+      "sourceDate": "2019-12-27",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Sibling to Absorption (KI-054, same release day) -- clarifies the mechanic is GM-manual-trade-driven per round, not passive (CLAIM-147, refines CLAIM-145). Command usage cross-references cleanly to CLAIM-048/CLAIM-049's confirmed real Command.dat registries (CLAIM-149). See CLAIM-147 through CLAIM-150."
+    },
+    {
+      "id": "KI-056",
+      "title": "Custom Event Team vs Team (auto-split team-score walkthrough)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/h_6b8VC85ok.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "team-vs-team",
+        "tvt",
+        "pvp",
+        "team-score"
+      ],
+      "entities": [
+        "CustomEventTvT",
+        "OpenEvent",
+        "JoinEvent"
+      ],
+      "capturedAt": "2026-08-27T01:10:00Z",
+      "sourceDate": "2019-12-27",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Longest and most detailed of the December 2019 event batch. Win condition is team kill-score, not elimination -- a distinct pattern from most other events in this sweep. Supports both automatic schedule and manual GM start simultaneously, unlike Stop Or Die (CLAIM-114/117, manual-only). Command usage cross-references cleanly to CLAIM-048/CLAIM-049's confirmed real Command.dat registries (CLAIM-153). See CLAIM-151 through CLAIM-154."
+    },
+    {
+      "id": "KI-057",
+      "title": "Custom Arena multi-preset walkthrough (Mata-Mata, Sobrevivencia, Resta 1)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/orGfLJpTEug.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "custom-arena",
+        "mata-mata",
+        "sobrevivencia",
+        "resta-1"
+      ],
+      "entities": [
+        "CustomArena",
+        "CustomEventPvpAll"
+      ],
+      "capturedAt": "2026-08-27T01:15:00Z",
+      "sourceDate": "2019-09-25",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Important disambiguation: this video's 'Mata-Mata' is a Custom Arena preset, NOT the same system as the separately-confirmed dedicated Kill All Event (CLAIM-024/025/026) despite the shared Portuguese name (CLAIM-155). The 10 pre-created Arena instances (index 0-9) cross-reference exactly to CLAIM-048's confirmed real GM panel finding of '10 town Arenas (index 0-9)' on Blood Moon (CLAIM-156). See CLAIM-155 through CLAIM-159."
+    },
+    {
+      "id": "KI-058",
+      "title": "Custom Monster HP (boss-only HP bar whitelist)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/ras-LWKglMM.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "monsters",
+        "hp-bar",
+        "ui",
+        "boss"
+      ],
+      "entities": [
+        "CustomMonsterHP",
+        "Kundun",
+        "Selupan"
+      ],
+      "capturedAt": "2026-08-27T01:20:00Z",
+      "sourceDate": "2026-05-19",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "A UI/display feature, not an event -- addresses a concrete player complaint (monster HP bars interfering with picking up ground items). Demo whitelist entries (Kundun, Selupan) both correspond to real Blood Moon bosses per CLAIM-096, though that's a different config file and doesn't confirm this specific HP-bar feature's state on Blood Moon. See CLAIM-160 through CLAIM-162."
+    },
+    {
+      "id": "KI-059",
+      "title": "Custom Monster Time (H-key boss respawn countdown)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/BaAxyG7Pio8.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "monsters",
+        "hp-timer",
+        "h-key",
+        "boss",
+        "ui"
+      ],
+      "entities": [
+        "CustomMonsterTime",
+        "Erohim",
+        "Selupan"
+      ],
+      "capturedAt": "2026-08-27T01:25:00Z",
+      "sourceDate": "2023-03-02",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Strong direct corroboration of CLAIM-096 (real Blood Moon CustomMonsterTime.txt): both the Selupan exclusion rationale (CLAIM-165) and the Erohim inclusion (CLAIM-166) match Blood Moon's actual recorded file content exactly. High value as background for a player-facing 'where are the world bosses' help note, though the H-key UI mechanism itself is not independently runtime-verified. See CLAIM-163 through CLAIM-166."
+    },
+    {
+      "id": "KI-060",
+      "title": "Custom Map Up Level (per-map EXP ceiling)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/VV2J_60gXBQ.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "maps",
+        "progression",
+        "exp-cap",
+        "leveling"
+      ],
+      "entities": [
+        "CustomMapUpLevel"
+      ],
+      "capturedAt": "2026-08-27T01:30:00Z",
+      "sourceDate": "2020-03-15",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "First coverage of this system in the sweep -- no prior claim on Blood Moon's real configuration. The -1-disables-dimension config convention matches an already-confirmed pattern from CLAIM-035, suggesting a shared engine-wide idiom. Player-facing relevance: explains a 'why did my exp stop counting on this map' support scenario. See CLAIM-167 and CLAIM-168."
+    },
+    {
+      "id": "KI-061",
+      "title": "Custom Map Pk (auto-PK-on-entry map list)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/HLtXKRSqyrQ.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "maps",
+        "pk",
+        "pvp"
+      ],
+      "entities": [
+        "CustomMapPk"
+      ],
+      "capturedAt": "2026-08-27T01:35:00Z",
+      "sourceDate": "2020-03-15",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "First coverage of this system in the sweep -- companion feature to Custom Map Up Level (KI-060), released the same day, both opt-in per-map admin config systems. No prior claim on Blood Moon's real configuration. Useful for a 'why am I suddenly flagged PK' support scenario. See CLAIM-169 and CLAIM-170."
+    },
+    {
+      "id": "KI-062",
+      "title": "Command MakeSet, Make, Drop (item-duration update)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "commands",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/M7KLqCfcb9I.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "commands",
+        "make",
+        "makeset",
+        "drop",
+        "gm-tools"
+      ],
+      "entities": [
+        "Make",
+        "MakeSet",
+        "Drop"
+      ],
+      "capturedAt": "2026-08-27T01:40:00Z",
+      "sourceDate": "2020-02-29",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Companion/earlier update to the same 3 commands already partly covered by CLAIM-078 (a later Type 0/1 shorthand update) -- this video documents a separate item-expiry-duration parameter and clarifies baseline parameter ordering. Internal/GM-tooling relevance only, not player-facing. See CLAIM-171 and CLAIM-172."
+    },
+    {
+      "id": "KI-063",
+      "title": "Custom Pk Drop Item (anti-griefer equipment-drop punishment)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/u_daoxwEfTA.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "drop-system",
+        "pk",
+        "pvp",
+        "punishment"
+      ],
+      "entities": [
+        "CustomPkDropItem"
+      ],
+      "capturedAt": "2026-08-27T01:45:00Z",
+      "sourceDate": "2020-01-29",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "First coverage of this system in the sweep. Intended as an anti-griefer deterrent (punishes players who PK weaker targets) -- presenter notes it's popular on Argentine servers specifically. Potentially high player-support relevance (permanent gear loss) IF Blood Moon has it enabled anywhere, which is unverified. See CLAIM-173 through CLAIM-175."
+    },
+    {
+      "id": "KI-064",
+      "title": "Custom Monster & Npc (custom model authoring pipeline)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/CfVxdXykC6k.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "monsters",
+        "npc",
+        "content-authoring",
+        "shop-manager"
+      ],
+      "entities": [
+        "CustomMonster",
+        "ShopManager"
+      ],
+      "capturedAt": "2026-08-27T01:50:00Z",
+      "sourceDate": "2019-12-29",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "PROVIDER_SPECIFIC",
+      "note": "Internal GM/admin content-authoring tooling, not player-facing support content -- describes how server operators add wholly new custom monster/NPC models to the game, requiring synced edits across server config and multiple client-side language files. Extends the multi-file-coordinate-matching footgun pattern already flagged in CLAIM-125 for Drop Npc. See CLAIM-176 and CLAIM-177."
+    },
+    {
+      "id": "KI-065",
+      "title": "Event Tropa (Invasion Manager summon-helpers extension)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "events",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/Qsy9gEioHw4.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "events",
+        "invasion-manager",
+        "boss",
+        "summon"
+      ],
+      "entities": [
+        "EventTropa",
+        "InvasionManager",
+        "Selupan",
+        "Kundun"
+      ],
+      "capturedAt": "2026-08-27T01:55:00Z",
+      "sourceDate": "2019-09-05",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Extends the already-confirmed real Invasion Manager system (CLAIM-048) with helper-monster summons and a 3rd reward currency. Both demo monsters (Selupan, Kundun) independently correspond to real Blood Moon monster entities per CLAIM-096, reinforcing this is built on genuinely-deployed vendor infrastructure even though Event Tropa's own deployment on Blood Moon is unverified. See CLAIM-179 and CLAIM-180."
+    },
+    {
+      "id": "KI-066",
+      "title": "Adicionando Item MuMaker (Access-based item editor tutorial)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/etbGEpJdmRQ.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "items",
+        "mumaker",
+        "admin-tooling",
+        "database"
+      ],
+      "entities": [
+        "MuMaker"
+      ],
+      "capturedAt": "2026-08-27T02:00:00Z",
+      "sourceDate": "2019-07-27",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "PROVIDER_SPECIFIC",
+      "note": "Purely internal GM/admin tooling (a generic Microsoft Access database GUI walkthrough for adding items) -- not player-support-relevant at all, and reveals nothing about Blood Moon's actual item roster. See CLAIM-181."
+    },
+    {
+      "id": "KI-067",
+      "title": "Adicionando Item MuServer e Cliente (server/client item pipeline)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/-JKSgUY9-3Y.pt.json",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "items",
+        "admin-tooling",
+        "client-editing",
+        "season-14",
+        "season-16",
+        "season-18"
+      ],
+      "entities": [
+        "Item.txt",
+        "CustomItem"
+      ],
+      "capturedAt": "2026-08-27T02:05:00Z",
+      "sourceDate": "2017-10-03",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "PROVIDER_SPECIFIC",
+      "note": "The oldest video in this batch (2017) -- a deep, purely internal admin content-authoring tutorial covering server-side Item.txt plus season-specific client-side item.bmd editing toolchains (Season 14 vs 16 vs 18). Not player-facing and reveals nothing about Blood Moon's actual item content. See CLAIM-182 through CLAIM-184."
+    },
+    {
+      "id": "KI-068",
+      "title": "Custom Item Drop Requirement (level/reset/VIP drop gate)",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "systems",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/zJRrsKWKcUc.pt.srt",
+      "normalizedArtifact": null,
+      "derivedArtifacts": [],
+      "tags": [
+        "drop-system",
+        "items",
+        "requirements",
+        "vip"
+      ],
+      "entities": [
+        "CustomItemDropRequirement"
+      ],
+      "capturedAt": "2026-08-27T02:10:00Z",
+      "sourceDate": null,
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "Only video in the original 27-item P0 list whose transcript was unavailable in the standard .pt.json format used elsewhere in this sweep -- a raw .pt.srt caption file exists for it from the same channel/pipeline and was read in full instead, so this entry carries the same evidentiary standing as the rest. No upload date metadata was present in the .srt file (unlike the .json transcripts, which embed videoId/title/uploadDate) -- sourceDate left null rather than guessed. Two-file architecture cross-references CLAIM-092's confirmed real master switchboard file. See CLAIM-185 through CLAIM-187."
     }
   ]
 }

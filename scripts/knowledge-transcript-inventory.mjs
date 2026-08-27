@@ -6,9 +6,13 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 
-const ROOT = 'D:\\MU'
-const VS = join(ROOT, 'mu-bloodmoon-v1', 'knowledge', 'vendor-sweep')
-const YT = join(ROOT, 'Research', 'YouTube', 'project-gamers-oficial')
+// VS resolves relative to cwd (matching every other knowledge-*.mjs
+// generator's convention) so this script operates on whichever git
+// worktree it's invoked from, never a hardcoded absolute path to one
+// specific checkout. YT stays absolute -- Research/YouTube lives outside
+// git entirely (shared across worktrees, not tracked/branched).
+const VS = join(process.cwd(), 'knowledge', 'vendor-sweep')
+const YT = join('D:\\MU', 'Research', 'YouTube', 'project-gamers-oficial')
 
 function parseRelevant(text) {
   return text.trim().split('\n').map(line => {
@@ -77,10 +81,15 @@ const statusByVideo = parseStatusTsv(readFileSync(join(YT, 'transcripts-status.t
 const knowledgeIndex = JSON.parse(readFileSync(join(VS, 'knowledge-index.json'), 'utf8'))
 const claimsDoc = JSON.parse(readFileSync(join(VS, 'atomic-claims.json'), 'utf8'))
 
-// map videoId -> KI entry (via rawArtifact path containing the videoId)
+// map videoId -> KI entry (via rawArtifact path containing the videoId).
+// Matches both .pt.json (the standard yt-dlp transcript format used
+// throughout this sweep) and .pt.srt (the one fallback format used when a
+// video's official-caption fetch only ever produced an .srt, see KI-068) --
+// a videoId-only match here previously left that one entry permanently
+// invisible to this inventory despite being fully processed.
 const kiByVideo = new Map()
 for (const ki of knowledgeIndex.entries) {
-  const m = /transcripts\/([^/.]+)\.pt\.json/.exec(ki.rawArtifact || '')
+  const m = /transcripts\/([^/.]+)\.pt\.(json|srt)/.exec(ki.rawArtifact || '')
   if (m) kiByVideo.set(m[1], ki)
 }
 
