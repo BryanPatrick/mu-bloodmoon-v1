@@ -23,6 +23,7 @@ export default tseslint.config(
       '**/.npm-cache/**',
       '**/work/**',
       '**/*.min.js',
+      '**/.wrangler/**',
       'apps/api/prisma/migrations/**',
       'apps/launcher/bin/**',
       'apps/launcher/obj/**',
