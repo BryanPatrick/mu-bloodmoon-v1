@@ -674,6 +674,10 @@ describe('Guilds MVP', () => {
       // LEADER status was already transferred away by the other request
       // racing ahead of it -- the invariant under test is never "both
       // succeed", it's "the guild never has zero or two LEADERs afterward".
+      // A rejection must still be a clean 4xx (already-transferred-away is
+      // an ordinary, expected outcome of the race) -- never a 500, matching
+      // the sibling concurrency assertions elsewhere in this file.
+      expect([first.status, second.status]).not.toContain(500)
       expect([first.status, second.status].filter((status) => status === 200).length).toBeGreaterThanOrEqual(1)
       expect(await countLeaders()).toBe(1)
     })

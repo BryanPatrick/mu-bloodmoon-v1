@@ -444,11 +444,11 @@ export class GuildsService {
     }
 
     const now = new Date()
-    const [disbanded] = await this.prisma.$transaction([
+    const [disbanded] = await this.retryOnWriteConflict(() => this.prisma.$transaction([
       this.prisma.guild.update({ where: { id: guild.id }, data: { status: 'DISBANDED' } }),
       this.prisma.guildInvite.updateMany({ where: { guildId: guild.id, status: 'PENDING' }, data: { status: 'CANCELLED', decidedAt: now } }),
       this.prisma.guildJoinRequest.updateMany({ where: { guildId: guild.id, status: 'PENDING' }, data: { status: 'CANCELLED', decidedBy: user.id, decidedAt: now, decisionNote: 'Guild encerrada pelo líder.' } })
-    ])
+    ]))
 
     await this.observability.recordOperationalEvent({
       module: 'guilds', eventType: 'GUILD_DISBANDED', entityType: 'Guild', entityId: guild.id,
@@ -807,6 +807,32 @@ export class GuildsService {
     return { guild, member }
   }
 
+  // disbandGuild's transaction and updateMemberRole's LEADER-transfer
+  // transaction both write the same Guild row (and can touch overlapping
+  // GuildMember rows) -- under true concurrent execution, MySQL/InnoDB can
+  // pick either transaction as the deadlock victim and roll it back, which
+  // Prisma surfaces as PrismaClientKnownRequestError code P2034 ("Transaction
+  // failed due to a write conflict or a deadlock. Please retry your
+  // transaction"). Prisma does not retry this itself (see Prisma docs on
+  // interactive transactions) -- left uncaught, it would propagate as an
+  // unhandled 500, violating the "concurrent legitimate operations never
+  // return 500" invariant these two methods are held to. A short, bounded
+  // retry is the standard, documented mitigation for this exact error code.
+  // Only P2034 is retried -- any other error (including the deliberate
+  // NotFoundException/BadRequestException rejections both transactions can
+  // throw) propagates immediately on the first attempt.
+  private async retryOnWriteConflict<T>(operation: () => Promise<T>, attempts = 3): Promise<T> {
+    for (let attempt = 1; attempt <= attempts; attempt++) {
+      try {
+        return await operation()
+      } catch (error) {
+        const isWriteConflict = error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2034'
+        if (!isWriteConflict || attempt === attempts) throw error
+      }
+    }
+    throw new Error('unreachable')
+  }
+
   async updateMemberRole(slug: string, memberId: string, payload: GuildMemberRolePayload, user: AuthenticatedUser) {
     const { guild, member } = await this.guildAndMember(slug, memberId)
     await this.assertRole(guild.id, user, ['LEADER'])
@@ -827,7 +853,7 @@ export class GuildsService {
       // have granted that ex-leader ongoing LEADER-only authority, not just
       // a cosmetic data inconsistency.
       if (member.roleKey === 'LEADER') return member
-      const promoted = await this.prisma.$transaction(async (tx) => {
+      const promoted = await this.retryOnWriteConflict(() => this.prisma.$transaction(async (tx) => {
         await tx.guildMember.updateMany({
           where: { guildId: guild.id, roleKey: 'LEADER', id: { not: member.id } },
           data: { roleKey: 'OFFICER' }
@@ -846,7 +872,7 @@ export class GuildsService {
         const next = await tx.guildMember.findUniqueOrThrow({ where: { id: member.id } })
         await tx.guild.update({ where: { id: guild.id }, data: { leaderMemberId: member.id } })
         return next
-      })
+      }))
       await this.observability.recordOperationalEvent({ module: 'guilds', eventType: 'GUILD_LEADERSHIP_TRANSFERRED', entityType: 'GuildMember', entityId: member.id, actorUserId: user.id, targetUserId: member.accountId, description: `Liderança transferida para ${member.accountId}; líder anterior rebaixado a OFFICER.` })
       return promoted
     }
