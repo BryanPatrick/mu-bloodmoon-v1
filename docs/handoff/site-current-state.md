@@ -15,6 +15,53 @@ diretamente contra o codigo atual (nao a partir deste documento)** -- ver
 e atual de autenticacao, recuperacao de senha, loja, marketplace/GameBridge,
 wiki, rankings, busca, launcher, paginas de erro, SEO e seguranca.
 
+## Atualizacao 2026-08-27 -- modulos adicionados apos a Etapa 19.6
+
+**Esta secao e um adendo objetivo, nao uma nova auditoria.** Todo o
+restante deste documento (Etapas 5-19.6) permanece como registro historico
+tal como foi escrito -- nao foi revisado nem reescrito nesta atualizacao.
+O unico objetivo aqui e registrar quais subsistemas novos existem hoje no
+codigo que nao aparecem em nenhuma secao abaixo, para quem for ler este
+documento nao concluir erroneamente que o site "parou" na Etapa 19.6.
+
+Subsistemas reais, presentes no codigo atual, ausentes de todo o resto
+deste documento:
+
+- **Unified Account / Game Account Identity** (`apps/api/src/modules/
+game-account-identity/`, mais fluxos de registro/preparo/ativacao
+  correlatos) -- existe e tem cobertura E2E propria (ver
+  `docs/accounts/unified-account-implementation.md`).
+- **Game Provisioning** (`apps/api/src/modules/
+game-provisioning-reconciliation/`) -- existe, com worker de
+  reconciliacao e RBAC administrativo dedicado.
+- **Launcher CMS/Studio** (`apps/api/src/modules/launcher-studio/`) --
+  existe; gerencia conteudo/campanhas do launcher, distinto do modulo
+  `launcher` original ja documentado acima.
+- **Game Data Platform** (`apps/game-bridge-agent/` .NET Worker Service +
+  `apps/game-data-worker/` Cloudflare Worker + `apps/api/src/modules/
+game-data/`) -- arquitetura read-only SQL Server -> Agent -> Cloudflare
+  -> apps/api, documentada em `docs/game-data/`. Fase 1 (fundacao local,
+  sem SQL Server real nem conta Cloudflare real) concluida; validacao
+  contra infraestrutura real ainda pendente -- ver `docs/game-data/
+phase-1-report.md` para o status exato.
+- **Guilds** (`apps/api/src/modules/guilds/`) -- sistema de guildas
+  completo (criacao, papeis, convites, disband, tesouraria/vault),
+  ausente de todo o inventario de modulos/rotas acima.
+- **GM tooling** (`apps/api/src/modules/gm/`) e **Discord integrations**
+  (`apps/api/src/modules/integrations-discord/`) -- tambem novos,
+  ausentes do inventario original.
+- **Payments** (`apps/api/src/modules/payments/`) e **Test Personas**
+  (`apps/api/src/modules/test-personas/`) -- idem.
+
+O provider de banco continua MySQL (ja correto neste documento desde a
+Etapa 17, sem alteracao) -- este adendo nao revisita essa parte.
+
+Nao ha reclassificacao BLOCKER/HIGH/MEDIUM/LOW destes modulos novos nesta
+atualizacao -- isso exigiria uma auditoria completa como a da Etapa 17,
+fora do escopo desta correcao pontual. Para o estado atual desses
+subsistemas especificos, ver a documentacao dedicada de cada um
+(`docs/accounts/`, `docs/game-data/`) em vez deste arquivo.
+
 ## Escopo e criterio
 
 Este documento descreve o codigo local observado. Ele nao afirma que uma funcao esta
@@ -89,96 +136,96 @@ sensivel com o MU passa por jobs idempotentes e auditados.
 
 ### Publicas
 
-| Rota | Status | Estado observado |
-|---|---|---|
-| `/` | PARTIAL | Home visual pronta, busca conteudo/launcher na API; possui fallback editorial e depende de dados reais. |
-| `/about` | PARTIAL | Conteudo carregado pela API; depende de publicacao CMS. |
-| `/acesso-negado` | READY | Estado de autorizacao negada. |
-| `/downloads` | READY | Links externos de launcher/cliente existem; patch e extras permanecem `Em breve`. |
-| `/login` | PARTIAL | Login JWT, refresh e 2FA ligados a API; falta smoke/E2E com banco real nesta auditoria. |
-| `/registrar` | PARTIAL | Cadastro chama API; falta validar fluxo completo e e-mail real. |
-| `/recuperar-conta` | BLOCKED | Backend real (token hash, expira, single-use, invalida sessoes) e UI IDLE/LOADING/SUCCESS/ERROR implementados (Etapa 19.3); envio de e-mail so funciona com provedor de e-mail aprovado, que ainda nao existe -- ver `docs/handoff/auth-recovery-provider-blocker.md`. |
-| `/noticias` | PARTIAL | Lista via Content API; qualidade depende do conteudo publicado. |
-| `/rankings` | PARTIAL | UI existe, mas dados dependem do store/sincronizacao do servidor; vazio e tratado. |
-| `/guias` | PARTIAL | Indice de guias existe; coexistencia com `/wiki` precisa decisao de produto. |
-| `/guias/[category]/[topic]` | PARTIAL | Renderizador amplo, incluindo equipamentos; arquivo grande e combina dados gerados/API. |
-| `/wiki` | PARTIAL | Wiki ampla, filtros e catalogos; depende de API/dados e possui bundle/arquivo muito grande. |
-| `/loja` | PARTIAL | Catalogo publico conectado a Store API. Compra depende de autenticacao, saldo e entrega. |
-| `/loja/[slug]` | PARTIAL | Detalhe/variante/destino implementados; requer teste comercial ponta a ponta. |
-| `/marketplace` | PARTIAL | Busca/listagem/compra conectadas a API; escrow/GameBridge requer homologacao real. |
-| `/roadmap` | PARTIAL | Listagem/filtros via Roadmap API; depende de itens publicados. |
-| `/roadmap/[slug]` | PARTIAL | Detalhe via Roadmap API. |
-| `/recarga` | PARTIAL | Intencao de recarga existe; confirmacao de pagamento real nao foi validada. |
-| `/comunidade` | PARTIAL | Feed/posts/interacoes reais misturados com rails e perfil mockados. Ver documento dedicado. |
-| `/comunidade/[username]` | READY | Etapa 7: dados 100% reais, sem mock/fallback; estados loading/erro/nao-encontrado explicitos. Coberto por E2E (`community-profile.e2e-spec.ts`). Ainda requer QA visual manual em navegador. |
-| `/comunidade/perfil/[username]` | READY | Alias que redireciona ao perfil canonico. |
+| Rota                            | Status  | Estado observado                                                                                                                                                                                                                                                       |
+| ------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`                             | PARTIAL | Home visual pronta, busca conteudo/launcher na API; possui fallback editorial e depende de dados reais.                                                                                                                                                                |
+| `/about`                        | PARTIAL | Conteudo carregado pela API; depende de publicacao CMS.                                                                                                                                                                                                                |
+| `/acesso-negado`                | READY   | Estado de autorizacao negada.                                                                                                                                                                                                                                          |
+| `/downloads`                    | READY   | Links externos de launcher/cliente existem; patch e extras permanecem `Em breve`.                                                                                                                                                                                      |
+| `/login`                        | PARTIAL | Login JWT, refresh e 2FA ligados a API; falta smoke/E2E com banco real nesta auditoria.                                                                                                                                                                                |
+| `/registrar`                    | PARTIAL | Cadastro chama API; falta validar fluxo completo e e-mail real.                                                                                                                                                                                                        |
+| `/recuperar-conta`              | BLOCKED | Backend real (token hash, expira, single-use, invalida sessoes) e UI IDLE/LOADING/SUCCESS/ERROR implementados (Etapa 19.3); envio de e-mail so funciona com provedor de e-mail aprovado, que ainda nao existe -- ver `docs/handoff/auth-recovery-provider-blocker.md`. |
+| `/noticias`                     | PARTIAL | Lista via Content API; qualidade depende do conteudo publicado.                                                                                                                                                                                                        |
+| `/rankings`                     | PARTIAL | UI existe, mas dados dependem do store/sincronizacao do servidor; vazio e tratado.                                                                                                                                                                                     |
+| `/guias`                        | PARTIAL | Indice de guias existe; coexistencia com `/wiki` precisa decisao de produto.                                                                                                                                                                                           |
+| `/guias/[category]/[topic]`     | PARTIAL | Renderizador amplo, incluindo equipamentos; arquivo grande e combina dados gerados/API.                                                                                                                                                                                |
+| `/wiki`                         | PARTIAL | Wiki ampla, filtros e catalogos; depende de API/dados e possui bundle/arquivo muito grande.                                                                                                                                                                            |
+| `/loja`                         | PARTIAL | Catalogo publico conectado a Store API. Compra depende de autenticacao, saldo e entrega.                                                                                                                                                                               |
+| `/loja/[slug]`                  | PARTIAL | Detalhe/variante/destino implementados; requer teste comercial ponta a ponta.                                                                                                                                                                                          |
+| `/marketplace`                  | PARTIAL | Busca/listagem/compra conectadas a API; escrow/GameBridge requer homologacao real.                                                                                                                                                                                     |
+| `/roadmap`                      | PARTIAL | Listagem/filtros via Roadmap API; depende de itens publicados.                                                                                                                                                                                                         |
+| `/roadmap/[slug]`               | PARTIAL | Detalhe via Roadmap API.                                                                                                                                                                                                                                               |
+| `/recarga`                      | PARTIAL | Intencao de recarga existe; confirmacao de pagamento real nao foi validada.                                                                                                                                                                                            |
+| `/comunidade`                   | PARTIAL | Feed/posts/interacoes reais misturados com rails e perfil mockados. Ver documento dedicado.                                                                                                                                                                            |
+| `/comunidade/[username]`        | READY   | Etapa 7: dados 100% reais, sem mock/fallback; estados loading/erro/nao-encontrado explicitos. Coberto por E2E (`community-profile.e2e-spec.ts`). Ainda requer QA visual manual em navegador.                                                                           |
+| `/comunidade/perfil/[username]` | READY   | Alias que redireciona ao perfil canonico.                                                                                                                                                                                                                              |
 
 ### Painel do jogador
 
-| Rota | Status | Estado observado |
-|---|---|---|
-| `/painel` | PARTIAL | Dashboard muda por papel; depende das APIs e permissoes. |
-| `/painel/conta` | PARTIAL | Perfil, senha, sessoes e 2FA implementados; requer E2E. |
-| `/painel/personagens` | PARTIAL | Consulta/gestao conectada a Characters API; dados reais dependem da ponte MU. |
-| `/painel/compras` | PARTIAL | Lista compras reais; falha de API vira estado vazio sem diagnostico ao usuario. |
-| `/painel/loja` | READY | Redireciona para `/loja`. |
-| `/painel/marketplace` | PARTIAL | Criacao e gestao de anuncios/pedidos; depende de escrow/GameBridge. |
-| `/painel/notificacoes` | PLACEHOLDER | Agrega NEWS/EVENT globais; nao e notificacao pessoal persistida. |
-| `/painel/suporte` | PARTIAL | Criacao/listagem de tickets conectadas a API. |
-| `/painel/configuracoes` | PARTIAL | Preferencias visuais/conta; revisar persistencia real. |
+| Rota                    | Status      | Estado observado                                                                |
+| ----------------------- | ----------- | ------------------------------------------------------------------------------- |
+| `/painel`               | PARTIAL     | Dashboard muda por papel; depende das APIs e permissoes.                        |
+| `/painel/conta`         | PARTIAL     | Perfil, senha, sessoes e 2FA implementados; requer E2E.                         |
+| `/painel/personagens`   | PARTIAL     | Consulta/gestao conectada a Characters API; dados reais dependem da ponte MU.   |
+| `/painel/compras`       | PARTIAL     | Lista compras reais; falha de API vira estado vazio sem diagnostico ao usuario. |
+| `/painel/loja`          | READY       | Redireciona para `/loja`.                                                       |
+| `/painel/marketplace`   | PARTIAL     | Criacao e gestao de anuncios/pedidos; depende de escrow/GameBridge.             |
+| `/painel/notificacoes`  | PLACEHOLDER | Agrega NEWS/EVENT globais; nao e notificacao pessoal persistida.                |
+| `/painel/suporte`       | PARTIAL     | Criacao/listagem de tickets conectadas a API.                                   |
+| `/painel/configuracoes` | PARTIAL     | Preferencias visuais/conta; revisar persistencia real.                          |
 
 ### Painel administrativo
 
 Aliases `/admin/community`, `/admin/reports`, `/admin/roadmap`, `/admin/store` e
 `/admin/tasks` apenas redirecionam para o painel oficial.
 
-| Rota | Status | Estado observado |
-|---|---|---|
-| `/painel/admin/contas` | PARTIAL | Consulta, status, papeis/permissoes e sessoes; requer homologacao por papel. |
-| `/painel/admin/financeiro` | PARTIAL | Operacao financeira/commerce; valores estrategicos protegidos por permissao. |
-| `/painel/admin/conteudo` | PARTIAL | CMS de conteudo, equipamentos, configuracoes e midia. |
-| `/painel/admin/loja` | PARTIAL | Manager completo no codigo para produtos, variantes, pedidos, entregas e teste protegido. |
-| `/painel/admin/marketplace` | PARTIAL | Manager para anuncios, transacoes, denuncias e configuracoes. |
-| `/painel/admin/marketplace/escrow` | PARTIAL | Reusa manager na aba escrow; exige homologacao da ponte do jogo. |
-| `/painel/admin/comunidade` | PARTIAL | Moderacao/catalogos/politicas/tarefas/analytics; migrations locais pendentes. |
-| `/painel/admin/tarefas` | PARTIAL | Central de tarefas, evidencia, revisao e historico. |
-| `/painel/admin/relatorios` | PARTIAL | Relatorios e exportacoes por permissao; validar dados reais. |
-| `/painel/admin/roadmap` | PARTIAL | Workflow, revisao, publicacao, atualizacoes e tarefas. |
-| `/painel/admin/auditoria` | PARTIAL | Consulta de AuditLog e filtros. |
-| `/painel/admin/historico` | PARTIAL | Historico por entidade/ID. |
-| `/painel/admin/logs-trabalho` | PARTIAL | Consulta/criacao de AdminWorkLog. |
-| `/painel/admin/eventos-operacionais` | PARTIAL | Linha de eventos operacionais compartilhada. |
-| `/painel/admin/exportacoes` | PARTIAL | Exportacao administrativa por permissao. |
-| `/painel/admin/erros` | PARTIAL | Central de erros, atribuicao, investigacao e resolucao. |
-| `/painel/admin/alertas` | PARTIAL | Alertas do sistema. |
-| `/painel/admin/retencao` | PARTIAL | Politicas de retencao. |
-| `/painel/admin/moderacao` | PARTIAL | Moderacao de contas. |
-| `/painel/admin/tickets` | PARTIAL | Fila e resolucao de tickets. |
-| `/painel/admin/personagens` | PLACEHOLDER | Apenas encaminha para consulta por conta. |
-| `/painel/admin/sistema` | PARTIAL | Configuracoes/importacoes administrativas; valores sensiveis devem ficar no ambiente. |
+| Rota                                 | Status      | Estado observado                                                                          |
+| ------------------------------------ | ----------- | ----------------------------------------------------------------------------------------- |
+| `/painel/admin/contas`               | PARTIAL     | Consulta, status, papeis/permissoes e sessoes; requer homologacao por papel.              |
+| `/painel/admin/financeiro`           | PARTIAL     | Operacao financeira/commerce; valores estrategicos protegidos por permissao.              |
+| `/painel/admin/conteudo`             | PARTIAL     | CMS de conteudo, equipamentos, configuracoes e midia.                                     |
+| `/painel/admin/loja`                 | PARTIAL     | Manager completo no codigo para produtos, variantes, pedidos, entregas e teste protegido. |
+| `/painel/admin/marketplace`          | PARTIAL     | Manager para anuncios, transacoes, denuncias e configuracoes.                             |
+| `/painel/admin/marketplace/escrow`   | PARTIAL     | Reusa manager na aba escrow; exige homologacao da ponte do jogo.                          |
+| `/painel/admin/comunidade`           | PARTIAL     | Moderacao/catalogos/politicas/tarefas/analytics; migrations locais pendentes.             |
+| `/painel/admin/tarefas`              | PARTIAL     | Central de tarefas, evidencia, revisao e historico.                                       |
+| `/painel/admin/relatorios`           | PARTIAL     | Relatorios e exportacoes por permissao; validar dados reais.                              |
+| `/painel/admin/roadmap`              | PARTIAL     | Workflow, revisao, publicacao, atualizacoes e tarefas.                                    |
+| `/painel/admin/auditoria`            | PARTIAL     | Consulta de AuditLog e filtros.                                                           |
+| `/painel/admin/historico`            | PARTIAL     | Historico por entidade/ID.                                                                |
+| `/painel/admin/logs-trabalho`        | PARTIAL     | Consulta/criacao de AdminWorkLog.                                                         |
+| `/painel/admin/eventos-operacionais` | PARTIAL     | Linha de eventos operacionais compartilhada.                                              |
+| `/painel/admin/exportacoes`          | PARTIAL     | Exportacao administrativa por permissao.                                                  |
+| `/painel/admin/erros`                | PARTIAL     | Central de erros, atribuicao, investigacao e resolucao.                                   |
+| `/painel/admin/alertas`              | PARTIAL     | Alertas do sistema.                                                                       |
+| `/painel/admin/retencao`             | PARTIAL     | Politicas de retencao.                                                                    |
+| `/painel/admin/moderacao`            | PARTIAL     | Moderacao de contas.                                                                      |
+| `/painel/admin/tickets`              | PARTIAL     | Fila e resolucao de tickets.                                                              |
+| `/painel/admin/personagens`          | PLACEHOLDER | Apenas encaminha para consulta por conta.                                                 |
+| `/painel/admin/sistema`              | PARTIAL     | Configuracoes/importacoes administrativas; valores sensiveis devem ficar no ambiente.     |
 
 Nenhuma rota foi classificada `BROKEN` pela compilacao. Isso nao substitui teste com
 API e banco em execucao.
 
 ## Modulos do portal
 
-| Dominio | Status | Observacoes principais |
-|---|---|---|
-| Autenticacao | PARTIAL | JWT/refresh, sessoes unicas, 2FA e permissoes existem; token ainda e persistido em localStorage. |
-| Cadastro | PARTIAL | Endpoint e tela existem; e-mail/ativacao real precisam validacao. |
-| Recuperacao | BLOCKED | Modelo `PasswordResetToken`, endpoints `/auth/password-recovery/request` e `/reset`, invalidacao de sessao e E2E existem (Etapa 19.3); bloqueado apenas pela ausencia de provedor de e-mail aprovado. |
-| Conteudo/noticias | PARTIAL | Content API e CMS existem; ha fallbacks/textos ficticios no frontend. |
-| Wiki/equipamentos | PARTIAL | 613 equipamentos e 1.031 variantes passam no verificador; UI e payloads sao grandes. |
-| Ranking | PARTIAL | Sem prova de sincronizacao online nesta auditoria. |
-| Loja | PARTIAL | Catalogo, workflow, pedidos e entregas existem; pagamento/entrega real pendem de homologacao. |
-| Marketplace | PARTIAL | Escrow e jobs existem; e dominio de alto risco sem E2E real comprovado. |
-| Roadmap | PARTIAL | Publico/admin/workflow implementados. |
-| Suporte | PARTIAL | Tickets player/admin implementados. |
-| Launcher/download | PARTIAL | Downloads disponiveis e endpoints launcher existem; atualizacao real nao testada. |
-| Comunidade | PARTIAL | Implementacao local extensa e nao commitada. |
-| Observabilidade | PARTIAL | AuditLog, trabalho, eventos, erros, alertas, correlacao e retencao existem. |
-| Relatorios | PARTIAL | APIs/UI/exportacao existem; consolidacao real nao testada. |
-| Game Bridge | PARTIAL | Jobs/worker existem; nao conectar escrita real sem homologacao e rollback. |
+| Dominio           | Status  | Observacoes principais                                                                                                                                                                                |
+| ----------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Autenticacao      | PARTIAL | JWT/refresh, sessoes unicas, 2FA e permissoes existem; token ainda e persistido em localStorage.                                                                                                      |
+| Cadastro          | PARTIAL | Endpoint e tela existem; e-mail/ativacao real precisam validacao.                                                                                                                                     |
+| Recuperacao       | BLOCKED | Modelo `PasswordResetToken`, endpoints `/auth/password-recovery/request` e `/reset`, invalidacao de sessao e E2E existem (Etapa 19.3); bloqueado apenas pela ausencia de provedor de e-mail aprovado. |
+| Conteudo/noticias | PARTIAL | Content API e CMS existem; ha fallbacks/textos ficticios no frontend.                                                                                                                                 |
+| Wiki/equipamentos | PARTIAL | 613 equipamentos e 1.031 variantes passam no verificador; UI e payloads sao grandes.                                                                                                                  |
+| Ranking           | PARTIAL | Sem prova de sincronizacao online nesta auditoria.                                                                                                                                                    |
+| Loja              | PARTIAL | Catalogo, workflow, pedidos e entregas existem; pagamento/entrega real pendem de homologacao.                                                                                                         |
+| Marketplace       | PARTIAL | Escrow e jobs existem; e dominio de alto risco sem E2E real comprovado.                                                                                                                               |
+| Roadmap           | PARTIAL | Publico/admin/workflow implementados.                                                                                                                                                                 |
+| Suporte           | PARTIAL | Tickets player/admin implementados.                                                                                                                                                                   |
+| Launcher/download | PARTIAL | Downloads disponiveis e endpoints launcher existem; atualizacao real nao testada.                                                                                                                     |
+| Comunidade        | PARTIAL | Implementacao local extensa e nao commitada.                                                                                                                                                          |
+| Observabilidade   | PARTIAL | AuditLog, trabalho, eventos, erros, alertas, correlacao e retencao existem.                                                                                                                           |
+| Relatorios        | PARTIAL | APIs/UI/exportacao existem; consolidacao real nao testada.                                                                                                                                            |
+| Game Bridge       | PARTIAL | Jobs/worker existem; nao conectar escrita real sem homologacao e rollback.                                                                                                                            |
 
 ## Backend e API
 
@@ -273,19 +320,19 @@ integracao e fidelidade de dados.
 
 ## Verificacoes executadas
 
-| Verificacao | Resultado | Observacao |
-|---|---|---|
-| `npm run api:check` | PASS | Checks estruturais + `tsc --noEmit`. |
-| `npm run web:build` | PASS | Build SSR/Nitro concluido; avisos de sourcemap, deprecacao e chunks grandes. |
-| `npm run data:check-equipment` | PASS | 613 equipamentos, 1.031 variantes, 132 sets, zero vazamento acima da Season 6. |
-| `npm run lint` (Etapa 5) | FAIL (1 erro) | ESLint 10 flat config + eslint-plugin-vue + typescript-eslint, cobrindo apps/web/apps/api/packages/shared. 1075 problemas brutos -> 56 apos configurar 3 falsos-positivos conhecidos (no-undef de auto-import Nuxt, ternario-como-statement, catch vazio intencional). O 1 erro restante e uma atribuicao morta inofensiva em `admin-tasks.service.ts:363` (nao-Community, nao corrigida nesta etapa); 55 warnings sao `unused-vars` pre-existentes (baseline, nao corrigidos em massa). **Escopo Community isolado: 0 erros, 0 warnings** apos correcao trivial de ordem de atributos. Ver docs/handoff/community-current-state.md. |
-| `npm run format:check` (Etapa 5) | FAIL (261 arquivos) | Prettier 3 configurado (`.prettierrc.json`/`.prettierignore`); repositorio nunca foi formatado antes desta etapa. Nao formatado em massa por instrucao explicita -- apenas os arquivos novos de cada etapa estao em conformidade. |
-| `npm run lint` (Etapa 7) | FAIL (mesmo 1 erro pre-existente) | Sem regressao -- mesmo erro nao-Community ja conhecido (`admin-tasks.service.ts:363`). Arquivos tocados nesta etapa (perfil, backend de perfil, testes E2E) lintam limpos. |
-| `npm run web:build` (Etapa 7) | PASS | Rebuild apos remocao dos mocks de perfil e novos arquivos de tipos/mapeamento -- sem erro. |
-| `npm run api:test:e2e` (Etapa 7) | PASS (6/6) | Primeiro E2E do repositorio -- Jest + Supertest contra container MariaDB descartavel. Ver "Perfil (Etapa 7)" em docs/handoff/community-current-state.md. |
-| testes unitarios | NOT_CONFIGURED | Nao ha script/suite identificada. |
-| banco/migrations | NOT_EXECUTED | Proibido aplicar nesta auditoria/etapa -- ver "Migrations pendentes (Etapa 5)"/"Homologacao das migrations (Etapa 6)" em docs/handoff/community-current-state.md. |
-| smoke de producao | NOT_EXECUTED | Proibido alterar/testar producao nesta etapa. |
+| Verificacao                      | Resultado                         | Observacao                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| -------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `npm run api:check`              | PASS                              | Checks estruturais + `tsc --noEmit`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `npm run web:build`              | PASS                              | Build SSR/Nitro concluido; avisos de sourcemap, deprecacao e chunks grandes.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `npm run data:check-equipment`   | PASS                              | 613 equipamentos, 1.031 variantes, 132 sets, zero vazamento acima da Season 6.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `npm run lint` (Etapa 5)         | FAIL (1 erro)                     | ESLint 10 flat config + eslint-plugin-vue + typescript-eslint, cobrindo apps/web/apps/api/packages/shared. 1075 problemas brutos -> 56 apos configurar 3 falsos-positivos conhecidos (no-undef de auto-import Nuxt, ternario-como-statement, catch vazio intencional). O 1 erro restante e uma atribuicao morta inofensiva em `admin-tasks.service.ts:363` (nao-Community, nao corrigida nesta etapa); 55 warnings sao `unused-vars` pre-existentes (baseline, nao corrigidos em massa). **Escopo Community isolado: 0 erros, 0 warnings** apos correcao trivial de ordem de atributos. Ver docs/handoff/community-current-state.md. |
+| `npm run format:check` (Etapa 5) | FAIL (261 arquivos)               | Prettier 3 configurado (`.prettierrc.json`/`.prettierignore`); repositorio nunca foi formatado antes desta etapa. Nao formatado em massa por instrucao explicita -- apenas os arquivos novos de cada etapa estao em conformidade.                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `npm run lint` (Etapa 7)         | FAIL (mesmo 1 erro pre-existente) | Sem regressao -- mesmo erro nao-Community ja conhecido (`admin-tasks.service.ts:363`). Arquivos tocados nesta etapa (perfil, backend de perfil, testes E2E) lintam limpos.                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `npm run web:build` (Etapa 7)    | PASS                              | Rebuild apos remocao dos mocks de perfil e novos arquivos de tipos/mapeamento -- sem erro.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `npm run api:test:e2e` (Etapa 7) | PASS (6/6)                        | Primeiro E2E do repositorio -- Jest + Supertest contra container MariaDB descartavel. Ver "Perfil (Etapa 7)" em docs/handoff/community-current-state.md.                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| testes unitarios                 | NOT_CONFIGURED                    | Nao ha script/suite identificada.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| banco/migrations                 | NOT_EXECUTED                      | Proibido aplicar nesta auditoria/etapa -- ver "Migrations pendentes (Etapa 5)"/"Homologacao das migrations (Etapa 6)" em docs/handoff/community-current-state.md.                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| smoke de producao                | NOT_EXECUTED                      | Proibido alterar/testar producao nesta etapa.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 
 ## Producao e deploy documentados
 
@@ -406,8 +453,8 @@ em vez de uma refatoracao unica.
   proprio painel admin documenta isso (`store-admin.service.ts:1217`:
   "Simulacao nao alterou o servidor de jogo").
 - **Recarga** (`recarga.vue`) e ainda mais manual: o texto da propria
-  pagina admite (`recarga.vue:9`): *"A integracao real de pagamento entra
-  na etapa de backend."* Confirmar pagamento = admin troca um status
+  pagina admite (`recarga.vue:9`): _"A integracao real de pagamento entra
+  na etapa de backend."_ Confirmar pagamento = admin troca um status
   manualmente (`commerce.service.ts:717-765`), sem nenhuma verificacao
   contra uma transacao real.
 - **Sem idempotencia no purchase-intent** -- `correlationId` e gerado pelo
@@ -425,7 +472,7 @@ em vez de uma refatoracao unica.
 - **Confirma e piora o que ja era suspeitado**: o worker
   (`apps/api/scripts/process-game-bridge-jobs.mjs:129-135`) **sempre
   falha por design** -- `throw new Error('MU bridge worker is not
-  connected to the game database yet.')`. Modo dry-run e o padrao
+connected to the game database yet.')`. Modo dry-run e o padrao
   (`MU_BRIDGE_ENABLED=false` no `.env.example`). Nenhuma conexao a
   SQL Server do jogo existe em lugar nenhum de `apps/api` hoje.
   `apps/api/src/modules/game-integration/` so tem um arquivo de tipos --
@@ -529,7 +576,7 @@ em vez de uma refatoracao unica.
   quebrado.
   **Launcher/auto-update**: mecanismo real e bem construido (RSA-2048 +
   SHA-256 + aplicacao transacional com rollback, `apps/launcher/Services/
-  PatchService.cs`), mas o manifesto de producao esta vazio
+PatchService.cs`), mas o manifesto de producao esta vazio
   (`manifest.production.json`: `files: []`) -- nao ha nada para
   distribuir ainda, o mecanismo existe mas nao tem conteudo.
 
@@ -560,7 +607,7 @@ em vez de uma refatoracao unica.
 - **Achado sensivel**: um arquivo local (nao versionado, no `.gitignore`)
   contem uma credencial real de banco de dados de producao em texto
   plano. Confirmado que **nao esta no Git** (nunca commitado, `git
-  check-ignore` confirma), mas esta em texto plano no disco desta maquina
+check-ignore` confirma), mas esta em texto plano no disco desta maquina
   -- recomendacao: mover para um gerenciador de segredos e rotacionar se
   esse arquivo ja foi copiado/compartilhado de forma insegura em algum
   momento. Valor da credencial deliberadamente **nao reproduzido** neste
@@ -575,9 +622,8 @@ nao o dev server):
 
 - `curl` (sem `Accept: text/html`) para uma rota inexistente recebe
   corretamente **HTTP 404** com JSON `{"statusCode":404,"message":"Page
-  not found: ..."}` -- o backend/roteador Nitro esta correto.
-- **Um navegador real navegando para a mesma URL recebe HTTP 500** (nao
-  404) e renderiza a pagina de erro padrao (nao customizada) do proprio
+not found: ..."}` -- o backend/roteador Nitro esta correto.
+- **Um navegador real navegando para a mesma URL recebe HTTP 500** (nao 404) e renderiza a pagina de erro padrao (nao customizada) do proprio
   Nuxt, mostrando literalmente `500` / `undefined` / "This page is
   temporarily unavailable." -- confirmado via `read_network_requests`
   (`GET .../rota-inexistente -> 500 Server Error`) e via HTML bruto

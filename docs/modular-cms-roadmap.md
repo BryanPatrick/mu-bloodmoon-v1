@@ -2,6 +2,39 @@
 
 Este documento registra a visao de evoluir o Blood Moon de um site de servidor para uma plataforma modular reutilizavel para outros servidores MU Online.
 
+> **Aviso de desatualizacao (2026-08-27):** este e um documento de
+> planejamento historico, escrito em torno de 2026-07-16, antes da
+> migracao do banco editorial e antes de varios modulos abaixo terem sido
+> efetivamente construidos. Ele foi **mantido integralmente, sem reescrita
+> ou remocao de conteudo** -- apenas os dois pontos abaixo precisam de
+> correcao ao le-lo hoje:
+>
+> 1. **Banco editorial do portal**: a secao "Deploy em ambiente
+>    PHP/LiteSpeed" abaixo (linha ~11) descreve "PostgreSQL no desenho
+>    atual" -- isso e historico. O portal usa **MySQL** hoje (Prisma
+>    provider MySQL, migrations em `apps/api/prisma/migrations`), migracao
+>    ja concluida e documentada em `docs/handoff/site-current-state.md`.
+> 2. **"Modulos independentes alvo" (secao abaixo) ja parcialmente
+>    construidos**: varios dos modulos que este documento ainda trata como
+>    visao futura ja existem como subsistemas reais no codigo atual, ainda
+>    que com nomes/fronteiras diferentes do que foi originalmente proposto
+>    aqui: **Unified Account** (`apps/api/src/modules/
+game-account-identity/`, cobre o que este doc chama de `core-auth`
+>    para contas de jogo), **Game Provisioning**
+>    (`apps/api/src/modules/game-provisioning-reconciliation/`), **Launcher
+>    CMS/Studio** (`apps/api/src/modules/launcher-studio/`, um CMS de
+>    conteudo do launcher, distinto do `cms-content` generico proposto
+>    abaixo) e a **Game Data Platform** (`apps/game-bridge-agent/` +
+>    `apps/game-data-worker/` + `apps/api/src/modules/game-data/`,
+>    arquitetura read-only SQL Server -> Cloudflare -> apps/api, que
+>    substitui a nocao original de `game-bridge` "leitura/escrita segura no
+>    SQL Server" abaixo por uma abordagem read-only faseada -- ver
+>    `docs/game-data/architecture.md`). O restante das secoes ("Modulos
+>    independentes alvo", "Plano de migracao dos dados do servidor",
+>    "Proximas tarefas recomendadas") continua sendo visao/planejamento,
+>    nao inventario do que existe -- nao foi validado nem atualizado nesta
+>    correcao.
+
 ## Deploy em ambiente PHP/LiteSpeed
 
 O servidor web atual do dominio responde como LiteSpeed com PHP 8.1. Isso significa que ele e adequado para PHP/MuCMS tradicional, mas o nosso projeto atual nao e PHP:
