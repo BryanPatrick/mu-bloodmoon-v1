@@ -14,6 +14,19 @@
   },
   "entries": [
     {
+      "progressionId": "PROG-002",
+      "stage": "Event entry gated by reset count",
+      "requirement": "Character's reset count must fall within a configured [ResetMin, ResetMax] range (or the check is disabled entirely when both are -1)",
+      "target": "Ability to join Blood Castle, Chaos Castle, Devil Square, or Illusion Temple",
+      "rewardOrBenefit": null,
+      "sourceRefs": ["Research/YouTube/project-gamers-oficial/transcripts/HMmfyPerla8.pt.json (full transcript, demonstrated live)"],
+      "evidenceType": "PROVIDER_TUTORIAL",
+      "factStatus": "FACT",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "bloodMoonVerification": "UNVERIFIED",
+      "notes": "FACT tier because the mechanism itself (the engine checks ResetMin/ResetMax at join time) is demonstrated directly and unambiguously on video, not inferred or recommended. What is NOT yet FACT for Blood Moon specifically: whether Blood Moon sets any non-default (-1/-1) values on any of the 4 affected events -- that would require reading the real per-event config (not yet located, see CLAIM-035's verificationTargets) or the corresponding Data/EventItemBag/012-026 files. Until then this entry describes what the ENGINE supports, not what BLOOD MOON has configured -- keep those two questions separate."
+    },
+    {
       "progressionId": "PROG-001",
       "stage": "Post-level-400 'build point' farming",
       "requirement": "Character level >= 400 (vendor's suggested threshold, not a hard-coded engine limit)",
@@ -27,5 +40,5 @@
       "notes": "This is the vendor's own generic advice for how server admins COULD use the RewardPoints feature, not a description of anything Blood Moon has actually built. Recorded as RECOMMENDATION tier specifically so it is never later mistaken for a FACT about Blood Moon's real progression system. CLAIM-020 (RewardPoints/RewardLevel columns exist and are real, confirmed via CustomMonster.txt) is the FACT this RECOMMENDATION is built on top of -- but the FACT only confirms the mechanism exists, not that Blood Moon uses it this way."
     }
   ],
-  "coverageNote": "Only 1 entry exists. This sweep found real config evidence for several systems (drop rates, event schedules, monster rosters) but essentially no evidence yet that directly answers progression questions like 'what level unlocks map X' or 'what is the intended gear/reset progression route' -- those would need either a real config field explicitly gating access by level/reset-count (none found so far; CustomEventPandora.txt's MinLevel/MaxLevel columns were both '*'  = any level, in the one example checked), or a vendor tutorial explicitly walking through a progression route (not yet transcribed -- see knowledge/vendor-sweep/event-video-inventory.json entries for rcL6fxy92Ss and HMmfyPerla8, both titled around 'ResetMin & ResetMax ... events', flagged HIGH priority specifically because they are the most likely source of real FACT-tier progression data currently sitting in the untranscribed queue). Per the explicit instruction not to invent recommendations where no evidence exists, this sweep does not fabricate additional entries to pad this list."
+  "coverageNote": "2 entries now exist: PROG-001 (RECOMMENDATION tier, vendor advice about build-point farming) and PROG-002 (FACT tier, ResetMin/ResetMax event-entry gating -- the first FACT-tier progression mechanism found in this sweep, from HMmfyPerla8.pt.json). The sibling video rcL6fxy92Ss ('ResetMin & ResetMax Entry to events Atualizado update 2.0.1.7', likely a newer version of the same feature) was attempted and hit the known caption-delivery fault (see failure-manifest.json) -- HMmfyPerla8 (the older 2.0.1.6 version) succeeded instead and is the source for PROG-002. Neither entry is yet confirmed against Blood Moon's OWN config values (only the engine mechanism is confirmed) -- see PROG-002's notes for the precise distinction. Per the explicit instruction not to invent recommendations where no evidence exists, this sweep does not fabricate additional entries to pad this list."
 }

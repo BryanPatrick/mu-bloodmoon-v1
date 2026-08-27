@@ -1,7 +1,15 @@
 {
   "sweepId": "knowledge-sweep-2026-08-25",
-  "lastUpdatedUtc": "2026-08-26T03:15:00Z",
+  "lastUpdatedUtc": "2026-08-26T03:45:00Z",
   "status": "PARTIAL",
+  "phase3ContinuationCompleted": [
+    "Resumed from checkpoint (the Phase 3 brief was resent verbatim -- treated as 'continue', not 'restart', per this sweep's own resumeInstructions discipline)",
+    "Transcribed lWclobV5zm8 ('Custom Event Time - UPDATED 6.6') -- reveals the real CustomEventTimer filename is very likely 'CustomEventTime.txt' (no trailing r), located somewhere under a path involving 'Util' that is NOT Data/Util (where GameMaster.txt was confirmed) -- not found in either the 90-file Data/Custom or 463-entry full-Data/ inventories already captured. Still genuinely unlocated, but the filename guess is now much better.",
+    "Attempted rcL6fxy92Ss (newer ResetMin/ResetMax video) -- hit the same diagnosed caption-delivery fault. Its older sibling HMmfyPerla8 succeeded instead and covers the same feature.",
+    "Transcribed HMmfyPerla8 ('ResetMin & ResetMax Events update 2.0.1.6') -- first FACT-tier (not RECOMMENDATION-tier) progression mechanism found in this whole sweep: event entry gated by a configurable reset-count range, demonstrated live blocking then allowing entry. Added as CLAIM-035 and progression-entries.json PROG-002.",
+    "Caught and fixed a real self-inflicted JSON corruption bug while appending CLAIM-035 (an Edit call matched the wrong occurrence and inserted a duplicate closing bracket) -- caught immediately by the now-standard post-edit `node -e JSON.parse(...)` validation habit, fixed before it could propagate, confirmed via the full knowledge-tools-test.mjs suite.",
+    "knowledge-index.json grew to 15 entries (KI-015), canonical-facts.json and provenance-report.json regenerated (still 22 canonical facts; provenance tallies updated to reflect the new source)."
+  ],
   "phase1Completed": [
     "Part A: repo/knowledge-structure audit; Part G/H/I/J/K: YouTube sweep both target channels (9 priority videos resolved, EuSanTiago catalogued); Part P: EuSanTiago classified PROVIDER_SPECIFIC_OTHER_SERVER; Part B (targeted): reference-gap-manifest.json; Part T: 4 wiki_candidates; Part AE: failure-manifest.json; Part AK: 7 docs/knowledge/*.md; Part AB: knowledge-gap-report.mjs"
   ],

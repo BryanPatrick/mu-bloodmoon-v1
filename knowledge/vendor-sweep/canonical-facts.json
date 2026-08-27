@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-26T20:02:20.981Z",
+  "generatedAt": "2026-08-27T00:50:35.811Z",
   "generatedBy": "scripts/knowledge-canonical-facts.mjs -- derived mechanically from atomic-claims.json, do not hand-edit, re-run instead",
   "rule": "A claim qualifies as canonical only when verificationStatus starts with CONFIRMED_BY_ (config/schema/runtime evidence). PROVIDER_TUTORIAL or COMMUNITY_TUTORIAL sourceAuthority alone, however plausible, is explicitly insufficient -- see docs/knowledge/source-authority.md.",
   "canonicalFactCount": 22,
-  "totalClaims": 34,
+  "totalClaims": 35,
   "canonicalFacts": [
     {
       "claimId": "CLAIM-001",

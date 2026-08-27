@@ -478,6 +478,23 @@
       "notes": "5 independent files now show the same pattern (1 exception: CustomBotStore is live). At this sample size it looks like a genuine operational characteristic of how Blood Moon's administrator(s) adopt vendor updates -- files get copied in during an update but are rarely individually enabled/customized/activated unless there's a specific reason (as with the Store). Sample is still small (5 of 90 files in Data/Custom) and drawn non-randomly (files this sweep happened to have video sources for) -- NOT yet strong enough to claim this holds for all 90 files, but strong enough to flag as a real pattern worth testing further. IMPORTANT UPDATE (Phase 3, per explicit instruction not to over-generalize this finding): the pattern does NOT hold for the 3 custom event files checked in Phase 3 (CustomEventZombie.txt, CustomEventPandora.txt, CustomEventStopOrDie.txt) -- none of these files has an obvious per-entry Enabled flag at all (a structurally different config shape than the Bot/Monster family), and all three contain real, distinct, non-template operational values (schedules, rewards, coordinates), not placeholder demo data. This is PATTERN_OBSERVED for the specific Bot-family + ItemDrop.txt + CustomMonster.txt files checked so far -- explicitly NOT a general BLOODMOON_POLICY that custom features are typically disabled. Do not extend this pattern to event configs or any other file family without independently checking each one."
     },
     {
+      "claimId": "CLAIM-035",
+      "statement": "The vendor's engine (update 2.0.1.6) supports a ResetMin/ResetMax entry requirement for Blood Castle, Chaos Castle, Devil Square, and Illusion Temple -- a character's reset count must fall within the configured range to join, checked at join time (not just displayed); a value of -1/-1 disables the check.",
+      "sourceId": "KI-015",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "sourceLocation": "Research/YouTube/project-gamers-oficial/transcripts/HMmfyPerla8.pt.json, segments 0:00-3:29",
+      "entityTypes": ["SYSTEM", "EVENT"],
+      "entities": ["ResetMin", "ResetMax", "Blood Castle", "Chaos Castle", "Devil Square", "Illusion Temple"],
+      "topic": "progression",
+      "season": null,
+      "providerVersion": "update 2.0.1.6",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "verificationTargets": [{ "type": "file_read", "path": "Data/EventItemBag/012-026 (Blood Castle/Chaos Castle files) or the events' own config -- exact ResetMin/ResetMax field location not yet located" }],
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "notes": "First FACT-tier (not RECOMMENDATION-tier) progression mechanism found in this sweep -- see progression-entries.json PROG-002. Demonstrated live with illustrative values (21-99), not real Blood Moon data -- whether Blood Moon actually sets non-default ResetMin/ResetMax on any of its 4 affected events remains unverified."
+    },
+    {
       "claimId": "CLAIM-028",
       "statement": "Blood Moon's real Data/EventItemBagManager.txt (150 lines) is a flat index mapping 148 reward-bag entries to ItemIndex/ItemLevel/MonsterClass/SpecialValue/DropMap criteria, each referencing an individually-named file in a separate Data/EventItemBag/ folder (also 148 files, indices 000-147).",
       "sourceId": "real-config-read",

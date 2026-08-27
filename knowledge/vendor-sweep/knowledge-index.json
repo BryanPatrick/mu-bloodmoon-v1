@@ -388,6 +388,25 @@
       "confidence": "CONFIRMED_VENDOR_VIDEO",
       "status": "BLOODMOON_LIKELY",
       "note": "First fully event-mechanics source in this sweep (scoring, ranking, rewards)."
+    },
+    {
+      "id": "KI-015",
+      "title": "ResetMin/ResetMax event entry gate",
+      "sourceType": "YOUTUBE_VIDEO",
+      "sourceAuthority": "PROVIDER_TUTORIAL",
+      "category": "progression",
+      "season": null,
+      "provider": "ProjectGamers/eMuGS",
+      "rawArtifact": "Research/YouTube/project-gamers-oficial/transcripts/HMmfyPerla8.pt.json",
+      "normalizedArtifact": "knowledge/vendor-sweep/normalized/youtube/HMmfyPerla8.md",
+      "derivedArtifacts": [],
+      "tags": ["progression", "reset", "events"],
+      "entities": ["ResetMin", "ResetMax"],
+      "capturedAt": "2026-08-26T03:35:00Z",
+      "sourceDate": "2018-11-03",
+      "confidence": "CONFIRMED_VENDOR_VIDEO",
+      "status": "BLOODMOON_LIKELY",
+      "note": "First FACT-tier progression source in this sweep -- see progression-entries.json PROG-002 and CLAIM-035."
     }
   ]
 }
