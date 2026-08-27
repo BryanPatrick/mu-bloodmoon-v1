@@ -1,41 +1,497 @@
 {
-  "generatedAt": "2026-08-27T02:00:00Z",
+  "generatedAt": "2026-08-27T13:48:18.430Z",
   "generatedBy": "Phase 5 (BULK TRANSCRIPT CONSOLIDATION), Part M-P entity extraction",
   "sourceAuthority": "PROVIDER_TUTORIAL",
   "scope": "SYSTEM/EVENT/COMMAND entities extracted from vendor (ProjectGamers/eMuGS) tutorial transcripts processed in Phase 5. UNLIKE entities/gameplay-entities.json (which is REAL_BLOODMOON_CONFIG-sourced, CONFIRMED_RUNTIME), every entity here is PROVIDER_DESCRIBES/BLOODMOON_LIKELY -- the vendor's engine supports the feature, but Blood Moon's actual use of it (enabled/disabled, filename, customized values) is UNVERIFIED unless a note says otherwise. Per the explicit no-blind-merge rule, these are NOT merged into gameplay-entities.json -- do that only after a real config read confirms each one, the same way CLAIM-028/029 did for the monster roster.",
   "note": "aliases[] captures alternate names/spellings seen across this sweep's transcripts (Portuguese ASR variants, English UI strings). claimRefs[] are the atomic-claims.json entries this entity was extracted from.",
-
   "systems": [
-    { "entityId": "SYS-custom-auction-event", "canonicalName": "CustomAuctionEvent", "aliases": ["Custom Action Event", "leilão"], "providerVersion": "ADDED 8.6", "claimRefs": ["CLAIM-039","CLAIM-040","CLAIM-041"], "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "entityId": "SYS-custom-event-racer", "canonicalName": "CustomEventRacer", "aliases": ["Custom Race Event", "evento corrida"], "providerVersion": "ADDED 8.6", "claimRefs": ["CLAIM-042","CLAIM-043","CLAIM-044"], "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "entityId": "SYS-custom-event-kill-vs-kill", "canonicalName": "CustomEventKillVsKill", "aliases": ["Kill vs Kill Rounds", "mata-mata automático"], "providerVersion": "ADDED 8.5", "claimRefs": ["CLAIM-045","CLAIM-046","CLAIM-047"], "bloodMoonStatus": "BLOODMOON_LIKELY", "note": "Distinct entity from EVT-kill-vs-kill in gameplay-entities.json (that one is the REAL EventItemBagManager.txt index 144 entry -- CONFIRMED to exist; this entity is the vendor's fuller mechanic description, UNVERIFIED beyond the index's existence)." },
-    { "entityId": "SYS-open-event", "canonicalName": "OpenEvent", "aliases": ["Abrir Evento", "/abrir evento", "/openevent"], "providerVersion": "multiple, extended through ADDED 8.2", "claimRefs": ["CLAIM-048","CLAIM-050","CLAIM-079","CLAIM-080"], "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "entityId": "SYS-join-event", "canonicalName": "JoinEvent", "aliases": ["/participar", "/join"], "providerVersion": "multiple, extended through ADDED 8.2", "claimRefs": ["CLAIM-049","CLAIM-079"], "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "entityId": "SYS-custom-event-time", "canonicalName": "CustomEventTime.txt", "aliases": ["CustomEventTimer (superseded guess, see CLAIM-023)", "H-key panel"], "providerVersion": "ADDED 5.7, updated through 8.1", "claimRefs": ["CLAIM-023","CLAIM-051","CLAIM-052","CLAIM-076","CLAIM-077","CLAIM-082","CLAIM-083"], "bloodMoonStatus": "BLOODMOON_LIKELY", "note": "Highest-corroboration SYSTEM entity in this registry -- independently touched by 5 different videos across this sweep (lRhePn4cLZ0, KTO4Zk_Qxt8, lWclobV5zm8, yVXjMheH9qY, plus this phase's own re-reads)." },
-    { "entityId": "SYS-custom-map-requirement", "canonicalName": "CustomMapRequirement", "aliases": ["Custom Mapa Requeriment"], "providerVersion": "ADDED 8.0", "claimRefs": ["CLAIM-053","CLAIM-054"], "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "entityId": "SYS-custom-event-entry-level", "canonicalName": "CustomEventEntryLevel", "aliases": ["Custom Event Entry Level"], "providerVersion": "ADDED 7.7", "claimRefs": ["CLAIM-062","CLAIM-063"], "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "entityId": "SYS-get-my-info", "canonicalName": "GetMyInfo", "aliases": ["Data/Util/GetMyInfo", "getmaninfo"], "providerVersion": "multiple", "claimRefs": ["CLAIM-057","CLAIM-058","CLAIM-059","CLAIM-060","CLAIM-061","CLAIM-083"], "bloodMoonStatus": "BLOODMOON_LIKELY", "note": "Client-side config hub referenced by more distinct claims than any other entity in this registry -- a central integration point for many small UI-toggle features." },
-    { "entityId": "SYS-custom-guild-vs-guild", "canonicalName": "CustomGuildVsGuild", "aliases": ["Guild vs Guild Event"], "providerVersion": "UPDATED 6.9", "claimRefs": ["CLAIM-070","CLAIM-071","CLAIM-072"], "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "entityId": "SYS-custom-event-pvp-1x1", "canonicalName": "CustomEventPvP1x1", "aliases": ["Custom Event PvP 1x1"], "providerVersion": "ADDED 6.6", "claimRefs": ["CLAIM-075"], "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "entityId": "SYS-custom-guild-map-move", "canonicalName": "CustomGuildMapMove", "aliases": ["Custom Guild Map Move"], "providerVersion": "ADDED 6.3", "claimRefs": ["CLAIM-081"], "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "entityId": "SYS-custom-monster-skill", "canonicalName": "CustomMonsterSkill.txt", "aliases": [], "providerVersion": "ADDED 5.5", "claimRefs": ["CLAIM-084","CLAIM-069"], "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "entityId": "SYS-custom-capture-the-flag", "canonicalName": "CustomCaptureTheFlag", "aliases": ["Capture The Flag", "roubar bandeira"], "providerVersion": "ADDED 5.4", "claimRefs": ["CLAIM-085","CLAIM-086"], "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "entityId": "SYS-custom-event-robber", "canonicalName": "CustomEventRobber", "aliases": ["Event Robber"], "providerVersion": "ADDED 4.7", "claimRefs": ["CLAIM-087","CLAIM-088","CLAIM-089"], "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "entityId": "SYS-custom-event-onclick", "canonicalName": "CustomEventOnClick", "aliases": ["Evento Veloz", "Custom Event Quickly"], "providerVersion": "UPDATED 4.4", "claimRefs": ["CLAIM-090","CLAIM-091"], "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "entityId": "SYS-invasion-manager", "canonicalName": "InvasionManager", "aliases": ["Invasion Manager", "invasor maneira/manejo (ASR)"], "providerVersion": "multiple", "claimRefs": ["CLAIM-050","CLAIM-082"], "bloodMoonStatus": "BLOODMOON_LIKELY", "note": "Distinct from this sweep's real Data/EventItemBagManager.txt (which is a DIFFERENT file, already CONFIRMED in gameplay-entities.json) -- InvasionManager appears to be the invasion-spawn config specifically, cross-referenced by index count in 2 videos (R9jc0kFIlb4: panel shows 0-27 vs real file's 0-26 off-by-one; yVXjMheH9qY: original 5.7 index layout)." },
-    { "entityId": "SYS-event-run-and-catch", "canonicalName": "EVENT-run-and-catch (pega-pega/tag)", "aliases": ["Run And Catch Auto Skin", "pega-pega"], "providerVersion": "UPDATED 7.2", "claimRefs": ["CLAIM-064","CLAIM-065"], "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "entityId": "SYS-custom-monster-typefield", "canonicalName": "CustomMonster.txt 'Type' field (client visual mode)", "aliases": [], "providerVersion": "ADDED 7.2", "claimRefs": ["CLAIM-066","CLAIM-067","CLAIM-068"], "bloodMoonStatus": "BLOODMOON_LIKELY", "note": "This is a specific COLUMN within the already-CONFIRMED-to-exist Data/Custom/CustomMonster.txt (CLAIM-020) -- the column's existence on Blood Moon's real file is unconfirmed since all 7 real entries are commented out with the Type field not decoded during that read." }
+    {
+      "entityId": "SYS-custom-auction-event",
+      "canonicalName": "CustomAuctionEvent",
+      "aliases": [
+        "Custom Action Event",
+        "leilão"
+      ],
+      "providerVersion": "ADDED 8.6",
+      "claimRefs": [
+        "CLAIM-039",
+        "CLAIM-040",
+        "CLAIM-041"
+      ],
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "providerSources": [
+        "CLAIM-039",
+        "CLAIM-040",
+        "CLAIM-041"
+      ],
+      "promotionState": "BLOODMOON_CONFIRMED",
+      "enabledStatus": "ENABLED",
+      "bloodMoonEvidence": "Data/Custom/CustomEventAuction.txt (real filename), CustomEventAuctionSwitch=1",
+      "verificationDate": "2026-08-27"
+    },
+    {
+      "entityId": "SYS-custom-event-racer",
+      "canonicalName": "CustomEventRacer",
+      "aliases": [
+        "Custom Race Event",
+        "evento corrida"
+      ],
+      "providerVersion": "ADDED 8.6",
+      "claimRefs": [
+        "CLAIM-042",
+        "CLAIM-043",
+        "CLAIM-044"
+      ],
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "providerSources": [
+        "CLAIM-042",
+        "CLAIM-043",
+        "CLAIM-044"
+      ],
+      "promotionState": "BLOODMOON_CONFIRMED",
+      "enabledStatus": "DISABLED",
+      "bloodMoonEvidence": "Data/Custom/CustomEventRacer.txt (exact filename match), all rows commented, CustomEventRacerSwitch=0",
+      "verificationDate": "2026-08-27"
+    },
+    {
+      "entityId": "SYS-custom-event-kill-vs-kill",
+      "canonicalName": "CustomEventKillVsKill",
+      "aliases": [
+        "Kill vs Kill Rounds",
+        "mata-mata automático"
+      ],
+      "providerVersion": "ADDED 8.5",
+      "claimRefs": [
+        "CLAIM-045",
+        "CLAIM-046",
+        "CLAIM-047"
+      ],
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "Distinct entity from EVT-kill-vs-kill in gameplay-entities.json (that one is the REAL EventItemBagManager.txt index 144 entry -- CONFIRMED to exist; this entity is the vendor's fuller mechanic description, UNVERIFIED beyond the index's existence).",
+      "providerSources": [
+        "CLAIM-045",
+        "CLAIM-046",
+        "CLAIM-047"
+      ],
+      "promotionState": "BLOODMOON_CONFIRMED",
+      "enabledStatus": "DISABLED",
+      "bloodMoonEvidence": "Data/Custom/CustomEventKillvsKill.txt, populated real values, CustomEventKillVsKillSwitch=0",
+      "verificationDate": "2026-08-27"
+    },
+    {
+      "entityId": "SYS-open-event",
+      "canonicalName": "OpenEvent",
+      "aliases": [
+        "Abrir Evento",
+        "/abrir evento",
+        "/openevent"
+      ],
+      "providerVersion": "multiple, extended through ADDED 8.2",
+      "claimRefs": [
+        "CLAIM-048",
+        "CLAIM-050",
+        "CLAIM-079",
+        "CLAIM-080"
+      ],
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "providerSources": [
+        "CLAIM-048",
+        "CLAIM-050",
+        "CLAIM-079",
+        "CLAIM-080"
+      ],
+      "promotionState": "BLOODMOON_CONFIRMED",
+      "enabledStatus": "ENABLED",
+      "bloodMoonEvidence": "GameServerInfo-CommandGM.dat, CommandOpenEventSwitch=1, full 31-event StartEventXxxSyntax registry read",
+      "verificationDate": "2026-08-27"
+    },
+    {
+      "entityId": "SYS-join-event",
+      "canonicalName": "JoinEvent",
+      "aliases": [
+        "/participar",
+        "/join"
+      ],
+      "providerVersion": "multiple, extended through ADDED 8.2",
+      "claimRefs": [
+        "CLAIM-049",
+        "CLAIM-079"
+      ],
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "providerSources": [
+        "CLAIM-049",
+        "CLAIM-079"
+      ],
+      "promotionState": "BLOODMOON_CONFIRMED",
+      "enabledStatus": "ENABLED (no dedicated master switch -- gated per-event by that event's own switch)",
+      "bloodMoonEvidence": "GameServerInfo-Command.dat, full 10-event JoinEventXxxSyntax registry read",
+      "verificationDate": "2026-08-27"
+    },
+    {
+      "entityId": "SYS-custom-event-time",
+      "canonicalName": "CustomEventTime.txt",
+      "aliases": [
+        "CustomEventTimer (superseded guess, see CLAIM-023)",
+        "H-key panel"
+      ],
+      "providerVersion": "ADDED 5.7, updated through 8.1",
+      "claimRefs": [
+        "CLAIM-023",
+        "CLAIM-051",
+        "CLAIM-052",
+        "CLAIM-076",
+        "CLAIM-077",
+        "CLAIM-082",
+        "CLAIM-083"
+      ],
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "Highest-corroboration SYSTEM entity in this registry -- independently touched by 5 different videos across this sweep (lRhePn4cLZ0, KTO4Zk_Qxt8, lWclobV5zm8, yVXjMheH9qY, plus this phase's own re-reads).",
+      "providerSources": [
+        "CLAIM-023",
+        "CLAIM-051",
+        "CLAIM-052",
+        "CLAIM-076",
+        "CLAIM-077",
+        "CLAIM-082",
+        "CLAIM-083"
+      ],
+      "promotionState": "BLOODMOON_CONFIRMED",
+      "enabledStatus": "ENABLED (CustomEventTimeSwitch=1)",
+      "bloodMoonEvidence": "GameServerInfo-Custom.dat confirms the FEATURE is on; however no file named CustomEventTime.txt (or variant) exists in Data/Custom, Data/Event, or Data/Util -- likely powered by InvasionManager.dat + CustomArena.txt jointly, not a single dedicated file. canonicalName kept as a spoken/informal feature name, not a confirmed filename.",
+      "verificationDate": "2026-08-27"
+    },
+    {
+      "entityId": "SYS-custom-map-requirement",
+      "canonicalName": "CustomMapRequirement",
+      "aliases": [
+        "Custom Mapa Requeriment"
+      ],
+      "providerVersion": "ADDED 8.0",
+      "claimRefs": [
+        "CLAIM-053",
+        "CLAIM-054"
+      ],
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "providerSources": [
+        "CLAIM-053",
+        "CLAIM-054"
+      ],
+      "promotionState": "BLOODMOON_CONFIRMED",
+      "enabledStatus": "DISABLED",
+      "bloodMoonEvidence": "Data/Custom/CustomMapRequeriment.txt (Portuguese spelling), master toggle=0, 4 real configured rows",
+      "verificationDate": "2026-08-27"
+    },
+    {
+      "entityId": "SYS-custom-event-entry-level",
+      "canonicalName": "CustomEventEntryLevel",
+      "aliases": [
+        "Custom Event Entry Level"
+      ],
+      "providerVersion": "ADDED 7.7",
+      "claimRefs": [
+        "CLAIM-062",
+        "CLAIM-063"
+      ],
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "providerSources": [
+        "CLAIM-062",
+        "CLAIM-063"
+      ],
+      "promotionState": "BLOODMOON_FILE_FOUND",
+      "enabledStatus": "UNKNOWN (file found, content not yet read)",
+      "bloodMoonEvidence": "Data/Event/CustomEventEntryLevel.dat confirmed present via inventory-json listing; content not read this pass -- next verification target",
+      "verificationDate": "2026-08-27"
+    },
+    {
+      "entityId": "SYS-get-my-info",
+      "canonicalName": "GetMyInfo",
+      "aliases": [
+        "Data/Util/GetMyInfo",
+        "getmaninfo"
+      ],
+      "providerVersion": "multiple",
+      "claimRefs": [
+        "CLAIM-057",
+        "CLAIM-058",
+        "CLAIM-059",
+        "CLAIM-060",
+        "CLAIM-061",
+        "CLAIM-083"
+      ],
+      "bloodMoonStatus": "UPSTREAM_MU",
+      "note": "Client-side config hub referenced by more distinct claims than any other entity in this registry -- a central integration point for many small UI-toggle features.",
+      "providerSources": [
+        "CLAIM-057",
+        "CLAIM-058",
+        "CLAIM-059",
+        "CLAIM-060",
+        "CLAIM-061",
+        "CLAIM-083"
+      ],
+      "promotionState": "DISCOVERED_FROM_PROVIDER",
+      "enabledStatus": "NOT_APPLICABLE",
+      "bloodMoonEvidence": "Clarified this phase: GetMyInfo is the VENDOR'S OWN local admin tool (runs on the vendor's/admin's machine, compiles flags from various GameServerInfo *.dat files into a client-readable .mpg) -- it is not itself a Blood Moon server file and cannot be inventoried remotely. Downgraded from a \"file to find\" to \"vendor tooling, out of scope for server-side verification\".",
+      "verificationDate": "2026-08-27"
+    },
+    {
+      "entityId": "SYS-custom-guild-vs-guild",
+      "canonicalName": "CustomGuildVsGuild",
+      "aliases": [
+        "Guild vs Guild Event"
+      ],
+      "providerVersion": "UPDATED 6.9",
+      "claimRefs": [
+        "CLAIM-070",
+        "CLAIM-071",
+        "CLAIM-072"
+      ],
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "providerSources": [
+        "CLAIM-070",
+        "CLAIM-071",
+        "CLAIM-072"
+      ],
+      "promotionState": "BLOODMOON_CONFIRMED",
+      "enabledStatus": "DISABLED",
+      "bloodMoonEvidence": "Data/Custom/CustomGuildVsGuild.txt (exact filename match), populated real values (crown NPC, zone-block), CustomEventGuildVsGuildSwitch=0",
+      "verificationDate": "2026-08-27"
+    },
+    {
+      "entityId": "SYS-custom-event-pvp-1x1",
+      "canonicalName": "CustomEventPvP1x1",
+      "aliases": [
+        "Custom Event PvP 1x1"
+      ],
+      "providerVersion": "ADDED 6.6",
+      "claimRefs": [
+        "CLAIM-075"
+      ],
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "providerSources": [
+        "CLAIM-075"
+      ],
+      "promotionState": "BLOODMOON_CONFIRMED",
+      "enabledStatus": "DISABLED",
+      "bloodMoonEvidence": "GameServerInfo-Event.dat \"PvP Event (1x1)\" section, EventPvPSwitch=0, MaxScore=3/MaxTime=3min match the video's \"melhor de 3\" description",
+      "verificationDate": "2026-08-27"
+    },
+    {
+      "entityId": "SYS-custom-guild-map-move",
+      "canonicalName": "CustomGuildMapMove",
+      "aliases": [
+        "Custom Guild Map Move"
+      ],
+      "providerVersion": "ADDED 6.3",
+      "claimRefs": [
+        "CLAIM-081"
+      ],
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "providerSources": [
+        "CLAIM-081"
+      ],
+      "promotionState": "BLOODMOON_CONFIRMED",
+      "enabledStatus": "ZERO_ACTIVE_ROWS (file present, all 3 example rows commented out)",
+      "bloodMoonEvidence": "Data/Custom/CustomGuildMapMove.txt, exact filename match, vendor demo guild names still commented in place",
+      "verificationDate": "2026-08-27"
+    },
+    {
+      "entityId": "SYS-custom-monster-skill",
+      "canonicalName": "CustomMonsterSkill.txt",
+      "aliases": [],
+      "providerVersion": "ADDED 5.5",
+      "claimRefs": [
+        "CLAIM-084",
+        "CLAIM-069"
+      ],
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "providerSources": [
+        "CLAIM-084",
+        "CLAIM-069"
+      ],
+      "promotionState": "BLOODMOON_CONFIRMED",
+      "enabledStatus": "ENABLED (switch=1) but backing data file NOT LOCATED",
+      "bloodMoonEvidence": "CustomMonsterSkillSwitch=1 in GameServerInfo-Custom.dat (feature enabled), but no file named CustomMonsterSkill.txt (or close variant) exists among Data/Custom's real 90 files -- backing data location unresolved, flagged for a future targeted search (possibly under Data/Skill/ or embedded elsewhere).",
+      "verificationDate": "2026-08-27"
+    },
+    {
+      "entityId": "SYS-custom-capture-the-flag",
+      "canonicalName": "CustomCaptureTheFlagEvent",
+      "aliases": [
+        "Capture The Flag",
+        "roubar bandeira"
+      ],
+      "providerVersion": "ADDED 5.4",
+      "claimRefs": [
+        "CLAIM-085",
+        "CLAIM-086"
+      ],
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "providerSources": [
+        "CLAIM-085",
+        "CLAIM-086"
+      ],
+      "promotionState": "BLOODMOON_CONFIRMED",
+      "enabledStatus": "DISABLED",
+      "bloodMoonEvidence": "Data/Custom/CustomCaptureTheFlagEvent.txt (real filename has an extra \"Event\" suffix), populated (new MinLevel=400 fact), CustomEventCaptureTheFlagSwitch=0",
+      "verificationDate": "2026-08-27"
+    },
+    {
+      "entityId": "SYS-custom-event-robber",
+      "canonicalName": "CustomEventRobber",
+      "aliases": [
+        "Event Robber"
+      ],
+      "providerVersion": "ADDED 4.7",
+      "claimRefs": [
+        "CLAIM-087",
+        "CLAIM-088",
+        "CLAIM-089"
+      ],
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "providerSources": [
+        "CLAIM-087",
+        "CLAIM-088",
+        "CLAIM-089"
+      ],
+      "promotionState": "BLOODMOON_CONFIRMED",
+      "enabledStatus": "DISABLED",
+      "bloodMoonEvidence": "Data/Custom/CustomEventRobber.txt (exact filename match), populated, CustomEventRobberSwitch=0, neither targeting mode (PK-only/stat-requirement) active",
+      "verificationDate": "2026-08-27"
+    },
+    {
+      "entityId": "SYS-custom-event-onclick",
+      "canonicalName": "CustomEventQuickly (real filename; \"CustomEventOnClick\" was this sweep's earlier guess based on the config-path fragment \"event onclick\" spoken in the source video)",
+      "aliases": [
+        "Evento Veloz",
+        "Custom Event Quickly"
+      ],
+      "providerVersion": "UPDATED 4.4",
+      "claimRefs": [
+        "CLAIM-090",
+        "CLAIM-091"
+      ],
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "providerSources": [
+        "CLAIM-090",
+        "CLAIM-091"
+      ],
+      "promotionState": "BLOODMOON_CONFIRMED",
+      "enabledStatus": "DISABLED",
+      "bloodMoonEvidence": "Real filename is Data/Custom/CustomEventQuickly.txt (NOT \"CustomEventOnClick\" -- \"Quickly\" is the vendor's own English name), single example row fully commented, QuicklyEventSwitch=0",
+      "verificationDate": "2026-08-27"
+    },
+    {
+      "entityId": "SYS-invasion-manager",
+      "canonicalName": "InvasionManager",
+      "aliases": [
+        "Invasion Manager",
+        "invasor maneira/manejo (ASR)"
+      ],
+      "providerVersion": "multiple",
+      "claimRefs": [
+        "CLAIM-050",
+        "CLAIM-082"
+      ],
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "Distinct from this sweep's real Data/EventItemBagManager.txt (which is a DIFFERENT file, already CONFIRMED in gameplay-entities.json) -- InvasionManager appears to be the invasion-spawn config specifically, cross-referenced by index count in 2 videos (R9jc0kFIlb4: panel shows 0-27 vs real file's 0-26 off-by-one; yVXjMheH9qY: original 5.7 index layout).",
+      "providerSources": [
+        "CLAIM-050",
+        "CLAIM-082"
+      ],
+      "promotionState": "BLOODMOON_CONFIRMED",
+      "enabledStatus": "ENABLED",
+      "bloodMoonEvidence": "Data/Event/InvasionManager.dat confirmed present; InvasionManagerSwitch=1 in GameServerInfo-Event.dat. Still not confirmed whether this is the SAME file as any part of the \"CustomEventTime\" H-panel feature or a genuinely separate one -- kept as an open question, not resolved by assumption.",
+      "verificationDate": "2026-08-27"
+    },
+    {
+      "entityId": "SYS-event-run-and-catch",
+      "canonicalName": "EVENT-run-and-catch (pega-pega/tag)",
+      "aliases": [
+        "Run And Catch Auto Skin",
+        "pega-pega"
+      ],
+      "providerVersion": "UPDATED 7.2",
+      "claimRefs": [
+        "CLAIM-064",
+        "CLAIM-065"
+      ],
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "providerSources": [
+        "CLAIM-064",
+        "CLAIM-065"
+      ],
+      "promotionState": "BLOODMOON_CONFIRMED",
+      "enabledStatus": "DISABLED",
+      "bloodMoonEvidence": "GameServerInfo-Event.dat \"Run And Catch Event\" section, EventRunAndCatchSwitch=0, AutoSkin=-1 default (matches CLAIM-064), tiered rewards 10/20/30 configured but inert",
+      "verificationDate": "2026-08-27"
+    },
+    {
+      "entityId": "SYS-custom-monster-typefield",
+      "canonicalName": "CustomMonster.txt 'Type' field (client visual mode)",
+      "aliases": [],
+      "providerVersion": "ADDED 7.2",
+      "claimRefs": [
+        "CLAIM-066",
+        "CLAIM-067",
+        "CLAIM-068"
+      ],
+      "bloodMoonStatus": "BLOODMOON_CONTRADICTED",
+      "note": "This is a specific COLUMN within the already-CONFIRMED-to-exist Data/Custom/CustomMonster.txt (CLAIM-020) -- the column's existence on Blood Moon's real file is unconfirmed since all 7 real entries are commented out with the Type field not decoded during that read.",
+      "providerSources": [
+        "CLAIM-066",
+        "CLAIM-067",
+        "CLAIM-068"
+      ],
+      "promotionState": "BLOODMOON_CONTRADICTED",
+      "enabledStatus": "NOT_PRESENT",
+      "bloodMoonEvidence": "Full re-read of Data/Custom/CustomMonster.txt confirms no \"Type\" column of any kind exists in the real server-side file -- this specific claim is CONTRADICTED for the server file (a client-side equivalent remains unresolved, out of safe remote-access scope)",
+      "verificationDate": "2026-08-27"
+    }
   ],
-
   "commands": [
-    { "entityId": "CMD-make", "canonicalName": "/make", "aliases": ["Make 7 (make-set)"], "providerVersion": "UPDATED 6.5", "claimRefs": ["CLAIM-078"], "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "entityId": "CMD-makeset", "canonicalName": "/makeset", "aliases": [], "providerVersion": "UPDATED 6.5", "claimRefs": ["CLAIM-078"], "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "entityId": "CMD-drop", "canonicalName": "/drop", "aliases": [], "providerVersion": "UPDATED 6.5", "claimRefs": ["CLAIM-078"], "bloodMoonStatus": "BLOODMOON_LIKELY" }
+    {
+      "entityId": "CMD-make",
+      "canonicalName": "/make",
+      "aliases": [
+        "Make 7 (make-set)"
+      ],
+      "providerVersion": "UPDATED 6.5",
+      "claimRefs": [
+        "CLAIM-078"
+      ],
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "promotionState": "DISCOVERED_FROM_PROVIDER",
+      "bloodMoonEvidence": "Not checked this phase -- CMD-make/makeset/drop (command syntax) were out of this phase's P0 scope."
+    },
+    {
+      "entityId": "CMD-makeset",
+      "canonicalName": "/makeset",
+      "aliases": [],
+      "providerVersion": "UPDATED 6.5",
+      "claimRefs": [
+        "CLAIM-078"
+      ],
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "promotionState": "DISCOVERED_FROM_PROVIDER",
+      "bloodMoonEvidence": "Not checked this phase -- CMD-make/makeset/drop (command syntax) were out of this phase's P0 scope."
+    },
+    {
+      "entityId": "CMD-drop",
+      "canonicalName": "/drop",
+      "aliases": [],
+      "providerVersion": "UPDATED 6.5",
+      "claimRefs": [
+        "CLAIM-078"
+      ],
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "promotionState": "DISCOVERED_FROM_PROVIDER",
+      "bloodMoonEvidence": "Not checked this phase -- CMD-make/makeset/drop (command syntax) were out of this phase's P0 scope."
+    }
   ],
-
   "canonicalizationNotes": [
     "No blind merges performed: every entity above stayed in this separate PROVIDER_TUTORIAL-authority file rather than being added to gameplay-entities.json (REAL_BLOODMOON_CONFIG authority), per Phase 5 Part O's explicit no-blind-merge rule.",
     "2 near-duplicate pairs were deliberately kept separate rather than merged, because they describe different evidence tiers for what may be the same underlying Blood Moon feature: SYS-custom-event-kill-vs-kill (this file, PROVIDER_TUTORIAL) vs EVT-kill-vs-kill (gameplay-entities.json, REAL_BLOODMOON_CONFIG -- only the EventItemBagManager index's existence is confirmed there); SYS-invasion-manager (this file) vs the real Data/EventItemBagManager.txt entities (gameplay-entities.json) -- these may be 2 different real files, not yet confirmed as the same or different.",
     "SYS-get-my-info and SYS-custom-event-time are the 2 highest-corroboration entities (6 and 7 claim references respectively) -- good candidates for the next real-config verification pass."
-  ]
+  ],
+  "promotionStateMachine": "DISCOVERED_FROM_PROVIDER -> BLOODMOON_CANDIDATE -> BLOODMOON_FILE_FOUND -> (BLOODMOON_CONFIRMED | BLOODMOON_CONTRADICTED | BLOODMOON_DISABLED | UNKNOWN). Applied explicitly starting Phase 6 (2026-08-27) per the user's own requested promotion mechanism -- provenance (claimRefs/providerSources) is never overwritten, only supplemented with bloodMoonEvidence/verificationDate/enabledStatus/promotionState fields."
 }

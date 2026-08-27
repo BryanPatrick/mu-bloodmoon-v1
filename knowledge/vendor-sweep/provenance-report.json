@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-27T02:09:49.122Z",
+  "generatedAt": "2026-08-27T13:50:23.369Z",
   "generatedBy": "scripts/knowledge-provenance-report.mjs -- derived mechanically from knowledge-index.json, atomic-claims.json, knowledge-graph.json, and wiki_candidates/, do not hand-edit",
   "scope": "41 cataloged sources (knowledge-index.json). Does NOT cover the underlying 75+ prior-session docs corpus, which predates this sweep's index and uses its own provenance conventions (see Knowledge/README.md's EVIDENCE/KNOWLEDGE/OPERATIONS model instead).",
   "perSource": [
@@ -129,7 +129,7 @@
       "RAW": "COMPLETE",
       "NORMALIZED": "COMPLETE",
       "CLAIMS": "COMPLETE",
-      "VERIFICATION": "MISSING",
+      "VERIFICATION": "PARTIAL",
       "GRAPH": "MISSING",
       "WIKI": "COMPLETE"
     },
@@ -139,7 +139,7 @@
       "RAW": "COMPLETE",
       "NORMALIZED": "COMPLETE",
       "CLAIMS": "COMPLETE",
-      "VERIFICATION": "MISSING",
+      "VERIFICATION": "COMPLETE",
       "GRAPH": "MISSING",
       "WIKI": "MISSING"
     },
@@ -149,7 +149,7 @@
       "RAW": "COMPLETE",
       "NORMALIZED": "COMPLETE",
       "CLAIMS": "COMPLETE",
-      "VERIFICATION": "MISSING",
+      "VERIFICATION": "COMPLETE",
       "GRAPH": "MISSING",
       "WIKI": "MISSING"
     },
@@ -189,7 +189,7 @@
       "RAW": "COMPLETE",
       "NORMALIZED": "MISSING",
       "CLAIMS": "COMPLETE",
-      "VERIFICATION": "MISSING",
+      "VERIFICATION": "COMPLETE",
       "GRAPH": "MISSING",
       "WIKI": "MISSING"
     },
@@ -199,7 +199,7 @@
       "RAW": "COMPLETE",
       "NORMALIZED": "MISSING",
       "CLAIMS": "COMPLETE",
-      "VERIFICATION": "MISSING",
+      "VERIFICATION": "COMPLETE",
       "GRAPH": "MISSING",
       "WIKI": "MISSING"
     },
@@ -209,7 +209,7 @@
       "RAW": "COMPLETE",
       "NORMALIZED": "MISSING",
       "CLAIMS": "COMPLETE",
-      "VERIFICATION": "MISSING",
+      "VERIFICATION": "COMPLETE",
       "GRAPH": "MISSING",
       "WIKI": "MISSING"
     },
@@ -219,7 +219,7 @@
       "RAW": "COMPLETE",
       "NORMALIZED": "MISSING",
       "CLAIMS": "COMPLETE",
-      "VERIFICATION": "MISSING",
+      "VERIFICATION": "PARTIAL",
       "GRAPH": "MISSING",
       "WIKI": "COMPLETE"
     },
@@ -229,7 +229,7 @@
       "RAW": "COMPLETE",
       "NORMALIZED": "MISSING",
       "CLAIMS": "COMPLETE",
-      "VERIFICATION": "MISSING",
+      "VERIFICATION": "PARTIAL",
       "GRAPH": "MISSING",
       "WIKI": "COMPLETE"
     },
@@ -239,7 +239,7 @@
       "RAW": "COMPLETE",
       "NORMALIZED": "MISSING",
       "CLAIMS": "COMPLETE",
-      "VERIFICATION": "MISSING",
+      "VERIFICATION": "COMPLETE",
       "GRAPH": "MISSING",
       "WIKI": "MISSING"
     },
@@ -289,7 +289,7 @@
       "RAW": "COMPLETE",
       "NORMALIZED": "MISSING",
       "CLAIMS": "COMPLETE",
-      "VERIFICATION": "MISSING",
+      "VERIFICATION": "PARTIAL",
       "GRAPH": "MISSING",
       "WIKI": "MISSING"
     },
@@ -299,7 +299,7 @@
       "RAW": "COMPLETE",
       "NORMALIZED": "MISSING",
       "CLAIMS": "COMPLETE",
-      "VERIFICATION": "MISSING",
+      "VERIFICATION": "COMPLETE",
       "GRAPH": "MISSING",
       "WIKI": "MISSING"
     },
@@ -329,7 +329,7 @@
       "RAW": "COMPLETE",
       "NORMALIZED": "MISSING",
       "CLAIMS": "COMPLETE",
-      "VERIFICATION": "MISSING",
+      "VERIFICATION": "COMPLETE",
       "GRAPH": "MISSING",
       "WIKI": "COMPLETE"
     },
@@ -349,7 +349,7 @@
       "RAW": "COMPLETE",
       "NORMALIZED": "MISSING",
       "CLAIMS": "COMPLETE",
-      "VERIFICATION": "MISSING",
+      "VERIFICATION": "COMPLETE",
       "GRAPH": "MISSING",
       "WIKI": "COMPLETE"
     },
@@ -359,7 +359,7 @@
       "RAW": "COMPLETE",
       "NORMALIZED": "MISSING",
       "CLAIMS": "COMPLETE",
-      "VERIFICATION": "MISSING",
+      "VERIFICATION": "COMPLETE",
       "GRAPH": "MISSING",
       "WIKI": "MISSING"
     },
@@ -369,7 +369,7 @@
       "RAW": "COMPLETE",
       "NORMALIZED": "MISSING",
       "CLAIMS": "COMPLETE",
-      "VERIFICATION": "MISSING",
+      "VERIFICATION": "COMPLETE",
       "GRAPH": "MISSING",
       "WIKI": "COMPLETE"
     },
@@ -389,7 +389,7 @@
       "RAW": "COMPLETE",
       "NORMALIZED": "MISSING",
       "CLAIMS": "COMPLETE",
-      "VERIFICATION": "MISSING",
+      "VERIFICATION": "COMPLETE",
       "GRAPH": "MISSING",
       "WIKI": "MISSING"
     },
@@ -399,7 +399,7 @@
       "RAW": "COMPLETE",
       "NORMALIZED": "MISSING",
       "CLAIMS": "COMPLETE",
-      "VERIFICATION": "MISSING",
+      "VERIFICATION": "COMPLETE",
       "GRAPH": "MISSING",
       "WIKI": "MISSING"
     },
@@ -409,7 +409,7 @@
       "RAW": "COMPLETE",
       "NORMALIZED": "MISSING",
       "CLAIMS": "COMPLETE",
-      "VERIFICATION": "MISSING",
+      "VERIFICATION": "COMPLETE",
       "GRAPH": "MISSING",
       "WIKI": "MISSING"
     }
@@ -431,9 +431,9 @@
       "MISSING": 1
     },
     "VERIFICATION": {
-      "COMPLETE": 6,
-      "PARTIAL": 2,
-      "MISSING": 33
+      "COMPLETE": 20,
+      "PARTIAL": 6,
+      "MISSING": 15
     },
     "GRAPH": {
       "COMPLETE": 8,

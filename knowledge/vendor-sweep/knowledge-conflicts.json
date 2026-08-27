@@ -14,7 +14,25 @@
       "followUp": "docs/vendor-tutorials-knowledge-extraction.md's entry for ItemDrop.htm (line 517-521) should get an inline note pointing to this conflict and to the real 4-column structure, the next time that file is touched -- not done this session to avoid an unnecessary rewrite of an otherwise-stable, already-reviewed document.",
       "alsoInvolvedClaims": ["CLAIM-001", "CLAIM-003", "CLAIM-004", "CLAIM-027"],
       "alsoInvolvedNote": "scripts/knowledge-conflict-scan.mjs (Part AG, run 2026-08-26) surfaces 4 additional pairs involving CLAIM-005 (CLAIM-001/003/004/027, all vs CLAIM-005) -- these are NOT separate conflicts, they are the same underlying CONFLICT-001 (CLAIM-005's stale single-DropRate-column claim vs. the real 4-column file) reached through different claim pairs about the same entity (ItemDrop.txt). Recorded here rather than as 4 new conflict entries to avoid duplication."
+    },
+    {
+      "id": "REVIEW-CLUSTER-002",
+      "subject": "Data/Custom/CustomMonster.txt column structure (Phase 6 real verification, 2026-08-27)",
+      "property": "conflict-scan flags CLAIM-020 (CONFIRMED_BY_CONFIG) vs CLAIM-066/067/068 (CONTRADICTED_BY_CONFIG), and CLAIM-027 (CONFIRMED_BY_CONFIG) vs the same 3 -- 6 pairs total, all sharing the entity CustomMonster.txt",
+      "classification": "NOT_A_CONFLICT",
+      "reasoning": "CLAIM-020/027 are about the REAL columns CustomMonster.txt does have (RewardLevel, RewardPoints, and the general 'present but disabled' pattern) -- both independently re-confirmed by the same Phase 6 re-read. CLAIM-066/067/068 are about a DIFFERENT, separate 'Type' column a provider tutorial video described, which this same re-read found does NOT exist in the real file. These are not opposing claims about the same fact -- they are a true statement about columns A/B and a false statement about column C, both about the same file. The conflict-scanner correctly flags them as sharing an entity (by design, it does not parse claim semantics) but a human/LLM review confirms no genuine contradiction.",
+      "resolution": "No action needed -- both sets of claims stand as written. Recorded here so this cluster does not need re-review on every future conflict-scan run.",
+      "status": "REVIEWED_NOT_A_CONFLICT"
+    },
+    {
+      "id": "REVIEW-CLUSTER-003",
+      "subject": "Data/Custom/CustomEventRobber.txt targeting-mode fields (Phase 6 real verification, 2026-08-27)",
+      "property": "conflict-scan flags CLAIM-087 (CONFIRMED_BY_CONFIG) vs CLAIM-088 (CONTRADICTED_BY_CONFIG) vs CLAIM-089 (CONFIRMED_BY_CONFIG), all sharing the entity CustomEventRobber",
+      "classification": "NOT_A_CONFLICT",
+      "reasoning": "CLAIM-087 (the event's basic mechanic: steal items, kill the robber to recover them) and CLAIM-089 (no-item-loss-on-disconnect guarantee) were both independently CONFIRMED by the same real-file read. CLAIM-088 specifically asserted Blood Moon would have EITHER the PK-only mode OR the stat-requirement targeting mode active -- the same real read found NEITHER is active (both underlying switches are 0). This is one claim being contradicted (CLAIM-088's specific assumption about targeting mode) alongside two adjacent claims about the same file being confirmed (the event's core mechanic and its disconnect-safety guarantee) -- not an internal contradiction.",
+      "resolution": "No action needed -- CLAIM-088 correctly stays CONTRADICTED_BY_CONFIG/BLOODMOON_CONTRADICTED; CLAIM-087/089 correctly stay CONFIRMED. Recorded here so this cluster does not need re-review on every future conflict-scan run.",
+      "status": "REVIEWED_NOT_A_CONFLICT"
     }
   ],
-  "note": "Systematic pairwise conflict scanning (Part AG) is now automated via scripts/knowledge-conflict-scan.mjs, which groups claims by shared entity and flags opposing verificationStatus/bloodMoonStatus pairs. Run against the current 27 claims (2026-08-26): found only the CONFLICT-001 cluster above (5 claim pairs, all the same underlying disagreement) -- no other conflicts detected. Re-run this script after adding new claims in future sweeps."
+  "note": "Systematic pairwise conflict scanning (Part AG) is now automated via scripts/knowledge-conflict-scan.mjs, which groups claims by shared entity and flags opposing verificationStatus/bloodMoonStatus pairs. Run against the current 27 claims (2026-08-26): found only the CONFLICT-001 cluster above (5 claim pairs, all the same underlying disagreement) -- no other conflicts detected. Phase 6 (2026-08-27) re-run against 99 claims surfaced 8 new candidate pairs, all reviewed and classified NOT_A_CONFLICT (REVIEW-CLUSTER-002/003 above) -- the conflict-scanner flags same-entity+opposing-status pairs mechanically and cannot itself distinguish 'two claims disagree about the same fact' from 'two claims are about different facts on the same file,' so each new cluster gets a human/LLM semantic review before being trusted as CONFLICT vs NOT_A_CONFLICT. Re-run this script after adding new claims in future sweeps."
 }

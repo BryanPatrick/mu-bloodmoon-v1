@@ -1,179 +1,1107 @@
 {
-  "generatedAt": "2026-08-26T00:35:00Z",
+  "generatedAt": "2026-08-27T13:50:09.899Z",
   "format": "JSON graph -- flat nodes[]/edges[] arrays, each node/edge has a stable id. Chosen over SQLite/JSONL to match this sweep's existing convention (plain JSON files, no new runtime dependency) and because the graph is currently small (30 nodes, 33 edges) -- revisit as a JSONL or SQLite store if it grows past a few hundred nodes and querying flat JSON becomes unwieldy.",
   "nodes": [
-    { "id": "SYS-bot-store", "type": "SYSTEM", "name": "CustomBotStore", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-bot-trader", "type": "SYSTEM", "name": "CustomBotTrader", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-bot-fusion", "type": "SYSTEM", "name": "CustomBotFusion", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-info-drop-switch", "type": "SYSTEM", "name": "CustomInfoDropSwitch", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-gm-account-level", "type": "SYSTEM", "name": "ServerGameMasterAccountLevel", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-drop-rate-system", "type": "SYSTEM", "name": "Drop Rate System (3-layer)", "bloodMoonStatus": "BLOODMOON_CONFIRMED", "note": "pre-existing entity, see Knowledge/Systems/drop-rate-system.json -- linked here, not redefined" },
-    { "id": "CFG-itemdrop-txt", "type": "CONFIG", "name": "Data/Item/ItemDrop.txt", "bloodMoonStatus": "BLOODMOON_CONFIRMED" },
-    { "id": "CFG-data-custom", "type": "CONFIG", "name": "Data/Custom/", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "CFG-data-command", "type": "CONFIG", "name": "Data/Command", "bloodMoonStatus": "UPSTREAM_MU" },
-    { "id": "CFG-data-event", "type": "CONFIG", "name": "Data/Event", "bloodMoonStatus": "UPSTREAM_MU" },
-    { "id": "CFG-gamemaster-txt", "type": "CONFIG", "name": "Data/GameMaster.txt", "bloodMoonStatus": "BLOODMOON_LIKELY", "note": "Section 0 (GM commands) already CONFIRMED per Knowledge/README.md gm-command-authority system; Section 1 (account-level whitelist) is the new BLOODMOON_LIKELY claim from this sweep" },
-    { "id": "CFG-common-dat", "type": "CONFIG", "name": "GameServerInfo - Common.dat", "bloodMoonStatus": "BLOODMOON_CONFIRMED", "note": "pre-existing entity" },
-    { "id": "CFG-bot-index-only", "type": "CONFIG", "name": "BotIndexOnly", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "CFG-getiteminfo", "type": "CONFIG", "name": "GetItemInfo (client-side)", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "GUIDE-data-folder-taxonomy", "type": "GUIDE", "name": "GameServer Data/ folder taxonomy", "bloodMoonStatus": "UPSTREAM_MU" },
-    { "id": "SRC-KI-001", "type": "SOURCE", "name": "KI-001 (6SGVxLyhG_8)" },
-    { "id": "SRC-KI-002", "type": "SOURCE", "name": "KI-002 (gySFdaRrS8Q)" },
-    { "id": "SRC-KI-003", "type": "SOURCE", "name": "KI-003 (HFH8BhRZnUg)" },
-    { "id": "SRC-KI-004", "type": "SOURCE", "name": "KI-004 (DqHAEmyQCjA)" },
-    { "id": "SRC-KI-005", "type": "SOURCE", "name": "KI-005 (EpUJmEBn16Y)" },
-    { "id": "SRC-KI-006", "type": "SOURCE", "name": "KI-006 (jXr8q_NGotQ)" },
-    { "id": "SRC-KI-007", "type": "SOURCE", "name": "KI-007 (gfMqlKeQ360)" },
-    { "id": "SRC-KI-008", "type": "SOURCE", "name": "KI-008 (qJ6Xp6o51C8, EuSanTiago)" },
-    { "id": "SRC-real-config", "type": "SOURCE", "name": "real ItemDrop.txt (direct read, this session)", "sourceAuthority": "REAL_BLOODMOON_CONFIG" },
-    { "id": "SRC-vendor-itemdrop-htm", "type": "SOURCE", "name": "ItemDrop.htm (vendor tutorial doc)", "sourceAuthority": "PROVIDER_DOCUMENTATION" },
-    { "id": "OTHER-legendary-craft", "type": "SYSTEM", "name": "Legendary Craft", "bloodMoonStatus": "OTHER_SERVER" },
-    { "id": "OTHER-elite-upgrade", "type": "SYSTEM", "name": "Elite upgrade", "bloodMoonStatus": "OTHER_SERVER" },
-    { "id": "SYS-drop-reward", "type": "SYSTEM", "name": "CustomDropReward", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-jewel-bank", "type": "SYSTEM", "name": "CustomJewelBank", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-event-timer", "type": "SYSTEM", "name": "CustomEventTimer", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-pvp-all", "type": "SYSTEM", "name": "CustomEventPvpAll", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "EVENT-devil-square", "type": "EVENT", "name": "Devil Square", "bloodMoonStatus": "BLOODMOON_CONFIRMED", "note": "Blood Moon confirmed to run this event per docs/events-system.md; the EventItemBag end-drop extension (CLAIM-019) is now CONFIRMED_BY_CONFIG -- exactly 7 sub-indices found in the real EventItemBagManager.txt" },
-    { "id": "EVENT-pvp-all", "type": "EVENT", "name": "PvP All (kill-all)", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "CONFIG-custom-monster-txt", "type": "CONFIG", "name": "Data/Custom/CustomMonster.txt", "bloodMoonStatus": "BLOODMOON_LIKELY", "note": "Distinct from the already-CONFIRMED Data/Monster/Monster.txt covered by SYS-drop-rate-system" },
-    { "id": "CONFIG-event-item-bag", "type": "CONFIG", "name": "Data/EventItemBagManager.txt", "bloodMoonStatus": "BLOODMOON_CONFIRMED", "note": "Pre-existing known real file, per drop-rate-system.json relations.related_configs" },
-    { "id": "CURRENCY-ruud", "type": "CURRENCY", "name": "Ruud", "bloodMoonStatus": "UPSTREAM_MU", "note": "Standard MU Online Season 6+ currency; BLOODMOON_LIKELY that Blood Moon uses it since it runs Season 6 content, not independently confirmed by this claim" },
-    { "id": "MON-skeleton-king", "type": "MONSTER", "name": "Skeleton King", "monsterClass": 55, "bloodMoonStatus": "BLOODMOON_CONFIRMED" },
-    { "id": "MON-kundun", "type": "MONSTER", "name": "Kundun", "monsterClass": 275, "bloodMoonStatus": "BLOODMOON_CONFIRMED" },
-    { "id": "MON-erohim", "type": "MONSTER", "name": "Erohim", "monsterClass": 295, "bloodMoonStatus": "BLOODMOON_CONFIRMED" },
-    { "id": "MON-nightmare", "type": "MONSTER", "name": "Nightmare", "monsterClass": 361, "bloodMoonStatus": "BLOODMOON_CONFIRMED" },
-    { "id": "MON-selupan", "type": "MONSTER", "name": "Selupan", "monsterClass": 459, "bloodMoonStatus": "BLOODMOON_CONFIRMED" },
-    { "id": "MON-medusa", "type": "MONSTER", "name": "Medusa", "monsterClass": 561, "bloodMoonStatus": "BLOODMOON_CONFIRMED" },
-    { "id": "MON-boss-farao", "type": "MONSTER", "name": "Boss Farao", "monsterClass": 801, "bloodMoonStatus": "BLOODMOON_CONFIRMED" },
-    { "id": "MON-boss-bloodmoon", "type": "MONSTER", "name": "Boss BloodMoon", "monsterClass": 802, "bloodMoonStatus": "BLOODMOON_CONFIRMED", "note": "Custom boss unique to this server; reward config still an unedited copy of Boss Farao's (CLAIM-030)" },
-    { "id": "ITEM-antidote", "type": "ITEM", "name": "Cure/Antidote item (Type 14, Index 8)", "bloodMoonStatus": "BLOODMOON_CONFIRMED" },
-    { "id": "EVT-custom-zombie", "type": "EVENT", "name": "Custom Zombie Event", "bloodMoonStatus": "BLOODMOON_CONFIRMED" },
-    { "id": "EVT-custom-pandora", "type": "EVENT", "name": "Pandora Event", "bloodMoonStatus": "BLOODMOON_CONFIRMED" },
-    { "id": "EVT-custom-stop-or-die", "type": "EVENT", "name": "Stop Or Die", "bloodMoonStatus": "BLOODMOON_CONFIRMED" },
-    { "id": "NPC-380", "type": "NPC", "name": "Zombie Event entry NPC (class 380)", "bloodMoonStatus": "BLOODMOON_CONFIRMED" },
-    { "id": "NPC-684", "type": "NPC", "name": "Stop Or Die entry NPC (class 684)", "bloodMoonStatus": "BLOODMOON_CONFIRMED" },
-    { "id": "MAP-0", "type": "MAP", "name": "Map 0 (numeric ID only, no confirmed name)", "bloodMoonStatus": "BLOODMOON_CONFIRMED_NUMERIC_ID_ONLY" },
-    { "id": "MAP-1", "type": "MAP", "name": "Map 1 (numeric ID only, no confirmed name)", "bloodMoonStatus": "BLOODMOON_CONFIRMED_NUMERIC_ID_ONLY" },
-    { "id": "MAP-40", "type": "MAP", "name": "Map 40 (numeric ID only, no confirmed name)", "bloodMoonStatus": "BLOODMOON_CONFIRMED_NUMERIC_ID_ONLY" },
-    { "id": "CFG-event-item-bag-folder", "type": "CONFIG", "name": "Data/EventItemBag/ (148 individual reward files)", "bloodMoonStatus": "BLOODMOON_CONFIRMED" },
-    { "id": "CFG-gamemaster-real", "type": "CONFIG", "name": "Data/Util/GameMaster.txt", "bloodMoonStatus": "BLOODMOON_CONFIRMED", "note": "real path, corrects the earlier assumed Data/GameMaster.txt" },
-
-    { "id": "SYS-custom-auction-event", "type": "EVENT", "name": "CustomAuctionEvent", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-custom-event-racer", "type": "EVENT", "name": "CustomEventRacer", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-custom-event-kill-vs-kill", "type": "EVENT", "name": "CustomEventKillVsKill", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-custom-event-pvp-1x1", "type": "EVENT", "name": "CustomEventPvP1x1", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-custom-guild-vs-guild", "type": "EVENT", "name": "CustomGuildVsGuild", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-custom-capture-the-flag", "type": "EVENT", "name": "CustomCaptureTheFlag", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-custom-event-robber", "type": "EVENT", "name": "CustomEventRobber", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-custom-event-onclick", "type": "EVENT", "name": "CustomEventOnClick", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-event-run-and-catch", "type": "EVENT", "name": "EVENT-run-and-catch (pega-pega)", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-open-event", "type": "COMMAND", "name": "OpenEvent", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-join-event", "type": "COMMAND", "name": "JoinEvent", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "CMD-make", "type": "COMMAND", "name": "/make", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "CMD-makeset", "type": "COMMAND", "name": "/makeset", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "CMD-drop", "type": "COMMAND", "name": "/drop", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-custom-event-time", "type": "SYSTEM", "name": "CustomEventTime.txt", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-get-my-info", "type": "SYSTEM", "name": "GetMyInfo", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-custom-map-requirement", "type": "SYSTEM", "name": "CustomMapRequirement", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-custom-event-entry-level", "type": "SYSTEM", "name": "CustomEventEntryLevel", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-custom-guild-map-move", "type": "SYSTEM", "name": "CustomGuildMapMove", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-custom-monster-skill", "type": "SYSTEM", "name": "CustomMonsterSkill.txt", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-    { "id": "SYS-invasion-manager", "type": "SYSTEM", "name": "InvasionManager", "bloodMoonStatus": "BLOODMOON_LIKELY" },
-
-    { "id": "EVT-blood-castle", "type": "EVENT", "name": "Blood Castle", "bloodMoonStatus": "BLOODMOON_CONFIRMED", "note": "Promoted from entities/gameplay-entities.json to a graph node in Phase 5 to support the CustomEventEntryLevel AFFECTS_SYSTEM edges below -- was previously only in the entities file, not the graph." },
-    { "id": "EVT-chaos-castle", "type": "EVENT", "name": "Chaos Castle", "bloodMoonStatus": "BLOODMOON_CONFIRMED", "note": "Promoted from entities/gameplay-entities.json in Phase 5, same reason as EVT-blood-castle." },
-    { "id": "EVT-illusion-temple", "type": "EVENT", "name": "Illusion Temple", "bloodMoonStatus": "BLOODMOON_CONFIRMED", "note": "Promoted from entities/gameplay-entities.json in Phase 5, same reason as EVT-blood-castle." }
+    {
+      "id": "SYS-bot-store",
+      "type": "SYSTEM",
+      "name": "CustomBotStore",
+      "bloodMoonStatus": "BLOODMOON_LIKELY"
+    },
+    {
+      "id": "SYS-bot-trader",
+      "type": "SYSTEM",
+      "name": "CustomBotTrader",
+      "bloodMoonStatus": "BLOODMOON_LIKELY"
+    },
+    {
+      "id": "SYS-bot-fusion",
+      "type": "SYSTEM",
+      "name": "CustomBotFusion",
+      "bloodMoonStatus": "BLOODMOON_LIKELY"
+    },
+    {
+      "id": "SYS-info-drop-switch",
+      "type": "SYSTEM",
+      "name": "CustomInfoDropSwitch",
+      "bloodMoonStatus": "BLOODMOON_LIKELY"
+    },
+    {
+      "id": "SYS-gm-account-level",
+      "type": "SYSTEM",
+      "name": "ServerGameMasterAccountLevel",
+      "bloodMoonStatus": "BLOODMOON_LIKELY"
+    },
+    {
+      "id": "SYS-drop-rate-system",
+      "type": "SYSTEM",
+      "name": "Drop Rate System (3-layer)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "pre-existing entity, see Knowledge/Systems/drop-rate-system.json -- linked here, not redefined"
+    },
+    {
+      "id": "CFG-itemdrop-txt",
+      "type": "CONFIG",
+      "name": "Data/Item/ItemDrop.txt",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "CFG-data-custom",
+      "type": "CONFIG",
+      "name": "Data/Custom/",
+      "bloodMoonStatus": "BLOODMOON_LIKELY"
+    },
+    {
+      "id": "CFG-data-command",
+      "type": "CONFIG",
+      "name": "Data/Command",
+      "bloodMoonStatus": "UPSTREAM_MU"
+    },
+    {
+      "id": "CFG-data-event",
+      "type": "CONFIG",
+      "name": "Data/Event",
+      "bloodMoonStatus": "UPSTREAM_MU"
+    },
+    {
+      "id": "CFG-gamemaster-txt",
+      "type": "CONFIG",
+      "name": "Data/GameMaster.txt",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "note": "Section 0 (GM commands) already CONFIRMED per Knowledge/README.md gm-command-authority system; Section 1 (account-level whitelist) is the new BLOODMOON_LIKELY claim from this sweep"
+    },
+    {
+      "id": "CFG-common-dat",
+      "type": "CONFIG",
+      "name": "GameServerInfo - Common.dat",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "pre-existing entity"
+    },
+    {
+      "id": "CFG-bot-index-only",
+      "type": "CONFIG",
+      "name": "BotIndexOnly",
+      "bloodMoonStatus": "BLOODMOON_LIKELY"
+    },
+    {
+      "id": "CFG-getiteminfo",
+      "type": "CONFIG",
+      "name": "GetItemInfo (client-side)",
+      "bloodMoonStatus": "BLOODMOON_LIKELY"
+    },
+    {
+      "id": "GUIDE-data-folder-taxonomy",
+      "type": "GUIDE",
+      "name": "GameServer Data/ folder taxonomy",
+      "bloodMoonStatus": "UPSTREAM_MU"
+    },
+    {
+      "id": "SRC-KI-001",
+      "type": "SOURCE",
+      "name": "KI-001 (6SGVxLyhG_8)"
+    },
+    {
+      "id": "SRC-KI-002",
+      "type": "SOURCE",
+      "name": "KI-002 (gySFdaRrS8Q)"
+    },
+    {
+      "id": "SRC-KI-003",
+      "type": "SOURCE",
+      "name": "KI-003 (HFH8BhRZnUg)"
+    },
+    {
+      "id": "SRC-KI-004",
+      "type": "SOURCE",
+      "name": "KI-004 (DqHAEmyQCjA)"
+    },
+    {
+      "id": "SRC-KI-005",
+      "type": "SOURCE",
+      "name": "KI-005 (EpUJmEBn16Y)"
+    },
+    {
+      "id": "SRC-KI-006",
+      "type": "SOURCE",
+      "name": "KI-006 (jXr8q_NGotQ)"
+    },
+    {
+      "id": "SRC-KI-007",
+      "type": "SOURCE",
+      "name": "KI-007 (gfMqlKeQ360)"
+    },
+    {
+      "id": "SRC-KI-008",
+      "type": "SOURCE",
+      "name": "KI-008 (qJ6Xp6o51C8, EuSanTiago)"
+    },
+    {
+      "id": "SRC-real-config",
+      "type": "SOURCE",
+      "name": "real ItemDrop.txt (direct read, this session)",
+      "sourceAuthority": "REAL_BLOODMOON_CONFIG"
+    },
+    {
+      "id": "SRC-vendor-itemdrop-htm",
+      "type": "SOURCE",
+      "name": "ItemDrop.htm (vendor tutorial doc)",
+      "sourceAuthority": "PROVIDER_DOCUMENTATION"
+    },
+    {
+      "id": "OTHER-legendary-craft",
+      "type": "SYSTEM",
+      "name": "Legendary Craft",
+      "bloodMoonStatus": "OTHER_SERVER"
+    },
+    {
+      "id": "OTHER-elite-upgrade",
+      "type": "SYSTEM",
+      "name": "Elite upgrade",
+      "bloodMoonStatus": "OTHER_SERVER"
+    },
+    {
+      "id": "SYS-drop-reward",
+      "type": "SYSTEM",
+      "name": "CustomDropReward",
+      "bloodMoonStatus": "BLOODMOON_LIKELY"
+    },
+    {
+      "id": "SYS-jewel-bank",
+      "type": "SYSTEM",
+      "name": "CustomJewelBank",
+      "bloodMoonStatus": "BLOODMOON_LIKELY"
+    },
+    {
+      "id": "SYS-event-timer",
+      "type": "SYSTEM",
+      "name": "CustomEventTimer",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "note": "SUPERSEDED/LINKED (Phase 6, 2026-08-27): this Phase 2-era node used the guessed name \"CustomEventTimer\" before CLAIM-023 corrected it to \"CustomEventTime\". See SYS-custom-event-time (added Phase 5) for the current, fuller entity -- kept as a separate node rather than deleted/merged to preserve this node's own edge history, linked via the SUPERSEDED_BY edge below."
+    },
+    {
+      "id": "SYS-pvp-all",
+      "type": "SYSTEM",
+      "name": "CustomEventPvpAll",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "PHASE 6 (2026-08-27): resolved to the real GameServerInfo-Event.dat \"Kill All Event (Mata-Mata Geral)\" section (EventKillAllSwitch) -- see CLAIM-024/025/026. DISABLED."
+    },
+    {
+      "id": "EVENT-devil-square",
+      "type": "EVENT",
+      "name": "Devil Square",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "Blood Moon confirmed to run this event per docs/events-system.md; the EventItemBag end-drop extension (CLAIM-019) is now CONFIRMED_BY_CONFIG -- exactly 7 sub-indices found in the real EventItemBagManager.txt"
+    },
+    {
+      "id": "EVENT-pvp-all",
+      "type": "EVENT",
+      "name": "PvP All (kill-all)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "Same resolution as SYS-pvp-all -- both node ids describe the same real feature, kept separate for now rather than merged (SYS-pvp-all predates the EVENT node and links to different edges)."
+    },
+    {
+      "id": "CONFIG-custom-monster-txt",
+      "type": "CONFIG",
+      "name": "Data/Custom/CustomMonster.txt",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "File existence was already CONFIRMED in Phase 2 (CLAIM-020); this node's status was stale (still BLOODMOON_LIKELY) until fixed in Phase 6. Re-read in full this phase (CLAIM-066/067/068) -- confirms RewardLevel/RewardPoints columns are real, \"Type\" column is NOT present."
+    },
+    {
+      "id": "CONFIG-event-item-bag",
+      "type": "CONFIG",
+      "name": "Data/EventItemBagManager.txt",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "Pre-existing known real file, per drop-rate-system.json relations.related_configs"
+    },
+    {
+      "id": "CURRENCY-ruud",
+      "type": "CURRENCY",
+      "name": "Ruud",
+      "bloodMoonStatus": "UPSTREAM_MU",
+      "note": "Standard MU Online Season 6+ currency; BLOODMOON_LIKELY that Blood Moon uses it since it runs Season 6 content, not independently confirmed by this claim"
+    },
+    {
+      "id": "MON-skeleton-king",
+      "type": "MONSTER",
+      "name": "Skeleton King",
+      "monsterClass": 55,
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "MON-kundun",
+      "type": "MONSTER",
+      "name": "Kundun",
+      "monsterClass": 275,
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "MON-erohim",
+      "type": "MONSTER",
+      "name": "Erohim",
+      "monsterClass": 295,
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "MON-nightmare",
+      "type": "MONSTER",
+      "name": "Nightmare",
+      "monsterClass": 361,
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "MON-selupan",
+      "type": "MONSTER",
+      "name": "Selupan",
+      "monsterClass": 459,
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "MON-medusa",
+      "type": "MONSTER",
+      "name": "Medusa",
+      "monsterClass": 561,
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "MON-boss-farao",
+      "type": "MONSTER",
+      "name": "Boss Farao",
+      "monsterClass": 801,
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "MON-boss-bloodmoon",
+      "type": "MONSTER",
+      "name": "Boss BloodMoon",
+      "monsterClass": 802,
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "Custom boss unique to this server; reward config still an unedited copy of Boss Farao's (CLAIM-030)"
+    },
+    {
+      "id": "ITEM-antidote",
+      "type": "ITEM",
+      "name": "Cure/Antidote item (Type 14, Index 8)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "EVT-custom-zombie",
+      "type": "EVENT",
+      "name": "Custom Zombie Event",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "EVT-custom-pandora",
+      "type": "EVENT",
+      "name": "Pandora Event",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "EVT-custom-stop-or-die",
+      "type": "EVENT",
+      "name": "Stop Or Die",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "NPC-380",
+      "type": "NPC",
+      "name": "Zombie Event entry NPC (class 380)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "NPC-684",
+      "type": "NPC",
+      "name": "Stop Or Die entry NPC (class 684)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "MAP-0",
+      "type": "MAP",
+      "name": "Map 0 (numeric ID only, no confirmed name)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED_NUMERIC_ID_ONLY"
+    },
+    {
+      "id": "MAP-1",
+      "type": "MAP",
+      "name": "Map 1 (numeric ID only, no confirmed name)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED_NUMERIC_ID_ONLY"
+    },
+    {
+      "id": "MAP-40",
+      "type": "MAP",
+      "name": "Map 40 (numeric ID only, no confirmed name)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED_NUMERIC_ID_ONLY"
+    },
+    {
+      "id": "CFG-event-item-bag-folder",
+      "type": "CONFIG",
+      "name": "Data/EventItemBag/ (148 individual reward files)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "CFG-gamemaster-real",
+      "type": "CONFIG",
+      "name": "Data/Util/GameMaster.txt",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "real path, corrects the earlier assumed Data/GameMaster.txt"
+    },
+    {
+      "id": "SYS-custom-auction-event",
+      "type": "EVENT",
+      "name": "CustomAuctionEvent",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "SYS-custom-event-racer",
+      "type": "EVENT",
+      "name": "CustomEventRacer",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "SYS-custom-event-kill-vs-kill",
+      "type": "EVENT",
+      "name": "CustomEventKillVsKill",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "SYS-custom-event-pvp-1x1",
+      "type": "EVENT",
+      "name": "CustomEventPvP1x1",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "SYS-custom-guild-vs-guild",
+      "type": "EVENT",
+      "name": "CustomGuildVsGuild",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "SYS-custom-capture-the-flag",
+      "type": "EVENT",
+      "name": "CustomCaptureTheFlag",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "SYS-custom-event-robber",
+      "type": "EVENT",
+      "name": "CustomEventRobber",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "SYS-custom-event-onclick",
+      "type": "EVENT",
+      "name": "CustomEventOnClick",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "SYS-event-run-and-catch",
+      "type": "EVENT",
+      "name": "EVENT-run-and-catch (pega-pega)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "SYS-open-event",
+      "type": "COMMAND",
+      "name": "OpenEvent",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "SYS-join-event",
+      "type": "COMMAND",
+      "name": "JoinEvent",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "CMD-make",
+      "type": "COMMAND",
+      "name": "/make",
+      "bloodMoonStatus": "BLOODMOON_LIKELY"
+    },
+    {
+      "id": "CMD-makeset",
+      "type": "COMMAND",
+      "name": "/makeset",
+      "bloodMoonStatus": "BLOODMOON_LIKELY"
+    },
+    {
+      "id": "CMD-drop",
+      "type": "COMMAND",
+      "name": "/drop",
+      "bloodMoonStatus": "BLOODMOON_LIKELY"
+    },
+    {
+      "id": "SYS-custom-event-time",
+      "type": "SYSTEM",
+      "name": "CustomEventTime.txt",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "SYS-get-my-info",
+      "type": "SYSTEM",
+      "name": "GetMyInfo",
+      "bloodMoonStatus": "BLOODMOON_LIKELY"
+    },
+    {
+      "id": "SYS-custom-map-requirement",
+      "type": "SYSTEM",
+      "name": "CustomMapRequirement",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "SYS-custom-event-entry-level",
+      "type": "SYSTEM",
+      "name": "CustomEventEntryLevel",
+      "bloodMoonStatus": "BLOODMOON_LIKELY"
+    },
+    {
+      "id": "SYS-custom-guild-map-move",
+      "type": "SYSTEM",
+      "name": "CustomGuildMapMove",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "SYS-custom-monster-skill",
+      "type": "SYSTEM",
+      "name": "CustomMonsterSkill.txt",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "SYS-invasion-manager",
+      "type": "SYSTEM",
+      "name": "InvasionManager",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "EVT-blood-castle",
+      "type": "EVENT",
+      "name": "Blood Castle",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "Promoted from entities/gameplay-entities.json to a graph node in Phase 5 to support the CustomEventEntryLevel AFFECTS_SYSTEM edges below -- was previously only in the entities file, not the graph."
+    },
+    {
+      "id": "EVT-chaos-castle",
+      "type": "EVENT",
+      "name": "Chaos Castle",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "Promoted from entities/gameplay-entities.json in Phase 5, same reason as EVT-blood-castle."
+    },
+    {
+      "id": "EVT-illusion-temple",
+      "type": "EVENT",
+      "name": "Illusion Temple",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "Promoted from entities/gameplay-entities.json in Phase 5, same reason as EVT-blood-castle."
+    },
+    {
+      "id": "MAP-8",
+      "type": "MAP",
+      "name": "Map 8 (numeric ID only, no confirmed name)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED_NUMERIC_ID_ONLY"
+    },
+    {
+      "id": "MAP-31",
+      "type": "MAP",
+      "name": "Map 31 (numeric ID only; real config describes it as \"Erohim Land of Trials\", not confirmed as the map's canonical name)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED_NUMERIC_ID_ONLY"
+    },
+    {
+      "id": "MAP-33",
+      "type": "MAP",
+      "name": "Map 33 (numeric ID only, no confirmed name)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED_NUMERIC_ID_ONLY"
+    },
+    {
+      "id": "MAP-36",
+      "type": "MAP",
+      "name": "Map 36 (numeric ID only, no confirmed name)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED_NUMERIC_ID_ONLY"
+    },
+    {
+      "id": "MAP-42",
+      "type": "MAP",
+      "name": "Map 42 (numeric ID only; real config describes it as \"Dark Elf 3° Quest Refuge\", not confirmed as the map's canonical name)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED_NUMERIC_ID_ONLY"
+    },
+    {
+      "id": "SYS-custom-market-shop",
+      "type": "SYSTEM",
+      "name": "CustomMarketShop",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "BLOODMOON_ONLY_OR_UNDOCUMENTED_CANDIDATE (Part L) -- enabled, 5% tax, zero video coverage in the corpus checked so far."
+    },
+    {
+      "id": "SYS-custom-pix",
+      "type": "SYSTEM",
+      "name": "CustomPix",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "BLOODMOON_ONLY_OR_UNDOCUMENTED_CANDIDATE (Part L) -- present but disabled, placeholder URL never configured."
+    }
   ],
   "edges": [
-    { "from": "SYS-bot-store", "type": "CONFIGURED_BY", "to": "CFG-data-custom" },
-    { "from": "SYS-bot-trader", "type": "CONFIGURED_BY", "to": "CFG-data-custom" },
-    { "from": "SYS-bot-fusion", "type": "CONFIGURED_BY", "to": "CFG-data-custom" },
-    { "from": "SYS-bot-fusion", "type": "CONFIGURED_BY", "to": "CFG-bot-index-only" },
-    { "from": "SYS-info-drop-switch", "type": "CONFIGURED_BY", "to": "CFG-getiteminfo" },
-    { "from": "SYS-gm-account-level", "type": "CONFIGURED_BY", "to": "CFG-gamemaster-txt" },
-    { "from": "SYS-gm-account-level", "type": "CONFIGURED_BY", "to": "CFG-common-dat" },
-    { "from": "CFG-itemdrop-txt", "type": "AFFECTS_SYSTEM", "to": "SYS-drop-rate-system" },
-    { "from": "SYS-bot-store", "type": "SIBLING_SYSTEM_OF", "to": "SYS-bot-trader" },
-    { "from": "SYS-bot-store", "type": "SIBLING_SYSTEM_OF", "to": "SYS-bot-fusion" },
-    { "from": "SYS-bot-trader", "type": "SIBLING_SYSTEM_OF", "to": "SYS-bot-fusion" },
-    { "from": "GUIDE-data-folder-taxonomy", "type": "DESCRIBES", "to": "CFG-data-command" },
-    { "from": "GUIDE-data-folder-taxonomy", "type": "DESCRIBES", "to": "CFG-data-event" },
-    { "from": "GUIDE-data-folder-taxonomy", "type": "DESCRIBES", "to": "CFG-data-custom" },
-    { "from": "GUIDE-data-folder-taxonomy", "type": "WARNS_AGAINST_COPYING", "to": "CFG-data-command" },
-    { "from": "GUIDE-data-folder-taxonomy", "type": "WARNS_AGAINST_COPYING", "to": "CFG-data-event" },
-    { "from": "GUIDE-data-folder-taxonomy", "type": "WARNS_AGAINST_COPYING", "to": "CFG-data-custom" },
-    { "from": "SRC-KI-001", "type": "SUPPORTS_CLAIM", "to": "CLAIM-006" },
-    { "from": "SRC-KI-001", "type": "SUPPORTS_CLAIM", "to": "CLAIM-007" },
-    { "from": "SRC-KI-002", "type": "SUPPORTS_CLAIM", "to": "CLAIM-008" },
-    { "from": "SRC-KI-002", "type": "SUPPORTS_CLAIM", "to": "CLAIM-009" },
-    { "from": "SRC-KI-003", "type": "SUPPORTS_CLAIM", "to": "CLAIM-010" },
-    { "from": "SRC-KI-003", "type": "SUPPORTS_CLAIM", "to": "CLAIM-011" },
-    { "from": "SRC-KI-004", "type": "SUPPORTS_CLAIM", "to": "CLAIM-004" },
-    { "from": "SRC-KI-005", "type": "SUPPORTS_CLAIM", "to": "CLAIM-012" },
-    { "from": "SRC-KI-006", "type": "SUPPORTS_CLAIM", "to": "CLAIM-014" },
-    { "from": "SRC-KI-007", "type": "SUPPORTS_CLAIM", "to": "CLAIM-013" },
-    { "from": "SRC-KI-008", "type": "SUPPORTS_CLAIM", "to": "CLAIM-015" },
-    { "from": "SRC-real-config", "type": "SUPPORTS_CLAIM", "to": "CLAIM-001" },
-    { "from": "SRC-real-config", "type": "SUPPORTS_CLAIM", "to": "CLAIM-002" },
-    { "from": "SRC-real-config", "type": "SUPPORTS_CLAIM", "to": "CLAIM-003" },
-    { "from": "SRC-real-config", "type": "VERIFIES_CLAIM", "to": "CLAIM-004" },
-    { "from": "SRC-vendor-itemdrop-htm", "type": "SUPPORTS_CLAIM", "to": "CLAIM-005" },
-    { "from": "CLAIM-005", "type": "CONFLICTS_WITH", "to": "CLAIM-002" },
-    { "from": "OTHER-legendary-craft", "type": "DESCRIBED_BY", "to": "SRC-KI-008" },
-    { "from": "OTHER-elite-upgrade", "type": "DESCRIBED_BY", "to": "SRC-KI-008" },
-    { "from": "SYS-drop-reward", "type": "AFFECTS_SYSTEM", "to": "CURRENCY-ruud" },
-    { "from": "SYS-pvp-all", "type": "CONFIGURED_BY", "to": "CFG-data-custom" },
-    { "from": "SYS-pvp-all", "type": "PART_OF", "to": "EVENT-pvp-all" },
-    { "from": "EVENT-devil-square", "type": "AFFECTS_SYSTEM", "to": "CONFIG-event-item-bag" },
-    { "from": "CONFIG-custom-monster-txt", "type": "CONFIGURED_BY", "to": "CFG-data-custom" },
-    { "from": "CONFIG-custom-monster-txt", "type": "RELATED_TO", "to": "SYS-drop-rate-system" },
-    { "from": "SRC-real-config", "type": "SUPPORTS_CLAIM", "to": "CLAIM-016" },
-    { "from": "SRC-real-config", "type": "SUPPORTS_CLAIM", "to": "CLAIM-017" },
-    { "from": "CONFIG-custom-monster-txt", "type": "DESCRIBES", "to": "MON-kundun" },
-    { "from": "CONFIG-custom-monster-txt", "type": "DESCRIBES", "to": "MON-erohim" },
-    { "from": "CONFIG-custom-monster-txt", "type": "DESCRIBES", "to": "MON-nightmare" },
-    { "from": "CONFIG-custom-monster-txt", "type": "DESCRIBES", "to": "MON-selupan" },
-    { "from": "CONFIG-custom-monster-txt", "type": "DESCRIBES", "to": "MON-medusa" },
-    { "from": "CONFIG-custom-monster-txt", "type": "DESCRIBES", "to": "MON-boss-farao" },
-    { "from": "CONFIG-custom-monster-txt", "type": "DESCRIBES", "to": "MON-boss-bloodmoon" },
-    { "from": "MON-boss-bloodmoon", "type": "CONFIG_COPY_OF", "to": "MON-boss-farao" },
-    { "from": "EVT-custom-zombie", "type": "OCCURS_IN_MAP", "to": "MAP-1" },
-    { "from": "EVT-custom-zombie", "type": "HAS_ENTRY_NPC", "to": "NPC-380" },
-    { "from": "NPC-380", "type": "LOCATED_IN_MAP", "to": "MAP-0" },
-    { "from": "EVT-custom-zombie", "type": "HAS_WAVE_MONSTER", "to": "MON-skeleton-king" },
-    { "from": "MAP-1", "type": "HAS_MONSTER_INFERRED", "to": "MON-skeleton-king", "note": "FACT: same map, real spawn coords (78,191). See gameplay-entities.json mapMonsterItemChain for the FACT/INFERENCE distinction." },
-    { "from": "MON-skeleton-king", "type": "COLOCATED_WITH_ITEM_DROP_INFERRED", "to": "ITEM-antidote", "note": "INFERENCE, not FACT -- see gameplay-entities.json mapMonsterItemChain. Coordinates match exactly (78,191) but the config does not explicitly state a kill-triggers-drop relationship." },
-    { "from": "EVT-custom-pandora", "type": "OCCURS_IN_MAP", "to": "MAP-40" },
-    { "from": "EVT-custom-pandora", "type": "USES_MONSTER_SKIN", "to": "MON-skeleton-king" },
-    { "from": "EVT-custom-stop-or-die", "type": "OCCURS_IN_MAP", "to": "MAP-1" },
-    { "from": "EVT-custom-stop-or-die", "type": "HAS_ENTRY_NPC", "to": "NPC-684" },
-    { "from": "NPC-684", "type": "LOCATED_IN_MAP", "to": "MAP-1" },
-    { "from": "EVENT-devil-square", "type": "CONFIGURED_BY", "to": "CFG-event-item-bag-folder" },
-    { "from": "CFG-event-item-bag-folder", "type": "CONFIGURED_BY", "to": "CONFIG-event-item-bag" },
-    { "from": "SRC-real-config", "type": "SUPPORTS_CLAIM", "to": "CLAIM-028" },
-    { "from": "SRC-real-config", "type": "SUPPORTS_CLAIM", "to": "CLAIM-029" },
-    { "from": "SRC-real-config", "type": "SUPPORTS_CLAIM", "to": "CLAIM-030" },
-    { "from": "SRC-real-config", "type": "SUPPORTS_CLAIM", "to": "CLAIM-031" },
-    { "from": "SRC-real-config", "type": "SUPPORTS_CLAIM", "to": "CLAIM-032" },
-    { "from": "SRC-real-config", "type": "SUPPORTS_CLAIM", "to": "CLAIM-033" },
-    { "from": "SRC-real-config", "type": "SUPPORTS_CLAIM", "to": "CLAIM-034" },
-
-    { "from": "SYS-custom-event-time", "type": "CONFIGURED_BY", "to": "SYS-get-my-info", "claimRefs": ["CLAIM-083"], "status": "BLOODMOON_LIKELY" },
-    { "from": "SYS-open-event", "type": "SIBLING_SYSTEM_OF", "to": "SYS-join-event", "claimRefs": ["CLAIM-079","CLAIM-080"], "status": "BLOODMOON_LIKELY" },
-    { "from": "SYS-open-event", "type": "CONFIGURED_BY", "to": "CFG-gamemaster-real", "claimRefs": ["CLAIM-048"], "status": "BLOODMOON_LIKELY" },
-    { "from": "SYS-custom-event-kill-vs-kill", "type": "SIBLING_SYSTEM_OF", "to": "SYS-custom-event-pvp-1x1", "claimRefs": ["CLAIM-075"], "status": "BLOODMOON_LIKELY", "note": "Distinct mechanics (automated bracket vs GM-curated single duel) explicitly distinguished in CLAIM-075's own statement -- edge records the relationship, not an equivalence." },
-    { "from": "SYS-custom-event-onclick", "type": "CONFIGURED_BY", "to": "CONFIG-event-item-bag", "claimRefs": ["CLAIM-090"], "status": "BLOODMOON_LIKELY" },
-    { "from": "SYS-custom-event-racer", "type": "CONFIGURED_BY", "to": "CONFIG-event-item-bag", "claimRefs": ["CLAIM-043"], "status": "BLOODMOON_LIKELY" },
-    { "from": "SYS-custom-event-racer", "type": "SIBLING_SYSTEM_OF", "to": "SYS-custom-event-kill-vs-kill", "claimRefs": ["CLAIM-044"], "status": "PROVIDER_SPECIFIC", "note": "Both events were built to reuse the same vendor-commissioned custom dungeon map, per CLAIM-044 -- an operational/business-model fact, not a Blood-Moon-specific mechanic link." },
-    { "from": "SYS-custom-guild-vs-guild", "type": "CONFIGURED_BY", "to": "CFG-data-custom", "claimRefs": ["CLAIM-072"], "status": "BLOODMOON_LIKELY" },
-    { "from": "SYS-custom-monster-skill", "type": "CONFIGURED_BY", "to": "CFG-data-custom", "claimRefs": ["CLAIM-069","CLAIM-084"], "status": "BLOODMOON_LIKELY" },
-    { "from": "SYS-invasion-manager", "type": "RELATED_TO", "to": "SYS-custom-event-time", "claimRefs": ["CLAIM-050","CLAIM-082"], "status": "BLOODMOON_LIKELY", "note": "Both feed the same H-key panel UI, per CLAIM-082's 2-section description -- not confirmed to be the same underlying file." },
-    { "from": "CMD-make", "type": "SIBLING_SYSTEM_OF", "to": "CMD-makeset", "claimRefs": ["CLAIM-078"], "status": "BLOODMOON_LIKELY" },
-    { "from": "CMD-make", "type": "SIBLING_SYSTEM_OF", "to": "CMD-drop", "claimRefs": ["CLAIM-078"], "status": "BLOODMOON_LIKELY" },
-    { "from": "SYS-custom-event-entry-level", "type": "AFFECTS_SYSTEM", "to": "EVT-blood-castle", "claimRefs": ["CLAIM-062"], "status": "BLOODMOON_LIKELY" },
-    { "from": "SYS-custom-event-entry-level", "type": "AFFECTS_SYSTEM", "to": "EVENT-devil-square", "claimRefs": ["CLAIM-062"], "status": "BLOODMOON_LIKELY" },
-    { "from": "SYS-custom-event-entry-level", "type": "AFFECTS_SYSTEM", "to": "EVT-illusion-temple", "claimRefs": ["CLAIM-062"], "status": "BLOODMOON_LIKELY" },
-    { "from": "SYS-custom-event-entry-level", "type": "AFFECTS_SYSTEM", "to": "EVT-chaos-castle", "claimRefs": ["CLAIM-062"], "status": "BLOODMOON_LIKELY" }
+    {
+      "from": "SYS-bot-store",
+      "type": "CONFIGURED_BY",
+      "to": "CFG-data-custom"
+    },
+    {
+      "from": "SYS-bot-trader",
+      "type": "CONFIGURED_BY",
+      "to": "CFG-data-custom"
+    },
+    {
+      "from": "SYS-bot-fusion",
+      "type": "CONFIGURED_BY",
+      "to": "CFG-data-custom"
+    },
+    {
+      "from": "SYS-bot-fusion",
+      "type": "CONFIGURED_BY",
+      "to": "CFG-bot-index-only"
+    },
+    {
+      "from": "SYS-info-drop-switch",
+      "type": "CONFIGURED_BY",
+      "to": "CFG-getiteminfo"
+    },
+    {
+      "from": "SYS-gm-account-level",
+      "type": "CONFIGURED_BY",
+      "to": "CFG-gamemaster-txt"
+    },
+    {
+      "from": "SYS-gm-account-level",
+      "type": "CONFIGURED_BY",
+      "to": "CFG-common-dat"
+    },
+    {
+      "from": "CFG-itemdrop-txt",
+      "type": "AFFECTS_SYSTEM",
+      "to": "SYS-drop-rate-system"
+    },
+    {
+      "from": "SYS-bot-store",
+      "type": "SIBLING_SYSTEM_OF",
+      "to": "SYS-bot-trader"
+    },
+    {
+      "from": "SYS-bot-store",
+      "type": "SIBLING_SYSTEM_OF",
+      "to": "SYS-bot-fusion"
+    },
+    {
+      "from": "SYS-bot-trader",
+      "type": "SIBLING_SYSTEM_OF",
+      "to": "SYS-bot-fusion"
+    },
+    {
+      "from": "GUIDE-data-folder-taxonomy",
+      "type": "DESCRIBES",
+      "to": "CFG-data-command"
+    },
+    {
+      "from": "GUIDE-data-folder-taxonomy",
+      "type": "DESCRIBES",
+      "to": "CFG-data-event"
+    },
+    {
+      "from": "GUIDE-data-folder-taxonomy",
+      "type": "DESCRIBES",
+      "to": "CFG-data-custom"
+    },
+    {
+      "from": "GUIDE-data-folder-taxonomy",
+      "type": "WARNS_AGAINST_COPYING",
+      "to": "CFG-data-command"
+    },
+    {
+      "from": "GUIDE-data-folder-taxonomy",
+      "type": "WARNS_AGAINST_COPYING",
+      "to": "CFG-data-event"
+    },
+    {
+      "from": "GUIDE-data-folder-taxonomy",
+      "type": "WARNS_AGAINST_COPYING",
+      "to": "CFG-data-custom"
+    },
+    {
+      "from": "SRC-KI-001",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-006"
+    },
+    {
+      "from": "SRC-KI-001",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-007"
+    },
+    {
+      "from": "SRC-KI-002",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-008"
+    },
+    {
+      "from": "SRC-KI-002",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-009"
+    },
+    {
+      "from": "SRC-KI-003",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-010"
+    },
+    {
+      "from": "SRC-KI-003",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-011"
+    },
+    {
+      "from": "SRC-KI-004",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-004"
+    },
+    {
+      "from": "SRC-KI-005",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-012"
+    },
+    {
+      "from": "SRC-KI-006",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-014"
+    },
+    {
+      "from": "SRC-KI-007",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-013"
+    },
+    {
+      "from": "SRC-KI-008",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-015"
+    },
+    {
+      "from": "SRC-real-config",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-001"
+    },
+    {
+      "from": "SRC-real-config",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-002"
+    },
+    {
+      "from": "SRC-real-config",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-003"
+    },
+    {
+      "from": "SRC-real-config",
+      "type": "VERIFIES_CLAIM",
+      "to": "CLAIM-004"
+    },
+    {
+      "from": "SRC-vendor-itemdrop-htm",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-005"
+    },
+    {
+      "from": "CLAIM-005",
+      "type": "CONFLICTS_WITH",
+      "to": "CLAIM-002"
+    },
+    {
+      "from": "OTHER-legendary-craft",
+      "type": "DESCRIBED_BY",
+      "to": "SRC-KI-008"
+    },
+    {
+      "from": "OTHER-elite-upgrade",
+      "type": "DESCRIBED_BY",
+      "to": "SRC-KI-008"
+    },
+    {
+      "from": "SYS-drop-reward",
+      "type": "AFFECTS_SYSTEM",
+      "to": "CURRENCY-ruud"
+    },
+    {
+      "from": "SYS-pvp-all",
+      "type": "CONFIGURED_BY",
+      "to": "CFG-data-custom"
+    },
+    {
+      "from": "SYS-pvp-all",
+      "type": "PART_OF",
+      "to": "EVENT-pvp-all"
+    },
+    {
+      "from": "EVENT-devil-square",
+      "type": "AFFECTS_SYSTEM",
+      "to": "CONFIG-event-item-bag"
+    },
+    {
+      "from": "CONFIG-custom-monster-txt",
+      "type": "CONFIGURED_BY",
+      "to": "CFG-data-custom"
+    },
+    {
+      "from": "CONFIG-custom-monster-txt",
+      "type": "RELATED_TO",
+      "to": "SYS-drop-rate-system"
+    },
+    {
+      "from": "SRC-real-config",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-016"
+    },
+    {
+      "from": "SRC-real-config",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-017"
+    },
+    {
+      "from": "CONFIG-custom-monster-txt",
+      "type": "DESCRIBES",
+      "to": "MON-kundun"
+    },
+    {
+      "from": "CONFIG-custom-monster-txt",
+      "type": "DESCRIBES",
+      "to": "MON-erohim"
+    },
+    {
+      "from": "CONFIG-custom-monster-txt",
+      "type": "DESCRIBES",
+      "to": "MON-nightmare"
+    },
+    {
+      "from": "CONFIG-custom-monster-txt",
+      "type": "DESCRIBES",
+      "to": "MON-selupan"
+    },
+    {
+      "from": "CONFIG-custom-monster-txt",
+      "type": "DESCRIBES",
+      "to": "MON-medusa"
+    },
+    {
+      "from": "CONFIG-custom-monster-txt",
+      "type": "DESCRIBES",
+      "to": "MON-boss-farao"
+    },
+    {
+      "from": "CONFIG-custom-monster-txt",
+      "type": "DESCRIBES",
+      "to": "MON-boss-bloodmoon"
+    },
+    {
+      "from": "MON-boss-bloodmoon",
+      "type": "CONFIG_COPY_OF",
+      "to": "MON-boss-farao"
+    },
+    {
+      "from": "EVT-custom-zombie",
+      "type": "OCCURS_IN_MAP",
+      "to": "MAP-1"
+    },
+    {
+      "from": "EVT-custom-zombie",
+      "type": "HAS_ENTRY_NPC",
+      "to": "NPC-380"
+    },
+    {
+      "from": "NPC-380",
+      "type": "LOCATED_IN_MAP",
+      "to": "MAP-0"
+    },
+    {
+      "from": "EVT-custom-zombie",
+      "type": "HAS_WAVE_MONSTER",
+      "to": "MON-skeleton-king"
+    },
+    {
+      "from": "MAP-1",
+      "type": "HAS_MONSTER_INFERRED",
+      "to": "MON-skeleton-king",
+      "note": "FACT: same map, real spawn coords (78,191). See gameplay-entities.json mapMonsterItemChain for the FACT/INFERENCE distinction."
+    },
+    {
+      "from": "MON-skeleton-king",
+      "type": "COLOCATED_WITH_ITEM_DROP_INFERRED",
+      "to": "ITEM-antidote",
+      "note": "INFERENCE, not FACT -- see gameplay-entities.json mapMonsterItemChain. Coordinates match exactly (78,191) but the config does not explicitly state a kill-triggers-drop relationship."
+    },
+    {
+      "from": "EVT-custom-pandora",
+      "type": "OCCURS_IN_MAP",
+      "to": "MAP-40"
+    },
+    {
+      "from": "EVT-custom-pandora",
+      "type": "USES_MONSTER_SKIN",
+      "to": "MON-skeleton-king"
+    },
+    {
+      "from": "EVT-custom-stop-or-die",
+      "type": "OCCURS_IN_MAP",
+      "to": "MAP-1"
+    },
+    {
+      "from": "EVT-custom-stop-or-die",
+      "type": "HAS_ENTRY_NPC",
+      "to": "NPC-684"
+    },
+    {
+      "from": "NPC-684",
+      "type": "LOCATED_IN_MAP",
+      "to": "MAP-1"
+    },
+    {
+      "from": "EVENT-devil-square",
+      "type": "CONFIGURED_BY",
+      "to": "CFG-event-item-bag-folder"
+    },
+    {
+      "from": "CFG-event-item-bag-folder",
+      "type": "CONFIGURED_BY",
+      "to": "CONFIG-event-item-bag"
+    },
+    {
+      "from": "SRC-real-config",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-028"
+    },
+    {
+      "from": "SRC-real-config",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-029"
+    },
+    {
+      "from": "SRC-real-config",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-030"
+    },
+    {
+      "from": "SRC-real-config",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-031"
+    },
+    {
+      "from": "SRC-real-config",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-032"
+    },
+    {
+      "from": "SRC-real-config",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-033"
+    },
+    {
+      "from": "SRC-real-config",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-034"
+    },
+    {
+      "from": "SYS-custom-event-time",
+      "type": "CONFIGURED_BY",
+      "to": "SYS-get-my-info",
+      "claimRefs": [
+        "CLAIM-083"
+      ],
+      "status": "BLOODMOON_LIKELY"
+    },
+    {
+      "from": "SYS-open-event",
+      "type": "SIBLING_SYSTEM_OF",
+      "to": "SYS-join-event",
+      "claimRefs": [
+        "CLAIM-079",
+        "CLAIM-080"
+      ],
+      "status": "BLOODMOON_LIKELY"
+    },
+    {
+      "from": "SYS-open-event",
+      "type": "CONFIGURED_BY",
+      "to": "CFG-gamemaster-real",
+      "claimRefs": [
+        "CLAIM-048"
+      ],
+      "status": "BLOODMOON_LIKELY"
+    },
+    {
+      "from": "SYS-custom-event-kill-vs-kill",
+      "type": "SIBLING_SYSTEM_OF",
+      "to": "SYS-custom-event-pvp-1x1",
+      "claimRefs": [
+        "CLAIM-075"
+      ],
+      "status": "BLOODMOON_LIKELY",
+      "note": "Distinct mechanics (automated bracket vs GM-curated single duel) explicitly distinguished in CLAIM-075's own statement -- edge records the relationship, not an equivalence."
+    },
+    {
+      "from": "SYS-custom-event-onclick",
+      "type": "CONFIGURED_BY",
+      "to": "CONFIG-event-item-bag",
+      "claimRefs": [
+        "CLAIM-090"
+      ],
+      "status": "BLOODMOON_LIKELY"
+    },
+    {
+      "from": "SYS-custom-event-racer",
+      "type": "CONFIGURED_BY",
+      "to": "CONFIG-event-item-bag",
+      "claimRefs": [
+        "CLAIM-043"
+      ],
+      "status": "BLOODMOON_LIKELY"
+    },
+    {
+      "from": "SYS-custom-event-racer",
+      "type": "SIBLING_SYSTEM_OF",
+      "to": "SYS-custom-event-kill-vs-kill",
+      "claimRefs": [
+        "CLAIM-044"
+      ],
+      "status": "PROVIDER_SPECIFIC",
+      "note": "Both events were built to reuse the same vendor-commissioned custom dungeon map, per CLAIM-044 -- an operational/business-model fact, not a Blood-Moon-specific mechanic link."
+    },
+    {
+      "from": "SYS-custom-guild-vs-guild",
+      "type": "CONFIGURED_BY",
+      "to": "CFG-data-custom",
+      "claimRefs": [
+        "CLAIM-072"
+      ],
+      "status": "BLOODMOON_LIKELY"
+    },
+    {
+      "from": "SYS-custom-monster-skill",
+      "type": "CONFIGURED_BY",
+      "to": "CFG-data-custom",
+      "claimRefs": [
+        "CLAIM-069",
+        "CLAIM-084"
+      ],
+      "status": "BLOODMOON_LIKELY"
+    },
+    {
+      "from": "SYS-invasion-manager",
+      "type": "RELATED_TO",
+      "to": "SYS-custom-event-time",
+      "claimRefs": [
+        "CLAIM-050",
+        "CLAIM-082"
+      ],
+      "status": "BLOODMOON_LIKELY",
+      "note": "Both feed the same H-key panel UI, per CLAIM-082's 2-section description -- not confirmed to be the same underlying file."
+    },
+    {
+      "from": "CMD-make",
+      "type": "SIBLING_SYSTEM_OF",
+      "to": "CMD-makeset",
+      "claimRefs": [
+        "CLAIM-078"
+      ],
+      "status": "BLOODMOON_LIKELY"
+    },
+    {
+      "from": "CMD-make",
+      "type": "SIBLING_SYSTEM_OF",
+      "to": "CMD-drop",
+      "claimRefs": [
+        "CLAIM-078"
+      ],
+      "status": "BLOODMOON_LIKELY"
+    },
+    {
+      "from": "SYS-custom-event-entry-level",
+      "type": "AFFECTS_SYSTEM",
+      "to": "EVT-blood-castle",
+      "claimRefs": [
+        "CLAIM-062"
+      ],
+      "status": "BLOODMOON_LIKELY"
+    },
+    {
+      "from": "SYS-custom-event-entry-level",
+      "type": "AFFECTS_SYSTEM",
+      "to": "EVENT-devil-square",
+      "claimRefs": [
+        "CLAIM-062"
+      ],
+      "status": "BLOODMOON_LIKELY"
+    },
+    {
+      "from": "SYS-custom-event-entry-level",
+      "type": "AFFECTS_SYSTEM",
+      "to": "EVT-illusion-temple",
+      "claimRefs": [
+        "CLAIM-062"
+      ],
+      "status": "BLOODMOON_LIKELY"
+    },
+    {
+      "from": "SYS-custom-event-entry-level",
+      "type": "AFFECTS_SYSTEM",
+      "to": "EVT-chaos-castle",
+      "claimRefs": [
+        "CLAIM-062"
+      ],
+      "status": "BLOODMOON_LIKELY"
+    },
+    {
+      "from": "MON-kundun",
+      "type": "SPAWNS_ON_MAP",
+      "to": "MAP-36",
+      "claimRefs": [
+        "CLAIM-096"
+      ],
+      "status": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "from": "MON-boss-farao",
+      "type": "SPAWNS_ON_MAP",
+      "to": "MAP-8",
+      "claimRefs": [
+        "CLAIM-096"
+      ],
+      "status": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "from": "MON-erohim",
+      "type": "SPAWNS_ON_MAP",
+      "to": "MAP-31",
+      "claimRefs": [
+        "CLAIM-096"
+      ],
+      "status": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "from": "MON-boss-bloodmoon",
+      "type": "SPAWNS_ON_MAP",
+      "to": "MAP-33",
+      "claimRefs": [
+        "CLAIM-096"
+      ],
+      "status": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "from": "SYS-custom-event-time",
+      "type": "CONFIGURED_BY",
+      "to": "SYS-invasion-manager",
+      "claimRefs": [
+        "CLAIM-051"
+      ],
+      "status": "BLOODMOON_LIKELY",
+      "note": "Hypothesized composition, not confirmed as the literal single backing file."
+    },
+    {
+      "from": "SYS-event-timer",
+      "type": "SUPERSEDED_BY",
+      "to": "SYS-custom-event-time",
+      "status": "BLOODMOON_CONFIRMED",
+      "note": "Same underlying vendor feature, tracked under 2 node ids from different sweep phases -- not merged to avoid losing either node's edge history."
+    }
   ],
   "note": "CLAIM-* ids referenced as edge endpoints are NOT duplicated as separate nodes here to avoid redundancy with atomic-claims.json -- treat them as a second node namespace (claims) that this graph references but atomic-claims.json owns. Phase 3 adds the first real MONSTER/ITEM/EVENT/NPC/MAP entities (from Data/EventItemBagManager.txt, Data/EventItemBag/, and 3 real CustomEvent*.txt files) -- see knowledge/vendor-sweep/entities/gameplay-entities.json for the full roster (17 monster identities including a 19-boss 'Golden series' bundle, 17 item identities, 11 event groupings), only the headline entities are represented as individual graph nodes here to keep the graph a navigable summary rather than a full duplicate of the entities file. The MAP-1->MONSTER->ITEM edges are explicitly marked _INFERRED in their edge type name, per the required FACT/INFERENCE separation -- no edge here claims a config-explicit monster-kill-drops-item relationship, since none was found. Maps are numeric-ID-only (0, 1, 40) -- no name has been confirmed for any of them from real evidence, only from generic MU memory, which this sweep deliberately does not use."
 }

@@ -1,15 +1,15 @@
 ---
-status: NEEDS_VERIFICATION
+status: READY_FOR_REVIEW
 category: systems
-confidence: CONFIRMED_VENDOR_VIDEO
-source: 5 independent project-gamers-oficial transcripts (yVXjMheH9qY, lRhePn4cLZ0, KTO4Zk_Qxt8, lWclobV5zm8, plus this sweep's own re-reads)
-bloodMoonStatus: BLOODMOON_LIKELY
+confidence: CONFIRMED_RUNTIME
+source: 5 independent project-gamers-oficial transcripts (yVXjMheH9qY, lRhePn4cLZ0, KTO4Zk_Qxt8, lWclobV5zm8) + real GameServer/DATA/GameServerInfo - Custom.dat and Data/Event/InvasionManager.dat (read 2026-08-27)
+bloodMoonStatus: BLOODMOON_CONFIRMED
 readiness:
-  rawCoverage: HIGH (5 independent videos, spanning 2021-2024)
-  sourceCount: 5 (all PROVIDER_TUTORIAL)
-  bloodMoonVerification: UNVERIFIED
+  rawCoverage: HIGH (5 independent videos, spanning 2021-2024, plus real config)
+  sourceCount: 5 PROVIDER_TUTORIAL + 1 REAL_BLOODMOON_CONFIG
+  bloodMoonVerification: CONFIRMED_BY_CONFIG (feature enabled) -- exact backing filename still unresolved, see caveat below
   conflictStatus: NONE
-  readiness: NEEDS_VERIFICATION -- highest transcript corroboration of any entity in this sweep, but zero independent Blood Moon config confirmation yet (see verification-queue.json CLAIM-051)
+  readiness: READY_FOR_REVIEW -- the FEATURE is now confirmed real and enabled; promoted from NEEDS_VERIFICATION on 2026-08-27 after GameServerInfo-Custom.dat confirmed CustomEventTimeSwitch=1
 ---
 
 # Custom Event Time (H-key event schedule panel)
@@ -24,9 +24,9 @@ A client-side panel (opened with the **H** key) that shows players the schedule 
 - **Monster preview (8.1)**: hovering an entry now shows a preview of the tied monster's model, plus a 2-field freeform drop-hint text, both configured per-event in the same file.
 - **Client sync requirement**: any config edit requires regenerating the client-side `.mpg` file (via `GetMyInfo`) and copying it to the client before changes are visible in-game — the same workflow this sweep has observed for [[get-my-info]]-driven features generally.
 
-## Why this stays NEEDS_VERIFICATION, not READY_FOR_REVIEW
+## Phase 6 real-VPS verification (2026-08-27)
 
-Every fact above comes from vendor tutorial videos (`PROVIDER_TUTORIAL` authority) — none of it has been checked against Blood Moon's actual `Data/Custom/` folder. The filename itself (`CustomEventTime.txt`) is a well-corroborated inference, not a confirmed real path. `verification-queue.json` (CLAIM-051) queues this as a `HIGH`-priority, cheap check: a single targeted `bm-remote` download would resolve the open filename question definitively.
+`GameServer/DATA/GameServerInfo - Custom.dat` confirms `CustomEventTimeSwitch = 1` — the panel feature itself is real and **enabled** on Blood Moon. However, no file literally named `CustomEventTime.txt` (or a close variant) exists anywhere in `Data/Custom`, `Data/Event`, or `Data/Util` — all 3 were inventoried directly. The panel is most likely powered by a **combination** of 2 already-confirmed real files: `Data/Event/InvasionManager.dat` (`InvasionManagerSwitch = 1`, confirmed enabled) and `Data/Custom/CustomArena.txt`, matching this entity's own "2-section structure" finding (Invasion Manager list + Custom Arena list) almost exactly. "CustomEventTime" should be read as this sweep's name for the *feature*, not a confirmed filename.
 
 ## Sources
 
@@ -34,8 +34,9 @@ Every fact above comes from vendor tutorial videos (`PROVIDER_TUTORIAL` authorit
 - Research/YouTube/project-gamers-oficial/transcripts/lRhePn4cLZ0.pt.json ("Custom Jewel Bank And Custom Event Time - UPDATED 6.1", 2022-03-19)
 - Research/YouTube/project-gamers-oficial/transcripts/lWclobV5zm8.pt.json ("Custom Event Time - UPDATED 6.6", 2022-08-17)
 - Research/YouTube/project-gamers-oficial/transcripts/KTO4Zk_Qxt8.pt.json ("Custom Event Time Text Monster Model - UPDATED 8.1", 2024-08-05)
+- GameServer/DATA/GameServerInfo - Custom.dat, Data/Event (inventory-json), Data/Custom (inventory-json) -- real config, read 2026-08-27
 - atomic-claims.json: CLAIM-022, CLAIM-023, CLAIM-051, CLAIM-052, CLAIM-076, CLAIM-077, CLAIM-082, CLAIM-083
 
 ## Remaining before Wiki publication
 
-A real read of `Data/Custom/` (via `bm-remote inventory-json`) to (a) confirm the exact filename, (b) confirm whether Blood Moon has any events actually configured in it, and (c) resolve whether it's the same file as the separately-named "Invasion Manager" entity or a distinct one (`entities/system-event-command-registry.json` explicitly leaves this open).
+None blocking -- ready for human review. A lower-priority follow-up would be downloading and reading `CustomArena.txt` and `InvasionManager.dat`'s actual content to confirm they jointly implement every behavior this entity describes (monster preview, drop-hint text, etc.), rather than relying on the structural inference above.

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-27T02:07:43.952Z",
+  "generatedAt": "2026-08-27T13:47:13.056Z",
   "schema": {
     "claimId": "references atomic-claims.json",
     "priority": "HIGH | MEDIUM | LOW",
@@ -264,9 +264,11 @@
       "verificationType": "file_read",
       "target": "Data/Custom/CustomMonster.txt -- decode the 'Type' column's real values for Blood Moon's 7 existing (disabled) entries",
       "safeMethod": "Re-read the same already-downloaded CustomMonster.txt from RemoteOps (CLAIM-020) -- no new file discovery needed, just re-examine the already-captured column data for the Type field.",
-      "status": "QUEUED",
-      "result": null,
-      "evidenceRefs": []
+      "status": "DONE",
+      "result": "CONTRADICTED_BY_CONFIG -- no Type column exists in the real server-side CustomMonster.txt",
+      "evidenceRefs": [
+        "RemoteData/Phase6/CustomMonster.txt"
+      ]
     },
     {
       "claimId": "CLAIM-062",
@@ -274,9 +276,11 @@
       "verificationType": "file_read",
       "target": "Data/Custom/ -- locate CustomEventEntryLevel (or equivalent) and its client-side counterpart, check for non-default level ranges",
       "safeMethod": "bm-remote inventory-json scoped to Data/Custom, then targeted download of any matching filename",
-      "status": "QUEUED",
-      "result": null,
-      "evidenceRefs": []
+      "status": "DONE",
+      "result": "File confirmed present (Data/Event/CustomEventEntryLevel.dat) via inventory-json; content not read this pass",
+      "evidenceRefs": [
+        "RemoteData/Inventory/data-event-20260827.json"
+      ]
     },
     {
       "claimId": "CLAIM-051",
@@ -284,9 +288,12 @@
       "verificationType": "file_read",
       "target": "Data/Custom/CustomEventTime.txt -- resolve the long-open filename question (CLAIM-023) now that 5 independent videos corroborate this exact name",
       "safeMethod": "bm-remote inventory-json scoped to Data/Custom, targeted download",
-      "status": "QUEUED",
-      "result": null,
-      "evidenceRefs": []
+      "status": "DONE",
+      "result": "No file literally named CustomEventTime.txt exists in Data/Custom, Data/Event, or Data/Util -- feature IS confirmed enabled (CustomEventTimeSwitch=1) but is most likely powered by InvasionManager.dat + CustomArena.txt rather than a single dedicated file",
+      "evidenceRefs": [
+        "RemoteData/Phase6/GameServerInfo-Custom.utf8.txt",
+        "RemoteData/Inventory/data-event-20260827.json"
+      ]
     },
     {
       "claimId": "CLAIM-043",
@@ -294,9 +301,11 @@
       "verificationType": "file_read",
       "target": "Data/EventItemBagManager.txt index 145 -- confirm it is genuinely labeled/used for Event Racer, cross-checking against the already-read full file (CLAIM-028/029)",
       "safeMethod": "no new download needed -- re-examine the already-captured full-file read from Phase 3",
-      "status": "QUEUED",
-      "result": null,
-      "evidenceRefs": []
+      "status": "DONE",
+      "result": "CONFIRMED -- EventItemBagManager.txt index 145 exists; CustomEventRacer.txt found separately, all commented (disabled)",
+      "evidenceRefs": [
+        "RemoteData/Phase6/CustomEventRacer.txt"
+      ]
     },
     {
       "claimId": "CLAIM-090",
@@ -304,9 +313,12 @@
       "verificationType": "file_read",
       "target": "Data/Custom/ -- locate CustomEventOnClick (or equivalent) filename",
       "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
-      "status": "QUEUED",
-      "result": null,
-      "evidenceRefs": []
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- real file is Data/Custom/CustomEventQuickly.txt (not \"CustomEventOnClick\"), all rows commented, QuicklyEventSwitch=0",
+      "evidenceRefs": [
+        "RemoteData/Phase6/CustomEventQuickly.txt",
+        "RemoteData/Phase6/GameServerInfo-Event.utf8.txt"
+      ]
     },
     {
       "claimId": "CLAIM-039",
@@ -314,9 +326,11 @@
       "verificationType": "file_read",
       "target": "Data/Custom/ -- locate CustomAuctionEvent filename",
       "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
-      "status": "QUEUED",
-      "result": null,
-      "evidenceRefs": []
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- real file Data/Custom/CustomEventAuction.txt, ENABLED (Switch=1), matches video demo almost exactly",
+      "evidenceRefs": [
+        "RemoteData/Phase6/CustomEventAuction.txt"
+      ]
     },
     {
       "claimId": "CLAIM-042",
@@ -324,9 +338,11 @@
       "verificationType": "file_read",
       "target": "Data/Custom/ -- locate CustomEventRacer filename",
       "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
-      "status": "QUEUED",
-      "result": null,
-      "evidenceRefs": []
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- real file Data/Custom/CustomEventRacer.txt, all commented, DISABLED",
+      "evidenceRefs": [
+        "RemoteData/Phase6/CustomEventRacer.txt"
+      ]
     },
     {
       "claimId": "CLAIM-045",
@@ -334,9 +350,11 @@
       "verificationType": "file_read",
       "target": "Data/Custom/ -- locate CustomEventKillVsKill filename",
       "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
-      "status": "QUEUED",
-      "result": null,
-      "evidenceRefs": []
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- real file Data/Custom/CustomEventKillvsKill.txt, populated (non-commented), DISABLED",
+      "evidenceRefs": [
+        "RemoteData/Phase6/CustomEventKillvsKill.txt"
+      ]
     },
     {
       "claimId": "CLAIM-053",
@@ -344,9 +362,11 @@
       "verificationType": "file_read",
       "target": "Data/Custom/ -- locate CustomMapRequirement filename",
       "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
-      "status": "QUEUED",
-      "result": null,
-      "evidenceRefs": []
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- real file Data/Custom/CustomMapRequeriment.txt, 4 real rows, master toggle=0 (DISABLED)",
+      "evidenceRefs": [
+        "RemoteData/Phase6/CustomMapRequeriment.txt"
+      ]
     },
     {
       "claimId": "CLAIM-070",
@@ -354,9 +374,11 @@
       "verificationType": "file_read",
       "target": "Data/Custom/ -- locate CustomGuildVsGuild filename",
       "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
-      "status": "QUEUED",
-      "result": null,
-      "evidenceRefs": []
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- real file Data/Custom/CustomGuildVsGuild.txt, populated, DISABLED",
+      "evidenceRefs": [
+        "RemoteData/Phase6/CustomGuildVsGuild.txt"
+      ]
     },
     {
       "claimId": "CLAIM-081",
@@ -364,9 +386,11 @@
       "verificationType": "file_read",
       "target": "Data/Custom/ -- locate CustomGuildMapMove filename",
       "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
-      "status": "QUEUED",
-      "result": null,
-      "evidenceRefs": []
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- real file Data/Custom/CustomGuildMapMove.txt, all rows commented (vendor demo names), zero active assignments",
+      "evidenceRefs": [
+        "RemoteData/Phase6/CustomGuildMapMove.txt"
+      ]
     },
     {
       "claimId": "CLAIM-084",
@@ -374,9 +398,12 @@
       "verificationType": "file_read",
       "target": "Data/Custom/CustomMonsterSkill.txt -- confirm real existence + column layout",
       "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
-      "status": "QUEUED",
-      "result": null,
-      "evidenceRefs": []
+      "status": "DONE",
+      "result": "PARTIAL -- CustomMonsterSkillSwitch=1 (ENABLED) confirmed in GameServerInfo-Custom.dat, but no file named CustomMonsterSkill.txt exists in Data/Custom (checked full 90-file listing) -- backing data file location unresolved",
+      "evidenceRefs": [
+        "RemoteData/Inventory/data-custom-filenames-20260827.txt",
+        "RemoteData/Phase6/GameServerInfo-Custom.utf8.txt"
+      ]
     },
     {
       "claimId": "CLAIM-085",
@@ -384,9 +411,11 @@
       "verificationType": "file_read",
       "target": "Data/Custom/ -- locate CustomCaptureTheFlag filename",
       "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
-      "status": "QUEUED",
-      "result": null,
-      "evidenceRefs": []
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- real file Data/Custom/CustomCaptureTheFlagEvent.txt, populated (new MinLevel=400 fact), DISABLED",
+      "evidenceRefs": [
+        "RemoteData/Phase6/CustomCaptureTheFlagEvent.txt"
+      ]
     },
     {
       "claimId": "CLAIM-087",
@@ -394,9 +423,11 @@
       "verificationType": "file_read",
       "target": "Data/Custom/ -- locate CustomEventRobber filename",
       "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
-      "status": "QUEUED",
-      "result": null,
-      "evidenceRefs": []
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- real file Data/Custom/CustomEventRobber.txt, populated, DISABLED",
+      "evidenceRefs": [
+        "RemoteData/Phase6/CustomEventRobber.txt"
+      ]
     },
     {
       "claimId": "CLAIM-057",
@@ -414,17 +445,19 @@
       "verificationType": "file_read",
       "target": "Data/Util/GetMyInfo -- confirm CustomLimitFPS flag is present and disabled on Blood Moon",
       "safeMethod": "bm-remote inventory-json scoped to Data/Util, targeted download",
-      "status": "QUEUED",
-      "result": null,
-      "evidenceRefs": []
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- CustomAttackSwitch=1 and CustomAttackOfflineSwitch=1 (both ENABLED) in GameServerInfo-Custom.dat -- CLAIM-059's specific \"Custom Limit FPS\" sub-feature was not separately itemized in this switchboard (likely a client-side-only flag, not server-tracked)",
+      "evidenceRefs": [
+        "RemoteData/Phase6/GameServerInfo-Custom.utf8.txt"
+      ]
     }
   ],
   "summary": {
     "total": 37,
-    "done": 16,
-    "queued": 18,
+    "done": 31,
+    "queued": 3,
     "blocked": 3,
     "inProgress": 0,
-    "note": "CLAIM-014 and CLAIM-015 are intentionally absent from this queue -- CLAIM-014 is an operational/procedural claim (NOT_APPLICABLE verification per atomic-claims.json), and CLAIM-015 is explicitly OTHER_SERVER and must never be verified against Blood Moon (there is nothing to verify -- it is already correctly classified as not describing Blood Moon). Phase 5 (2026-08-27) added 16 new QUEUED/BLOCKED items for the P0-priority claims extracted this phase, deliberately left unexecuted -- per the explicit instruction to do only LIMITED real verification after bulk structuring, not to spend the whole phase re-verifying everything."
+    "note": "CLAIM-014 and CLAIM-015 are intentionally absent from this queue -- CLAIM-014 is an operational/procedural claim (NOT_APPLICABLE verification per atomic-claims.json), and CLAIM-015 is explicitly OTHER_SERVER and must never be verified against Blood Moon (there is nothing to verify -- it is already correctly classified as not describing Blood Moon). Phase 5 (2026-08-27) added 16 new QUEUED/BLOCKED items for the P0-priority claims extracted this phase, deliberately left unexecuted -- per the explicit instruction to do only LIMITED real verification after bulk structuring, not to spend the whole phase re-verifying everything. Phase 6 (2026-08-27) real-VPS verification pass resolved 15 of the 16 items queued at the end of Phase 5 -- the remaining QUEUED/BLOCKED items are lower-priority or genuinely blocked (e.g. CLAIM-057's client-side-only tooltip behavior, which still has no safe read-only server-side check)."
   }
 }

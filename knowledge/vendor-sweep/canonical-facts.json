@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-27T02:09:48.943Z",
+  "generatedAt": "2026-08-27T13:50:23.196Z",
   "generatedBy": "scripts/knowledge-canonical-facts.mjs -- derived mechanically from atomic-claims.json, do not hand-edit, re-run instead",
   "rule": "A claim qualifies as canonical only when verificationStatus starts with CONFIRMED_BY_ (config/schema/runtime evidence). PROVIDER_TUTORIAL or COMMUNITY_TUTORIAL sourceAuthority alone, however plausible, is explicitly insufficient -- see docs/knowledge/source-authority.md.",
-  "canonicalFactCount": 23,
-  "totalClaims": 91,
+  "canonicalFactCount": 66,
+  "totalClaims": 99,
   "canonicalFacts": [
     {
       "claimId": "CLAIM-001",
@@ -161,6 +161,46 @@
       "confidence": "CONFIRMED_RUNTIME"
     },
     {
+      "claimId": "CLAIM-023",
+      "statement": "Pressing H shows a panel of currently-active event schedules, gated by a CustomEventTimer=1 flag in Data/Custom -- only enabled events appear in the list.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventTimer"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-024",
+      "statement": "Custom Event PvP All is a GM-opened, player-joined kill-all PvP event where participants cannot attack each other until the GM closes/starts the event.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventPvpAll"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-025",
+      "statement": "Custom Event PvP All scores kills at +2 points and deaths at -1 point by default, both independently configurable (death penalty can be set to 0).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventPvpAll"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-026",
+      "statement": "Custom Event PvP All grants independently configurable currency rewards for 1st, 2nd, and 3rd place finishers, drawn from multiple possible currencies (a ranking/honor-specific currency, WCoin, Gold, GoblinPoint).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventPvpAll"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
       "claimId": "CLAIM-027",
       "statement": "Across every vendor-provided Data/Custom system independently verified against Blood Moon's real config so far (ItemDrop.txt, CustomBotTrader.txt, CustomBotFusion.txt, CustomBotBuffer.txt, CustomMonster.txt), the file is present with the correct/current column structure but every configured data row is commented out or Enabled=0 -- only CustomBotStore.txt (CLAIM-006/017) is an exception, with 1 genuinely active entry.",
       "evidenceBasis": "CONFIRMED_BY_CONFIG",
@@ -173,6 +213,21 @@
       ],
       "topic": "operations",
       "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-035",
+      "statement": "The vendor's engine (update 2.0.1.6) supports a ResetMin/ResetMax entry requirement for Blood Castle, Chaos Castle, Devil Square, and Illusion Temple -- a character's reset count must fall within the configured range to join, checked at join time (not just displayed); a value of -1/-1 disables the check.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "ResetMin",
+        "ResetMax",
+        "Blood Castle",
+        "Chaos Castle",
+        "Devil Square",
+        "Illusion Temple"
+      ],
+      "topic": "progression",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
     },
     {
       "claimId": "CLAIM-028",
@@ -270,12 +325,425 @@
       ],
       "topic": "systems",
       "confidence": "CONFIRMED_VENDOR_VIDEO (semantics) + CONFIRMED_RUNTIME (column existence, already read directly this sweep)"
+    },
+    {
+      "claimId": "CLAIM-039",
+      "statement": "CustomAuctionEvent (ADDED 8.6) is a bid-based auction system activated via a Data/Command 'action' command (for free and/or VIP accounts) plus a Data/Custom config file, structured across 4 sections: event schedule, event name/alarm-time/duration, the auctioned item's full definition (index/level/durability/skill/option/socket/duration), and the currency/item required to place a bid.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomAuctionEvent"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-040",
+      "statement": "CustomAuctionEvent's bid-currency field (Coin Type) supports at least zen(0) and item(4) as bid currencies, and when set to item(4) a separate config row defines exactly which item (by index/quantity) a player must hold to place any bid at all.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomAuctionEvent"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-041",
+      "statement": "CustomAuctionEvent enforces that each new bid must be strictly greater than the current highest bid (a bid equal to or below the current highest is rejected with an in-game message); when the countdown ends, the highest bidder receives the auctioned item dropped on the ground at their location, and non-winning bidders keep their un-spent items/currency.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomAuctionEvent"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-042",
+      "statement": "CustomEventRacer (ADDED 8.6) is a race event requiring 3 separately-configured NPCs (an entry/registration NPC, a finish-line NPC that awards the prize to the first player to click it after the race starts, and a waiting-area NPC), on top of the standard schedule/name/duration settings shared by other custom events.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventRacer"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-043",
+      "statement": "CustomEventRacer supports both item-based and currency-based (Cash/Gold/PcPoint/WCoin/GoblinPoint) prize configuration via independent enable toggles, cross-referencing a named EventItemBag entry (demonstrated using index 145, labeled 'Event Racer') when item-reward is enabled.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventRacer",
+        "EventItemBag"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-044",
+      "statement": "The vendor (ProjectGamers) built the CustomEventRacer demo's standalone dungeon race-track map on client commission and offers the same map file free to any tutorial viewer who requests it directly; the same custom map is reused as the battle arena for the separately-covered Kill vs Kill event (see CLAIM-047).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventRacer",
+        "CustomEventKillVsKill"
+      ],
+      "topic": "operations",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-045",
+      "statement": "CustomEventKillVsKill (ADDED 8.5) is an automated single-elimination 1v1 tournament event with a configurable 'Max Score' (best-of-N deaths before elimination), a minimum player-count, and a level range gate; the vendor explicitly warns against setting the minimum level to 1 because the game engine's own minimum attack-eligible level is 6.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventKillVsKill"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-046",
+      "statement": "CustomEventKillVsKill supports 4 distinct reward-type modes selected by a single RewardType field (1=character attributes, 2=EventItemBag items, 3=currency, 4=VIP time), and can be scheduled per-class (one weekday/time slot per character class, plus a separate 'all classes' slot) or opened on demand via a GM command independent of any schedule.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventKillVsKill"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-047",
+      "statement": "Using a non-town (custom/dungeon) map as CustomEventKillVsKill's battle arena additionally requires configuring a matching entry in a separate Data/Custom respawn-gate manager file plus the death-warp gate table, otherwise a player who dies inside the event's battle map is teleported to Lorencia by the engine's default death-warp rule and cannot return to the event.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventKillVsKill"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-048",
+      "statement": "A GM-only panel (opened with the D key, visible only to accounts holding GameMaster.txt permission) provides one-click buttons to open nearly every custom event this sweep has catalogued: 10 town Arenas (index 0-9), Team vs Team, Russian Roulette, Absorption, Hide and Seek, Drop Event/Drop Npc, BBB, Battle Royale, Racer, the core castle-family events (Blood Castle/Devil Square/Illusion Temple/Chaos Castle), Invasion Manager (indices 0-27), Capture the Flag, a Guild-vs-Guild-adjacent option, a generic PvP-event option, and a raffle ('sorteio') option -- each button simply invokes the corresponding existing GM command rather than adding new event logic.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "OpenEvent",
+        "GameMaster.txt"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-049",
+      "statement": "A separate player-facing panel (also opened with the D key, a 'Join Event' tab) lets any player join whichever event a GM currently has open without typing the /join command, and is enabled/visible via its own independent config flag, distinct from the GM panel's flag.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "JoinEvent"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-051",
+      "statement": "Update 8.1 adds a monster-model hover-preview (the cursor icon changes to show the tied monster's in-game appearance) plus a 2-field freeform text hint (e.g. a drop-chance callout like '20% chance to drop Bless/Soul') to each entry in the H-key event-schedule panel, both configured per-event in Data/Custom/CustomEventTime.txt.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventTime"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-053",
+      "statement": "CustomMapRequirement (ADDED 8.0) lets an admin require players to hold specific item(s) and/or a currency amount (Cash/Gold/PcPoint/WCoin/GoblinPoint) before they can move to a configured map by /move command or the in-game map-teleport UI; on a successful move, the required item(s) and currency are automatically deducted from the player.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomMapRequirement"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-054",
+      "statement": "In CustomMapRequirement, setting an item's fields to an asterisk (*) disables that item's requirement check entirely (currency-only enforcement), and independently setting all currency amounts to 0 disables the currency requirement (item-only enforcement) -- the two requirement types are independently toggleable, and leaving both empty/zero disables the feature for that map entirely.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomMapRequirement"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-070",
+      "statement": "CustomGuildVsGuild (rewritten UPDATED 6.9) is a throne-capture event: a 'crown' NPC spawns automatically at event start (and despawns at event end) at a configured map/coordinate; a guild member clicks it to claim the throne, and rival guild members must kill the current holder and click the NPC themselves to steal it. The winning guild (by total hold time/score) receives a guild-wide reward, and a separate top-5 individual ranking receives its own reward.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomGuildVsGuild"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-071",
+      "statement": "CustomGuildVsGuild requires a minimum guild-member count (admin-configured) to be eligible to participate, and -- new in update 6.9 -- supports a 'zone block' (map + coordinate rectangle) that physically prevents players from crossing into the event area until the event officially starts, automatically unlocking at the configured start time.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomGuildVsGuild"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-072",
+      "statement": "Configuring CustomGuildVsGuild's entry NPC requires adding matching map/coordinate entries in 3 separate places that must all agree: the CustomGuildVsGuild config file itself, the monster/NPC placement file (MonsterSetBase.txt), and a separate NPC-type command-routing config (referred to in the video as 'NPC Viaturas' / Custom NPC) -- a mismatch in any one breaks the NPC's function.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomGuildVsGuild"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-076",
+      "statement": "Update 6.6 adds 2 new event entries to the H-key event-schedule panel (index 4=Crywolf, index 5=a Castle-Siege-affiliated event) plus a new 'monster quantity' column applying to invasion-type entries; the Castle-Siege entry only appears in the panel when the viewing player is connected to the GameServerCS instance (or standing on the Crywolf map), because those 2 events are specific to that separate server instance rather than the main GameServer.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventTime"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-077",
+      "statement": "The H-key event panel only lists events/invasions that are currently enabled -- a disabled entry (demonstrated live: Custom Arena, turned off) is silently omitted from the list entirely rather than shown greyed-out, meaning panel absence is not reliable evidence a feature doesn't exist -- it may simply be off, or (for Castle-Siege/Crywolf specifically) the viewer may not be connected to the right server instance.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventTime"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-079",
+      "statement": "The /join (participar) player command only works for a whitelisted subset of events; it explicitly does NOT work for CustomArena, Battle Royale, or DropNpc, which instead require the player to click a dedicated map NPC to enter.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "JoinEvent"
+      ],
+      "topic": "commands",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-080",
+      "statement": "The /openevent (Abrir evento) GM command's syntax depends on whether the target event supports multiple configured instances: multi-instance events (e.g. CustomArena, 10 slots indexed 0-9) require both an index number and a name string that must exactly match the event's registered command string; single-instance events (e.g. Roleta Russa) always use index 0 with just the name string.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "OpenEvent"
+      ],
+      "topic": "commands",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-081",
+      "statement": "CustomGuildMapMove (ADDED 6.3) lets an admin designate a specific map as exclusive to one named guild (e.g. as an event-victory reward) -- only members of that exact guild (not even allied guilds) can move to the map; anyone else's move attempt is rejected with an in-game message naming the map's current owning guild. Multiple maps can each be independently assigned to different guilds simultaneously.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomGuildMapMove"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-082",
+      "statement": "The original 5.7 version of the H-key event panel is built from 2 separate config sections: an 'Invasion Manager' list (the engine's fixed original events plus up to 5 free custom slots at indices 9-13, whose names are looked up from the language/Messenger file by message-ID) and a separate 'Custom Arena' list (its own 0-9 index range); the available Custom Arena slot count varies by base engine season (fewer slots on Season 2/3 and pre-Season client 97d than on Season 4+).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventTime",
+        "InvasionManager"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-083",
+      "statement": "Any edit to the H-key event panel's config requires regenerating the client-side .mpg file (via GetMyInfo) and copying it into the client folder before the changes take visible effect in-game -- the same GetMyInfo -> mpg -> client-copy workflow this sweep has observed for several other GetMyInfo-driven features (e.g. CLAIM-060/061).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "GetMyInfo"
+      ],
+      "topic": "operations",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-085",
+      "statement": "CustomCaptureTheFlag (ADDED 5.4) awards a point to a team in exactly 2 ways: (a) a member returns the enemy team's stolen flag to their own team's designated NPC, or (b) a member kills an enemy player who is currently carrying their team's own stolen flag (which simultaneously returns the flag and scores the point) -- killing a non-flag-carrying opponent never scores a point.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomCaptureTheFlag"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-086",
+      "statement": "In CustomCaptureTheFlag, dying while carrying the enemy's stolen flag causes the flag to be dropped/returned to its origin point, requiring another player to steal it again; team assignment (Red/Blue) on event entry is fully automatic/random with no player choice, and a tied score at the event's time limit results in no declared winner.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomCaptureTheFlag"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-087",
+      "statement": "CustomEventRobber (ADDED 4.7) spawns a monster that steals either just the randomly-targeted victim's inventory items, or their entire loadout (equipped gear + inventory + wings + pet), per 2 independently toggleable config scopes; only the targeted victim can damage this specific monster instance, and killing it returns 100% of the stolen items plus some bonus loot the monster itself drops.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventRobber"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-089",
+      "statement": "If CustomEventRobber's targeted victim disconnects before recovering their items, the monster despawns and the stolen items are automatically returned to the player -- an explicit no-item-loss guarantee even on disconnect.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventRobber"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-090",
+      "statement": "CustomEventOnClick ('Evento Veloz'/quick-click) spawns a single NPC at a scheduled time; the first player to click it wins a combination of item (via a linked EventItemBag entry), currency, and/or VIP time, and subsequent clicks by other players after the prize is claimed yield nothing, with the winner's name broadcast server-wide.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventOnClick"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-091",
+      "statement": "CustomEventOnClick's VIP-time reward is configured independently for free vs. already-VIP players (distinct tier and day-count fields for each), specifically so a player who already holds a higher VIP tier isn't accidentally downgraded by winning a lower-tier VIP reward from the event.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventOnClick"
+      ],
+      "topic": "events",
+      "confidence": "CONFIRMED_VENDOR_VIDEO"
+    },
+    {
+      "claimId": "CLAIM-092",
+      "statement": "GameServer/DATA/GameServerInfo - Custom.dat is a single master switchboard (758 lines) containing an on/off Switch flag for nearly every Data/Custom feature, serving as the authoritative real source for whether a given custom system is enabled on Blood Moon -- independent of whether that system's own Data/Custom/*.txt file has populated rows.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "GameServerInfo - Custom.dat"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-093",
+      "statement": "Blood Moon's real Data/Util/ResetTable.txt exists but contains zero configured data rows -- only its header comment (MinReset/MaxReset/Level_AL0-3/Money_AL0-3/Point_AL0-3 columns) and an \"end\" marker.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "ResetTable.txt"
+      ],
+      "topic": "progression",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-094",
+      "statement": "Blood Moon's real /reset command (GameServerInfo - Command.dat) is ENABLED and requires exactly level 400 to use, on all 4 VIP tiers; grants 1 reset per use, 450 stat points on tier AL0 or 500 on tiers AL1-3, resets the character to level 1, and enforces no item/money/quest/skill cost; the total-reset cap is 20 for tiers AL0-AL2 but 50 for tier AL3 (the highest VIP tier).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "/reset"
+      ],
+      "topic": "progression",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-095",
+      "statement": "Blood Moon's real /masterreset command is DISABLED (CommandMasterResetSwitch=0) even though its full parameter set is configured as if ready to use: requires level 400 and 1000 prior resets, resets the character back to level 400 with 0 reset count, grants 0 stat points, with no per-tier variation in these requirements.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "/masterreset"
+      ],
+      "topic": "progression",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-096",
+      "statement": "Data/Custom/CustomMonsterTime.txt provides real, direct MonsterClass-to-MapNumber associations for 5 monster instances (4 active, 1 commented): MonsterClass 412 on Map 42 (commented \"Dark Elf 3° Quest Refuge\"), MonsterClass 275 (Kundun) on Map 36, MonsterClass 801 (Boss Farao) on Map 8, MonsterClass 295 (Erohim) on Map 31 (commented \"Erohim Land of Trials\"), and MonsterClass 802 (Boss BloodMoon) on Map 33 -- 2 additional rows (Nightmare on Map 39, Selupan on Map 58) are commented out/inactive.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "Kundun",
+        "Boss Farao",
+        "Erohim",
+        "Boss BloodMoon",
+        "Map 8",
+        "Map 31",
+        "Map 33",
+        "Map 36",
+        "Map 42"
+      ],
+      "topic": "maps",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-097",
+      "statement": "Blood Moon runs a \"Custom Market Shop\" (player-to-player listing system) that is ENABLED (CustomMarketShopSwitch=1) with a 5% transaction tax and no per-account item cap -- this feature is not described in any project-gamers-oficial video processed by this sweep.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomMarketShop"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-098",
+      "statement": "Blood Moon has a \"Custom Pix\" payment-integration feature (CustomPixSwitch) present in config but DISABLED, with its URL field still set to the vendor's own unconfigured placeholder value (\"https://seudominio.com.br/pix.php\") and all 6 price-package fields at 0 -- indicating it was never set up, not merely turned off after use.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomPix"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-099",
+      "statement": "Blood Moon's real Data/EventItemBagManager.txt index 32 currently reads MonsterClass 275 with the comment \"//Kundun\" -- confirming CLAIM-029's original finding and CONTRADICTING the \"Condor\" name given in video b5S00cPpUBg (CLAIM-037). No evidence was found of index 32 ever having held a different MonsterClass value.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "Kundun",
+        "EventItemBagManager.txt"
+      ],
+      "topic": "monsters",
+      "confidence": "CONFIRMED_RUNTIME"
     }
   ],
   "explicitlyNotCanonical_contradicted": [
     {
       "claimId": "CLAIM-005",
       "statement": "The vendor's own ItemDrop.htm tutorial document (as normalized in docs/vendor-tutorials-knowledge-extraction.md) lists ItemDrop.txt's fields as a single 'DropRate' column, not 4 VIP-tier columns.",
+      "evidenceBasis": "CONTRADICTED_BY_CONFIG"
+    },
+    {
+      "claimId": "CLAIM-066",
+      "statement": "The reworked CustomMonster/CustomNPC system (ADDED 7.2) supports 5 distinct client-side 'Type' visual modes for a custom entity: 0=NPC using a stock NPC-folder BMD model, 1=Monster using a stock Monster-folder BMD model, 2='Golden Monster' variant, 3=NPC assembled entirely from a 7-slot equippable item-set instead of a dedicated BMD model file, 4=Monster assembled the same equipment-set way.",
+      "evidenceBasis": "CONTRADICTED_BY_CONFIG"
+    },
+    {
+      "claimId": "CLAIM-067",
+      "statement": "The item-set-based NPC/Monster appearance (Type 3/4, see CLAIM-066) uses a fixed 8-slot layout (0=Helm, 1=Armor, 2=Pants, 3=Gloves, 4=Boots, 5=Weapon1, 6=Weapon2/Shield, 7=Wings), each slot independently able to reference any real in-game item index/category and independently settable to Excellent quality; as of this video there is no Pet slot in this system, explicitly noted by the vendor as a possible future addition, not yet built.",
+      "evidenceBasis": "CONTRADICTED_BY_CONFIG"
+    },
+    {
+      "claimId": "CLAIM-068",
+      "statement": "A custom NPC configured with a shop (via a Shop Manager index plus a matching individual shop file) will fail to open its shop in-game unless the map number and X/Y coordinates in the shop config exactly match the coordinates configured for that same NPC in the monster/NPC placement file (MonsterSetBase.txt).",
+      "evidenceBasis": "CONTRADICTED_BY_CONFIG"
+    },
+    {
+      "claimId": "CLAIM-088",
+      "statement": "CustomEventRobber supports 2 relevant targeting configurations: a general random-victim pool restricted to characters meeting a minimum Reset/Master-Reset/status-stat threshold (each independently disabled via -1), or a 'PK-only' mode that restricts the random-victim pool to currently PK-flagged players standing in open-PvP areas, excluding anyone inside a safe town.",
       "evidenceBasis": "CONTRADICTED_BY_CONFIG"
     }
   ]
