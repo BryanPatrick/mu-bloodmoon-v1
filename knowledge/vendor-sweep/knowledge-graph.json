@@ -56,7 +56,33 @@
     { "id": "MAP-1", "type": "MAP", "name": "Map 1 (numeric ID only, no confirmed name)", "bloodMoonStatus": "BLOODMOON_CONFIRMED_NUMERIC_ID_ONLY" },
     { "id": "MAP-40", "type": "MAP", "name": "Map 40 (numeric ID only, no confirmed name)", "bloodMoonStatus": "BLOODMOON_CONFIRMED_NUMERIC_ID_ONLY" },
     { "id": "CFG-event-item-bag-folder", "type": "CONFIG", "name": "Data/EventItemBag/ (148 individual reward files)", "bloodMoonStatus": "BLOODMOON_CONFIRMED" },
-    { "id": "CFG-gamemaster-real", "type": "CONFIG", "name": "Data/Util/GameMaster.txt", "bloodMoonStatus": "BLOODMOON_CONFIRMED", "note": "real path, corrects the earlier assumed Data/GameMaster.txt" }
+    { "id": "CFG-gamemaster-real", "type": "CONFIG", "name": "Data/Util/GameMaster.txt", "bloodMoonStatus": "BLOODMOON_CONFIRMED", "note": "real path, corrects the earlier assumed Data/GameMaster.txt" },
+
+    { "id": "SYS-custom-auction-event", "type": "EVENT", "name": "CustomAuctionEvent", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-custom-event-racer", "type": "EVENT", "name": "CustomEventRacer", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-custom-event-kill-vs-kill", "type": "EVENT", "name": "CustomEventKillVsKill", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-custom-event-pvp-1x1", "type": "EVENT", "name": "CustomEventPvP1x1", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-custom-guild-vs-guild", "type": "EVENT", "name": "CustomGuildVsGuild", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-custom-capture-the-flag", "type": "EVENT", "name": "CustomCaptureTheFlag", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-custom-event-robber", "type": "EVENT", "name": "CustomEventRobber", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-custom-event-onclick", "type": "EVENT", "name": "CustomEventOnClick", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-event-run-and-catch", "type": "EVENT", "name": "EVENT-run-and-catch (pega-pega)", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-open-event", "type": "COMMAND", "name": "OpenEvent", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-join-event", "type": "COMMAND", "name": "JoinEvent", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "CMD-make", "type": "COMMAND", "name": "/make", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "CMD-makeset", "type": "COMMAND", "name": "/makeset", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "CMD-drop", "type": "COMMAND", "name": "/drop", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-custom-event-time", "type": "SYSTEM", "name": "CustomEventTime.txt", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-get-my-info", "type": "SYSTEM", "name": "GetMyInfo", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-custom-map-requirement", "type": "SYSTEM", "name": "CustomMapRequirement", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-custom-event-entry-level", "type": "SYSTEM", "name": "CustomEventEntryLevel", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-custom-guild-map-move", "type": "SYSTEM", "name": "CustomGuildMapMove", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-custom-monster-skill", "type": "SYSTEM", "name": "CustomMonsterSkill.txt", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+    { "id": "SYS-invasion-manager", "type": "SYSTEM", "name": "InvasionManager", "bloodMoonStatus": "BLOODMOON_LIKELY" },
+
+    { "id": "EVT-blood-castle", "type": "EVENT", "name": "Blood Castle", "bloodMoonStatus": "BLOODMOON_CONFIRMED", "note": "Promoted from entities/gameplay-entities.json to a graph node in Phase 5 to support the CustomEventEntryLevel AFFECTS_SYSTEM edges below -- was previously only in the entities file, not the graph." },
+    { "id": "EVT-chaos-castle", "type": "EVENT", "name": "Chaos Castle", "bloodMoonStatus": "BLOODMOON_CONFIRMED", "note": "Promoted from entities/gameplay-entities.json in Phase 5, same reason as EVT-blood-castle." },
+    { "id": "EVT-illusion-temple", "type": "EVENT", "name": "Illusion Temple", "bloodMoonStatus": "BLOODMOON_CONFIRMED", "note": "Promoted from entities/gameplay-entities.json in Phase 5, same reason as EVT-blood-castle." }
   ],
   "edges": [
     { "from": "SYS-bot-store", "type": "CONFIGURED_BY", "to": "CFG-data-custom" },
@@ -130,7 +156,24 @@
     { "from": "SRC-real-config", "type": "SUPPORTS_CLAIM", "to": "CLAIM-031" },
     { "from": "SRC-real-config", "type": "SUPPORTS_CLAIM", "to": "CLAIM-032" },
     { "from": "SRC-real-config", "type": "SUPPORTS_CLAIM", "to": "CLAIM-033" },
-    { "from": "SRC-real-config", "type": "SUPPORTS_CLAIM", "to": "CLAIM-034" }
+    { "from": "SRC-real-config", "type": "SUPPORTS_CLAIM", "to": "CLAIM-034" },
+
+    { "from": "SYS-custom-event-time", "type": "CONFIGURED_BY", "to": "SYS-get-my-info", "claimRefs": ["CLAIM-083"], "status": "BLOODMOON_LIKELY" },
+    { "from": "SYS-open-event", "type": "SIBLING_SYSTEM_OF", "to": "SYS-join-event", "claimRefs": ["CLAIM-079","CLAIM-080"], "status": "BLOODMOON_LIKELY" },
+    { "from": "SYS-open-event", "type": "CONFIGURED_BY", "to": "CFG-gamemaster-real", "claimRefs": ["CLAIM-048"], "status": "BLOODMOON_LIKELY" },
+    { "from": "SYS-custom-event-kill-vs-kill", "type": "SIBLING_SYSTEM_OF", "to": "SYS-custom-event-pvp-1x1", "claimRefs": ["CLAIM-075"], "status": "BLOODMOON_LIKELY", "note": "Distinct mechanics (automated bracket vs GM-curated single duel) explicitly distinguished in CLAIM-075's own statement -- edge records the relationship, not an equivalence." },
+    { "from": "SYS-custom-event-onclick", "type": "CONFIGURED_BY", "to": "CONFIG-event-item-bag", "claimRefs": ["CLAIM-090"], "status": "BLOODMOON_LIKELY" },
+    { "from": "SYS-custom-event-racer", "type": "CONFIGURED_BY", "to": "CONFIG-event-item-bag", "claimRefs": ["CLAIM-043"], "status": "BLOODMOON_LIKELY" },
+    { "from": "SYS-custom-event-racer", "type": "SIBLING_SYSTEM_OF", "to": "SYS-custom-event-kill-vs-kill", "claimRefs": ["CLAIM-044"], "status": "PROVIDER_SPECIFIC", "note": "Both events were built to reuse the same vendor-commissioned custom dungeon map, per CLAIM-044 -- an operational/business-model fact, not a Blood-Moon-specific mechanic link." },
+    { "from": "SYS-custom-guild-vs-guild", "type": "CONFIGURED_BY", "to": "CFG-data-custom", "claimRefs": ["CLAIM-072"], "status": "BLOODMOON_LIKELY" },
+    { "from": "SYS-custom-monster-skill", "type": "CONFIGURED_BY", "to": "CFG-data-custom", "claimRefs": ["CLAIM-069","CLAIM-084"], "status": "BLOODMOON_LIKELY" },
+    { "from": "SYS-invasion-manager", "type": "RELATED_TO", "to": "SYS-custom-event-time", "claimRefs": ["CLAIM-050","CLAIM-082"], "status": "BLOODMOON_LIKELY", "note": "Both feed the same H-key panel UI, per CLAIM-082's 2-section description -- not confirmed to be the same underlying file." },
+    { "from": "CMD-make", "type": "SIBLING_SYSTEM_OF", "to": "CMD-makeset", "claimRefs": ["CLAIM-078"], "status": "BLOODMOON_LIKELY" },
+    { "from": "CMD-make", "type": "SIBLING_SYSTEM_OF", "to": "CMD-drop", "claimRefs": ["CLAIM-078"], "status": "BLOODMOON_LIKELY" },
+    { "from": "SYS-custom-event-entry-level", "type": "AFFECTS_SYSTEM", "to": "EVT-blood-castle", "claimRefs": ["CLAIM-062"], "status": "BLOODMOON_LIKELY" },
+    { "from": "SYS-custom-event-entry-level", "type": "AFFECTS_SYSTEM", "to": "EVENT-devil-square", "claimRefs": ["CLAIM-062"], "status": "BLOODMOON_LIKELY" },
+    { "from": "SYS-custom-event-entry-level", "type": "AFFECTS_SYSTEM", "to": "EVT-illusion-temple", "claimRefs": ["CLAIM-062"], "status": "BLOODMOON_LIKELY" },
+    { "from": "SYS-custom-event-entry-level", "type": "AFFECTS_SYSTEM", "to": "EVT-chaos-castle", "claimRefs": ["CLAIM-062"], "status": "BLOODMOON_LIKELY" }
   ],
   "note": "CLAIM-* ids referenced as edge endpoints are NOT duplicated as separate nodes here to avoid redundancy with atomic-claims.json -- treat them as a second node namespace (claims) that this graph references but atomic-claims.json owns. Phase 3 adds the first real MONSTER/ITEM/EVENT/NPC/MAP entities (from Data/EventItemBagManager.txt, Data/EventItemBag/, and 3 real CustomEvent*.txt files) -- see knowledge/vendor-sweep/entities/gameplay-entities.json for the full roster (17 monster identities including a 19-boss 'Golden series' bundle, 17 item identities, 11 event groupings), only the headline entities are represented as individual graph nodes here to keep the graph a navigable summary rather than a full duplicate of the entities file. The MAP-1->MONSTER->ITEM edges are explicitly marked _INFERRED in their edge type name, per the required FACT/INFERENCE separation -- no edge here claims a config-explicit monster-kill-drops-item relationship, since none was found. Maps are numeric-ID-only (0, 1, 40) -- no name has been confirmed for any of them from real evidence, only from generic MU memory, which this sweep deliberately does not use."
 }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-26T00:20:00Z",
+  "generatedAt": "2026-08-27T02:07:43.952Z",
   "schema": {
     "claimId": "references atomic-claims.json",
     "priority": "HIGH | MEDIUM | LOW",
@@ -19,7 +19,10 @@
       "safeMethod": "local read of the already-captured, byte-verified snapshot copy (Deploy/Predeploy-Snapshots/20260730-season6-scope-cleanup/.../Data/Item/ItemDrop.txt); no new RemoteOps call needed since this file was already confirmed identical to live production per docs/snapshot-differences.md",
       "status": "DONE",
       "result": "CONFIRMED_BY_CONFIG -- see CLAIM-002/CLAIM-003/CLAIM-004 and CONFLICT-001",
-      "evidenceRefs": ["Deploy/Predeploy-Snapshots/20260730-season6-scope-cleanup/workspace-binaries/muserver-extracted/MuServer-stage/Data/Item/ItemDrop.txt", "sha256:5e29e7cd66e42949613bb51baace0a9c9974decba0c408f1887d5c93a4ccabb2"]
+      "evidenceRefs": [
+        "Deploy/Predeploy-Snapshots/20260730-season6-scope-cleanup/workspace-binaries/muserver-extracted/MuServer-stage/Data/Item/ItemDrop.txt",
+        "sha256:5e29e7cd66e42949613bb51baace0a9c9974decba0c408f1887d5c93a4ccabb2"
+      ]
     },
     {
       "claimId": "CLAIM-006",
@@ -29,7 +32,9 @@
       "safeMethod": "Part AA safe inventory tool (bm-remote inventory-json 'C:\\MuServer\\Data\\Custom') located the exact filename, then bm-remote download",
       "status": "DONE",
       "result": "CONFIRMED_BY_CONFIG -- 1 active NPC ('Luffen', live cash shop). See CLAIM-006, CLAIM-007, CLAIM-017.",
-      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/CustomBotStore.txt"]
+      "evidenceRefs": [
+        "RemoteData/Inventory/custom-bot-configs/CustomBotStore.txt"
+      ]
     },
     {
       "claimId": "CLAIM-008",
@@ -39,7 +44,9 @@
       "safeMethod": "same as CLAIM-006",
       "status": "DONE",
       "result": "CONFIRMED_BY_CONFIG -- structurally present, both entries Enabled=0 (disabled). See CLAIM-008, CLAIM-017.",
-      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/CustomBotTrader.txt"]
+      "evidenceRefs": [
+        "RemoteData/Inventory/custom-bot-configs/CustomBotTrader.txt"
+      ]
     },
     {
       "claimId": "CLAIM-009",
@@ -49,7 +56,9 @@
       "safeMethod": "same as CLAIM-006",
       "status": "DONE",
       "result": "CONFIRMED_BY_CONFIG -- header comment states 'Max: 30 bots' (matches video); only 2 of 30 slots actually configured, both disabled.",
-      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/CustomBotTrader.txt"]
+      "evidenceRefs": [
+        "RemoteData/Inventory/custom-bot-configs/CustomBotTrader.txt"
+      ]
     },
     {
       "claimId": "CLAIM-010",
@@ -59,7 +68,9 @@
       "safeMethod": "same as CLAIM-006",
       "status": "DONE",
       "result": "CONFIRMED_BY_CONFIG -- structurally present, both entries Enabled=0 (disabled). See CLAIM-010, CLAIM-017.",
-      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/CustomBotFusion.txt"]
+      "evidenceRefs": [
+        "RemoteData/Inventory/custom-bot-configs/CustomBotFusion.txt"
+      ]
     },
     {
       "claimId": "CLAIM-011",
@@ -69,7 +80,9 @@
       "safeMethod": "same as CLAIM-006",
       "status": "DONE",
       "result": "CONFIRMED_BY_CONFIG, WITH CORRECTION -- real field is 'OnlySameType', not 'BotIndexOnly' (the video-transcript-based guess). See CLAIM-011.",
-      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/CustomBotFusion.txt"]
+      "evidenceRefs": [
+        "RemoteData/Inventory/custom-bot-configs/CustomBotFusion.txt"
+      ]
     },
     {
       "claimId": "CLAIM-016",
@@ -79,7 +92,9 @@
       "safeMethod": "same as CLAIM-006 (discovered opportunistically, not originally queued -- no video source existed for it)",
       "status": "DONE",
       "result": "CONFIRMED_BY_CONFIG -- section 1 (bot placement) entirely commented out, zero active entries.",
-      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/CustomBotBuffer.txt"]
+      "evidenceRefs": [
+        "RemoteData/Inventory/custom-bot-configs/CustomBotBuffer.txt"
+      ]
     },
     {
       "claimId": "CLAIM-012",
@@ -99,7 +114,9 @@
       "safeMethod": "bm-remote inventory-json 'C:\\MuServer\\Data' (Phase 3) located it under Data/Util/, then bm-remote download",
       "status": "DONE",
       "result": "CONFIRMED_BY_CONFIG -- Section 0 (Account/Name/Level) and Section 1 (Account/Level) both present with 4 real GM test accounts, matching the video exactly.",
-      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/GameMaster.txt"]
+      "evidenceRefs": [
+        "RemoteData/Inventory/custom-bot-configs/GameMaster.txt"
+      ]
     },
     {
       "claimId": "CLAIM-020",
@@ -109,7 +126,9 @@
       "safeMethod": "bm-remote inventory-json 'C:\\MuServer\\Data\\Custom' located the exact filename (already catalogued in this session's first inventory run), then bm-remote download",
       "status": "DONE",
       "result": "CONFIRMED_BY_CONFIG -- RewardLevel/RewardPoints columns present, all 7 monster entries commented out (6th data point supporting the CLAIM-027 'present but inert' pattern).",
-      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/CustomMonster.txt"]
+      "evidenceRefs": [
+        "RemoteData/Inventory/custom-bot-configs/CustomMonster.txt"
+      ]
     },
     {
       "claimId": "CLAIM-018",
@@ -129,7 +148,10 @@
       "safeMethod": "bm-remote inventory-json 'C:\\MuServer\\Data' (Phase 3) located it, then bm-remote download",
       "status": "DONE",
       "result": "CONFIRMED_BY_CONFIG -- exactly 7 Devil Square sub-indices found, plus a much larger real monster/item/event roster extracted. See CLAIM-028/029.",
-      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/EventItemBagManager.txt", "knowledge/vendor-sweep/entities/gameplay-entities.json"]
+      "evidenceRefs": [
+        "RemoteData/Inventory/custom-bot-configs/EventItemBagManager.txt",
+        "knowledge/vendor-sweep/entities/gameplay-entities.json"
+      ]
     },
     {
       "claimId": "CLAIM-022",
@@ -169,7 +191,10 @@
       "safeMethod": "bm-remote inventory-json 'C:\\MuServer\\Data' then bm-remote download",
       "status": "DONE",
       "result": "CONFIRMED_BY_CONFIG -- full 150-line index file read, 148-file EventItemBag/ folder catalogued.",
-      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/EventItemBagManager.txt", "RemoteData/Inventory/data-root-20260826.json"]
+      "evidenceRefs": [
+        "RemoteData/Inventory/custom-bot-configs/EventItemBagManager.txt",
+        "RemoteData/Inventory/data-root-20260826.json"
+      ]
     },
     {
       "claimId": "CLAIM-029",
@@ -179,7 +204,10 @@
       "safeMethod": "both files already downloaded, cross-reference performed locally (no additional remote call needed)",
       "status": "DONE",
       "result": "CONFIRMED_BY_CONFIG -- all 7 custom monster indices named exactly, agreeing across both independent files.",
-      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/CustomMonster.txt", "RemoteData/Inventory/custom-bot-configs/EventItemBagManager.txt"]
+      "evidenceRefs": [
+        "RemoteData/Inventory/custom-bot-configs/CustomMonster.txt",
+        "RemoteData/Inventory/custom-bot-configs/EventItemBagManager.txt"
+      ]
     },
     {
       "claimId": "CLAIM-030",
@@ -189,7 +217,10 @@
       "safeMethod": "bm-remote download, both files",
       "status": "DONE",
       "result": "CONFIRMED_BY_CONFIG -- byte-identical content confirmed, including the internal EventName field.",
-      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/146-Boss-Farao.txt", "RemoteData/Inventory/custom-bot-configs/147-Boss-BloodMoon.txt"]
+      "evidenceRefs": [
+        "RemoteData/Inventory/custom-bot-configs/146-Boss-Farao.txt",
+        "RemoteData/Inventory/custom-bot-configs/147-Boss-BloodMoon.txt"
+      ]
     },
     {
       "claimId": "CLAIM-031",
@@ -199,7 +230,9 @@
       "safeMethod": "found via the cached 90-file Data/Custom inventory (matches the stalled video A2BcRITQjxc's title), then bm-remote download",
       "status": "DONE",
       "result": "CONFIRMED_BY_CONFIG -- full 38-line file read, bypassing the broken video transcript entirely.",
-      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/CustomEventZombie.txt"]
+      "evidenceRefs": [
+        "RemoteData/Inventory/custom-bot-configs/CustomEventZombie.txt"
+      ]
     },
     {
       "claimId": "CLAIM-032",
@@ -209,7 +242,9 @@
       "safeMethod": "same as CLAIM-031 (matches stalled video ivDj7I9elZA's title)",
       "status": "DONE",
       "result": "CONFIRMED_BY_CONFIG -- full 19-line file read.",
-      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/CustomEventPandora.txt"]
+      "evidenceRefs": [
+        "RemoteData/Inventory/custom-bot-configs/CustomEventPandora.txt"
+      ]
     },
     {
       "claimId": "CLAIM-033",
@@ -219,14 +254,177 @@
       "safeMethod": "same as CLAIM-031 (matches never-attempted video qw4GrxEjykI's title)",
       "status": "DONE",
       "result": "CONFIRMED_BY_CONFIG -- full 9-line file read.",
-      "evidenceRefs": ["RemoteData/Inventory/custom-bot-configs/CustomEventStopOrDie.txt"]
+      "evidenceRefs": [
+        "RemoteData/Inventory/custom-bot-configs/CustomEventStopOrDie.txt"
+      ]
+    },
+    {
+      "claimId": "CLAIM-066",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "Data/Custom/CustomMonster.txt -- decode the 'Type' column's real values for Blood Moon's 7 existing (disabled) entries",
+      "safeMethod": "Re-read the same already-downloaded CustomMonster.txt from RemoteOps (CLAIM-020) -- no new file discovery needed, just re-examine the already-captured column data for the Type field.",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-062",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "Data/Custom/ -- locate CustomEventEntryLevel (or equivalent) and its client-side counterpart, check for non-default level ranges",
+      "safeMethod": "bm-remote inventory-json scoped to Data/Custom, then targeted download of any matching filename",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-051",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "Data/Custom/CustomEventTime.txt -- resolve the long-open filename question (CLAIM-023) now that 5 independent videos corroborate this exact name",
+      "safeMethod": "bm-remote inventory-json scoped to Data/Custom, targeted download",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-043",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "Data/EventItemBagManager.txt index 145 -- confirm it is genuinely labeled/used for Event Racer, cross-checking against the already-read full file (CLAIM-028/029)",
+      "safeMethod": "no new download needed -- re-examine the already-captured full-file read from Phase 3",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-090",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "Data/Custom/ -- locate CustomEventOnClick (or equivalent) filename",
+      "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-039",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "Data/Custom/ -- locate CustomAuctionEvent filename",
+      "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-042",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "Data/Custom/ -- locate CustomEventRacer filename",
+      "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-045",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "Data/Custom/ -- locate CustomEventKillVsKill filename",
+      "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-053",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "Data/Custom/ -- locate CustomMapRequirement filename",
+      "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-070",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "Data/Custom/ -- locate CustomGuildVsGuild filename",
+      "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-081",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "Data/Custom/ -- locate CustomGuildMapMove filename",
+      "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-084",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "Data/Custom/CustomMonsterSkill.txt -- confirm real existence + column layout",
+      "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-085",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "Data/Custom/ -- locate CustomCaptureTheFlag filename",
+      "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-087",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "Data/Custom/ -- locate CustomEventRobber filename",
+      "safeMethod": "bm-remote inventory-json scoped to Data/Custom",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-057",
+      "priority": "LOW",
+      "verificationType": "runtime_observation",
+      "target": "Ground-item hover tooltip -- client-side visual behavior, no safe read-only config path identified",
+      "safeMethod": "no safe automated check available (same limitation class as CLAIM-012/022)",
+      "status": "BLOCKED",
+      "result": null,
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-059",
+      "priority": "LOW",
+      "verificationType": "file_read",
+      "target": "Data/Util/GetMyInfo -- confirm CustomLimitFPS flag is present and disabled on Blood Moon",
+      "safeMethod": "bm-remote inventory-json scoped to Data/Util, targeted download",
+      "status": "QUEUED",
+      "result": null,
+      "evidenceRefs": []
     }
   ],
   "summary": {
-    "total": 21,
+    "total": 37,
     "done": 16,
-    "queued": 3,
-    "blocked": 2,
-    "note": "CLAIM-014 and CLAIM-015 are intentionally absent from this queue -- CLAIM-014 is an operational/procedural claim (NOT_APPLICABLE verification per atomic-claims.json), and CLAIM-015 is explicitly OTHER_SERVER and must never be verified against Blood Moon (there is nothing to verify -- it is already correctly classified as not describing Blood Moon)."
+    "queued": 18,
+    "blocked": 3,
+    "inProgress": 0,
+    "note": "CLAIM-014 and CLAIM-015 are intentionally absent from this queue -- CLAIM-014 is an operational/procedural claim (NOT_APPLICABLE verification per atomic-claims.json), and CLAIM-015 is explicitly OTHER_SERVER and must never be verified against Blood Moon (there is nothing to verify -- it is already correctly classified as not describing Blood Moon). Phase 5 (2026-08-27) added 16 new QUEUED/BLOCKED items for the P0-priority claims extracted this phase, deliberately left unexecuted -- per the explicit instruction to do only LIMITED real verification after bulk structuring, not to spend the whole phase re-verifying everything."
   }
 }

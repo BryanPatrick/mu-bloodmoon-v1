@@ -155,6 +155,88 @@ function cmdWikiReady() {
   for (const r of results) console.log(`[${r.status}] ${r.title} (${r.file})`)
 }
 
+// --- Phase 5 (Part AF/AG) additions ---
+
+function cmdSource(videoId) {
+  if (!videoId) { console.error('Usage: knowledge-query.mjs source <videoId>'); process.exit(1) }
+  const inv = load('transcript-inventory.json', { videos: [] })
+  const v = inv.videos.find(x => x.videoId === videoId)
+  if (!v) { console.log(`No inventory entry for videoId "${videoId}" -- run scripts/knowledge-transcript-inventory.mjs to rebuild the inventory, or this may be a non-project-gamers-oficial source (e.g. eusantiago).`); return }
+  console.log(`Source ${v.videoId} -- "${v.title}"`)
+  console.log(`  rawTranscriptStatus: ${v.rawTranscriptStatus} (${v.captureMethod || 'n/a'})`)
+  console.log(`  knowledgeIndexId: ${v.knowledgeIndexId || '(none -- not yet processed)'}`)
+  console.log(`  normalizedStatus: ${v.normalizedStatus}`)
+  console.log(`  claimsStatus: ${v.claimsStatus}`)
+  console.log(`  domains: ${v.domains.join(', ')}  priority: ${v.priority}`)
+  console.log(`  bloodMoonProviderVersion: ${v.bloodMoonProviderVersion || 'n/a'}`)
+  if (v.knowledgeIndexId) {
+    const claims = load('atomic-claims.json', { claims: [] }).claims
+    const mine = claims.filter(c => (c.sourceId || '').includes(v.knowledgeIndexId))
+    console.log(`\n  ${mine.length} claim(s) from this source:`)
+    for (const c of mine) console.log(`    [${c.claimId}] ${c.statement}`)
+  }
+}
+
+function cmdClaims(system) {
+  if (!system) { console.error('Usage: knowledge-query.mjs claims <system>'); process.exit(1) }
+  const needle = system.toLowerCase()
+  const claims = load('atomic-claims.json', { claims: [] }).claims
+  const hits = claims.filter(c => (c.entities || []).some(e => e.toLowerCase().includes(needle)) || (c.topic || '').toLowerCase().includes(needle))
+  console.log(`Claims about "${system}" -- ${hits.length} hit(s)\n`)
+  for (const c of hits) console.log(`[${c.claimId}] (${c.bloodMoonStatus}/${c.verificationStatus}) ${c.statement}`)
+}
+
+function cmdTypedLookup(type, name) {
+  const typeMap = { map: 'MAP', item: 'ITEM', event: 'EVENT', monster: 'MONSTER', npc: 'NPC' }
+  const wanted = typeMap[type]
+  if (!name) { console.error(`Usage: knowledge-query.mjs ${type} <name>`); process.exit(1) }
+  const needle = name.toLowerCase()
+  const graph = load('knowledge-graph.json', { nodes: [], edges: [] })
+  const nodes = graph.nodes.filter(n => n.type === wanted && n.name.toLowerCase().includes(needle))
+  console.log(`${wanted} matching "${name}" -- ${nodes.length} graph node(s)\n`)
+  for (const n of nodes) {
+    console.log(`[${n.id}] ${n.name} (${n.bloodMoonStatus || 'n/a'})`)
+    for (const e of graph.edges.filter(e => e.from === n.id || e.to === n.id)) console.log(`  ${e.from} --${e.type}--> ${e.to}`)
+  }
+  const claims = load('atomic-claims.json', { claims: [] }).claims
+  const claimHits = claims.filter(c => (c.entities || []).some(e => e.toLowerCase().includes(needle)))
+  console.log(`\n${claimHits.length} claim(s) mentioning "${name}":`)
+  for (const c of claimHits) console.log(`  [${c.claimId}] ${c.statement}`)
+  if (nodes.length === 0 && claimHits.length === 0) console.log(`(nothing found -- also check entities/gameplay-entities.json and entities/system-event-command-registry.json, which hold entries not yet promoted to individual graph nodes)`)
+}
+
+// P0/P1/P2 priority for a claim is DERIVED (not stored) from its topic/entityTypes,
+// mirroring the same classification rule scripts/knowledge-transcript-inventory.mjs
+// uses for videos -- keeps one source of truth for what counts as "high priority".
+function claimPriority(c) {
+  const t = (c.topic || '').toLowerCase()
+  const types = (c.entityTypes || []).map(x => x.toUpperCase())
+  if (['progression', 'monsters', 'maps'].includes(t) || types.includes('PROGRESSION') || types.includes('MAP') || types.includes('MONSTER')) return 'P0'
+  if (t === 'events' || types.includes('EVENT') || t === 'drop-system' || types.includes('ITEM')) return 'P0'
+  if (types.includes('NPC') || t === 'commands' && types.includes('CURRENCY')) return 'P1'
+  if (t === 'systems' || types.includes('SYSTEM') || types.includes('CONFIG') || t === 'commands') return 'P2'
+  return 'P3'
+}
+
+function cmdUnverifiedPriority(flag) {
+  const m = /--priority=(P[0-3])/.exec(flag || '')
+  const wanted = m ? m[1] : null
+  const claims = load('atomic-claims.json', { claims: [] }).claims
+  let unverified = claims.filter(c => c.verificationStatus === 'UNVERIFIED')
+  if (wanted) unverified = unverified.filter(c => claimPriority(c) === wanted)
+  console.log(`Unverified claims${wanted ? ` (priority=${wanted})` : ''} -- ${unverified.length} hit(s)\n`)
+  for (const c of unverified) console.log(`[${c.claimId}] (${claimPriority(c)}) ${c.statement}`)
+}
+
+function cmdProviderVersion(version) {
+  if (!version) { console.error('Usage: knowledge-query.mjs provider-version <version>'); process.exit(1) }
+  const needle = version.toLowerCase()
+  const claims = load('atomic-claims.json', { claims: [] }).claims
+  const hits = claims.filter(c => (c.providerVersion || '').toLowerCase().includes(needle))
+  console.log(`Claims tagged providerVersion~"${version}" -- ${hits.length} hit(s)\n`)
+  for (const c of hits) console.log(`[${c.claimId}] (${c.providerVersion}) ${c.statement}`)
+}
+
 function main() {
   const [, , cmd, ...rest] = process.argv
   const arg = rest.join(' ')
@@ -163,13 +245,19 @@ function main() {
     case 'entity': return cmdEntity(arg)
     case 'gaps': return cmdGaps()
     case 'conflicts': return cmdConflicts()
-    case 'unverified': return cmdUnverified()
+    case 'unverified': return cmdUnverifiedPriority(arg)
     case 'verified': return cmdVerified()
     case 'disabled-systems': return cmdDisabledSystems()
     case 'progression': return cmdProgression()
     case 'wiki-ready': return cmdWikiReady()
+    case 'source': return cmdSource(arg)
+    case 'claims': return cmdClaims(arg)
+    case 'map': return cmdTypedLookup('map', arg)
+    case 'item': return cmdTypedLookup('item', arg)
+    case 'event': return cmdTypedLookup('event', arg)
+    case 'provider-version': return cmdProviderVersion(arg)
     default:
-      console.log('Usage: node scripts/knowledge-query.mjs <query "term"|entity "name"|entity <map|monster|item|event|npc|system|config>|gaps|conflicts|unverified|verified|disabled-systems|progression|wiki-ready>')
+      console.log('Usage: node scripts/knowledge-query.mjs <query "term"|entity "name"|entity <map|monster|item|event|npc|system|config>|gaps|conflicts|unverified [--priority=P0]|verified|disabled-systems|progression|wiki-ready|source <videoId>|claims <system>|map|item|event <name>|provider-version <version>>')
       process.exit(cmd ? 1 : 0)
   }
 }

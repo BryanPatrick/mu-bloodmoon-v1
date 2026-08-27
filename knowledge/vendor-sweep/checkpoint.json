@@ -1,7 +1,21 @@
 {
   "sweepId": "knowledge-sweep-2026-08-25",
-  "lastUpdatedUtc": "2026-08-26T03:45:00Z",
+  "lastUpdatedUtc": "2026-08-27T02:20:00Z",
   "status": "PARTIAL",
+  "phase5Completed": [
+    "IMPORTANT PIPELINE OPTIMIZATION phase (2026-08-27, before Phase 5): built Tools/YtDlpAsr/ (yt-dlp + faster-whisper pipeline), resolving the entire project-gamers-oficial RAW-capture backlog to 108/108 CAPTURED and eusantiago to its true 2/3-plus-1-members-only boundary. --js-runtimes node was the key fix (refuted an earlier rate-limiting hypothesis). Documented in docs/knowledge/youtube-ingestion.md and Tools/YtDlpAsr/README.md.",
+    "Part A/B/C: scripts/knowledge-transcript-inventory.mjs built (generator, not hand-maintained) -- produces transcript-inventory.json (per-video per-stage status for all 108 relevant videos) and priority-queues.json (P0-P3, keyword-classified from titles, multi-domain).",
+    "Bulk claim/entity extraction across 23 P0-priority previously-pure-RAW videos (TDL051DxNw8, lTT6Ibij7Zw, ZpyDXTnk4s0, R9jc0kFIlb4, KTO4Zk_Qxt8, RAg7M8JqSHM, DlukUjAW_Ko, XZMNP5xMfKY, UeNNFBW8P9E, 0uqVGJzsYwU, TPS3xmESYRc, IquX3gNZIpw, okCpQ3tya-M, pUfPrwJjtcY, lWclobV5zm8, qqtrBciJ3n8, ptFi5mX0eFU, 4KNQFhiBLpE, yVXjMheH9qY, VAH2rMXnBmU, fHttxHWnTR8, 83XTOql1g1g, lu1uu1UJc3E) -- knowledge-index.json grew 18->41 entries, atomic-claims.json grew 38->91 claims (all new claims kept BLOODMOON_LIKELY/UNVERIFIED unless independently corroborated by an existing real-config read; none promoted to BLOODMOON_CONFIRMED without one).",
+    "Part M-P: entities/system-event-command-registry.json built -- 19 SYSTEM + 3 COMMAND entities from Phase 5 transcripts, deliberately kept in a SEPARATE file from entities/gameplay-entities.json (REAL_BLOODMOON_CONFIG authority) per the no-blind-merge rule -- 2 explicit near-duplicate pairs flagged rather than merged (CustomEventKillVsKill vs the real EventItemBagManager index; InvasionManager vs EventItemBagManager.txt).",
+    "Part E/F: glossary.json built -- 15 RAW-ASR-to-canonical term mappings, each with an explicit normalizationReason and claimRefs, RAW segment text in transcripts never edited.",
+    "Part X/Y: knowledge-graph.json grew 55/72 -> 79/88 (nodes/edges) -- 21 new nodes, 16 new edges, every new edge carrying claimRefs+status. A real node-id mismatch bug (EVT-devil-square vs the actual EVENT-devil-square) was introduced and caught immediately by knowledge-validate.mjs, then fixed -- also promoted 3 CONFIRMED events (Blood Castle/Chaos Castle/Illusion Temple) from entities-file-only to graph nodes to support new edges.",
+    "Part Z/AA/AB: verification-queue.json grew 21 -> 37 items (16 new QUEUED/BLOCKED, 0 executed this phase -- deliberately limited per the explicit instruction not to spend the whole phase re-verifying).",
+    "Part AC/AD: 2 new wiki_candidates at NEEDS_VERIFICATION tier (custom-event-time-panel.md, open-join-event-commands.md) -- correctly NOT marked READY_FOR_REVIEW since neither has independent Blood Moon config confirmation yet, despite high transcript corroboration (5 and 3 independent videos respectively).",
+    "Part AF/AG: scripts/knowledge-query.mjs extended with source/claims/map/item/event/provider-version subcommands plus a --priority=P0|P1|P2 filter on unverified (priority derived from topic/entityTypes, not separately stored, to keep one source of truth).",
+    "Part AP: scripts/knowledge-tools-test.mjs grew 8 -> 15 checks, including a regression guard for the graph node-id bug found this phase. All 15 pass.",
+    "canonical-facts.json (still 23 -- no Phase 5 claim reached CONFIRMED_BY_* yet, correctly) and provenance-report.json regenerated via their generator scripts, never hand-edited.",
+    "Part AE: provenance-report.json's per-stage tallies (COMPLETE/PARTIAL/MISSING across RAW/NORMALIZED/CLAIMS/VERIFICATION/GRAPH/WIKI for all 40 KI-covered sources) now serve as this phase's honest completeness metric -- see the final report for the numbers."
+  ],
   "phase3ContinuationCompleted": [
     "Resumed from checkpoint (the Phase 3 brief was resent verbatim -- treated as 'continue', not 'restart', per this sweep's own resumeInstructions discipline)",
     "Transcribed lWclobV5zm8 ('Custom Event Time - UPDATED 6.6') -- reveals the real CustomEventTimer filename is very likely 'CustomEventTime.txt' (no trailing r), located somewhere under a path involving 'Util' that is NOT Data/Util (where GameMaster.txt was confirmed) -- not found in either the 90-file Data/Custom or 463-entry full-Data/ inventories already captured. Still genuinely unlocated, but the filename guess is now much better.",
@@ -35,20 +49,20 @@
     "Part U (light): dedup re-checked (videoIds, transcript sha256, claimIds) -- all clean. Content addressing: claimId/KI-id/videoId scheme already stable; sha256 recorded for the ItemDrop.txt evidence chain."
   ],
   "notStarted": [
-    "CustomDropReward, dedicated CustomEventTimer file, and PvpAll real filenames still not located (CLAIM-018/023/024 remain QUEUED) -- not found under any guessed name in the 90-file Data/Custom listing; may need the video transcripts after all, or live under an unexpected name.",
-    "39 of 44 event-titled videos remain untranscribed (event-video-inventory.json has the priorities).",
+    "69 of 108 project-gamers-oficial videos are still pure RAW (captured but not normalized/claimed) -- 27 of those are P0-priority (priority-queues.json has the exact list). CustomDropReward and PvpAll real filenames are still not located.",
     "MAP/EVENT names still numeric-ID-only (0, 1, 40) -- no source has confirmed what these numbers correspond to.",
-    "No FACT-tier progression entries yet (only 1 RECOMMENDATION-tier entry) -- the 2 HIGH-priority 'ResetMin & ResetMax' videos (rcL6fxy92Ss, HMmfyPerla8) in event-video-inventory.json are the most likely source.",
+    "Only 2 FACT-tier progression entries (PROG-001 RECOMMENDATION-tier, PROG-002 FACT-tier from CLAIM-035) -- Phase 5's CLAIM-055/056 (event-entry reset-requirement tooltip) extend PROG-002's UI surface but no new progression-entries.json row was added since they don't introduce a new mechanic.",
+    "16 new verification-queue.json items from Phase 5 remain QUEUED/BLOCKED, none executed -- CLAIM-051 (CustomEventTime.txt) and CLAIM-066 (CustomMonster.txt Type field, cheap re-check of an already-downloaded file) are the highest-value next real-config checks.",
+    "entities/system-event-command-registry.json's 22 PROVIDER_TUTORIAL-tier entities have NOT been merged into entities/gameplay-entities.json (REAL_BLOODMOON_CONFIG-tier) -- do that only after each is individually confirmed against a real config read, never in bulk.",
     "Part AB/AC not extended to the other 85 of 90 Data/Custom files -- CLAIM-027's pattern claim rests on a small, non-random sample.",
-    "provenance-report.json's MISSING counts (7 VERIFICATION, 6 GRAPH, 9 WIKI) are real, honest gaps, not further bugs -- e.g. KI-009 (FakeOnline) predates the atomic-claims model and has no CLAIM-* entries pointing at it yet."
+    "provenance-report.json's MISSING counts (33 VERIFICATION, 33 GRAPH, 30 WIKI, out of 40 sources) are real, honest gaps reflecting the deliberate Phase 5 choice to prioritize breadth (bulk claim extraction across many videos) over depth (full-pipeline completion per video) -- not further bugs."
   ],
   "resumeInstructions": [
-    "1. Read this checkpoint, atomic-claims.json, knowledge-graph.json, entities/gameplay-entities.json, event-video-inventory.json, and canonical-facts.json first.",
+    "1. Read this checkpoint, atomic-claims.json, knowledge-graph.json, entities/gameplay-entities.json, entities/system-event-command-registry.json, priority-queues.json, and transcript-inventory.json first.",
     "2. Run `node scripts/knowledge-tools-test.mjs` -- if anything fails, fix the DATA (not the test) unless the test itself is proven wrong.",
-    "3. Re-run `node scripts/knowledge-canonical-facts.mjs --write` and `node scripts/knowledge-provenance-report.mjs --write` after adding any new claims -- they're generators, never hand-edit their output files directly.",
-    "4. For CustomDropReward/CustomEventTimer/PvpAll: try transcribing lWclobV5zm8 ('Custom Event Time - UPDATED 6.6') and KTO4Zk_Qxt8 ('Custom Event Time Text Monster Model - UPDATED 8.1') first -- their titles suggest they may finally resolve the CustomEventTimer filename gap.",
-    "5. For progression: prioritize rcL6fxy92Ss and HMmfyPerla8 (ResetMin/ResetMax videos) -- these are the best current lead for real FACT-tier progression data.",
-    "6. Before building new MAP/EVENT entity names, check whether any captured source (video or config) ever states a map's name alongside its numeric ID -- do not guess from general MU knowledge.",
-    "7. `node scripts/knowledge-query.mjs entity <type>` and `node scripts/knowledge-query.mjs progression` are the fastest way to see current coverage before doing new work."
+    "3. Re-run `node scripts/knowledge-transcript-inventory.mjs` to refresh transcript-inventory.json/priority-queues.json, and `node scripts/knowledge-canonical-facts.mjs --write` + `node scripts/knowledge-provenance-report.mjs --write` after adding any new claims -- all 3 are generators, never hand-edit their output files directly.",
+    "4. To continue bulk claim extraction: `node scripts/knowledge-query.mjs unverified --priority=P0` or read priority-queues.json's P0 array directly for the next unprocessed videos, in the same batch-read-then-batch-write pattern used throughout Phase 5 (read 5-6 transcripts per round-trip, then append claims+KI-entries together) -- avoid the earlier phases' one-video-at-a-time pattern, it doesn't scale to 69 remaining videos.",
+    "5. Before building new MAP/EVENT entity names, check whether any captured source (video or config) ever states a map's name alongside its numeric ID -- do not guess from general MU knowledge.",
+    "6. `node scripts/knowledge-query.mjs source <videoId>` shows a single video's full pipeline status; `node scripts/knowledge-query.mjs claims <system>` and `entity/map/item/event <name>` are the fastest ways to check existing coverage before extracting a new claim, to avoid accidental duplicates."
   ]
 }

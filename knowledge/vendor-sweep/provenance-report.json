@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-27T01:34:23.432Z",
+  "generatedAt": "2026-08-27T02:09:49.122Z",
   "generatedBy": "scripts/knowledge-provenance-report.mjs -- derived mechanically from knowledge-index.json, atomic-claims.json, knowledge-graph.json, and wiki_candidates/, do not hand-edit",
-  "scope": "18 cataloged sources (knowledge-index.json). Does NOT cover the underlying 75+ prior-session docs corpus, which predates this sweep's index and uses its own provenance conventions (see Knowledge/README.md's EVIDENCE/KNOWLEDGE/OPERATIONS model instead).",
+  "scope": "41 cataloged sources (knowledge-index.json). Does NOT cover the underlying 75+ prior-session docs corpus, which predates this sweep's index and uses its own provenance conventions (see Knowledge/README.md's EVIDENCE/KNOWLEDGE/OPERATIONS model instead).",
   "perSource": [
     {
       "id": "KI-001",
@@ -131,7 +131,7 @@
       "CLAIMS": "COMPLETE",
       "VERIFICATION": "MISSING",
       "GRAPH": "MISSING",
-      "WIKI": "MISSING"
+      "WIKI": "COMPLETE"
     },
     {
       "id": "KI-014",
@@ -182,38 +182,268 @@
       "VERIFICATION": "MISSING",
       "GRAPH": "MISSING",
       "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-019",
+      "title": "Custom Auction Event (leilão)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-020",
+      "title": "Custom Event Racer",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-021",
+      "title": "Custom Event Kill vs Kill Rounds (automated 1v1 elimination)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-022",
+      "title": "Command Open And Join Event Custom Interface (GM + player event panels)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "COMPLETE"
+    },
+    {
+      "id": "KI-023",
+      "title": "Custom Event Time Text Monster Model (H-panel monster preview + drop hint)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "COMPLETE"
+    },
+    {
+      "id": "KI-024",
+      "title": "Custom Map Requirement (item/currency toll to move maps)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-025",
+      "title": "Custom Info Event Defaults Requirement (castle-event tooltip)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-026",
+      "title": "Custom Info Drop Item, FPS/MS monitor, Command Window, Show Level Patent",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-027",
+      "title": "Custom Event Entry Level (per-event level range override)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-028",
+      "title": "Event Run And Catch (pega-pega) Auto Skin",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-029",
+      "title": "New Custom Monster And Npc (item-set visual system rework)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-030",
+      "title": "Custom Guild vs Guild Event (throne-capture rework)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-031",
+      "title": "Custom Monster reward (Reset/Master Reset on kill, live demo)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-032",
+      "title": "Custom Event PvP 1x1 (GM-curated duel)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-033",
+      "title": "Custom Event Time (H-panel: Crywolf/Castle Siege entries + monster-count column)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "COMPLETE"
+    },
+    {
+      "id": "KI-034",
+      "title": "Command Make, Drop And MakeSet (Type 0/1 shorthand rework)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-035",
+      "title": "Command Open Event And Join (per-event command-scope rules)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "COMPLETE"
+    },
+    {
+      "id": "KI-036",
+      "title": "Custom Guild Map Move (guild-exclusive maps)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-037",
+      "title": "Custom Event Time Settings (original 5.7 H-panel: Invasion Manager + Custom Arena)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "COMPLETE"
+    },
+    {
+      "id": "KI-038",
+      "title": "Custom Monster Skill (attack visual-effect assignment)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-039",
+      "title": "Custom Event Capture The Flag (2-team CTF)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-040",
+      "title": "Custom Event Robber (item-stealing monster)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
+    },
+    {
+      "id": "KI-041",
+      "title": "Custom Event Quickly / Veloz (quick-click NPC reward)",
+      "RAW": "COMPLETE",
+      "NORMALIZED": "MISSING",
+      "CLAIMS": "COMPLETE",
+      "VERIFICATION": "MISSING",
+      "GRAPH": "MISSING",
+      "WIKI": "MISSING"
     }
   ],
   "tallies": {
     "RAW": {
-      "COMPLETE": 18,
+      "COMPLETE": 41,
       "PARTIAL": 0,
       "MISSING": 0
     },
     "NORMALIZED": {
       "COMPLETE": 12,
       "PARTIAL": 3,
-      "MISSING": 3
+      "MISSING": 26
     },
     "CLAIMS": {
-      "COMPLETE": 17,
+      "COMPLETE": 40,
       "PARTIAL": 0,
       "MISSING": 1
     },
     "VERIFICATION": {
       "COMPLETE": 6,
       "PARTIAL": 2,
-      "MISSING": 10
+      "MISSING": 33
     },
     "GRAPH": {
       "COMPLETE": 8,
       "PARTIAL": 0,
-      "MISSING": 10
+      "MISSING": 33
     },
     "WIKI": {
-      "COMPLETE": 5,
+      "COMPLETE": 11,
       "PARTIAL": 0,
-      "MISSING": 13
+      "MISSING": 30
     }
   }
 }

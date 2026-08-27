@@ -1,0 +1,2136 @@
+{
+  "generatedAt": "2026-08-27T02:11:19.764Z",
+  "generatedBy": "scripts/knowledge-transcript-inventory.mjs (Phase 5 Part A/B/C)",
+  "scope": "All 108 project-gamers-oficial videos in _relevant.tsv. Per-video status is DERIVED from transcripts-status.tsv + knowledge-index.json + atomic-claims.json, not hand-maintained -- re-run this script any time those sources change.",
+  "summary": {
+    "totalRelevantVideos": 108,
+    "rawCapturedCount": 108,
+    "withKnowledgeIndexEntry": 39,
+    "withClaims": 39,
+    "pureRawAwaitingProcessing": 69,
+    "byPriority": {
+      "P0": 57,
+      "P1": 20,
+      "P2": 17,
+      "P3": 14
+    },
+    "byPriorityUnprocessed": {
+      "P0": 27,
+      "P1": 14,
+      "P2": 16,
+      "P3": 12
+    }
+  },
+  "videos": [
+    {
+      "idx": 2,
+      "videoId": "A2BcRITQjxc",
+      "title": "Custom Event Zombie - ADDED 8.9",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 8.9"
+    },
+    {
+      "idx": 10,
+      "videoId": "QJclT4HLaMg",
+      "title": "Custom Minimap Icons and AutoMove - ADDED 8.9",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P2",
+      "bloodMoonProviderVersion": "ADDED 8.9"
+    },
+    {
+      "idx": 17,
+      "videoId": "ras-LWKglMM",
+      "title": "Custom Monster HP - ADDED 8.8",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "MONSTER",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 8.8"
+    },
+    {
+      "idx": 19,
+      "videoId": "ivDj7I9elZA",
+      "title": "Custom Event Pandora - ADDED 8.8",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 8.8"
+    },
+    {
+      "idx": 20,
+      "videoId": "qw4GrxEjykI",
+      "title": "Custom Event Stop Or Die - ADDED 8.8",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 8.8"
+    },
+    {
+      "idx": 31,
+      "videoId": "zJRrsKWKcUc",
+      "title": "Custom Item Drop Requirement - ADDED 8.7",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp (prior session, before blocked)",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "ITEM",
+        "DROP",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 8.7"
+    },
+    {
+      "idx": 47,
+      "videoId": "TDL051DxNw8",
+      "title": "Custom Auction Event - ADDED 8.6",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-019",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (3)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 8.6"
+    },
+    {
+      "idx": 48,
+      "videoId": "lTT6Ibij7Zw",
+      "title": "Custom Event Racer - ADDED 8.6",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-020",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (3)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 8.6"
+    },
+    {
+      "idx": 54,
+      "videoId": "ZpyDXTnk4s0",
+      "title": "Custom Event Kill vs Kill Rounds - ADDED 8.5",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-021",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (3)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 8.5"
+    },
+    {
+      "idx": 55,
+      "videoId": "UvqM-eVfr4w",
+      "title": "Custom Active Events Invasion - ADDED 8.5",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P2",
+      "bloodMoonProviderVersion": "ADDED 8.5"
+    },
+    {
+      "idx": 65,
+      "videoId": "VzAaZH92IH0",
+      "title": "Start Game from the Launcher - ADDED 8.3",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "OPERATIONS"
+      ],
+      "priority": "P3",
+      "bloodMoonProviderVersion": "ADDED 8.3"
+    },
+    {
+      "idx": 67,
+      "videoId": "gqtSk1pdti4",
+      "title": "Custom Buy Vip  - ADDED 8.3",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "SHOP",
+        "CURRENCY",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": "ADDED 8.3"
+    },
+    {
+      "idx": 71,
+      "videoId": "R9jc0kFIlb4",
+      "title": "Command Open And Join Event Custom Interface - ADDED 8.2",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-022",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (3)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "EVENT",
+        "COMMAND",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 8.2"
+    },
+    {
+      "idx": 73,
+      "videoId": "Jia1TrtgZfY",
+      "title": "Command Buy Vip Check User - UPDATED 8.2",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "COMMAND",
+        "SHOP",
+        "CURRENCY"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": "UPDATED 8.2"
+    },
+    {
+      "idx": 81,
+      "videoId": "KTO4Zk_Qxt8",
+      "title": "Custom Event Time Text Monster Model - UPDATED 8.1",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-023",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (2)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "EVENT",
+        "MONSTER",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "UPDATED 8.1"
+    },
+    {
+      "idx": 83,
+      "videoId": "wzS9GoStA2A",
+      "title": "Custom Rankings and Score Events - ADDED 8.1",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P2",
+      "bloodMoonProviderVersion": "ADDED 8.1"
+    },
+    {
+      "idx": 90,
+      "videoId": "RAg7M8JqSHM",
+      "title": "Custom Map Requeriment - ADDED 8.0",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-024",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (2)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "MAP",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 8.0"
+    },
+    {
+      "idx": 93,
+      "videoId": "dxHssh3PLAQ",
+      "title": "Write Drop EventItemBag - ADDED 8.0",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-016",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (1)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "DROP"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": "ADDED 8.0"
+    },
+    {
+      "idx": 101,
+      "videoId": "DlukUjAW_Ko",
+      "title": "Custom Info Event Defaults Requirement - ADDED 7.9",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-025",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (2)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 7.9"
+    },
+    {
+      "idx": 104,
+      "videoId": "EpUJmEBn16Y",
+      "title": "Custom Info Drop Switch - ADDED 7.8",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "real browser, YouTube transcript panel",
+      "knowledgeIndexId": "KI-005",
+      "normalizedStatus": "NORMALIZED",
+      "claimsStatus": "EXTRACTED (1)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "DROP",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": "ADDED 7.8"
+    },
+    {
+      "idx": 107,
+      "videoId": "XZMNP5xMfKY",
+      "title": "Custom Info Drop Item, Monitor FPS-MS, Command Window New and Show Level Patent - ADDED 7.7",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-026",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (5)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "ITEM",
+        "DROP",
+        "COMMAND",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 7.7"
+    },
+    {
+      "idx": 108,
+      "videoId": "XUeN6U74zME",
+      "title": "Custom Buy Vip And Coin - UPDATED 7.7",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "SHOP",
+        "CURRENCY",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": "UPDATED 7.7"
+    },
+    {
+      "idx": 110,
+      "videoId": "UeNNFBW8P9E",
+      "title": "Custom Event Entry Level - ADDED 7.7",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-027",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (2)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "PROGRESSION",
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 7.7"
+    },
+    {
+      "idx": 117,
+      "videoId": "6SGVxLyhG_8",
+      "title": "Custom Bot Store - ADDED 7.6",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "real browser, YouTube transcript panel",
+      "knowledgeIndexId": "KI-001",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (2)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_CONFIRMED",
+      "domains": [
+        "SHOP",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": "ADDED 7.6"
+    },
+    {
+      "idx": 118,
+      "videoId": "gySFdaRrS8Q",
+      "title": "Custom Bot Trader - ADDED 7.6",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "real browser, YouTube transcript panel",
+      "knowledgeIndexId": "KI-002",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (2)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_CONFIRMED",
+      "domains": [
+        "SHOP",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": "ADDED 7.6"
+    },
+    {
+      "idx": 126,
+      "videoId": "s_HotsixA1E",
+      "title": "ProjectGamers New Launcher Create Update",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "OPERATIONS"
+      ],
+      "priority": "P3",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 127,
+      "videoId": "qnmsryqc_ps",
+      "title": "ProjectGamers New Launcher Presentation",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "OPERATIONS"
+      ],
+      "priority": "P3",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 128,
+      "videoId": "ay5Da1fenLw",
+      "title": "Custom Npc Features for Class and Custom Damage for vips - UPDATED 7.4",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "NPC",
+        "CLASS",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": "UPDATED 7.4"
+    },
+    {
+      "idx": 129,
+      "videoId": "2k_69IL4xYY",
+      "title": "Party Disable Kill Between and Helper Active Delay - ADDED 7.4",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "OTHER"
+      ],
+      "priority": "P3",
+      "bloodMoonProviderVersion": "ADDED 7.4"
+    },
+    {
+      "idx": 133,
+      "videoId": "9blMRwQmATQ",
+      "title": "MuHelper for vips, Command Info And Custom Npc Gift for vips - UPDATED - 7.3",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "NPC",
+        "COMMAND",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 134,
+      "videoId": "8Oq6AX3kVo0",
+      "title": "Custom Npc Collector And Command Gift for vips - UPDATED",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "NPC",
+        "COMMAND",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 135,
+      "videoId": "syv236BDzEQ",
+      "title": "Window Command Join Events - ADDED 7.3",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "COMMAND"
+      ],
+      "priority": "P2",
+      "bloodMoonProviderVersion": "ADDED 7.3"
+    },
+    {
+      "idx": 142,
+      "videoId": "0uqVGJzsYwU",
+      "title": "Event Run And Catch Auto Skin - UPDATED 7.2",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-028",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (2)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "EVENT"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "UPDATED 7.2"
+    },
+    {
+      "idx": 144,
+      "videoId": "TPS3xmESYRc",
+      "title": "New Custom Monster And Npc - ADDED 7.2",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-029",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (4)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "MONSTER",
+        "NPC",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 7.2"
+    },
+    {
+      "idx": 146,
+      "videoId": "KtVmAPk5ggo",
+      "title": "Automatic Account Migration Server",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "SECURITY",
+        "DATABASE"
+      ],
+      "priority": "P3",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 148,
+      "videoId": "b5S00cPpUBg",
+      "title": "Event Item Bag Manager - UPDATED 7.1",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-017",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (1)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_CONFIRMED",
+      "domains": [
+        "EVENT",
+        "ITEM",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "UPDATED 7.1"
+    },
+    {
+      "idx": 157,
+      "videoId": "BaAxyG7Pio8",
+      "title": "Custom Monster Time - ADDED 7.1",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "MONSTER",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 7.1"
+    },
+    {
+      "idx": 158,
+      "videoId": "FHPFZmqyDqI",
+      "title": "Custom Buy Vip And Coin - ADDED 7.0",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "SHOP",
+        "CURRENCY",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": "ADDED 7.0"
+    },
+    {
+      "idx": 160,
+      "videoId": "DqHAEmyQCjA",
+      "title": "ItemDrop per vips - UPDATED 7.0",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "real browser, YouTube transcript panel",
+      "knowledgeIndexId": "KI-004",
+      "normalizedStatus": "NORMALIZED",
+      "claimsStatus": "EXTRACTED (1)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_CONFIRMED",
+      "domains": [
+        "ITEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "UPDATED 7.0"
+    },
+    {
+      "idx": 164,
+      "videoId": "LbNZ98OSjVg",
+      "title": "Custom Monster - UPDATED 6.9",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "real browser, YouTube transcript panel",
+      "knowledgeIndexId": "KI-012",
+      "normalizedStatus": "NORMALIZED",
+      "claimsStatus": "EXTRACTED (2)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "MONSTER",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "UPDATED 6.9"
+    },
+    {
+      "idx": 166,
+      "videoId": "IquX3gNZIpw",
+      "title": "Custom Guild vs Guild Event - UPDATED 6.9",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-030",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (3)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "UPDATED 6.9"
+    },
+    {
+      "idx": 170,
+      "videoId": "fkaG0dVg2w0",
+      "title": "Command Post Type By Account Level - ADDED 6.8",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "COMMAND",
+        "SECURITY"
+      ],
+      "priority": "P2",
+      "bloodMoonProviderVersion": "ADDED 6.8"
+    },
+    {
+      "idx": 172,
+      "videoId": "DUK52xHToK0",
+      "title": "Drop Event Devil Square - ADDED 6.8",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "real browser, YouTube transcript panel",
+      "knowledgeIndexId": "KI-011",
+      "normalizedStatus": "NORMALIZED",
+      "claimsStatus": "EXTRACTED (1)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "EVENT",
+        "DROP"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 6.8"
+    },
+    {
+      "idx": 173,
+      "videoId": "Mxanjz4Ml3E",
+      "title": "Custom Drop Reward Season 6.17 - ADDED 6.8",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "real browser, YouTube transcript panel",
+      "knowledgeIndexId": "KI-010",
+      "normalizedStatus": "NORMALIZED",
+      "claimsStatus": "EXTRACTED (1)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "DROP",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": "ADDED 6.8"
+    },
+    {
+      "idx": 185,
+      "videoId": "okCpQ3tya-M",
+      "title": "Custom Monster - UPDATED 6.7",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-031",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (2)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "MONSTER",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "UPDATED 6.7"
+    },
+    {
+      "idx": 189,
+      "videoId": "qil3Pw1VkGg",
+      "title": "Custom Event PvP All - ADDED 6.6",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "real browser, YouTube transcript panel",
+      "knowledgeIndexId": "KI-014",
+      "normalizedStatus": "NORMALIZED",
+      "claimsStatus": "EXTRACTED (3)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 6.6"
+    },
+    {
+      "idx": 190,
+      "videoId": "pUfPrwJjtcY",
+      "title": "Custom Event PvP 1x1 - ADDED 6.6",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-032",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (1)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 6.6"
+    },
+    {
+      "idx": 191,
+      "videoId": "lWclobV5zm8",
+      "title": "Custom Event Time - UPDATED 6.6",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "real browser, YouTube transcript panel",
+      "knowledgeIndexId": "KI-033",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (2)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "UPDATED 6.6"
+    },
+    {
+      "idx": 192,
+      "videoId": "1-URdUaW4Tw",
+      "title": "Custom Fake Online - ADDED 6.6",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "real browser VTT export (prior session)",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P2",
+      "bloodMoonProviderVersion": "ADDED 6.6"
+    },
+    {
+      "idx": 200,
+      "videoId": "qqtrBciJ3n8",
+      "title": "Command Make, Drop And MakeSet - UPDATED 6.5",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-034",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (1)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "ITEM",
+        "DROP",
+        "COMMAND"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "UPDATED 6.5"
+    },
+    {
+      "idx": 206,
+      "videoId": "ptFi5mX0eFU",
+      "title": "Command Open Event And Join - UPDATED 6.4",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-035",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (2)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "EVENT",
+        "COMMAND"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "UPDATED 6.4"
+    },
+    {
+      "idx": 207,
+      "videoId": "HFH8BhRZnUg",
+      "title": "Custom Bot Fusion - ADDED 6.4",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "real browser, YouTube transcript panel",
+      "knowledgeIndexId": "KI-003",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (2)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_CONFIRMED",
+      "domains": [
+        "SHOP",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": "ADDED 6.4"
+    },
+    {
+      "idx": 214,
+      "videoId": "4KNQFhiBLpE",
+      "title": "Custom Guild Map Move - ADDED 6.3",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-036",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (1)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "MAP",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 6.3"
+    },
+    {
+      "idx": 219,
+      "videoId": "lRhePn4cLZ0",
+      "title": "Custom Jewel Bank And Custom Event Time - UPDATED 6.1",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "real browser, YouTube transcript panel",
+      "knowledgeIndexId": "KI-013",
+      "normalizedStatus": "NORMALIZED",
+      "claimsStatus": "EXTRACTED (2)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "UPDATED 6.1"
+    },
+    {
+      "idx": 224,
+      "videoId": "mGj5j0eEyUA",
+      "title": "Configurando EventItemBag",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "CONFIG"
+      ],
+      "priority": "P2",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 225,
+      "videoId": "jXr8q_NGotQ",
+      "title": "Primeiras Configura\\u00e7\\u00f5es do Servidor",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "real browser, YouTube transcript panel",
+      "knowledgeIndexId": "KI-006",
+      "normalizedStatus": "NORMALIZED",
+      "claimsStatus": "EXTRACTED (1)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "UPSTREAM_MU",
+      "domains": [
+        "OTHER"
+      ],
+      "priority": "P3",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 228,
+      "videoId": "pPhK9sEABq4",
+      "title": "Custom OffAttack - UPDATED 5.8",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "LOCAL ASR (faster-whisper medium, CPU)",
+      "knowledgeIndexId": "KI-018",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (1)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P2",
+      "bloodMoonProviderVersion": "UPDATED 5.8"
+    },
+    {
+      "idx": 230,
+      "videoId": "yVXjMheH9qY",
+      "title": "Custom Event Time Settings - ADDED 5.7",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-037",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (2)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 5.7"
+    },
+    {
+      "idx": 232,
+      "videoId": "VAH2rMXnBmU",
+      "title": "Custom Monster Skill - ADDED 5.5",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-038",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (1)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "MONSTER",
+        "SKILL",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 5.5"
+    },
+    {
+      "idx": 237,
+      "videoId": "fHttxHWnTR8",
+      "title": "Custom Event Capture The Flag - ADDED 5.4",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-039",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (2)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 5.4"
+    },
+    {
+      "idx": 238,
+      "videoId": "gfMqlKeQ360",
+      "title": "Server Game Master Account Level - ADDED 5.4",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "real browser, YouTube transcript panel",
+      "knowledgeIndexId": "KI-007",
+      "normalizedStatus": "NORMALIZED",
+      "claimsStatus": "EXTRACTED (1)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "SECURITY"
+      ],
+      "priority": "P3",
+      "bloodMoonProviderVersion": "ADDED 5.4"
+    },
+    {
+      "idx": 246,
+      "videoId": "e9NLT40zdls",
+      "title": "Vip Money Editor ProjectGamers",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "CURRENCY"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 252,
+      "videoId": "83XTOql1g1g",
+      "title": "Custom Event Robber - ADDED 4.7",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-040",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (3)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 4.7"
+    },
+    {
+      "idx": 261,
+      "videoId": "lu1uu1UJc3E",
+      "title": "Custom Event Quickly (Veloz) - UPDATED 4.4",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": "KI-041",
+      "normalizedStatus": "RAW_ONLY",
+      "claimsStatus": "EXTRACTED (2)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "UPDATED 4.4"
+    },
+    {
+      "idx": 269,
+      "videoId": "iIJ93ptu6zU",
+      "title": "Fazendo Conex\\u00e3o ao FTP Cliente",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "OPERATIONS"
+      ],
+      "priority": "P3",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 273,
+      "videoId": "tcPkQYfmSx4",
+      "title": "Custom Event Battle Royale - ADDED 4.2",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "ADDED 4.2"
+    },
+    {
+      "idx": 274,
+      "videoId": "zzh166VKwGk",
+      "title": "Custom Event Drop Npc - UPDATED 4.2",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "EVENT",
+        "NPC",
+        "DROP",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "UPDATED 4.2"
+    },
+    {
+      "idx": 278,
+      "videoId": "VV2J_60gXBQ",
+      "title": "Custom Map Up Level ADDED - UPDATE 4.1",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "MAP",
+        "OPERATIONS",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "UPDATE 4.1"
+    },
+    {
+      "idx": 280,
+      "videoId": "HLtXKRSqyrQ",
+      "title": "Custom Map Pk ADDED - UPDATE 4.1",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "MAP",
+        "OPERATIONS",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "UPDATE 4.1"
+    },
+    {
+      "idx": 281,
+      "videoId": "pNvSjmchQ4E",
+      "title": "Custom Drop New Box ADDED -  UPDATE 4.1",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp (prior session, before blocked)",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "DROP",
+        "OPERATIONS",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": "UPDATE 4.1"
+    },
+    {
+      "idx": 284,
+      "videoId": "M7KLqCfcb9I",
+      "title": "Command MakeSet, Make, Drop UPDATED",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "ITEM",
+        "DROP",
+        "COMMAND"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 289,
+      "videoId": "u_daoxwEfTA",
+      "title": "Custom Pk Drop Item  ADDED",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "ITEM",
+        "DROP",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 292,
+      "videoId": "7S-GtB91E6Y",
+      "title": "Custom Event BBB ADDED",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 293,
+      "videoId": "HmagyvjHllU",
+      "title": "Custom Event Quiz ADDED",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 295,
+      "videoId": "Q7lb3HJ-iBs",
+      "title": "Custom Event ADDED - Hide And Seek",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 296,
+      "videoId": "ZEsn5eEg3AI",
+      "title": "Custom Event ADDED -  Run And Catch",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 297,
+      "videoId": "CfVxdXykC6k",
+      "title": "Custom Monster & Npc ADDED HOT",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "MONSTER",
+        "NPC",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 298,
+      "videoId": "GQpifIFKxWA",
+      "title": "Custom Event ADDED - NpcCrazy",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 299,
+      "videoId": "xL2edt5ePkw",
+      "title": "Custom Event ADDED - Absorption",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 300,
+      "videoId": "cBkzq54U_xU",
+      "title": "Custom Event ADDED - Russian Roulette",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 301,
+      "videoId": "h_6b8VC85ok",
+      "title": "Custom Event ADDED - Team vs Team",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 303,
+      "videoId": "orGfLJpTEug",
+      "title": "Custom Event   ADDED Mata Mata, Sobreviv\\u00eancia, Resta 1, etc",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "EVENT",
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 307,
+      "videoId": "Qsy9gEioHw4",
+      "title": "Event Tropa ADDED",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "EVENT"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 310,
+      "videoId": "B5wja90aSv8",
+      "title": "Command RewardVip ADDED",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "COMMAND"
+      ],
+      "priority": "P2",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 321,
+      "videoId": "XA3JgQgsr9k",
+      "title": "Command Make & Drop Atualizados",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "DROP",
+        "COMMAND"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 322,
+      "videoId": "kBwSLxkxf6A",
+      "title": "Command DropItemBag",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "COMMAND"
+      ],
+      "priority": "P2",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 323,
+      "videoId": "etbGEpJdmRQ",
+      "title": "Adicionando Item MuMaker",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "ITEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 332,
+      "videoId": "j44k2IFuT5U",
+      "title": "Aprendendo Aplicar Updates MuServer & Main",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "OPERATIONS"
+      ],
+      "priority": "P3",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 333,
+      "videoId": "rcL6fxy92Ss",
+      "title": "ResetMin & ResetMax Entry to events Atualizado update 2.0.1.7",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "RESET",
+        "PROGRESSION",
+        "OPERATIONS"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "update 2.0.1.7"
+    },
+    {
+      "idx": 334,
+      "videoId": "gDrEjwfDf78",
+      "title": "MapManager Atualizado update 2.0.1.7",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "OPERATIONS",
+        "SYSTEM"
+      ],
+      "priority": "P2",
+      "bloodMoonProviderVersion": "update 2.0.1.7"
+    },
+    {
+      "idx": 336,
+      "videoId": "o3h4PQ8Y8Kc",
+      "title": "Command Start Event update 2.0.1.7",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "EVENT",
+        "COMMAND",
+        "OPERATIONS"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "update 2.0.1.7"
+    },
+    {
+      "idx": 341,
+      "videoId": "daXFimBKtVM",
+      "title": "Command Buy Vip update 2.0.1.6",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "COMMAND",
+        "SHOP",
+        "CURRENCY",
+        "OPERATIONS"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": "update 2.0.1.6"
+    },
+    {
+      "idx": 342,
+      "videoId": "0r_QHATVZKo",
+      "title": "Command Set Vip update 2.0.1.6",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "COMMAND",
+        "CURRENCY",
+        "OPERATIONS"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": "update 2.0.1.6"
+    },
+    {
+      "idx": 343,
+      "videoId": "HMmfyPerla8",
+      "title": "ResetMin & ResetMax Events update 2.0.1.6",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "real browser, YouTube transcript panel",
+      "knowledgeIndexId": "KI-015",
+      "normalizedStatus": "NORMALIZED",
+      "claimsStatus": "EXTRACTED (1)",
+      "entityExtractionStatus": "PARTIAL",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "BLOODMOON_LIKELY",
+      "domains": [
+        "RESET",
+        "PROGRESSION",
+        "OPERATIONS"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": "update 2.0.1.6"
+    },
+    {
+      "idx": 345,
+      "videoId": "sK5QGl2ykQc",
+      "title": "Custom BotBuffer",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp (prior session, before blocked)",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P2",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 349,
+      "videoId": "N5JGBoBVmUA",
+      "title": "Atualizando Sistema Vips",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "OTHER"
+      ],
+      "priority": "P3",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 359,
+      "videoId": "UUWYaRoK3R0",
+      "title": "Atualizado MapManager 2",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "SYSTEM"
+      ],
+      "priority": "P2",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 367,
+      "videoId": "agkUd7RWitw",
+      "title": "Configurando SMTP",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "OPERATIONS",
+        "CONFIG"
+      ],
+      "priority": "P2",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 370,
+      "videoId": "eO0pJmlsp0Q",
+      "title": "Custom Desativando Efeitos do Cliente",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "CONFIG",
+        "SYSTEM"
+      ],
+      "priority": "P2",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 378,
+      "videoId": "e7TMZivFUX4",
+      "title": "Adicionado Novos Mapas",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "OTHER"
+      ],
+      "priority": "P3",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 379,
+      "videoId": "JpUw7M4o8kY",
+      "title": "Atualizado MapManager.txt",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "SYSTEM"
+      ],
+      "priority": "P2",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 386,
+      "videoId": "LPQNDbT5z6k",
+      "title": "Adicionando Update Launcher 02",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "OPERATIONS"
+      ],
+      "priority": "P3",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 387,
+      "videoId": "kbg_lCHg8K8",
+      "title": "Configurando CastleSiege",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "CONFIG"
+      ],
+      "priority": "P2",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 388,
+      "videoId": "cBmrSmAFxFw",
+      "title": "Criando Novos Eventos",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "OTHER"
+      ],
+      "priority": "P3",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 389,
+      "videoId": "KwzxnwjTTZE",
+      "title": "Adicionando Pacotes de Vip's e Moedas",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "CURRENCY"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 391,
+      "videoId": "mJPGM26MJFc",
+      "title": "Adicionando Update Launcher",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "OPERATIONS"
+      ],
+      "priority": "P3",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 392,
+      "videoId": "-JKSgUY9-3Y",
+      "title": "Adicionando Item MuServer e Cliente",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "ITEM"
+      ],
+      "priority": "P0",
+      "bloodMoonProviderVersion": null
+    },
+    {
+      "idx": 396,
+      "videoId": "xAHo-_33feE",
+      "title": "Adicionando Pacotes Vips e Cash's",
+      "rawTranscriptStatus": "CAPTURED",
+      "captureMethod": "yt-dlp official auto-caption fetch",
+      "knowledgeIndexId": null,
+      "normalizedStatus": "NOT_STARTED",
+      "claimsStatus": "NOT_STARTED",
+      "entityExtractionStatus": "NOT_STARTED",
+      "graphStatus": "NOT_TRACKED_PER_VIDEO",
+      "verificationStatus": "NOT_APPLICABLE",
+      "domains": [
+        "CURRENCY"
+      ],
+      "priority": "P1",
+      "bloodMoonProviderVersion": null
+    }
+  ]
+}
