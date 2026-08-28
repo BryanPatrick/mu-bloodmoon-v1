@@ -12,11 +12,12 @@ Nunca inclua segredos, credenciais, ou comandos operacionais privilegiados (prod
 
 ## ACCOUNT (conta)
 
+- **Correção Fase 10**: não existe e-mail de confirmação de cadastro -- a conta é criada ativa imediatamente. Não peça ao jogador para "confirmar o e-mail" antes de logar, isso não existe no fluxo real.
 - **Perguntar**: nome de usuário, e-mail cadastrado.
-- **Responder na hora**: como redefinir senha (se o fluxo de recuperação estiver funcionando -- checar status atual antes de prometer), como funciona 2FA.
-- **Evidência a pedir**: e-mail de confirmação de cadastro, se existir.
-- **Escalar quando**: suspeita de conta comprometida, e-mail não recebido, 2FA travado sem acesso ao dispositivo.
-- **Nunca**: pedir a senha do jogador por qualquer canal; alterar e-mail/senha de conta sem verificação de identidade.
+- **Responder na hora**: você pode logar assim que se cadastrar, sem etapa de confirmação; como redefinir senha (se o fluxo de recuperação estiver funcionando -- checar status atual antes de prometer); como funciona 2FA.
+- **Evidência a pedir**: para recuperação de senha, confirmar se o e-mail de redefinição chegou.
+- **Escalar quando**: suspeita de conta comprometida; e-mail de recuperação de senha não recebido (fluxo técnico separado, pode ter bloqueio de infraestrutura pendente); 2FA travado sem acesso ao dispositivo.
+- **Nunca**: pedir a senha do jogador por qualquer canal; alterar e-mail/senha de conta sem verificação de identidade; dizer que o cadastro "precisa de confirmação de e-mail" -- isso não é verdade.
 
 ## LAUNCHER
 

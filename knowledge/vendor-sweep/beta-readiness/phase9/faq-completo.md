@@ -15,7 +15,8 @@ Status: `READY` (resposta confirmada, publicável), `PARTIAL` (parte confirmada,
 | Pergunta | Resposta curta | Status | Fonte | Escalação |
 |---|---|---|---|---|
 | Como crio uma conta? | Cadastro em `/registrar` | `READY` | Auditoria anterior, `apps/api/src/modules/auth` | N/A |
-| Recebo e-mail de confirmação? | Fluxo real de recuperação/ativação existe, mas infraestrutura de e-mail aprovada tinha bloqueio pendente em auditoria anterior, não reconfirmado nesta fase | `TECHNICAL_REQUIRED` | `docs/handoff/auth-recovery-provider-blocker.md` | Escalar para Codex/produção se o jogador não receber e-mail |
+| Recebo e-mail de confirmação? | **Correção Fase 10**: Não existe e-mail de confirmação de cadastro -- a conta é criada ativa imediatamente, sem etapa de ativação (confirmado por leitura direta do código real, `auth.service.ts`). Você pode logar assim que se cadastrar. | `READY` | Fase 10, `apps/api/src/modules/auth/auth.service.ts` (leitura direta) | N/A |
+| E se eu esquecer minha senha e não receber o e-mail de recuperação? | Esse é um fluxo diferente (recuperação de senha, não cadastro) -- pode haver um bloqueio de infraestrutura de e-mail pendente de confirmação técnica | `TECHNICAL_REQUIRED` | `docs/handoff/auth-recovery-provider-blocker.md` | Escalar para Codex/produção |
 | Posso ter mais de uma conta? | Não pesquisado | `UNKNOWN` | -- | Escalar |
 
 ## DOWNLOAD
@@ -50,7 +51,7 @@ Status: `READY` (resposta confirmada, publicável), `PARTIAL` (parte confirmada,
 
 | Pergunta | Resposta curta | Status | Fonte | Escalação |
 |---|---|---|---|---|
-| Quais classes existem? | Não confirmado nesta ou em fases anteriores | `UNKNOWN` | -- | Escalar |
+| Quais classes existem? | **Atualização Fase 10**: 7 classes reais confirmadas (códigos reais: dw, dk, elf, mg, dl, su, rf, encontrados no texto real do servidor). Quais são selecionáveis na criação inicial vs. desbloqueadas depois não foi confirmado. | `PARTIAL` | Fase 10, `Data/Character/DefaultClassInfo.txt` + `Data/Lang/Por/Message.txt` (leitura real direta) | Escalar dúvidas sobre disponibilidade na criação |
 | Quantos personagens por conta? | Não confirmado | `UNKNOWN` | -- | Escalar |
 
 ## LEVELING
@@ -78,8 +79,9 @@ Status: `READY` (resposta confirmada, publicável), `PARTIAL` (parte confirmada,
 
 | Pergunta | Resposta curta | Status | Fonte | Escalação |
 |---|---|---|---|---|
-| Quais eventos estão ativos? | Só o Leilão (Auction) | `READY` | `CONFIRMED_BY_CONFIG`, event-registry.json | N/A |
-| Por que `/participar` não funciona? | O comando funciona; o evento-alvo provavelmente está desativado | `READY` | participar-command-reconciliation.md | Não escalar como bug na maioria dos casos |
+| Quais eventos estão ativos? | **Atualização Fase 10**: 4 eventos confirmados ativos -- Leilão (Auction), Blood Castle, Chaos Castle e Devil Square (com agenda automática real). Illusion Temple está desativado. | `READY` | `CONFIRMED_BY_CONFIG`, event-registry.json (Fase 10) | N/A |
+| Como entro no Blood Castle/Chaos Castle/Devil Square? | Nível exigido confirmado por sub-nível (ver guia de Eventos); método exato de entrada (NPC/mapa) ainda não confirmado | `PARTIAL` | Fase 10, Data/Event/*.dat | Escalar se o nível estiver correto e a entrada falhar |
+| Por que `/participar` não funciona? | O comando funciona; o evento-alvo provavelmente está desativado (nenhum dos 4 eventos clássicos usa `/participar`, mesmo os 3 ativos) | `READY` | participar-command-reconciliation.md | Não escalar como bug na maioria dos casos |
 | Quando os outros eventos serão ativados? | Não definido | `POLICY_REQUIRED` | -- | Escalar para produto |
 
 ## COMMANDS

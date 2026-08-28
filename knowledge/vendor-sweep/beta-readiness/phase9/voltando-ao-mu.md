@@ -37,7 +37,7 @@ Esses conceitos existem no Blood Moon, mas os detalhes exatos (custo, recompensa
 
 ## Eventos (`BLOODMOON_CONFIRMED`)
 
-A maioria dos eventos customizados que você pode ter visto em vídeos sobre este motor de servidor **está desativada no Blood Moon hoje** -- só o Leilão está confirmado ativo. Isso não é um problema no seu cliente, é o estado real do servidor agora. Ver a Central de Eventos para a lista completa.
+A maioria dos eventos customizados que você pode ter visto em vídeos sobre este motor de servidor **está desativada no Blood Moon hoje**. Mas os eventos clássicos que você provavelmente já conhece de outras versões de MU estão, em sua maioria, ativos: **Blood Castle, Chaos Castle e Devil Square abrem automaticamente várias vezes por dia**, com agenda real confirmada (Fase 10). **Illusion Temple está desativado.** O Leilão (um sistema novo, não clássico) também está confirmado ativo. Ver a Central de Eventos para a lista completa e horários.
 
 ## Comunidade e ajuda (`BLOODMOON_CONFIRMED`)
 

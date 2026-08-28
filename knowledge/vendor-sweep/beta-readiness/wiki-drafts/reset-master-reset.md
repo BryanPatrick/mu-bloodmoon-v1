@@ -44,6 +44,8 @@ O motor do servidor suporta uma trava de "reset mínimo/máximo" para entrar em 
 
 **Detalhe adicional confirmado na Fase 8** (vídeo de fornecedor sobre a atualização 2.0.1.7 do motor, cruzado com o config real já lido): a partir dessa versão, a trava deixou de ser um único par Min/Max por evento inteiro e passou a ser **configurável individualmente por sub-nível** -- até 8 pares para Blood Castle (sub-níveis 1-8), 7 para Chaos Castle, 7 para Devil Square, 6 para Illusion Temple. Cada sub-nível também tem 2 caixas de marcação independentes: "exige Reset" e "exige Master Reset" -- ou seja, no futuro será possível, por exemplo, exigir reset só para entrar no Blood Castle nível 5 em diante, sem afetar os níveis 1-4. **Isso não muda o estado atual (tudo desligado, valores 0/0) -- é só o nível de detalhe que o motor suporta, caso essa trava seja ativada no futuro.**
 
+**Atualização confirmada na Fase 10**: Blood Castle, Chaos Castle e Devil Square estão **realmente ativos** no servidor hoje, com agenda automática real (ex.: Blood Castle a cada 2 horas). **Illusion Temple é diferente dos outros 3 -- está desativado** (`IllusionTempleEvent = 0`). Isso não muda a informação acima sobre reset (nenhum dos 4 exige reset hoje), mas corrige uma imprecisão das Fases 7-9, que tratava os 4 como um grupo uniforme. Ver a Central de Eventos para o detalhe completo por evento.
+
 ## FUTURE_DESIGN / RECOMMENDATION (não confirmado, não publicar como fato do servidor)
 
 - O Master Reset parece preparado para ativação futura (ver nota acima) -- **não afirmar uma data ou promessa de quando isso vai acontecer** sem confirmação do time.

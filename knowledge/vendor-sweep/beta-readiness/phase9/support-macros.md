@@ -30,9 +30,10 @@ lastVerified: 2026-08-28
 
 ## ACCOUNT_NOT_PROVISIONED
 
-- **Resposta**: "Vamos confirmar o status da sua conta. Isso pode levar alguns minutos após o cadastro."
+- **Correção Fase 10**: isso NÃO é sobre confirmação de e-mail -- a conta do portal já nasce ativa imediatamente no cadastro (confirmado por leitura de código). "Provisionamento" aqui se refere especificamente à conta de jogo (`GameAccountIdentity`), um fluxo técnico separado, controlado por feature flag e por um worker de reconciliação.
+- **Resposta**: "Vamos confirmar o status da sua conta de jogo. Isso pode levar alguns minutos após o cadastro."
 - **Evidência necessária**: usuário, horário do cadastro.
-- **Escalar para**: verificação técnica -- este é um fluxo com bloqueio conhecido de infraestrutura de e-mail em auditoria anterior, pode precisar de escalação a Codex/produção.
+- **Escalar para**: verificação técnica/Codex -- este é um fluxo de infraestrutura (não de e-mail).
 - **Nunca prometer**: prazo exato sem confirmar a causa.
 
 ## EVENT_NOT_WORKING

@@ -117,6 +117,56 @@ check('knowledge-graph.json Phase 5 additions pass structural validation (node-i
   if (!out.includes('All structural checks passed')) throw new Error('Phase 5 graph additions broke validation -- see the EVT-devil-square vs EVENT-devil-square id-mismatch bug caught during this same phase for the failure mode this guards against')
 })
 
+// --- Phase 10 additions ---
+
+check('knowledge-transcript-inventory.mjs still counts .pt.srt-only transcripts, not just .pt.json (Phase 7 regression guard)', () => {
+  const src = readFileSync(join(ROOT, 'scripts', 'knowledge-transcript-inventory.mjs'), 'utf8')
+  if (!src.includes('\\.pt\\.(json|srt)')) {
+    throw new Error('kiByVideo regex no longer matches both .pt.json AND .pt.srt -- this is exactly the Phase 7 bug (zJRrsKWKcUc hidden from inventory) silently returning')
+  }
+  const out = JSON.parse(run('knowledge-transcript-inventory.mjs'))
+  if (out.byPriorityUnprocessed.P0 !== 0) {
+    throw new Error(`expected 0 unprocessed P0 videos (all 27 were processed in Phase 7, verified via the .pt.srt inventory fix), got ${out.byPriorityUnprocessed.P0}`)
+  }
+})
+
+check('knowledge-search-index-build.mjs fail-closed visibility filter does not over-trigger on safe player-facing prose (Phase 10 false-positive regression guard)', () => {
+  const out = run('knowledge-search-index-build.mjs')
+  const idx = JSON.parse(out)
+  if (idx.chunkCount < 150) throw new Error(`expected at least 150 chunks, got ${idx.chunkCount}`)
+  const built = JSON.parse(readFileSync(join(ROOT, 'knowledge', 'vendor-sweep', 'beta-readiness', 'search-index.json'), 'utf8'))
+  const eventos = built.chunks.filter((c) => c.sourcePath.includes('wiki-drafts/eventos.md'))
+  const classicos = eventos.find((c) => c.section === 'Eventos clássicos do motor MU')
+  if (!classicos || classicos.playerVisibility !== 'PUBLIC_PLAYER') {
+    throw new Error('the classic castle events section (Blood Castle/Chaos Castle/Devil Square real schedule data) is not PUBLIC_PLAYER -- see the literal "INTERNAL_ONLY" token false-positive fixed this phase')
+  }
+  const leilao = eventos.find((c) => c.section === 'ATIVO hoje')
+  if (!leilao || leilao.playerVisibility !== 'PUBLIC_PLAYER') {
+    throw new Error('the Auction (Leilão) section is not PUBLIC_PLAYER -- see the "/openevent" passing-mention false-positive fixed this phase')
+  }
+  const gmSection = (built.chunks.find((c) => c.sourcePath.includes('comandos.md') && c.section && c.section.includes('GM_COMMAND')))
+  if (!gmSection || gmSection.playerVisibility !== 'ADMIN_INTERNAL') {
+    throw new Error('the GM_COMMAND section stopped being downgraded to ADMIN_INTERNAL -- this is the real leak the fail-closed filter exists to prevent')
+  }
+  const superseded = built.chunks.filter((c) => c.sourcePath.includes('wiki-drafts/comecando.md') || c.sourcePath.includes('wiki-drafts/central-de-ajuda-faq.md'))
+  if (superseded.some((c) => c.playerVisibility === 'PUBLIC_PLAYER')) {
+    throw new Error('a BLOCKED/superseded page (comecando.md or central-de-ajuda-faq.md, per phase9/wiki-release-candidates.md) is competing in player search again -- should be HISTORICAL')
+  }
+})
+
+check('knowledge-search-query.mjs 20-query Portuguese test corpus has zero WRONG_RESULT (worse than NOT_FOUND per Part K)', () => {
+  let out
+  try {
+    out = run('knowledge-search-test-corpus.mjs')
+  } catch (e) {
+    // the script exits 1 on any WRONG_RESULT -- execFileSync throws, but
+    // stdout is still on the error object
+    out = e.stdout ? e.stdout.toString() : ''
+    if (!out) throw e
+  }
+  if (!out.includes('WRONG_RESULT: 0')) throw new Error('expected WRONG_RESULT: 0 in the test corpus summary:\n' + out.slice(-600))
+})
+
 console.log('')
 if (failures === 0) {
   console.log('All knowledge tooling integration checks passed.')

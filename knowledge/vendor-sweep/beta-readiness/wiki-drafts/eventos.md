@@ -3,9 +3,9 @@ status: DRAFT_READY_FOR_REVIEW
 category: beta-readiness/wiki-drafts
 audience: player-facing (Wiki + support) -- GM-only sections marked separately
 confidence: mixed, marked per event
-source: GameServer/DATA/GameServerInfo - Custom.dat, GameServerInfo - Event.dat, GameServerInfo - Command.dat, GameServerInfo - CommandGM.dat (real config, read 2026-08-27); Data/Custom/CustomEventZombie.txt, CustomEventPandora.txt, CustomEventStopOrDie.txt, CustomEventRobber.txt (real config, read directly)
+source: GameServer/DATA/GameServerInfo - Custom.dat, GameServerInfo - Event.dat, GameServerInfo - Command.dat, GameServerInfo - CommandGM.dat (real config, read 2026-08-27); Data/Custom/CustomEventZombie.txt, CustomEventPandora.txt, CustomEventStopOrDie.txt, CustomEventRobber.txt (real config); Data/Event/BloodCastle.dat, ChaosCastle.dat, DevilSquare.dat, IllusionTemple.dat, CustomEventEntryLevel.dat (real config, Phase 10)
 provenance: knowledge/vendor-sweep/beta-readiness/event-registry.json (full claimRefs per event)
-lastVerified: 2026-08-27 (Phase 8 enrichment)
+lastVerified: 2026-08-28 (Phase 10 correction -- classic castle events)
 publish: NOT_PUBLISHED -- draft only
 ---
 
@@ -15,7 +15,9 @@ publish: NOT_PUBLISHED -- draft only
 
 ## Achado mais importante para o Open Beta
 
-**Hoje, praticamente todo evento custom acessível por `/participar` (join) está DESATIVADO no servidor real.** Dos 10 eventos que o comando `/join` sabe abrir, **9 foram confirmados desligados**. O único evento custom confirmado **ativo e funcionando** hoje é o **Leilão (CustomEventAuction)**, que usa um comando próprio, não `/participar`. Os 4 eventos clássicos (Blood Castle, Chaos Castle, Devil Square, Illusion Temple) são considerados sempre disponíveis por padrão do motor MU, mas o método de entrada específico no Blood Moon não foi confirmado nesta fase.
+**Eventos custom acessíveis por `/participar` (join)**: dos 10 eventos que o comando `/join` sabe abrir, **9 foram confirmados desligados**. O único evento custom confirmado ativo por esse caminho é o **Leilão (CustomEventAuction)**, que usa um comando próprio, não `/participar`.
+
+**Correção da Fase 10**: os 4 eventos clássicos (Blood Castle, Chaos Castle, Devil Square, Illusion Temple) **não são um grupo uniforme** -- Blood Castle, Chaos Castle e Devil Square estão **confirmados ativos**, com agenda automática real (o servidor abre esses eventos sozinho, várias vezes por dia, sem intervenção de GM). Illusion Temple está **confirmado desativado**. Isso significa que, hoje, existem **4 eventos genuinamente jogáveis** no Blood Moon (Leilão + 3 castelos clássicos), não apenas 1 como as Fases 7-9 relatavam.
 
 **REGRA DE SEGURANÇA PARA CONTEÚDO PÚBLICO (Part K)**: mesmo quando a documentação técnica interna de um evento desativado está completa (e várias estão, graças à Fase 7), **a página pública nunca pode descrever esse evento como disponível**. Toda seção de evento desativado abaixo está marcada `DISABLED_MUST_LABEL_UNAVAILABLE` -- qualquer versão publicada precisa manter essa rotulagem clara.
 
@@ -28,7 +30,7 @@ publish: NOT_PUBLISHED -- draft only
 `ACTIVE` | `claimRefs: CLAIM-039, CLAIM-040, CLAIM-041` | `publicationSafety: ACTIVE_SAFE_TO_DESCRIBE_AS_LIVE`
 
 - **Mecânica**: sistema de lances. Um item é colocado em leilão por tempo determinado; jogadores dão lances em zen ou em um item específico configurado; cada novo lance precisa ser estritamente maior que o atual (lance igual ou menor é recusado); quando o tempo acaba, o maior lance recebe o item, dropado no chão na posição do vencedor.
-- **Entrada**: comando de "action" dedicado (não é `/openevent` nem `/participar`).
+- **Entrada**: comando de "action" dedicado (não é o comando de evento usado por GMs, nem `/participar`).
 - **Requisitos**: nenhum nível/reset confirmado. Custo é o próprio lance (zen ou item, configurável).
 - **Mapa**: não confirmado nesta fase.
 - **Recompensa**: o item leiloado, com todos os atributos (índice/nível/durabilidade/skill/opção/socket/duração) independentemente configuráveis por leilão.
@@ -37,17 +39,45 @@ publish: NOT_PUBLISHED -- draft only
 
 ---
 
-## Eventos clássicos do motor MU (sempre presentes por padrão)
+## Eventos clássicos do motor MU
 
-### Blood Castle, Chaos Castle, Devil Square, Illusion Temple
+**Atualização da Fase 10**: correção importante -- estes 4 eventos NÃO são todos iguais. 3 estão realmente ativos com agenda automática real; 1 está desativado. Isso corrige o conteúdo das Fases 7-9, que tratava os 4 uniformemente.
 
-`ENGINE_PRESENT` | `claimRefs: CLAIM-035, CLAIM-100, CLAIM-106` | `publicationSafety: ACTIVE_SAFE_TO_DESCRIBE_AS_LIVE (com a ressalva de reset abaixo)`
+### Blood Castle -- `ACTIVE`
 
-- **Confirmado**: existem no registro real de `/openevent` (comando de GM), confirmando que o servidor realmente os reconhece.
-- **Reset/Master Reset**: o motor suporta uma trava de reset mínimo/máximo por evento -- desde a atualização 2.0.1.7 do fornecedor, essa trava é configurável **por sub-nível individualmente** (até 8 pares para Blood Castle, 7 para Chaos Castle, 7 para Devil Square, 6 para Illusion Temple), com 2 checkboxes independentes ("exige Reset" / "exige Master Reset") por sub-nível. **No Blood Moon hoje, TODOS os switches estão desligados e todos os valores são 0/0** -- ou seja, não existe restrição de reset para entrar em nenhum dos 4 eventos atualmente.
-- **⚠️ Aviso obrigatório para conteúdo público**: nunca implicar que existe um requisito de reset para esses eventos. Se o time ativar essa trava no futuro, esta página precisa ser atualizada antes que a informação fique desatualizada.
-- **Entrada específica (NPC, mapa, requisitos de nível)**: `NEEDS_MORE_DATA` -- não confirmado nesta fase para o Blood Moon especificamente.
-- **Status**: `PARTIAL` -- existência e estado do reset-gate confirmados; demais detalhes de entrada precisam de confirmação em jogo.
+`claimRefs: CLAIM-035, CLAIM-100, CLAIM-106` | `publicationSafety: ACTIVE_SAFE_TO_DESCRIBE_AS_LIVE`
+
+- **Confirmado ativo** (`BloodCastleEvent = 1`), com **agenda automática real**: a cada 2 horas, começando à meia-noite (12x por dia), evento de 15 minutos.
+- **Requisito de nível real por sub-nível** (`CustomEventEntryLevel.dat`): nível 1 (10-79), 2 (80-129), 3 (130-179), 4 (180-229), 5 (230-279), 6 (280-329), 7 (330+).
+- **Máximo de 10 jogadores** por instância (`BloodCastleMaxUser`).
+- **Reset/Master Reset**: sem requisito hoje (trava existe, desligada -- ver guia de Reset).
+- **Recompensa**: tabelas reais de Zen e XP por sub-nível existem; uma tabela adicional de WCoinC/WCoinP/GoblinPoint também existe mas está **desligada** (`BloodCastleRewardSwitch = 0`).
+- **NPC/mapa de entrada**: `UNKNOWN` -- não encontrado em configuração real; provavelmente fixo no cliente.
+
+### Chaos Castle -- `ACTIVE`
+
+- **Confirmado ativo** (`ChaosCastleEvent = 1`), agenda automática: a cada 6 horas, no minuto :30 (00:30, 06:30, 12:30, 18:30), evento de 10 minutos.
+- **Requisito de nível real**: 1 (10-49), 2 (50-119), 3 (120-179), 4 (180-239), 5 (240-299), 6 (300+).
+- **Mínimo de 1 jogador** (`ChaosCastleMinUser`).
+- **Recompensa**: tabela de XP real por sub-nível; bônus de moeda existe mas está desligado (`ChaosCastleRewardSwitch = 0`).
+
+### Devil Square -- `ACTIVE`
+
+- **Confirmado ativo** (`DevilSquareEvent = 1`), agenda automática: a cada 2 horas, começando à 01:00 (12x por dia), evento de 20 minutos.
+- **Requisito de nível real**: 1 (10-129), 2 (130-179), 3 (180-229), 4 (230-279), 5 (280-329), 6 (330+).
+- **Máximo de 15 jogadores** (`DevilSquareMaxUser`).
+- **Recompensa**: tabelas reais de Zen e XP por onda (10 ondas por sub-nível); nenhum bônus de WCoin/GoblinPoint configurado.
+
+### Illusion Temple -- `DISABLED`
+
+- **Confirmado desativado** (`IllusionTempleEvent = 0`) -- diferente dos outros 3. Tem uma agenda real configurada (a cada 4 horas, começando 01:30) e requisito de nível real (220-400, em 5 faixas), mas **nada disso roda hoje** porque o evento está desligado.
+- **⚠️ Não descrever como disponível.**
+
+### Comum aos 4
+
+- **Entrada** (`/participar`): nenhum dos 4 está na lista real de 10 eventos elegíveis a `/participar` -- a entrada normal é por outro mecanismo (provavelmente NPC/mapa, padrão MU Online), não confirmado especificamente para o Blood Moon nesta fase.
+- **⚠️ Aviso obrigatório para conteúdo público**: nunca implicar requisito de reset para nenhum dos 4 -- essa trava existe no motor mas está desligada em todos.
+- **Status**: `PARTIAL` para Blood Castle/Chaos Castle/Devil Square (agenda, requisito de nível e recompensa confirmados; NPC/mapa de entrada ainda não); Illusion Temple não deve ser descrito como disponível, pois está desativado hoje (ver acima).
 
 ---
 
