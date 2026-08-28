@@ -1,0 +1,51 @@
+{
+  "generatedAt": "2026-08-27T21:00:00Z",
+  "generatedBy": "Knowledge Phase 8, Part F -- a reusable card schema for future Website/Wiki/Launcher event displays. Knowledge/content first: this is a data shape, not frontend code. Populate it FROM event-registry.json, never hand-author a card independent of the registry, to avoid the registry and the displayed cards drifting apart.",
+  "schema": {
+    "name": "string -- canonicalName from event-registry.json",
+    "status": "ATIVO | INDISPONIVEL -- derived from enabledStatus (ACTIVE/ENGINE_PRESENT -> ATIVO, DISABLED/UNKNOWN -> INDISPONIVEL). Never a raw enabledStatus value on a player-facing card.",
+    "shortDescription": "string, <= 140 chars, player-voice, no internal config field names",
+    "entryMethod": "string, player-facing phrasing of entryMethod (e.g. 'Digite /participar pandora' or 'Clique no NPC no mapa X')",
+    "requirements": "string or null -- player-facing phrasing of level/reset/item/currency requirements, or null if none confirmed (never fabricate a requirement to fill this field)",
+    "schedule": "string or null -- player-facing phrasing of scheduleSource, or null if unconfirmed",
+    "map": "string or null -- mapName if known, else mapId if known, else null",
+    "reward": "string or null -- player-facing phrasing of reward/rewardType, or null if unconfirmed",
+    "playerCommand": "string or null -- the exact command text if confirmed, else null",
+    "difficulty": "UNKNOWN -- not derivable from current evidence for any event; every card must show this honestly rather than guessing",
+    "groupType": "SOLO | TEAM | GUILD | UNKNOWN -- derived from groupRequirement",
+    "sourceConfidence": "CONFIRMED_BY_CONFIG | CONFIRMED_VENDOR_VIDEO | UNVERIFIED -- rolled up from event-registry.json's verificationStatus, shown small/muted on the card for internal QA builds only, never in the public-facing render"
+  },
+  "renderRules": [
+    "A card for an event whose enabledStatus is DISABLED or UNKNOWN must render status as INDISPONIVEL and must not render playerCommand, requirements, schedule, map, or reward fields even if the registry has real values for them -- Part K safety: internal completeness must never leak into a player-facing 'how to play' presentation of unavailable content.",
+    "difficulty is always UNKNOWN today -- render as omitted/hidden rather than showing a fabricated placeholder value.",
+    "sourceConfidence is for internal/QA tooling only (e.g. a content-team review view) -- strip it from any consumer-facing build."
+  ],
+  "example_active": {
+    "name": "CustomEventAuction",
+    "status": "ATIVO",
+    "shortDescription": "Dê lances por itens raros. O maior lance quando o tempo acaba leva o prêmio.",
+    "entryMethod": "Comando de leilão dedicado (ver guia de comandos)",
+    "requirements": null,
+    "schedule": null,
+    "map": null,
+    "reward": "O item leiloado, entregue ao vencedor do lance mais alto",
+    "playerCommand": null,
+    "difficulty": "UNKNOWN",
+    "groupType": "SOLO",
+    "sourceConfidence": "CONFIRMED_BY_CONFIG"
+  },
+  "example_disabled": {
+    "name": "CustomEventPandora",
+    "status": "INDISPONIVEL",
+    "shortDescription": "Evento ainda não disponível neste servidor.",
+    "entryMethod": null,
+    "requirements": null,
+    "schedule": null,
+    "map": null,
+    "reward": null,
+    "playerCommand": null,
+    "difficulty": "UNKNOWN",
+    "groupType": "UNKNOWN",
+    "sourceConfidence": "CONFIRMED_BY_CONFIG"
+  }
+}

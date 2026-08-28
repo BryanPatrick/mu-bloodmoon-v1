@@ -4,9 +4,9 @@ category: beta-readiness/wiki-drafts
 audience: player-facing (Wiki + support)
 confidence: CONFIRMED_BY_CONFIG
 source: GameServer/DATA/GameServerInfo - Command.dat, GameServerInfo - Event.dat (real Blood Moon config, read 2026-08-27, Phase 6)
-provenance: atomic-claims.json CLAIM-035, CLAIM-094, CLAIM-095; progression-entries.json PROG-002, PROG-003, PROG-004
-lastVerified: 2026-08-27
-publish: NOT_PUBLISHED -- draft only, per Phase 7 instructions
+provenance: atomic-claims.json CLAIM-035, CLAIM-094, CLAIM-095, CLAIM-100, CLAIM-101; progression-entries.json PROG-002, PROG-003, PROG-004
+lastVerified: 2026-08-27 (Phase 8 enrichment)
+publish: NOT_PUBLISHED -- draft only
 ---
 
 # Reset e Master Reset
@@ -41,6 +41,8 @@ publish: NOT_PUBLISHED -- draft only, per Phase 7 instructions
 ### Requisito de entrada em eventos por reset (ResetMin/ResetMax)
 
 O motor do servidor suporta uma trava de "reset mínimo/máximo" para entrar em Blood Castle, Chaos Castle, Devil Square e Illusion Temple -- mas **hoje essa trava está desligada em todos os 4 eventos e todos os valores são 0/0**. Ou seja: **não existe restrição de reset para entrar nesses 4 eventos atualmente**. Isso pode mudar em uma atualização futura (o mecanismo está pronto, só não está sendo usado).
+
+**Detalhe adicional confirmado na Fase 8** (vídeo de fornecedor sobre a atualização 2.0.1.7 do motor, cruzado com o config real já lido): a partir dessa versão, a trava deixou de ser um único par Min/Max por evento inteiro e passou a ser **configurável individualmente por sub-nível** -- até 8 pares para Blood Castle (sub-níveis 1-8), 7 para Chaos Castle, 7 para Devil Square, 6 para Illusion Temple. Cada sub-nível também tem 2 caixas de marcação independentes: "exige Reset" e "exige Master Reset" -- ou seja, no futuro será possível, por exemplo, exigir reset só para entrar no Blood Castle nível 5 em diante, sem afetar os níveis 1-4. **Isso não muda o estado atual (tudo desligado, valores 0/0) -- é só o nível de detalhe que o motor suporta, caso essa trava seja ativada no futuro.**
 
 ## FUTURE_DESIGN / RECOMMENDATION (não confirmado, não publicar como fato do servidor)
 

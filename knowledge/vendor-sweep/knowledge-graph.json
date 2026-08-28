@@ -534,6 +534,114 @@
       "name": "CustomPix",
       "bloodMoonStatus": "BLOODMOON_CONFIRMED",
       "note": "BLOODMOON_ONLY_OR_UNDOCUMENTED_CANDIDATE (Part L) -- present but disabled, placeholder URL never configured."
+    },
+    {
+      "id": "EVT-custom-event-auction",
+      "type": "EVENT",
+      "name": "CustomEventAuction",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "EVT-event-russian-roulette",
+      "type": "EVENT",
+      "name": "EventRussianRoulette",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "EVT-event-absorption",
+      "type": "EVENT",
+      "name": "EventAbsorption",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "EVT-custom-event-team-vs-team",
+      "type": "EVENT",
+      "name": "CustomEventTeamVsTeam",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "EVT-event-bbb",
+      "type": "EVENT",
+      "name": "EventBBB",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "EVT-custom-event-quiz",
+      "type": "EVENT",
+      "name": "CustomEventQuiz",
+      "bloodMoonStatus": "BLOODMOON_LIKELY"
+    },
+    {
+      "id": "EVT-custom-event-hide-and-seek",
+      "type": "EVENT",
+      "name": "CustomEventHideAndSeek",
+      "bloodMoonStatus": "BLOODMOON_LIKELY"
+    },
+    {
+      "id": "EVT-event-run-and-catch",
+      "type": "EVENT",
+      "name": "EventRunAndCatch",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "EVT-custom-event-capture-the-flag",
+      "type": "EVENT",
+      "name": "CustomEventCaptureTheFlag",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "EVT-custom-event-kill-vs-kill",
+      "type": "EVENT",
+      "name": "CustomEventKillVsKill",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "EVT-custom-event-robber",
+      "type": "EVENT",
+      "name": "CustomEventRobber",
+      "bloodMoonStatus": "BLOODMOON_CONTRADICTED"
+    },
+    {
+      "id": "EVT-custom-guild-vs-guild",
+      "type": "EVENT",
+      "name": "CustomGuildVsGuild",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "EVT-custom-event-racer",
+      "type": "EVENT",
+      "name": "CustomEventRacer",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "EVT-custom-event-drop-npc",
+      "type": "EVENT",
+      "name": "CustomEventDropNpc",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "EVT-custom-event-battle-royale",
+      "type": "EVENT",
+      "name": "CustomEventBattleRoyale",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "EVT-custom-arena",
+      "type": "EVENT",
+      "name": "CustomArena",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "EVT-event-gm",
+      "type": "EVENT",
+      "name": "EventGM",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "EVT-event-tropa",
+      "type": "EVENT",
+      "name": "EventTropa",
+      "bloodMoonStatus": "UNVERIFIED"
     }
   ],
   "edges": [
@@ -1101,6 +1209,136 @@
       "to": "SYS-custom-event-time",
       "status": "BLOODMOON_CONFIRMED",
       "note": "Same underlying vendor feature, tracked under 2 node ids from different sweep phases -- not merged to avoid losing either node's edge history."
+    },
+    {
+      "from": "EVT-custom-pandora",
+      "type": "PART_OF",
+      "to": "SYS-join-event",
+      "claimRefs": [
+        "CLAIM-032",
+        "CLAIM-111",
+        "CLAIM-112",
+        "CLAIM-113",
+        "CLAIM-114",
+        "CLAIM-115"
+      ],
+      "status": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "from": "EVT-custom-stop-or-die",
+      "type": "PART_OF",
+      "to": "SYS-join-event",
+      "claimRefs": [
+        "CLAIM-033",
+        "CLAIM-114",
+        "CLAIM-116",
+        "CLAIM-117",
+        "CLAIM-118",
+        "CLAIM-119"
+      ],
+      "status": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "from": "EVT-event-russian-roulette",
+      "type": "PART_OF",
+      "to": "SYS-join-event",
+      "claimRefs": [
+        "CLAIM-141",
+        "CLAIM-145",
+        "CLAIM-147",
+        "CLAIM-148",
+        "CLAIM-149",
+        "CLAIM-150"
+      ],
+      "status": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "from": "EVT-event-absorption",
+      "type": "PART_OF",
+      "to": "SYS-join-event",
+      "claimRefs": [
+        "CLAIM-141",
+        "CLAIM-145",
+        "CLAIM-146"
+      ],
+      "status": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "from": "EVT-custom-event-team-vs-team",
+      "type": "PART_OF",
+      "to": "SYS-join-event",
+      "claimRefs": [
+        "CLAIM-151",
+        "CLAIM-152",
+        "CLAIM-153",
+        "CLAIM-154"
+      ],
+      "status": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "from": "EVT-event-bbb",
+      "type": "PART_OF",
+      "to": "SYS-join-event",
+      "claimRefs": [
+        "CLAIM-129",
+        "CLAIM-130",
+        "CLAIM-131",
+        "CLAIM-134"
+      ],
+      "status": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "from": "EVT-event-run-and-catch",
+      "type": "PART_OF",
+      "to": "SYS-join-event",
+      "claimRefs": [
+        "CLAIM-139",
+        "CLAIM-140",
+        "CLAIM-141"
+      ],
+      "status": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "from": "EVT-custom-event-capture-the-flag",
+      "type": "PART_OF",
+      "to": "SYS-join-event",
+      "claimRefs": [
+        "CLAIM-085",
+        "CLAIM-086"
+      ],
+      "status": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "from": "EVENT-pvp-all",
+      "type": "PART_OF",
+      "to": "SYS-join-event",
+      "claimRefs": [
+        "CLAIM-024",
+        "CLAIM-025",
+        "CLAIM-026",
+        "CLAIM-155"
+      ],
+      "status": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "from": "EVT-event-gm",
+      "type": "PART_OF",
+      "to": "SYS-join-event",
+      "claimRefs": [
+        "CLAIM-104",
+        "CLAIM-105",
+        "CLAIM-106"
+      ],
+      "status": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "from": "EVT-custom-arena",
+      "type": "RELATED_TO",
+      "to": "EVENT-pvp-all",
+      "claimRefs": [
+        "CLAIM-155"
+      ],
+      "status": "PROVIDER_SPECIFIC"
     }
   ],
   "note": "CLAIM-* ids referenced as edge endpoints are NOT duplicated as separate nodes here to avoid redundancy with atomic-claims.json -- treat them as a second node namespace (claims) that this graph references but atomic-claims.json owns. Phase 3 adds the first real MONSTER/ITEM/EVENT/NPC/MAP entities (from Data/EventItemBagManager.txt, Data/EventItemBag/, and 3 real CustomEvent*.txt files) -- see knowledge/vendor-sweep/entities/gameplay-entities.json for the full roster (17 monster identities including a 19-boss 'Golden series' bundle, 17 item identities, 11 event groupings), only the headline entities are represented as individual graph nodes here to keep the graph a navigable summary rather than a full duplicate of the entities file. The MAP-1->MONSTER->ITEM edges are explicitly marked _INFERRED in their edge type name, per the required FACT/INFERENCE separation -- no edge here claims a config-explicit monster-kill-drops-item relationship, since none was found. Maps are numeric-ID-only (0, 1, 40) -- no name has been confirmed for any of them from real evidence, only from generic MU memory, which this sweep deliberately does not use."
