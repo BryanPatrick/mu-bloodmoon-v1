@@ -1,12 +1,12 @@
 ---
-status: DRAFT_READY_FOR_REVIEW
+status: READY_FOR_OPEN_BETA (finalized Phase 9, Part H)
 category: beta-readiness/wiki-drafts
 audience: player-facing (Wiki + support)
 confidence: CONFIRMED_BY_CONFIG
 source: GameServer/DATA/GameServerInfo - Command.dat, GameServerInfo - Event.dat (real Blood Moon config, read 2026-08-27, Phase 6)
 provenance: atomic-claims.json CLAIM-035, CLAIM-094, CLAIM-095, CLAIM-100, CLAIM-101; progression-entries.json PROG-002, PROG-003, PROG-004
-lastVerified: 2026-08-27 (Phase 8 enrichment)
-publish: NOT_PUBLISHED -- draft only
+lastVerified: 2026-08-28 (Phase 9 finalization -- content unchanged, every field already CONFIRMED_BY_CONFIG, audited against the stricter Phase 9 bar and passed with no gaps)
+publish: NOT_PUBLISHED -- draft only, publish authorization is a separate decision
 ---
 
 # Reset e Master Reset

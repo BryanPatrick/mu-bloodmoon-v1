@@ -25,6 +25,22 @@ const load = (name, fallback) => {
   return JSON.parse(readFileSync(p, 'utf8'))
 }
 
+// Knowledge Phase 9, Part M: a handful of Portuguese player-search terms
+// tested against this tool returned 0 hits purely because the underlying
+// claim text is written in English (e.g. a player searching "resetar" finds
+// nothing even though claims about /reset exist, because they say "reset").
+// This is a narrow, low-risk fix for that specific mismatch -- it does NOT
+// address the deeper gap that this tool only searches atomic-claims.json/
+// knowledge-index.json and has no visibility into the Phase 7-9 FAQ/wiki
+// markdown content at all (see knowledge/vendor-sweep/beta-readiness/
+// phase9/searchability-test.md for that finding, tracked as a Phase 10 gap).
+const QUERY_ALIASES = {
+  resetar: ['reset'],
+  logar: ['login', 'log'],
+  baixar: ['download'],
+  reportar: ['report'],
+}
+
 function cmdQuery(term) {
   if (!term) { console.error('Usage: knowledge-query.mjs query "<search term>"'); process.exit(1) }
   // tokenized AND search -- every word in the query must appear somewhere in
@@ -32,7 +48,11 @@ function cmdQuery(term) {
   // containing both "ItemDrop.txt" and "VIP-tier", even though that exact
   // phrase never appears verbatim).
   const words = term.toLowerCase().split(/\s+/).filter(Boolean)
-  const matchesAll = (haystack) => words.every(w => haystack.includes(w))
+  // Each word matches if the word itself is present, OR any of its known
+  // Portuguese-alias expansions is present -- never the reverse (a claim
+  // containing "reset" should not make every query match "resetar" by
+  // accident; only an explicit query word looks up its own alias list).
+  const matchesAll = (haystack) => words.every(w => haystack.includes(w) || (QUERY_ALIASES[w] || []).some(alias => haystack.includes(alias)))
   const claims = load('atomic-claims.json', { claims: [] }).claims
   const index = load('knowledge-index.json', { entries: [] }).entries
   const hits = []

@@ -1,9 +1,9 @@
 ---
-status: DRAFT_READY_FOR_REVIEW
+status: READY_WITH_MINOR_GAPS (audited Phase 9, Part N -- all 15 requested terms already present since Phase 7, structure already matches the Phase 9 confirmed/policy-required/unknown discipline)
 category: beta-readiness/wiki-drafts
 audience: player-facing (Wiki + support), aimed at returning/new players
 confidence: mixed, marked per term
-lastVerified: 2026-08-27
+lastVerified: 2026-08-28 (Phase 9 audit, content unchanged)
 publish: NOT_PUBLISHED -- draft only
 ---
 
