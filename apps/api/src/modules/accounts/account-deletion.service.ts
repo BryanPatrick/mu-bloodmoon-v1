@@ -86,7 +86,14 @@ export class AccountDeletionService {
     return { accountId, verdict: blockers.length > 0 ? 'BLOCKED' : 'WOULD_ANONYMIZE', blockers, dependencies }
   }
 
-  async executeNormalDeletion(actor: AuthenticatedUser, accountId: string, reason?: string) {
+  // actor.id may be null for a system-triggered execution (e.g. a
+  // self-service deletion request whose grace period elapsed, processed
+  // by account-deletion-request.service.ts#processReadyDeletions) --
+  // AuditEvent.actorId is a real, nullable FK to Account (confirmed in
+  // schema), so passing a made-up non-account id would violate the FK
+  // constraint exactly like the Phase 13 VIP test fixture bug did. null
+  // is the correct, safe value here, not a placeholder id.
+  async executeNormalDeletion(actor: { id: string | null, username: string }, accountId: string, reason?: string) {
     const existing = await this.prisma.accountDeletionRecord.findUnique({ where: { accountId } })
     if (existing) return { accountId, status: 'ALREADY_DELETED' as const }
 

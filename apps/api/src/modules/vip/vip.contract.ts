@@ -20,5 +20,9 @@ export type UpsertVipBenefitConfigPayload = {
   dropBonusPercent?: number
   chaosMachineBonusPercent?: number
   resetBenefitEnabled?: boolean
+  // The only two fields not hard-clamped to 0 by vip.service.ts -- see the
+  // schema comment on VipBenefitConfig.
+  warehouseBonusPages?: number
+  commandCostReductionPercent?: number
   enabled?: boolean
 }

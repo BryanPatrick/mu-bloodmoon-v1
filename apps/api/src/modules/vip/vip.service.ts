@@ -9,6 +9,11 @@ import type { PurchaseVipPayload, UpsertVipBenefitConfigPayload, UpsertVipProduc
 
 const DAY_MS = 86_400_000
 
+function clampNonNegativeInt(value: number | undefined, fallback: number, max: number): number {
+  if (!Number.isInteger(value) || (value as number) < 0) return fallback
+  return Math.min(value as number, max)
+}
+
 @Injectable()
 export class VipService {
   constructor(
@@ -203,6 +208,8 @@ export class VipService {
       dropBonusPercent: 0,
       chaosMachineBonusPercent: 0,
       resetBenefitEnabled: false,
+      warehouseBonusPages: 0,
+      commandCostReductionPercent: 0,
       enabled: false,
       updatedBy: null,
       updatedAt: null
@@ -210,15 +217,21 @@ export class VipService {
   }
 
   /**
-   * Admin-only. Deliberately does NOT let a caller set a nonzero bonus
-   * without an explicit, separate confirmation this phase forbids by
-   * design -- every bonus percent request is clamped to 0 here
-   * regardless of what's sent, and `enabled` can never be set true. See
-   * ECONOMY_PHASE_13 scope: "Do NOT define Bronze +X XP... yet."
-   * Removing this clamp is a deliberate, separate future decision, not
-   * an oversight.
+   * Admin-only. Bryan approved exactly two benefit categories as
+   * non-power "convenience" (docs/vip/vip-benefit-decisions.md):
+   * warehouseBonusPages and commandCostReductionPercent -- those two are
+   * persisted as real, requested values (clamped only to a sane range,
+   * never forced to 0). Every other bonus field (xpBonusPercent,
+   * dropBonusPercent, chaosMachineBonusPercent, resetBenefitEnabled) is
+   * still hard-clamped to 0/false regardless of what's requested --
+   * those remain "candidates pending balance analysis," not approved.
+   * Removing a clamp is always a deliberate, separate future decision
+   * per field, never a blanket unlock.
    */
   async upsertBenefitConfig(payload: UpsertVipBenefitConfigPayload, user: AuthenticatedUser) {
+    const warehouseBonusPages = clampNonNegativeInt(payload.warehouseBonusPages, 0, 50)
+    const commandCostReductionPercent = clampNonNegativeInt(payload.commandCostReductionPercent, 0, 100)
+
     const row = await this.prisma.vipBenefitConfig.upsert({
       where: { tier: payload.tier },
       create: {
@@ -227,17 +240,21 @@ export class VipService {
         dropBonusPercent: 0,
         chaosMachineBonusPercent: 0,
         resetBenefitEnabled: false,
-        enabled: false,
+        warehouseBonusPages,
+        commandCostReductionPercent,
+        enabled: payload.enabled ?? false,
         updatedBy: user.username
       },
       update: {
-        // Values are recorded (so an admin can see what WOULD be
-        // configured) but never activated this phase.
+        // These four remain forced to 0/false -- not approved.
         xpBonusPercent: 0,
         dropBonusPercent: 0,
         chaosMachineBonusPercent: 0,
         resetBenefitEnabled: false,
-        enabled: false,
+        // These two are real, per Bryan's explicit approval.
+        warehouseBonusPages,
+        commandCostReductionPercent,
+        enabled: payload.enabled ?? false,
         updatedBy: user.username
       }
     })
@@ -248,7 +265,11 @@ export class VipService {
       action: 'admin.vip.benefit.upsert',
       targetType: 'VipBenefitConfig',
       targetId: row.tier,
-      metadata: { requested: payload, appliedEnabled: false, note: 'VIP benefits are not approved this phase; request clamped to disabled/zero' }
+      metadata: {
+        requested: payload,
+        applied: { warehouseBonusPages, commandCostReductionPercent, xpBonusPercent: 0, dropBonusPercent: 0, chaosMachineBonusPercent: 0, resetBenefitEnabled: false },
+        note: 'xp/drop/chaosMachine/reset benefits remain clamped to disabled/zero pending balance analysis; warehouse pages and command cost reduction are real per Bryan\'s approval'
+      }
     })
 
     return row

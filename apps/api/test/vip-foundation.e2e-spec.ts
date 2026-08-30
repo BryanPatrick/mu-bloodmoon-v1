@@ -199,27 +199,48 @@ describe('VIP foundation -- Open Beta P0', () => {
   })
 
   // -------------------------------------------------------------------
-  // No unapproved benefit values -- explicit clamp verification
+  // Power/progression benefits stay clamped to 0/disabled; the two
+  // Bryan-approved convenience fields (warehouse pages, command cost
+  // reduction) are real. See docs/vip/vip-benefit-decisions.md.
   // -------------------------------------------------------------------
-  it('admin cannot activate VIP benefits this phase -- requested values are always clamped to 0/disabled', async () => {
+  it('power/progression benefit values (xp/drop/chaos machine/reset) are always clamped to 0/disabled regardless of request', async () => {
     const row = await vip.upsertBenefitConfig(
-      { tier: 'GOLD', xpBonusPercent: 30, dropBonusPercent: 25, chaosMachineBonusPercent: 15, resetBenefitEnabled: true, enabled: true },
+      { tier: 'GOLD', xpBonusPercent: 30, dropBonusPercent: 25, chaosMachineBonusPercent: 15, resetBenefitEnabled: true, warehouseBonusPages: 5, commandCostReductionPercent: 20, enabled: true },
       adminUser
     )
     expect(row.xpBonusPercent).toBe(0)
     expect(row.dropBonusPercent).toBe(0)
     expect(row.chaosMachineBonusPercent).toBe(0)
     expect(row.resetBenefitEnabled).toBe(false)
-    expect(row.enabled).toBe(false)
   })
 
-  it('no VIP-tier Chaos Machine or XP bonus is granted as part of a purchase itself', async () => {
+  it('warehouse bonus pages and command cost reduction are real, requested values -- the only two approved benefit fields', async () => {
+    const row = await vip.upsertBenefitConfig(
+      { tier: 'SILVER', warehouseBonusPages: 5, commandCostReductionPercent: 20, enabled: true },
+      adminUser
+    )
+    expect(row.warehouseBonusPages).toBe(5)
+    expect(row.commandCostReductionPercent).toBe(20)
+    expect(row.enabled).toBe(true)
+  })
+
+  it('warehouse bonus pages and command cost reduction are clamped to a sane range, not unbounded', async () => {
+    const row = await vip.upsertBenefitConfig(
+      { tier: 'BRONZE', warehouseBonusPages: 9999, commandCostReductionPercent: 500, enabled: true },
+      adminUser
+    )
+    expect(row.warehouseBonusPages).toBeLessThanOrEqual(50)
+    expect(row.commandCostReductionPercent).toBeLessThanOrEqual(100)
+  })
+
+  it('no VIP-tier Chaos Machine or XP bonus is granted as part of a purchase itself, even when the tier\'s benefit row is enabled', async () => {
     await enableProduct('GOLD', 7, 100)
     const account = await makeAccount('vipnobenefit')
     await vip.purchase(asUser(account), { tier: 'GOLD', durationDays: 7 })
     const benefit = await prisma.vipBenefitConfig.findUnique({ where: { tier: 'GOLD' } })
-    // No row at all is the expected, safest state (nothing configured,
-    // nothing to accidentally activate).
-    expect(benefit === null || (benefit.enabled === false && benefit.xpBonusPercent === 0)).toBe(true)
+    // A row may legitimately exist and be enabled=true now (Bryan approved
+    // warehouse/command-cost as real benefits) -- what must always hold is
+    // that the power/progression fields stay at zero regardless.
+    expect(benefit === null || (benefit.xpBonusPercent === 0 && benefit.chaosMachineBonusPercent === 0 && benefit.dropBonusPercent === 0)).toBe(true)
   })
 })

@@ -147,6 +147,33 @@ describe('Account deletion -- Phase 14 Part D', () => {
     await expect(deletion.executeNormalDeletion(asActor(admin), staff.id)).rejects.toThrow()
   })
 
+  // Per Bryan's explicit request: a dedicated, standalone test proving
+  // staff-exclusive operational data (GmOccurrenceNote, only ever authored
+  // by GM/ADMIN/SUPER_ADMIN accounts) is never touched by either deletion
+  // mode -- not just that the staff account survives, but that the real
+  // data it authored is byte-for-byte untouched.
+  test('STAFF_EXCLUSIVE_DATA_NEVER_TOUCHED_BY_EITHER_DELETION_MODE', async () => {
+    const gm = await makeAccount('staffdataowner', { role: 'GM' })
+    const occurrence = await prisma.gmOccurrence.create({
+      data: { type: 'test-occurrence', description: 'staff-only test data', createdById: gm.id }
+    })
+    const note = await prisma.gmOccurrenceNote.create({
+      data: { occurrenceId: occurrence.id, authorId: gm.id, note: 'staff-only note content' }
+    })
+
+    await expect(deletion.executeNormalDeletion(asActor(admin), gm.id)).rejects.toThrow()
+    await expect(deletion.executePreBetaPurge(asActor(admin), `cycle-${suffix()}`, [gm.id])).rejects.toThrow()
+
+    const noteStillExists = await prisma.gmOccurrenceNote.findUnique({ where: { id: note.id } })
+    expect(noteStillExists).not.toBeNull()
+    expect(noteStillExists?.note).toBe('staff-only note content')
+    expect(noteStillExists?.authorId).toBe(gm.id)
+
+    const gmStillExists = await prisma.account.findUnique({ where: { id: gm.id } })
+    expect(gmStillExists?.role).toBe('GM')
+    expect(gmStillExists?.deletedAt).toBeNull()
+  })
+
   test('NORMAL_DELETION_IS_IDEMPOTENT', async () => {
     const account = await makeAccount('normalidempotent')
     const first = await deletion.executeNormalDeletion(asActor(admin), account.id)

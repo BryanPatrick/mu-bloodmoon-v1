@@ -666,6 +666,38 @@ model AccountDeletionRecord {
   @@index([originalEmailHash])
 }
 
+// Phase 15. Self-service account deletion for real (OPEN_BETA/OFFICIAL)
+// players: request -> strong confirmation (emailed token, same pattern as
+// PasswordResetToken) -> grace period -> execution via the existing
+// NORMAL_ACCOUNT_DELETION path (account-deletion.service.ts), never a new
+// deletion mechanism. Per Bryan: "fluxo de solicitacao -> confirmacao
+// forte -> periodo/estado de exclusao -> execucao." Deliberately NOT a
+// relation field on Account (same no-hard-FK precedent as
+// AccountDeletionRecord/BetaRewardEntitlement) -- accountId is unique so
+// only one active request can exist per account at a time.
+enum AccountDeletionRequestStatus {
+  REQUESTED
+  CONFIRMED
+  CANCELLED
+  EXECUTED
+}
+
+model AccountDeletionRequest {
+  id                   String                       @id @default(uuid())
+  accountId            String                       @unique
+  tokenHash            String                       @unique @db.VarChar(191)
+  status               AccountDeletionRequestStatus @default(REQUESTED)
+  requestedAt          DateTime                     @default(now())
+  requestIp            String?                      @db.VarChar(80)
+  requestAgent         String?                      @db.VarChar(255)
+  confirmedAt          DateTime?
+  scheduledExecutionAt DateTime?
+  executedAt           DateTime?
+  cancelledAt          DateTime?
+
+  @@index([status, scheduledExecutionAt])
+}
+
 // Phase 14 Part D. PRE_BETA_PURGE's operational record -- intentionally a
 // DIFFERENT shape from AccountDeletionRecord: batch-level only, no
 // per-user tombstone, because purged accounts were never real players
@@ -2295,6 +2327,19 @@ model VipBenefitConfig {
   dropBonusPercent         Int      @default(0)
   chaosMachineBonusPercent Int      @default(0)
   resetBenefitEnabled      Boolean  @default(false)
+  // Phase 15. Bryan approved exactly two benefit categories as
+  // non-power "convenience": extra warehouse storage, and reduced Zen
+  // cost on utility commands (PK-clear, stat respec, mail). Both are
+  // portal-defined abstractions -- NOT a raw copy of the GameServer's
+  // CommandWareNumber_AL* or CommandPKClearMoney_AL*/CommandReAddMoney_AL*
+  // values (see docs/vip/vip-benefit-decisions.md "Portal abstraction
+  // boundary"). Everything else (xpBonusPercent/dropBonusPercent/
+  // chaosMachineBonusPercent/resetBenefitEnabled, and any future field)
+  // stays hard-clamped to 0/false in vip.service.ts#upsertBenefitConfig
+  // until each is explicitly approved with real numbers -- these two are
+  // the only fields that escape that clamp.
+  warehouseBonusPages         Int     @default(0)
+  commandCostReductionPercent Int     @default(0)
   enabled                  Boolean  @default(false)
   updatedBy                String?  @db.VarChar(191)
   updatedAt                DateTime @updatedAt
