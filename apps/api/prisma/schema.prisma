@@ -405,6 +405,15 @@ enum GameBridgeOperation {
   // exists, the same state every other operation type would be in if
   // MU_BRIDGE_ENABLED were never turned on.
   GRANT_VIP
+  // Phase 14 Part D. Two intentionally narrow, allowlisted operations --
+  // never a generic "run this SQL against the GameServer" capability.
+  // Payloads are fixed shapes ({accountId, legacyLogin[, betaCycleId]}),
+  // enforced by account-deletion.service.ts, not by this enum alone.
+  // Neither has a real worker-side handler yet, for the same reason
+  // GRANT_VIP doesn't: no sanctioned write path into the production
+  // MuOnline SQL Server exists anywhere in this project yet.
+  ANONYMIZE_GAME_ACCOUNT
+  PURGE_GAME_ACCOUNT
 }
 
 enum GameBridgeStatus {
@@ -577,6 +586,12 @@ model Account {
   role                      Role                        @default(PLAYER)
   status                    AccountStatus               @default(PENDING)
   accountPhase              AccountPhase                @default(PRE_BETA)
+  // Phase 14 Part D. Set only by NORMAL_ACCOUNT_DELETION (account-deletion.service.ts),
+  // alongside status=BLOCKED, to distinguish "deleted/anonymized" from an
+  // ordinary moderation block without a schema-wide AccountStatus.DELETED
+  // migration -- deliberate minimal choice, documented in
+  // docs/accounts/account-deletion-architecture.md's "Schema additions" section.
+  deletedAt                 DateTime?
   createdAt                 DateTime                    @default(now())
   updatedAt                 DateTime                    @updatedAt
   currencies                AccountCurrency[]
@@ -627,6 +642,46 @@ model Account {
   vipEntitlement            VipEntitlement?
   walletLedgerEntries       WalletLedgerEntry[]         @relation("WalletLedgerOwner")
   walletLedgerCounterparty  WalletLedgerEntry[]         @relation("WalletLedgerCounterparty")
+}
+
+// Phase 14 Part D. NORMAL_ACCOUNT_DELETION's tombstone metadata --
+// deliberately NOT a relation field on Account (same no-hard-FK pattern
+// BetaRewardEntitlement.originalAccountId already established in Phase 13),
+// since the Account row it describes is never deleted, only anonymized in
+// place. Never carries passwordHash, twoFactorSecret, session tokens, or
+// 2FA recovery codes -- those are deleted outright by
+// account-deletion.service.ts, not tombstoned here in any form, hashed or
+// otherwise. See docs/accounts/account-deletion-architecture.md.
+model AccountDeletionRecord {
+  id                String   @id @default(uuid())
+  accountId         String   @unique
+  deletionMode      String   @db.VarChar(40) // always "NORMAL_ACCOUNT_DELETION" -- kept as a string, not sharing PurgeBatchRecord's enum-of-one, so the two models never get confused for each other
+  requestedBy       String
+  requestedAt       DateTime @default(now())
+  completedAt       DateTime?
+  reason            String?  @db.Text
+  originalUsernameHash String @db.VarChar(191)
+  originalEmailHash String   @db.VarChar(191)
+
+  @@index([originalEmailHash])
+}
+
+// Phase 14 Part D. PRE_BETA_PURGE's operational record -- intentionally a
+// DIFFERENT shape from AccountDeletionRecord: batch-level only, no
+// per-user tombstone, because purged accounts were never real players
+// (eligibility already required zero financial/legal weight before this
+// row is ever written). accountIdsPurged is safe to keep verbatim (not
+// hashed) precisely because these were disposable pre-Beta identifiers,
+// not real player PII.
+model PurgeBatchRecord {
+  id               String   @id @default(uuid())
+  betaCycleId      String   @db.VarChar(80)
+  requestedBy      String
+  executedAt       DateTime @default(now())
+  accountCount     Int
+  accountIdsPurged Json
+
+  @@index([betaCycleId])
 }
 
 // Open Beta P0 foundation (Part L). Versioned, auditable acceptance record
