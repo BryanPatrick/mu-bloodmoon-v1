@@ -2,6 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
+using System.Windows.Media.Imaging;
 using BloodMoon.Launcher.Models;
 
 namespace BloodMoon.Launcher.Services.ContentCache;
@@ -19,6 +20,7 @@ public interface IAssetDownloader
 public sealed class HttpAssetDownloader : IAssetDownloader, IDisposable
 {
     private readonly HttpClient _http = new() { Timeout = TimeSpan.FromMinutes(2) };
+    private const int MaximumAssetBytes = 8 * 1024 * 1024;
 
     public async Task<byte[]> DownloadAsync(string url, CancellationToken cancellationToken)
     {
@@ -29,7 +31,25 @@ public sealed class HttpAssetDownloader : IAssetDownloader, IDisposable
             // this app.
             throw new InvalidOperationException("Somente URLs HTTPS são permitidas para assets remotos.");
         }
-        return await _http.GetByteArrayAsync(uri, cancellationToken);
+        using var response = await _http.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        response.EnsureSuccessStatusCode();
+        if (response.Content.Headers.ContentLength is > MaximumAssetBytes)
+        {
+            throw new InvalidOperationException("Asset remoto excede o limite permitido.");
+        }
+        await using var source = await response.Content.ReadAsStreamAsync(cancellationToken);
+        using var destination = new MemoryStream();
+        var buffer = new byte[81920];
+        int read;
+        while ((read = await source.ReadAsync(buffer, cancellationToken)) > 0)
+        {
+            if (destination.Length + read > MaximumAssetBytes)
+            {
+                throw new InvalidOperationException("Asset remoto excede o limite permitido.");
+            }
+            await destination.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
+        }
+        return destination.ToArray();
     }
 
     public void Dispose() => _http.Dispose();
@@ -39,7 +59,12 @@ public enum AssetValidationFailure
 {
     HttpFailure,
     HashMismatch,
-    EmptyPayload
+    EmptyPayload,
+    UnsupportedContentType,
+    PayloadTooLarge,
+    SizeMismatch,
+    CorruptImage,
+    InvalidDimensions
 }
 
 public sealed class AssetCacheException(AssetValidationFailure failure, string message) : Exception(message)
@@ -68,14 +93,18 @@ public sealed class AssetCacheService
     private readonly IAssetDownloader _downloader;
     private readonly string _cacheDirectory;
     private readonly AssetHashAlgorithm _hashAlgorithm;
+    private readonly bool _validateRasterImage;
+    private const int MaximumAssetBytes = 8 * 1024 * 1024;
 
     public AssetCacheService(
         IAssetDownloader downloader,
         string? cacheDirectory = null,
-        AssetHashAlgorithm hashAlgorithm = AssetHashAlgorithm.Sha1)
+        AssetHashAlgorithm hashAlgorithm = AssetHashAlgorithm.Sha1,
+        bool validateRasterImage = false)
     {
         _downloader = downloader;
         _hashAlgorithm = hashAlgorithm;
+        _validateRasterImage = validateRasterImage;
         _cacheDirectory = cacheDirectory ?? Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "BloodMoon", "Launcher", "cache", "assets");
@@ -98,7 +127,16 @@ public sealed class AssetCacheService
             var existingBytes = await File.ReadAllBytesAsync(path, cancellationToken);
             if (string.Equals(ComputeHash(existingBytes), entry.Hash, StringComparison.OrdinalIgnoreCase))
             {
-                return path;
+                try
+                {
+                    Validate(entry, existingBytes);
+                    return path;
+                }
+                catch (AssetCacheException)
+                {
+                    // A corrupt cache is never trusted. Keep going and try
+                    // a clean download; callers retain their LKG separately.
+                }
             }
         }
 
@@ -117,6 +155,8 @@ public sealed class AssetCacheService
         {
             throw new AssetCacheException(AssetValidationFailure.EmptyPayload, $"Asset {entry.Id} veio vazio.");
         }
+
+        Validate(entry, downloaded);
 
         var actualHash = ComputeHash(downloaded);
         if (!string.Equals(actualHash, entry.Hash, StringComparison.OrdinalIgnoreCase))
@@ -141,6 +181,39 @@ public sealed class AssetCacheService
         }
 
         return path;
+    }
+
+    private void Validate(LauncherAssetManifestEntry entry, byte[] bytes)
+    {
+        if (!_validateRasterImage) return;
+        if (entry.ContentType is not ("image/png" or "image/jpeg"))
+        {
+            throw new AssetCacheException(AssetValidationFailure.UnsupportedContentType,
+                $"Asset {entry.Id} usa formato não suportado pelo WPF ({entry.ContentType}).");
+        }
+        if (bytes.Length > MaximumAssetBytes)
+        {
+            throw new AssetCacheException(AssetValidationFailure.PayloadTooLarge, $"Asset {entry.Id} excede 8 MiB.");
+        }
+        if (entry.Size > 0 && entry.Size != bytes.LongLength)
+        {
+            throw new AssetCacheException(AssetValidationFailure.SizeMismatch, $"Asset {entry.Id} não bateu com o tamanho esperado.");
+        }
+        try
+        {
+            using var stream = new MemoryStream(bytes, writable: false);
+            var decoder = BitmapDecoder.Create(stream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
+            var frame = decoder.Frames.FirstOrDefault();
+            if (frame is null || frame.PixelWidth < 1 || frame.PixelHeight < 1 || frame.PixelWidth > 8192 || frame.PixelHeight > 8192)
+            {
+                throw new AssetCacheException(AssetValidationFailure.InvalidDimensions, $"Asset {entry.Id} tem dimensões inválidas.");
+            }
+        }
+        catch (AssetCacheException) { throw; }
+        catch (Exception ex)
+        {
+            throw new AssetCacheException(AssetValidationFailure.CorruptImage, $"Asset {entry.Id} não pôde ser decodificado: {ex.Message}");
+        }
     }
 
     private string ComputeHash(byte[] bytes) => _hashAlgorithm switch

@@ -54,7 +54,7 @@ public partial class HomePage : UserControl, ILauncherPage
 
     private async Task LoadHeroImageAsync()
     {
-        var image = await SlotImageResolver.ResolveAsync(_context, _context.Slots.GetAssetId("home.hero.image"), CancellationToken.None);
+        var image = await SlotImageResolver.ResolveAsync(_context, "home.hero.image", _context.Slots.GetAssetId("home.hero.image"), CancellationToken.None);
         HeroImageHost.Background = image is not null
             ? new ImageBrush(image) { Stretch = Stretch.UniformToFill }
             : (Brush)Application.Current.Resources["Brush.BackgroundSurfaceAlt"];
@@ -68,6 +68,13 @@ public partial class HomePage : UserControl, ILauncherPage
         CampaignVersionText.Text = _context.Slots.GetText("home.campaign.versionLabel") ?? "CAMPANHA";
         CampaignTitleText.Text = _context.Slots.GetText("home.campaign.title") ?? "";
         CampaignSubtitleText.Text = _context.Slots.GetText("home.campaign.subtitle") ?? "";
+        _ = ApplyCampaignImageAsync();
+    }
+
+    private async Task ApplyCampaignImageAsync()
+    {
+        var image = await SlotImageResolver.ResolveAsync(_context, "home.campaign.image", _context.Slots.GetAssetId("home.campaign.image"), CancellationToken.None);
+        CampaignBorder.Background = image is null ? null : new ImageBrush(image) { Stretch = Stretch.UniformToFill, Opacity = 0.32 };
     }
 
 

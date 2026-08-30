@@ -18,6 +18,7 @@ public sealed class AssetCacheServiceTests : IDisposable
     }
 
     private static string Sha1Hex(byte[] bytes) => Convert.ToHexString(SHA1.HashData(bytes)).ToLowerInvariant();
+    private static byte[] ValidPng() => Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9Z2S8AAAAASUVORK5CYII=");
 
     private static LauncherAssetManifestEntry Entry(byte[] bytes, string id = "asset-1", string? hash = null) => new()
     {
@@ -131,5 +132,64 @@ public sealed class AssetCacheServiceTests : IDisposable
         var ex = await Assert.ThrowsAsync<AssetCacheException>(
             () => serviceFail.GetOrDownloadAsync(Entry(bytes, "cms-asset-2", sha1Hex), CancellationToken.None));
         Assert.Equal(AssetValidationFailure.HashMismatch, ex.Failure);
+    }
+
+    [Fact]
+    public async Task ValidatedCache_AcceptsNativePngAndLeavesNoTemporaryFile()
+    {
+        var bytes = ValidPng();
+        var downloader = new FakeAssetDownloader { Bytes = bytes };
+        var service = new AssetCacheService(downloader, _dir, validateRasterImage: true);
+        var entry = Entry(bytes);
+        entry.Url = "https://cdn.example/asset.png";
+        entry.ContentType = "image/png";
+
+        var path = await service.GetOrDownloadAsync(entry, CancellationToken.None);
+
+        Assert.True(File.Exists(path));
+        Assert.Empty(Directory.GetFiles(_dir, "*.tmp"));
+    }
+
+    [Fact]
+    public async Task ValidatedCache_RejectsCorruptImageWithoutPromotion()
+    {
+        var bytes = Encoding.UTF8.GetBytes("not-an-image");
+        var downloader = new FakeAssetDownloader { Bytes = bytes };
+        var service = new AssetCacheService(downloader, _dir, validateRasterImage: true);
+        var entry = Entry(bytes);
+        entry.ContentType = "image/png";
+
+        var ex = await Assert.ThrowsAsync<AssetCacheException>(() => service.GetOrDownloadAsync(entry, CancellationToken.None));
+
+        Assert.Equal(AssetValidationFailure.CorruptImage, ex.Failure);
+        Assert.False(Directory.Exists(_dir) && Directory.GetFiles(_dir).Any(path => !path.EndsWith(".tmp")));
+    }
+
+    [Fact]
+    public async Task ValidatedCache_RejectsWebpBecauseWpfHasNoReliableNativeDecoder()
+    {
+        var bytes = ValidPng();
+        var service = new AssetCacheService(new FakeAssetDownloader { Bytes = bytes }, _dir, validateRasterImage: true);
+
+        var ex = await Assert.ThrowsAsync<AssetCacheException>(() => service.GetOrDownloadAsync(Entry(bytes), CancellationToken.None));
+
+        Assert.Equal(AssetValidationFailure.UnsupportedContentType, ex.Failure);
+    }
+
+    [Fact]
+    public async Task ContentHashChange_DownloadsOnlyTheChangedAsset()
+    {
+        var first = Encoding.UTF8.GetBytes("version-one");
+        var second = Encoding.UTF8.GetBytes("version-two");
+        var downloader = new FakeAssetDownloader { Bytes = first };
+        var service = new AssetCacheService(downloader, _dir);
+        await service.GetOrDownloadAsync(Entry(first), CancellationToken.None);
+        await service.GetOrDownloadAsync(Entry(first), CancellationToken.None);
+        Assert.Equal(1, downloader.CallCount);
+
+        downloader.Bytes = second;
+        await service.GetOrDownloadAsync(Entry(second), CancellationToken.None);
+        Assert.Equal(2, downloader.CallCount);
+        Assert.Empty(Directory.GetFiles(_dir, "*.tmp"));
     }
 }

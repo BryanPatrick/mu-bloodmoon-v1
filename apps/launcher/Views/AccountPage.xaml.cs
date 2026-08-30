@@ -124,7 +124,7 @@ public partial class AccountPage : UserControl, ILauncherPage
 
     private async Task ApplyClassIconsAsync()
     {
-        var guildEmblem = await SlotImageResolver.ResolveAsync(_context, _context.Slots.GetAssetId("account.guildEmblem"), CancellationToken.None);
+        var guildEmblem = await SlotImageResolver.ResolveAsync(_context, "account.guildEmblem", _context.Slots.GetAssetId("account.guildEmblem"), CancellationToken.None);
         GuildEmblemHost.Background = guildEmblem is not null
             ? new ImageBrush(guildEmblem) { Stretch = Stretch.UniformToFill }
             : (Brush)Application.Current.Resources["Brush.BackgroundSurfaceAlt"];

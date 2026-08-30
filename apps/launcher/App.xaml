@@ -7,6 +7,7 @@
       <!-- Launcher Foundation phase: neutral local placeholders for
            missing remote images (Part W). -->
       <ResourceDictionary Source="Assets/Placeholders.xaml" />
+      <ResourceDictionary Source="Assets/DefaultVisuals.xaml" />
       <!-- Launcher Phase L3 (Part AU): centralized color/typography/
            control resources. Palette must load before Controls (Controls
            references Brush.*/Font.*/FontSize.* keys via StaticResource,

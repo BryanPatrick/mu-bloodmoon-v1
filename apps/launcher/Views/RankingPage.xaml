@@ -1,7 +1,7 @@
 <UserControl x:Class="BloodMoon.Launcher.Views.RankingPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-  <ScrollViewer Background="{StaticResource Brush.BackgroundVoid}" VerticalScrollBarVisibility="Auto">
+  <ScrollViewer Background="{StaticResource Brush.DefaultEditorialEnvironmentMuted}" VerticalScrollBarVisibility="Auto">
     <StackPanel Margin="24,20">
       <StackPanel Orientation="Horizontal">
         <RadioButton x:Name="TypeMasterReset" Content="MASTER RESET" GroupName="RankingType" Style="{StaticResource BmTabItem}" IsChecked="True" Checked="RankingType_Changed" Tag="masterReset" />

@@ -26,7 +26,7 @@ public partial class EventsPage : UserControl, ILauncherPage
 
     public async Task RefreshAsync()
     {
-        var bannerImage = await SlotImageResolver.ResolveAsync(_context, _context.Slots.GetAssetId("events.activeBanner"), CancellationToken.None);
+        var bannerImage = await SlotImageResolver.ResolveAsync(_context, "events.activeBanner", _context.Slots.GetAssetId("events.activeBanner"), CancellationToken.None);
         BannerBorder.Background = bannerImage is not null
             ? new ImageBrush(bannerImage) { Stretch = Stretch.UniformToFill }
             : (Brush)Application.Current.Resources["Brush.BackgroundSurfaceAlt"];

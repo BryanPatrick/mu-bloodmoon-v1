@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <Resource Include="Assets\launcher-shell-v2.png" />
+    <Resource Include="Assets\Defaults\*.png" />
     <Content Include="launcher.settings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

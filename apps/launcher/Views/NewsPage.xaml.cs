@@ -32,6 +32,7 @@ public partial class NewsPage : UserControl, ILauncherPage
         var all = _context.Bootstrap?.News ?? [];
         var state = NewsStateMapper.Paginate(all, _filter, _page);
         NewsGrid.ItemsSource = state.Items;
+        NoNewsState.Visibility = state.Items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         PageIndicatorText.Text = state.TotalPages == 0 ? "-" : $"{state.Page} / {state.TotalPages}";
         return Task.CompletedTask;
     }

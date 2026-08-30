@@ -32,7 +32,7 @@
             <DataTemplate>
               <Border Style="{StaticResource Card}" Margin="0,0,10,10" Cursor="Hand" MouseLeftButtonUp="ProductCard_Click">
                 <StackPanel>
-                  <Border Height="96" Background="{StaticResource Brush.BackgroundSurfaceAlt}" />
+                  <Border Height="96" Background="{StaticResource Brush.DefaultEditorialCard}" />
                   <TextBlock Text="{Binding Name}" Margin="0,8,0,0" Foreground="{StaticResource Brush.TextPrimary}" FontFamily="{StaticResource Font.Display}" FontWeight="Bold" FontSize="12" TextWrapping="Wrap" />
                   <TextBlock Text="{Binding Short}" Margin="0,3,0,0" Foreground="{StaticResource Brush.TextMuted}" FontSize="10" TextWrapping="Wrap" MaxHeight="30" TextTrimming="CharacterEllipsis" />
                   <TextBlock Margin="0,8,0,0" Foreground="{StaticResource Brush.Gold}" FontSize="12" FontWeight="Bold">
