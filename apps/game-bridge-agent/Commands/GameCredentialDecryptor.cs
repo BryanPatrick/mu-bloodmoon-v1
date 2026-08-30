@@ -12,15 +12,23 @@ public sealed class GameCredentialDecryptor(IGameCredentialKeyProvider keys)
 {
     public byte[] Decrypt(ClaimedGameCommand command)
     {
-        if (command.Credential.Algorithm != "AES-256-GCM") throw new CryptographicException("CREDENTIAL_ALGORITHM_UNSUPPORTED");
-        var key = keys.GetKey(command.Credential.KeyVersion);
+        // Credential became nullable when the GameBridge extension plan
+        // (Part 1/2) generalized ClaimedGameCommand for the four new
+        // command types, none of which carry one. GameCommandWorker
+        // already guards this before calling Decrypt, but this method
+        // stays defensive on its own -- it's the one place that ever
+        // touches decrypted key material, so it shouldn't trust a caller
+        // guard alone.
+        if (command.Credential is not { } credential) throw new CryptographicException("CREDENTIAL_ENVELOPE_INVALID");
+        if (credential.Algorithm != "AES-256-GCM") throw new CryptographicException("CREDENTIAL_ALGORITHM_UNSUPPORTED");
+        var key = keys.GetKey(credential.KeyVersion);
         if (key.Length != 32) throw new CryptographicException("CREDENTIAL_KEY_INVALID");
         byte[] nonce, tag, ciphertext;
         try
         {
-            nonce = Convert.FromBase64String(command.Credential.Nonce);
-            tag = Convert.FromBase64String(command.Credential.Tag);
-            ciphertext = Convert.FromBase64String(command.Credential.Ciphertext);
+            nonce = Convert.FromBase64String(credential.Nonce);
+            tag = Convert.FromBase64String(credential.Tag);
+            ciphertext = Convert.FromBase64String(credential.Ciphertext);
         }
         catch (FormatException) { throw new CryptographicException("CREDENTIAL_ENVELOPE_INVALID"); }
         if (nonce.Length != 12 || tag.Length != 16) throw new CryptographicException("CREDENTIAL_ENVELOPE_INVALID");

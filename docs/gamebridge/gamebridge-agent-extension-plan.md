@@ -1,13 +1,26 @@
 ---
-status: PLAN_FOR_REVIEW_NOT_IMPLEMENTED
+status: APPROVED_FOR_LOCAL_IMPLEMENTATION
 category: gamebridge/infrastructure
 audience: internal (Bryan approval required before any SQL Server or production change)
 lastVerified: 2026-08-30
 ---
 
-# GameBridge Agent Extension Plan — GRANT_VIP / ANONYMIZE_GAME_ACCOUNT / PURGE_GAME_ACCOUNT
+# GameBridge Agent Extension Plan — GRANT_VIP / SYNC_VIP_TIER / ANONYMIZE_GAME_ACCOUNT / PURGE_GAME_ACCOUNT
 
-**Nothing in this document has been executed.** No stored procedure created, no SQL Server permission changed, no Agent/Worker code changed, no deploy, no push. Every fact about the *existing* pipeline below was re-verified this session (read-only) against the real source and the real production schema — nothing here is assumed or copied from an earlier phase's notes without re-checking.
+**Approved by Bryan for local implementation only** (round 2, 2026-08-30) — see "Decisions incorporated" immediately below. Production SQL Server, permissions, real purge/anonymize execution, and VIP sales remain untouched until a separate, explicit go-ahead. This document was originally written for three operations; **the approved scope is now four** — `SYNC_VIP_TIER` was promoted from "future follow-up" to "same implementation" per decision E below, and every part of this document has been updated accordingly, not just appended to.
+
+## Decisions incorporated (round 2)
+
+| # | Decision | What changed from the original plan |
+|---|---|---|
+| A | Overall approach approved with adjustments B–F | No architectural change — same Portal→Worker/Queue→Agent→procedure→`bloodmoon_writer` pipeline, same prohibitions (no dynamic SQL, no generic procedure, no direct table grants, no `db_owner`/`db_datawriter`, no global EXECUTE, no arbitrary SQL) |
+| B | `warehouse`/`ExtWarehouse` on ANONYMIZE_GAME_ACCOUNT = **DELETE**, not DETACH | Part 4 entity #13 changed from "open decision, recommend DETACH" to a firm DELETE; data-minimization principle applied — only counts/existence/result/timestamp survive in `AccountDeletionRecord`/`AuditEvent`, never the item blob or a decoded inventory. `PRE_BETA_PURGE`'s existing DELETE (Part 5) is unchanged, now explicitly reconfirmed under the same minimization principle (no per-item detail retained "just in case"). |
+| C | Mirror `AuditEvent` in the Portal for ANONYMIZE_GAME_ACCOUNT/PURGE_GAME_ACCOUNT, approved | Part 10 upgraded from "recommended, not decided" to approved and scoped: correlate via `commandId`/`correlationId` across Portal → Worker/D1 → Agent → SQL result. GRANT_VIP/SYNC_VIP_TIER don't need the same legal-shaped `AuditEvent`, but must have full commercial traceability via `VipEntitlement`/Order/Delivery/GameBridge command-result/reconciliation — never untraceable. |
+| D | Snapshot leve approved (Option 1), with an exact field list | Part 11 gets a concrete before/after field list instead of a general description. `PRE_BETA_PURGE` explicitly kept a separate retention category from `NORMAL_ACCOUNT_DELETION` (financial retention, LGPD/legal review) — not to be confused. |
+| E | **`SYNC_VIP_TIER` is in the same implementation, not a follow-up phase** | The single biggest scope change. Part 3 is rewritten: GRANT_VIP is now explicitly *not* the source of truth for GameServer state — it's the idempotent record of a commercial delivery. A new Part 3B designs `SYNC_VIP_TIER` (desired-state sync, AL0-3, safe no-op on re-run) plus a periodic Portal-side reconciler (expiry detection, divergence detection, retry/backoff, observability — no manual revoke dependency). The shared-lock decision from the original Part 9 is reinforced and widened to a named convention (`GAME_ACCOUNT_MUTATION:<accountId>`) covering all four operations, auditing `CREATE_GAME_ACCOUNT`/provisioning for real conflicts too. |
+| F | Disposable SQL Server approved (Option 1), with a compatibility constraint | Must prioritize a real SQL Server engine (Developer/Express-compatible) over Azure SQL Edge if there's any behavioral gap for stored procedures/types/locking/transactions. Test fixtures must be schema-compatible, minimal, synthetic, and must **not** add FKs that don't exist in the real production schema (preserving the single real `CustomQuest.Name → Character.Name CASCADE` finding exactly) — an "improved" test schema would mask real PURGE bugs. **This session's environment has no Docker, no SQL Server, no SQL Server LocalDB, and no `sqlcmd` installed** (verified this round) — see the Implementation Status section for how this was actually handled. |
+
+**Explicitly still prohibited** (unchanged): altering production SQL Server, granting new production permissions, executing a real purge, executing a real anonymize against a real user, enabling VIP sales in production, automatic deploy, push.
 
 ---
 
@@ -86,13 +99,13 @@ Reviewed again this session (`references/game-data/sql-discovery/phase-3c-write-
 
 ## PARTE 2 — Novos command types: contrato completo
 
-All three share this shape (extending, not replacing, `CreateGameCommandEnvelope`):
+All four share this shape (extending, not replacing, `CreateGameCommandEnvelope`):
 
 ```
 GameCommandEnvelope {
   commandId: GUID                    // Worker/Agent transport idempotency key
   provisioningRequestId: GUID        // apps/api's own request identity (existing pattern)
-  commandType: 'CREATE_GAME_ACCOUNT' | 'GRANT_VIP' | 'ANONYMIZE_GAME_ACCOUNT' | 'PURGE_GAME_ACCOUNT'
+  commandType: 'CREATE_GAME_ACCOUNT' | 'GRANT_VIP' | 'SYNC_VIP_TIER' | 'ANONYMIZE_GAME_ACCOUNT' | 'PURGE_GAME_ACCOUNT'
   environment: string                // existing SCOPE-validated field
   serverId: string                   // existing SCOPE-validated field
   expiresAt: ISO8601                 // existing, ≤24h out (unchanged validation window)
@@ -103,7 +116,9 @@ GameCommandEnvelope {
 
 `commandId` is the immutable idempotency key at every layer (Worker D1 row PK, Agent `ProvisioningLedger` key, and — new — the stored procedure's own `sp_getapplock` resource name will incorporate it or the target `legacyLogin`, per operation below).
 
-### GRANT_VIP
+### GRANT_VIP — commercial delivery record, NOT the GameServer source of truth (per decision E)
+
+**Reframed this round**: GRANT_VIP is the idempotent record that a specific purchase/entitlement was delivered — it applies a floor (`MAX`) to `AccountLevel` at the moment of purchase, but it is never the mechanism that keeps the GameServer in sync with the Portal's ongoing decision about an account's tier (extension, expiry, downgrade after a chargeback, etc.). That job belongs entirely to `SYNC_VIP_TIER` (Part 3B). GRANT_VIP fires once per purchase event; `SYNC_VIP_TIER` is the thing that can be safely re-run forever.
 
 | Field | Value |
 |---|---|
@@ -120,13 +135,32 @@ GameCommandEnvelope {
 | Auditoria | See Part 10 — `commandId`, `legacyLogin` (not raw PII beyond what's already logged today), `targetLevel`, `previousLevel`/`newLevel`, timestamps, `resultCode` |
 | Nunca no payload | No WCoin amount, no price, no payment reference, no VipEntitlement.id, no idempotencyKey from `VipGrant` — the GameServer side only ever needs to know "what level, for which account," never *why* or *how much was paid*. Keeping payment data out of this payload is a deliberate boundary: a GameServer-side compromise can change tiers but can never learn pricing/payment identifiers, and a Portal-side compromise of the payment path can't be replayed as a GameServer command without also forging the HMAC |
 
+### SYNC_VIP_TIER — desired-state sync, the real source-of-truth mechanism (new this round)
+
+| Field | Value |
+|---|---|
+| `commandType` | `SYNC_VIP_TIER` |
+| `payload` (minimum) | `{ desiredLevel: 0 \| 1 \| 2 \| 3 }` — the Portal's current computed truth for this account (0 = Free/expired, 1-3 = Bronze/Silver/Gold), always freshly computed from `VipEntitlement` at the moment the command is built, never cached |
+| Idempotency key | `commandId` (transport layers) + `legacyLogin` (procedure's `sp_getapplock` resource — **shared namespace with GRANT_VIP and every other account-mutating operation**, Part 9) |
+| Validation | `legacyLogin` exists; `desiredLevel` ∈ {0,1,2,3} — **unlike GRANT_VIP, 0 is valid and expected** (this is precisely how expiry gets enforced) |
+| Authorization | Same model, unchanged |
+| States | Same, unchanged |
+| Response | `{status, resultCode, previousLevel, newLevel, changed: boolean}` — `changed=false` when `previousLevel == desiredLevel` (the expected common case once the reconciler catches up and steady-state is reached) |
+| Retryable | `SQL_UNAVAILABLE`, `EXECUTION_UNAVAILABLE` |
+| Terminal | `INVALID_INPUT`, `ACCOUNT_NOT_FOUND`, `AGENT_SCOPE_DENIED`, `COMMAND_EXPIRED`, `COMMAND_TYPE_DENIED` |
+| Timeout | Same as GRANT_VIP — single-column update, no reason to differ |
+| Auditoria | `commandId`, `legacyLogin`, `desiredLevel`, `previousLevel`/`newLevel`, `changed`, the **Portal-side reason** that triggered this sync (`PURCHASE`, `EXPIRY`, `RECONCILIATION_DIVERGENCE`, `MANUAL_ADMIN`) — this reason lives in the Portal's own `VipSyncCommand`/reconciliation record (Part 3B), not in the GameServer payload itself, mirroring GRANT_VIP's "never carry the *why* across the boundary" rule |
+| Nunca no payload | Same exclusions as GRANT_VIP (no price, no payment reference, no entitlement ID) — `desiredLevel` is the only fact the GameServer needs |
+
+**Idempotency property**: re-sending the *same* `desiredLevel` for an account already at that level is a guaranteed no-op (`UPDATE ... WHERE AccountLevel <> @DesiredLevel`, zero rows affected, still `ResultCode='SUCCEEDED'`) — this is what makes it safe for a reconciler to call this constantly without any need to track "did I already sync this."
+
 ### ANONYMIZE_GAME_ACCOUNT
 
 | Field | Value |
 |---|---|
 | `commandType` | `ANONYMIZE_GAME_ACCOUNT` |
 | `payload` (minimum) | `{}` — empty. Everything the procedure needs (which account, and that it's a real anonymize-not-purge request) is already in `legacyLogin` + `commandType` itself. No new fields needed. |
-| Idempotency key | `commandId` + `legacyLogin` (`sp_getapplock` resource `'BloodMoon:AnonymizeGameAccount:'+LOWER(@LegacyLogin)`) |
+| Idempotency key | `commandId` + `legacyLogin` (`sp_getapplock` resource `'BloodMoon:GAME_ACCOUNT_MUTATION:'+LOWER(@LegacyLogin)` — the shared namespace, Part 9) |
 | Validation | `legacyLogin` exists; account is **not** already anonymized (see Part 4 for the marker); account is not a staff/system account (see Part 4) |
 | Authorization | Same model, unchanged |
 | States | Same, unchanged |
@@ -143,7 +177,7 @@ GameCommandEnvelope {
 |---|---|
 | `commandType` | `PURGE_GAME_ACCOUNT` |
 | `payload` (minimum) | `{ betaCycleId: string }` — required, non-empty, echoing the Portal's own `PurgeBatchRecord.betaCycleId` so the GameServer-side action is traceably scoped to the same batch, never inferred |
-| Idempotency key | `commandId` + `legacyLogin` (`sp_getapplock` resource `'BloodMoon:PurgeGameAccount:'+LOWER(@LegacyLogin)`) |
+| Idempotency key | `commandId` + `legacyLogin` (`sp_getapplock` resource `'BloodMoon:GAME_ACCOUNT_MUTATION:'+LOWER(@LegacyLogin)` — the shared namespace, Part 9) |
 | Validation | `legacyLogin` exists; `betaCycleId` non-empty and charset-restricted (reuse the existing `SCOPE` regex family); **account must be marked eligible before this command is ever sent** — the Agent/procedure does not re-derive eligibility (accountPhase, zero balance, etc.) since that's Portal-side state the GameServer doesn't have; eligibility is apps/api's `assessPreBetaPurgeEligibility()`'s job, already built and tested (Phase 14) — this command is only ever issued *after* that check passed, and the procedure's own job is narrower: refuse a `legacyLogin` matching any staff/system marker regardless of what the Portal believes (defense in depth, Part 5) |
 | Authorization | Same model, unchanged |
 | States | Same, unchanged |
@@ -172,7 +206,7 @@ All of this is **already solved on the Portal side** (`vip.service.ts#purchase()
 
 ### Never a downgrade, never a lost tier
 
-Because a single AL0-3 value can't represent "Gold expired, but Bronze is still active underneath it," GRANT_VIP must **never blindly overwrite** `AccountLevel` — it must set it to `MAX(current AccountLevel, requested targetLevel)`. If the Portal ever needs to *lower* a tier (expiry, refund, moderation), that is explicitly a different, not-yet-designed operation (same gap as above) — GRANT_VIP by name and by design is monotonically upward-only, which is also the safe default given "nenhuma perda de dias restantes" — a MAX-based grant can never accidentally undo an existing, already-paid-for tier.
+Because a single AL0-3 value can't represent "Gold expired, but Bronze is still active underneath it," GRANT_VIP must **never blindly overwrite** `AccountLevel` — it must set it to `MAX(current AccountLevel, requested targetLevel)`. If the Portal ever needs to *lower* a tier (expiry, refund, moderation), that is `SYNC_VIP_TIER`'s job (Part 3B), not GRANT_VIP's — GRANT_VIP by name and by design is monotonically upward-only, which is also the safe default given "nenhuma perda de dias restantes": a MAX-based grant can never accidentally undo an existing, already-paid-for tier, while a separate, explicit desired-state sync is exactly the mechanism that's allowed to lower a tier, because it's driven by the Portal's own authoritative `VipEntitlement` state rather than by "a purchase just happened."
 
 ### Tabelas/campos tocados
 
@@ -183,7 +217,7 @@ Only `MEMB_INFO.AccountLevel`, one row, one column. Nothing else. (No `AccountEx
 `dbo.bm_GrantVip(@LegacyLogin VARCHAR(10), @TargetLevel TINYINT, @ResultCode VARCHAR(32) OUTPUT, @PreviousLevel TINYINT OUTPUT, @NewLevel TINYINT OUTPUT)`
 
 - Input validation: `@LegacyLogin` same charset/length rule as the existing procedure; `@TargetLevel` must be exactly 1, 2, or 3 (reject 0 and reject >3) → `INVALID_INPUT` otherwise.
-- `sp_getapplock @Resource = 'BloodMoon:GrantVip:'+LOWER(@LegacyLogin), @LockMode='Exclusive', @LockOwner='Transaction', @LockTimeout=10000` — serializes concurrent GRANT_VIP calls for the *same* account (two near-simultaneous purchases), matching the existing pattern exactly.
+- `sp_getapplock @Resource = 'BloodMoon:GAME_ACCOUNT_MUTATION:'+LOWER(@LegacyLogin), @LockMode='Exclusive', @LockOwner='Transaction', @LockTimeout=10000` — the **shared** account-mutation lock namespace (Part 9, decision E), not a GRANT_VIP-only resource — serializes concurrent GRANT_VIP calls for the same account against each other *and* against SYNC_VIP_TIER/ANONYMIZE/PURGE for that same account.
 - `SELECT @PreviousLevel = AccountLevel FROM MEMB_INFO WHERE memb___id=@LegacyLogin` — if no row, `ResultCode='ACCOUNT_NOT_FOUND'`, rollback, return.
 - `SET @NewLevel = CASE WHEN @TargetLevel > @PreviousLevel THEN @TargetLevel ELSE @PreviousLevel END`
 - `UPDATE MEMB_INFO SET AccountLevel=@NewLevel WHERE memb___id=@LegacyLogin` — only executes (and only needs to) when `@NewLevel <> @PreviousLevel`; if they're equal, this is a no-op **and still returns `SUCCEEDED`** (idempotent — re-sending the same or a lower-tier GRANT_VIP is always safe, never an error).
@@ -197,6 +231,43 @@ Yes — single, short, single-table transaction (simpler than `CREATE_GAME_ACCOU
 ### Como evita concessão dupla
 
 Four independent layers, same defense-in-depth shape as the existing operation: (1) Worker D1 `requestHash` rejects a mutated retry of the same `commandId`; (2) Agent `ProvisioningLedger` (extended to key on `commandType+commandId`, see Part 8) stops a second local execution after a crash; (3) `sp_getapplock` stops two *concurrent* deliveries for the same account from racing; (4) the procedure's own `MAX()` logic makes even a genuinely-duplicated, non-idempotency-caught execution harmless — running `bm_GrantVip` twice with the same `@TargetLevel` produces the same `@NewLevel` both times, by construction, not just by luck.
+
+---
+
+## PARTE 3B — SYNC_VIP_TIER e o reconciliador (novo nesta rodada, decisão E)
+
+### Arquitetura: Portal como source of truth
+
+```
+Purchase / VipEntitlement change (Portal)
+  → Portal computes the CURRENT effective tier (0-3) from VipEntitlement.expiresAt vs now
+  → SYNC_VIP_TIER(legacyLogin, desiredLevel)
+  → GameServer AccountLevel reflects it
+
+VipEntitlement.expiresAt passes (time alone, no purchase event)
+  → reconciler detects it on its next pass
+  → effective tier recomputes to 0 (Free)
+  → SYNC_VIP_TIER(legacyLogin, desiredLevel=0)
+  → GameServer AccountLevel drops to 0
+```
+
+**The GameServer never decides its own tier.** It only ever reflects the last `desiredLevel` it was told, and `SYNC_VIP_TIER` is safe to call at any time, for any reason, with the Portal's current answer — the procedure's job (Part 6) is a straight `UPDATE ... SET AccountLevel=@DesiredLevel WHERE AccountLevel <> @DesiredLevel`, no `MAX()`, no direction restriction, because the Portal is now trusted to have already computed the correct desired state before ever sending the command.
+
+### O reconciliador (Portal-side, apps/api)
+
+A new, scheduled service (same shape as the existing `GameProvisioningReconciliationService`/`VipDeliveryService` pattern already built in Phase 14 — `setInterval`, env-flag-gated, MySQL named-lock for single-instance safety):
+
+1. **Scan** every `VipEntitlement` row (or, more efficiently, only rows whose `expiresAt` is in the past but whose last-known-synced state hasn't caught up yet — an index-friendly query, not a full table scan every tick).
+2. **Compute effective tier**: `expiresAt > now ? tier-as-AL : 0`.
+3. **Compare against last-known-synced state** — a new, small Portal-side table (e.g. `VipSyncState`, one row per account: `lastSyncedLevel`, `lastSyncedAt`, `lastSyncCommandId`) is the Portal's own memory of "what did we last successfully tell the GameServer," **separate from** `VipEntitlement` itself (which represents commercial truth, not sync status) — this separation is what lets the reconciler answer "is there a divergence" without re-deriving it from GameBridge command history every time.
+4. **Divergence detection**: if `computedEffectiveTier != lastSyncedLevel` (or if `lastSyncCommandId`'s command never reached a terminal `SUCCEEDED` state), issue a new `SYNC_VIP_TIER` command.
+5. **Retry/backoff**: same shape as `VipDeliveryService` (Phase 14) — claim, attempt, exponential backoff with jitter, a hard attempt ceiling that surfaces to `FAILED` rather than retrying forever, crash-safe recovery of stale `PROCESSING` rows.
+6. **Report/observability**: a `listNeedingAttention()`-style admin endpoint (mirroring the existing `VipDeliveryController`/`GameProvisioningReconciliationController` pattern) showing divergent/failed accounts, plus a simple tick-summary (`scanned`, `synced`, `alreadyInSync`, `failed`) for operational visibility — no dependency on a human noticing and manually revoking anything.
+
+### Reused vs new (Portal side)
+
+**Reused, unchanged**: the whole claim/backoff/ceiling/crash-recovery pattern already proven twice this session (`VipDeliveryService`, Part D's account-deletion services), the MySQL named-lock single-instance-safety pattern, the `GameCommandTransportClient`.
+**New**: `VipSyncState` table (or equivalent), the reconciler service itself, the divergence-detection query, the admin observability endpoint. This is real, non-trivial Portal-side engineering — not a thin wrapper around the existing `VipDeliveryService`, since that service's whole design (Phase 14) assumed a one-shot "deliver this specific grant" job, not an ongoing "keep this account's tier in sync forever" loop.
 
 ---
 
@@ -218,7 +289,7 @@ Four independent layers, same defense-in-depth shape as the existing operation: 
 | 10 | Friends (`T_FriendMain`, `T_FriendList`, `T_WaitFriend`, `T_FriendMail`) | `Name`/`GUID` (unconfirmed exact `GUID` linkage to `Character`) | **DETACH** | Remove this account's own friend-list rows; other players' `T_FriendList` rows referencing this character by `FriendName` become stale references pointing at a now-renamed character — **UNKNOWN_DISPLAY_BEHAVIOR** (does the client show "player not found" gracefully, or error?) — flagged, not assumed benign. |
 | 11 | Logs (`HACK_LOG`, `COMMAND_LOG`, `CONNECT_LOG`, `CHAT_LOG`, GameServer file-based logs per `remoteops.json`'s `LogDirectories`) | — | **PRESERVE** | File-based, not DB tables reachable by this stored-procedure model at all — out of scope for a SQL procedure entirely; explicitly not promised to be touched. |
 | 12 | VIP (`MEMB_INFO.AccountLevel`) | `memb___id` | **ANONYMIZE (reset to 0)** | Per Bryan's own list. Resetting to AL0/Free on anonymize is the correct real-world equivalent of "no longer a distinguishable paying identity" — losing VIP status is an accepted, expected consequence of deleting your account, not a bug. |
-| 13 | Warehouse (`warehouse`, `ExtWarehouse`) | `AccountID` | **DELETE or DETACH — open decision** | Both are opaque `varbinary` blobs (confirmed, Phase 14) — a stored procedure cannot "anonymize" binary item data field-by-field; the only two real options are delete the row (destroying stored items) or leave it in place keyed to the tombstoned `legacyLogin` (harmless once the account can't log in again). **Recommend DETACH (leave the row, keyed to the now-anonymized legacyLogin, since the account cannot authenticate afterward regardless)** — flagged as Bryan's call, not decided here. |
+| 13 | Warehouse (`warehouse`, `ExtWarehouse`) | `AccountID` | **DELETE (decided, round 2)** | Both are opaque `varbinary` blobs (confirmed, Phase 14) — a stored procedure cannot "anonymize" binary item data field-by-field. Bryan's decision: DELETE, not DETACH — warehouse must never become an indirect, permanent retention channel for a deleted account's state. Only minimal, non-decoded metadata (row existed: yes/no, deleted: yes/no, timestamp) survives in `AccountDeletionRecord`/`AuditEvent` (Part 10/11) — never the item blob, never a decoded inventory, per the data-minimization principle. Anything that genuinely needs to survive (payment, chargeback, fraud, sanction, legal/fiscal obligation) survives in its own specific record (ledger, `RechargeIntent`, `PurchaseIntent`, `AccountDeletionRecord`, `AuditEvent`), never in the warehouse blob. |
 | 14 | CashShop balances (`CashShopData`) | `AccountID` | **ANONYMIZE (zero balances)** | Mirrors the Portal's own `AccountCurrency` zeroing in `executeNormalDeletion()` (Phase 14) — consistent treatment of currency across both systems. |
 | 15 | Siege/Castle (`MuCastle_SIEGE_GUILDLIST`) | Guild-scoped, not account-scoped directly | **NOT_APPLICABLE** | Indirect at best (via guild membership, already handled at #4/#5) — no direct account/character column found. |
 | 16 | Bans (`DmN_Ban_List`) | unconfirmed | **PRESERVE** | Belongs to the dormant legacy CMS but a ban record is exactly the kind of thing that should survive account anonymization for future abuse-pattern detection (same reasoning as the Portal's own `AccountModeration` preservation, Phase 14) — **UNKNOWN whether this table is genuinely dormant like its VIP siblings; not assumed empty**. |
@@ -277,11 +348,12 @@ Names follow the existing `dbo.DmN_*` convention loosely but are proposed as a n
 
 | Procedure | Parameters | Tables touched | Transaction | Idempotency strategy |
 |---|---|---|---|---|
-| `dbo.bm_GrantVip` | `@LegacyLogin VARCHAR(10)`, `@TargetLevel TINYINT`, OUT `@ResultCode VARCHAR(32)`, OUT `@PreviousLevel TINYINT`, OUT `@NewLevel TINYINT` | `MEMB_INFO` (1 column) | Single short transaction, `sp_getapplock` per `legacyLogin` | `MAX(current, target)` — naturally idempotent, no replay-detection table needed |
-| `dbo.bm_AnonymizeGameAccount` | `@LegacyLogin VARCHAR(10)`, OUT `@ResultCode VARCHAR(32)`, OUT `@EntitiesAffectedJson NVARCHAR(MAX)` | `MEMB_INFO`, `Character`/`AccountCharacter`, `GuildMember`, `CustomMarketShop` (check only), `CashShopData`, `T_FriendMain`/`T_FriendList`/`T_WaitFriend`, `warehouse`/`ExtWarehouse` (per Part 4's open DETACH-vs-DELETE decision) | Single transaction, `sp_getapplock` per `legacyLogin` | Deterministic tombstone value (same input → same output); a second call finds the account already tombstoned and returns success without re-mutating |
-| `dbo.bm_PurgeGameAccount` | `@LegacyLogin VARCHAR(10)`, `@BetaCycleId VARCHAR(80)`, OUT `@ResultCode VARCHAR(32)`, OUT `@TablesAffectedJson NVARCHAR(MAX)` | All 11 tables from Part 5's exclusion order | Single transaction, `sp_getapplock` per `legacyLogin` | `MEMB_INFO` row absence after a lookup ⇒ `ALREADY_PURGED`; genuinely destructive, no "replay produces the same effect" property beyond "deletes nothing the second time" |
+| `dbo.bm_GrantVip` | `@LegacyLogin VARCHAR(10)`, `@TargetLevel TINYINT`, OUT `@ResultCode VARCHAR(32)`, OUT `@PreviousLevel TINYINT`, OUT `@NewLevel TINYINT` | `MEMB_INFO` (1 column) | Single short transaction, `sp_getapplock` on the **shared** `GAME_ACCOUNT_MUTATION:<legacyLogin>` resource (Part 9) | `MAX(current, target)` — naturally idempotent, no replay-detection table needed |
+| `dbo.bm_SyncVipTier` | `@LegacyLogin VARCHAR(10)`, `@DesiredLevel TINYINT`, OUT `@ResultCode VARCHAR(32)`, OUT `@PreviousLevel TINYINT`, OUT `@NewLevel TINYINT`, OUT `@Changed BIT` | `MEMB_INFO` (1 column) | Single short transaction, same shared `GAME_ACCOUNT_MUTATION:<legacyLogin>` lock | `UPDATE ... WHERE AccountLevel <> @DesiredLevel` — unconditional idempotent set (not `MAX`, since 0 is a valid, expected desired value), zero-row update still reports `SUCCEEDED` with `Changed=0` |
+| `dbo.bm_AnonymizeGameAccount` | `@LegacyLogin VARCHAR(10)`, OUT `@ResultCode VARCHAR(32)`, OUT `@EntitiesAffectedJson NVARCHAR(MAX)` | `MEMB_INFO`, `Character`/`AccountCharacter`, `GuildMember`, `CustomMarketShop` (check only), `CashShopData`, `T_FriendMain`/`T_FriendList`/`T_WaitFriend`, `warehouse`/`ExtWarehouse` (**DELETE**, decided round 2 — see Part 4 #13) | Single transaction, same shared lock | Deterministic tombstone value (same input → same output); a second call finds the account already tombstoned and returns success without re-mutating |
+| `dbo.bm_PurgeGameAccount` | `@LegacyLogin VARCHAR(10)`, `@BetaCycleId VARCHAR(80)`, OUT `@ResultCode VARCHAR(32)`, OUT `@TablesAffectedJson NVARCHAR(MAX)` | All 11 tables from Part 5's exclusion order | Single transaction, same shared lock | `MEMB_INFO` row absence after a lookup ⇒ `ALREADY_PURGED`; genuinely destructive, no "replay produces the same effect" property beyond "deletes nothing the second time" |
 
-All three: no dynamic SQL, no `EXEC()`/`sp_executesql`, no table/column name ever passed as a parameter, every statement fully static in the procedure body, `SET XACT_ABORT ON` + `TRY/CATCH` + no raw SQL error text ever returned — identical discipline to `dbo.DmN_CreateGameAccount`.
+All four: no dynamic SQL, no `EXEC()`/`sp_executesql`, no table/column name ever passed as a parameter, every statement fully static in the procedure body, `SET XACT_ABORT ON` + `TRY/CATCH` + no raw SQL error text ever returned — identical discipline to `dbo.DmN_CreateGameAccount`. **The lock resource string is now shared across all four new procedures plus, for audit purposes, cross-checked against `CREATE_GAME_ACCOUNT`'s own resource family** (Part 9) — `bm_GrantVip`/`bm_SyncVipTier` no longer use a per-operation-type lock name (`'BloodMoon:GrantVip:...'`) as originally drafted; this was changed specifically to close the "GRANT_VIP could commit mid-ANONYMIZE" race named in the original Part 9.
 
 **Output-shape note**: `@EntitiesAffectedJson`/`@TablesAffectedJson` (NVARCHAR(MAX) holding a small, fixed-shape JSON object, e.g. `{"guildMember":1,"customMarketShop":0,...}`) is the simplest way to report *which* of the many entities in Part 4/5's maps were actually touched, without needing N separate OUTPUT parameters per procedure — flagged as a real design choice for review, not the only option (a fixed set of OUTPUT integers would also work and might be simpler to consume from C#, at the cost of being less self-describing if the entity list ever grows).
 
@@ -304,6 +376,7 @@ bloodmoon_writer:
 bloodmoon_writer:
   GRANT EXECUTE ON dbo.DmN_CreateGameAccount        [existing, unchanged]
   GRANT EXECUTE ON dbo.bm_GrantVip                   [new]
+  GRANT EXECUTE ON dbo.bm_SyncVipTier                 [new]
   GRANT EXECUTE ON dbo.bm_AnonymizeGameAccount        [new]
   GRANT EXECUTE ON dbo.bm_PurgeGameAccount            [new]
   DENY  SELECT, INSERT, UPDATE, DELETE ON SCHEMA::dbo [existing, unchanged — still the correct blanket denial]
@@ -312,13 +385,13 @@ bloodmoon_writer:
 
 ### Explicitly NOT granted (confirmed by design, to be re-verified live exactly like the existing procedure's own verification block)
 
-- No `SELECT`/`INSERT`/`UPDATE`/`DELETE` on `MEMB_INFO`, `Character`, `AccountCharacter`, `warehouse`, `ExtWarehouse`, `CashShopData`, `Guild`, `GuildMember`, `CustomMarketShop`, `T_FriendMain`/`T_FriendList`/`T_WaitFriend`, any `Ranking*` table, or any other table touched by the three new procedures — reachable *only* through the three narrow procedures, via the same ownership-chaining mechanism already proven for `DmN_CreateGameAccount`.
+- No `SELECT`/`INSERT`/`UPDATE`/`DELETE` on `MEMB_INFO`, `Character`, `AccountCharacter`, `warehouse`, `ExtWarehouse`, `CashShopData`, `Guild`, `GuildMember`, `CustomMarketShop`, `T_FriendMain`/`T_FriendList`/`T_WaitFriend`, any `Ranking*` table, or any other table touched by the four new procedures — reachable *only* through the four narrow procedures, via the same ownership-chaining mechanism already proven for `DmN_CreateGameAccount`.
 - No `db_owner`, `db_ddladmin`, `db_datawriter`, `db_datareader`, `sysadmin`, `serveradmin`, `securityadmin` — same as today.
-- No schema-wide or database-wide `EXECUTE` — three new object-level grants, nothing broader. A future fourth procedure (e.g. the not-designed `SYNC_VIP_TIER`/`REVOKE_VIP` flagged in Part 3) would need its own explicit fourth grant, by the same pattern — this design deliberately never grants ahead of need.
+- No schema-wide or database-wide `EXECUTE` — four new object-level grants, nothing broader. This design deliberately never grants ahead of need.
 
 ### Verification (same discipline as the existing script's own self-check, extended)
 
-The existing install script's verification block (`EXECUTE AS USER='bloodmoon_writer'` + `HAS_PERMS_BY_NAME` for every sensitive table/procedure) should be extended with three more `CanExecute*` checks (one per new procedure, expected `1`) and the *same* full list of `CanSelect/Insert/Update/Delete` checks against every table in Part 4/5's dependency maps (all expected `0`) — not a smaller check just because there are more tables now; the whole point of the original script was exhaustiveness, and that discipline should not shrink for this extension.
+The existing install script's verification block (`EXECUTE AS USER='bloodmoon_writer'` + `HAS_PERMS_BY_NAME` for every sensitive table/procedure) should be extended with four more `CanExecute*` checks (one per new procedure, expected `1`) and the *same* full list of `CanSelect/Insert/Update/Delete` checks against every table in Part 4/5's dependency maps (all expected `0`) — not a smaller check just because there are more tables now; the whole point of the original script was exhaustiveness, and that discipline should not shrink for this extension.
 
 ---
 
@@ -340,13 +413,16 @@ Reusing, not reinventing, the three-layer model already proven for `CREATE_GAME_
 
 ## PARTE 9 — Concorrência
 
+**Decided, round 2**: all four new procedures share one lock resource per account — `'BloodMoon:GAME_ACCOUNT_MUTATION:'+LOWER(@LegacyLogin)` — replacing the original draft's per-operation-type resource strings. `CREATE_GAME_ACCOUNT`'s own resource (`'BloodMoon:CreateGameAccount:'+LOWER(@LegacyLogin)`) is **not** merged into this namespace (a brand-new account can't yet be the target of GRANT_VIP/SYNC_VIP_TIER/ANONYMIZE/PURGE — there's no real race to close there), but per Bryan's instruction, provisioning is still **audited** for conflicts: the Portal-side reconciler/audit layer (Part 10) should flag, not silently ignore, a `GRANT_VIP`/`SYNC_VIP_TIER` command whose `legacyLogin` has an in-flight (`CLAIMED`/not-yet-terminal) `CREATE_GAME_ACCOUNT` command — a real, if narrow, sequencing concern (an account shouldn't receive VIP before it exists) that the shared lock alone doesn't cover, since the two operations use different lock resources.
+
 | Scenario | Resolution |
 |---|---|
-| VIP grant + account deletion (ANONYMIZE or PURGE) racing for the same account | Both use `sp_getapplock` scoped to the *same* `legacyLogin` resource string family (`'BloodMoon:'+OperationName+':'+LOWER(@LegacyLogin)`) — **recommend** these use a **shared** lock resource per account (e.g. `'BloodMoon:AccountMutation:'+LOWER(@LegacyLogin)`, not one distinct string per operation type) specifically so GRANT_VIP and ANONYMIZE/PURGE against the *same* account serialize against each other, not just against same-operation retries. This is a real change from the existing single-operation pattern (which only needed to serialize against itself) and must be called out explicitly: **without a shared lock namespace across all three new operations, a GRANT_VIP could commit against an account mid-ANONYMIZE, granting a tier to a tombstoned account.** Flagged as a required design decision, not an afterthought. |
+| VIP grant + account deletion (ANONYMIZE or PURGE) racing for the same account | Shared `GAME_ACCOUNT_MUTATION:<legacyLogin>` lock (above) — serializes GRANT_VIP/SYNC_VIP_TIER against ANONYMIZE/PURGE for the same account, closing the "GRANT_VIP could commit mid-ANONYMIZE" race the original draft only flagged as a recommendation. |
 | Account login + purge | Out of scope for these procedures (login is not a DB write these procedures interact with) — a real risk exists (a player logs in during/after their own pre-Beta test account is purged mid-session) but is a GameServer *session* concern, not a SQL Server concern; not solvable at the stored-procedure layer, flagged for Bryan's awareness rather than falsely claimed solved. |
 | Market operation + purge | Covered by Part 5's BLOCK-if-active-listing rule — purge refuses rather than racing. |
 | Character save + purge | Same category as "login + purge" — a live GameServer process writing `Character` rows outside these procedures is a real concurrent-writer this SQL-layer design cannot fully close; the transaction+lock protects the *procedure's own* consistency, not against the live GameServer engine process writing to the same row through its normal (non-procedure) path at the same instant. This is a genuine, named risk (see Part 16), not resolved by this plan alone — likely needs either an operational rule ("never purge an account with an active session," checkable via `last_login`/a session table if the engine exposes one — not investigated this session) or acceptance of a narrow race window. |
 | Two VIP grants simultaneously (same account) | `sp_getapplock` exclusive per account — second call waits up to the lock timeout, then proceeds against the *updated* `AccountLevel`; `MAX()` logic makes the outcome correct regardless of arrival order. |
+| GRANT_VIP racing the reconciler's SYNC_VIP_TIER for the same account | Same shared lock serializes them; whichever commits second still produces a *correct* end state because both read the then-current `AccountLevel` inside the lock — worth naming explicitly since this is the one pair of operations expected to race routinely in normal operation (a purchase landing at the same moment the reconciler's periodic scan reaches that account), not just as an edge case. |
 | Two deletion commands simultaneously (same account) | Same lock — second call (whichever mode) finds the account already anonymized/purged and returns the appropriate idempotent terminal state, never a race between "half-anonymized, half-purged." |
 
 **Transaction isolation**: default `READ COMMITTED` (SQL Server's default, matching the existing procedure — no explicit isolation-level change proposed; `sp_getapplock` is doing the real serialization work, not the isolation level).
@@ -376,11 +452,13 @@ Reusing, not reinventing, the three-layer model already proven for `CREATE_GAME_
 | `deletionMode` | `commandType` itself doubles as this (`ANONYMIZE_GAME_ACCOUNT` vs `PURGE_GAME_ACCOUNT`) — no separate field needed |
 | `batchId` | `betaCycleId` for PURGE (Part 2); ANONYMIZE has no batch concept (always single-account, per Bryan's own real-player framing) |
 | Records affected per entity/table | The `@EntitiesAffectedJson`/`@TablesAffectedJson` output (Part 6) |
-| Verification result | **Recommend**: apps/api's reconciliation step (mirroring the existing `GameProvisioningReconciliationService` pattern) should, after a `SUCCEEDED` ANONYMIZE/PURGE result, be able to re-query (via a **future, separate, read-only** confirmation — not proposed as a new write-capable check) that the account is genuinely gone/tombstoned, closing the loop the same way `dryRunPreBetaPurge()` already does on the Portal side (Part 5) |
+| Verification result | apps/api's reconciliation step (mirroring the existing `GameProvisioningReconciliationService` pattern) should, after a `SUCCEEDED` ANONYMIZE/PURGE result, be able to re-query (via a **future, separate, read-only** confirmation — not proposed as a new write-capable check) that the account is genuinely gone/tombstoned, closing the loop the same way `dryRunPreBetaPurge()` already does on the Portal side (Part 5) |
 
-### The one real gap carried forward, named explicitly
+### AuditEvent mirroring — approved, round 2 (decision C)
 
-Per Part 1: the Worker's D1 `game_command` table is not currently mirrored into apps/api's own `AuditEvent`/`AuditService`. For CREATE_GAME_ACCOUNT this was an acceptable gap (low-stakes, easily re-queried via `GET /internal/game-commands/:id`). **For ANONYMIZE_GAME_ACCOUNT and PURGE_GAME_ACCOUNT, given LGPD/legal-review implications already flagged in Phase 15's `financial-retention-policy.md` and `account-deletion-architecture.md`, this gap should probably close** — recommend apps/api write its own `AuditEvent` row (via the existing `AuditService`, already used everywhere else in this project) at the moment it *sends* the command and again when it *receives* a terminal result, rather than relying solely on the Worker's D1 row as the only record. Not implemented in this plan; named as a real, load-bearing recommendation for Part 13's rollout.
+Per Part 1: the Worker's D1 `game_command` table was not, until this decision, mirrored into apps/api's own `AuditEvent`/`AuditService`. **Now approved and scoped**: apps/api writes a real `AuditEvent` row (via the existing `AuditService`) for `ANONYMIZE_GAME_ACCOUNT` and `PURGE_GAME_ACCOUNT` at two points — when the command is *sent* and when a terminal result is *received* — carrying `commandId` as the `correlationId`, so a single query against `AuditEvent.correlationId` (or the existing `AuditEvent.correlationId` index) lines up the Portal-side intent with the Worker/D1 record and the Agent/SQL result. `CREATE_GAME_ACCOUNT` is **not** retroactively changed by this decision (still relies on D1 + `GameProvisioningAttempt` alone) — this is scoped to the two operations Bryan named.
+
+**GRANT_VIP and SYNC_VIP_TIER — commercial traceability, not the same legal `AuditEvent` shape (per Bryan's explicit clarification)**: these two don't need a Part-14-style legal audit trail, but must never be untraceable. The chain that already provides this: `VipEntitlement` (current state) → `VipGrant` (append-only purchase history, Phase 13) → the new `VipSyncState` row (Part 3B, last-known-synced GameServer state) → the `GameBridgeJob`/command's own `commandId` → the Worker D1 row → the Agent's result report. Every hop carries a linkable key (`VipGrant.idempotencyKey` → the `commandId` sent for GRANT_VIP; `VipSyncState.lastSyncCommandId` → the `commandId` sent for the most recent SYNC_VIP_TIER) — a full "why is this account at AL2 right now" trace is reconstructable end-to-end without needing a dedicated legal-shaped `AuditEvent` for every sync tick (which would be excessive given the reconciler may call SYNC_VIP_TIER far more often than a real state change occurs).
 
 ---
 
@@ -389,7 +467,13 @@ Per Part 1: the Worker's D1 `game_command` table is not currently mirrored into 
 ### GRANT_VIP
 
 - **Transaction rollback on failure**: standard — any error inside `BEGIN TRY` rolls back the single `UPDATE`, `AccountLevel` is left exactly as it was before the call.
-- **Reconciliation if the response is lost after commit**: the `MAX()`-idempotent design means this is nearly a non-issue — a retry (automatic or manual) simply re-confirms the same `NewLevel`, no drift possible. The only "rollback" concept that could ever apply is a **deliberate downgrade** (refund, moderation) — which, as noted in Part 3, is explicitly a different, unbuilt operation. This plan does not promise a way to undo a GRANT_VIP; it only promises GRANT_VIP itself cannot double-apply.
+- **Reconciliation if the response is lost after commit**: the `MAX()`-idempotent design means this is nearly a non-issue — a retry (automatic or manual) simply re-confirms the same `NewLevel`, no drift possible. A **deliberate downgrade** (refund, moderation, natural expiry) is explicitly `SYNC_VIP_TIER`'s job, not GRANT_VIP's (Part 3B) — the Portal recomputes the effective tier and the reconciler issues the correction; GRANT_VIP itself still promises nothing beyond "cannot double-apply."
+
+### SYNC_VIP_TIER
+
+- **Transaction rollback on failure**: same as GRANT_VIP — a failed `UPDATE` rolls back, `AccountLevel` unchanged.
+- **Reconciliation if the response is lost after commit**: by design, a non-issue — the reconciler's next tick simply recomputes the same (or by-then-updated) desired state and re-sends; unconditional idempotency (Part 3B) means there is no "stuck" state to recover from, only eventual convergence.
+- **Rollback in the everyday sense**: SYNC_VIP_TIER *is* the rollback mechanism for GRANT_VIP (see above) — it has no rollback of its own beyond "call it again with the correct desired state," which the reconciler already does automatically.
 
 ### ANONYMIZE_GAME_ACCOUNT
 
@@ -400,15 +484,21 @@ Per Part 1: the Worker's D1 `game_command` table is not currently mirrored into 
 ### PURGE_GAME_ACCOUNT
 
 - **Irreversible**: by definition and by design — this is the whole point of restricting it to pre-approved, zero-financial-weight, pre-Beta test accounts.
-- **Backup/snapshot requirement**: **recommend** a lightweight, pre-purge snapshot — not a full DB backup (out of proportion for a handful of disposable test accounts) but the `@TablesAffectedJson` output itself, captured into the Portal's `PurgeBatchRecord` (already exists, Phase 14) *before* being discarded, giving a minimal "what did we actually remove" record without keeping the removed data itself. A full pre-purge SQL Server backup/snapshot is a heavier operational decision (who takes it, where it's stored, how long it's kept) — flagged as an open question for Bryan (Part 16/Risks), not assumed either way.
+- **Backup/snapshot requirement — decided, round 2 (decision D)**: lightweight snapshot, not a full SQL Server backup. Exact field list, captured into the Portal's `PurgeBatchRecord` (already exists, Phase 14):
+  - **Before execution**: account identifier (`legacyLogin`), `purgeBatchId` (`betaCycleId`), characters found, related tables found (which of Part 5's 11 entities actually have rows for this account), **expected** row counts per entity, dependency classification (DELETE/BLOCK/etc. per Part 5), eligibility state (echoing the Portal's own `assessPreBetaPurgeEligibility()` result), blockers (if any), timestamp, `commandId`.
+  - **After execution**: **actual** row counts per entity (from `@TablesAffectedJson`, Part 6), remaining references (should be zero for everything except the intentionally-`BLOCK`ed cases, which shouldn't have reached execution at all), verification status (did a post-purge `dryRunPreBetaPurge()` re-check confirm clean).
+  - **Never captured**: the removed data itself (item contents, character stats beyond what's needed for the "characters found" count, any decoded warehouse content) — the snapshot answers "what did we remove and how much," never "what was in it," per the same data-minimization principle as decision B.
+  - A full pre-purge SQL Server backup was explicitly rejected as disproportionate — `PRE_BETA_PURGE` only ever targets pre-approved, zero-financial-weight, disposable test accounts, and per-account full backups would be operationally heavier than the population they protect.
 - **Verification requirement**: re-running the Portal's `dryRunPreBetaPurge()` post-purge (Part 5) is the verification — an account that still shows `WOULD_DELETE` after a `SUCCEEDED` purge command is a real, actionable failure signal.
 - **Approval gate**: already fully designed and built on the Portal side (Phase 14's `assessPreBetaPurgeEligibility()` + explicit `accountIds` list, never implicit) — this plan does not add a *second* approval gate at the GameServer layer beyond the staff/wildcard structural refusals already described (Part 5), since a second full eligibility re-check would require the GameServer to see Portal-only tables it structurally cannot reach.
+
+**Important — not to be confused with `NORMAL_ACCOUNT_DELETION`'s financial retention**: `PRE_BETA_PURGE`'s lightweight-snapshot decision above is a *different* retention category from real-player account deletion. `NORMAL_ACCOUNT_DELETION` continues to follow its own, already-designed rules (Phase 14/15): minimal tombstone (`AccountDeletionRecord`), independent financial-record retention (`financial-retention-policy.md`, `LEGAL_REVIEW_REQUIRED`), full audit, and LGPD/legal review. `PRE_BETA_PURGE` is reserved exclusively for pre-approved, zero-financial-weight, explicitly-disposable test accounts — the lighter snapshot requirement above is only ever correct for that category, never a precedent for how real player deletions are handled.
 
 ---
 
 ## PARTE 12 — Test Plan (before implementation)
 
-All against a **local/disposable** SQL Server test database — never the real `MuOnline` production database, mirroring the existing project-wide discipline. (This session has no local SQL Server instance available, per prior phases' findings — a disposable SQL Server/Azure SQL Edge container, or a dedicated non-production SQL Server instance, would be a prerequisite for actually running these tests; not solved in this plan, flagged in Part 13.)
+All against a **local/disposable** SQL Server test database — never the real `MuOnline` production database, mirroring the existing project-wide discipline. Per decision F, this must be a real SQL Server engine (Developer/Express-compatible), not Azure SQL Edge, and the test schema must match production's real, sparse FK reality (Part 13) rather than an "improved" version. See the Implementation Status section for how this was actually resolved in this session's environment.
 
 ### GRANT_VIP
 
@@ -423,6 +513,19 @@ All against a **local/disposable** SQL Server test database — never the real `
 9. Retry after a genuine transient SQL failure (simulate `SQL_UNAVAILABLE`): classified `FAILED_RETRYABLE`, backoff, eventual success on a healthy retry.
 10. Invalid AL (`@TargetLevel = 0` or `= 4`): `INVALID_INPUT`, no mutation.
 11. Nonexistent account: `ACCOUNT_NOT_FOUND`, no mutation.
+
+### SYNC_VIP_TIER (new this round)
+
+1. Account at AL2, desired=AL2: no-op, `Changed=0`, `ResultCode='SUCCEEDED'`.
+2. Account at AL2, desired=AL0 (natural expiry): `AccountLevel` becomes 0 — **the test that proves downgrade actually works**, unlike GRANT_VIP.
+3. Account at AL1, desired=AL3 (upgrade via sync, e.g. correcting a divergence): becomes 3.
+4. Extension: entitlement extended before expiry, reconciler computes the same tier it already synced — no-op, confirming the reconciler doesn't spam redundant commands for an account already in steady state.
+5. Retry/duplicate: same shape as GRANT_VIP tests 6/9.
+6. Concurrent GRANT_VIP + SYNC_VIP_TIER for the same account (Part 9's newly-named routine race): both use the shared lock; final state is correct regardless of arrival order, and neither call errors due to the other holding the lock (they wait, not fail).
+7. **Reconciliation divergence test**: manually set `AccountLevel` to a value that disagrees with `VipSyncState.lastSyncedLevel` (simulating an out-of-band GameServer change or a missed sync), run one reconciler tick, confirm exactly one `SYNC_VIP_TIER` command is generated and the divergence resolves.
+8. **Expiry detection test**: a `VipEntitlement` with `expiresAt` in the past but `VipSyncState.lastSyncedLevel` still reflecting the old paid tier — one reconciler tick generates a `desiredLevel=0` sync.
+9. Invalid desired level (`@DesiredLevel > 3`): `INVALID_INPUT`.
+10. Nonexistent account: `ACCOUNT_NOT_FOUND`.
 
 ### ANONYMIZE_GAME_ACCOUNT
 
@@ -452,15 +555,16 @@ All against a **local/disposable** SQL Server test database — never the real `
 ## PARTE 13 — Rollout Plan (proposed, not executed)
 
 1. **Local unit tests** — Agent-side (`GameCommandProcessor`, new command handling) and Worker-side (`commands.ts` extensions) against the existing xUnit/Vitest suites, following the exact patterns already in `BloodMoon.GameBridgeAgent.Tests`/`apps/game-data-worker/test`.
-2. **Disposable/local SQL Server test DB** — the three new procedures created and exercised against Part 12's full test matrix, on infrastructure this session does not currently have access to (a real prerequisite gap, named honestly rather than assumed solved).
+2. **Disposable/local SQL Server test DB** — the four new procedures created and exercised against Part 12's full test matrix. **Per decision F**: prefer a real SQL Server Developer/Express-compatible engine over Azure SQL Edge given known behavioral gaps (stored procedures, types, locking, transactions). Test fixtures: schema-compatible, minimal, synthetic — never copy real production data — with the real, sparse FK reality preserved exactly (only `CustomQuest.Name → Character.Name ON DELETE CASCADE`, no "helpful" FKs added, since that would mask real PURGE bugs). See Implementation Status for how this was actually resolved this session.
 3. **Staging/safe test account if available** — if a non-production MuOnline SQL Server instance exists or can be stood up, re-run a subset of Part 12 against it before touching the real production database (mirrors the "controlled QA write" step the original `CREATE_GAME_ACCOUNT` rollout already did successfully, Phase 3C).
-4. **Deploy procedures** — via the existing `bm-sql-admin-bootstrap.ps1`/`Invoke-SqlAdminBootstrap.ps1` pattern (Part 1's admin bootstrap tool), extended to recognize the three new procedure files, with the exact same static-SQL review guard (Part 6's "no dynamic SQL" requirement enforced by tooling, not just procedure discipline) re-applied to each new procedure's source before install.
+4. **Deploy procedures** — via the existing `bm-sql-admin-bootstrap.ps1`/`Invoke-SqlAdminBootstrap.ps1` pattern (Part 1's admin bootstrap tool), extended to recognize the four new procedure files, with the exact same static-SQL review guard (Part 6's "no dynamic SQL" requirement enforced by tooling, not just procedure discipline) re-applied to each new procedure's source before install.
 5. **Grant EXECUTE only** — via `proposed-writer-login-grants.sql`'s established pattern (Part 7's AFTER state), applied only after step 4's install succeeds and step 4's own re-run of the verification query (Part 7) confirms exactly the expected grant set.
-6. **Agent update** — new `GameCommandModels.cs` types, `GameCommandProcessor` extended to dispatch on `commandType`, `IGameDatabaseWriter` gains the two/three new methods, published and deployed to the game VPS (mirrors the existing `game-bridge-agent:publish` self-contained single-file build).
-7. **Worker/command enablement** — D1 schema migration widening the `CHECK` constraint and adding the new nullable/generic payload columns (Part 1's identified real-work item), `commands.ts` extended to validate and route the three new `commandType`s.
-8. **Controlled smoke** — one real GRANT_VIP against a real, disposable test account (mirroring the original `CREATE_GAME_ACCOUNT` controlled QA write, Phase 3C) — **not** an ANONYMIZE or PURGE smoke test against anything resembling a real account; those two should only ever be smoke-tested against a purpose-created disposable account, never one of the real 9.
-9. **Reconciliation** — confirm the Worker's D1 row, the Agent's local ledger, and the actual `MEMB_INFO`/related-table state all agree, for every smoke-tested command.
-10. **Enable production feature** — only after every prior step is green, and only as a separate, explicit decision from "the plan is technically sound" — this document does not request or imply that approval.
+6. **Agent update** — new `GameCommandModels.cs` types, `GameCommandProcessor` extended to dispatch on `commandType`, `IGameDatabaseWriter` gains the four new methods, published and deployed to the game VPS (mirrors the existing `game-bridge-agent:publish` self-contained single-file build).
+7. **Worker/command enablement** — D1 schema migration widening the `CHECK` constraint and adding the new nullable/generic payload columns (Part 1's identified real-work item), `commands.ts` extended to validate and route the four new `commandType`s.
+8. **Portal reconciler** — the new `VipSyncState` table/service (Part 3B), gated behind its own env flag, defaulting OFF until steps 1-9 are green.
+9. **Controlled smoke** — one real GRANT_VIP against a real, disposable test account (mirroring the original `CREATE_GAME_ACCOUNT` controlled QA write, Phase 3C) — **not** an ANONYMIZE or PURGE smoke test against anything resembling a real account; those two should only ever be smoke-tested against a purpose-created disposable account, never one of the real 9.
+10. **Reconciliation** — confirm the Worker's D1 row, the Agent's local ledger, and the actual `MEMB_INFO`/related-table state all agree, for every smoke-tested command.
+11. **Enable production feature** — only after every prior step is green, and only as a separate, explicit decision from "the plan is technically sound" — this document does not request or imply that approval.
 
 **Nothing in this rollout plan has been executed.**
 
@@ -468,11 +572,12 @@ All against a **local/disposable** SQL Server test database — never the real `
 
 ## PARTE 14 — Kill switch
 
-Three independent switches, not one global Agent kill switch, so a problem in one operation never forces disabling all GameBridge functionality (including the already-working, in-production-use `CREATE_GAME_ACCOUNT` path):
+Four independent switches, not one global Agent kill switch, so a problem in one operation never forces disabling all GameBridge functionality (including the already-working, in-production-use `CREATE_GAME_ACCOUNT` path):
 
 - **`GAME_BRIDGE_GRANT_VIP_ENABLED`** — checked by `GameCommandProcessor` before dispatching a `GRANT_VIP` command; if false, the Agent reports `FAILED_FINAL COMMAND_TYPE_DISABLED` (a new, distinct code from `COMMAND_TYPE_DENIED`, so an operator can tell "we don't support this at all" apart from "we support it but it's paused") without ever calling `IGameDatabaseWriter`.
+- **`GAME_BRIDGE_SYNC_VIP_TIER_ENABLED`** — same shape, independent flag. Also gates the **Portal-side reconciler** itself (Part 3B) — if this is off, the reconciler should not even attempt to generate `SYNC_VIP_TIER` commands, not just have the Agent reject them after the fact (defense in depth at both ends of the pipe).
 - **`GAME_BRIDGE_ANONYMIZE_ENABLED`** — same shape, independent flag.
-- **`GAME_BRIDGE_PURGE_ENABLED`** — same shape, independent flag, and per Bryan's own Phase 14/15 decision (`VIP_DELIVERY_WORKER_ENABLED` stays OFF until the real Agent is connected and tested) — **recommend this one defaults to `false` even after the other two are enabled**, given it's the only genuinely irreversible operation of the three, so enabling it is a deliberate, separate decision from "the pipeline works."
+- **`GAME_BRIDGE_PURGE_ENABLED`** — same shape, independent flag, and per Bryan's own Phase 14/15 decision (`VIP_DELIVERY_WORKER_ENABLED` stays OFF until the real Agent is connected and tested) — **defaults to `false` even after the other three are enabled**, given it's the only genuinely irreversible operation of the four, so enabling it is a deliberate, separate decision from "the pipeline works."
 - All three read from Agent configuration (`appsettings.Local.json`/environment variables, the existing non-committed-secrets pattern), **not** from a per-request Worker/Portal flag — the Agent, running on the game VPS, is the last line of defense and should not trust a remote "yes it's safe" signal for something this destructive; a compromised or buggy Portal/Worker cannot re-enable a kill-switched operation.
 - The Worker-side `game_command` table can independently stop *accepting new* commands of a given type (a Worker-side `COMMAND_TYPE_SUSPENDED` check in `parseCreate()`) as a second, earlier gate — belt-and-suspenders with the Agent-side switch, not a replacement for it.
 
@@ -511,78 +616,15 @@ This table is unchanged from Phase 14/15 — included here only so this plan is 
 
 ---
 
-## ENTREGÁVEL
+## PARTE 17 — Status de implementação local (preenchido após a rodada de implementação)
 
-This document: `docs/gamebridge/gamebridge-agent-extension-plan.md`. No code written this phase.
+Ver relatório em chat mais recente para o `GAMEBRIDGE_IMPLEMENTATION` completo — este documento registra apenas as decisões arquiteturais e o desenho; os resultados reais de implementação/teste (incluindo a resolução da Decisão F sobre o SQL Server descartável) são reportados separadamente, no formato exato solicitado por Bryan, para não duplicar/desatualizar dois lugares com o mesmo dado.
 
 ---
 
-## FINAL REPORT
+## ENTREGÁVEL
 
-```
-GAMEBRIDGE_EXTENSION_PLAN = PASS
-
-CURRENT_PIPELINE_REUSED = HMAC signing/verification (Agent+Worker), nonce replay protection,
-  Worker claim/lease/report state machine, Agent poll/backoff loop, ProvisioningLedger pattern
-  (extended, not replaced), bloodmoon_writer least-privilege model, sp_getapplock concurrency
-  pattern, TRY/CATCH-no-raw-error-leak procedure discipline, static-SQL-only discipline,
-  existing admin bootstrap tool pattern for procedure install + verification
-
-NEW_COMMANDS = [GRANT_VIP, ANONYMIZE_GAME_ACCOUNT, PURGE_GAME_ACCOUNT]
-
-NEW_STORED_PROCEDURES_PROPOSED = [dbo.bm_GrantVip, dbo.bm_AnonymizeGameAccount, dbo.bm_PurgeGameAccount]
-NEW_SQL_GRANTS_PROPOSED = [EXECUTE ON dbo.bm_GrantVip TO bloodmoon_writer,
-  EXECUTE ON dbo.bm_AnonymizeGameAccount TO bloodmoon_writer,
-  EXECUTE ON dbo.bm_PurgeGameAccount TO bloodmoon_writer]
-
-DIRECT_TABLE_WRITE_PERMISSION_REQUIRED = NO
-DYNAMIC_SQL_REQUIRED = NO
-GLOBAL_EXECUTE_REQUIRED = NO
-
-GRANT_VIP_PLAN = PASS
-ANONYMIZE_PLAN = PASS
-PURGE_PLAN = PASS
-
-IDEMPOTENCY_PLAN = PASS
-CONCURRENCY_PLAN = PASS  (one required design decision flagged: shared lock namespace
-  across all account-mutating operations, Part 9 — not yet a code change, a plan requirement)
-AUDIT_PLAN = PASS  (one recommended, not-yet-decided improvement flagged: mirror Worker D1
-  command history into apps/api's own AuditEvent for ANONYMIZE/PURGE specifically, Part 10)
-KILL_SWITCH_PLAN = PASS
-ROLLBACK_RECOVERY_PLAN = PASS  (PURGE's irreversibility stated plainly, not glossed over)
-TEST_PLAN = PASS
-ROLLOUT_PLAN = PASS  (one real prerequisite gap named: no local/disposable SQL Server test
-  instance currently available to this session, Part 13 step 2)
-
-PRODUCTION_CHANGED = NO
-SQL_PROCEDURE_CREATED = NO
-SQL_PERMISSION_CHANGED = NO
-AGENT_CHANGED = NO
-WORKER_CHANGED = NO
-DEPLOY = NO
-PUSH = NO
-```
-
-### RISKS
-
-1. **GRANT_VIP has no expiry-enforcement counterpart.** Once granted, `AccountLevel` never comes back down on its own — a fourth, not-designed command (`SYNC_VIP_TIER`/`REVOKE_VIP`) is a real, near-term follow-up need, not covered by this plan's three operations (Part 3).
-2. **Compromised-Agent risk is more consequential for PURGE than for the existing CREATE_GAME_ACCOUNT**, because purge is irreversible (Part 16). Mitigated but not eliminated by the kill switch and per-account-explicit design.
-3. **Live-session concurrency (login/character-save racing a purge) is not fully solvable at the SQL layer** — flagged as a named, accepted gap rather than a false promise (Part 9).
-4. **No local/disposable SQL Server test environment currently exists for this session** to actually execute Part 12's test plan — a real infrastructure prerequisite, not assumed solved (Part 13).
-5. **The Worker's D1 schema has a hard `CHECK` constraint limiting it to one command type today** — real schema-migration work, not a config flag (Part 1/7/13).
-6. **The `warehouse`/`ExtWarehouse` DETACH-vs-DELETE question for ANONYMIZE (Part 4, entity #13) is a genuine open call**, not a technical constraint either way — both are defensible, and the choice affects what a future support/legal request ("does the account still have their old items somewhere") can honestly answer.
-
-### OPEN_DECISIONS_FOR_BRYAN
-
-1. Approve or reject the overall three-procedure, `bloodmoon_writer`-extended approach (Part 6/7) before any SQL Server change is made.
-2. `warehouse`/`ExtWarehouse` on ANONYMIZE: DETACH (leave in place, account can't log in anyway) or DELETE (Part 4, entity #13)?
-3. Should PURGE_GAME_ACCOUNT get a shorter `expiresAt` window than the existing 24h default, given its irreversibility (Part 16)?
-4. Should `GAME_BRIDGE_PURGE_ENABLED` default to `false` even after GRANT_VIP/ANONYMIZE are live (recommended, Part 14) — confirm this is the desired default?
-5. Approve (or defer) closing the audit gap: mirror Worker D1 command history into apps/api's `AuditEvent` for ANONYMIZE/PURGE specifically (Part 10) — worth the extra implementation work now, or acceptable to defer given the existing D1 record is still real and queryable?
-6. Is a pre-purge lightweight snapshot into `PurgeBatchRecord` (Part 11) sufficient, or does Bryan want a heavier, full pre-purge SQL Server backup step in the rollout (Part 13)?
-7. Naming: `bm_` prefix for the new procedures acceptable, or a different convention preferred (Part 6)?
-8. Confirm the not-yet-designed VIP-expiry-enforcement operation (Risk #1) should be scoped as an explicit follow-up phase, separate from this three-operation plan.
-9. Where should the local/disposable SQL Server test environment for Part 12/13 actually come from (Risk #4) — is this something Bryan can provision, or does it need its own separate investigation?
+This document: `docs/gamebridge/gamebridge-agent-extension-plan.md`. Round 2: decisions A–F incorporated, scope expanded to four operations (`GRANT_VIP`, `SYNC_VIP_TIER`, `ANONYMIZE_GAME_ACCOUNT`, `PURGE_GAME_ACCOUNT`). Approved by Bryan for local implementation.
 
 STOP.
 ```

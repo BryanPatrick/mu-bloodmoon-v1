@@ -57,6 +57,14 @@ public sealed class GameCommandWorker(
         }
     }
 
+    // GameBridge extension plan Part 1/2/14. Dispatches on CommandType to
+    // one of five allowlisted operations -- anything else is
+    // FAILED_FINAL COMMAND_TYPE_DENIED, exactly as CREATE_GAME_ACCOUNT
+    // alone was before this change. Each of the four new types has its own
+    // independent kill switch (Part 14), checked before the writer is ever
+    // touched -- a disabled type reports FAILED_FINAL COMMAND_TYPE_DISABLED,
+    // distinct from COMMAND_TYPE_DENIED, so an operator can tell "not
+    // supported" from "supported but paused."
     public async Task ExecuteClaimedAsync(ClaimedGameCommand command, CancellationToken ct)
     {
         CommandResultReport report;
@@ -64,10 +72,16 @@ public sealed class GameCommandWorker(
             report = Failure(command, "FAILED_FINAL", "AGENT_SCOPE_DENIED");
         else if (command.ExpiresAt <= DateTimeOffset.UtcNow)
             report = Failure(command, "FAILED_FINAL", "COMMAND_EXPIRED");
-        else if (command.CommandType != "CREATE_GAME_ACCOUNT")
-            report = Failure(command, "FAILED_FINAL", "COMMAND_TYPE_DENIED");
         else
-            report = await ExecuteWriteAsync(command, ct);
+            report = command.CommandType switch
+            {
+                "CREATE_GAME_ACCOUNT" => await ExecuteCreateGameAccountAsync(command, ct),
+                "GRANT_VIP" => !_options.GrantVipEnabled ? Failure(command, "FAILED_FINAL", "COMMAND_TYPE_DISABLED") : await ExecuteGrantVipAsync(command, ct),
+                "SYNC_VIP_TIER" => !_options.SyncVipTierEnabled ? Failure(command, "FAILED_FINAL", "COMMAND_TYPE_DISABLED") : await ExecuteSyncVipTierAsync(command, ct),
+                "ANONYMIZE_GAME_ACCOUNT" => !_options.AnonymizeEnabled ? Failure(command, "FAILED_FINAL", "COMMAND_TYPE_DISABLED") : await ExecuteAnonymizeAsync(command, ct),
+                "PURGE_GAME_ACCOUNT" => !_options.PurgeEnabled ? Failure(command, "FAILED_FINAL", "COMMAND_TYPE_DISABLED") : await ExecutePurgeAsync(command, ct),
+                _ => Failure(command, "FAILED_FINAL", "COMMAND_TYPE_DENIED")
+            };
 
         try
         {
@@ -80,8 +94,9 @@ public sealed class GameCommandWorker(
         }
     }
 
-    private async Task<CommandResultReport> ExecuteWriteAsync(ClaimedGameCommand command, CancellationToken ct)
+    private async Task<CommandResultReport> ExecuteCreateGameAccountAsync(ClaimedGameCommand command, CancellationToken ct)
     {
+        if (command.Credential is null) return Failure(command, "FAILED_FINAL", "INVALID_PAYLOAD");
         byte[]? credentialBytes = null;
         try
         {
@@ -95,27 +110,98 @@ public sealed class GameCommandWorker(
         {
             return Failure(command, "FAILED_FINAL", SafeCryptoCode(ex.Message));
         }
-        catch (InvalidOperationException ex) when (ex.Message == "COMMAND_IN_PROGRESS")
+        catch (Exception ex)
         {
-            return Failure(command, "FAILED_RETRYABLE", "COMMAND_IN_PROGRESS");
-        }
-        catch (InvalidOperationException ex) when (ex.Message is "IDEMPOTENCY_CONFLICT" or "INVALID_COMMAND_ID" or "INVALID_PAYLOAD" or "COMMAND_TYPE_DENIED" or "LEGACY_LOGIN_COLLISION")
-        {
-            return Failure(command, "FAILED_FINAL", ex.Message);
-        }
-        catch (SqlException)
-        {
-            return Failure(command, "FAILED_RETRYABLE", "SQL_UNAVAILABLE");
-        }
-        catch
-        {
-            return Failure(command, "FAILED_RETRYABLE", "EXECUTION_UNAVAILABLE");
+            return ClassifyFailure(command, ex);
         }
         finally
         {
             if (credentialBytes is not null) CryptographicOperations.ZeroMemory(credentialBytes);
         }
     }
+
+    private async Task<CommandResultReport> ExecuteGrantVipAsync(ClaimedGameCommand command, CancellationToken ct)
+    {
+        try
+        {
+            if (!TryGetPayloadInt(command.Payload, "targetLevel", out var targetLevel)) return Failure(command, "FAILED_FINAL", "INVALID_PAYLOAD");
+            var result = await processor.ExecuteAsync(new GrantVipCommand(
+                command.CommandId, command.ProvisioningRequestId, command.CommandType, command.LegacyLogin, targetLevel), ct);
+            return new(command.CommandId, command.ProvisioningRequestId, "SUCCEEDED", result.ResultCode, null,
+                VipDetailJson(result.PreviousLevel, result.NewLevel, result.Changed));
+        }
+        catch (Exception ex) { return ClassifyFailure(command, ex); }
+    }
+
+    private async Task<CommandResultReport> ExecuteSyncVipTierAsync(ClaimedGameCommand command, CancellationToken ct)
+    {
+        try
+        {
+            if (!TryGetPayloadInt(command.Payload, "desiredLevel", out var desiredLevel)) return Failure(command, "FAILED_FINAL", "INVALID_PAYLOAD");
+            var result = await processor.ExecuteAsync(new SyncVipTierCommand(
+                command.CommandId, command.ProvisioningRequestId, command.CommandType, command.LegacyLogin, desiredLevel), ct);
+            return new(command.CommandId, command.ProvisioningRequestId, "SUCCEEDED", result.ResultCode, null,
+                VipDetailJson(result.PreviousLevel, result.NewLevel, result.Changed));
+        }
+        catch (Exception ex) { return ClassifyFailure(command, ex); }
+    }
+
+    private async Task<CommandResultReport> ExecuteAnonymizeAsync(ClaimedGameCommand command, CancellationToken ct)
+    {
+        try
+        {
+            var result = await processor.ExecuteAsync(new AnonymizeGameAccountCommand(
+                command.CommandId, command.ProvisioningRequestId, command.CommandType, command.LegacyLogin), ct);
+            return new(command.CommandId, command.ProvisioningRequestId, "SUCCEEDED", result.ResultCode, null, result.DetailJson);
+        }
+        catch (Exception ex) { return ClassifyFailure(command, ex); }
+    }
+
+    private async Task<CommandResultReport> ExecutePurgeAsync(ClaimedGameCommand command, CancellationToken ct)
+    {
+        try
+        {
+            if (!TryGetPayloadString(command.Payload, "betaCycleId", out var betaCycleId)) return Failure(command, "FAILED_FINAL", "INVALID_PAYLOAD");
+            var result = await processor.ExecuteAsync(new PurgeGameAccountCommand(
+                command.CommandId, command.ProvisioningRequestId, command.CommandType, command.LegacyLogin, betaCycleId), ct);
+            return new(command.CommandId, command.ProvisioningRequestId, "SUCCEEDED", result.ResultCode, null, result.DetailJson);
+        }
+        catch (Exception ex) { return ClassifyFailure(command, ex); }
+    }
+
+    // Shared failure classification for the four new operations -- same
+    // taxonomy ExecuteCreateGameAccountAsync already used inline
+    // (COMMAND_IN_PROGRESS/IDEMPOTENCY_CONFLICT/etc. are FAILED_FINAL or
+    // FAILED_RETRYABLE per the same rules), pulled into one place now that
+    // five call sites share it instead of one.
+    private static CommandResultReport ClassifyFailure(ClaimedGameCommand command, Exception ex) => ex switch
+    {
+        InvalidOperationException { Message: "COMMAND_IN_PROGRESS" } => Failure(command, "FAILED_RETRYABLE", "COMMAND_IN_PROGRESS"),
+        InvalidOperationException e when e.Message is "IDEMPOTENCY_CONFLICT" or "INVALID_COMMAND_ID" or "INVALID_PAYLOAD" or "COMMAND_TYPE_DENIED"
+            or "LEGACY_LOGIN_COLLISION" or "ACCOUNT_NOT_FOUND" or "STAFF_ACCOUNT_REJECTED" => Failure(command, "FAILED_FINAL", e.Message),
+        SqlException => Failure(command, "FAILED_RETRYABLE", "SQL_UNAVAILABLE"),
+        _ => Failure(command, "FAILED_RETRYABLE", "EXECUTION_UNAVAILABLE")
+    };
+
+    private static bool TryGetPayloadInt(System.Text.Json.JsonElement? payload, string property, out int value)
+    {
+        value = 0;
+        if (payload is not { } p || p.ValueKind != System.Text.Json.JsonValueKind.Object) return false;
+        if (!p.TryGetProperty(property, out var el) || el.ValueKind != System.Text.Json.JsonValueKind.Number) return false;
+        return el.TryGetInt32(out value);
+    }
+
+    private static bool TryGetPayloadString(System.Text.Json.JsonElement? payload, string property, out string value)
+    {
+        value = "";
+        if (payload is not { } p || p.ValueKind != System.Text.Json.JsonValueKind.Object) return false;
+        if (!p.TryGetProperty(property, out var el) || el.ValueKind != System.Text.Json.JsonValueKind.String) return false;
+        value = el.GetString() ?? "";
+        return !string.IsNullOrWhiteSpace(value);
+    }
+
+    private static string VipDetailJson(int? previousLevel, int? newLevel, bool changed) =>
+        $$"""{"previousLevel":{{previousLevel?.ToString() ?? "null"}},"newLevel":{{newLevel?.ToString() ?? "null"}},"changed":{{(changed ? "true" : "false")}}}""";
 
     private static CommandResultReport Failure(ClaimedGameCommand c, string status, string code) =>
         new(c.CommandId, c.ProvisioningRequestId, status, code, null);
