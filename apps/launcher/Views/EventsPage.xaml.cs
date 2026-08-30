@@ -31,7 +31,11 @@ public partial class EventsPage : UserControl, ILauncherPage
             ? new ImageBrush(bannerImage) { Stretch = Stretch.UniformToFill }
             : (Brush)Application.Current.Resources["Brush.BackgroundSurfaceAlt"];
 
-        try
+        if (_context.PreviewMode)
+        {
+            _events = null;
+        }
+        else try
         {
             _events = await _context.ApiClient.GetEventsAsync(CancellationToken.None);
         }

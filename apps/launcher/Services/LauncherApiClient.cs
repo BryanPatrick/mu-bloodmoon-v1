@@ -153,24 +153,19 @@ public sealed class LauncherApiClient : IDisposable, ILauncherBootstrapSource, I
             ?? throw new InvalidOperationException("A API retornou uma resposta vazia.");
     }
 
-    private static async Task EnsureSuccessAsync(HttpResponseMessage response, CancellationToken cancellationToken)
+    private static Task EnsureSuccessAsync(HttpResponseMessage response, CancellationToken cancellationToken)
     {
         if (response.IsSuccessStatusCode)
         {
-            return;
+            return Task.CompletedTask;
         }
-        var body = await response.Content.ReadAsStringAsync(cancellationToken);
         var message = response.StatusCode switch
         {
             HttpStatusCode.Unauthorized => "Usuário, senha ou sessão inválidos.",
             HttpStatusCode.Forbidden => "A conta não tem permissão para esta operação.",
             _ => $"API indisponível ({(int)response.StatusCode})."
         };
-        if (!string.IsNullOrWhiteSpace(body) && body.Length < 240)
-        {
-            message += $" {body}";
-        }
-        throw new InvalidOperationException(message);
+        return Task.FromException(new InvalidOperationException(message));
     }
 
     public void Dispose() => _http.Dispose();

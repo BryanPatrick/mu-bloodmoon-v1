@@ -28,7 +28,11 @@ public partial class RankingPage : UserControl, ILauncherPage
 
     public async Task RefreshAsync()
     {
-        try
+        if (_context.PreviewMode)
+        {
+            _allRows = [];
+        }
+        else try
         {
             var response = await _context.ApiClient.GetRankingsAsync(_rankingType, CancellationToken.None);
             _allRows = response.Entries

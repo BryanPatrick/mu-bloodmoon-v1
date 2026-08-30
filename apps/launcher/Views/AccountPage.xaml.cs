@@ -33,12 +33,28 @@ public partial class AccountPage : UserControl, ILauncherPage
         {
             SignedOutPanel.Visibility = Visibility.Visible;
             ContentPanel.Visibility = Visibility.Collapsed;
+            AccountStatusPanel.Visibility = Visibility.Collapsed;
             return Task.CompletedTask;
         }
         SignedOutPanel.Visibility = Visibility.Collapsed;
         ContentPanel.Visibility = Visibility.Visible;
+        AccountStatusPanel.Visibility = Visibility.Visible;
 
         var account = _context.Account;
+        var unified = _context.UnifiedAccount;
+        AccountIdentityText.Text = account is null
+            ? "CONTA BLOOD MOON"
+            : $"{account.User.Name} · @{account.User.Username}";
+        AccountRoleText.Text = unified is null
+            ? "Status da conta temporariamente indisponível"
+            : $"PERFIL {unified.Role} · CONTA ATIVA";
+        ProvisioningStateText.Text = unified is null
+            ? "JOGO — INDISPONÍVEL"
+            : unified.GameReady
+                ? "CONTA DE JOGO — PRONTA"
+                : $"CONTA DE JOGO — {unified.ProvisioningStatus}";
+        ProvisioningStateText.Foreground = (Brush)Application.Current.Resources[
+            unified?.GameReady == true ? "Brush.Success" : "Brush.Warning"];
         var state = account is null
             ? new AccountPageState()
             : AccountStateMapper.Map(account);

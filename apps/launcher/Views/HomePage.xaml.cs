@@ -23,6 +23,7 @@ public partial class HomePage : UserControl, ILauncherPage
     {
         _context = context;
         _context.AccountChanged += (_, _) => _ = RefreshAsync();
+        _context.RuntimeStateChanged += (_, _) => _ = RefreshAsync();
     }
 
     public bool OnPageLeaving(PageKey to) => true;
@@ -33,7 +34,6 @@ public partial class HomePage : UserControl, ILauncherPage
     {
         ApplyHero();
         ApplyCampaign();
-        ApplySocials();
         ApplyServerAndCharacter();
         ApplyNews();
         await ApplyEventsAsync();
@@ -70,25 +70,6 @@ public partial class HomePage : UserControl, ILauncherPage
         CampaignSubtitleText.Text = _context.Slots.GetText("home.campaign.subtitle") ?? "";
     }
 
-    private void ApplySocials()
-    {
-        var socials = _context.Slots.GetList("home.socials", element =>
-        {
-            if (!SlotRegistryMapper.BoolField(element, "enabled", fallback: true)) return null;
-            var label = SlotRegistryMapper.StringField(element, "label");
-            var url = SlotRegistryMapper.StringField(element, "url");
-            return string.IsNullOrWhiteSpace(label) || string.IsNullOrWhiteSpace(url) ? null : new SocialLinkItem(label!, url!);
-        });
-        SocialItems.ItemsSource = socials;
-    }
-
-    private void SocialItem_Click(object sender, RoutedEventArgs e)
-    {
-        if (sender is Button { DataContext: SocialLinkItem item })
-        {
-            _context.OpenExternalLink?.Invoke(item.Url);
-        }
-    }
 
     private void ApplyServerAndCharacter()
     {
@@ -114,18 +95,13 @@ public partial class HomePage : UserControl, ILauncherPage
             ? state.ServerState.MaintenanceMessage
             : $"{state.ServerState.OnlinePlayers:N0} jogadores online";
 
-        // NotLoggedIn stays clickable -- clicking it is how a signed-out
-        // player opens the login overlay (PlayButton_Click). Only a real
-        // blocker (server offline / game account not ready yet) disables
-        // the button outright.
-        PlayButton.IsEnabled = state.PlayState is PlayState.ReadyToPlay or PlayState.NotLoggedIn;
-        PlayButton.Content = state.PlayState switch
-        {
-            PlayState.NotLoggedIn => "ENTRE PARA JOGAR",
-            PlayState.ServerOffline => "SERVIDOR OFFLINE",
-            PlayState.GameAccountNotReady => "PREPARANDO CONTA...",
-            _ => "JOGAR"
-        };
+        var serverAvailable = !state.ServerState.MaintenanceActive &&
+            !string.Equals(state.ServerState.Status, "OFFLINE", StringComparison.OrdinalIgnoreCase);
+        var gameAccountReady = _context.UnifiedAccount?.GameReady ?? !_context.IsLoggedIn;
+        var play = LauncherRuntimePolicy.ResolvePlayButton(
+            _context.UpdateState, _context.IsLoggedIn, serverAvailable, gameAccountReady);
+        PlayButton.IsEnabled = play.IsEnabled;
+        PlayButton.Content = play.Label;
     }
 
     private void ApplyNews()
@@ -136,6 +112,11 @@ public partial class HomePage : UserControl, ILauncherPage
 
     private async Task ApplyEventsAsync()
     {
+        if (_context.PreviewMode)
+        {
+            ActiveEventText.Text = NextEventText.Text = RemoteContentFailureMessages.For(RemoteContentFailureKind.NoEvents);
+            return;
+        }
         try
         {
             var events = await _context.ApiClient.GetEventsAsync(CancellationToken.None);
@@ -181,23 +162,4 @@ public partial class HomePage : UserControl, ILauncherPage
     private void NewsButton_Click(object sender, RoutedEventArgs e) =>
         _context.OpenExternalLink?.Invoke(_context.Bootstrap?.Links.News ?? "https://mubloodmoon.com.br/noticias");
 
-    private void Utility_Click(object sender, RoutedEventArgs e)
-    {
-        if (sender is not Button button)
-        {
-            return;
-        }
-        var url = button.Tag?.ToString() switch
-        {
-            "support" => _context.Bootstrap?.Utilities.Find(u => u.Id == "support")?.Url,
-            "wiki" => _context.Bootstrap?.Utilities.Find(u => u.Id == "wiki")?.Url,
-            _ => _context.Bootstrap?.Links.Website
-        };
-        if (!string.IsNullOrWhiteSpace(url))
-        {
-            _context.OpenExternalLink?.Invoke(url);
-        }
-    }
-
-    private sealed record SocialLinkItem(string Label, string Url);
 }

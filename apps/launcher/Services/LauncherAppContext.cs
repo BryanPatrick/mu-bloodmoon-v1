@@ -36,8 +36,10 @@ public sealed class LauncherAppContext(
     public GameProcessService GameProcessService { get; } = gameProcessService;
 
     public LauncherSettings Settings { get; set; } = new();
+    public bool PreviewMode { get; set; }
     public LauncherSession? Session { get; set; }
     public LauncherAccount? Account { get; set; }
+    public LauncherMe? UnifiedAccount { get; set; }
     public LauncherBootstrap? Bootstrap { get; set; }
     public SlotRegistryMapper Slots { get; set; } = SlotRegistryMapper.Empty;
     public List<LauncherAssetManifestEntry> SlotAssets { get; set; } = [];
@@ -66,6 +68,9 @@ public sealed class LauncherAppContext(
     // ARQUIVOS/BACKUP/RESTAURAR) only ever trigger these, never duplicate
     // the patch/backup orchestration themselves.
     public bool ClientReady { get; set; }
+    public LauncherUpdateState UpdateState { get; set; } = LauncherUpdateState.Checking;
+    public event EventHandler? RuntimeStateChanged;
+    public void RaiseRuntimeStateChanged() => RuntimeStateChanged?.Invoke(this, EventArgs.Empty);
     public Func<bool, Task>? CheckAndUpdateClientAsync { get; set; }
     public Action? StartGame { get; set; }
     public Func<Task>? RunBackupAsync { get; set; }

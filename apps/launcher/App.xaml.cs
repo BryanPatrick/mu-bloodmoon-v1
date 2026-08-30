@@ -1,5 +1,7 @@
 using System.IO;
 using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
 
 namespace BloodMoon.Launcher;
 
@@ -24,9 +26,9 @@ public partial class App : Application
         var pageArgument = e.Args.FirstOrDefault(value =>
             value.StartsWith("--render-preview-page=", StringComparison.OrdinalIgnoreCase));
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(outputPath))!);
+        RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
+        window.PreviewMode = true;
         window.ShowActivated = false;
-        window.Left = -10000;
-        window.Top = -10000;
         window.Show();
         // Loaded (async) must finish -- pages/bootstrap/slot content are
         // populated there -- before navigating for a QA screenshot.
@@ -36,6 +38,7 @@ public partial class App : Application
         {
             window.NavigateForPreview(page);
         }
+        await Task.Delay(TimeSpan.FromMilliseconds(750));
         await window.RenderPreviewAsync(outputPath);
         window.Close();
         Shutdown();

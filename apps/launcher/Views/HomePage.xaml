@@ -76,14 +76,9 @@
       </Grid>
     </ScrollViewer>
 
-    <!-- NEWS + SOCIALS + UTILITIES -->
+    <!-- Latest CMS news. Social and utility regions belong to the stable shell. -->
     <Grid Grid.Row="1" Margin="24,0,24,20">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="2*" />
-        <ColumnDefinition Width="16" />
-        <ColumnDefinition Width="1*" />
-      </Grid.ColumnDefinitions>
-      <Border Grid.Column="0" Style="{StaticResource Card}">
+      <Border Style="{StaticResource Card}">
         <StackPanel>
           <DockPanel>
             <TextBlock Text="NOTÍCIAS" Style="{StaticResource LauncherSectionTitle}" />
@@ -103,24 +98,6 @@
               </DataTemplate>
             </ItemsControl.ItemTemplate>
           </ItemsControl>
-        </StackPanel>
-      </Border>
-      <Border Grid.Column="2" Style="{StaticResource Card}">
-        <StackPanel>
-          <TextBlock Text="REDES SOCIAIS" Style="{StaticResource LauncherLabel}" />
-          <ItemsControl x:Name="SocialItems" Margin="0,8,0,10">
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <Button Content="{Binding Label}" Style="{StaticResource LauncherTextButton}" Margin="0,0,0,6" HorizontalAlignment="Stretch" Click="SocialItem_Click" />
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
-          <TextBlock Text="UTILITÁRIOS" Style="{StaticResource LauncherLabel}" />
-          <UniformGrid Rows="1" Margin="0,8,0,0">
-            <Button Content="SUPORTE" Style="{StaticResource LauncherTextButton}" Margin="0,0,4,0" Click="Utility_Click" Tag="support" />
-            <Button Content="SITE" Style="{StaticResource LauncherTextButton}" Margin="4,0,4,0" Click="Utility_Click" Tag="site" />
-            <Button Content="WIKI" Style="{StaticResource LauncherTextButton}" Margin="4,0,0,0" Click="Utility_Click" Tag="wiki" />
-          </UniformGrid>
         </StackPanel>
       </Border>
     </Grid>

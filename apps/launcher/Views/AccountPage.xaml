@@ -2,14 +2,29 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Grid Background="{StaticResource Brush.BackgroundVoid}">
-    <Grid x:Name="SignedOutPanel" Visibility="Collapsed">
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+    <Grid x:Name="SignedOutPanel" Grid.RowSpan="2" Visibility="Collapsed">
       <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
         <TextBlock Text="Entre na sua conta para ver este conteúdo." Foreground="{StaticResource Brush.TextMuted}" FontSize="14" />
         <Button Content="ENTRAR" Margin="0,14,0,0" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Center" Click="Login_Click" />
       </StackPanel>
     </Grid>
 
-    <Grid x:Name="ContentPanel" Margin="24,20">
+    <Border x:Name="AccountStatusPanel" Grid.Row="0" Margin="24,18,24,0" Padding="12" Style="{StaticResource Card}">
+      <Grid>
+        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <StackPanel>
+          <TextBlock x:Name="AccountIdentityText" Text="CONTA BLOOD MOON" Foreground="{StaticResource Brush.TextPrimary}" FontFamily="{StaticResource Font.Display}" FontWeight="Bold" FontSize="15"/>
+          <TextBlock x:Name="AccountRoleText" Margin="0,3,0,0" Foreground="{StaticResource Brush.TextMuted}" FontSize="10"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+          <TextBlock x:Name="ProvisioningStateText" TextAlignment="Right" Foreground="{StaticResource Brush.TextSecondary}" FontFamily="{StaticResource Font.Compact}" FontSize="10"/>
+          <TextBlock x:Name="AccountSecurityText" Text="SESSÃO PROTEGIDA" Margin="0,3,0,0" TextAlignment="Right" Foreground="{StaticResource Brush.Success}" FontSize="9"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Grid x:Name="ContentPanel" Grid.Row="1" Margin="24,12,24,20">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="1.2*" />
         <ColumnDefinition Width="16" />

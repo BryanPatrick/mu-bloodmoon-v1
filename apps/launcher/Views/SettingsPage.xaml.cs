@@ -21,6 +21,7 @@ public partial class SettingsPage : UserControl, ILauncherPage
     // yet -- every XAML-driven handler below checks this before touching
     // any named element.
     private bool _initialized;
+    private bool _refreshingState;
 
     public SettingsPage()
     {
@@ -42,6 +43,7 @@ public partial class SettingsPage : UserControl, ILauncherPage
 
     public Task RefreshAsync()
     {
+        _refreshingState = true;
         var settings = _context.Settings;
         GameResolutionCombo.SelectedIndex = Math.Clamp(settings.ResolutionIndex, 0, 7);
         LanguageCombo.SelectedIndex = settings.Language switch { "Eng" => 1, "Spn" => 2, _ => 0 };
@@ -63,6 +65,7 @@ public partial class SettingsPage : UserControl, ILauncherPage
         PerformanceModeCheck.IsChecked = settings.PerformanceMode;
 
         ApplyAccountChip();
+        _refreshingState = false;
         return Task.CompletedTask;
     }
 
@@ -97,7 +100,7 @@ public partial class SettingsPage : UserControl, ILauncherPage
         // Live preview -- Part L: selecting a profile applies immediately,
         // APLICAR only persists it (matches how the resolution combo felt
         // in the pre-existing overlay: instant feedback, explicit save).
-        if (_initialized && _context is not null && ViewportCombo.SelectedIndex >= 0)
+        if (_initialized && !_refreshingState && _context is not null && ViewportCombo.SelectedIndex >= 0)
         {
             _context.ApplyResolutionProfile?.Invoke(ViewportCombo.SelectedIndex);
         }

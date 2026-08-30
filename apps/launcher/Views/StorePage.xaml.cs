@@ -38,7 +38,11 @@ public partial class StorePage : UserControl, ILauncherPage
         var currencies = _context.Slots.GetList("store.currencyIcon", element => SlotRegistryMapper.StringField(element, "currency"));
         CurrencyIcons.ItemsSource = currencies.Count > 0 ? currencies : ["WCOIN", "GOBLIN_POINT", "HUNT_POINT"];
 
-        try
+        if (_context.PreviewMode)
+        {
+            _products = [];
+        }
+        else try
         {
             var response = await _context.ApiClient.GetStoreProductsAsync(CancellationToken.None);
             _products = response.Data;
@@ -51,7 +55,11 @@ public partial class StorePage : UserControl, ILauncherPage
         ProductGrid.ItemsSource = _products;
         NoProductsText.Visibility = _products.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
-        try
+        if (_context.PreviewMode)
+        {
+            _activeTerms = null;
+        }
+        else try
         {
             _activeTerms = await _context.ApiClient.GetActiveTermsAsync(CancellationToken.None);
         }
