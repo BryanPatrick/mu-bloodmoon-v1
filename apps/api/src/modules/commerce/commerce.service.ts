@@ -1,6 +1,5 @@
 ﻿import { BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common'
 import type {
-  Account,
   CurrencyCode,
   Prisma,
   PurchaseIntentStatus,
@@ -18,6 +17,7 @@ import { ObservabilityService } from '../observability/observability.service'
 import { PAYMENT_PROVIDER, type PaymentProvider } from '../payments/payment-provider.interface'
 import { PaymentWebhookEventService } from '../payments/payment-webhook-event.service'
 import { mapMercadoPagoOrderStatus } from '../payments/mercadopago.status-map'
+import { WalletLedgerService } from '../wallet/wallet-ledger.service'
 import type {
   CommerceQuery,
   CreatePurchaseIntentPayload,
@@ -228,7 +228,8 @@ export class CommerceService {
     private readonly audit: AuditService,
     private readonly observability: ObservabilityService,
     @Inject(PAYMENT_PROVIDER) private readonly paymentProvider: PaymentProvider,
-    private readonly webhookEvents: PaymentWebhookEventService
+    private readonly webhookEvents: PaymentWebhookEventService,
+    private readonly walletLedger: WalletLedgerService
   ) {}
 
   async ensureSeeded() {
@@ -573,11 +574,14 @@ export class CommerceService {
         if (!reserved.count) throw new BadRequestException('Insufficient product stock')
       }
 
-      const charged = await tx.accountCurrency.updateMany({
-        where: { accountId: user.id, currency, balance: { gte: totalPrice } },
-        data: { balance: { decrement: totalPrice } }
+      // Buying FROM the platform, not another player -- STORE_PURCHASE,
+      // never P2P-taxed.
+      await this.walletLedger.debit(tx, user.id, currency, totalPrice, {
+        idempotencyKey: `store-purchase-debit:${correlationId}`,
+        type: 'STORE_PURCHASE',
+        sourceType: 'PurchaseIntent',
+        metadata: { productId: product.id, variantId: variant?.id || null, quantity }
       })
-      if (!charged.count) throw new BadRequestException('Insufficient balance')
 
       return tx.purchaseIntent.create({
         data: {
@@ -1037,11 +1041,23 @@ export class CommerceService {
       }
 
       if (payload.status === 'COMPLETED' && purchase.status !== 'COMPLETED') {
-        await this.debitCurrency(tx, purchase.account, purchase.currency, purchase.price)
+        await this.walletLedger.debit(tx, purchase.accountId, purchase.currency, purchase.price, {
+          idempotencyKey: `admin-purchase-complete-debit:${purchase.id}`,
+          type: 'ADMIN_ADJUSTMENT',
+          sourceType: 'PurchaseIntent',
+          sourceId: purchase.id,
+          metadata: { actorId: user.id, actorUsername: user.username, previousStatus: purchase.status }
+        })
       }
 
       if (purchase.status === 'COMPLETED' && payload.status === 'CANCELLED') {
-        await this.creditCurrency(tx, purchase.accountId, purchase.currency, purchase.price)
+        await this.walletLedger.credit(tx, purchase.accountId, purchase.currency, purchase.price, {
+          idempotencyKey: `admin-purchase-cancel-credit:${purchase.id}`,
+          type: 'ADMIN_ADJUSTMENT',
+          sourceType: 'PurchaseIntent',
+          sourceId: purchase.id,
+          metadata: { actorId: user.id, actorUsername: user.username, previousStatus: purchase.status }
+        })
       }
 
       const updated = await tx.purchaseIntent.update({
@@ -1127,11 +1143,27 @@ export class CommerceService {
         let refundClawbackFailed = false
 
         if (nextStatus === 'PAID' && recharge.status !== 'PAID') {
-          await this.creditCurrency(tx, recharge.accountId, recharge.currency, amount)
+          // The real-money -> WC provenance link (Part E/F traceability):
+          // this ledger row's paymentProvenanceRef is the RechargeIntent
+          // itself, answering "which payment created this WC credit?"
+          // directly from the ledger, not by cross-referencing tables.
+          await this.walletLedger.credit(tx, recharge.accountId, recharge.currency, amount, {
+            idempotencyKey: `recharge-credit:${recharge.id}`,
+            type: 'WC_PURCHASE_CREDIT',
+            sourceType: 'RechargeIntent',
+            sourceId: recharge.id,
+            paymentProvenanceRef: recharge.id
+          })
         }
 
         if (recharge.status === 'PAID' && nextStatus === 'CANCELLED') {
-          await this.debitCurrency(tx, recharge.account, recharge.currency, amount)
+          await this.walletLedger.debit(tx, recharge.accountId, recharge.currency, amount, {
+            idempotencyKey: `recharge-cancel-clawback:${recharge.id}`,
+            type: 'PAYMENT_REVERSAL',
+            sourceType: 'RechargeIntent',
+            sourceId: recharge.id,
+            paymentProvenanceRef: recharge.id
+          })
         }
 
         if (recharge.status === 'PAID' && nextStatus === 'REFUNDED') {
@@ -1139,7 +1171,13 @@ export class CommerceService {
           // Never let that silently corrupt the transition -- fall back to
           // REFUND_PENDING and raise a CRITICAL alert for a human instead.
           try {
-            await this.debitCurrency(tx, recharge.account, recharge.currency, amount)
+            await this.walletLedger.debit(tx, recharge.accountId, recharge.currency, amount, {
+              idempotencyKey: `recharge-refund-clawback:${recharge.id}`,
+              type: 'PAYMENT_REVERSAL',
+              sourceType: 'RechargeIntent',
+              sourceId: recharge.id,
+              paymentProvenanceRef: recharge.id
+            })
           } catch {
             refundClawbackFailed = true
           }
@@ -1199,26 +1237,6 @@ export class CommerceService {
       },
       { isolationLevel: 'Serializable' }
     )
-  }
-
-  private async creditCurrency(tx: Prisma.TransactionClient, accountId: string, currency: CurrencyCode, amount: number) {
-    await tx.accountCurrency.upsert({
-      where: { accountId_currency: { accountId, currency } },
-      create: { accountId, currency, balance: Math.max(0, amount) },
-      update: { balance: { increment: Math.max(0, amount) } }
-    })
-  }
-
-  private async debitCurrency(tx: Prisma.TransactionClient, account: Account, currency: CurrencyCode, amount: number) {
-    const wallet = await tx.accountCurrency.findUnique({ where: { accountId_currency: { accountId: account.id, currency } } })
-    const balance = wallet?.balance || 0
-    if (balance < amount) {
-      throw new BadRequestException('Saldo insuficiente para concluir a operacao.')
-    }
-    await tx.accountCurrency.update({
-      where: { accountId_currency: { accountId: account.id, currency } },
-      data: { balance: { decrement: amount } }
-    })
   }
 
   private mapPurchase(item: Prisma.PurchaseIntentGetPayload<{ include: { account: true, product: true } }>) {

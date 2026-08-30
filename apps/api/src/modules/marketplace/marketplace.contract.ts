@@ -106,7 +106,17 @@ export type MarketplaceTaskPayload = {
 
 export type MarketplaceEconomyPayload = {
   publicationFee: number
+  // DEPRECATED -- see the field comment on MarketplaceEconomyConfig in
+  // schema.prisma. Still accepted (existing admin UI may still send it)
+  // but no longer read by the fee-calculation code.
   saleFeePercent: number
+  // Per-currency P2P transaction tax (Open Beta P0). wcoinTaxPercent is
+  // the decided 10% economic sink; goblinPointTaxPercent/
+  // huntPointTaxPercent default to and stay at the pre-existing 5% rate
+  // unless an admin explicitly changes them -- never silently raised.
+  wcoinTaxPercent: number
+  goblinPointTaxPercent: number
+  huntPointTaxPercent: number
   listingDurationHours: number
   maxListings: number
   vipDiscountPercent: number

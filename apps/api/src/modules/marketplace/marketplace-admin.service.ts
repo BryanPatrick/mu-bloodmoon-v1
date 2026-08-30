@@ -10,6 +10,7 @@ import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
 import { ObservabilityService } from '../observability/observability.service'
+import { WalletLedgerService } from '../wallet/wallet-ledger.service'
 import type {
   MarketplaceAdminActionPayload,
   MarketplaceAdminQuery,
@@ -52,7 +53,8 @@ export class MarketplaceAdminService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
-    private readonly observability: ObservabilityService
+    private readonly observability: ObservabilityService,
+    private readonly walletLedger: WalletLedgerService
   ) {}
 
   async dashboard(user: AuthenticatedUser) {
@@ -382,19 +384,12 @@ export class MarketplaceAdminService {
         throw new BadRequestException('A transacao mudou enquanto era processada. Recarregue a tela.')
       }
       if (order.paidAt) {
-        await tx.accountCurrency.upsert({
-          where: {
-            accountId_currency: {
-              accountId: order.buyerAccountId,
-              currency: order.currency
-            }
-          },
-          create: {
-            accountId: order.buyerAccountId,
-            currency: order.currency,
-            balance: order.price
-          },
-          update: { balance: { increment: order.price } }
+        await this.walletLedger.credit(tx, order.buyerAccountId, order.currency, order.price, {
+          idempotencyKey: `admin-market-order-${payload.action.toLowerCase()}:${order.id}`,
+          type: 'REFUND',
+          sourceType: 'PlayerMarketOrder',
+          sourceId: order.id,
+          metadata: { actorId: user.id, actorUsername: user.username, reason, action: payload.action }
         })
       }
       await tx.playerMarketListing.update({
@@ -855,11 +850,20 @@ export class MarketplaceAdminService {
       throw new BadRequestException('Selecione ao menos uma moeda aceita.')
     }
     const before = await this.economy()
+    // The existing admin UI (apps/web) predates these three fields and
+    // does not send them yet -- fall back to the CURRENT stored value
+    // rather than Math.floor(undefined) corrupting the config to NaN on
+    // every save until the frontend is updated separately.
+    const clampPercentOrKeep = (value: number | undefined, current: number) =>
+      Number.isFinite(value) ? Math.max(0, Math.min(100, Math.floor(value as number))) : current
     const after = await this.prisma.marketplaceEconomyConfig.update({
       where: { id: 'default' },
       data: {
         publicationFee: Math.max(0, Math.floor(payload.publicationFee)),
         saleFeePercent: Math.max(0, Math.min(100, Math.floor(payload.saleFeePercent))),
+        wcoinTaxPercent: clampPercentOrKeep(payload.wcoinTaxPercent, before.wcoinTaxPercent),
+        goblinPointTaxPercent: clampPercentOrKeep(payload.goblinPointTaxPercent, before.goblinPointTaxPercent),
+        huntPointTaxPercent: clampPercentOrKeep(payload.huntPointTaxPercent, before.huntPointTaxPercent),
         listingDurationHours: Math.max(1, Math.floor(payload.listingDurationHours)),
         maxListings: Math.max(1, Math.floor(payload.maxListings)),
         vipDiscountPercent: Math.max(0, Math.min(100, Math.floor(payload.vipDiscountPercent))),

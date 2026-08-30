@@ -1,6 +1,7 @@
 ﻿import { Module } from '@nestjs/common'
 import { AuditModule } from '../audit/audit.module'
 import { AuthModule } from '../auth/auth.module'
+import { WalletModule } from '../wallet/wallet.module'
 import { MarketplaceController } from './marketplace.controller'
 import { MarketplaceAdminController } from './marketplace-admin.controller'
 import { MarketplaceAdminService } from './marketplace-admin.service'
@@ -14,7 +15,7 @@ import { MarketplaceService } from './marketplace.service'
 // absent from the array below: Nest never registers its routes, so a
 // request to them 404s at the router, not a 403 from a guard.
 @Module({
-  imports: [AuthModule, AuditModule],
+  imports: [AuthModule, AuditModule, WalletModule],
   controllers: [
     MarketplaceController,
     MarketplaceAdminController,

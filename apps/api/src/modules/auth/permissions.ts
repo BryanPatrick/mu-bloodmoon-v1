@@ -57,6 +57,8 @@ export const permissionKeys = {
   adminMarketplaceEconomyManage: 'admin.marketplace.economy.manage',
   adminMarketplaceTasksManage: 'admin.marketplace.tasks.manage',
   adminMarketplaceReportsView: 'admin.marketplace.reports.view',
+  adminVipManage: 'admin.vip.manage',
+  adminBetaLifecycleManage: 'admin.beta-lifecycle.manage',
   adminCommunityView: 'admin.community.view',
   adminCommunityPostsModerate: 'admin.community.posts.moderate',
   adminCommunityCommentsModerate: 'admin.community.comments.moderate',

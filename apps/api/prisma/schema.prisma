@@ -21,6 +21,19 @@ enum AccountStatus {
   BLOCKED
 }
 
+// Open Beta P0 foundation. Explicitly assigned by the backend at
+// registration time (auth.service.ts), keyed off a server-side Open Beta
+// window config -- never inferred from createdAt after the fact, and
+// never left to a client clock. PRE_BETA is the column default so any
+// account-creation path that doesn't explicitly set this (a seed script,
+// an admin tool) fails safe toward "not yet trusted as an official
+// account" rather than silently defaulting to OFFICIAL.
+enum AccountPhase {
+  PRE_BETA
+  OPEN_BETA
+  OFFICIAL
+}
+
 // Phase 3B. State machine for GameAccountIdentity.provisioningStatus --
 // see docs/game-data/game-account-provisioning-contract.md. Deliberately
 // separate from AccountStatus: a Blood Moon Account can be fully ACTIVE
@@ -154,6 +167,11 @@ enum StoreDeliveryTarget {
   INVENTORY
   VAULT
   MAIL
+  // Open Beta P0 foundation: a VIP purchase delivers a time-based
+  // entitlement (VipEntitlement/VipGrant), not an item -- distinct from
+  // every other target above, which all deliver something into the game
+  // world. Added additively; no existing StoreDelivery row is affected.
+  VIP_ENTITLEMENT
 }
 
 enum RechargeIntentStatus {
@@ -378,6 +396,15 @@ enum GameBridgeOperation {
   DELIVER_ITEM
   CREDIT_CURRENCY
   SYNC_INVENTORY
+  // Open Beta P0 foundation. apps/api owns the VIP entitlement's expiry
+  // as the source of truth (VipEntitlement) -- this job is the sync
+  // trigger toward GameServer, queued on every grant/extension, exactly
+  // like LOCK_ITEM/CREDIT_CURRENCY are queued today. No worker-side
+  // handler is implemented this phase (foundation only, per the P0
+  // scope) -- jobs of this type accumulate PENDING until a real handler
+  // exists, the same state every other operation type would be in if
+  // MU_BRIDGE_ENABLED were never turned on.
+  GRANT_VIP
 }
 
 enum GameBridgeStatus {
@@ -549,6 +576,7 @@ model Account {
   twoFactorPending          String?                     @db.Text
   role                      Role                        @default(PLAYER)
   status                    AccountStatus               @default(PENDING)
+  accountPhase              AccountPhase                @default(PRE_BETA)
   createdAt                 DateTime                    @default(now())
   updatedAt                 DateTime                    @updatedAt
   currencies                AccountCurrency[]
@@ -595,6 +623,29 @@ model Account {
   gmEventResultsValidated   GmEventResult[]             @relation("GmEventResultValidatedBy")
   gameIdentity              GameAccountIdentity?
   gameCredential            GameAccountCredential?
+  termsAcceptances          AccountTermsAcceptance[]
+  vipEntitlement            VipEntitlement?
+  walletLedgerEntries       WalletLedgerEntry[]         @relation("WalletLedgerOwner")
+  walletLedgerCounterparty  WalletLedgerEntry[]         @relation("WalletLedgerCounterparty")
+}
+
+// Open Beta P0 foundation (Part L). Versioned, auditable acceptance record
+// -- deliberately NOT a bare `acceptedTerms: Boolean` on Account, since
+// that can't answer "which version, when." `termsKey` distinguishes
+// different documents (the Open Beta notice vs. a future general ToS)
+// that may each version independently. ipAddress is optional and kept
+// minimal -- exactly the same discipline AccountSession already applies
+// elsewhere in this schema (real, precedented pattern, not a new one).
+model AccountTermsAcceptance {
+  id           String   @id @default(uuid())
+  accountId    String
+  termsKey     String   @db.VarChar(80)
+  termsVersion Int
+  acceptedAt   DateTime @default(now())
+  ipAddress    String?  @db.VarChar(80)
+  account      Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId, termsKey])
 }
 
 // Phase 3B. The Portal-side half of the Unified Blood Moon Account model
@@ -1009,6 +1060,14 @@ model AccountCurrency {
   accountId String
   currency  CurrencyCode
   balance   Int          @default(0)
+  // Open Beta P0 foundation (WC tax fixed-point accumulator). Only
+  // meaningful for the WCOIN row today -- GP/HP rows leave this at 0 since
+  // their tax rate isn't required to be fractionally exact per the
+  // decided policy. 1 WC = 10,000 subunits (see wallet-ledger.service.ts).
+  // Tracks fee obligation accrued but not yet realized as a whole-WC
+  // balance deduction; never let this field alone drive a balance
+  // negative -- see WalletLedgerService.settleAccumulator.
+  feeAccumulatorSubunits Int @default(0)
   account   Account      @relation(fields: [accountId], references: [id])
 
   @@unique([accountId, currency])
@@ -1964,9 +2023,30 @@ model MarketplaceTask {
 model MarketplaceEconomyConfig {
   id                   String   @id @default("default")
   publicationFee       Int      @default(0)
+  // DEPRECATED (Open Beta P0 audit, Phase 12): superseded by the three
+  // per-currency fields below. Kept, not dropped, so the existing admin
+  // API contract (marketplace-admin.service.ts) doesn't break -- but
+  // marketplace.service.ts's fee calculation no longer reads this field.
+  // Do not wire new behavior to it.
   saleFeePercent       Int      @default(5)
+  // Per-currency P2P transaction tax, replacing saleFeePercent (Open Beta
+  // P0). wcoinTaxPercent honors the decided 10% WC economic sink via the
+  // fixed-point accumulator (wallet-ledger.service.ts) -- goblinPoint/
+  // huntPoint stay at their pre-existing 5% rate, explicitly preserved
+  // per instruction ("do NOT raise GP/HP to 10% in this phase").
+  wcoinTaxPercent       Int      @default(10)
+  goblinPointTaxPercent Int      @default(5)
+  huntPointTaxPercent   Int      @default(5)
   listingDurationHours Int      @default(168)
   maxListings          Int      @default(10)
+  // DEAD FIELD (Open Beta P0 audit, Phase 12): confirmed never read by
+  // any fee-calculation code in marketplace.service.ts -- grepped across
+  // the whole module, zero references outside this model definition and
+  // the admin CRUD endpoint that lets it be set. Not activated. Not
+  // wired to VIP tiers. Left in place (not dropped) only because the
+  // admin API already exposes it and dropping it is a separate, later
+  // decision -- do not build new behavior on top of it without first
+  // confirming that's actually intended.
   vipDiscountPercent   Int      @default(0)
   acceptedCurrencies   Json
   minimumPrice         Int      @default(1)
@@ -1976,6 +2056,220 @@ model MarketplaceEconomyConfig {
   updatedBy            String?  @db.VarChar(191)
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
+}
+
+// ===================================================================
+// Open Beta P0 foundation -- wallet ledger (Parts C/D/E of the Economy
+// audit, "WC ledger" in product decisions). Currency-aware by design: the
+// real fee code already applies uniformly across WCOIN/GOBLIN_POINT/
+// HUNT_POINT, so a WC-only ledger would leave GP/HP movements exactly as
+// untraceable as they are today. Every AccountCurrency balance mutation
+// this phase touches (marketplace purchase/sale, recharge credit) writes
+// exactly one row here, inside the same Prisma transaction as the
+// balance change itself -- see wallet-ledger.service.ts.
+// ===================================================================
+
+enum WalletTransactionType {
+  WC_PURCHASE_CREDIT
+  PLAYER_MARKET_PURCHASE
+  PLAYER_DIRECT_TRANSFER
+  SERVER_REWARD
+  BUG_HUNTER_REWARD
+  ADMIN_ADJUSTMENT
+  PAYMENT_REVERSAL
+  REFUND
+  SYSTEM_CORRECTION
+  // Not in the phase spec's suggested list, added for real ledger
+  // completeness: a ShopProduct purchase (the official Blood Moon store,
+  // commerce.service.ts) spends WC/GP/HP too, but is bought FROM the
+  // platform, not another player -- never P2P-taxed, same as
+  // WC_PURCHASE_CREDIT/SERVER_REWARD. Left out of the ledger, this would
+  // be a real gap in "what happened to this WC after it was credited."
+  STORE_PURCHASE
+}
+
+enum WalletLedgerStatus {
+  SETTLED
+  REVERSED
+}
+
+model WalletLedgerEntry {
+  id                            String                @id @default(uuid())
+  // Enforces NO_DUPLICATE_FEE_ON_IDEMPOTENT_RETRY at the database level,
+  // not just in application logic -- a retry with the same key can only
+  // ever produce one row.
+  idempotencyKey                String                @unique @db.VarChar(191)
+  type                          WalletTransactionType
+  currency                      CurrencyCode
+  // Nullable + SetNull, matching the existing AccountModeration/AuditEvent/
+  // GameBridgeJob pattern in this schema: a ledger row is audit history
+  // and must outlive the account it was about (relevant to Beta account
+  // deletion later) rather than cascade-deleting with it.
+  accountId                     String?
+  counterpartyAccountId         String?
+  grossAmount                   Int
+  // Whole-unit fee actually collected (balance-deducted) in THIS
+  // transaction -- can be 0 for a small transaction whose fee obligation
+  // is still accruing in the accumulator, not yet a whole unit.
+  taxAmount                     Int                   @default(0)
+  netAmount                     Int
+  // The EXACT fee obligation this transaction contributed, in subunits
+  // (1 currency unit = 10,000 subunits) -- always precise even when
+  // taxAmount is 0, so EXACT_CUMULATIVE_10_PERCENT is directly verifiable
+  // from ledger rows alone without reconstructing it from accumulator
+  // deltas.
+  feeObligationSubunits         Int                   @default(0)
+  feeAccumulatorSubunitsBefore  Int?
+  feeAccumulatorSubunitsAfter   Int?
+  sourceType                    String?               @db.VarChar(80)
+  sourceId                      String?
+  // e.g. a RechargeIntent.id, when this entry is traceable to a real
+  // payment -- the Part E/F chargeback-traceability link.
+  paymentProvenanceRef          String?
+  status                        WalletLedgerStatus    @default(SETTLED)
+  metadata                      Json?
+  createdAt                     DateTime              @default(now())
+  account                       Account?              @relation("WalletLedgerOwner", fields: [accountId], references: [id], onDelete: SetNull)
+  counterparty                  Account?              @relation("WalletLedgerCounterparty", fields: [counterpartyAccountId], references: [id], onDelete: SetNull)
+
+  @@index([accountId, createdAt])
+  @@index([counterpartyAccountId, createdAt])
+  @@index([type, createdAt])
+  @@index([sourceType, sourceId])
+}
+
+// ===================================================================
+// Open Beta P0 foundation -- Beta reward entitlement (Part K). Deliberately
+// decoupled from Account: survives Beta account deletion by design (a
+// hashed, normalized email is the durability anchor, not a live FK).
+// ===================================================================
+
+enum BetaRewardEntitlementStatus {
+  PENDING
+  ELIGIBLE
+  REJECTED
+  CLAIMED
+  REVOKED
+}
+
+model BetaRewardEntitlement {
+  id                   String                       @id @default(uuid())
+  betaCycleId          String                       @db.VarChar(80)
+  // Hashed, never plaintext -- "do not store more personal data than
+  // necessary" (Part K). Claim-time lookup hashes the new account's own
+  // normalized email the same way and compares hashes, never storing or
+  // querying a plaintext email against this table.
+  normalizedEmailHash  String                       @db.VarChar(191)
+  // Kept only as long as legally/technically appropriate; nullable so it
+  // can be cleared post-deletion without invalidating the row (Part J).
+  originalAccountId    String?
+  rewardType           String                       @db.VarChar(80)
+  rewardAmount         Int
+  reason               String                       @db.Text
+  sourceType           String                       @db.VarChar(80)
+  sourceId             String?
+  status               BetaRewardEntitlementStatus  @default(PENDING)
+  createdAt            DateTime                     @default(now())
+  claimedAt            DateTime?
+  claimedByAccountId   String?
+
+  @@index([normalizedEmailHash, betaCycleId])
+  @@index([status])
+}
+
+// ===================================================================
+// Open Beta P0 foundation -- VIP (Parts F/G/H). One VipEntitlement row
+// per account (current state, extend-in-place); VipGrant is the
+// append-only history of every purchase/extension, mirroring the
+// WalletLedgerEntry idempotency pattern.
+// ===================================================================
+
+enum VipTier {
+  BRONZE
+  SILVER
+  GOLD
+}
+
+enum VipEntitlementStatus {
+  INACTIVE
+  ACTIVE
+  EXPIRED
+}
+
+model VipEntitlement {
+  id               String                @id @default(uuid())
+  accountId        String                @unique
+  tier             VipTier?
+  activatedAt      DateTime?
+  expiresAt        DateTime?
+  // Cumulative days ever granted -- audit/analytics only, never used to
+  // compute current status (expiresAt is the only source of truth for
+  // "is VIP active right now").
+  totalDaysGranted Int                   @default(0)
+  status           VipEntitlementStatus  @default(INACTIVE)
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+  account          Account               @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  grants           VipGrant[]
+}
+
+model VipGrant {
+  id                 String          @id @default(uuid())
+  vipEntitlementId   String
+  accountId          String
+  tier               VipTier
+  durationDays       Int
+  sourceType         String          @db.VarChar(80)
+  sourceId           String?
+  idempotencyKey     String          @unique @db.VarChar(191)
+  grantedAt          DateTime        @default(now())
+  previousExpiresAt  DateTime?
+  newExpiresAt       DateTime
+  vipEntitlement     VipEntitlement  @relation(fields: [vipEntitlementId], references: [id], onDelete: Cascade)
+
+  @@index([accountId, grantedAt])
+}
+
+// All bonus values default to 0/disabled per explicit instruction ("leave
+// unapproved bonuses disabled/zero" / "Do NOT define Bronze +X XP... yet").
+// `enabled` is a master switch, also off by default -- flipping individual
+// bonus numbers alone is never enough to activate a benefit.
+model VipBenefitConfig {
+  tier                     VipTier  @id
+  xpBonusPercent           Int      @default(0)
+  dropBonusPercent         Int      @default(0)
+  chaosMachineBonusPercent Int      @default(0)
+  resetBenefitEnabled      Boolean  @default(false)
+  enabled                  Boolean  @default(false)
+  updatedBy                String?  @db.VarChar(191)
+  updatedAt                DateTime @updatedAt
+}
+
+// Dedicated, lightweight VIP catalog -- deliberately NOT reusing
+// ShopProduct/StoreDelivery. That pipeline's delivery step is
+// admin-manually processed today (store-admin.service.ts, no automatic
+// worker exists yet) and is item-shaped, not time-entitlement-shaped;
+// forcing a VIP grant through it would either block on a human clicking
+// "process" for every purchase or require deep changes to a system this
+// phase shouldn't be touching. A VIP purchase completes synchronously
+// instead: debit -> extend VipEntitlement -> VipGrant row, all in one
+// transaction (see vip.service.ts) -- apps/api is the source of truth
+// for entitlement state (Option C from the audit), with GameServer sync
+// queued separately via GRANT_VIP.
+// `enabled: false` and `price: 0` by default on every seeded row -- per
+// explicit instruction, nothing is purchasable until priced and approved.
+model VipProductConfig {
+  id           String       @id @default(uuid())
+  tier         VipTier
+  durationDays Int
+  price        Int          @default(0)
+  currency     CurrencyCode @default(WCOIN)
+  enabled      Boolean      @default(false)
+  updatedBy    String?      @db.VarChar(191)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@unique([tier, durationDays])
 }
 
 model CommunityProfile {
