@@ -108,4 +108,23 @@ Both follow the exact job-queue shape already proven for `GRANT_VIP` in Part C (
 - `GameBridgeOperation` gains `ANONYMIZE_GAME_ACCOUNT` and `PURGE_GAME_ACCOUNT`.
 - `Account.status` gains no new enum value this phase (using existing `BLOCKED` + a new `deletedAt` timestamp field is sufficient to distinguish "deleted" from "ordinarily blocked" without a schema-wide enum migration) — flagged as a minimal, deliberate choice, not an oversight; a dedicated `DELETED` status is one migration away if product wants a cleaner signal later.
 
+## Beta end-of-cycle deletion workflow — engineered this phase, not executed
+
+The operational sequence a real Beta-cycle wind-down would follow, built (dry-run, eligibility, execution primitives) but never run against real data this phase:
+
+1. Beta cycle ends (product decision, external to this system).
+2. Admin calls `GET beta/registration-notice`-adjacent reporting / Phase 13's `cleanupDryRun(betaCycleId)` to get the full `WOULD_DELETE`/`BLOCKED`/`UNKNOWN_DEPENDENCY` picture for every `OPEN_BETA` account in that cycle.
+3. Admin cross-references against `GET admin/accounts/deletion/pre-beta-purge/dry-run?betaCycleId=...` (this phase) for any accounts that are `PRE_BETA` rather than `OPEN_BETA` (test/seed accounts never promoted).
+4. For every account flagged `WOULD_DELETE` by both checks: confirm no `BetaRewardEntitlement` claim is still pending (Phase 13's `claimMyEntitlements` window should be closed by policy before this step).
+5. Snapshot: `BetaRewardEntitlement` rows are already durable and hashed-email-linked (Phase 13) — no extra snapshot step needed, by design.
+6. Admin builds an explicit `accountIds` list (never "all matching accounts") from the reviewed dry-run output.
+7. `executePreBetaPurge(actor, betaCycleId, accountIds)` re-validates eligibility per account in real time (not trusting the stale dry-run) and refuses the whole batch if any single account fails.
+8. On success: real cascading delete per account (`AccountCurrency` rows removed first, per the confirmed RESTRICT-relation finding), one `PurgeBatchRecord` for the whole batch.
+9. `ANONYMIZE_GAME_ACCOUNT`/`PURGE_GAME_ACCOUNT` `GameBridgeJob` rows are queued for any account with a `GameAccountIdentity` — real GameServer-side cleanup remains pending the same GameBridge Agent blocker noted throughout this phase.
+10. Audit record written (`admin.account.purge.pre-beta`) referencing the batch, not individual accounts (matching `PurgeBatchRecord`'s deliberately batch-shaped design).
+11. Any account that failed eligibility stays untouched — no partial purge of a blocked batch, no silent skip; the caller sees exactly which accounts blocked and why (`reasons[]`).
+12. Post-purge reconciliation: re-run the dry-run once more — an empty `WOULD_DELETE` result for the cycle confirms completion; any remaining `BLOCKED` rows are accounts requiring `NORMAL_ACCOUNT_DELETION` instead (real players who somehow ended up flagged, or accounts with financial/legal weight the eligibility check correctly caught).
+
+Steps 2, 3, 6, 7, 8, 9, 10, 11 all have real, tested code behind them this phase. Steps 1, 4, 5, 12 are process/timing steps around that code, not missing implementation.
+
 See [`pre-beta-account-review.md`](pre-beta-account-review.md) for the real, read-only review of the 9 actual accounts against this design.
