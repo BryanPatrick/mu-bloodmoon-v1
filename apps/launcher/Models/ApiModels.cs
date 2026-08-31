@@ -66,6 +66,8 @@ public sealed class LauncherAssetManifestEntry
     public string ContentType { get; set; } = "application/octet-stream";
     public string Hash { get; set; } = "";
     public long Size { get; set; }
+    public int? Width { get; set; }
+    public int? Height { get; set; }
     public string Kind { get; set; } = "";
 }
 

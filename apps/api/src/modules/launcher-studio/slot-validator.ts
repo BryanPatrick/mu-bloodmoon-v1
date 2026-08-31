@@ -5,6 +5,7 @@
 // declares what's possible, this file is what actually refuses the rest.
 import type { SlotDefinition, VisualTokenAxis } from './slot-registry'
 import { VISUAL_TOKEN_VALUES } from './slot-registry'
+import { LAUNCHER_ASSET_STATES, type LauncherAssetState } from './slot-registry'
 
 export class SlotValidationError extends Error {
   constructor(message: string) {
@@ -128,12 +129,33 @@ export function validateSlotValue(
   slot: SlotDefinition,
   input: unknown,
   assets: AssetLookup
-): { value: unknown; tokens?: Record<string, string> } {
+): { value: unknown; tokens?: Record<string, string>; assetState?: LauncherAssetState } {
   if (!isPlainObject(input)) {
     throw new SlotValidationError(`${slot.id}: corpo invalido -- esperado { value, tokens? }.`)
   }
-  const { value, tokens } = input as { value: unknown; tokens?: unknown }
+  const { value, tokens, assetState } = input as { value: unknown; tokens?: unknown; assetState?: unknown }
   const tokenResult = validateVisualTokenOverrides(slot, tokens)
+
+  if (slot.type !== 'IMAGE' && assetState !== undefined) {
+    throw new SlotValidationError(`${slot.id}: assetState so e permitido em slots IMAGE.`)
+  }
+  if (slot.type === 'IMAGE') {
+    const normalizedState: LauncherAssetState = assetState === undefined
+      ? (typeof value === 'string' && value ? 'REMOTE_ASSET' : 'INHERIT_DEFAULT')
+      : assetState as LauncherAssetState
+    if (!(LAUNCHER_ASSET_STATES as readonly unknown[]).includes(normalizedState)) {
+      throw new SlotValidationError(`${slot.id}: assetState invalido.`)
+    }
+    if (normalizedState === 'REMOTE_ASSET') {
+      if (typeof value !== 'string' || !value) throw new SlotValidationError(`${slot.id}: REMOTE_ASSET exige um asset.`)
+      validateTyped('IMAGE', value, slot.id, slot.constraints, assets)
+      return { value, tokens: tokenResult, assetState: normalizedState }
+    }
+    if (value !== null && value !== undefined && value !== '') {
+      throw new SlotValidationError(`${slot.id}: ${normalizedState} nao aceita asset remoto.`)
+    }
+    return { value: null, tokens: tokenResult, assetState: normalizedState }
+  }
 
   if (slot.type === 'ORDERED_LIST') {
     if (!Array.isArray(value)) throw new SlotValidationError(`${slot.id}: valor deve ser uma lista.`)

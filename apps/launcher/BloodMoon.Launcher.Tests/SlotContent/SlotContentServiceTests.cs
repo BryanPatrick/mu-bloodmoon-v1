@@ -104,6 +104,23 @@ public sealed class SlotContentServiceTests : IDisposable
         Assert.Equal(firstWriteTime, secondWriteTime);
     }
 
+    [Fact]
+    public async Task GetContentAsync_WhenCmsRecoversWithNewVersion_RefreshesCache()
+    {
+        var cache = new SlotContentCache("slot-content.json", _dir);
+        var source = new FakeSlotContentSource { Response = Payload(1) };
+        var service = new SlotContentService(source, cache);
+        await service.GetContentAsync(null, CancellationToken.None);
+
+        source.Response = Payload(2);
+        var recovered = await service.GetContentAsync(null, CancellationToken.None);
+
+        Assert.Equal(ContentSource.Fresh, recovered.Source);
+        Assert.False(recovered.IsStale);
+        Assert.Equal(2, recovered.Content.ContentVersion);
+        Assert.Equal("2", (await cache.LoadAsync(CancellationToken.None))!.ContentVersion);
+    }
+
     // Part BF's "malformed CMS payload" case -- a slot with no explicit
     // Value (as a truncated/malformed API response might produce) must
     // still cache and round-trip cleanly, never crash the whole boot

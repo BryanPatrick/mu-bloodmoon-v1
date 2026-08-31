@@ -432,7 +432,7 @@ public partial class MainWindow : Window
     private async Task RefreshShellContentAsync()
     {
         BrandLogoImage.Source = await SlotImageResolver.ResolveAsync(
-            _context, "home.brandLogo", _context.Slots.GetAssetId("home.brandLogo"), _shutdown.Token);
+            _context, "home.brandLogo", _context.Slots.GetAssetId("home.brandLogo"), _context.Slots.GetImageState("home.brandLogo"), _shutdown.Token);
         BrandLogoImage.Visibility = BrandLogoImage.Source is null ? Visibility.Collapsed : Visibility.Visible;
 
         var campaignTitle = _context.Slots.GetText("home.campaign.title");

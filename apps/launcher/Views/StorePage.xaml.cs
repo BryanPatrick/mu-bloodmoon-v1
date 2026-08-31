@@ -30,7 +30,7 @@ public partial class StorePage : UserControl, ILauncherPage
 
     public async Task RefreshAsync()
     {
-        var banner = await SlotImageResolver.ResolveAsync(_context, "store.featuredBannerImage", _context.Slots.GetAssetId("store.featuredBannerImage"), CancellationToken.None);
+        var banner = await SlotImageResolver.ResolveAsync(_context, "store.featuredBannerImage", _context.Slots.GetAssetId("store.featuredBannerImage"), _context.Slots.GetImageState("store.featuredBannerImage"), CancellationToken.None);
         BannerBorder.Background = banner is not null
             ? new ImageBrush(banner) { Stretch = Stretch.UniformToFill }
             : (Brush)Application.Current.Resources["Brush.BackgroundSurfaceAlt"];

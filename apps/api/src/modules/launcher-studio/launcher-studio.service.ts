@@ -1,5 +1,6 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { createHash } from 'node:crypto'
+import sharp from 'sharp'
 import { PrismaService } from '../../database/prisma.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
 import { AuditService } from '../audit/audit.service'
@@ -43,6 +44,16 @@ function isEqual(a: unknown, b: unknown) {
   return JSON.stringify(a) === JSON.stringify(b)
 }
 
+function parseSlotValue(slot: SlotDefinition, raw: unknown) {
+  const parsed = (raw ?? {}) as { value?: unknown; tokens?: Record<string, string>; assetState?: ResolvedSlot['assetState'] }
+  if (slot.type !== 'IMAGE') return { value: parsed.value ?? slot.defaultValue, tokens: parsed.tokens ?? {} }
+  const requested = parsed.assetState
+  const assetState = requested === 'REMOTE_ASSET' || requested === 'NONE' || requested === 'INHERIT_DEFAULT'
+    ? requested
+    : (typeof parsed.value === 'string' && parsed.value ? 'REMOTE_ASSET' : 'INHERIT_DEFAULT')
+  return { value: assetState === 'REMOTE_ASSET' ? parsed.value ?? null : null, tokens: parsed.tokens ?? {}, assetState }
+}
+
 @Injectable()
 export class LauncherStudioService {
   constructor(
@@ -81,15 +92,16 @@ export class LauncherStudioService {
 
   private resolveSlot(slot: SlotDefinition, row: Awaited<ReturnType<LauncherStudioService['slotRow']>>): ResolvedSlot {
     if (!row) {
-      return { id: slot.id, page: slot.page, value: slot.defaultValue, tokens: {}, status: 'UNSET' }
+      return { id: slot.id, page: slot.page, value: slot.defaultValue, tokens: {}, status: 'UNSET', ...(slot.type === 'IMAGE' ? { assetState: 'INHERIT_DEFAULT' as const } : {}) }
     }
     const value = row.status === 'PUBLISHED' ? row.publishedValue ?? row.draftValue : row.draftValue
-    const parsed = (value ?? {}) as { value?: unknown; tokens?: Record<string, string> }
+    const parsed = parseSlotValue(slot, value)
     return {
       id: slot.id,
       page: slot.page,
       value: parsed.value ?? slot.defaultValue,
-      tokens: parsed.tokens ?? {},
+      tokens: parsed.tokens,
+      ...(slot.type === 'IMAGE' ? { assetState: parsed.assetState } : {}),
       status: row.status
     }
   }
@@ -117,14 +129,12 @@ export class LauncherStudioService {
   }
 
   private resolveDraftOnly(slot: SlotDefinition, row: Awaited<ReturnType<LauncherStudioService['slotRow']>>) {
-    const parsed = (row?.draftValue ?? {}) as { value?: unknown; tokens?: Record<string, string> }
-    return { value: row ? parsed.value ?? slot.defaultValue : slot.defaultValue, tokens: parsed.tokens ?? {} }
+    return parseSlotValue(slot, row?.draftValue)
   }
 
   private resolvePublishedOnly(slot: SlotDefinition, row: Awaited<ReturnType<LauncherStudioService['slotRow']>>) {
     if (!row?.publishedValue) return null
-    const parsed = row.publishedValue as { value?: unknown; tokens?: Record<string, string> }
-    return { value: parsed.value ?? slot.defaultValue, tokens: parsed.tokens ?? {} }
+    return parseSlotValue(slot, row.publishedValue)
   }
 
   async updateSlotDraft(slotId: string, payload: AdminLauncherSlotUpdatePayload, user: AuthenticatedUser) {
@@ -132,7 +142,7 @@ export class LauncherStudioService {
     if (!slot) throw new NotFoundException(`Unknown slot "${slotId}"`)
 
     const assets = await this.assetLookup()
-    let validated: { value: unknown; tokens?: Record<string, string> }
+    let validated: ReturnType<typeof validateSlotValue>
     try {
       validated = validateSlotValue(slot, payload, assets)
     } catch (error) {
@@ -273,14 +283,18 @@ export class LauncherStudioService {
   // ---- Assets ------------------------------------------------------------
 
   async uploadAsset(payload: AdminLauncherAssetUploadPayload, user: AuthenticatedUser) {
-    const match = payload.dataUrl?.match(/^data:(image\/(?:png|jpeg|webp));base64,([A-Za-z0-9+/=]+)$/)
-    if (!match) throw new BadRequestException('Send a PNG, JPEG, or WebP image.')
+    const match = payload.dataUrl?.match(/^data:(image\/(?:png|jpeg));base64,([A-Za-z0-9+/=]+)$/)
+    if (!match) throw new BadRequestException('Send a PNG or JPEG image.')
 
     const buffer = Buffer.from(match[2], 'base64')
     if (!buffer.length || buffer.length > 5 * 1024 * 1024) {
       throw new BadRequestException('The image must be at most 5 MB.')
     }
     const mimeType = match[1]
+    const metadata = await sharp(buffer, { limitInputPixels: 40_000_000 }).metadata().catch(() => null)
+    if (!metadata?.width || !metadata.height || !['png', 'jpeg'].includes(metadata.format ?? '')) {
+      throw new BadRequestException('Send a valid PNG or JPEG image.')
+    }
 
     const sha256 = createHash('sha256').update(buffer).digest('hex')
     const existing = await this.prisma.launcherAsset.findFirst({ where: { sha256, category: payload.category } })
@@ -295,6 +309,8 @@ export class LauncherStudioService {
         name,
         category: payload.category,
         mimeType,
+        width: metadata.width,
+        height: metadata.height,
         sizeBytes: saved.sizeBytes,
         sha256: saved.sha256,
         storageProvider: this.storage.kind,
@@ -411,15 +427,19 @@ export class LauncherStudioService {
   // (deleted/never existed) is simply omitted, never a fabricated entry.
   private async buildAssetManifest(resolved: ResolvedSlot[]) {
     const ids = new Set<string>()
-    const collect = (value: unknown) => {
+    const collectIcons = (value: unknown) => {
       if (typeof value === 'string' && value) ids.add(value)
       if (Array.isArray(value)) {
         for (const item of value) {
-          if (item && typeof item === 'object' && 'iconAssetId' in item) collect((item as { iconAssetId?: unknown }).iconAssetId)
+          if (item && typeof item === 'object' && 'iconAssetId' in item) collectIcons((item as { iconAssetId?: unknown }).iconAssetId)
         }
       }
     }
-    for (const slot of resolved) collect(slot.value)
+    for (const slot of resolved) {
+      const definition = SLOT_BY_ID.get(slot.id)
+      if (definition?.type === 'IMAGE' && slot.assetState === 'REMOTE_ASSET') collectIcons(slot.value)
+      if (definition?.type === 'ORDERED_LIST') collectIcons(slot.value)
+    }
     if (ids.size === 0) return []
 
     const assets = await this.prisma.launcherAsset.findMany({ where: { id: { in: [...ids] } } })
@@ -430,7 +450,9 @@ export class LauncherStudioService {
         url: asset.publicUrl as string,
         contentType: asset.mimeType,
         hash: asset.sha256,
-        size: asset.sizeBytes
+        size: asset.sizeBytes,
+        width: asset.width,
+        height: asset.height
       }))
   }
 }

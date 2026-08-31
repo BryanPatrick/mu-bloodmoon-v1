@@ -114,6 +114,18 @@ export type LauncherAssetCategoryValue =
   | 'BRANDING'
   | 'SYSTEM'
 
+export const LAUNCHER_ASSET_STATES = ['INHERIT_DEFAULT', 'REMOTE_ASSET', 'NONE'] as const
+export type LauncherAssetState = typeof LAUNCHER_ASSET_STATES[number]
+
+export interface AssetSlotContract {
+  classification: 'EDITORIAL'
+  cmsOverrideAllowed: true
+  defaultAsset: string | null
+  renderStrategy: 'UNIFORM' | 'UNIFORM_TO_FILL'
+  noneBehavior: 'COLLAPSE' | 'EMPTY' | 'CONTROLLED_NEUTRAL'
+  cacheBehavior: 'LAST_KNOWN_GOOD'
+}
+
 export interface SlotConstraints {
   maxLength?: number
   minLength?: number
@@ -138,6 +150,7 @@ export interface SlotDefinition {
   constraints: SlotConstraints
   visualTokens: VisualTokenAxis[]
   defaultValue: unknown
+  assetContract?: AssetSlotContract
 }
 
 const image = (
@@ -145,7 +158,14 @@ const image = (
   page: LauncherPageKey,
   label: string,
   description: string,
-  opts: { aspectRatio: string; assetCategory: LauncherAssetCategoryValue; required?: boolean }
+  opts: {
+    aspectRatio: string
+    assetCategory: LauncherAssetCategoryValue
+    defaultAsset: string | null
+    renderStrategy?: AssetSlotContract['renderStrategy']
+    noneBehavior: AssetSlotContract['noneBehavior']
+    required?: boolean
+  }
 ): SlotDefinition => ({
   id,
   page,
@@ -156,11 +176,19 @@ const image = (
   constraints: {
     aspectRatio: opts.aspectRatio,
     maxSizeBytes: 5 * 1024 * 1024,
-    allowedFormats: ['image/png', 'image/jpeg', 'image/webp'],
+    allowedFormats: ['image/png', 'image/jpeg'],
     assetCategory: opts.assetCategory
   },
   visualTokens: [],
-  defaultValue: null
+  defaultValue: null,
+  assetContract: {
+    classification: 'EDITORIAL',
+    cmsOverrideAllowed: true,
+    defaultAsset: opts.defaultAsset,
+    renderStrategy: opts.renderStrategy ?? 'UNIFORM_TO_FILL',
+    noneBehavior: opts.noneBehavior,
+    cacheBehavior: 'LAST_KNOWN_GOOD'
+  }
 })
 
 const text = (
@@ -245,12 +273,17 @@ export const SLOT_REGISTRY: SlotDefinition[] = [
   // HOME
   image('home.brandLogo', 'HOME', 'Logo da marca', 'Logo exibida no topo do launcher.', {
     aspectRatio: '1:1',
-    assetCategory: 'BRANDING'
+    assetCategory: 'BRANDING',
+    defaultAsset: null,
+    renderStrategy: 'UNIFORM',
+    noneBehavior: 'COLLAPSE'
   }),
   boolean('home.hero.enabled', 'HOME', 'Hero ativo', 'Ativa/desativa o banner principal da Home.'),
   image('home.hero.image', 'HOME', 'Imagem do hero', 'Imagem principal de destaque da Home.', {
     aspectRatio: '16:9',
-    assetCategory: 'CAMPAIGNS'
+    assetCategory: 'CAMPAIGNS',
+    defaultAsset: 'Assets/Defaults/home-hero.png',
+    noneBehavior: 'EMPTY'
   }),
   text('home.hero.title', 'HOME', 'Titulo do hero', 'Titulo principal do banner de destaque.', { maxLength: 80 }),
   text('home.hero.subtitle', 'HOME', 'Subtitulo do hero', 'Texto de apoio do banner de destaque.', { maxLength: 160 }),
@@ -262,7 +295,9 @@ export const SLOT_REGISTRY: SlotDefinition[] = [
   text('home.campaign.versionLabel', 'HOME', 'Rotulo de versao', 'Ex.: "Season 6", "Open Beta".', { maxLength: 40, visualTokens: [] }),
   image('home.campaign.image', 'HOME', 'Imagem da campanha', 'Imagem da faixa de campanha.', {
     aspectRatio: '21:9',
-    assetCategory: 'CAMPAIGNS'
+    assetCategory: 'CAMPAIGNS',
+    defaultAsset: 'Assets/Defaults/editorial-environment.png',
+    noneBehavior: 'EMPTY'
   }),
   text('home.campaign.ctaLabel', 'HOME', 'Texto do botao da campanha', 'Rotulo do botao da faixa de campanha.', { maxLength: 40, visualTokens: [] }),
   link('home.campaign.ctaUrl', 'HOME', 'Link da campanha', 'Destino do botao da faixa de campanha.'),
@@ -288,14 +323,19 @@ export const SLOT_REGISTRY: SlotDefinition[] = [
   }),
   image('account.guildEmblem', 'ACCOUNT', 'Emblema de guild (generico)', 'Placeholder generico exibido quando a guild nao tem emblema proprio.', {
     aspectRatio: '1:1',
-    assetCategory: 'BRANDING'
+    assetCategory: 'BRANDING',
+    defaultAsset: null,
+    renderStrategy: 'UNIFORM',
+    noneBehavior: 'CONTROLLED_NEUTRAL'
   }),
 
   // EVENTS -- page-level banner only; individual events are their own
   // KnowledgeEntry rows (kind=EVENT), not slots.
   image('events.activeBanner', 'EVENTS', 'Banner da pagina de eventos', 'Banner de destaque no topo da pagina de Eventos.', {
     aspectRatio: '21:9',
-    assetCategory: 'EVENTS'
+    assetCategory: 'EVENTS',
+    defaultAsset: 'Assets/Defaults/editorial-environment.png',
+    noneBehavior: 'EMPTY'
   }),
 
   // RANKING
@@ -313,7 +353,9 @@ export const SLOT_REGISTRY: SlotDefinition[] = [
   }),
   image('store.featuredBannerImage', 'STORE', 'Banner de destaque da loja', 'Banner opcional no topo da pagina de Loja.', {
     aspectRatio: '21:9',
-    assetCategory: 'CAMPAIGNS'
+    assetCategory: 'CAMPAIGNS',
+    defaultAsset: 'Assets/Defaults/editorial-environment.png',
+    noneBehavior: 'EMPTY'
   })
 ]
 

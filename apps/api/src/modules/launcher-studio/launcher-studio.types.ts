@@ -1,8 +1,9 @@
-import type { LauncherAssetCategoryValue, LauncherPageKey } from './slot-registry'
+import type { LauncherAssetCategoryValue, LauncherAssetState, LauncherPageKey } from './slot-registry'
 
 export type AdminLauncherSlotUpdatePayload = {
   value: unknown
   tokens?: Record<string, string>
+  assetState?: LauncherAssetState
 }
 
 export type AdminLauncherAssetUploadPayload = {
@@ -43,6 +44,7 @@ export interface ResolvedSlot {
   value: unknown
   tokens: Record<string, string>
   status: 'DRAFT' | 'PUBLISHED' | 'UNSET'
+  assetState?: LauncherAssetState
 }
 
 // Part E's asset-resolution flow (assetId -> API-resolved metadata/url)
@@ -56,6 +58,8 @@ export interface LauncherAssetManifestEntry {
   contentType: string
   hash: string
   size: number
+  width: number | null
+  height: number | null
 }
 
 export interface LauncherContentResponse {

@@ -163,6 +163,23 @@ describe('Launcher CMS Studio', () => {
   // ---- Slot validation ----------------------------------------------------
 
   describe('slot validation', () => {
+    it('normal empty launcher content is a valid 200 contract', async () => {
+      const res = await (await request()).get('/api/launcher/content?page=SETTINGS')
+      expect(res.status).toBe(200)
+      expect(res.body).toMatchObject({ schemaVersion: 1 })
+      expect(typeof res.body.contentVersion).toBe('number')
+      expect(Array.isArray(res.body.slots)).toBe(true)
+      expect(Array.isArray(res.body.assets)).toBe(true)
+    })
+
+    it('contentVersion remains stable without a publish', async () => {
+      const first = await (await request()).get('/api/launcher/content')
+      const second = await (await request()).get('/api/launcher/content')
+      expect(first.status).toBe(200)
+      expect(second.status).toBe(200)
+      expect(second.body.contentVersion).toBe(first.body.contentVersion)
+    })
+
     it('rejects an unknown slot id', async () => {
       const { accessToken } = await registerLoginAs('ADMIN', ADMIN_PERMS)
       const res = await (await request())
@@ -244,6 +261,44 @@ describe('Launcher CMS Studio', () => {
       // what matters is the write was accepted, not rejected.
       expect(['DRAFT', 'PUBLISHED']).toContain(res.body.status)
       expect(res.body.value).toBe(upload.body.id)
+      expect(res.body.assetState).toBe('REMOTE_ASSET')
+    })
+
+    it('rejects invalid image metadata even when the data URL shape is valid', async () => {
+      const { accessToken } = await registerLoginAs('ADMIN', ADMIN_PERMS)
+      const invalid = Buffer.from('not an image').toString('base64')
+      const res = await (await request()).post('/api/admin/launcher-studio/assets/upload')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ name: 'invalid.png', category: 'CAMPAIGNS', dataUrl: `data:image/png;base64,${invalid}` })
+      expect(res.status).toBe(400)
+    })
+
+    it('formalizes REMOTE_ASSET -> INHERIT_DEFAULT -> NONE and rejects unknown state', async () => {
+      const { accessToken } = await registerLoginAs('ADMIN', ADMIN_PERMS)
+      const upload = await (await request())
+        .post('/api/admin/launcher-studio/assets/upload')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ name: 'State transition image', category: 'CAMPAIGNS', dataUrl: TINY_PNG_DATA_URL })
+      expect(upload.status).toBe(201)
+
+      const remote = await (await request()).patch('/api/admin/launcher-studio/slots/home.hero.image')
+        .set('Authorization', `Bearer ${accessToken}`).send({ value: upload.body.id, assetState: 'REMOTE_ASSET' })
+      expect(remote.status).toBe(200)
+      expect(remote.body).toMatchObject({ value: upload.body.id, assetState: 'REMOTE_ASSET' })
+
+      const inherited = await (await request()).patch('/api/admin/launcher-studio/slots/home.hero.image')
+        .set('Authorization', `Bearer ${accessToken}`).send({ value: null, assetState: 'INHERIT_DEFAULT' })
+      expect(inherited.status).toBe(200)
+      expect(inherited.body).toMatchObject({ value: null, assetState: 'INHERIT_DEFAULT' })
+
+      const none = await (await request()).patch('/api/admin/launcher-studio/slots/home.hero.image')
+        .set('Authorization', `Bearer ${accessToken}`).send({ value: null, assetState: 'NONE' })
+      expect(none.status).toBe(200)
+      expect(none.body).toMatchObject({ value: null, assetState: 'NONE' })
+
+      const invalid = await (await request()).patch('/api/admin/launcher-studio/slots/home.hero.image')
+        .set('Authorization', `Bearer ${accessToken}`).send({ value: null, assetState: 'UNKNOWN' })
+      expect(invalid.status).toBe(400)
     })
   })
 

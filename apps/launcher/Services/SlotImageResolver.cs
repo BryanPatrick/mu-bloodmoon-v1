@@ -21,15 +21,46 @@ public static class EditorialAssetFallbackPolicy
         if (lastKnownGoodValid) return ResolvedEditorialAssetOrigin.LastKnownGood;
         return localDefaultAvailable ? ResolvedEditorialAssetOrigin.LocalDefault : ResolvedEditorialAssetOrigin.None;
     }
+
+    public static ResolvedEditorialAssetOrigin ChooseForState(
+        SlotRegistryMapper.ImageState state,
+        bool remoteValid,
+        bool lastKnownGoodValid,
+        bool localDefaultAvailable) => state switch
+    {
+        SlotRegistryMapper.ImageState.None => ResolvedEditorialAssetOrigin.None,
+        SlotRegistryMapper.ImageState.InheritDefault => localDefaultAvailable
+            ? ResolvedEditorialAssetOrigin.LocalDefault
+            : ResolvedEditorialAssetOrigin.None,
+        _ => Choose(remoteValid, lastKnownGoodValid, localDefaultAvailable)
+    };
 }
 
 public static class SlotImageResolver
 {
     public static async Task<BitmapImage?> ResolveAsync(LauncherAppContext context, string slot, string? assetId, CancellationToken cancellationToken) =>
-        (await ResolveWithOriginAsync(context, slot, assetId, cancellationToken)).Image;
+        (await ResolveWithOriginAsync(context, slot, assetId,
+            string.IsNullOrWhiteSpace(assetId) ? SlotRegistryMapper.ImageState.InheritDefault : SlotRegistryMapper.ImageState.RemoteAsset,
+            cancellationToken)).Image;
+
+    public static async Task<BitmapImage?> ResolveAsync(LauncherAppContext context, string slot, string? assetId, SlotRegistryMapper.ImageState state, CancellationToken cancellationToken) =>
+        (await ResolveWithOriginAsync(context, slot, assetId, state, cancellationToken)).Image;
 
     public static async Task<ResolvedEditorialAsset> ResolveWithOriginAsync(LauncherAppContext context, string slot, string? assetId, CancellationToken cancellationToken)
+        => await ResolveWithOriginAsync(context, slot, assetId,
+            string.IsNullOrWhiteSpace(assetId) ? SlotRegistryMapper.ImageState.InheritDefault : SlotRegistryMapper.ImageState.RemoteAsset,
+            cancellationToken);
+
+    public static async Task<ResolvedEditorialAsset> ResolveWithOriginAsync(LauncherAppContext context, string slot, string? assetId, SlotRegistryMapper.ImageState state, CancellationToken cancellationToken)
     {
+        if (state == SlotRegistryMapper.ImageState.None)
+            return new(null, ResolvedEditorialAssetOrigin.None);
+        if (state == SlotRegistryMapper.ImageState.InheritDefault)
+        {
+            var packaged = DefaultVisualAssetCatalog.Load(slot);
+            return new(packaged, packaged is null ? ResolvedEditorialAssetOrigin.None : ResolvedEditorialAssetOrigin.LocalDefault);
+        }
+
         var lkgPath = LastKnownGoodPath(slot);
         var entry = string.IsNullOrWhiteSpace(assetId) ? null : context.SlotAssets.Find(a => a.Id == assetId);
         try
@@ -43,6 +74,8 @@ public static class SlotImageResolver
                 ContentType = entry.ContentType,
                 Hash = entry.Hash,
                 Size = entry.Size,
+                Width = entry.Width,
+                Height = entry.Height,
                 Kind = entry.Kind
             };
             var localPath = await context.CmsAssetCache.GetOrDownloadAsync(absoluteEntry, cancellationToken);

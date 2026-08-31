@@ -158,8 +158,9 @@
 import { History, RotateCcw, UploadCloud } from 'lucide-vue-next'
 import SlotInspector from './SlotInspector.vue'
 
-type SlotDef = { id: string; page: string; label: string; description: string; type: string; required: boolean; constraints: Record<string, unknown>; visualTokens: string[]; defaultValue: unknown }
-type DraftEntry = { definition: SlotDef; draft: { value: unknown; tokens: Record<string, string> }; published: { value: unknown; tokens: Record<string, string> } | null; hasPendingChanges: boolean }
+type SlotDef = { id: string; page: string; label: string; description: string; type: string; required: boolean; constraints: Record<string, unknown>; visualTokens: string[]; defaultValue: unknown; assetContract?: { defaultAsset: string | null; noneBehavior: string } }
+type AssetState = 'INHERIT_DEFAULT' | 'REMOTE_ASSET' | 'NONE'
+type DraftEntry = { definition: SlotDef; draft: { value: unknown; tokens: Record<string, string>; assetState?: AssetState }; published: { value: unknown; tokens: Record<string, string>; assetState?: AssetState } | null; hasPendingChanges: boolean }
 
 const api = useLauncherStudioApi()
 
@@ -247,7 +248,7 @@ function openSlot(id: string) {
   selectedSlotId.value = id
 }
 
-async function saveSlot(payload: { value: unknown; tokens?: Record<string, string> }) {
+async function saveSlot(payload: { value: unknown; tokens?: Record<string, string>; assetState?: AssetState }) {
   if (!selectedSlot.value) return
   try {
     await api.updateSlot(selectedSlot.value.id, payload)

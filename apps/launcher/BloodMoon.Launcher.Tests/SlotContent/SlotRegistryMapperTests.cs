@@ -7,13 +7,14 @@ namespace BloodMoon.Launcher.Tests.SlotContent;
 
 public sealed class SlotRegistryMapperTests
 {
-    private static ResolvedSlot Slot(string id, object value, Dictionary<string, string>? tokens = null) => new()
+    private static ResolvedSlot Slot(string id, object value, Dictionary<string, string>? tokens = null, string? assetState = null) => new()
     {
         Id = id,
         Page = "HOME",
         Value = JsonSerializer.SerializeToElement(value),
         Tokens = tokens ?? new Dictionary<string, string>(),
-        Status = "PUBLISHED"
+        Status = "PUBLISHED",
+        AssetState = assetState
     };
 
     [Fact]
@@ -114,6 +115,38 @@ public sealed class SlotRegistryMapperTests
         var mapper = new SlotRegistryMapper([Slot("home.hero.image", "asset-123")]);
         Assert.Equal("asset-123", mapper.GetAssetId("home.hero.image"));
         Assert.Equal("asset-123", mapper.GetReferenceId("home.hero.image"));
+    }
+
+    [Theory]
+    [InlineData("INHERIT_DEFAULT", SlotRegistryMapper.ImageState.InheritDefault)]
+    [InlineData("REMOTE_ASSET", SlotRegistryMapper.ImageState.RemoteAsset)]
+    [InlineData("NONE", SlotRegistryMapper.ImageState.None)]
+    [InlineData("UNKNOWN", SlotRegistryMapper.ImageState.InheritDefault)]
+    public void GetImageState_MapsClosedContract_AndUnknownSafely(string state, SlotRegistryMapper.ImageState expected)
+    {
+        var mapper = new SlotRegistryMapper([Slot("home.hero.image", "asset-123", assetState: state)]);
+        Assert.Equal(expected, mapper.GetImageState("home.hero.image"));
+    }
+
+    [Fact]
+    public void GetImageState_PreservesLegacyNullSemantics()
+    {
+        var legacyRemote = new SlotRegistryMapper([Slot("home.hero.image", "asset-123")]);
+        var legacyNull = new SlotRegistryMapper([Slot("home.campaign.image", (string?)null!)]);
+        Assert.Equal(SlotRegistryMapper.ImageState.RemoteAsset, legacyRemote.GetImageState("home.hero.image"));
+        Assert.Equal(SlotRegistryMapper.ImageState.InheritDefault, legacyNull.GetImageState("home.campaign.image"));
+    }
+
+    [Fact]
+    public void UnknownAndDuplicateSlots_DoNotCrashOrAffectKnownConsumers()
+    {
+        var mapper = new SlotRegistryMapper([
+            Slot("future.unknown", "ignored"),
+            Slot("home.hero.title", "old"),
+            Slot("home.hero.title", "current")
+        ]);
+        Assert.Equal("current", mapper.GetText("home.hero.title"));
+        Assert.Null(mapper.GetText("home.hero.subtitle"));
     }
 
     [Fact]

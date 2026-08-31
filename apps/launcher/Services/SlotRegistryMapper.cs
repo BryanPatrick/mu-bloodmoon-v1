@@ -11,11 +11,15 @@ namespace BloodMoon.Launcher.Services;
 // silently rendering raw JSON.
 public sealed class SlotRegistryMapper
 {
+    public enum ImageState { InheritDefault, RemoteAsset, None }
     private readonly Dictionary<string, ResolvedSlot> _byId;
 
     public SlotRegistryMapper(IEnumerable<ResolvedSlot> slots)
     {
-        _byId = slots.ToDictionary(s => s.Id, s => s);
+        _byId = slots
+            .Where(s => !string.IsNullOrWhiteSpace(s.Id))
+            .GroupBy(s => s.Id, StringComparer.Ordinal)
+            .ToDictionary(group => group.Key, group => group.Last(), StringComparer.Ordinal);
     }
 
     public static SlotRegistryMapper Empty { get; } = new([]);
@@ -36,6 +40,19 @@ public sealed class SlotRegistryMapper
     // plain string -- semantically distinct from GetText but the same
     // underlying shape, named separately so callers read intent, not shape.
     public string? GetAssetId(string slotId) => GetText(slotId);
+
+    public ImageState GetImageState(string slotId)
+    {
+        if (!TryGet(slotId, out var slot)) return ImageState.InheritDefault;
+        return slot.AssetState switch
+        {
+            "INHERIT_DEFAULT" => ImageState.InheritDefault,
+            "REMOTE_ASSET" => ImageState.RemoteAsset,
+            "NONE" => ImageState.None,
+            null or "" => string.IsNullOrWhiteSpace(GetAssetId(slotId)) ? ImageState.InheritDefault : ImageState.RemoteAsset,
+            _ => ImageState.InheritDefault
+        };
+    }
 
     public string? GetReferenceId(string slotId) => GetText(slotId);
 

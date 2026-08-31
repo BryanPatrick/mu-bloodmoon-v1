@@ -28,6 +28,7 @@ public sealed class ResolvedSlot
     public JsonElement Value { get; set; } = JsonDocument.Parse("null").RootElement;
     public Dictionary<string, string> Tokens { get; set; } = new();
     public string Status { get; set; } = "UNSET";
+    public string? AssetState { get; set; }
 }
 
 public sealed class LauncherContentPayload

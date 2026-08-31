@@ -8,21 +8,33 @@
 
     <!-- IMAGE / asset REFERENCE -->
     <div v-if="slotDef.type === 'IMAGE' || assetReferenceKind" class="grid gap-2">
-      <div class="grid grid-cols-4 gap-1">
+      <label v-if="slotDef.type === 'IMAGE'" class="bm-admin-label">Origem da imagem
+        <select v-model="assetState" class="bm-admin-field">
+          <option value="INHERIT_DEFAULT">Usar padrão do launcher</option>
+          <option value="REMOTE_ASSET">Usar asset publicado</option>
+          <option value="NONE">Não exibir</option>
+        </select>
+      </label>
+      <div v-if="slotDef.type !== 'IMAGE' || assetState === 'REMOTE_ASSET'" class="grid grid-cols-4 gap-1">
         <button
           v-for="asset in assets" :key="asset.id as string"
           class="aspect-square overflow-hidden rounded border"
           :class="value === asset.id ? 'border-crimson-400' : 'border-white/10'"
-          type="button" @click="value = asset.id as string"
+          type="button" @click="value = asset.id as string; assetState = 'REMOTE_ASSET'"
         >
           <img v-if="asset.publicUrl" :src="asset.publicUrl as string" class="h-full w-full object-cover" alt="">
           <span v-else class="flex h-full items-center justify-center text-[9px] text-white/30">sem preview</span>
         </button>
       </div>
-      <button v-if="value" class="bm-admin-action w-fit" type="button" @click="value = null">Remover selecao</button>
-      <label class="bm-admin-label">Enviar novo asset
-        <input type="file" accept="image/png,image/jpeg,image/webp" class="bm-admin-field" @change="onFile">
+      <button v-if="value && (slotDef.type !== 'IMAGE' || assetState === 'REMOTE_ASSET')" class="bm-admin-action w-fit" type="button" @click="value = null">Remover seleção</button>
+      <label v-if="slotDef.type !== 'IMAGE' || assetState === 'REMOTE_ASSET'" class="bm-admin-label">Enviar novo asset
+        <input type="file" accept="image/png,image/jpeg" class="bm-admin-field" @change="onFile">
       </label>
+      <div v-if="slotDef.type === 'IMAGE'" class="rounded border border-white/10 bg-white/5 p-2 text-[10px] text-white/55">
+        <p>Resultado efetivo: <strong class="text-white/80">{{ effectiveAssetLabel }}</strong></p>
+        <p>Asset remoto: {{ typeof value === 'string' && value ? value : 'nenhum' }}</p>
+        <p>Padrão local: {{ slotDef.assetContract?.defaultAsset || 'não disponível (área recolhida/neutra)' }}</p>
+      </div>
       <p v-if="uploadError" class="text-[10px] text-red-400">{{ uploadError }}</p>
     </div>
 
@@ -89,11 +101,12 @@
 <script setup lang="ts">
 import { Save } from 'lucide-vue-next'
 
-type SlotDef = { id: string; page: string; label: string; description: string; type: string; required: boolean; constraints: Record<string, unknown>; visualTokens: string[]; defaultValue: unknown }
-type DraftEntry = { definition: SlotDef; draft: { value: unknown; tokens: Record<string, string> }; published: unknown }
+type AssetState = 'INHERIT_DEFAULT' | 'REMOTE_ASSET' | 'NONE'
+type SlotDef = { id: string; page: string; label: string; description: string; type: string; required: boolean; constraints: Record<string, unknown>; visualTokens: string[]; defaultValue: unknown; assetContract?: { defaultAsset: string | null; noneBehavior: string } }
+type DraftEntry = { definition: SlotDef; draft: { value: unknown; tokens: Record<string, string>; assetState?: AssetState }; published: unknown }
 
 const props = defineProps<{ slotDef: SlotDef; entry: DraftEntry | null; assets: Array<Record<string, unknown>> }>()
-const emit = defineEmits<{ save: [payload: { value: unknown; tokens?: Record<string, string> }]; loadAssets: [category?: string]; uploadAsset: [payload: { name: string; category: string; dataUrl: string }] }>()
+const emit = defineEmits<{ save: [payload: { value: unknown; tokens?: Record<string, string>; assetState?: AssetState }]; loadAssets: [category?: string]; uploadAsset: [payload: { name: string; category: string; dataUrl: string }] }>()
 
 const FONT_TOKENS = ['DISPLAY', 'SERIF', 'UI', 'COMPACT']
 const FONT_SIZE_TOKENS = ['SM', 'MD', 'LG', 'XL', 'DISPLAY']
@@ -110,12 +123,15 @@ const tokenOptions: Record<string, string[]> = {
 }
 
 const value = ref<unknown>(props.entry?.draft.value ?? props.slotDef.defaultValue)
+const deriveAssetState = (): AssetState => props.entry?.draft.assetState ?? (typeof value.value === 'string' && value.value ? 'REMOTE_ASSET' : 'INHERIT_DEFAULT')
+const assetState = ref<AssetState>(deriveAssetState())
 const tokens = reactive<Record<string, string>>({ ...(props.entry?.draft.tokens || {}) })
 const saving = ref(false)
 const uploadError = ref('')
 
 watch(() => props.slotDef.id, () => {
   value.value = props.entry?.draft.value ?? props.slotDef.defaultValue
+  assetState.value = deriveAssetState()
   Object.keys(tokens).forEach((k) => delete tokens[k])
   Object.assign(tokens, props.entry?.draft.tokens || {})
 })
@@ -124,6 +140,9 @@ const maxLength = computed(() => props.slotDef.constraints.maxLength as number |
 const maxItems = computed(() => props.slotDef.constraints.maxItems as number | undefined)
 const itemShape = computed(() => (props.slotDef.constraints.itemShape as Record<string, string>) || {})
 const assetReferenceKind = computed(() => props.slotDef.type === 'REFERENCE' && props.slotDef.constraints.referenceKind === 'LAUNCHER_ASSET')
+const effectiveAssetLabel = computed(() => assetState.value === 'REMOTE_ASSET'
+  ? (value.value ? 'asset remoto selecionado' : 'selecione um asset')
+  : assetState.value === 'NONE' ? 'não exibir' : (props.slotDef.assetContract?.defaultAsset ? 'asset empacotado do launcher' : 'sem imagem'))
 
 const textValue = computed({ get: () => (typeof value.value === 'string' ? value.value : ''), set: (v: string) => { value.value = v } })
 const boolValue = computed({ get: () => value.value === true, set: (v: boolean) => { value.value = v } })
@@ -179,7 +198,12 @@ function onFile(event: Event) {
 function save() {
   saving.value = true
   const cleanTokens = Object.fromEntries(Object.entries(tokens).filter(([, v]) => v))
-  emit('save', { value: value.value, tokens: Object.keys(cleanTokens).length ? cleanTokens : undefined })
+  const imageState = props.slotDef.type === 'IMAGE' ? assetState.value : undefined
+  emit('save', {
+    value: imageState && imageState !== 'REMOTE_ASSET' ? null : value.value,
+    tokens: Object.keys(cleanTokens).length ? cleanTokens : undefined,
+    assetState: imageState
+  })
   saving.value = false
 }
 </script>

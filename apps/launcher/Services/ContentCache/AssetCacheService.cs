@@ -208,6 +208,11 @@ public sealed class AssetCacheService
             {
                 throw new AssetCacheException(AssetValidationFailure.InvalidDimensions, $"Asset {entry.Id} tem dimensões inválidas.");
             }
+            if ((entry.Width is > 0 && entry.Width != frame.PixelWidth) ||
+                (entry.Height is > 0 && entry.Height != frame.PixelHeight))
+            {
+                throw new AssetCacheException(AssetValidationFailure.InvalidDimensions, $"Asset {entry.Id} não bateu com as dimensões declaradas.");
+            }
         }
         catch (AssetCacheException) { throw; }
         catch (Exception ex)

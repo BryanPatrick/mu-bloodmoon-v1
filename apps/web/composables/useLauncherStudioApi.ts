@@ -35,7 +35,7 @@ export const useLauncherStudioApi = () => {
     pages: () => fetchAdmin<Array<{ page: string; slotCount: number }>>('/admin/launcher-studio/pages'),
     registry: (page?: string) => fetchAdmin<unknown[]>('/admin/launcher-studio/registry', page ? { page } : {}),
     draft: (page?: string) => fetchAdmin<unknown[]>('/admin/launcher-studio/draft', page ? { page } : {}),
-    updateSlot: (slotId: string, payload: { value: unknown; tokens?: Record<string, string> }) =>
+    updateSlot: (slotId: string, payload: { value: unknown; tokens?: Record<string, string>; assetState?: 'INHERIT_DEFAULT' | 'REMOTE_ASSET' | 'NONE' }) =>
       sendAdmin('PATCH', `/admin/launcher-studio/slots/${encodeURIComponent(slotId)}`, payload),
     publish: (note?: string) => sendAdmin('POST', '/admin/launcher-studio/publish', { note }),
     rollback: (version: number, note?: string) => sendAdmin('POST', '/admin/launcher-studio/rollback', { version, note }),
