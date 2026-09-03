@@ -40,6 +40,15 @@ public sealed class LauncherAppContext(
     public LauncherSession? Session { get; set; }
     public LauncherAccount? Account { get; set; }
     public LauncherMe? UnifiedAccount { get; set; }
+    // Phase 2D Part 12 -- captured from LoginResponse.User at login time
+    // (SessionUser.TwoFactorEnabled). Best-effort: refreshed on every real
+    // login, not re-fetched on token refresh/session restore -- an honest,
+    // small staleness window rather than a new dedicated endpoint call.
+    public bool TwoFactorEnabled { get; set; }
+    // Phase 2D Part 5 -- drives the login overlay's own UI (which field to
+    // show, which error to display); separate from IsLoggedIn/Play gating
+    // (LauncherRuntimePolicy, unchanged this phase).
+    public LoginState LoginState { get; set; } = LoginState.LoggedOut;
     public LauncherBootstrap? Bootstrap { get; set; }
     public SlotRegistryMapper Slots { get; set; } = SlotRegistryMapper.Empty;
     public List<LauncherAssetManifestEntry> SlotAssets { get; set; } = [];

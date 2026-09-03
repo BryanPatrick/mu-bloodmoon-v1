@@ -33,11 +33,23 @@ public sealed class LauncherApiClient : IDisposable, ILauncherBootstrapSource, I
     public void Configure(string baseUrl)
     {
         _baseUrl = baseUrl.TrimEnd('/');
-        if (!Uri.TryCreate(_baseUrl, UriKind.Absolute, out var uri) || uri.Scheme != Uri.UriSchemeHttps)
+        if (!Uri.TryCreate(_baseUrl, UriKind.Absolute, out var uri) || !IsSecureOrLoopback(uri))
         {
             throw new InvalidOperationException("A API do launcher deve usar HTTPS.");
         }
     }
+
+    // Phase 2D Part 13 -- real local QA needs a real local API, and this
+    // project's local dev API runs on plain HTTP (no local TLS setup
+    // exists). Loopback-only HTTP is a narrow, well-established exception
+    // (the same reasoning RFC 8252 uses for OAuth's own http://localhost
+    // redirect URIs): traffic that never leaves the machine has no
+    // network eavesdropper to defend against, so this is not a security
+    // downgrade for any real deployment -- a non-loopback http:// URL
+    // (including a real domain resolved to 127.0.0.1 by a hosts-file
+    // trick) is still rejected exactly as before.
+    public static bool IsSecureOrLoopback(Uri uri) =>
+        uri.Scheme == Uri.UriSchemeHttps || (uri.Scheme == Uri.UriSchemeHttp && uri.IsLoopback);
 
     public Task<LauncherBootstrap> GetBootstrapAsync(CancellationToken cancellationToken) =>
         GetAsync<LauncherBootstrap>("launcher/bootstrap", null, cancellationToken);
@@ -153,19 +165,45 @@ public sealed class LauncherApiClient : IDisposable, ILauncherBootstrapSource, I
             ?? throw new InvalidOperationException("A API retornou uma resposta vazia.");
     }
 
-    private static Task EnsureSuccessAsync(HttpResponseMessage response, CancellationToken cancellationToken)
+    private static async Task EnsureSuccessAsync(HttpResponseMessage response, CancellationToken cancellationToken)
     {
         if (response.IsSuccessStatusCode)
         {
-            return Task.CompletedTask;
+            return;
         }
+        var body = await response.Content.ReadAsStringAsync(cancellationToken);
         var message = response.StatusCode switch
         {
             HttpStatusCode.Unauthorized => "Usuário, senha ou sessão inválidos.",
             HttpStatusCode.Forbidden => "A conta não tem permissão para esta operação.",
             _ => $"API indisponível ({(int)response.StatusCode})."
         };
-        return Task.FromException(new InvalidOperationException(message));
+
+        // Phase 2D Part 19 -- parse a real backend `code` field when the API
+        // sent one (e.g. {"code":"TWO_FACTOR_REQUIRED", ...} from
+        // auth.service.ts) so AuthErrorMapper can key off it directly,
+        // instead of every caller pattern-matching the raw JSON body that
+        // used to get silently concatenated into this exception's message
+        // (a real, found issue this phase -- that path could put raw
+        // backend JSON in front of a player via ShowToast(exception.Message)).
+        string? code = null;
+        if (!string.IsNullOrWhiteSpace(body))
+        {
+            try
+            {
+                using var parsed = JsonDocument.Parse(body);
+                if (parsed.RootElement.TryGetProperty("code", out var codeElement) && codeElement.ValueKind == JsonValueKind.String)
+                {
+                    code = codeElement.GetString();
+                }
+            }
+            catch (JsonException)
+            {
+                // Not JSON, or not an object -- fall through, code stays null.
+            }
+        }
+
+        throw new AuthApiException((int)response.StatusCode, code, message);
     }
 
     public void Dispose() => _http.Dispose();

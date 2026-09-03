@@ -1,4 +1,5 @@
 using System.Net.Http;
+using System.Text.Json;
 using BloodMoon.Launcher.Models;
 using BloodMoon.Launcher.Services;
 using BloodMoon.Launcher.Services.ContentCache;
@@ -146,6 +147,83 @@ public sealed class SlotContentServiceTests : IDisposable
         Assert.Single(result.Content.Slots);
         var mapper = new SlotRegistryMapper(result.Content.Slots);
         Assert.Null(mapper.GetText("home.hero.title"));
+    }
+
+    // Phase 2D Part 15 -- CMS_STALE_REMOTE_REMOVAL_LOCAL. Production could
+    // not safely test this (Phase 2C: "zero linhas de slot... não existe
+    // slot isolado/não público"); this exercises the same real code path
+    // against local fake data instead of production. A slot that WAS
+    // resolved (REMOTE_ASSET-equivalent) and then genuinely disappears
+    // from a fresh server response (reverted to INHERIT_DEFAULT/NONE)
+    // must not linger from a stale local cache -- SlotRegistryMapper is
+    // rebuilt fresh from each GetContentAsync result, never merged with
+    // a prior one, so the old value must be gone, not just unreachable.
+    [Fact]
+    public async Task GetContentAsync_WhenAPreviouslyResolvedSlotIsRemovedRemotely_TheNextFreshFetchNoLongerReturnsIt()
+    {
+        var cache = new SlotContentCache("slot-content.json", _dir);
+        var withAsset = new LauncherContentPayload
+        {
+            SchemaVersion = 1,
+            ContentVersion = 1,
+            Slots = [new ResolvedSlot { Id = "home.brandLogo", Page = "HOME", Status = "PUBLISHED", Value = JsonDocument.Parse("\"asset-123\"").RootElement }]
+        };
+        var firstSource = new FakeSlotContentSource { Response = withAsset };
+        var firstResult = await new SlotContentService(firstSource, cache).GetContentAsync(null, CancellationToken.None);
+        var firstMapper = new SlotRegistryMapper(firstResult.Content.Slots);
+        Assert.Equal("asset-123", firstMapper.GetAssetId("home.brandLogo"));
+
+        // The slot is now entirely absent from a fresh server response --
+        // reverted to INHERIT_DEFAULT, not merely emptied.
+        var withoutAsset = new LauncherContentPayload { SchemaVersion = 1, ContentVersion = 2, Slots = [] };
+        var secondSource = new FakeSlotContentSource { Response = withoutAsset };
+        var secondResult = await new SlotContentService(secondSource, cache).GetContentAsync(null, CancellationToken.None);
+
+        Assert.Equal(ContentSource.Fresh, secondResult.Source);
+        var secondMapper = new SlotRegistryMapper(secondResult.Content.Slots);
+        Assert.Null(secondMapper.GetAssetId("home.brandLogo"));
+    }
+
+    // Phase 2D Part 15 -- the three real CMS resolution states, tested
+    // against local fake data (production has zero slot rows -- Phase 2C
+    // could not safely exercise any of these there). All three route
+    // through the identical, already-existing SlotRegistryMapper logic
+    // (Services/SlotRegistryMapper.cs) -- no new resolution engine was
+    // built, since none was needed: absence of a slot IS INHERIT_DEFAULT
+    // by construction, a present slot with a value IS REMOTE_ASSET, and a
+    // present-but-empty slot IS the NONE case, all already handled.
+    [Fact]
+    public void CMS_INHERIT_DEFAULT_LOCAL()
+    {
+        // A slot never resolved server-side simply isn't in the payload --
+        // this is INHERIT_DEFAULT's real, structural shape.
+        var mapper = new SlotRegistryMapper([]);
+        Assert.Null(mapper.GetText("home.brandLogo"));
+        Assert.Null(mapper.GetAssetId("home.hero.image"));
+        Assert.False(mapper.GetBool("home.hero.enabled"));
+    }
+
+    [Fact]
+    public void CMS_REMOTE_ASSET_LOCAL()
+    {
+        var slots = new[] { new ResolvedSlot { Id = "home.brandLogo", Page = "HOME", Status = "PUBLISHED", Value = JsonDocument.Parse("\"asset-real-123\"").RootElement } };
+        var mapper = new SlotRegistryMapper(slots);
+
+        Assert.Equal("asset-real-123", mapper.GetAssetId("home.brandLogo"));
+    }
+
+    [Fact]
+    public void CMS_NONE_LOCAL()
+    {
+        // A slot explicitly present but with no real value (server-side
+        // "NONE") -- ValueKind stays Undefined/default, and every typed
+        // accessor degrades to its neutral fallback, never a crash and
+        // never rendering raw JSON.
+        var slots = new[] { new ResolvedSlot { Id = "home.brandLogo", Page = "HOME", Status = "UNSET" } };
+        var mapper = new SlotRegistryMapper(slots);
+
+        Assert.Null(mapper.GetAssetId("home.brandLogo"));
+        Assert.Null(mapper.GetText("home.brandLogo"));
     }
 
     [Fact]

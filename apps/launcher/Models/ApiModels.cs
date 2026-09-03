@@ -118,11 +118,23 @@ public sealed class LauncherNews
     public string Url { get; set; } = "";
 }
 
+// Phase 2D Part 4 -- aligned to the REAL API contract
+// (apps/api/src/modules/auth/auth.contract.ts's LoginRequest): CaptchaToken
+// is required there, not optional -- POST /auth/login rejects a call
+// without it (CaptchaService.verify). RecoveryCode is the real,
+// existing alternate-to-TotpCode field auth.service.ts's login() also
+// accepts (2FA recovery-code login), previously never sent by the
+// Launcher at all. None of these three are ever persisted -- see
+// MainWindow.xaml.cs's LoginButton_Click, which clears the password/
+// TOTP/recovery boxes and never writes them anywhere but this one
+// short-lived payload object.
 public sealed class LoginPayload
 {
     public string Username { get; set; } = "";
     public string Password { get; set; } = "";
+    public string CaptchaToken { get; set; } = "";
     public string? TotpCode { get; set; }
+    public string? RecoveryCode { get; set; }
 }
 
 public sealed class RefreshPayload
@@ -143,6 +155,10 @@ public sealed class SessionUser
     public string Username { get; set; } = "";
     public string Name { get; set; } = "";
     public string Role { get; set; } = "";
+    // Phase 2D Part 12 -- matches the real API's SessionUser.twoFactorEnabled
+    // (auth.contract.ts), previously received in every login/refresh
+    // response but never read anywhere in the Launcher.
+    public bool TwoFactorEnabled { get; set; }
 }
 
 public sealed class LauncherAccount

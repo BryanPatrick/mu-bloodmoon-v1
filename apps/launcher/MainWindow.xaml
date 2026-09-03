@@ -1,4 +1,5 @@
 <Window x:Class="BloodMoon.Launcher.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
  Title="Blood Moon Launcher" Width="1180" Height="700" MinWidth="1180" MinHeight="700" MaxWidth="1180" MaxHeight="700"
  WindowStyle="None" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Background="{StaticResource Brush.BackgroundVoid}"
  Loaded="Window_Loaded" Closing="Window_Closing" UseLayoutRounding="True" SnapsToDevicePixels="True">
@@ -92,12 +93,21 @@
    <Grid x:Name="LoginOverlay" Grid.Row="0" Grid.RowSpan="3" Background="#E6050505" Visibility="Collapsed" Panel.ZIndex="20">
     <Border Width="410" Padding="24" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{StaticResource Brush.BackgroundPanel}" BorderBrush="{StaticResource Brush.BorderCrimson}" BorderThickness="1">
      <Grid>
-      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+      <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
       <DockPanel><StackPanel><TextBlock Text="CONTA BLOOD MOON" Foreground="{StaticResource Brush.TextPrimary}" FontFamily="{StaticResource Font.Display}" FontSize="19" FontWeight="Bold"/><TextBlock Margin="0,4,0,0" Foreground="{StaticResource Brush.TextFaint}" FontSize="10" Text="Use a mesma conta do portal."/></StackPanel><Button DockPanel.Dock="Right" Width="30" Height="28" Content="✕" Style="{StaticResource DialogButton}" Click="CloseLoginButton_Click"/></DockPanel>
-      <StackPanel Grid.Row="1" Margin="0,18,0,0"><TextBlock Text="USUÁRIO" Style="{StaticResource LauncherLabel}"/><TextBox x:Name="LoginUsernameBox" Margin="0,6,0,0" Height="34" Padding="10,7"/></StackPanel>
-      <StackPanel Grid.Row="2" Margin="0,12,0,0"><TextBlock Text="SENHA" Style="{StaticResource LauncherLabel}"/><PasswordBox x:Name="LoginPasswordBox" Margin="0,6,0,0" Height="34" Padding="10,7"/></StackPanel>
-      <StackPanel Grid.Row="3" Margin="0,12,0,0"><TextBlock Text="CÓDIGO 2FA (SE ATIVO)" Style="{StaticResource LauncherLabel}"/><TextBox x:Name="LoginTotpBox" Margin="0,6,0,0" Height="34" Padding="10,7" MaxLength="6"/></StackPanel>
-      <Button Grid.Row="4" Margin="0,18,0,0" Content="ENTRAR" Style="{StaticResource PrimaryButton}" Click="LoginButton_Click"/>
+      <StackPanel Grid.Row="1" Margin="0,18,0,0"><TextBlock Text="USUÁRIO" Style="{StaticResource LauncherLabel}"/><TextBox x:Name="LoginUsernameBox" Margin="0,6,0,0" Height="34" Padding="10,7" AutomationProperties.AutomationId="LoginUsernameBox"/></StackPanel>
+      <StackPanel Grid.Row="2" Margin="0,12,0,0"><TextBlock Text="SENHA" Style="{StaticResource LauncherLabel}"/><PasswordBox x:Name="LoginPasswordBox" Margin="0,6,0,0" Height="34" Padding="10,7" AutomationProperties.AutomationId="LoginPasswordBox"/></StackPanel>
+      <!-- Phase 2D Part 2: the real, embedded Turnstile challenge (see
+           CaptchaChallengeService.cs). The WebView2 host is blank until
+           ENTRAR is pressed, which is the only time RequestTokenAsync
+           navigates it to the real hosted challenge page. -->
+      <StackPanel Grid.Row="3" Margin="0,12,0,0">
+       <TextBlock Text="VERIFICAÇÃO DE SEGURANÇA" Style="{StaticResource LauncherLabel}"/>
+       <wv2:WebView2 x:Name="CaptchaWebView" Margin="0,6,0,0" Height="110"/>
+       <TextBlock x:Name="CaptchaStatusText" Margin="0,5,0,0" Foreground="{StaticResource Brush.TextFaint}" FontSize="9" TextWrapping="Wrap"/>
+      </StackPanel>
+      <StackPanel x:Name="LoginTotpPanel" Grid.Row="4" Margin="0,12,0,0" Visibility="Collapsed"><TextBlock Text="CÓDIGO 2FA (SE ATIVO)" Style="{StaticResource LauncherLabel}"/><TextBox x:Name="LoginTotpBox" Margin="0,6,0,0" Height="34" Padding="10,7" MaxLength="6"/></StackPanel>
+      <Button x:Name="LoginSubmitButton" Grid.Row="5" Margin="0,18,0,0" Content="ENTRAR" Style="{StaticResource PrimaryButton}" Click="LoginButton_Click" AutomationProperties.AutomationId="LoginSubmitButton"/>
      </Grid>
     </Border>
    </Grid>

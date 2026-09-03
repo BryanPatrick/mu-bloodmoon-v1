@@ -31,6 +31,10 @@ public partial class MainWindow : Window
     private readonly LauncherUpdateService _launcherUpdateService = new();
     private readonly LauncherApiClient _apiClient = new();
     private readonly SessionStore _sessionStore = new();
+    // Phase 2D Part 2 -- lazily bound to CaptchaWebView on first login
+    // attempt (EnsureCoreWebView2Async is real async setup work; no
+    // reason to pay for it before the login overlay is ever opened).
+    private CaptchaChallengeService? _captchaChallenge;
     private readonly CancellationTokenSource _shutdown = new();
     private readonly DispatcherTimer _contentTimer = new() { Interval = TimeSpan.FromMinutes(1) };
     private readonly NavigationService _navigation = new();
@@ -491,6 +495,7 @@ public partial class MainWindow : Window
         {
             _context.Account = await _apiClient.GetAccountAsync(_context.Session.AccessToken, _shutdown.Token);
             _context.UnifiedAccount = await _apiClient.GetMeAsync(_context.Session.AccessToken, _shutdown.Token);
+            _context.LoginState = LoginState.Authenticated;
             ApplyAccount(_context.Account);
             _context.RaiseAccountChanged();
         }
@@ -511,6 +516,8 @@ public partial class MainWindow : Window
     {
         _context.Account = null;
         _context.UnifiedAccount = null;
+        _context.TwoFactorEnabled = false;
+        _context.LoginState = LoginState.LoggedOut;
         AccountActionButton.Content = "ENTRAR";
         AccountGreetingText.Text = "Entre com sua conta";
         AccountEmailText.Text = "Use a mesma conta do portal.";
@@ -543,8 +550,21 @@ public partial class MainWindow : Window
         LoginOverlay.Visibility = Visibility.Collapsed;
         LoginPasswordBox.Clear();
         LoginTotpBox.Clear();
+        LoginTotpPanel.Visibility = Visibility.Collapsed;
+        // Phase 2D Part 5 -- closing the overlay mid-attempt is a real,
+        // explicit return to LOGGED_OUT, not silently left in whatever
+        // intermediate state the last failed attempt produced.
+        _context.LoginState = LoginState.LoggedOut;
     }
 
+    // Phase 2D Parts 2-6 -- the real login flow: a fresh Turnstile token is
+    // requested on EVERY submit (including a 2FA retry), matching how the
+    // web login page's own TurnstileWidget.reset() forces a new token
+    // after any failed attempt -- Cloudflare tokens are single-use, so
+    // reusing one across a retry would just fail server-side anyway. No
+    // CAPTCHA bypass exists anywhere in this path: a null/empty token from
+    // CaptchaChallengeService simply stops here before any /auth/login
+    // call is made.
     private async void LoginButton_Click(object sender, RoutedEventArgs e)
     {
         if (string.IsNullOrWhiteSpace(LoginUsernameBox.Text) || string.IsNullOrWhiteSpace(LoginPasswordBox.Password))
@@ -552,25 +572,66 @@ public partial class MainWindow : Window
             ShowToast("Informe usuário e senha.");
             return;
         }
+
+        LoginSubmitButton.IsEnabled = false;
+        _context.LoginState = LoginState.CaptchaRequired;
+        CaptchaStatusText.Text = "Confirme que você é uma pessoa para continuar.";
         try
         {
+            _captchaChallenge ??= new CaptchaChallengeService(CaptchaWebView);
+            var captchaToken = await _captchaChallenge.RequestTokenAsync(
+                $"{_context.Settings.WebsiteUrl.TrimEnd('/')}/launcher/captcha",
+                _shutdown.Token);
+
+            if (string.IsNullOrWhiteSpace(captchaToken))
+            {
+                CaptchaStatusText.Text = "Não foi possível concluir a verificação. Tente novamente.";
+                _context.LoginState = LoginState.CaptchaRequired;
+                return;
+            }
+
+            CaptchaStatusText.Text = "Verificação concluída.";
+            _context.LoginState = LoginState.Authenticating;
+
             var response = await _apiClient.LoginAsync(new LoginPayload
             {
                 Username = LoginUsernameBox.Text.Trim(),
                 Password = LoginPasswordBox.Password,
+                CaptchaToken = captchaToken,
                 TotpCode = string.IsNullOrWhiteSpace(LoginTotpBox.Text) ? null : LoginTotpBox.Text.Trim()
             }, _shutdown.Token);
+
             _context.Session = new LauncherSession { AccessToken = response.AccessToken, RefreshToken = response.RefreshToken };
+            _context.TwoFactorEnabled = response.User.TwoFactorEnabled;
             await _sessionStore.SaveAsync(_context.Session);
             LoginOverlay.Visibility = Visibility.Collapsed;
             LoginPasswordBox.Clear();
             LoginTotpBox.Clear();
+            LoginTotpPanel.Visibility = Visibility.Collapsed;
             await RefreshAccountAsync(showErrors: true);
             ShowToast("Conta conectada com sucesso.");
         }
+        catch (AuthApiException authException)
+        {
+            var mapped = AuthErrorMapper.Map(authException);
+            _context.LoginState = mapped.ResultingState;
+            LoginTotpPanel.Visibility = mapped.ResultingState == LoginState.TwoFactorRequired
+                ? Visibility.Visible
+                : LoginTotpPanel.Visibility;
+            ShowToast(mapped.PlayerMessage);
+        }
         catch (Exception exception)
         {
+            _context.LoginState = LoginState.AuthFailed;
+            // Not an AuthApiException (e.g. no network/timeout) -- there is
+            // no backend signal to map here, so this is the one path that
+            // still surfaces exception.Message directly, matching the
+            // pre-existing behavior for non-HTTP failures.
             ShowToast(exception.Message);
+        }
+        finally
+        {
+            LoginSubmitButton.IsEnabled = true;
         }
     }
 

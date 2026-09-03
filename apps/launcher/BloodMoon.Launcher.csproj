@@ -50,5 +50,11 @@
 
   <ItemGroup>
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
+    <!-- Part 2: the legitimate embedded Turnstile challenge (CaptchaChallengeService)
+         needs a real Chromium host; WebView2 is Microsoft's own, officially
+         supported control for exactly this desktop-app-embeds-a-real-web-page
+         use case. Requires the WebView2 Runtime (bundled with Windows 10/11
+         and Edge by default; the SDK NuGet ships the loader/bootstrapper only). -->
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2957.106" />
   </ItemGroup>
 </Project>

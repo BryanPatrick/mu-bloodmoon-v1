@@ -55,6 +55,13 @@ public partial class AccountPage : UserControl, ILauncherPage
                 : $"CONTA DE JOGO — {unified.ProvisioningStatus}";
         ProvisioningStateText.Foreground = (Brush)Application.Current.Resources[
             unified?.GameReady == true ? "Brush.Success" : "Brush.Warning"];
+        // Phase 2D Part 12 -- real 2FA status (SessionUser.TwoFactorEnabled,
+        // captured at login, previously received but never read anywhere
+        // in the Launcher). Replaces the prior static "SESSÃO PROTEGIDA"
+        // label with the real, current state.
+        AccountSecurityText.Text = _context.TwoFactorEnabled
+            ? "AUTENTICAÇÃO EM DUAS ETAPAS — ATIVA"
+            : "AUTENTICAÇÃO EM DUAS ETAPAS — NÃO ATIVADA";
         var state = account is null
             ? new AccountPageState()
             : AccountStateMapper.Map(account);
