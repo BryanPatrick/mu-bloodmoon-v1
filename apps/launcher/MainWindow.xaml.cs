@@ -82,12 +82,13 @@ public partial class MainWindow : Window
             StartGame = StartGame,
             RunBackupAsync = RunBackupAsync,
             RunRollbackAsync = RunRollbackAsync,
-            ApplyResolutionProfile = ApplyResolutionProfile
+            ApplyResolutionProfile = ApplyResolutionProfile,
+            ApplyLauncherScale = ApplyLauncherScale
         };
 
         _context.Settings = await _settingsService.LoadAsync();
         _apiClient.Configure(_context.Settings.ApiBaseUrl);
-        ApplyResolutionProfile(_context.Settings.LauncherViewportProfileIndex);
+        ApplyDisplayLayout(_context.Settings.LauncherScaleIndex);
 
         BuildPages();
         // NavigationService.CurrentPage already defaults to PageKey.Home
@@ -116,17 +117,60 @@ public partial class MainWindow : Window
         }
     }
 
-    // Phase 1 preserves the approved compact, fixed-size desktop frame.
-    // The legacy viewport preference remains readable for compatibility,
-    // but it no longer turns the launcher into a resizable dashboard.
+    // Phase 1 preserves the approved compact frame's own real proportions
+    // (1180x700) as the single native size -- the legacy viewport preference
+    // is stored for compatibility but never switches between different
+    // native sizes; it never did, even before scale/accessibility. Both
+    // this and ApplyLauncherScale below delegate to the same
+    // ApplyDisplayLayout, so picking a viewport profile never silently
+    // discards the user's chosen scale.
     private void ApplyResolutionProfile(int profileIndex)
     {
+        _context.Settings.LauncherViewportProfileIndex = profileIndex;
+        ApplyDisplayLayout(_context.Settings.LauncherScaleIndex);
+    }
+
+    // Scale/accessibility -- a uniform density multiplier for the whole
+    // rendered shell (RootScaleTransform, a LayoutTransform on RootGrid --
+    // real layout re-runs at the transformed size, unlike a Viewbox
+    // stretching a bitmap) plus a matching real window resize, so the
+    // approved 1180x700 frame is genuinely presented smaller/larger, not
+    // just visually denser. Deliberately NOT free-form: ResizeMode stays
+    // NoResize (see MainWindow.xaml) -- only these five discrete presets
+    // (and FitToWorkArea's own automatic step-down) ever change the
+    // window's size; the user cannot drag-resize it. See
+    // docs/launcher/launcher-scale-and-text-scale.md.
+    private void ApplyLauncherScale(int scaleIndex) => ApplyDisplayLayout(scaleIndex);
+
+    private void ApplyDisplayLayout(int scaleIndex)
+    {
+        const double nativeWidth = 1180;
+        const double nativeHeight = 700;
+        var requestedScale = LauncherScaleOptions.ForIndex(scaleIndex);
         var workArea = SystemParameters.WorkArea;
-        Width = 1180;
-        Height = 700;
+        var fitted = LauncherScaleEngine.FitToWorkArea(nativeWidth, nativeHeight, workArea.Width, workArea.Height, requestedScale);
+
+        MinWidth = LauncherScaleEngine.MinWidthForScale(nativeWidth, fitted.Factor);
+        MinHeight = LauncherScaleEngine.MinHeightForScale(nativeHeight, fitted.Factor);
+
+        RootGrid.Width = nativeWidth;
+        RootGrid.Height = nativeHeight;
+        RootScaleTransform.ScaleX = fitted.Factor;
+        RootScaleTransform.ScaleY = fitted.Factor;
+
+        var targetWidth = Math.Min(nativeWidth * fitted.Factor, workArea.Width);
+        var targetHeight = Math.Min(nativeHeight * fitted.Factor, workArea.Height);
+        Width = Math.Max(MinWidth, Math.Round(targetWidth));
+        Height = Math.Max(MinHeight, Math.Round(targetHeight));
         Left = Math.Round(workArea.Left + (workArea.Width - Width) / 2);
         Top = Math.Round(workArea.Top + (workArea.Height - Height) / 2);
-        _context.Settings.LauncherViewportProfileIndex = profileIndex;
+
+        // The originally requested index is always what's saved -- Part 8's
+        // "do not destroy the saved preference unless necessary": only the
+        // window actually shown this session steps down via FitToWorkArea
+        // when it wouldn't otherwise fit; reopening later (e.g. on a larger
+        // monitor) re-applies the real saved preference from scratch.
+        _context.Settings.LauncherScaleIndex = scaleIndex;
     }
 
     private void BuildPages()

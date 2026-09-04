@@ -52,8 +52,29 @@
         <!-- LAUNCHER (viewport/resolution profiles, Part L) -->
         <StackPanel x:Name="PanelLauncher" Visibility="Collapsed">
           <TextBlock Text="RESOLUÇÃO DO LAUNCHER" Style="{StaticResource LauncherLabel}" />
-          <ComboBox x:Name="ViewportCombo" Width="260" Margin="0,8,0,0" HorizontalAlignment="Left" Style="{StaticResource BmComboBox}" SelectionChanged="ViewportCombo_SelectionChanged" />
+          <ComboBox x:Name="ViewportCombo" Width="260" Margin="0,8,0,0" HorizontalAlignment="Left" Style="{StaticResource BmComboBox}" SelectionChanged="ViewportCombo_SelectionChanged">
+            <ComboBox.ItemTemplate>
+              <DataTemplate><TextBlock Text="{Binding Label}"/></DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
           <TextBlock Margin="0,10,0,0" Foreground="{StaticResource Brush.TextFaint}" FontSize="10" TextWrapping="Wrap" Text="Números reais de resolução -- não rótulos de tamanho. WIDE dá prioridade ao conteúdo central; MAXIMIZADO usa o espaço disponível da tela." />
+
+          <TextBlock Text="TAMANHO DO LAUNCHER" Style="{StaticResource LauncherLabel}" Margin="0,24,0,0" />
+          <ComboBox x:Name="LauncherScaleCombo" Width="260" Margin="0,8,0,0" HorizontalAlignment="Left" Style="{StaticResource BmComboBox}" SelectionChanged="LauncherScaleCombo_SelectionChanged">
+            <ComboBox.ItemTemplate>
+              <DataTemplate><TextBlock Text="{Binding Label}"/></DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+          <TextBlock Margin="0,10,0,0" Foreground="{StaticResource Brush.TextFaint}" FontSize="10" TextWrapping="Wrap" Text="Deixa toda a interface (menus, botões, textos, ícones) maior ou menor, mantendo o mesmo layout aprovado. Aplica na hora." />
+
+          <TextBlock Text="TAMANHO DO TEXTO" Style="{StaticResource LauncherLabel}" Margin="0,20,0,0" />
+          <ComboBox x:Name="TextScaleCombo" Width="260" Margin="0,8,0,0" HorizontalAlignment="Left" Style="{StaticResource BmComboBox}">
+            <ComboBox.ItemTemplate>
+              <DataTemplate><TextBlock Text="{Binding Label}"/></DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+          <TextBlock Margin="0,10,0,0" Foreground="{StaticResource Brush.TextFaint}" FontSize="10" TextWrapping="Wrap" Text="Ajusta só o tamanho do texto, independente do tamanho do launcher acima. Requer reabrir o launcher para atualizar." />
+
           <CheckBox x:Name="StartWithWindowsCheck" Margin="0,20,0,0" Style="{StaticResource BmToggle}" Content="Iniciar com o Windows" />
           <CheckBox x:Name="MinimizeToTrayCheck" Margin="0,12,0,0" Style="{StaticResource BmToggle}" Content="Minimizar para a bandeja" />
           <CheckBox x:Name="CloseAfterGameStartsCheck" Margin="0,12,0,0" Style="{StaticResource BmToggle}" Content="Fechar o launcher ao iniciar o jogo" />

@@ -39,4 +39,13 @@ public sealed class LauncherSettings
     // in-game resolution, written to the game's registry config by
     // GameConfigurationService and untouched by this phase).
     public int LauncherViewportProfileIndex { get; set; }
+
+    // Scale/accessibility -- two independent axes on top of
+    // LauncherViewportProfileIndex above (see LauncherScaleEngine.cs's own
+    // header comment for why they're kept separate from each other and
+    // from the viewport profile). Both default to their Standard index (2
+    // and 1 respectively) so an older settings.json on disk without these
+    // keys behaves exactly as before this feature.
+    public int LauncherScaleIndex { get; set; } = 2;
+    public int TextScaleIndex { get; set; } = 1;
 }

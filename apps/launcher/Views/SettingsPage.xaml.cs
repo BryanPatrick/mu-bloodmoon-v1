@@ -26,8 +26,16 @@ public partial class SettingsPage : UserControl, ILauncherPage
     public SettingsPage()
     {
         InitializeComponent();
+        // Label display comes from each ComboBox's own XAML ItemTemplate
+        // (a bare TextBlock bound to {Binding Label}) -- WPF forbids
+        // setting both DisplayMemberPath and ItemTemplate on the same
+        // ComboBox (InvalidOperationException at construction), and
+        // ItemTemplate is the one that also drives the closed-box
+        // SelectionBoxItem display correctly under this page's custom
+        // BmComboBox control template.
         ViewportCombo.ItemsSource = ResolutionProfiles.All;
-        ViewportCombo.DisplayMemberPath = nameof(ResolutionProfile.Label);
+        LauncherScaleCombo.ItemsSource = LauncherScaleOptions.All;
+        TextScaleCombo.ItemsSource = TextScaleOptions.All;
         _initialized = true;
     }
 
@@ -50,6 +58,8 @@ public partial class SettingsPage : UserControl, ILauncherPage
         WindowModeCheck.IsChecked = settings.WindowMode;
 
         ViewportCombo.SelectedIndex = Math.Clamp(settings.LauncherViewportProfileIndex, 0, ResolutionProfiles.All.Count - 1);
+        LauncherScaleCombo.SelectedIndex = Math.Clamp(settings.LauncherScaleIndex, 0, LauncherScaleOptions.All.Count - 1);
+        TextScaleCombo.SelectedIndex = Math.Clamp(settings.TextScaleIndex, 0, TextScaleOptions.All.Count - 1);
         StartWithWindowsCheck.IsChecked = settings.StartWithWindows;
         MinimizeToTrayCheck.IsChecked = settings.MinimizeToTray;
         CloseAfterGameStartsCheck.IsChecked = settings.CloseLauncherAfterGameStarts;
@@ -106,6 +116,15 @@ public partial class SettingsPage : UserControl, ILauncherPage
         }
     }
 
+    private void LauncherScaleCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        // Live preview, same convention as ViewportCombo above.
+        if (_initialized && !_refreshingState && _context is not null && LauncherScaleCombo.SelectedIndex >= 0)
+        {
+            _context.ApplyLauncherScale?.Invoke(LauncherScaleCombo.SelectedIndex);
+        }
+    }
+
     private async void Apply_Click(object sender, RoutedEventArgs e)
     {
         var settings = _context.Settings;
@@ -114,6 +133,9 @@ public partial class SettingsPage : UserControl, ILauncherPage
         settings.WindowMode = WindowModeCheck.IsChecked == true;
 
         settings.LauncherViewportProfileIndex = ViewportCombo.SelectedIndex;
+        settings.LauncherScaleIndex = LauncherScaleCombo.SelectedIndex;
+        var textScaleChanged = settings.TextScaleIndex != TextScaleCombo.SelectedIndex;
+        settings.TextScaleIndex = TextScaleCombo.SelectedIndex;
         settings.StartWithWindows = StartWithWindowsCheck.IsChecked == true;
         settings.MinimizeToTray = MinimizeToTrayCheck.IsChecked == true;
         settings.CloseLauncherAfterGameStarts = CloseAfterGameStartsCheck.IsChecked == true;
@@ -131,7 +153,10 @@ public partial class SettingsPage : UserControl, ILauncherPage
             _context.GameConfigurationService.Apply(settings);
             await _context.SettingsService.SaveAsync(settings);
             _context.ApplyResolutionProfile?.Invoke(settings.LauncherViewportProfileIndex);
-            _context.ShowToast?.Invoke("Configurações aplicadas com sucesso.");
+            _context.ApplyLauncherScale?.Invoke(settings.LauncherScaleIndex);
+            _context.ShowToast?.Invoke(textScaleChanged
+                ? "Configurações aplicadas com sucesso. Reabra o launcher para atualizar o tamanho do texto."
+                : "Configurações aplicadas com sucesso.");
         }
         catch (Exception exception)
         {

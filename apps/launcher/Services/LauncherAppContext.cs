@@ -85,4 +85,8 @@ public sealed class LauncherAppContext(
     public Func<Task>? RunBackupAsync { get; set; }
     public Func<Task>? RunRollbackAsync { get; set; }
     public Action<int>? ApplyResolutionProfile { get; set; }
+    // Scale/accessibility -- LauncherScale's own live-preview entry point,
+    // independent of ApplyResolutionProfile (see LauncherScaleEngine.cs's
+    // header comment for why the two axes are separate).
+    public Action<int>? ApplyLauncherScale { get; set; }
 }
