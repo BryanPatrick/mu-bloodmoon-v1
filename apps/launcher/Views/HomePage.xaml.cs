@@ -85,7 +85,16 @@ public partial class HomePage : UserControl, ILauncherPage
         if (state.CharacterSummary is { } character)
         {
             CharacterNameText.Text = character.Name;
-            CharacterDetailText.Text = $"{character.CurrentClass} · Nível {character.Level} · Reset {character.Reset}";
+            // Phase 3 -- Master Reset/Guild come straight from the real
+            // ActiveCharacter DTO (GET /launcher/account), never fabricated;
+            // omitted entirely when the account has no guild or a zero
+            // master reset rather than showing a misleading "-" for a stat
+            // that simply isn't meaningful yet.
+            var active = _context.Account?.ActiveCharacter;
+            var extra = active is null ? "" : string.Concat(
+                active.MasterReset > 0 ? $" · MR {active.MasterReset}" : "",
+                string.IsNullOrWhiteSpace(active.Guild) ? "" : $" · {active.Guild}");
+            CharacterDetailText.Text = $"{character.CurrentClass} · Nível {character.Level} · Reset {character.Reset}{extra}";
         }
         else
         {
@@ -121,27 +130,55 @@ public partial class HomePage : UserControl, ILauncherPage
     {
         if (_context.PreviewMode)
         {
-            ActiveEventText.Text = NextEventText.Text = RemoteContentFailureMessages.For(RemoteContentFailureKind.NoEvents);
+            var previewMessage = RemoteContentFailureMessages.For(RemoteContentFailureKind.NoEvents);
+            ActiveEventNameText.Text = NextEventNameText.Text = previewMessage;
+            ActiveEventCountdownText.Text = NextEventCountdownText.Text = "";
+            ActiveEventGuideButton.Visibility = Visibility.Collapsed;
             return;
         }
         try
         {
             var events = await _context.ApiClient.GetEventsAsync(CancellationToken.None);
-            ActiveEventText.Text = events.ActiveEvent is { } active
-                ? $"{active.Name} · {CountdownFormatter.Format(active.EndsAt ?? active.StartsAt ?? DateTimeOffset.UtcNow)}"
-                : RemoteContentFailureMessages.For(RemoteContentFailureKind.NoEvents);
-            ActiveEventText.Text = events.Upcoming.Count > 0 || events.ActiveEvent is not null
-                ? ActiveEventText.Text
-                : RemoteContentFailureMessages.For(RemoteContentFailureKind.NoEvents);
+            if (events.ActiveEvent is { } active)
+            {
+                ActiveEventNameText.Text = active.Name;
+                ActiveEventCountdownText.Text = $"Termina em {CountdownFormatter.Format(active.EndsAt ?? active.StartsAt ?? DateTimeOffset.UtcNow)}";
+                ActiveEventGuideButton.Tag = active.GuideUrl;
+                ActiveEventGuideButton.Visibility = string.IsNullOrWhiteSpace(active.GuideUrl) ? Visibility.Collapsed : Visibility.Visible;
+            }
+            else
+            {
+                ActiveEventNameText.Text = RemoteContentFailureMessages.For(RemoteContentFailureKind.NoEvents);
+                ActiveEventCountdownText.Text = "";
+                ActiveEventGuideButton.Visibility = Visibility.Collapsed;
+            }
+
             var next = events.Upcoming.FirstOrDefault();
-            NextEventText.Text = next is not null
-                ? $"{next.Name} · {(next.StartsAt is { } starts ? CountdownFormatter.Format(starts) : "")}"
-                : RemoteContentFailureMessages.For(RemoteContentFailureKind.NoEvents);
+            if (next is not null)
+            {
+                NextEventNameText.Text = next.Name;
+                NextEventCountdownText.Text = next.StartsAt is { } starts ? $"Começa em {CountdownFormatter.Format(starts)}" : "";
+            }
+            else
+            {
+                NextEventNameText.Text = RemoteContentFailureMessages.For(RemoteContentFailureKind.NoEvents);
+                NextEventCountdownText.Text = "";
+            }
         }
         catch
         {
-            ActiveEventText.Text = RemoteContentFailureMessages.For(RemoteContentFailureKind.ApiOffline);
-            NextEventText.Text = RemoteContentFailureMessages.For(RemoteContentFailureKind.ApiOffline);
+            var offlineMessage = RemoteContentFailureMessages.For(RemoteContentFailureKind.ApiOffline);
+            ActiveEventNameText.Text = NextEventNameText.Text = offlineMessage;
+            ActiveEventCountdownText.Text = NextEventCountdownText.Text = "";
+            ActiveEventGuideButton.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    private void ActiveEventGuide_Click(object sender, RoutedEventArgs e)
+    {
+        if (ActiveEventGuideButton.Tag is string url && !string.IsNullOrWhiteSpace(url))
+        {
+            _context.OpenExternalLink?.Invoke(url);
         }
     }
 

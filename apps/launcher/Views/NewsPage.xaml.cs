@@ -6,9 +6,12 @@ using BloodMoon.Launcher.Services.Navigation;
 
 namespace BloodMoon.Launcher.Views;
 
-// Part Y/Z -- NOTÍCIAS. List (2x2 grid, 4/page, filters) and a second,
-// in-page state for VER RESUMO -> summary view (never the full article --
-// VER NOTÍCIA COMPLETA opens the website, Part Z's explicit rule).
+// Part Y/Z, revised Phase 3 -- NOTÍCIAS. A single-column editorial list
+// (Bryan override: the earlier 2x2 grid and TODAS/ATUALIZAÇÕES/EVENTOS
+// tabs are both explicitly rejected) and a second, in-page state for VER
+// RESUMO -> summary view (never the full article -- VER NOTÍCIA COMPLETA
+// opens the website, Part Z's explicit rule). NewsFilter/NewsStateMapper's
+// filtering is kept, fixed to Todas, in case tab UI is re-approved later.
 public partial class NewsPage : UserControl, ILauncherPage
 {
     private LauncherAppContext _context = null!;
@@ -35,23 +38,6 @@ public partial class NewsPage : UserControl, ILauncherPage
         NoNewsState.Visibility = state.Items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         PageIndicatorText.Text = state.TotalPages == 0 ? "-" : $"{state.Page} / {state.TotalPages}";
         return Task.CompletedTask;
-    }
-
-    private void Filter_Changed(object sender, RoutedEventArgs e)
-    {
-        // FilterTodas' IsChecked="True" (XAML) fires this Checked handler
-        // during InitializeComponent itself -- before Initialize(context)
-        // has ever run. Nothing to refresh yet; OnPageEntering will do the
-        // first real refresh once the page is actually navigated to.
-        if (_context is null) return;
-
-        _filter = sender == FilterAtualizacoes
-            ? NewsFilter.Atualizacoes
-            : sender == FilterEventos
-                ? NewsFilter.Eventos
-                : NewsFilter.Todas;
-        _page = 1;
-        _ = RefreshAsync();
     }
 
     private void PreviousPage_Click(object sender, RoutedEventArgs e)

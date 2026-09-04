@@ -10,46 +10,31 @@
         <RowDefinition Height="*" />
       </Grid.RowDefinitions>
       <Grid Grid.Row="0" Margin="24,20,24,0">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
         <StackPanel>
           <TextBlock Text="NOTÍCIAS" Style="{StaticResource LauncherSectionTitle}" FontSize="22" />
           <TextBlock Text="Fique por dentro das novidades do servidor" Margin="0,4,0,0" Foreground="{StaticResource Brush.TextMuted}" FontSize="12" />
-        </StackPanel>
-        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom">
-          <RadioButton x:Name="FilterTodas" Content="TODAS" GroupName="NewsFilter" Style="{StaticResource BmTabItem}" IsChecked="True" Checked="Filter_Changed" />
-          <RadioButton x:Name="FilterAtualizacoes" Content="ATUALIZAÇÕES" GroupName="NewsFilter" Style="{StaticResource BmTabItem}" Checked="Filter_Changed" />
-          <RadioButton x:Name="FilterEventos" Content="EVENTOS" GroupName="NewsFilter" Style="{StaticResource BmTabItem}" Checked="Filter_Changed" />
         </StackPanel>
       </Grid>
 
       <ScrollViewer Grid.Row="1" Margin="24,16,24,20" VerticalScrollBarVisibility="Auto">
         <StackPanel>
           <ItemsControl x:Name="NewsGrid">
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <UniformGrid Columns="2" />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
               <DataTemplate>
-                <Border Style="{StaticResource Card}" Margin="0,0,12,12">
-                  <StackPanel>
-                    <Border Height="140" Background="{StaticResource Brush.DefaultEditorialCard}" />
-                    <TextBlock Text="{Binding Kind}" Margin="0,10,0,0" Foreground="{StaticResource Brush.Crimson}" FontSize="9" FontWeight="Bold" />
-                    <TextBlock Text="{Binding Title}" Margin="0,4,0,0" Foreground="{StaticResource Brush.TextPrimary}" FontFamily="{StaticResource Font.Display}" FontWeight="Bold" FontSize="15" TextWrapping="Wrap" />
-                    <TextBlock Text="{Binding Summary}" Margin="0,6,0,0" Foreground="{StaticResource Brush.TextMuted}" FontSize="11" TextWrapping="Wrap" MaxHeight="46" TextTrimming="CharacterEllipsis" />
-                    <Grid Margin="0,10,0,0">
-                      <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                      </Grid.ColumnDefinitions>
-                      <TextBlock Text="{Binding PublishedAt, StringFormat={}{0:dd/MM/yyyy}}" Foreground="{StaticResource Brush.TextFaint}" FontSize="10" VerticalAlignment="Center" />
-                      <Button Grid.Column="1" Content="VER RESUMO" Style="{StaticResource LauncherTextButton}" Click="OpenSummary_Click" />
-                    </Grid>
-                  </StackPanel>
+                <Border Style="{StaticResource Card}" Margin="0,0,0,10">
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                      <TextBlock Text="{Binding Kind}" Foreground="{StaticResource Brush.Crimson}" FontSize="9" FontWeight="Bold" />
+                      <TextBlock Text="{Binding Title}" Margin="0,4,0,0" Foreground="{StaticResource Brush.TextPrimary}" FontFamily="{StaticResource Font.Display}" FontWeight="Bold" FontSize="15" TextWrapping="Wrap" />
+                      <TextBlock Text="{Binding Summary}" Margin="0,6,0,0" Foreground="{StaticResource Brush.TextMuted}" FontSize="11" TextWrapping="Wrap" MaxHeight="32" TextTrimming="CharacterEllipsis" />
+                      <TextBlock Text="{Binding PublishedAt, StringFormat={}{0:dd/MM/yyyy}}" Margin="0,8,0,0" Foreground="{StaticResource Brush.TextFaint}" FontSize="10" />
+                    </StackPanel>
+                    <Button Grid.Column="1" Content="VER RESUMO" VerticalAlignment="Top" Style="{StaticResource LauncherTextButton}" Click="OpenSummary_Click" />
+                  </Grid>
                 </Border>
               </DataTemplate>
             </ItemsControl.ItemTemplate>

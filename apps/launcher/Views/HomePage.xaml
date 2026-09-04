@@ -12,66 +12,89 @@
         <Grid.ColumnDefinitions>
           <ColumnDefinition x:Name="HeroColumn" Width="2*" />
           <ColumnDefinition Width="16" />
-          <ColumnDefinition Width="1*" />
+          <ColumnDefinition Width="1.15*" />
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="16" />
-          <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
 
-        <!-- HERO (Part O—major adaptive region, expands in WIDE). -->
-        <Border Grid.Column="0" Grid.Row="0" Style="{StaticResource Card}" MinHeight="260" Padding="0">
-          <Grid>
-            <Border x:Name="HeroImageHost" Background="{StaticResource Brush.BackgroundSurfaceAlt}" />
-            <StackPanel VerticalAlignment="Bottom" Margin="24">
-              <TextBlock x:Name="HeroTitleText" Foreground="{StaticResource Brush.TextPrimary}" FontFamily="{StaticResource Font.Display}" FontWeight="Bold" FontSize="28" TextWrapping="Wrap" />
-              <TextBlock x:Name="HeroSubtitleText" Margin="0,6,0,0" Foreground="{StaticResource Brush.TextSecondary}" FontFamily="{StaticResource Font.Compact}" FontSize="13" TextWrapping="Wrap" />
-              <Button x:Name="HeroCtaButton" Margin="0,14,0,0" HorizontalAlignment="Left" Style="{StaticResource DialogButton}" Click="HeroCta_Click" />
-            </StackPanel>
-          </Grid>
-        </Border>
-
-        <!-- CHARACTER SUMMARY / JOGAR -->
-        <Border Grid.Column="2" Grid.Row="0" Style="{StaticResource Card}">
-          <StackPanel>
-            <TextBlock Text="PERSONAGEM" Style="{StaticResource LauncherLabel}" />
-            <StackPanel x:Name="CharacterSummaryPanel" Margin="0,10,0,0">
-              <TextBlock x:Name="CharacterNameText" Foreground="{StaticResource Brush.TextPrimary}" FontFamily="{StaticResource Font.Display}" FontWeight="Bold" FontSize="18" />
-              <TextBlock x:Name="CharacterDetailText" Margin="0,3,0,0" Foreground="{StaticResource Brush.TextMuted}" FontSize="11" />
-            </StackPanel>
-            <TextBlock x:Name="ServerStatusText" Margin="0,16,0,0" Foreground="{StaticResource Brush.Success}" FontFamily="{StaticResource Font.Ui}" FontSize="12" />
-            <TextBlock x:Name="ServerStatusDetailText" Margin="0,3,0,0" Foreground="{StaticResource Brush.TextFaint}" FontSize="10" TextWrapping="Wrap" />
-            <Button x:Name="PlayButton" Margin="0,16,0,0" Content="JOGAR" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Stretch" Click="PlayButton_Click" />
-          </StackPanel>
-        </Border>
-
-        <!-- CAMPAIGN + EVENTS -->
-        <Border Grid.Column="0" Grid.Row="2" x:Name="CampaignBorder" Style="{StaticResource Card}">
-          <StackPanel>
-            <TextBlock x:Name="CampaignVersionText" Style="{StaticResource LauncherLabel}" />
-            <TextBlock x:Name="CampaignTitleText" Margin="0,4,0,0" Foreground="{StaticResource Brush.TextPrimary}" FontFamily="{StaticResource Font.Display}" FontWeight="Bold" FontSize="16" />
-            <TextBlock x:Name="CampaignSubtitleText" Margin="0,3,0,0" Foreground="{StaticResource Brush.TextMuted}" FontSize="11" TextWrapping="Wrap" />
-          </StackPanel>
-        </Border>
-        <Grid Grid.Column="2" Grid.Row="2">
+        <!-- HERO (Part O—major adaptive region, expands in WIDE) + optional
+             CMS campaign card underneath (collapsed unless configured). -->
+        <Grid Grid.Column="0">
           <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="8" />
+            <RowDefinition Height="16" />
             <RowDefinition Height="Auto" />
           </Grid.RowDefinitions>
+          <Border Grid.Row="0" Style="{StaticResource Card}" MinHeight="480" Padding="0">
+            <Grid>
+              <Border x:Name="HeroImageHost" Background="{StaticResource Brush.BackgroundSurfaceAlt}" />
+              <StackPanel VerticalAlignment="Bottom" Margin="24">
+                <TextBlock x:Name="HeroTitleText" Foreground="{StaticResource Brush.TextPrimary}" FontFamily="{StaticResource Font.Display}" FontWeight="Bold" FontSize="28" TextWrapping="Wrap" />
+                <TextBlock x:Name="HeroSubtitleText" Margin="0,6,0,0" Foreground="{StaticResource Brush.TextSecondary}" FontFamily="{StaticResource Font.Compact}" FontSize="13" TextWrapping="Wrap" />
+                <Button x:Name="HeroCtaButton" Margin="0,14,0,0" HorizontalAlignment="Left" Style="{StaticResource DialogButton}" Click="HeroCta_Click" />
+              </StackPanel>
+            </Grid>
+          </Border>
+          <Border Grid.Row="2" x:Name="CampaignBorder" Style="{StaticResource Card}">
+            <StackPanel>
+              <TextBlock x:Name="CampaignVersionText" Style="{StaticResource LauncherLabel}" />
+              <TextBlock x:Name="CampaignTitleText" Margin="0,4,0,0" Foreground="{StaticResource Brush.TextPrimary}" FontFamily="{StaticResource Font.Display}" FontWeight="Bold" FontSize="16" />
+              <TextBlock x:Name="CampaignSubtitleText" Margin="0,3,0,0" Foreground="{StaticResource Brush.TextMuted}" FontSize="11" TextWrapping="Wrap" />
+            </StackPanel>
+          </Border>
+        </Grid>
+
+        <!-- RIGHT COLUMN: character bar, event status, JOGAR. Matches the
+             approved consolidated Início reference's right-column order and
+             relative proportions (Phase 3, owner-resolved). -->
+        <Grid Grid.Column="2">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="12" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+
           <Border Grid.Row="0" Style="{StaticResource Card}">
             <StackPanel>
-              <TextBlock Text="EVENTO ATIVO" Style="{StaticResource LauncherLabel}" />
-              <TextBlock x:Name="ActiveEventText" Margin="0,4,0,0" Foreground="{StaticResource Brush.TextPrimary}" FontSize="12" TextWrapping="Wrap" />
+              <TextBlock Text="PERSONAGEM" Style="{StaticResource LauncherLabel}" />
+              <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="10" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border Width="40" Height="40" Background="{StaticResource Brush.DefaultEditorialCard}" />
+                <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                  <TextBlock x:Name="CharacterNameText" Foreground="{StaticResource Brush.TextPrimary}" FontFamily="{StaticResource Font.Display}" FontWeight="Bold" FontSize="17" />
+                  <TextBlock x:Name="CharacterDetailText" Margin="0,3,0,0" Foreground="{StaticResource Brush.TextMuted}" FontSize="11" TextWrapping="Wrap" />
+                </StackPanel>
+              </Grid>
+              <Border Height="1" Margin="0,12" Background="{StaticResource Brush.BorderSubtle}" />
+              <TextBlock x:Name="ServerStatusText" Foreground="{StaticResource Brush.Success}" FontFamily="{StaticResource Font.Ui}" FontSize="12" />
+              <TextBlock x:Name="ServerStatusDetailText" Margin="0,3,0,0" Foreground="{StaticResource Brush.TextFaint}" FontSize="10" TextWrapping="Wrap" />
             </StackPanel>
           </Border>
+
           <Border Grid.Row="2" Style="{StaticResource Card}">
             <StackPanel>
-              <TextBlock Text="PRÓXIMO EVENTO" Style="{StaticResource LauncherLabel}" />
-              <TextBlock x:Name="NextEventText" Margin="0,4,0,0" Foreground="{StaticResource Brush.TextPrimary}" FontSize="12" TextWrapping="Wrap" />
+              <TextBlock Text="EVENTO ATIVO" Style="{StaticResource LauncherLabel}" />
+              <TextBlock x:Name="ActiveEventNameText" Margin="0,6,0,0" Foreground="{StaticResource Brush.TextPrimary}" FontFamily="{StaticResource Font.Display}" FontWeight="Bold" FontSize="15" TextWrapping="Wrap" />
+              <TextBlock x:Name="ActiveEventCountdownText" Margin="0,4,0,0" Foreground="{StaticResource Brush.Crimson}" FontFamily="{StaticResource Font.Mono}" FontWeight="Bold" FontSize="13" />
+              <Button x:Name="ActiveEventGuideButton" Content="VER EVENTO" Margin="0,10,0,0" Style="{StaticResource LauncherTextButton}" HorizontalAlignment="Left" Visibility="Collapsed" Click="ActiveEventGuide_Click" />
             </StackPanel>
           </Border>
+
+          <Border Grid.Row="4" Style="{StaticResource Card}">
+            <StackPanel>
+              <TextBlock Text="PRÓXIMO EVENTO" Style="{StaticResource LauncherLabel}" />
+              <TextBlock x:Name="NextEventNameText" Margin="0,6,0,0" Foreground="{StaticResource Brush.TextPrimary}" FontFamily="{StaticResource Font.Display}" FontWeight="Bold" FontSize="14" TextWrapping="Wrap" />
+              <TextBlock x:Name="NextEventCountdownText" Margin="0,4,0,0" Foreground="{StaticResource Brush.TextSecondary}" FontFamily="{StaticResource Font.Mono}" FontSize="12" />
+            </StackPanel>
+          </Border>
+
+          <Button Grid.Row="6" x:Name="PlayButton" Content="JOGAR" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Stretch" Height="72" FontSize="20" Click="PlayButton_Click" />
         </Grid>
       </Grid>
     </ScrollViewer>
