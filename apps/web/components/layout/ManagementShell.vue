@@ -96,7 +96,7 @@
 
 <script setup lang="ts">
 import {
-  Activity, BarChart3, Bell, ChevronDown, FileSearch, LayoutDashboard, LayoutTemplate, Map, PackageCheck,
+  Activity, BarChart3, Bell, Bug, ChevronDown, FileSearch, LayoutDashboard, LayoutTemplate, Map, PackageCheck,
   ListTodo, MessageCircle, PanelLeftClose, PanelLeftOpen, Settings, Shield, ShoppingBag,
   Store, TicketCheck, UserCog, Users
 } from 'lucide-vue-next'
@@ -232,6 +232,12 @@ const administrativeItems: MenuItem[] = [
     permission: permissions.gmEventsView
   },
   {
+    label: 'Bug Hunters',
+    to: '/painel/admin/bug-hunters',
+    icon: Bug,
+    permission: permissions.adminBugHuntersView
+  },
+  {
     label: 'Launcher Studio',
     to: '/painel/admin/launcher-studio',
     icon: LayoutTemplate,
@@ -282,7 +288,8 @@ const administrativeItems: MenuItem[] = [
       { label: 'Administradores', to: '/painel/admin/contas?perfil=admin', permission: permissions.adminRolesManage, roles: ['super-admin'] },
       { label: 'Moedas', to: '/painel/admin/financeiro?secao=moedas', permission: permissions.adminFinanceManage, roles: ['super-admin'] },
       { label: 'Integrações', to: '/painel/admin/sistema?secao=integracoes', permission: permissions.adminServerSettingsManage, roles: ['super-admin'] },
-      { label: 'Configurações gerais', to: '/painel/admin/sistema', permission: permissions.adminServerSettingsManage, roles: ['super-admin'] }
+      { label: 'Configurações gerais', to: '/painel/admin/sistema', permission: permissions.adminServerSettingsManage, roles: ['super-admin'] },
+      { label: 'Recompensas de Beta', to: '/painel/admin/beta-rewards', permission: permissions.adminBetaRewardsView, roles: ['super-admin'] }
     ]
   }
 ]
@@ -300,6 +307,7 @@ const playerItems: MenuItem[] = [
   { label: 'Meus anúncios', to: '/painel/marketplace?visao=meus-anuncios', icon: ShoppingBag },
   { label: 'Notificações', to: '/painel/notificacoes', icon: Bell },
   { label: 'Suporte', to: '/painel/suporte', icon: TicketCheck },
+  { label: 'Bug Hunters', to: '/painel/bug-hunters', icon: Bug },
   { label: 'Configurações', to: '/painel/configuracoes', icon: Settings }
 ]
 
@@ -314,6 +322,7 @@ const gmItems: MenuItem[] = [
   { label: 'Guildas', to: '/guilds', icon: Shield },
   { label: 'Notificações', to: '/painel/notificacoes', icon: Bell },
   { label: 'Suporte', to: '/painel/suporte', icon: TicketCheck },
+  { label: 'Bug Hunters', to: '/painel/bug-hunters', icon: Bug },
   { label: 'Configurações', to: '/painel/configuracoes', icon: Settings }
 ]
 
