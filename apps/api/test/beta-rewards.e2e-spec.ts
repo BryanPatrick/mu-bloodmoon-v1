@@ -185,7 +185,15 @@ describe('Beta Rewards -- participation source and generation', () => {
 
     // No PRE_BETA account was created or touched by this whole flow --
     // this workflow is independent of, and never triggers, purge eligibility.
-    const preBetaCount = await prisma.account.count({ where: { accountPhase: 'PRE_BETA' } })
-    expect(preBetaCount).toBe(0)
+    // Scoped to the accounts this test itself created (staff, player) rather
+    // than a global table count -- bloodmoon_local_claude is a shared,
+    // persistent DB with pre-existing PRE_BETA fixture rows from unrelated
+    // suites, so a global count is not a valid assertion here.
+    const [staffAfter, playerAfter] = await Promise.all([
+      prisma.account.findUniqueOrThrow({ where: { id: staff.id } }),
+      prisma.account.findUniqueOrThrow({ where: { id: player.id } })
+    ])
+    expect(staffAfter.accountPhase).not.toBe('PRE_BETA')
+    expect(playerAfter.accountPhase).not.toBe('PRE_BETA')
   })
 })
