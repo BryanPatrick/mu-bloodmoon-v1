@@ -2,7 +2,7 @@
   <ManagementShell>
     <section class="grid gap-5">
       <header class="border-b border-white/10 pb-5">
-        <p class="bm-kicker">Beta · Bug Hunters</p>
+        <p class="bm-kicker">Bug Hunters</p>
         <h1 class="mt-2 font-display text-3xl font-black uppercase">Relatar um problema</h1>
         <p class="mt-2 max-w-2xl text-sm font-semibold text-white/60">
           Conte o que aconteceu com o maximo de detalhe possivel -- isso ajuda a equipe a reproduzir e corrigir mais rapido.

@@ -2,7 +2,7 @@
   <ManagementShell>
     <section class="grid gap-5">
       <header class="border-b border-white/10 pb-5">
-        <p class="bm-kicker">Beta · Bug Hunters · area administrativa</p>
+        <p class="bm-kicker">Bug Hunters · area administrativa</p>
         <h1 class="mt-2 font-display text-3xl font-black uppercase">Triagem de relatos</h1>
         <p class="mt-2 text-sm font-semibold text-white/60">Relatos reproduziveis enviados por jogadores. Nao confundir com tickets de suporte (contas/pagamentos pessoais).</p>
       </header>
