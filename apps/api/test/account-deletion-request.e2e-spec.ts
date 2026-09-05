@@ -86,6 +86,75 @@ describe('Account deletion request flow -- Phase 15', () => {
     expect(row?.status).toBe('REQUESTED')
   })
 
+  test('EXIT_FEEDBACK_IS_RECORDED_AND_NEVER_BLOCKS_THE_REQUEST', async () => {
+    const account = await makeAccount('delfeedback')
+    const result = await deletionRequest.requestDeletion(asUser(account), { ip: null, device: null }, {
+      reasons: [{ code: 'LACK_OF_TIME' }, { code: 'BUGS', detail: 'crash on login' }],
+      otherText: 'also just bored'
+    })
+    expect(result.status).toBe('REQUESTED')
+
+    const feedback = await prisma.accountDeletionFeedback.findFirst({ where: { accountId: account.id } })
+    expect(feedback).toBeTruthy()
+    expect(feedback?.reasons).toEqual([{ code: 'LACK_OF_TIME' }, { code: 'BUGS', detail: 'crash on login' }])
+    expect(feedback?.otherText).toBe('also just bored')
+    expect(feedback?.anonymizedAt).toBeNull()
+  })
+
+  test('EXIT_FEEDBACK_UNKNOWN_REASON_CODES_ARE_DROPPED_NOT_REJECTED', async () => {
+    const account = await makeAccount('delfeedbackunknown')
+    const result = await deletionRequest.requestDeletion(asUser(account), { ip: null, device: null }, {
+      // @ts-expect-error -- deliberately an unrecognized code, simulating a
+      // newer client sending a reason this server doesn't know yet.
+      reasons: [{ code: 'SOME_FUTURE_REASON' }, { code: 'BALANCING' }]
+    })
+    expect(result.status).toBe('REQUESTED')
+
+    const feedback = await prisma.accountDeletionFeedback.findFirst({ where: { accountId: account.id } })
+    expect(feedback?.reasons).toEqual([{ code: 'BALANCING' }])
+  })
+
+  test('EXIT_FEEDBACK_MISSING_OR_EMPTY_NEVER_CREATES_A_ROW', async () => {
+    const account = await makeAccount('delfeedbacknone')
+    await deletionRequest.requestDeletion(asUser(account), { ip: null, device: null })
+
+    const feedback = await prisma.accountDeletionFeedback.findFirst({ where: { accountId: account.id } })
+    expect(feedback).toBeNull()
+  })
+
+  test('EXIT_FEEDBACK_IS_ANONYMIZED_NOT_DELETED_WHEN_ACCOUNT_DELETION_EXECUTES', async () => {
+    const account = await makeAccount('delfeedbackexec')
+    await deletionRequest.requestDeletion(asUser(account), { ip: null, device: null }, {
+      reasons: [{ code: 'PRIVACY_SECURITY' }]
+    })
+    const token = extractToken(mailTransport.consumeLastSentForTest()!.text)
+    await deletionRequest.confirmDeletion(token, { ip: null, device: null })
+    await prisma.accountDeletionRequest.update({ where: { accountId: account.id }, data: { scheduledExecutionAt: new Date(Date.now() - 1000) } })
+
+    const before = await prisma.accountDeletionFeedback.findFirstOrThrow({ where: { accountId: account.id } })
+    await deletionRequest.processReadyDeletions()
+
+    const after = await prisma.accountDeletionFeedback.findUnique({ where: { id: before.id } })
+    expect(after).toBeTruthy()
+    expect(after?.accountId).toBeNull()
+    expect(after?.anonymizedAt).not.toBeNull()
+    // The analytics content itself survives the unlink.
+    expect(after?.reasons).toEqual([{ code: 'PRIVACY_SECURITY' }])
+  })
+
+  test('EXIT_FEEDBACK_SUMMARY_COUNTS_BY_REASON_WITHOUT_READING_IDENTITY', async () => {
+    const a = await makeAccount('delsummary1')
+    const b = await makeAccount('delsummary2')
+    await deletionRequest.requestDeletion(asUser(a), { ip: null, device: null }, { reasons: [{ code: 'BUGS' }] })
+    await deletionRequest.requestDeletion(asUser(b), { ip: null, device: null }, { reasons: [{ code: 'BUGS' }, { code: 'LACK_OF_TIME' }] })
+
+    const summary = await deletionRequest.exitFeedbackSummary(30)
+    const bugs = summary.byReason.find((r) => r.code === 'BUGS')
+    const lackOfTime = summary.byReason.find((r) => r.code === 'LACK_OF_TIME')
+    expect(bugs?.currentWindowCount).toBeGreaterThanOrEqual(2)
+    expect(lackOfTime?.currentWindowCount).toBeGreaterThanOrEqual(1)
+  })
+
   test('CONFIRM_SCHEDULES_EXECUTION_AFTER_GRACE_PERIOD', async () => {
     const account = await makeAccount('delconfirm')
     await deletionRequest.requestDeletion(asUser(account), { ip: null, device: null })

@@ -142,6 +142,15 @@ export class AccountDeletionService {
         }
       })
 
+      // Exit feedback (Bryan, 2026-08-30): unlink, never delete -- the
+      // structured reasons/otherText survive for product analytics, but
+      // the direct accountId linkage is removed the moment there is no
+      // longer a legitimate need for it (the account is gone).
+      await tx.accountDeletionFeedback.updateMany({
+        where: { accountId },
+        data: { accountId: null, anonymizedAt: new Date() }
+      })
+
       if (identity?.legacyLogin) {
         await tx.gameBridgeJob.create({
           data: {

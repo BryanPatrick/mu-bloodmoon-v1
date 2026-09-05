@@ -698,6 +698,29 @@ model AccountDeletionRequest {
   @@index([status, scheduledExecutionAt])
 }
 
+// Bryan's 2026-08-30 follow-up: structured exit feedback for the
+// self-service account deletion flow (docs/accounts/account-deletion-architecture.md).
+// accountId is nullable and unindexed as a FK on purpose -- this row must
+// survive account anonymization (see AccountDeletionService.executeNormalDeletion,
+// which unlinks accountId to null and stamps anonymizedAt rather than
+// deleting the row). No @relation to Account by design -- PRE_BETA_PURGE's
+// real hard `account.delete()` must never be blocked by a dangling
+// reference from analytics data that carries zero financial/legal weight.
+model AccountDeletionFeedback {
+  id                  String    @id @default(uuid())
+  accountId           String?
+  reasons             Json
+  otherText           String?   @db.VarChar(2000)
+  // Phase K (2026-08-30) Part 12: ExitRetentionInteraction shape
+  // (account-deletion.contract.ts) -- observational only, never read back
+  // to gate anything; survives anonymization the same way `reasons` does.
+  retentionInteraction Json?
+  submittedAt         DateTime  @default(now())
+  anonymizedAt        DateTime?
+
+  @@index([accountId])
+}
+
 // Phase 14 Part D. PRE_BETA_PURGE's operational record -- intentionally a
 // DIFFERENT shape from AccountDeletionRecord: batch-level only, no
 // per-user tombstone, because purged accounts were never real players

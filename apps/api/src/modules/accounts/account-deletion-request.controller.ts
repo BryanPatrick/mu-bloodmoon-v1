@@ -5,6 +5,7 @@ import { CurrentUser } from '../auth/current-user.decorator'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import type { AuthenticatedUser } from '../auth/auth.types'
 import { AccountDeletionRequestService } from './account-deletion-request.service'
+import type { ExitFeedbackPayload } from './account-deletion.contract'
 
 type RequestWithIp = {
   ip?: string
@@ -38,8 +39,8 @@ export class AccountDeletionRequestController {
 
   @Post('request')
   @UseGuards(JwtAuthGuard)
-  request(@CurrentUser() user: AuthenticatedUser, @Req() req: RequestWithIp) {
-    return this.deletionRequest.requestDeletion(user, context(req))
+  request(@CurrentUser() user: AuthenticatedUser, @Req() req: RequestWithIp, @Body('feedback') feedback?: ExitFeedbackPayload) {
+    return this.deletionRequest.requestDeletion(user, context(req), feedback)
   }
 
   @Post('confirm')
