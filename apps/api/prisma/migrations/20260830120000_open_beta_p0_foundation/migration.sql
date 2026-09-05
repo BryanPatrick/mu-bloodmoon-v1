@@ -14,27 +14,27 @@
 -- Both are pre-existing and untouched by this migration.
 
 -- AlterTable
-ALTER TABLE `account` ADD COLUMN `accountPhase` ENUM('PRE_BETA', 'OPEN_BETA', 'OFFICIAL') NOT NULL DEFAULT 'PRE_BETA';
+ALTER TABLE `Account` ADD COLUMN `accountPhase` ENUM('PRE_BETA', 'OPEN_BETA', 'OFFICIAL') NOT NULL DEFAULT 'PRE_BETA';
 
 -- AlterTable
-ALTER TABLE `accountcurrency` ADD COLUMN `feeAccumulatorSubunits` INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE `AccountCurrency` ADD COLUMN `feeAccumulatorSubunits` INTEGER NOT NULL DEFAULT 0;
 
 -- AlterTable
-ALTER TABLE `gamebridgejob` MODIFY `operation` ENUM('LOCK_ITEM', 'RELEASE_ITEM', 'TRANSFER_ITEM', 'DELIVER_ITEM', 'CREDIT_CURRENCY', 'SYNC_INVENTORY', 'GRANT_VIP') NOT NULL;
+ALTER TABLE `GameBridgeJob` MODIFY `operation` ENUM('LOCK_ITEM', 'RELEASE_ITEM', 'TRANSFER_ITEM', 'DELIVER_ITEM', 'CREDIT_CURRENCY', 'SYNC_INVENTORY', 'GRANT_VIP') NOT NULL;
 
 -- AlterTable
-ALTER TABLE `marketplaceeconomyconfig` ADD COLUMN `goblinPointTaxPercent` INTEGER NOT NULL DEFAULT 5,
+ALTER TABLE `MarketplaceEconomyConfig` ADD COLUMN `goblinPointTaxPercent` INTEGER NOT NULL DEFAULT 5,
     ADD COLUMN `huntPointTaxPercent` INTEGER NOT NULL DEFAULT 5,
     ADD COLUMN `wcoinTaxPercent` INTEGER NOT NULL DEFAULT 10;
 
 -- AlterTable
-ALTER TABLE `shopproduct` MODIFY `deliveryTarget` ENUM('ACCOUNT', 'CHARACTER', 'INVENTORY', 'VAULT', 'MAIL', 'VIP_ENTITLEMENT') NOT NULL DEFAULT 'ACCOUNT';
+ALTER TABLE `ShopProduct` MODIFY `deliveryTarget` ENUM('ACCOUNT', 'CHARACTER', 'INVENTORY', 'VAULT', 'MAIL', 'VIP_ENTITLEMENT') NOT NULL DEFAULT 'ACCOUNT';
 
 -- AlterTable
-ALTER TABLE `shopproductvariant` MODIFY `deliveryTarget` ENUM('ACCOUNT', 'CHARACTER', 'INVENTORY', 'VAULT', 'MAIL', 'VIP_ENTITLEMENT') NULL;
+ALTER TABLE `ShopProductVariant` MODIFY `deliveryTarget` ENUM('ACCOUNT', 'CHARACTER', 'INVENTORY', 'VAULT', 'MAIL', 'VIP_ENTITLEMENT') NULL;
 
 -- AlterTable
-ALTER TABLE `storedelivery` MODIFY `target` ENUM('ACCOUNT', 'CHARACTER', 'INVENTORY', 'VAULT', 'MAIL', 'VIP_ENTITLEMENT') NOT NULL;
+ALTER TABLE `StoreDelivery` MODIFY `target` ENUM('ACCOUNT', 'CHARACTER', 'INVENTORY', 'VAULT', 'MAIL', 'VIP_ENTITLEMENT') NOT NULL;
 
 -- CreateTable
 CREATE TABLE `AccountTermsAcceptance` (
