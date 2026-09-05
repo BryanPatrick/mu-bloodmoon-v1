@@ -73,6 +73,12 @@ export const permissions = {
   adminReferencesManage: 'admin.references.manage',
   adminFinanceManage: 'admin.finance.manage',
   adminRechargeManage: 'admin.recharge.manage',
+  // PHASE P (2026-08-31): see apps/api/src/modules/auth/permissions.ts's
+  // matching comments.
+  adminChargebackView: 'admin.chargeback.view',
+  adminChargebackManage: 'admin.chargeback.manage',
+  adminRiskView: 'admin.risk.view',
+  adminRiskManage: 'admin.risk.manage',
   adminSystemManage: 'admin.system.manage',
   adminGuildsView: 'admin.guilds.view',
   adminGuildsModerate: 'admin.guilds.moderate',

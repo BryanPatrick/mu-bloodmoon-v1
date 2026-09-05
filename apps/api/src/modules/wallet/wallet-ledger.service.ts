@@ -273,4 +273,124 @@ export class WalletLedgerService {
     const wallet = await this.prisma.accountCurrency.findUnique({ where: { accountId_currency: { accountId, currency } } })
     return wallet?.feeAccumulatorSubunits || 0
   }
+
+  /**
+   * PHASE O (2026-08-31), chargeback dispersal traceability -- Decision 2
+   * (docs/decisions/0016-rmt-policy-gap.md): "we must be able to trace:
+   * payment -> initial credit -> A -> subsequent WC movements ->
+   * counterparties. Primary responsibility remains with originator/
+   * fraudster. Do not automatically punish innocent downstream players."
+   *
+   * Real WC provenance already exists on every ledger row
+   * (paymentProvenanceRef links a credit back to its RechargeIntent), and
+   * settleTaxedCredit() is the one place counterpartyAccountId is ever
+   * populated: a taxed credit's own `accountId` is the RECEIVING account,
+   * `counterpartyAccountId` is who paid them (see that method's own
+   * comment). This traces forward from the account a payment originally
+   * credited: does it appear as a counterpartyAccountId on any LATER
+   * ledger row (meaning it paid someone else), and does THAT recipient in
+   * turn appear as a counterparty on a still-later row, etc. -- a
+   * breadth-first walk, bounded in both depth and time, so a real
+   * production trace can never run unbounded.
+   *
+   * This is a READ-ONLY report. It never freezes, restricts, or adjusts
+   * any account -- see Part 15 (risk/antifraud foundation) for where an
+   * actual action would be decided, separately, by a human reviewing this
+   * report's output.
+   */
+  async traceChargebackDispersal(rechargeIntentId: string, options: { maxHops?: number } = {}): Promise<{
+    rechargeIntentId: string
+    originAccountId: string | null
+    originCurrency: CurrencyCode | null
+    originAmount: number | null
+    originatedAt: Date | null
+    dispersalChain: Array<{
+      hop: number
+      fromAccountId: string
+      toAccountId: string
+      ledgerEntryId: string
+      amount: number
+      type: WalletTransactionType
+      occurredAt: Date
+    }>
+    involvedAccountIds: string[]
+    truncated: boolean
+  }> {
+    const maxHops = Math.max(1, Math.min(options.maxHops ?? 5, 10))
+
+    const originCredit = await this.prisma.walletLedgerEntry.findFirst({
+      where: { sourceType: 'RechargeIntent', sourceId: rechargeIntentId, type: 'WC_PURCHASE_CREDIT' }
+    })
+    if (!originCredit || !originCredit.accountId) {
+      return {
+        rechargeIntentId,
+        originAccountId: null,
+        originCurrency: null,
+        originAmount: null,
+        originatedAt: null,
+        dispersalChain: [],
+        involvedAccountIds: [],
+        truncated: false
+      }
+    }
+
+    const dispersalChain: Array<{
+      hop: number
+      fromAccountId: string
+      toAccountId: string
+      ledgerEntryId: string
+      amount: number
+      type: WalletTransactionType
+      occurredAt: Date
+    }> = []
+    const involved = new Set<string>([originCredit.accountId])
+    let frontier = [originCredit.accountId]
+    let truncated = false
+
+    for (let hop = 1; hop <= maxHops && frontier.length > 0; hop++) {
+      // Only entries strictly AFTER the original credit -- tracing must
+      // never pick up unrelated PRIOR activity that happens to share a
+      // counterparty relationship, only what genuinely descends from this
+      // specific payment.
+      const outgoing = await this.prisma.walletLedgerEntry.findMany({
+        where: {
+          counterpartyAccountId: { in: frontier },
+          currency: originCredit.currency,
+          createdAt: { gt: originCredit.createdAt }
+        },
+        orderBy: { createdAt: 'asc' }
+      })
+
+      const nextFrontier = new Set<string>()
+      for (const entry of outgoing) {
+        if (!entry.accountId || !entry.counterpartyAccountId) continue
+        dispersalChain.push({
+          hop,
+          fromAccountId: entry.counterpartyAccountId,
+          toAccountId: entry.accountId,
+          ledgerEntryId: entry.id,
+          amount: entry.grossAmount,
+          type: entry.type,
+          occurredAt: entry.createdAt
+        })
+        if (!involved.has(entry.accountId)) {
+          involved.add(entry.accountId)
+          nextFrontier.add(entry.accountId)
+        }
+      }
+      frontier = Array.from(nextFrontier)
+      if (hop === maxHops && frontier.length > 0) truncated = true
+    }
+
+    return {
+      rechargeIntentId,
+      originAccountId: originCredit.accountId,
+      originCurrency: originCredit.currency,
+      originAmount: originCredit.grossAmount,
+      originatedAt: originCredit.createdAt,
+      dispersalChain,
+      involvedAccountIds: Array.from(involved),
+      truncated
+    }
+  }
 }

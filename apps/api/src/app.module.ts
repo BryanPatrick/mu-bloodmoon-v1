@@ -15,6 +15,7 @@ import { CommerceModule } from './modules/commerce/commerce.module'
 import { WebSourceModule } from './modules/web-source/web-source.module'
 import { MarketplaceModule } from './modules/marketplace/marketplace.module'
 import { WalletModule } from './modules/wallet/wallet.module'
+import { WalletTransferModule } from './modules/wallet-transfer/wallet-transfer.module'
 import { VipModule } from './modules/vip/vip.module'
 import { BetaLifecycleModule } from './modules/beta-lifecycle/beta-lifecycle.module'
 import { CommunityModule } from './modules/community/community.module'
@@ -88,6 +89,7 @@ export type ApiModuleName = typeof apiModules[number]
     WebSourceModule,
     MarketplaceModule,
     WalletModule,
+    WalletTransferModule,
     VipModule,
     BetaLifecycleModule,
     CommunityModule,

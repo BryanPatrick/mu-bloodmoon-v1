@@ -4,6 +4,7 @@ import type { Account, CurrencyCode, GameBridgeJob, GameBridgeStatus, Marketplac
 import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
+import { PaymentRiskService } from '../commerce/payment-risk.service'
 import { ObservabilityService } from '../observability/observability.service'
 import { WalletLedgerService } from '../wallet/wallet-ledger.service'
 import type {
@@ -65,7 +66,8 @@ export class MarketplaceService {
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
     private readonly observability: ObservabilityService,
-    private readonly walletLedger: WalletLedgerService
+    private readonly walletLedger: WalletLedgerService,
+    private readonly paymentRisk: PaymentRiskService
   ) {}
 
   async listPublic(query: MarketplaceQuery) {
@@ -380,10 +382,46 @@ export class MarketplaceService {
     return this.mapListing(updated)
   }
 
+  // PHASE Q DECISION CLOSURE (2026-08-31) -- Bryan's own instruction:
+  // "audit the actual Market settlement flow" before deciding whether
+  // TRANSFER_RESTRICTION should cover any Market action. Real findings,
+  // per action (traced from this file's own code, not assumed):
+  //
+  //   MARKET_LIST (createListing)   -- no P2P WC movement at all (only an
+  //     optional STORE_PURCHASE-type publication FEE to the platform,
+  //     never to another player)                          -> ALLOW
+  //   MARKET_CANCEL (cancelListing) -- no WC movement whatsoever          -> ALLOW
+  //   MARKET_BUY (createOrder, below) -- debits the BUYER's WC
+  //     IMMEDIATELY, at order-creation time, addressed at a SPECIFIC
+  //     seller (via the listing) -- this is the exact "restricted
+  //     account initiates outbound P2P WC movement toward another
+  //     player" pattern TRANSFER_RESTRICTION exists to stop, even
+  //     though the seller isn't credited until settlement later. This
+  //     answers the Core Question directly: yes, buying moves a
+  //     restricted account's WC toward another specific player.       -> BLOCK
+  //   MARKET_SETTLEMENT (updateOrderStatus, COMPLETED) -- fulfills an
+  //     ALREADY-created, already-paid order; blocking it would strand
+  //     a legitimate seller's payout and a legitimate buyer's item for
+  //     an order that already happened (possibly before the
+  //     restriction even existed) -- this is completion/reconciliation,
+  //     not new initiation, and crediting the SELLER here is the
+  //     seller RECEIVING money, not dispersing it.                    -> ALLOW
+  //   MARKET_SELL (the seller's own side of a completed order) --
+  //     identical reasoning to settlement: the seller is RECEIVING,
+  //     never blocked.                                                -> ALLOW
+  //   REFUND (updateOrderStatus, REFUNDED) -- credits the buyer back,
+  //     the buyer RECEIVING, never blocked.                           -> ALLOW
+  //
+  // Only ONE real enforcement point follows from this: createOrder
+  // (Market BUY) is the sole Market action gated behind
+  // assertNoActiveTransferRestriction(). See ADR-0022 for the full
+  // table and the closed OQ-024.
   async createOrder(payload: CreateMarketplaceOrderPayload, user: AuthenticatedUser) {
     if (!payload.listingId?.trim()) {
       throw new BadRequestException('listingId e obrigatorio.')
     }
+
+    await this.paymentRisk.assertNoActiveTransferRestriction(user.id)
 
     const order = await this.prisma.$transaction(async (tx) => {
       const listing = await tx.playerMarketListing.findUnique({

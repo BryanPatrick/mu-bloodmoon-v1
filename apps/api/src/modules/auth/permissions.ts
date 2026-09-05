@@ -97,6 +97,23 @@ export const permissionKeys = {
   adminReferencesManage: 'admin.references.manage',
   adminFinanceManage: 'admin.finance.manage',
   adminRechargeManage: 'admin.recharge.manage',
+  // PHASE P (2026-08-31): the chargeback dispersal trace is a real
+  // read-only report (WalletLedgerService.traceChargebackDispersal()),
+  // but still real financial data about potentially multiple accounts,
+  // gated distinctly from ordinary finance viewing (adminFinanceView).
+  adminChargebackView: 'admin.chargeback.view',
+  // PHASE P (2026-08-31): acting on a chargeback case (notes/resolution)
+  // is more consequential than viewing the read-only dispersal trace --
+  // separately gated, same reasoning as adminRechargeRefund vs.
+  // adminOrdersOperate above.
+  adminChargebackManage: 'admin.chargeback.manage',
+  // PHASE P (2026-08-31): antifraud foundation -- risk case visibility and
+  // the ability to apply/lift a case action (MANUAL_REVIEW/
+  // PAYMENT_RESTRICTION/TRANSFER_RESTRICTION/ACCOUNT_RESTRICTION) are
+  // gated separately, same "do not assume all ADM roles can act on this"
+  // principle as every other finance-sensitive permission in this file.
+  adminRiskView: 'admin.risk.view',
+  adminRiskManage: 'admin.risk.manage',
   adminSystemManage: 'admin.system.manage',
   adminGuildsView: 'admin.guilds.view',
   adminGuildsModerate: 'admin.guilds.moderate',

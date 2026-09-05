@@ -642,6 +642,9 @@ model Account {
   vipEntitlement            VipEntitlement?
   walletLedgerEntries       WalletLedgerEntry[]         @relation("WalletLedgerOwner")
   walletLedgerCounterparty  WalletLedgerEntry[]         @relation("WalletLedgerCounterparty")
+  paymentRiskSignals        PaymentRiskSignal[]
+  paymentRiskCases          PaymentRiskCase[]
+  chargebackCases           ChargebackCase[]
 }
 
 // Phase 14 Part D. NORMAL_ACCOUNT_DELETION's tombstone metadata --
@@ -1924,6 +1927,7 @@ model RechargeIntent {
   account               Account               @relation(fields: [accountId], references: [id], onDelete: Cascade)
   package               RechargePackage       @relation(fields: [packageId], references: [id])
   webhookEvents         PaymentWebhookEvent[]
+  chargebackCase        ChargebackCase?
 
   @@index([accountId])
   @@index([packageId])
@@ -3720,4 +3724,176 @@ enum LauncherAssetCategory {
 enum LauncherAssetStorageProvider {
   LOCAL
   R2
+}
+
+// ===================================================================
+// Phase P (2026-08-31) -- payment antifraud foundation
+// (PaymentRiskSignal/PaymentRiskCase/PaymentRiskCaseAction) and a formal
+// chargeback case model (ChargebackCase), replacing the previously-
+// informal MANUAL_REVIEW + "charged_back:" prefix convention. Every
+// signal carries a human-readable `reason` and structured `evidence` --
+// there is no opaque score anywhere in this design. accountId is
+// nullable and NOT a hard-required relation on PaymentRiskSignal/
+// PaymentRiskCase/ChargebackCase on purpose: these rows must be able to
+// outlive the account they were about. See
+// docs/decisions/0019-payment-operational-closure-phase-p.md.
+// ===================================================================
+
+enum PaymentRiskSeverity {
+  INFO
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum PaymentRiskSignalType {
+  // Wired to a real detector this phase (payment-risk.service.ts).
+  NEW_ACCOUNT_HIGH_VALUE_PURCHASE
+  MULTIPLE_FAILED_PAYMENTS
+  REPEATED_CHARGEBACK
+  RAPID_PURCHASE_SEQUENCE
+  DELIVERY_ANOMALY
+  PROVIDER_REVIEW_STATE
+  // Wired this phase too, from wallet-transfer.service.ts's own
+  // evaluateTransferRiskSignals() -- the direct-WC-transfer feature this
+  // phase built specifically because these signals had no real P2P
+  // movement to observe before.
+  IMMEDIATE_WCOIN_TRANSFER
+  NEAR_FULL_BALANCE_TRANSFER
+  MANY_RECIPIENTS_AFTER_PURCHASE
+  REPEATED_RECIPIENT_NETWORK
+  // Deliberately UNSUPPORTED: Mercado Pago's real Orders API response
+  // never returns a payer identifier on GET/webhook (only sent in the
+  // CREATE request, never echoed back) -- there is no reliable field to
+  // compare against the account's registered email, and this codebase
+  // does not use fragile proxies (payer display name, etc.) for a fraud
+  // signal. Kept in the enum (not omitted) so a future phase extends
+  // additively if a reliable provider identifier ever becomes available.
+  PAYMENT_ACCOUNT_MISMATCH
+}
+
+enum PaymentRiskCaseStatus {
+  OPEN
+  UNDER_REVIEW
+  CLEARED
+  CONFIRMED_FRAUD
+  CLOSED
+}
+
+// Explicit, configurable actions a reviewer can record against a case --
+// never an automatic consequence of a signal firing on its own.
+// MANUAL_REVIEW here is a case-workflow marker, distinct from
+// RechargeIntentStatus.MANUAL_REVIEW.
+enum PaymentRiskAction {
+  MANUAL_REVIEW
+  PAYMENT_RESTRICTION
+  TRANSFER_RESTRICTION
+  ACCOUNT_RESTRICTION
+}
+
+model PaymentRiskSignal {
+  id         String                @id @default(uuid())
+  accountId  String?
+  signalType PaymentRiskSignalType
+  severity   PaymentRiskSeverity
+  sourceType String?               @db.VarChar(80)
+  sourceId   String?
+  // Human-readable WHY this signal fired -- always present, "no black-box
+  // score without evidence." evidence carries the concrete numbers/ids a
+  // reviewer needs to verify the reason themselves.
+  reason     String                @db.Text
+  evidence   Json?
+  riskCaseId String?
+  detectedAt DateTime              @default(now())
+  account    Account?              @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  riskCase   PaymentRiskCase?      @relation(fields: [riskCaseId], references: [id], onDelete: SetNull)
+
+  @@index([accountId, detectedAt])
+  @@index([signalType])
+  @@index([riskCaseId])
+}
+
+model PaymentRiskCase {
+  id                   String                  @id @default(uuid())
+  accountId            String?
+  status               PaymentRiskCaseStatus   @default(OPEN)
+  highestSeverity      PaymentRiskSeverity
+  summary              String                  @db.Text
+  reviewNotes          String?                 @db.Text
+  resolution           String?                 @db.Text
+  openedAt             DateTime                @default(now())
+  resolvedAt           DateTime?
+  resolvedByAccountId  String?
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime                @updatedAt
+  account              Account?                @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  signals              PaymentRiskSignal[]
+  actions              PaymentRiskCaseAction[]
+
+  @@index([accountId])
+  @@index([status])
+}
+
+model PaymentRiskCaseAction {
+  id                    String            @id @default(uuid())
+  riskCaseId            String
+  action                PaymentRiskAction
+  reason                String            @db.Text
+  performedByAccountId  String
+  performedByUsername   String
+  performedAt           DateTime          @default(now())
+  liftedAt              DateTime?
+  liftedByAccountId     String?
+  riskCase              PaymentRiskCase   @relation(fields: [riskCaseId], references: [id], onDelete: Cascade)
+
+  @@index([riskCaseId])
+}
+
+enum ChargebackCaseStatus {
+  OPEN
+  UNDER_REVIEW
+  CLEARED
+  CONFIRMED_FRAUD
+  CLOSED
+}
+
+// Replaces the previously-informal "MANUAL_REVIEW status + failureReason
+// prefixed 'charged_back:'" convention (still the trigger -- see
+// mercadopago.status-map.ts) with an explicit, structured case. Primary
+// responsibility is always the purchase originator; dispersalTraceSnapshot
+// exists for investigation, never for automatic clawback against
+// downstream recipients (docs/decisions/0016-rmt-policy-gap.md Decision 2,
+// reaffirmed by Phase P's own instruction).
+model ChargebackCase {
+  id                       String               @id @default(uuid())
+  rechargeIntentId         String               @unique
+  accountId                String?
+  provider                 String               @db.VarChar(40)
+  externalOrderId          String?              @db.VarChar(191)
+  currency                 CurrencyCode
+  originalAmountCredited   Int
+  // The account's live WC balance at the moment this case was opened --
+  // a real, honest fact. NOT an exact "how much of THIS specific credit
+  // remains" figure: WC is fungible once merged into a balance, and this
+  // codebase does not pretend to FIFO-trace individual coins. Use this
+  // together with dispersalTraceSnapshot (the actual, ledger-verified
+  // forward-transfer trail) for investigation.
+  accountBalanceAtCaseOpen Int?
+  dispersalTraceSnapshot   Json?
+  providerChargebackReason String?              @db.Text
+  sourceWebhookEventId     String?
+  chargebackDate           DateTime?
+  status                   ChargebackCaseStatus @default(OPEN)
+  reviewNotes              String?              @db.Text
+  resolution               String?              @db.Text
+  resolvedAt               DateTime?
+  resolvedByAccountId      String?
+  createdAt                DateTime             @default(now())
+  updatedAt                DateTime             @updatedAt
+  account                  Account?             @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  rechargeIntent           RechargeIntent       @relation(fields: [rechargeIntentId], references: [id])
+
+  @@index([accountId])
+  @@index([status])
 }
