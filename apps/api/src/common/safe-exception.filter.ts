@@ -8,6 +8,7 @@ import {
 import type { ExceptionFilter } from '@nestjs/common'
 import { randomUUID } from 'node:crypto'
 import type { AuthenticatedUser } from '../modules/auth/auth.types'
+import { Http5xxBurstDetector } from '../modules/alerting/http-5xx-burst-detector'
 import { ObservabilityService } from '../modules/observability/observability.service'
 import { RequestContextService } from './request-context.service'
 
@@ -53,7 +54,8 @@ const PUBLIC_ERROR_CODES = new Set([
 export class SafeExceptionFilter implements ExceptionFilter {
   constructor(
     private readonly observability: ObservabilityService,
-    private readonly requestContext: RequestContextService
+    private readonly requestContext: RequestContextService,
+    private readonly http5xxBurstDetector: Http5xxBurstDetector
   ) {}
 
   async catch(exception: unknown, host: ArgumentsHost) {
@@ -101,6 +103,21 @@ export class SafeExceptionFilter implements ExceptionFilter {
         }
       })
       console.error(`[${requestId}]`, exception)
+
+      // Part 13's "repeated 5xx threshold" -- distinct from the
+      // per-fingerprint SystemError dedup above, this answers "how many
+      // 5xx of ANY kind happened recently," which a single fingerprint
+      // can't see on its own.
+      if (this.http5xxBurstDetector.recordAndCheck()) {
+        await this.observability.recordOperationalEvent({
+          module: 'http',
+          eventType: 'HTTP_5XX_BURST',
+          severity: 'CRITICAL',
+          correlationId: requestId,
+          description: 'Repeated 5xx responses detected in a short window.',
+          data: { recentCount: this.http5xxBurstDetector.currentCount() }
+        })
+      }
     }
     response.status(status).json({ statusCode: status, message, ...(code ? { code } : {}), requestId })
   }

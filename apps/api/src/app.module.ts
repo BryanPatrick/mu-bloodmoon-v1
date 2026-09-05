@@ -36,6 +36,7 @@ import { GameAccountIdentityModule } from './modules/game-account-identity/game-
 import { GameProvisioningReconciliationModule } from './modules/game-provisioning-reconciliation/game-provisioning-reconciliation.module'
 import { IntegrationsDiscordModule } from './modules/integrations-discord/integrations-discord.module'
 import { LauncherStudioModule } from './modules/launcher-studio/launcher-studio.module'
+import { AlertingModule } from './modules/alerting/alerting.module'
 
 export const apiModules = [
   'auth',
@@ -106,7 +107,8 @@ export type ApiModuleName = typeof apiModules[number]
     GameAccountIdentityModule,
     GameProvisioningReconciliationModule,
     IntegrationsDiscordModule,
-    LauncherStudioModule
+    LauncherStudioModule,
+    AlertingModule
   ]
 })
 export class AppModule implements NestModule {
