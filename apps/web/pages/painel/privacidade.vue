@@ -109,8 +109,8 @@
 
     <!-- Fluxo: questionário -> confirmações -->
     <Teleport to="body">
-      <div v-if="flowStep" class="fixed inset-0 z-[120] grid place-items-center bg-black/70 p-4 backdrop-blur-sm" role="presentation">
-        <section class="bm-panel w-full max-w-2xl rounded-md p-6" role="dialog" aria-modal="true" aria-labelledby="deletion-flow-title">
+      <div v-if="flowStep" class="fixed inset-0 z-[120] grid place-items-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm" role="presentation">
+        <section class="bm-panel my-8 max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-md p-6" role="dialog" aria-modal="true" aria-labelledby="deletion-flow-title">
           <!-- Etapa 1: questionário de saída -->
           <div v-if="flowStep === 'questionnaire'">
             <p class="bm-kicker">Antes de continuar</p>
