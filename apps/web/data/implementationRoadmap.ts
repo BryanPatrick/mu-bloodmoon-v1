@@ -242,7 +242,7 @@ export const implementationRoadmap: RoadmapItem[] = [
     summary: 'A area do jogador precisa concentrar gerenciamento de personagens, conta, loja e moedas.',
     collectedData: [
       'Dropdown de boas-vindas ja existe',
-      'Moedas: WCoin, Goblin Point e Hunt Point',
+      'Moedas: WCoin, Blood Coin (Goblin Point) e Hunt Point',
       'Rotas base de painel, personagens, conta, loja e recarga',
       'APIs de conta, personagens, comercio e marketplace ja foram separadas por modulo'
     ],
@@ -286,7 +286,7 @@ export const implementationRoadmap: RoadmapItem[] = [
       'POST /api/auth/login emite accessToken e refreshToken',
       'Contas bloqueadas nao recebem sessao no backend',
       'POST /api/auth/register cria conta PLAYER ativa com senha e Personal ID hasheados',
-      'Cadastro real inicializa WCoin, Goblin Point e Hunt Point com saldo 0',
+      'Cadastro real inicializa WCoin, Blood Coin (Goblin Point) e Hunt Point com saldo 0',
       'Tela /registrar ja envia dados para API e trata duplicidade de usuario/e-mail'
     ],
     nextSteps: [
