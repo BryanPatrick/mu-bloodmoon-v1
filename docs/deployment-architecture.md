@@ -178,6 +178,49 @@ Antes de deploy real ainda precisamos:
 /backups    backups diarios, semanais e mensais
 ```
 
+## Reload de processo Node.js em producao (cPanel / LiteSpeed)
+
+Descoberto na Fase AD (2026-09-05) apos deploys de `bmapi` e `bmweb` nao
+surtirem efeito mesmo com arquivos corretos no disco.
+
+**Este host NAO usa Phusion Passenger.** Nao existe binario
+`passenger-status` em nenhum PATH da conta. Tocar `tmp/restart.txt` e um
+no-op aqui — e a convencao do Passenger, nao deste ambiente.
+
+O mecanismo real e **CloudLinux Node.js Selector + LSAPI do LiteSpeed**.
+Cada app Node roda como um processo `lsnode:/home/mubloodxz/<app>/` (visivel
+via `ps`), tipicamente com `PPid=1` (reparentado ao init apos o spawn
+original do LSAPI). O botao "Restart"/"Stop+Start" do Node.js Selector no
+cPanel **nao garante** que esse processo seja substituido — nesta fase,
+dois workers antigos (`bmapi` e depois `bmweb`) sobreviveram intactos a
+varios ciclos de Stop/Start pela UI, continuando a servir codigo antigo.
+
+Procedimento seguro confirmado (usado duas vezes nesta fase, ambas com
+sucesso):
+
+1. Levantar evidencia do(s) PID(s) candidato(s) antes de qualquer sinal:
+   `ps -eo pid,ppid,user,etimes,lstart,cmd | grep 'lsnode:/home/mubloodxz/<app>/'`,
+   depois por PID: `readlink -f /proc/<pid>/cwd`, `grep -E
+   "^(PPid|Uid|State):" /proc/<pid>/status`, e `environ` filtrado por
+   `app_root` — confirmar `CWD`/`CL_APP_ROOT` batem com o app certo e que
+   nenhum PID pertence a outro app na mesma conta.
+2. Confirmacao explicita do dono do produto antes de enviar qualquer sinal.
+3. `process.kill(pid, 'SIGTERM')` **apenas** nos PIDs confirmados — nunca
+   `SIGKILL` a menos que um SIGTERM confirmado falhe e haja nova
+   autorizacao explicita para isso.
+4. Uma requisicao HTTP real ao dominio publico (ex.: abrir a home) e
+   suficiente para o LiteSpeed subir um worker novo sob demanda — nao e
+   preciso reiniciar nada pela UI do cPanel depois do SIGTERM.
+5. Confirmar o worker novo: `ps` deve mostrar um PID diferente, com
+   `PPid` de um processo vivo (nao mais `1`) e horario de inicio posterior
+   ao deploy; refazer a checagem de `CWD`/`CL_APP_ROOT` do passo 1.
+
+Como nao ha API/SSH nesta conta (ver secao de hospedagem web acima), todo
+esse procedimento roda via um script `.cjs` temporario, subido pelo
+Administrador de Ficheiros do cPanel, registrado em `scripts` do
+`package.json` do app e executado por "Run JS script" no Node.js Selector
+— o mesmo canal ja usado para diagnosticos e migrations desta fase.
+
 ## SQL Server do jogo
 
 O SQL Server do jogo e a origem de verdade para contas/personagens/inventario/moedas reais. A wiki e conteudo editorial podem continuar em arquivos/objetos estaticos inicialmente.
