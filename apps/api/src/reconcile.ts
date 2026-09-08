@@ -17,9 +17,9 @@ async function main() {
   try {
     const reconciliation = app.get(GameProvisioningReconciliationService)
     const result = await reconciliation.runOnce()
-    logger.log(
+    process.stdout.write(
       `Reconciliation pass completed: scanned=${result.scanned} acted=${result.acted} ` +
-        `backoff=${result.skippedBackoff} ceiling=${result.skippedAttemptCeiling} errors=${result.errors}`
+        `backoff=${result.skippedBackoff} ceiling=${result.skippedAttemptCeiling} errors=${result.errors}\n`
     )
   } finally {
     await app.close()
