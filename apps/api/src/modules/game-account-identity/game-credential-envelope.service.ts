@@ -71,8 +71,12 @@ export function canonicalAad(value: GameCredentialAad): string {
 
 function loadKeyRing(): KeyRing {
   const activeVersion = process.env.GAME_CREDENTIAL_ACTIVE_KEY_VERSION || ''
+  const encodedKeyRing = process.env.GAME_CREDENTIAL_KEYS_B64 || ''
+  const serializedKeyRing = encodedKeyRing
+    ? Buffer.from(encodedKeyRing, 'base64').toString('utf8')
+    : process.env.GAME_CREDENTIAL_KEYS_JSON || ''
   let raw: unknown
-  try { raw = JSON.parse(process.env.GAME_CREDENTIAL_KEYS_JSON || '') } catch { raw = null }
+  try { raw = JSON.parse(serializedKeyRing) } catch { raw = null }
   if (!raw || typeof raw !== 'object' || !/^v[1-9][0-9]{0,3}$/.test(activeVersion)) {
     throw new Error('GAME_CREDENTIAL_KEYRING_NOT_CONFIGURED')
   }

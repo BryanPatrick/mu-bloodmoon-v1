@@ -5,16 +5,19 @@ describe('Phase 3D-A game credential envelope', () => {
   const service = new GameCredentialEnvelopeService()
   const aad = { commandId: randomUUID(), provisioningRequestId: randomUUID(), commandType: 'CREATE_GAME_ACCOUNT' as const }
   let previousKeys: string | undefined
+  let previousEncodedKeys: string | undefined
   let previousVersion: string | undefined
 
   beforeAll(() => {
     previousKeys = process.env.GAME_CREDENTIAL_KEYS_JSON
+    previousEncodedKeys = process.env.GAME_CREDENTIAL_KEYS_B64
     previousVersion = process.env.GAME_CREDENTIAL_ACTIVE_KEY_VERSION
     process.env.GAME_CREDENTIAL_KEYS_JSON = JSON.stringify({ v1: randomBytes(32).toString('base64'), v2: randomBytes(32).toString('base64') })
     process.env.GAME_CREDENTIAL_ACTIVE_KEY_VERSION = 'v1'
   })
   afterAll(() => {
     previousKeys === undefined ? delete process.env.GAME_CREDENTIAL_KEYS_JSON : process.env.GAME_CREDENTIAL_KEYS_JSON = previousKeys
+    previousEncodedKeys === undefined ? delete process.env.GAME_CREDENTIAL_KEYS_B64 : process.env.GAME_CREDENTIAL_KEYS_B64 = previousEncodedKeys
     previousVersion === undefined ? delete process.env.GAME_CREDENTIAL_ACTIVE_KEY_VERSION : process.env.GAME_CREDENTIAL_ACTIVE_KEY_VERSION = previousVersion
   })
 
@@ -50,6 +53,16 @@ describe('Phase 3D-A game credential envelope', () => {
     expect(v2.keyVersion).toBe('v2')
     expect(service.decrypt(v1, aad).toString('ascii')).toBe('MuOnly1234')
     process.env.GAME_CREDENTIAL_ACTIVE_KEY_VERSION = 'v1'
+  })
+
+  it('accepts a base64-encoded keyring for runtimes that cannot preserve JSON environment quotes', () => {
+    const serialized = process.env.GAME_CREDENTIAL_KEYS_JSON!
+    process.env.GAME_CREDENTIAL_KEYS_B64 = Buffer.from(serialized, 'utf8').toString('base64')
+    process.env.GAME_CREDENTIAL_KEYS_JSON = '{quote-stripped-invalid-json}'
+    const envelope = service.encrypt(Buffer.from('MuOnly1234'), aad)
+    expect(service.decrypt(envelope, aad).toString('ascii')).toBe('MuOnly1234')
+    delete process.env.GAME_CREDENTIAL_KEYS_B64
+    process.env.GAME_CREDENTIAL_KEYS_JSON = serialized
   })
 
   it('fails safely for an unavailable key version', () => {

@@ -133,6 +133,9 @@ async function main() {
     engines: { node: '>=20.19.3' },
     scripts: {
       start: 'node server.js',
+      'reconcile:provisioning': 'node dist/apps/api/src/reconcile.js',
+      'migrate:two-factor-keys': 'node dist/apps/api/src/migrate-two-factor-keys.js',
+      'migrate:game-credential-keys': 'node dist/apps/api/src/migrate-game-credential-keys.js',
       'prisma:generate': 'prisma generate --schema=prisma/schema.prisma',
       'prisma:migrate': 'prisma migrate deploy --schema=prisma/schema.prisma'
     },
