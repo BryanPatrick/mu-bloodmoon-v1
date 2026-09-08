@@ -17,6 +17,7 @@ import { MarketplaceModule } from './modules/marketplace/marketplace.module'
 import { WalletModule } from './modules/wallet/wallet.module'
 import { WalletTransferModule } from './modules/wallet-transfer/wallet-transfer.module'
 import { VipModule } from './modules/vip/vip.module'
+import { VipSyncModule } from './modules/vip-sync/vip-sync.module'
 import { BetaLifecycleModule } from './modules/beta-lifecycle/beta-lifecycle.module'
 import { CommunityModule } from './modules/community/community.module'
 import { MuServerExportModule } from './modules/muserver-export/muserver-export.module'
@@ -91,6 +92,7 @@ export type ApiModuleName = typeof apiModules[number]
     WalletModule,
     WalletTransferModule,
     VipModule,
+    VipSyncModule,
     BetaLifecycleModule,
     CommunityModule,
     MuServerExportModule,

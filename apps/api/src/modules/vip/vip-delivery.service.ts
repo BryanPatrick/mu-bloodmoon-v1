@@ -1,8 +1,8 @@
 import { Injectable, Logger, type OnModuleDestroy, type OnModuleInit } from '@nestjs/common'
 import { PrismaClient, type GameBridgeJob } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
+import { GameBridgeVipGateway } from './game-bridge-vip.gateway'
 import type { GrantVipDeliveryPayload, VipGameBridgeGateway } from './vip-delivery.gateway'
-import { UnconfiguredVipGameBridgeGateway } from './vip-delivery.gateway'
 
 // Phase 14 Part C. Mirrors the claim/backoff/ceiling/lock pattern already
 // proven in game-provisioning-reconciliation.service.ts, applied to
@@ -41,14 +41,18 @@ export class VipDeliveryService implements OnModuleInit, OnModuleDestroy {
   private timer: ReturnType<typeof setInterval> | null = null
   private readonly gateway: VipGameBridgeGateway
 
-  constructor(private readonly prisma: PrismaService) {
-    // The only gateway implementation that exists today -- see
-    // vip-delivery.gateway.ts's header comment. Not read from a DI token
-    // keyed off MU_BRIDGE_ENABLED, deliberately: that flag has never
-    // pointed at a real GRANT_VIP-capable implementation, and pretending
-    // otherwise here would silently start reporting fake deliveries the
-    // moment someone flips an unrelated flag.
-    this.gateway = new UnconfiguredVipGameBridgeGateway()
+  // PHASE O (2026-08-31): now the real GameBridgeVipGateway, injected via
+  // DI rather than manually constructed -- see game-bridge-vip.gateway.ts
+  // and vip-delivery.gateway.ts's header comments for why this supersedes
+  // the original UnconfiguredVipGameBridgeGateway-only design. It degrades
+  // to the exact same honest "GAME_BRIDGE_NOT_CONFIGURED" result on its
+  // own when GAME_DATA_WORKER_URL/GAME_COMMAND_PORTAL_SECRET are unset --
+  // never a silently-flipped feature flag, never a fabricated success.
+  constructor(
+    private readonly prisma: PrismaService,
+    gameBridgeVipGateway: GameBridgeVipGateway
+  ) {
+    this.gateway = gameBridgeVipGateway
   }
 
   onModuleInit() {
@@ -147,12 +151,19 @@ export class VipDeliveryService implements OnModuleInit, OnModuleDestroy {
       return 'FAILED_FINAL'
     }
 
+    // Carry forward any non-terminal state the gateway wants to resume
+    // from next attempt (e.g. GameBridgeVipGateway's gameCommandId, so a
+    // retry polls the already-in-flight command instead of submitting a
+    // new one). Merged into the existing payload, never replacing fields
+    // the gateway didn't mention.
+    const carriedPayload = outcome.detail ? { ...payload, ...outcome.detail } : payload
     await this.prisma.gameBridgeJob.update({
       where: { id: job.id },
       data: {
         status: 'PENDING',
         availableAt: new Date(Date.now() + backoffDelayMs(claimed.attempts)),
-        error: (outcome.reason ?? 'UNKNOWN_DELIVERY_FAILURE').slice(0, 500)
+        error: (outcome.reason ?? 'UNKNOWN_DELIVERY_FAILURE').slice(0, 500),
+        payload: carriedPayload as object
       }
     })
     return 'RETRIED'

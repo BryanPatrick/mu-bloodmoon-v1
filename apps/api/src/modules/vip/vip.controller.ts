@@ -19,10 +19,25 @@ export class VipController {
     return this.vip.listCatalog()
   }
 
+  // PHASE Q (2026-08-31), Part 3 -- public, approved-only benefit list
+  // for the player purchase page (see listPublicBenefits()'s own comment
+  // for why xp/drop/chaos/reset never appear here at all).
+  @Get('vip/benefits')
+  publicBenefits() {
+    return this.vip.listPublicBenefits()
+  }
+
   @Get('account/vip')
   @UseGuards(JwtAuthGuard)
   myEntitlement(@CurrentUser() user: AuthenticatedUser) {
     return this.vip.getMyEntitlement(user)
+  }
+
+  // PHASE Q (2026-08-31), Part 15 -- player's own VIP purchase history.
+  @Get('account/vip/history')
+  @UseGuards(JwtAuthGuard)
+  myVipHistory(@CurrentUser() user: AuthenticatedUser) {
+    return this.vip.listMyVipHistory(user)
   }
 
   @Post('account/vip/purchase')

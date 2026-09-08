@@ -4,6 +4,7 @@ import type { VipTier } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
+import { PaymentRiskService } from '../commerce/payment-risk.service'
 import { WalletLedgerService } from '../wallet/wallet-ledger.service'
 import type { PurchaseVipPayload, UpsertVipBenefitConfigPayload, UpsertVipProductConfigPayload } from './vip.contract'
 
@@ -19,7 +20,8 @@ export class VipService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
-    private readonly walletLedger: WalletLedgerService
+    private readonly walletLedger: WalletLedgerService,
+    private readonly paymentRisk: PaymentRiskService
   ) {}
 
   /** Public catalog -- only enabled, priced combinations are shown. */
@@ -34,6 +36,71 @@ export class VipService {
   async getMyEntitlement(user: AuthenticatedUser) {
     const entitlement = await this.prisma.vipEntitlement.findUnique({ where: { accountId: user.id } })
     return this.mapEntitlement(entitlement, user.id)
+  }
+
+  // PHASE Q (2026-08-31), Part 3 -- public, player-facing benefit list.
+  // Deliberately returns ONLY the two real, approved benefit fields
+  // (warehouseBonusPages/commandCostReductionPercent) and only when
+  // actually > 0 -- xpBonusPercent/dropBonusPercent/chaosMachineBonusPercent/
+  // resetBenefitEnabled are never included at all, not even as "disabled"
+  // placeholders, so the purchase page can never accidentally tease an
+  // unapproved benefit as coming soon. See upsertBenefitConfig()'s own
+  // comment for why those four stay hard-clamped.
+  async listPublicBenefits() {
+    const configs = await this.listBenefitConfigs()
+    return configs.map((config) => ({
+      tier: config.tier,
+      benefits: [
+        ...(config.warehouseBonusPages > 0 ? [{ key: 'warehouseBonusPages', label: `+${config.warehouseBonusPages} paginas de warehouse`, value: config.warehouseBonusPages }] : []),
+        ...(config.commandCostReductionPercent > 0 ? [{ key: 'commandCostReductionPercent', label: `-${config.commandCostReductionPercent}% no custo de comandos`, value: config.commandCostReductionPercent }] : [])
+      ]
+    }))
+  }
+
+  // PHASE Q (2026-08-31), Part 15 -- VIP purchase history for the
+  // player's own "Meus Pedidos" page. Payment status is always "PAID" for
+  // an existing VipGrant row -- the WC debit is atomic with the grant
+  // itself (see purchase()'s own transaction), there is no
+  // pending/failed payment state to represent here, unlike a real-money
+  // recharge. Delivery status is derived from the entitlement's CURRENT
+  // state, not raw GameBridgeJob/AccountLevel internals (ADR-0001: the
+  // Portal's own VipEntitlement is the source of truth; the GameServer
+  // sync is a background reconciliation concern already surfaced to
+  // admins elsewhere, not something to expose to the player here).
+  async listMyVipHistory(user: AuthenticatedUser) {
+    const grants = await this.prisma.vipGrant.findMany({
+      where: { accountId: user.id },
+      orderBy: { grantedAt: 'desc' },
+      take: 50
+    })
+    if (!grants.length) return []
+
+    // The real price actually paid, from the ledger row itself -- not
+    // the CURRENT VipProductConfig price, which may have changed since
+    // (grossAmount on the debit row this purchase's own idempotencyKey
+    // produced is the honest historical figure).
+    const debitKeys = grants.map((grant) => `vip-purchase-debit:${grant.idempotencyKey}`)
+    const debits = await this.prisma.walletLedgerEntry.findMany({
+      where: { idempotencyKey: { in: debitKeys } },
+      select: { idempotencyKey: true, grossAmount: true, currency: true }
+    })
+    const debitByKey = new Map(debits.map((debit) => [debit.idempotencyKey, debit]))
+
+    const now = Date.now()
+    return grants.map((grant) => {
+      const debit = debitByKey.get(`vip-purchase-debit:${grant.idempotencyKey}`)
+      return {
+        id: grant.id,
+        tier: grant.tier,
+        durationDays: grant.durationDays,
+        price: debit?.grossAmount ?? null,
+        currency: debit?.currency ?? 'WCOIN',
+        grantedAt: grant.grantedAt.toISOString(),
+        newExpiresAt: grant.newExpiresAt.toISOString(),
+        paymentStatus: 'PAID' as const,
+        deliveryStatus: grant.newExpiresAt.getTime() > now ? ('ACTIVE' as const) : ('EXPIRED' as const)
+      }
+    })
   }
 
   /**
@@ -52,6 +119,10 @@ export class VipService {
    * debit and the VipGrant row share unique-constrained idempotency keys.
    */
   async purchase(user: AuthenticatedUser, payload: PurchaseVipPayload) {
+    // PHASE Q (2026-08-31), Part 5 -- ACCOUNT_RESTRICTION covers VIP
+    // purchase (a commercial action, spends WC balance).
+    await this.paymentRisk.assertNoActiveAccountRestriction(user.id, 'compra de VIP')
+
     if (!Number.isInteger(payload.durationDays) || payload.durationDays <= 0) {
       throw new BadRequestException('Duracao de VIP invalida.')
     }
@@ -72,6 +143,27 @@ export class VipService {
     }
 
     const result = await this.prisma.$transaction(async (tx) => {
+      const now = new Date()
+      const current = await tx.vipEntitlement.findUnique({ where: { accountId: user.id } })
+      const currentlyActive = Boolean(current?.expiresAt && current.expiresAt > now)
+
+      // PHASE Q DECISION CLOSURE (2026-08-31), Decision 3 -- Bryan's own
+      // explicit reversal of the previous "latest-tier-wins + additive
+      // days" behavior (that rule could silently convert e.g. 20
+      // remaining Bronze days + a 30-day Gold purchase into 50 Gold
+      // days, destroying/inflating value with no real conversion basis).
+      // Conservative interim policy until a real value-conversion model
+      // is designed (see OQ-025, VIP_TIER_CHANGE_VALUE_CONVERSION):
+      // SAME tier while active -> allowed, extends normally (unchanged).
+      // DIFFERENT tier while active -> blocked outright, current VIP
+      // must expire first. Never silent -- a clear, specific error.
+      if (currentlyActive && current!.tier !== product.tier) {
+        throw new BadRequestException({
+          code: 'VIP_TIER_CHANGE_BLOCKED',
+          message: `Voce ja possui VIP ${current!.tier} ativo. Aguarde expirar para comprar um nivel diferente -- um sistema de troca/upgrade entre niveis ainda esta sendo desenhado.`
+        })
+      }
+
       await this.walletLedger.debit(tx, user.id, product.currency, product.price, {
         idempotencyKey: `vip-purchase-debit:${idempotencyKey}`,
         type: 'STORE_PURCHASE',
@@ -80,16 +172,11 @@ export class VipService {
         metadata: { tier: product.tier, durationDays: product.durationDays }
       })
 
-      const now = new Date()
-      const current = await tx.vipEntitlement.findUnique({ where: { accountId: user.id } })
-      // Extend-in-place: if currently active with remaining time, the new
-      // duration is added on top rather than lost (repurchase-while-active
-      // safety). If inactive/expired, the new period starts from now.
-      // Tier policy (not fully decided upstream, documented here as this
-      // implementation's choice): the tier of the LATEST purchase applies
-      // going forward; days always stack additively regardless of tier
-      // changes between purchases.
-      const baseExpiry = current?.expiresAt && current.expiresAt > now ? current.expiresAt : now
+      // Extend-in-place: if currently active with remaining time (now
+      // always the SAME tier, per the check above), the new duration is
+      // added on top rather than lost (repurchase-while-active safety).
+      // If inactive/expired, the new period starts from now.
+      const baseExpiry = currentlyActive ? current!.expiresAt! : now
       const newExpiresAt = new Date(baseExpiry.getTime() + product.durationDays * DAY_MS)
 
       const entitlement = await tx.vipEntitlement.upsert({

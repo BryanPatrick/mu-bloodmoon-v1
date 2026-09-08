@@ -6,6 +6,9 @@ import { GameCredentialEnvelopeService } from './game-credential-envelope.servic
 
 @Module({
   providers: [GameAccountIdentityService, GameAccountProvisioningService, GameCommandTransportClient, GameCredentialEnvelopeService],
-  exports: [GameAccountIdentityService, GameAccountProvisioningService]
+  // GameCommandTransportClient exported per the GameBridge extension plan
+  // (Part 1): its auth/signing/timeout plumbing is generic and meant to be
+  // reused by new command types (vip-sync.module.ts) without modification.
+  exports: [GameAccountIdentityService, GameAccountProvisioningService, GameCommandTransportClient]
 })
 export class GameAccountIdentityModule {}

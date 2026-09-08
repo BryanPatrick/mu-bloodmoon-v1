@@ -87,6 +87,8 @@ export const permissionKeys = {
   adminGameDataView: 'admin.game-data.view',
   adminGameProvisioningView: 'admin.game-provisioning.view',
   adminGameProvisioningManage: 'admin.game-provisioning.manage',
+  adminVipSyncView: 'admin.vip-sync.view',
+  adminVipSyncManage: 'admin.vip-sync.manage',
   adminRoadmapView: 'admin.roadmap.view',
   adminRoadmapCreate: 'admin.roadmap.create',
   adminRoadmapEdit: 'admin.roadmap.edit',

@@ -640,6 +640,7 @@ model Account {
   gameCredential            GameAccountCredential?
   termsAcceptances          AccountTermsAcceptance[]
   vipEntitlement            VipEntitlement?
+  vipSyncState              VipSyncState?
   walletLedgerEntries       WalletLedgerEntry[]         @relation("WalletLedgerOwner")
   walletLedgerCounterparty  WalletLedgerEntry[]         @relation("WalletLedgerCounterparty")
   paymentRiskSignals        PaymentRiskSignal[]
@@ -2319,6 +2320,54 @@ model VipGrant {
   vipEntitlement     VipEntitlement  @relation(fields: [vipEntitlementId], references: [id], onDelete: Cascade)
 
   @@index([accountId, grantedAt])
+}
+
+// GameBridge extension plan (docs/gamebridge/gamebridge-agent-extension-plan.md)
+// Part 3B, decision E. The Portal's own memory of "what did we last
+// successfully tell the GameServer" -- deliberately separate from
+// VipEntitlement, which represents commercial truth, not sync status. This
+// separation is what lets the reconciler answer "is there a divergence"
+// without re-deriving it from GameBridge command history every time.
+model VipSyncState {
+  id                String    @id @default(uuid())
+  accountId         String    @unique
+  // Last AccountLevel (0-3) the reconciler successfully synced to the
+  // GameServer. Null means "never synced" -- always a divergence.
+  lastSyncedLevel   Int?
+  lastSyncedAt      DateTime?
+  lastSyncCommandId String?
+  // The desiredLevel sent with lastSyncCommandId -- promoted to
+  // lastSyncedLevel only once that command is confirmed SUCCEEDED. Kept
+  // separate so a stuck/expired in-flight command never gets mistaken for
+  // a confirmed sync (the two are only ever merged by reconcileInFlight()).
+  pendingDesiredLevel Int?
+  // CREATED/QUEUED/.../SUCCEEDED/FAILED_FINAL -- mirrors GameCommandState's
+  // status vocabulary so a pending command in flight is distinguishable
+  // from one that actually completed.
+  lastSyncStatus    String?   @db.VarChar(32)
+  // PURCHASE / EXPIRY / RECONCILIATION_DIVERGENCE / MANUAL_ADMIN (plan Part
+  // 2's SYNC_VIP_TIER auditoria row) -- lives here, not in the GameServer
+  // payload, mirroring GRANT_VIP's "never carry the why across the boundary" rule.
+  lastSyncReason    String?   @db.VarChar(32)
+  // PHASE L DECISION CLOSURE, Decision 2 (2026-08-31): VIP native drift
+  // observability. dbo.bm_SyncVipTier's @PreviousLevel OUTPUT reports the
+  // true AccountLevel found on the GameServer immediately before this
+  // sync's own unconditional overwrite -- if that doesn't match
+  // lastSyncedLevel (the level the Portal itself last confirmed synced),
+  // something else wrote AccountLevel in between (native WZ_SetAccountLevel
+  // coexistence, a legacy writer, manual DBA action, etc.). driftCount/
+  // lastDriftAt track repeated divergence for the SAME account so a
+  // one-off (a single native write, corrected once) stays a WARN-level log
+  // line, while a pattern (this account diverging again and again) becomes
+  // distinguishable and investigable rather than silently re-logged at the
+  // same severity forever. Reset is deliberately never automatic -- only
+  // vip-sync.service.ts's own drift-handling code clears it, and only when
+  // a sync completes with zero divergence, so the count survives across
+  // ticks/restarts and genuinely reflects "how many times in a row".
+  driftCount        Int       @default(0)
+  lastDriftAt       DateTime?
+  updatedAt         DateTime  @updatedAt
+  account           Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
 }
 
 // All bonus values default to 0/disabled per explicit instruction ("leave
