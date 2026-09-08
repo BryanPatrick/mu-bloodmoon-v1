@@ -635,6 +635,10 @@ model Account {
   gmOccurrencesCreated      GmOccurrence[]              @relation("GmOccurrenceCreatedBy")
   gmOccurrencesAssigned     GmOccurrence[]              @relation("GmOccurrenceAssignedTo")
   gmOccurrenceNotes         GmOccurrenceNote[]
+  betaParticipationRecordsRecorded BetaParticipationRecord[] @relation("BetaParticipationRecordedBy")
+  bugReportsOwned           BugReport[]                 @relation("BugReportOwner")
+  bugReportsAssigned        BugReport[]                 @relation("BugReportAssignee")
+  bugReportEvents           BugReportEvent[]            @relation("BugReportEventActor")
   gmEventDefinitionsCreated GmEventDefinition[]         @relation("GmEventDefinitionCreatedBy")
   gmEventRunsStarted        GmEventRun[]                @relation("GmEventRunStartedBy")
   gmEventRunsEnded          GmEventRun[]                @relation("GmEventRunEndedBy")
@@ -1158,6 +1162,117 @@ model AccountModeration {
   @@index([accountId])
   @@index([actorId])
   @@index([type])
+}
+
+// Phase Z -- Bug Hunters MVP. Deliberately separate from SupportTicket
+// (an account/personal issue) -- this is a reproducible product/game
+// defect for Beta triage. No automatic conversion either way; staff
+// redirect/close manually if a report turns out to be a support matter.
+enum BugReportCategory {
+  LAUNCHER
+  LOGIN_ACCOUNT
+  GAMEPLAY
+  MAP_MONSTER
+  ITEM
+  EVENT
+  QUEST
+  VIP
+  STORE_PAYMENT
+  MARKETPLACE
+  GUILD
+  COMMUNITY
+  PORTAL
+  PERFORMANCE
+  OTHER
+}
+
+enum BugReportSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum BugReportStatus {
+  OPEN
+  TRIAGE
+  NEEDS_INFO
+  CONFIRMED
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+  DUPLICATE
+  NOT_A_BUG
+}
+
+enum BugReportEventType {
+  CREATED
+  STATUS_CHANGED
+  STAFF_SEVERITY_SET
+  ASSIGNED
+  STAFF_REPLY
+  INTERNAL_NOTE
+  PLAYER_INFO_ADDED
+  REWARD_ELIGIBILITY_RECORDED
+}
+
+model BugReport {
+  id               String             @id @default(uuid())
+  accountId        String
+  category         BugReportCategory
+  title            String             @db.VarChar(191)
+  description      String             @db.Text
+  stepsToReproduce String             @db.Text
+  expectedBehavior String             @db.Text
+  actualBehavior   String             @db.Text
+  // Player's own severity assessment -- kept distinct from staffSeverity
+  // below, never overwritten by it. Staff triage records their own
+  // judgment independently; both remain visible for comparison.
+  playerSeverity   BugReportSeverity
+  staffSeverity    BugReportSeverity?
+  status           BugReportStatus    @default(OPEN)
+  characterName    String?            @db.VarChar(80)
+  contextNote      String?            @db.Text
+  // Reference only (e.g. an already-uploaded asset id/URL) -- this model
+  // never receives or stores a raw file upload itself.
+  attachmentRef    String?            @db.VarChar(500)
+  consentAcknowledgedAt DateTime
+  assignedToAccountId   String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  resolvedAt       DateTime?
+  closedAt         DateTime?
+
+  account  Account          @relation("BugReportOwner", fields: [accountId], references: [id], onDelete: Cascade)
+  assignee Account?         @relation("BugReportAssignee", fields: [assignedToAccountId], references: [id], onDelete: SetNull)
+  events   BugReportEvent[]
+
+  @@index([accountId])
+  @@index([status])
+  @@index([category])
+  @@index([assignedToAccountId])
+}
+
+// Append-only event log, mirroring the existing GmOccurrenceNote pattern:
+// every status change/reply/internal note is its own immutable row.
+// isInternal is the sole player-visibility gate -- player-facing queries
+// filter isInternal: false server-side (never client-side); staff queries
+// see everything.
+model BugReportEvent {
+  id          String             @id @default(uuid())
+  bugReportId String
+  type        BugReportEventType
+  actorId     String
+  isInternal  Boolean            @default(false)
+  message     String?            @db.Text
+  metadata    Json?
+  createdAt   DateTime           @default(now())
+
+  bugReport BugReport @relation(fields: [bugReportId], references: [id], onDelete: Cascade)
+  actor     Account   @relation("BugReportEventActor", fields: [actorId], references: [id])
+
+  @@index([bugReportId, createdAt])
+  @@index([bugReportId, isInternal])
 }
 
 model AccountPermission {
@@ -2432,6 +2547,71 @@ model BetaRewardEntitlement {
 
   @@index([normalizedEmailHash, betaCycleId])
   @@index([status])
+}
+
+// Phase Z -- ELIGIBILITY FACT, deliberately separate from
+// BetaRewardEntitlement's own REWARD DEFINITION above. A row here records
+// only "this normalized email is confirmed eligible for a reward, for
+// this reason" -- never a reward type or amount. Staff (or a future
+// reviewed-import) creates these explicitly; nothing here is ever
+// inferred from accountPhase or createdAt alone (Part 2/4's explicit
+// rule). A separate, later, staff-initiated generation step (see
+// BetaRewardsService) turns RECORDED rows into real BetaRewardEntitlement
+// rows -- that step is where a reward type/amount finally gets attached,
+// keeping "why is this account eligible" and "what do they get" as two
+// independently auditable decisions.
+enum BetaParticipationSourceType {
+  OPEN_BETA_PARTICIPATION
+  BUG_HUNTER_CONTRIBUTION
+  EVENT_PARTICIPATION
+  MANUAL_STAFF_GRANT
+  IMPORTED_REVIEWED_LIST
+}
+
+enum BetaParticipationRecordStatus {
+  RECORDED
+  REJECTED
+  CONVERTED
+}
+
+model BetaParticipationRecord {
+  id                     String                         @id @default(uuid())
+  betaCycleId            String                         @db.VarChar(80)
+  // Same normalization/hash as BetaRewardEntitlement -- computed with the
+  // same normalizeEmail/hashNormalizedEmail helpers from
+  // beta-lifecycle.service.ts, never re-derived independently.
+  normalizedEmailHash    String                         @db.VarChar(191)
+  // Best-effort convenience reference to the account this fact was
+  // recorded against at the time -- NOT the durability anchor (that's
+  // normalizedEmailHash, matching BetaRewardEntitlement's own design), so
+  // deliberately not a hard FK: an account being anonymized/purged later
+  // must never be blocked by, or silently cascade into deleting, its own
+  // participation history.
+  accountId              String?
+  sourceType             BetaParticipationSourceType
+  // Free-form pointer into whatever produced this fact -- e.g. a
+  // BugReport.id when sourceType=BUG_HUNTER_CONTRIBUTION. Loosely typed
+  // like BetaRewardEntitlement.sourceId for the same reason: the source
+  // domain can evolve without a schema migration here.
+  sourceId               String?                        @db.VarChar(191)
+  // Required, human-readable -- the auditable "why" a reviewer can read
+  // months later without reverse-engineering sourceType/sourceId.
+  justification          String                         @db.Text
+  status                 BetaParticipationRecordStatus  @default(RECORDED)
+  recordedById           String
+  recordedAt             DateTime                       @default(now())
+  // Set once the generation step actually creates a BetaRewardEntitlement
+  // from this record -- the idempotency guard: a record already carrying
+  // a value here is never converted again.
+  convertedEntitlementId String?
+  convertedAt            DateTime?
+
+  recordedBy Account @relation("BetaParticipationRecordedBy", fields: [recordedById], references: [id])
+
+  @@unique([normalizedEmailHash, betaCycleId, sourceType, sourceId], name: "uniqueParticipationSource")
+  @@index([status])
+  @@index([sourceType, sourceId])
+  @@index([accountId])
 }
 
 // ===================================================================

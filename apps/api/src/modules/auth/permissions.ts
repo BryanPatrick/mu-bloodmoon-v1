@@ -84,6 +84,13 @@ export const permissionKeys = {
   adminMarketplaceReportsView: 'admin.marketplace.reports.view',
   adminVipManage: 'admin.vip.manage',
   adminBetaLifecycleManage: 'admin.beta-lifecycle.manage',
+  // Phase Z: BetaParticipationRecord (eligibility fact) view/generate are
+  // separately gated from adminBetaLifecycleManage (cleanup dry-run) --
+  // same "do not assume all ADM roles can act on this" principle as
+  // every other admin.* split in this file. `.generate` is the
+  // consequential one: it creates real BetaRewardEntitlement rows.
+  adminBetaRewardsView: 'admin.beta-rewards.view',
+  adminBetaRewardsGenerate: 'admin.beta-rewards.generate',
   adminCommunityView: 'admin.community.view',
   adminCommunityPostsModerate: 'admin.community.posts.moderate',
   adminCommunityCommentsModerate: 'admin.community.comments.moderate',
@@ -159,6 +166,13 @@ export const permissionKeys = {
   adminLauncherContentEdit: 'admin.launcher.content.edit',
   adminLauncherContentPublish: 'admin.launcher.content.publish',
   adminLauncherAssetsManage: 'admin.launcher.assets.manage',
+  // Phase Z: Bug Hunters staff triage -- view is listing/filtering/
+  // reading a report (including its own internal notes); triage is every
+  // consequential action (assign, status change, staff severity, reply,
+  // internal note, mark reward-eligible). Same view/consequential-action
+  // split as every other admin.* pair in this file.
+  adminBugHuntersView: 'admin.bug-hunters.view',
+  adminBugHuntersTriage: 'admin.bug-hunters.triage',
   accountManage: 'account.manage',
   charactersManage: 'characters.manage',
   shopAccess: 'shop.access',
@@ -166,6 +180,10 @@ export const permissionKeys = {
   communityAccess: 'community.access',
   rechargeAccess: 'recharge.access',
   guildsAccess: 'guilds.access',
+  // Phase Z: every player gets this by default, same tier as
+  // shopAccess/communityAccess above -- submitting/viewing your own bug
+  // reports is a baseline Beta feature, not a delegated admin privilege.
+  bugHuntersAccess: 'bug-hunters.access',
   guidesFutureView: 'guides.future.view',
   gmDashboardView: 'gm.dashboard.view',
   gmCharactersView: 'gm.characters.view',
@@ -205,7 +223,8 @@ const playerPermissions: PermissionKey[] = [
   permissionKeys.marketplaceAccess,
   permissionKeys.communityAccess,
   permissionKeys.rechargeAccess,
-  permissionKeys.guildsAccess
+  permissionKeys.guildsAccess,
+  permissionKeys.bugHuntersAccess
 ]
 
 const gmPermissions: PermissionKey[] = [

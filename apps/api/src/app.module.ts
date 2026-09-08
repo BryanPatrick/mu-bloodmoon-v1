@@ -20,6 +20,8 @@ import { WalletTransferModule } from './modules/wallet-transfer/wallet-transfer.
 import { VipModule } from './modules/vip/vip.module'
 import { VipSyncModule } from './modules/vip-sync/vip-sync.module'
 import { BetaLifecycleModule } from './modules/beta-lifecycle/beta-lifecycle.module'
+import { BetaRewardsModule } from './modules/beta-rewards/beta-rewards.module'
+import { BugHuntersModule } from './modules/bug-hunters/bug-hunters.module'
 import { CommunityModule } from './modules/community/community.module'
 import { MuServerExportModule } from './modules/muserver-export/muserver-export.module'
 import { WikiModule } from './modules/wiki/wiki.module'
@@ -96,6 +98,8 @@ export type ApiModuleName = typeof apiModules[number]
     VipModule,
     VipSyncModule,
     BetaLifecycleModule,
+    BetaRewardsModule,
+    BugHuntersModule,
     CommunityModule,
     MuServerExportModule,
     WikiModule,

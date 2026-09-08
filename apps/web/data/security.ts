@@ -93,6 +93,10 @@ export const permissions = {
   adminLauncherContentEdit: 'admin.launcher.content.edit',
   adminLauncherContentPublish: 'admin.launcher.content.publish',
   adminLauncherAssetsManage: 'admin.launcher.assets.manage',
+  adminBetaRewardsView: 'admin.beta-rewards.view',
+  adminBetaRewardsGenerate: 'admin.beta-rewards.generate',
+  adminBugHuntersView: 'admin.bug-hunters.view',
+  adminBugHuntersTriage: 'admin.bug-hunters.triage',
   accountManage: 'account.manage',
   charactersManage: 'characters.manage',
   shopAccess: 'shop.access',
@@ -100,6 +104,7 @@ export const permissions = {
   communityAccess: 'community.access',
   rechargeAccess: 'recharge.access',
   guildsAccess: 'guilds.access',
+  bugHuntersAccess: 'bug-hunters.access',
   guidesFutureView: 'guides.future.view',
   gmDashboardView: 'gm.dashboard.view',
   gmCharactersView: 'gm.characters.view',
@@ -130,7 +135,8 @@ const playerPermissions: Permission[] = [
   permissions.marketplaceAccess,
   permissions.communityAccess,
   permissions.rechargeAccess,
-  permissions.guildsAccess
+  permissions.guildsAccess,
+  permissions.bugHuntersAccess
 ]
 
 const gmPermissions: Permission[] = [
