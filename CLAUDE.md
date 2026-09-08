@@ -37,6 +37,18 @@ below duplicates `AGENTS.md`.
   inside a git worktree) discovery timing was only tested once, with
   zero delay, and failed — whether it also refreshes given more time is
   genuinely unconfirmed, not proven negative.
+- **A genuinely fresh session/agent (not just "a few turns later" in an
+  already-warmed-up session) has no observed delay at all.** Confirmed
+  2026-09-08 via two independent fresh subagent sessions (no shared
+  context with the session that wrote the files): both
+  `Skill(frontend-design)` and `Skill(bloodmoon-deploy)` returned `PASS`
+  on the very first invocation, with the correct, current content and
+  the correct canonical source path
+  (`C:\Users\Mini DELL3080\.claude\skills\<name>`). The "delay" observed
+  above is specific to re-invoking a skill within the same session that
+  just edited it, not a property of cold starts in general — don't
+  overgeneralize a same-session propagation quirk into a rule about
+  session startup itself.
 
 ## Blood Moon skills — canonical source
 
@@ -53,16 +65,15 @@ below duplicates `AGENTS.md`.
   `~/.claude/skills/bloodmoon-deploy/`, hash-verified identical to the
   `mu-bloodmoon-ops-hardening` origin before being edited to add
   governance-pack references, and **confirmed discoverable and loadable
-  this same session** with the post-edit content
-  (`Skill(bloodmoon-deploy)` returned the updated `SKILL.md`, including
-  the new "Engineering governance" section). The project-local origin
-  copy at `mu-bloodmoon-ops-hardening/.claude/skills/bloodmoon-deploy/`
-  is intentionally left in place — see the removal criteria below.
+  both same-session and from two independent fresh sessions** with the
+  post-edit content. **The project-local origin copy has been removed**
+  (2026-09-08, after full validation — see below); project-local skills
+  are not needed in this environment, `~/.claude/skills/` alone is
+  sufficient and correct.
 
-### `bloodmoon-deploy` canonicalization — done, origin preserved
+### `bloodmoon-deploy` canonicalization — COMPLETE
 
-1. Origin preserved — untouched, still at
-   `mu-bloodmoon-ops-hardening/.claude/skills/bloodmoon-deploy/`.
+1. Origin was preserved untouched through the entire validation process.
 2. Hash computed (2026-09-08): `SKILL.md` `sha256:41617742...`,
    `references/migration-and-remote-access.md` `sha256:2a15ecb2...`.
 3. Copied to `~/.claude/skills/bloodmoon-deploy/`.
@@ -74,15 +85,25 @@ below duplicates `AGENTS.md`.
    `branch-and-release-governance.md` — no content duplicated, only
    references + one-line invariants per this project's own "critical
    invariants may repeat a sentence" rule.
-6. Committed inside `~/.claude/skills/`'s own git repo (see that repo's
-   own log for the commit hash).
-7. Origin copy at `mu-bloodmoon-ops-hardening/.claude/skills/bloodmoon-deploy/`
-   is **still not removed** — Bryan's own criteria for removing it
-   (global skill discovered, `bloodmoon-deploy` activatable,
-   `frontend-design` activatable, no regression) are now all
-   individually true, confirmed within this session — but removal
-   itself is a separate, not-yet-authorized cleanup step, not implied
-   by discovery working.
+6. Committed inside `~/.claude/skills/`'s own git repo (`ee240de`,
+   `feat: add Blood Moon deploy skill`).
+7. Fresh-session validation (two independent subagents, no shared
+   context): both skills `PASS`, correct source path, correct current
+   content, `bloodmoon-deploy`'s "Engineering governance" section
+   present.
+8. Old copy at `mu-bloodmoon-ops-hardening/.claude/skills/bloodmoon-deploy/`
+   compared against the canonical copy: `references/migration-and-remote-access.md`
+   byte-identical; `SKILL.md` differed only by pure addition (the new
+   "Engineering governance" section + an updated cross-repo note),
+   nothing removed or contradicted — classified `SUPERSEDED`, not
+   `DIVERGENT_UNKNOWN`. Confirmed untracked in the `mu-bloodmoon-ops-hardening`
+   git repo (`git ls-files` returned nothing for that path) — safe to
+   delete with no git history to lose.
+9. **Old copy removed** (2026-09-08) — `rm -rf` scoped exactly to that
+   one skill's folder, nothing else under that repo's `.claude/`
+   touched. Re-validated post-removal via a third fresh subagent:
+   `bloodmoon-deploy` still `PASS`, same canonical source path, same
+   content — no hidden dependency on the deleted copy existed.
 
 ### `bloodmoon-deploy` audit against 2026-09-08 governance
 
