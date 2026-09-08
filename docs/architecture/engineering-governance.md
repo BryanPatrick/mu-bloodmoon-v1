@@ -63,6 +63,20 @@ When two sources disagree, resolve in this order:
 genuinely Claude-specific behavior, never a second rule set that could
 conflict with it.
 
+## Decision-record supersession
+
+A specific case of `AGENTS.md`'s "history is never silently
+overwritten" rule: when a product or architecture decision supersedes a
+previously documented one (`docs/decisions/000N-*.md`), create a new
+decision record with the next available number that explicitly
+supersedes the old ruling — never edit or delete the original, and
+never invent a replacement value that wasn't actually decided. The
+superseded record stays exactly as written, as the real historical
+account of what was true and why at the time.
+Worked example: `docs/decisions/0029-progression-reset-policy-current-ruling.md`
+(2026-09-08) supersedes parts of `0025`/`0026`/`0028` this way — see
+that ADR for the full case, not repeated here.
+
 ## Canonical document map
 
 Mapped against what already exists — the governance/protocol docs now
@@ -100,11 +114,20 @@ failure let this happen?"** The answer resolves to exactly one of:
 update a rule, update a doc, update a skill, update a checklist, add a
 test, add a guardrail, or — a valid answer — no change needed. Not
 every incident becomes process ceremony; only where a real, reusable
-lesson exists. This session's own governance pack is itself three
+lesson exists. This session's own governance pack is itself several
 rounds of this loop in action: the credential-envelope incident → the
 secret-bearing-page rule; the 49-missing-chunk incident → the Nuxt
 deploy-integrity rule; the dirty-worktree discovery → the recovery/
-checkpoint rules above.
+checkpoint rules above; and Execution Batch 1's Progression extraction
+(2026-09-08) → **static file audit is not sufficient for feature
+recovery**. A file-list audit correctly identified every source file to
+copy, but the branch only compiled and passed once actually run: a
+missing module registration (`ProgressionModule` never wired into
+`app.module.ts`), missing RBAC permission keys, and a missing runtime
+data-file dependency were all invisible to a file inventory and only
+surfaced by `npx tsc --noEmit` and the real e2e suite. Feature recovery
+requires inventory + dependency tracing + build/typecheck + tests
+before it is `TESTED`, never the file copy alone.
 
 ## Feature mini-plan (required before `Branch`)
 
