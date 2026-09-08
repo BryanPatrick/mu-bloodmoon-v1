@@ -16,6 +16,7 @@ import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
 import { permissionKeys } from '../auth/permissions'
+import { classifyLegacyCatalogKey } from './legacy-catalog-policy'
 import { ObservabilityService } from '../observability/observability.service'
 import type {
   CommerceQuery,
@@ -870,7 +871,7 @@ export class StoreAdminService implements OnModuleInit, OnModuleDestroy {
             technicalCode: String(item.code ?? ''),
             sourceOrigin: item.source?.file || 'commerce-item-catalog',
             ambiguous: blocked,
-            internalNotes: fixText(item.commerceReason),
+            internalNotes: this.legacyPolicyNote(item) || fixText(item.commerceReason),
             metadata: json(item),
             createdBy: user.id,
             updatedBy: user.id
@@ -1261,10 +1262,33 @@ export class StoreAdminService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  // PHASE S (2026-09-02) -- also checks Bryan's real, codified Phase R
+  // decisions (legacy-catalog-policy.ts), not just the older free-text
+  // `officialStore` heuristic below. The 153 X-Shop RED items (Decision
+  // 1: NOT_FOR_COMMERCIAL_SALE) and the 12 accessory items (Decision 2:
+  // BALANCE_TEST_REQUIRED, held at NOT_FOR_SALE until tested) both
+  // force a block here, regardless of what the older heuristic would
+  // have said on its own -- closing a real gap this phase found: the
+  // old heuristic never knew about the X-Shop's +13/all-excellent
+  // configuration at all (that data lives in CustomXShop.txt, not in
+  // this base-item reference catalog), so it could not have caught
+  // these on its own.
   private catalogItemBlocked(item: CatalogItem) {
     const name = fixText(item.name)
     const policy = fixText(item.officialStore).toLowerCase()
-    return !name || policy.includes('revis') || policy.includes('nao recomendado') || policy.includes('não recomendado')
+    const legacyPolicy = classifyLegacyCatalogKey(item.key)
+    return !name || policy.includes('revis') || policy.includes('nao recomendado') || policy.includes('não recomendado') || legacyPolicy !== null
+  }
+
+  private legacyPolicyNote(item: CatalogItem): string | null {
+    const legacyPolicy = classifyLegacyCatalogKey(item.key)
+    if (legacyPolicy === 'NOT_FOR_COMMERCIAL_SALE') {
+      return 'Bloqueado por decisao de produto (Fase S, Decisao 1): item do X-Shop com +13 e todas as 6 opcoes excellent -- LEGACY_CATALOG_NOT_FOR_COMMERCIAL_SALE. Ver docs/decisions/0023-store-catalog-decision-closure.md.'
+    }
+    if (legacyPolicy === 'BALANCE_TEST_REQUIRED') {
+      return 'Bloqueado por decisao de produto (Fase S, Decisao 2): acessorio do X-Shop pendente de teste de balanceamento em jogo -- BALANCE_TEST_REQUIRED, nao aprovado ate entao. Ver docs/decisions/0023-store-catalog-decision-closure.md.'
+    }
+    return null
   }
 
   private async readCatalog(): Promise<CommerceCatalog> {
