@@ -1,0 +1,341 @@
+{
+  "generatedAt": "2026-09-03T08:20:44.771Z",
+  "sourceMethod": "RemoteOps read-only download (bm-remote download/hash), same technique as Phase R/S/T",
+  "sourceFiles": [
+    {
+      "file": "GameServerInfo - Common.dat",
+      "sha256": "A7030F2D528340BC8002EF47E98A5774955D70B54F13960C56F3098E54B8E2EA",
+      "bytes": 15043,
+      "note": "freshly downloaded this phase (2026-09-03) -- drifted from the 2026-08-17 local snapshot on non-progression fields only, see progression-config-field-matrix.md"
+    },
+    {
+      "file": "GameServerInfo - Command.dat",
+      "sha256": "9D971E9F30038BDADEDB302A27830B6296DEB48CB9BF01AC0CB61A9A3D5B15D7",
+      "bytes": 24604,
+      "note": "hash-verified identical to Phase 11 cached copy via live bm-remote hash this phase -- reused without re-download"
+    }
+  ],
+  "domains": [
+    "EXPERIENCE",
+    "DROP",
+    "RESET",
+    "MASTER_RESET"
+  ],
+  "rows": [
+    {
+      "domain": "EXPERIENCE",
+      "key": "xp.rate",
+      "label": "Taxa de experiência",
+      "perTier": {
+        "AL0": 50,
+        "AL1": 60,
+        "AL2": 60,
+        "AL3": 60
+      },
+      "sourceFile": "GameServerInfo - Common.dat",
+      "sourceKey": "AddExperienceRate_AL0-3",
+      "fingerprint": "134df46632055db0"
+    },
+    {
+      "domain": "EXPERIENCE",
+      "key": "xp.master_rate",
+      "label": "Taxa de experiência master",
+      "perTier": {
+        "AL0": 20,
+        "AL1": 22,
+        "AL2": 22,
+        "AL3": 22
+      },
+      "sourceFile": "GameServerInfo - Common.dat",
+      "sourceKey": "AddMasterExperienceRate_AL0-3",
+      "fingerprint": "453017f297bff8b0"
+    },
+    {
+      "domain": "EXPERIENCE",
+      "key": "xp.event_rate",
+      "label": "Taxa de experiência de evento",
+      "perTier": {
+        "AL0": 300,
+        "AL1": 300,
+        "AL2": 300,
+        "AL3": 300
+      },
+      "sourceFile": "GameServerInfo - Common.dat",
+      "sourceKey": "AddEventExperienceRate_AL0-3",
+      "fingerprint": "2084fae8d8719339"
+    },
+    {
+      "domain": "EXPERIENCE",
+      "key": "xp.quest_rate",
+      "label": "Taxa de experiência de quest",
+      "perTier": {
+        "AL0": 100,
+        "AL1": 100,
+        "AL2": 100,
+        "AL3": 100
+      },
+      "sourceFile": "GameServerInfo - Common.dat",
+      "sourceKey": "AddQuestExperienceRate_AL0-3",
+      "fingerprint": "360b54ac7f58f2b1"
+    },
+    {
+      "domain": "EXPERIENCE",
+      "key": "xp.master_min_monster_level",
+      "label": "Nível mínimo de monstro para XP master",
+      "perTier": {
+        "AL0": 136,
+        "AL1": 136,
+        "AL2": 136,
+        "AL3": 136
+      },
+      "sourceFile": "GameServerInfo - Common.dat",
+      "sourceKey": "MinMasterExperienceMonsterLevel_AL0-3",
+      "fingerprint": "417f57fde23274db"
+    },
+    {
+      "domain": "EXPERIENCE",
+      "key": "xp.formula_const_a",
+      "label": "Constante de fórmula de XP (A)",
+      "flat": 10,
+      "sourceFile": "GameServerInfo - Common.dat",
+      "sourceKey": "ExperienceMultiplierConstA",
+      "fingerprint": "f34163a7ac9e1a3b"
+    },
+    {
+      "domain": "EXPERIENCE",
+      "key": "xp.formula_const_b",
+      "label": "Constante de fórmula de XP (B)",
+      "flat": 1000,
+      "sourceFile": "GameServerInfo - Common.dat",
+      "sourceKey": "ExperienceMultiplierConstB",
+      "fingerprint": "5a52195670a494fe"
+    },
+    {
+      "domain": "EXPERIENCE",
+      "key": "xp.random_additional",
+      "label": "Variação aleatória adicional de XP",
+      "flat": 0,
+      "sourceFile": "GameServerInfo - Common.dat",
+      "sourceKey": "ExperienceRandomAditional",
+      "fingerprint": "4926217508cefcc5"
+    },
+    {
+      "domain": "DROP",
+      "key": "drop.item_rate",
+      "label": "Taxa de drop de item",
+      "perTier": {
+        "AL0": 100,
+        "AL1": 120,
+        "AL2": 120,
+        "AL3": 120
+      },
+      "sourceFile": "GameServerInfo - Common.dat",
+      "sourceKey": "ItemDropRate_AL0-3",
+      "fingerprint": "fd601c3645cf8bb8"
+    },
+    {
+      "domain": "DROP",
+      "key": "drop.item_ground_seconds",
+      "label": "Tempo de item no chão (segundos)",
+      "flat": 20,
+      "sourceFile": "GameServerInfo - Common.dat",
+      "sourceKey": "ItemDropTime",
+      "fingerprint": "e237ac69185f6c34"
+    },
+    {
+      "domain": "DROP",
+      "key": "drop.zen_rate",
+      "label": "Taxa de drop de zen",
+      "perTier": {
+        "AL0": 10,
+        "AL1": 12,
+        "AL2": 12,
+        "AL3": 12
+      },
+      "sourceFile": "GameServerInfo - Common.dat",
+      "sourceKey": "MoneyAmountDropRate_AL0-3",
+      "fingerprint": "bf708946e859b216"
+    },
+    {
+      "domain": "DROP",
+      "key": "drop.zen_ground_seconds",
+      "label": "Tempo de zen no chão (segundos)",
+      "flat": 10,
+      "sourceFile": "GameServerInfo - Common.dat",
+      "sourceKey": "MoneyDropTime",
+      "fingerprint": "5bffbfcaa83d6056"
+    },
+    {
+      "domain": "RESET",
+      "key": "reset.enabled",
+      "label": "Reset habilitado",
+      "flat": 1,
+      "sourceFile": "GameServerInfo - Command.dat",
+      "sourceKey": "CommandResetSwitch",
+      "fingerprint": "27ad29f6f781899c"
+    },
+    {
+      "domain": "RESET",
+      "key": "reset.level_required",
+      "label": "Nível necessário para reset",
+      "perTier": {
+        "AL0": 400,
+        "AL1": 400,
+        "AL2": 400,
+        "AL3": 400
+      },
+      "sourceFile": "GameServerInfo - Command.dat",
+      "sourceKey": "CommandResetLevel_AL0-3",
+      "fingerprint": "bc2cc2ad99e9e1fd"
+    },
+    {
+      "domain": "RESET",
+      "key": "reset.money_cost",
+      "label": "Custo em Zen do reset",
+      "perTier": {
+        "AL0": 0,
+        "AL1": 0,
+        "AL2": 0,
+        "AL3": 0
+      },
+      "sourceFile": "GameServerInfo - Command.dat",
+      "sourceKey": "CommandResetMoney_AL0-3",
+      "fingerprint": "b6a3b01c6348c133"
+    },
+    {
+      "domain": "RESET",
+      "key": "reset.cap",
+      "label": "Limite total de resets",
+      "perTier": {
+        "AL0": 20,
+        "AL1": 20,
+        "AL2": 20,
+        "AL3": 50
+      },
+      "sourceFile": "GameServerInfo - Command.dat",
+      "sourceKey": "CommandResetLimit_AL0-3",
+      "fingerprint": "812ddd062e62732f"
+    },
+    {
+      "domain": "RESET",
+      "key": "reset.stat_points",
+      "label": "Pontos de status por reset",
+      "perTier": {
+        "AL0": 450,
+        "AL1": 500,
+        "AL2": 500,
+        "AL3": 500
+      },
+      "sourceFile": "GameServerInfo - Command.dat",
+      "sourceKey": "CommandResetPoint_AL0-3",
+      "fingerprint": "36f376b0c589194c"
+    },
+    {
+      "domain": "RESET",
+      "key": "reset.start_level",
+      "label": "Nível após reset",
+      "perTier": {
+        "AL0": 1,
+        "AL1": 1,
+        "AL2": 1,
+        "AL3": 1
+      },
+      "sourceFile": "GameServerInfo - Command.dat",
+      "sourceKey": "CommandResetStartLevel_AL0-3",
+      "fingerprint": "b2edd529b4ef1641"
+    },
+    {
+      "domain": "MASTER_RESET",
+      "key": "master_reset.enabled",
+      "label": "Master Reset habilitado",
+      "flat": 0,
+      "sourceFile": "GameServerInfo - Command.dat",
+      "sourceKey": "CommandMasterResetSwitch",
+      "fingerprint": "e834431943c0ce75"
+    },
+    {
+      "domain": "MASTER_RESET",
+      "key": "master_reset.level_required",
+      "label": "Nível necessário para master reset",
+      "perTier": {
+        "AL0": 400,
+        "AL1": 400,
+        "AL2": 400,
+        "AL3": 400
+      },
+      "sourceFile": "GameServerInfo - Command.dat",
+      "sourceKey": "CommandMasterResetLevel_AL0-3",
+      "fingerprint": "8570074bef2a768e"
+    },
+    {
+      "domain": "MASTER_RESET",
+      "key": "master_reset.reset_required",
+      "label": "Resets necessários para master reset",
+      "perTier": {
+        "AL0": 1000,
+        "AL1": 1000,
+        "AL2": 1000,
+        "AL3": 1000
+      },
+      "sourceFile": "GameServerInfo - Command.dat",
+      "sourceKey": "CommandMasterResetReset_AL0-3",
+      "fingerprint": "10ee9d1790bc310c"
+    },
+    {
+      "domain": "MASTER_RESET",
+      "key": "master_reset.money_cost",
+      "label": "Custo em Zen do master reset",
+      "perTier": {
+        "AL0": 0,
+        "AL1": 0,
+        "AL2": 0,
+        "AL3": 0
+      },
+      "sourceFile": "GameServerInfo - Command.dat",
+      "sourceKey": "CommandMasterResetMoney_AL0-3",
+      "fingerprint": "8aa3db9b7584e723"
+    },
+    {
+      "domain": "MASTER_RESET",
+      "key": "master_reset.stat_points",
+      "label": "Pontos de status por master reset",
+      "perTier": {
+        "AL0": 0,
+        "AL1": 0,
+        "AL2": 0,
+        "AL3": 0
+      },
+      "sourceFile": "GameServerInfo - Command.dat",
+      "sourceKey": "CommandMasterResetPoint_AL0-3",
+      "fingerprint": "2405f882106863ac"
+    },
+    {
+      "domain": "MASTER_RESET",
+      "key": "master_reset.start_level",
+      "label": "Nível após master reset",
+      "perTier": {
+        "AL0": 400,
+        "AL1": 400,
+        "AL2": 400,
+        "AL3": 400
+      },
+      "sourceFile": "GameServerInfo - Command.dat",
+      "sourceKey": "CommandMasterResetStartLevel_AL0-3",
+      "fingerprint": "906f087925f9119a"
+    },
+    {
+      "domain": "MASTER_RESET",
+      "key": "master_reset.start_reset",
+      "label": "Contador de reset após master reset",
+      "perTier": {
+        "AL0": 0,
+        "AL1": 0,
+        "AL2": 0,
+        "AL3": 0
+      },
+      "sourceFile": "GameServerInfo - Command.dat",
+      "sourceKey": "CommandMasterResetStartReset_AL0-3",
+      "fingerprint": "954130e9a7f8f453"
+    }
+  ]
+}
