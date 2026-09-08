@@ -27,13 +27,18 @@ import type {
   UpdateRechargeStatusPayload
 } from './commerce.contract'
 import { CommerceService } from './commerce.service'
+import type { LegacyCatalogBulkPayload, LegacyCatalogItemUpdatePayload, LegacyCatalogQuery } from './legacy-catalog-config.service'
+import { LegacyCatalogConfigService } from './legacy-catalog-config.service'
+import { LegacyCatalogEffectiveStateService } from './legacy-catalog-effective-state.service'
 import { StoreAdminService } from './store-admin.service'
 
 @Controller()
 export class CommerceController {
   constructor(
     private readonly commerceService: CommerceService,
-    private readonly storeAdminService: StoreAdminService
+    private readonly storeAdminService: StoreAdminService,
+    private readonly legacyCatalogConfig: LegacyCatalogConfigService,
+    private readonly legacyCatalogEffectiveState: LegacyCatalogEffectiveStateService
   ) {}
 
   @Get('shop/products')
@@ -167,6 +172,73 @@ export class CommerceController {
     @CurrentUser() user: AuthenticatedUser
   ) {
     return this.storeAdminService.categoryAction(id, action, user, payload.reason)
+  }
+
+  // PHASE S (2026-09-02) -- X-Shop/CashShop admin control plane, desired-
+  // state layer only (legacy-catalog-config.service.ts's own header
+  // comment explains why no GameServer sync exists yet).
+  @Get('admin/store/legacy-catalog')
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  @RequirePermissions(permissionKeys.adminStoreLegacyCatalogView)
+  listLegacyCatalog(@Query() query: LegacyCatalogQuery, @CurrentUser() user: AuthenticatedUser) {
+    return this.legacyCatalogConfig.list(user, query)
+  }
+
+  @Get('admin/store/legacy-catalog/summary')
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  @RequirePermissions(permissionKeys.adminStoreLegacyCatalogView)
+  legacyCatalogSummary(@CurrentUser() user: AuthenticatedUser) {
+    return this.legacyCatalogConfig.summary(user)
+  }
+
+  @Post('admin/store/legacy-catalog/seed')
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  @RequirePermissions(permissionKeys.adminStoreLegacyCatalogEdit)
+  seedLegacyCatalog(@CurrentUser() user: AuthenticatedUser) {
+    return this.legacyCatalogConfig.seedAll(user)
+  }
+
+  @Patch('admin/store/legacy-catalog/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  @RequirePermissions(permissionKeys.adminStoreLegacyCatalogEdit)
+  updateLegacyCatalogItem(@Param('id') id: string, @Body() payload: LegacyCatalogItemUpdatePayload, @CurrentUser() user: AuthenticatedUser) {
+    return this.legacyCatalogConfig.update(id, payload, user)
+  }
+
+  @Get('admin/store/legacy-catalog/:id/history')
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  @RequirePermissions(permissionKeys.adminStoreLegacyCatalogView)
+  legacyCatalogHistory(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.legacyCatalogConfig.history(id, user)
+  }
+
+  @Post('admin/store/legacy-catalog/bulk')
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  @RequirePermissions(permissionKeys.adminStoreLegacyCatalogEdit)
+  bulkUpdateLegacyCatalog(@Body() payload: LegacyCatalogBulkPayload, @CurrentUser() user: AuthenticatedUser) {
+    return this.legacyCatalogConfig.bulkUpdate(payload, user)
+  }
+
+  @Post('admin/store/legacy-catalog/:channel/sync')
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  @RequirePermissions(permissionKeys.adminStoreLegacyCatalogSync)
+  syncLegacyCatalog(@Param('channel') channel: 'XSHOP' | 'CASHSHOP', @CurrentUser() user: AuthenticatedUser) {
+    return this.legacyCatalogConfig.sync(channel, user)
+  }
+
+  @Post('admin/store/legacy-catalog/effective-state/refresh')
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  @RequirePermissions(permissionKeys.adminStoreLegacyCatalogEdit)
+  refreshLegacyCatalogEffectiveState(@CurrentUser() user: AuthenticatedUser) {
+    return this.legacyCatalogEffectiveState.refresh(user)
   }
 
   @Get('admin/store/products/:id')

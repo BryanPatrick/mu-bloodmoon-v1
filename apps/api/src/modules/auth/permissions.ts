@@ -47,6 +47,19 @@ export const permissionKeys = {
   adminStoreRefund: 'admin.store.refund',
   adminStoreDeliveries: 'admin.store.deliveries',
   adminStoreTest: 'admin.store.test',
+  // PHASE S (2026-09-02) -- the X-Shop/CashShop admin control plane
+  // desired-state layer. `sync` is deliberately its OWN key, separate
+  // from `edit` -- editing the Portal's own desired-state record is a
+  // normal content operation; a future real GameServer sync action is
+  // materially more sensitive (Part N's own explicit instruction) and
+  // must never be granted merely because an account already has edit
+  // access. No GameServer sync is implemented yet (see
+  // legacy-catalog-config.service.ts) -- this key exists now so the
+  // eventual sync endpoint has an RBAC boundary ready on day one rather
+  // than reusing `edit` out of convenience later.
+  adminStoreLegacyCatalogView: 'admin.store.legacy-catalog.view',
+  adminStoreLegacyCatalogEdit: 'admin.store.legacy-catalog.edit',
+  adminStoreLegacyCatalogSync: 'admin.store.legacy-catalog.sync',
   // PHASE U (2026-09-03) -- the Progression control plane (XP/Drop/
   // Reset/Master Reset). Per Bryan's own OQ-032 closure: admin
   // control-plane ACCESS is RBAC (these three keys); real GameServer

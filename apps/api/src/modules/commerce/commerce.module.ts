@@ -5,12 +5,14 @@ import { ObservabilityModule } from '../observability/observability.module'
 import { PaymentsModule } from '../payments/payments.module'
 import { CommerceController } from './commerce.controller'
 import { CommerceService } from './commerce.service'
+import { LegacyCatalogConfigService } from './legacy-catalog-config.service'
+import { LegacyCatalogEffectiveStateService } from './legacy-catalog-effective-state.service'
 import { RechargeWebhookController } from './recharge-webhook.controller'
 import { StoreAdminService } from './store-admin.service'
 
 @Module({
   imports: [AuthModule, AuditModule, ObservabilityModule, PaymentsModule],
   controllers: [CommerceController, RechargeWebhookController],
-  providers: [CommerceService, StoreAdminService]
+  providers: [CommerceService, StoreAdminService, LegacyCatalogConfigService, LegacyCatalogEffectiveStateService]
 })
 export class CommerceModule {}

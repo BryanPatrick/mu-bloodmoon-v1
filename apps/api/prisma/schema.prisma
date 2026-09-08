@@ -1560,6 +1560,7 @@ model ShopProduct {
   categoryRecord     StoreCategory?       @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   variants           ShopProductVariant[]
   purchases          PurchaseIntent[]
+  legacyCatalogItems LegacyCatalogItem[]
 
   @@index([category])
   @@index([categoryId])
@@ -1617,6 +1618,142 @@ model ShopProductVariant {
 
   @@index([productId, available, sortOrder])
   @@index([currency])
+}
+
+// PHASE S (2026-09-02) -- the X-Shop/CashShop legacy catalog's own
+// desired-state control plane (180 rows total: 168 X-Shop + 12 CashShop
+// = 180 total). This is deliberately NOT a live mirror of GameServer
+// state -- the `effective*`/`driftStatus` fields hold the last-known
+// comparison, updated only when an admin explicitly triggers a refresh
+// (see legacy-catalog-effective-state.service.ts's own header comment
+// for why apps/api does not itself hold live GameServer/RemoteOps
+// credentials).
+enum LegacyCatalogChannel {
+  XSHOP
+  CASHSHOP
+}
+
+// Mirrors Bryan's 7 Phase R/S decisions exactly -- see
+// docs/decisions/0023-store-catalog-decision-closure.md for the full
+// record of each. Never invented; every value here traces to a named
+// decision.
+enum LegacyCommercialDecision {
+  NOT_FOR_COMMERCIAL_SALE               // Decision 1 -- 153 X-Shop weapon/armor/wing (+13/all-excellent)
+  BALANCE_TEST_REQUIRED                 // Decision 2 -- 12 X-Shop Pets/Rings/Pendants
+  DEAD_UNRESOLVABLE_CATALOG_ROW         // Decision 3 -- 3 unresolved X-Shop Axes rows
+  RENTAL_CANDIDATE_PENDING_EMPIRICAL_TEST // Decision 4 -- 9 CashShop 7-day rentals
+  GREEN_CANDIDATE_NOT_APPROVED          // Decision 7 -- 3 CashShop event tickets
+}
+
+// The lifecycle Part C asked for. Deliberately distinct from
+// ShopProductStatus (the real Official Store product workflow) --
+// this tracks the LEGACY ROW's own commercial standing, which may
+// exist long before (or without ever having) a real ShopProduct.
+enum LegacyCatalogCommercialStatus {
+  REVIEW_REQUIRED
+  BLOCKED
+  APPROVED
+  PUBLISHED
+  DISABLED
+  RETIRED
+}
+
+enum LegacyCatalogDriftStatus {
+  NOT_CHECKED
+  IN_SYNC
+  DRIFT_DETECTED
+  CHECK_FAILED
+  // PHASE T (2026-09-02) -- distinct from NOT_CHECKED: this row has no
+  // effective-state comparison because the row itself isn't a real,
+  // individually-configurable GameServer unit (e.g. it's a category-level
+  // concept) rather than "we just haven't checked yet." Not currently
+  // assigned to any X-Shop/CashShop row (every real row IS individually
+  // manageable), reserved for a future channel/row type where it would
+  // apply.
+  NOT_MANAGED
+}
+
+model LegacyCatalogItem {
+  id                    String                        @id @default(uuid())
+  channel               LegacyCatalogChannel
+  // XSHOP: "{ItemType}-{ItemIndex}" (matches commerce-item-catalog.json's
+  // own `key` format, cross-verified this phase). CASHSHOP: the real
+  // ItemIndex (e.g. "6703").
+  legacyKey             String
+  itemName              String
+  // Raw technical identifiers as found in the source config (ItemType,
+  // ItemIndex, BaseIndex, source file/line) -- never re-derived, always
+  // traceable back to the exact row this was generated from.
+  technicalIdentifiers  Json
+  bryanDecision          LegacyCommercialDecision
+  commercialStatus      LegacyCatalogCommercialStatus @default(REVIEW_REQUIRED)
+  // VISIBLE != PURCHASABLE (Part I's own explicit distinction) -- both
+  // default false; BLOCKED rows must never flip either without a real
+  // admin action (enforced in legacy-catalog-config.service.ts, not
+  // just by this default).
+  visible               Boolean                       @default(false)
+  purchasable            Boolean                       @default(false)
+  // PHASE T (2026-09-02) -- ENABLED != APPROVED (Bryan's own explicit
+  // semantic). `desiredEnabled` is the Portal's opinion of whether this
+  // row SHOULD be enabled on the GameServer side once a real sync ever
+  // exists -- entirely independent of commercial approval. A row can be
+  // desiredEnabled=true and still BLOCKED (e.g. "this exists and could
+  // run, but is not commercially approved"), or desiredEnabled=false and
+  // APPROVED (e.g. "approved for a future date, not live yet").
+  desiredEnabled         Boolean                       @default(false)
+  priceDesired           Int?
+  currencyDesired         CurrencyCode?
+  durationDesiredDays    Int?
+  availableFrom          DateTime?
+  availableUntil         DateTime?
+  openBetaAllowed        Boolean                       @default(false)
+  fullReleaseAllowed     Boolean                       @default(false)
+  purchaseLimitDesired   Int?
+  internalNotes          String?                       @db.Text
+  blockReason            String?                       @db.Text
+  // Set only once a real Official Store product is created to deliver
+  // this legacy item (Part 5's "Official Product -> approved delivery
+  // definition -> GameBridge -> specific game item" mapping). Never set
+  // by any bulk/automatic process.
+  linkedShopProductId    String?
+  driftStatus            LegacyCatalogDriftStatus      @default(NOT_CHECKED)
+  // PHASE T (2026-09-02) -- structured effective-state capture (Part 5),
+  // populated only by an explicit admin "refresh from source" action
+  // (legacy-catalog-effective-state.service.ts) reading a committed
+  // snapshot file an operator refreshes via RemoteOps -- never a live
+  // GameServer read from within apps/api itself (see that service's own
+  // header comment for the full reasoning, same boundary ADR-0023
+  // already established). NEVER written by seedAll/#update.
+  effectiveEnabled         Boolean?
+  effectivePrice           Int?
+  // Raw GameServer currency label (WCoinC/WCoinP/GoblinPoint/CashShop
+  // points) -- deliberately a free string, not Portal's CurrencyCode
+  // enum, since these are a different, unreconciled currency domain
+  // (see docs/economy/legacy-dmn-cms-and-currency-investigation.md).
+  effectiveCurrency        String?
+  effectiveDurationSeconds Int?
+  // Full raw option/set/harmony/socket state (X-Shop) or duration/coin
+  // metadata (CashShop) as read from source -- everything the scalar
+  // fields above don't individually capture.
+  effectiveOptions         Json?
+  sourceLastReadAt         DateTime?
+  // A content hash of the raw source row -- lets a future refresh detect
+  // ANY change (including fields not individually parsed) without
+  // needing to enumerate every possible drift dimension up front.
+  sourceFingerprint        String?
+  effectiveStateCheckedBy String?
+  version                Int                           @default(1)
+  createdBy              String?
+  updatedBy              String?
+  createdAt              DateTime                      @default(now())
+  updatedAt              DateTime                      @updatedAt
+  linkedShopProduct      ShopProduct?                  @relation(fields: [linkedShopProductId], references: [id], onDelete: SetNull)
+
+  @@unique([channel, legacyKey])
+  @@index([channel, commercialStatus])
+  @@index([bryanDecision])
+  @@index([linkedShopProductId])
+  @@index([driftStatus])
 }
 
 model RechargePackage {
