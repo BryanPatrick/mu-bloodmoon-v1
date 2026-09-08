@@ -2,6 +2,7 @@ export const permissions = {
   adminDashboardView: 'admin.dashboard.view',
   adminAccountsView: 'admin.accounts.view',
   adminAccountsStatusManage: 'admin.accounts.status.manage',
+  adminAccountsPurgeManage: 'admin.accounts.purge.manage',
   adminRolesManage: 'admin.roles.manage',
   adminContentManage: 'admin.content.manage',
   adminAuditView: 'admin.audit.view',
