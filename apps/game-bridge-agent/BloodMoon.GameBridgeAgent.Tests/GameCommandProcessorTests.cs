@@ -261,11 +261,11 @@ public sealed class GameCommandProcessorTests
         "qa3c001",
         "A2b3C4d5E6");
 
-    private static GrantVipCommand NewGrantVipCommand(string legacyLogin, int targetLevel) => new(
-        Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "GRANT_VIP", legacyLogin, targetLevel);
+    private static GrantVipCommand NewGrantVipCommand(string legacyLogin, int targetLevel, DateTime? expiresAt = null) => new(
+        Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "GRANT_VIP", legacyLogin, targetLevel, expiresAt ?? DateTime.UtcNow.AddDays(30));
 
-    private static SyncVipTierCommand NewSyncVipTierCommand(string legacyLogin, int desiredLevel) => new(
-        Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "SYNC_VIP_TIER", legacyLogin, desiredLevel);
+    private static SyncVipTierCommand NewSyncVipTierCommand(string legacyLogin, int desiredLevel, DateTime? desiredExpiresAt = null) => new(
+        Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "SYNC_VIP_TIER", legacyLogin, desiredLevel, desiredLevel > 0 ? desiredExpiresAt ?? DateTime.UtcNow.AddDays(30) : null);
 
     private static AnonymizeGameAccountCommand NewAnonymizeCommand(string legacyLogin) => new(
         Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "ANONYMIZE_GAME_ACCOUNT", legacyLogin);
@@ -308,7 +308,7 @@ public sealed class GameCommandProcessorTests
             return new("SUCCEEDED", 4242);
         }
 
-        public async Task<GrantVipResult> GrantVipAsync(string legacyLogin, int targetLevel, CancellationToken ct)
+        public async Task<GrantVipResult> GrantVipAsync(string legacyLogin, int targetLevel, DateTime expiresAt, Guid commandId, Guid correlationId, CancellationToken ct)
         {
             Interlocked.Increment(ref _grantVipCallCount);
             Entered.TrySetResult();
@@ -319,7 +319,7 @@ public sealed class GameCommandProcessorTests
             return new("SUCCEEDED", previous, newLevel);
         }
 
-        public async Task<SyncVipTierResult> SyncVipTierAsync(string legacyLogin, int desiredLevel, CancellationToken ct)
+        public async Task<SyncVipTierResult> SyncVipTierAsync(string legacyLogin, int desiredLevel, DateTime? desiredExpiresAt, Guid commandId, Guid correlationId, CancellationToken ct)
         {
             Interlocked.Increment(ref _syncVipTierCallCount);
             Entered.TrySetResult();
@@ -329,7 +329,7 @@ public sealed class GameCommandProcessorTests
             return new("SUCCEEDED", previous, desiredLevel, previous != desiredLevel);
         }
 
-        public async Task<AnonymizeGameAccountResult> AnonymizeGameAccountAsync(string legacyLogin, CancellationToken ct)
+        public async Task<AnonymizeGameAccountResult> AnonymizeGameAccountAsync(string legacyLogin, Guid commandId, Guid correlationId, CancellationToken ct)
         {
             Interlocked.Increment(ref _anonymizeCallCount);
             Entered.TrySetResult();
@@ -337,7 +337,7 @@ public sealed class GameCommandProcessorTests
             return new("SUCCEEDED", """{"character":1,"guildMember":0,"warehouse":true}""");
         }
 
-        public async Task<PurgeGameAccountResult> PurgeGameAccountAsync(string legacyLogin, string betaCycleId, CancellationToken ct)
+        public async Task<PurgeGameAccountResult> PurgeGameAccountAsync(string legacyLogin, string betaCycleId, Guid commandId, Guid correlationId, CancellationToken ct)
         {
             Interlocked.Increment(ref _purgeCallCount);
             Entered.TrySetResult();

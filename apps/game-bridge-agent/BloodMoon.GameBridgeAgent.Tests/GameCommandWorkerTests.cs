@@ -25,7 +25,7 @@ public sealed class GameCommandWorkerTests
     {
         var (worker, transport, writer, _) = Build(new AgentOptions { CommandEnvironment = Environment, ServerId = ServerId });
 
-        await worker.ExecuteClaimedAsync(ClaimedVip("GRANT_VIP", JsonPayload("""{"targetLevel":2}""")), CancellationToken.None);
+        await worker.ExecuteClaimedAsync(ClaimedVip("GRANT_VIP", JsonPayload("""{"targetLevel":2,"vipExpiresAt":"2029-01-01T00:00:00Z"}""")), CancellationToken.None);
 
         Assert.Equal(0, writer.GrantVipCallCount);
         Assert.Single(transport.Reports);
@@ -38,7 +38,7 @@ public sealed class GameCommandWorkerTests
     {
         var (worker, transport, writer, _) = Build(new AgentOptions { CommandEnvironment = Environment, ServerId = ServerId, GrantVipEnabled = true });
 
-        await worker.ExecuteClaimedAsync(ClaimedVip("GRANT_VIP", JsonPayload("""{"targetLevel":2}""")), CancellationToken.None);
+        await worker.ExecuteClaimedAsync(ClaimedVip("GRANT_VIP", JsonPayload("""{"targetLevel":2,"vipExpiresAt":"2029-01-01T00:00:00Z"}""")), CancellationToken.None);
 
         Assert.Equal(1, writer.GrantVipCallCount);
         Assert.Equal("SUCCEEDED", transport.Reports[0].Status);
@@ -149,7 +149,7 @@ public sealed class GameCommandWorkerTests
     public async Task Scope_mismatch_is_checked_before_the_kill_switch()
     {
         var (worker, transport, writer, _) = Build(new AgentOptions { CommandEnvironment = Environment, ServerId = ServerId, GrantVipEnabled = true });
-        var wrongScope = ClaimedVip("GRANT_VIP", JsonPayload("""{"targetLevel":2}""")) with { Environment = "other-env" };
+        var wrongScope = ClaimedVip("GRANT_VIP", JsonPayload("""{"targetLevel":2,"vipExpiresAt":"2029-01-01T00:00:00Z"}""")) with { Environment = "other-env" };
 
         await worker.ExecuteClaimedAsync(wrongScope, CancellationToken.None);
 
@@ -206,25 +206,25 @@ public sealed class GameCommandWorkerTests
         public Task<CreateGameAccountResult> CreateGameAccountAsync(string legacyLogin, string gameCredential, CancellationToken ct) =>
             Task.FromResult(new CreateGameAccountResult("SUCCEEDED", 1));
 
-        public Task<GrantVipResult> GrantVipAsync(string legacyLogin, int targetLevel, CancellationToken ct)
+        public Task<GrantVipResult> GrantVipAsync(string legacyLogin, int targetLevel, DateTime expiresAt, Guid commandId, Guid correlationId, CancellationToken ct)
         {
             GrantVipCallCount++;
             return Task.FromResult(new GrantVipResult("SUCCEEDED", 0, targetLevel));
         }
 
-        public Task<SyncVipTierResult> SyncVipTierAsync(string legacyLogin, int desiredLevel, CancellationToken ct)
+        public Task<SyncVipTierResult> SyncVipTierAsync(string legacyLogin, int desiredLevel, DateTime? desiredExpiresAt, Guid commandId, Guid correlationId, CancellationToken ct)
         {
             SyncVipTierCallCount++;
             return Task.FromResult(new SyncVipTierResult("SUCCEEDED", 0, desiredLevel, desiredLevel != 0));
         }
 
-        public Task<AnonymizeGameAccountResult> AnonymizeGameAccountAsync(string legacyLogin, CancellationToken ct)
+        public Task<AnonymizeGameAccountResult> AnonymizeGameAccountAsync(string legacyLogin, Guid commandId, Guid correlationId, CancellationToken ct)
         {
             AnonymizeCallCount++;
             return Task.FromResult(new AnonymizeGameAccountResult("SUCCEEDED", """{"character":1}"""));
         }
 
-        public Task<PurgeGameAccountResult> PurgeGameAccountAsync(string legacyLogin, string betaCycleId, CancellationToken ct)
+        public Task<PurgeGameAccountResult> PurgeGameAccountAsync(string legacyLogin, string betaCycleId, Guid commandId, Guid correlationId, CancellationToken ct)
         {
             PurgeCallCount++;
             return Task.FromResult(new PurgeGameAccountResult("SUCCEEDED", """{"membInfo":1}"""));
