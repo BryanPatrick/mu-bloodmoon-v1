@@ -1506,11 +1506,43 @@ model SystemAlert {
   createdAt      DateTime            @default(now())
   updatedAt      DateTime            @updatedAt
 
+  notificationState AlertDispatchState?
+
   @@index([status, severity, createdAt])
   @@index([module, createdAt])
   @@index([assignedTo, status])
   @@index([sourceType, sourceId])
   @@index([correlationId])
+}
+
+// Phase AA -- outbound-notification bookkeeping for SystemAlert, kept as
+// its own table rather than new columns on SystemAlert: SystemAlert rows
+// are created from three independent places (ObservabilityService in the
+// live API process, the standalone process-game-bridge-jobs.mjs worker
+// script, and this phase's new /internal/ops-events ingest endpoint), so
+// notification is done by a single poller (AlertSweepService) that reads
+// SystemAlert regardless of which process created a given row, rather
+// than an in-process hook that only one of those three could reach.
+// One row per SystemAlert (1:1); its own lastNotifiedAt/notificationCount
+// implement the cooldown/dedup-noise-control requirement without ever
+// touching SystemAlert.status, which stays owned by the existing
+// admin Acknowledge/Resolve flow.
+model AlertDispatchState {
+  id                String    @id @default(uuid())
+  systemAlertId     String    @unique
+  firstSeenAt       DateTime  @default(now())
+  lastSeenAt        DateTime  @default(now())
+  lastNotifiedAt    DateTime?
+  notificationCount Int       @default(0)
+  lastNotifyError   String?   @db.Text
+  resolvedAt        DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  systemAlert SystemAlert @relation(fields: [systemAlertId], references: [id], onDelete: Cascade)
+
+  @@index([resolvedAt])
+  @@index([lastNotifiedAt])
 }
 
 model AdminLogExport {
