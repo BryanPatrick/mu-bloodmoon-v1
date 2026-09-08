@@ -125,8 +125,14 @@ public sealed class GameCommandWorker(
         try
         {
             if (!TryGetPayloadInt(command.Payload, "targetLevel", out var targetLevel)) return Failure(command, "FAILED_FINAL", "INVALID_PAYLOAD");
+            // "vipExpiresAt", not "expiresAt" -- deliberately distinct from
+            // ClaimedGameCommand's own command-envelope expiresAt (the
+            // command's TTL in the queue, an unrelated concept) to avoid
+            // exactly the kind of same-name-different-meaning confusion
+            // that caused the AccountExpireDate bug this field exists to fix.
+            if (!TryGetPayloadDateTime(command.Payload, "vipExpiresAt", out var expiresAt)) return Failure(command, "FAILED_FINAL", "INVALID_PAYLOAD");
             var result = await processor.ExecuteAsync(new GrantVipCommand(
-                command.CommandId, command.ProvisioningRequestId, command.CommandType, command.LegacyLogin, targetLevel), ct);
+                command.CommandId, command.ProvisioningRequestId, command.CommandType, command.LegacyLogin, targetLevel, expiresAt), ct);
             return new(command.CommandId, command.ProvisioningRequestId, "SUCCEEDED", result.ResultCode, null,
                 VipDetailJson(result.PreviousLevel, result.NewLevel, result.Changed));
         }
@@ -138,8 +144,13 @@ public sealed class GameCommandWorker(
         try
         {
             if (!TryGetPayloadInt(command.Payload, "desiredLevel", out var desiredLevel)) return Failure(command, "FAILED_FINAL", "INVALID_PAYLOAD");
+            // desiredExpiresAt is only required when desiredLevel > 0 --
+            // absent/unparseable at desiredLevel = 0 is fine (the processor
+            // itself enforces this precisely; a missing value here just
+            // flows through as null, not treated as a payload error).
+            DateTime? desiredExpiresAt = TryGetPayloadDateTime(command.Payload, "desiredVipExpiresAt", out var parsedExpiresAt) ? parsedExpiresAt : null;
             var result = await processor.ExecuteAsync(new SyncVipTierCommand(
-                command.CommandId, command.ProvisioningRequestId, command.CommandType, command.LegacyLogin, desiredLevel), ct);
+                command.CommandId, command.ProvisioningRequestId, command.CommandType, command.LegacyLogin, desiredLevel, desiredExpiresAt), ct);
             return new(command.CommandId, command.ProvisioningRequestId, "SUCCEEDED", result.ResultCode, null,
                 VipDetailJson(result.PreviousLevel, result.NewLevel, result.Changed));
         }
@@ -198,6 +209,17 @@ public sealed class GameCommandWorker(
         if (!p.TryGetProperty(property, out var el) || el.ValueKind != System.Text.Json.JsonValueKind.String) return false;
         value = el.GetString() ?? "";
         return !string.IsNullOrWhiteSpace(value);
+    }
+
+    // ISO-8601 string in the JSON payload (matches how the Portal/Worker
+    // already serialize every other timestamp in this pipeline) -- Phase L
+    // fix, backs GrantVipCommand.ExpiresAt / SyncVipTierCommand.DesiredExpiresAt.
+    private static bool TryGetPayloadDateTime(System.Text.Json.JsonElement? payload, string property, out DateTime value)
+    {
+        value = default;
+        if (payload is not { } p || p.ValueKind != System.Text.Json.JsonValueKind.Object) return false;
+        if (!p.TryGetProperty(property, out var el) || el.ValueKind != System.Text.Json.JsonValueKind.String) return false;
+        return el.TryGetDateTime(out value);
     }
 
     private static string VipDetailJson(int? previousLevel, int? newLevel, bool changed) =>

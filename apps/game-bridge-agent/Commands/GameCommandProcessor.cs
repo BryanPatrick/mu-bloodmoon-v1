@@ -31,14 +31,22 @@ public sealed class GameCommandProcessor(IGameDatabaseWriter writer, Provisionin
     public async Task<VipLevelResult> ExecuteAsync(GrantVipCommand command, CancellationToken ct)
     {
         if (command.CommandType != "GRANT_VIP") throw new InvalidOperationException("COMMAND_TYPE_DENIED");
-        if (!Guid.TryParse(command.CommandId, out _) || !Guid.TryParse(command.ProvisioningRequestId, out _)) throw new InvalidOperationException("INVALID_COMMAND_ID");
-        if (!IsValidLegacyLogin(command.LegacyLogin) || command.TargetLevel is < 1 or > 3) throw new InvalidOperationException("INVALID_PAYLOAD");
-        var requestHash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes($"{command.CommandType}\n{command.ProvisioningRequestId}\n{command.LegacyLogin}\n{command.TargetLevel}")));
+        if (!Guid.TryParse(command.CommandId, out var commandId) || !Guid.TryParse(command.ProvisioningRequestId, out var correlationId)) throw new InvalidOperationException("INVALID_COMMAND_ID");
+        // ExpiresAt validation (Phase L fix): must be a real future instant,
+        // never default(DateTime) -- a caller that forgets to compute it
+        // would otherwise silently reproduce the AccountExpireDate bug this
+        // fix exists to close (see GameCommandModels.cs's comment).
+        if (!IsValidLegacyLogin(command.LegacyLogin) || command.TargetLevel is < 1 or > 3 || command.ExpiresAt <= DateTime.UtcNow) throw new InvalidOperationException("INVALID_PAYLOAD");
+        var requestHash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes($"{command.CommandType}\n{command.ProvisioningRequestId}\n{command.LegacyLogin}\n{command.TargetLevel}\n{command.ExpiresAt:O}")));
         var begin = await ledger.BeginOrGetAsync(command, requestHash, ct);
         var existing = begin.Record;
         if (existing.Status == "SUCCEEDED") return VipResultFromLedger(command, existing, replayed: true);
         if (!begin.Acquired) throw new InvalidOperationException("COMMAND_IN_PROGRESS");
-        var result = await writer.GrantVipAsync(command.LegacyLogin, command.TargetLevel, ct);
+        // PHASE L DECISION CLOSURE, Decision 3: commandId/correlationId are
+        // the same identifiers already used above for ledger idempotency --
+        // threaded down so dbo.bm_GameBridgeAudit's rows correlate 1:1 with
+        // this Agent's own ProvisioningLedger record.
+        var result = await writer.GrantVipAsync(command.LegacyLogin, command.TargetLevel, command.ExpiresAt, commandId, correlationId, ct);
         if (result.ResultCode != "SUCCEEDED") throw new InvalidOperationException(result.ResultCode);
         var changed = result.PreviousLevel != result.NewLevel;
         await ledger.CompleteWithJsonAsync(command.CommandId, result.ResultCode, SerializeVipDetail(result.PreviousLevel, result.NewLevel, changed), ct);
@@ -50,14 +58,19 @@ public sealed class GameCommandProcessor(IGameDatabaseWriter writer, Provisionin
     public async Task<VipLevelResult> ExecuteAsync(SyncVipTierCommand command, CancellationToken ct)
     {
         if (command.CommandType != "SYNC_VIP_TIER") throw new InvalidOperationException("COMMAND_TYPE_DENIED");
-        if (!Guid.TryParse(command.CommandId, out _) || !Guid.TryParse(command.ProvisioningRequestId, out _)) throw new InvalidOperationException("INVALID_COMMAND_ID");
-        if (!IsValidLegacyLogin(command.LegacyLogin) || command.DesiredLevel is < 0 or > 3) throw new InvalidOperationException("INVALID_PAYLOAD");
-        var requestHash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes($"{command.CommandType}\n{command.ProvisioningRequestId}\n{command.LegacyLogin}\n{command.DesiredLevel}")));
+        if (!Guid.TryParse(command.CommandId, out var commandId) || !Guid.TryParse(command.ProvisioningRequestId, out var correlationId)) throw new InvalidOperationException("INVALID_COMMAND_ID");
+        // DesiredExpiresAt validation (Phase L fix): required whenever
+        // DesiredLevel > 0, for the same reason as GrantVipCommand.ExpiresAt.
+        // Irrelevant (may be absent) at DesiredLevel = 0.
+        if (!IsValidLegacyLogin(command.LegacyLogin) || command.DesiredLevel is < 0 or > 3
+            || (command.DesiredLevel > 0 && (command.DesiredExpiresAt is null || command.DesiredExpiresAt <= DateTime.UtcNow)))
+            throw new InvalidOperationException("INVALID_PAYLOAD");
+        var requestHash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes($"{command.CommandType}\n{command.ProvisioningRequestId}\n{command.LegacyLogin}\n{command.DesiredLevel}\n{command.DesiredExpiresAt?.ToString("O") ?? "NULL"}")));
         var begin = await ledger.BeginOrGetAsync(command, requestHash, ct);
         var existing = begin.Record;
         if (existing.Status == "SUCCEEDED") return VipResultFromLedger(command, existing, replayed: true);
         if (!begin.Acquired) throw new InvalidOperationException("COMMAND_IN_PROGRESS");
-        var result = await writer.SyncVipTierAsync(command.LegacyLogin, command.DesiredLevel, ct);
+        var result = await writer.SyncVipTierAsync(command.LegacyLogin, command.DesiredLevel, command.DesiredExpiresAt, commandId, correlationId, ct);
         if (result.ResultCode != "SUCCEEDED") throw new InvalidOperationException(result.ResultCode);
         await ledger.CompleteWithJsonAsync(command.CommandId, result.ResultCode, SerializeVipDetail(result.PreviousLevel, result.NewLevel, result.Changed), ct);
         return new(command.CommandId, command.ProvisioningRequestId, "SUCCEEDED", result.ResultCode, result.PreviousLevel, result.NewLevel, result.Changed, false);
@@ -70,14 +83,14 @@ public sealed class GameCommandProcessor(IGameDatabaseWriter writer, Provisionin
     public async Task<AccountMutationResult> ExecuteAsync(AnonymizeGameAccountCommand command, CancellationToken ct)
     {
         if (command.CommandType != "ANONYMIZE_GAME_ACCOUNT") throw new InvalidOperationException("COMMAND_TYPE_DENIED");
-        if (!Guid.TryParse(command.CommandId, out _) || !Guid.TryParse(command.ProvisioningRequestId, out _)) throw new InvalidOperationException("INVALID_COMMAND_ID");
+        if (!Guid.TryParse(command.CommandId, out var commandId) || !Guid.TryParse(command.ProvisioningRequestId, out var correlationId)) throw new InvalidOperationException("INVALID_COMMAND_ID");
         if (!IsValidLegacyLogin(command.LegacyLogin)) throw new InvalidOperationException("INVALID_PAYLOAD");
         var requestHash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes($"{command.CommandType}\n{command.ProvisioningRequestId}\n{command.LegacyLogin}")));
         var begin = await ledger.BeginOrGetAsync(command, requestHash, ct);
         var existing = begin.Record;
         if (existing.Status == "SUCCEEDED") return new(command.CommandId, command.ProvisioningRequestId, "SUCCEEDED", existing.ResultCode!, existing.ResultJson, true);
         if (!begin.Acquired) throw new InvalidOperationException("COMMAND_IN_PROGRESS");
-        var result = await writer.AnonymizeGameAccountAsync(command.LegacyLogin, ct);
+        var result = await writer.AnonymizeGameAccountAsync(command.LegacyLogin, commandId, correlationId, ct);
         if (result.ResultCode is not ("SUCCEEDED" or "ALREADY_ANONYMIZED")) throw new InvalidOperationException(result.ResultCode);
         await ledger.CompleteWithJsonAsync(command.CommandId, result.ResultCode, result.EntitiesAffectedJson, ct);
         return new(command.CommandId, command.ProvisioningRequestId, "SUCCEEDED", result.ResultCode, result.EntitiesAffectedJson, false);
@@ -90,14 +103,14 @@ public sealed class GameCommandProcessor(IGameDatabaseWriter writer, Provisionin
     public async Task<AccountMutationResult> ExecuteAsync(PurgeGameAccountCommand command, CancellationToken ct)
     {
         if (command.CommandType != "PURGE_GAME_ACCOUNT") throw new InvalidOperationException("COMMAND_TYPE_DENIED");
-        if (!Guid.TryParse(command.CommandId, out _) || !Guid.TryParse(command.ProvisioningRequestId, out _)) throw new InvalidOperationException("INVALID_COMMAND_ID");
+        if (!Guid.TryParse(command.CommandId, out var commandId) || !Guid.TryParse(command.ProvisioningRequestId, out var correlationId)) throw new InvalidOperationException("INVALID_COMMAND_ID");
         if (!IsValidLegacyLogin(command.LegacyLogin) || string.IsNullOrWhiteSpace(command.BetaCycleId) || command.BetaCycleId.Length > 80) throw new InvalidOperationException("INVALID_PAYLOAD");
         var requestHash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes($"{command.CommandType}\n{command.ProvisioningRequestId}\n{command.LegacyLogin}\n{command.BetaCycleId}")));
         var begin = await ledger.BeginOrGetAsync(command, requestHash, ct);
         var existing = begin.Record;
         if (existing.Status == "SUCCEEDED") return new(command.CommandId, command.ProvisioningRequestId, "SUCCEEDED", existing.ResultCode!, existing.ResultJson, true);
         if (!begin.Acquired) throw new InvalidOperationException("COMMAND_IN_PROGRESS");
-        var result = await writer.PurgeGameAccountAsync(command.LegacyLogin, command.BetaCycleId, ct);
+        var result = await writer.PurgeGameAccountAsync(command.LegacyLogin, command.BetaCycleId, commandId, correlationId, ct);
         if (result.ResultCode is not ("SUCCEEDED" or "ALREADY_PURGED")) throw new InvalidOperationException(result.ResultCode);
         await ledger.CompleteWithJsonAsync(command.CommandId, result.ResultCode, result.TablesAffectedJson, ct);
         return new(command.CommandId, command.ProvisioningRequestId, "SUCCEEDED", result.ResultCode, result.TablesAffectedJson, false);

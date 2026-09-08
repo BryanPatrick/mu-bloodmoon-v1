@@ -20,12 +20,24 @@ public sealed record LedgerBeginResult(LedgerRecord Record, bool Acquired);
 
 // Plan Part 2/3 -- GRANT_VIP: commercial delivery record, MAX()-idempotent,
 // never a downgrade. TargetLevel is always 1-3 (never 0 -- see Part 3).
-public sealed record GrantVipCommand(string CommandId, string ProvisioningRequestId, string CommandType, string LegacyLogin, int TargetLevel) : ICommandIdentity;
+// ExpiresAt (Phase L fix, 2026-08-31): REQUIRED -- dbo.bm_GrantVip now
+// writes MEMB_INFO.AccountExpireDate in the same statement as
+// AccountLevel. Without it, the native dbo.WZ_GetAccountLevel procedure
+// (called on every login, real body read via sys.sql_modules) silently
+// reverts AccountLevel to 0 on the player's very next login, because
+// AccountExpireDate defaults to 1900-01-01 and was never otherwise
+// written -- reproduced live in the lab, see
+// docs/vip/wz-setaccountlevel-coexistence.md.
+public sealed record GrantVipCommand(string CommandId, string ProvisioningRequestId, string CommandType, string LegacyLogin, int TargetLevel, DateTime ExpiresAt) : ICommandIdentity;
 public sealed record VipLevelResult(string CommandId, string ProvisioningRequestId, string Status, string ResultCode, int? PreviousLevel, int? NewLevel, bool Changed, bool Replayed);
 
 // Plan Part 2/3B -- SYNC_VIP_TIER: desired-state sync, DesiredLevel is 0-3
 // (0 is valid and expected -- this is how expiry gets enforced).
-public sealed record SyncVipTierCommand(string CommandId, string ProvisioningRequestId, string CommandType, string LegacyLogin, int DesiredLevel) : ICommandIdentity;
+// DesiredExpiresAt (Phase L fix): required when DesiredLevel > 0, same
+// AccountExpireDate reasoning as GrantVipCommand.ExpiresAt above;
+// irrelevant (may be null) when DesiredLevel = 0, since
+// WZ_GetAccountLevel's own guard is `AccountLevel <> 0`.
+public sealed record SyncVipTierCommand(string CommandId, string ProvisioningRequestId, string CommandType, string LegacyLogin, int DesiredLevel, DateTime? DesiredExpiresAt) : ICommandIdentity;
 
 // Plan Part 2/4 -- ANONYMIZE_GAME_ACCOUNT: no payload beyond identity.
 public sealed record AnonymizeGameAccountCommand(string CommandId, string ProvisioningRequestId, string CommandType, string LegacyLogin) : ICommandIdentity;
