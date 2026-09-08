@@ -3327,3 +3327,100 @@ enum LauncherAssetStorageProvider {
   LOCAL
   R2
 }
+
+// PHASE U (2026-09-03) -- Progression control plane (XP/Drop/Reset/
+// Master Reset). Same desired-state/effective-state/drift shape as
+// LegacyCatalogItem (ADR-0024) -- see docs/decisions/0025-progression-
+// control-plane.md for the full design and docs/progression/
+// progression-config-field-matrix.md for the real, hash-verified
+// GameServer config values each row traces back to.
+enum ProgressionDomain {
+  EXPERIENCE
+  DROP
+  RESET
+  MASTER_RESET
+}
+
+enum ProgressionDriftStatus {
+  NOT_CHECKED
+  IN_SYNC
+  DRIFT_DETECTED
+  CHECK_FAILED
+  NOT_MANAGED
+}
+
+enum ProgressionRiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+// PHASE V (2026-09-04) -- distinct from driftStatus (a TECHNICAL axis:
+// does desired match effective) and from desiredValue (the Portal's
+// own target). This is a BUSINESS axis: has this specific effective
+// value ever received real Bryan/product approval as an intentional
+// VIP/progression benefit, independent of whether the Portal has an
+// opinion about it. Bryan's own explicit instruction this phase: "current
+// effective config values are NOT automatically approved Blood Moon VIP
+// benefits" -- most rows seed as EFFECTIVE_BUT_UNAPPROVED for exactly
+// this reason, never APPROVED by default.
+enum ProgressionPolicyStatus {
+  NOT_EVALUATED
+  APPROVED
+  EFFECTIVE_BUT_UNAPPROVED
+  POLICY_DRIFT
+  DISABLED
+  UNKNOWN
+}
+
+model ProgressionConfigItem {
+  id            String            @id @default(uuid())
+  domain        ProgressionDomain
+  // Business-facing key (e.g. "xp.rate", "reset.cap") -- deliberately
+  // NOT the raw GameServer config key (e.g. "AddExperienceRate_AL0-3")
+  // per Part 12's explicit instruction not to expose only cryptic
+  // config keys. The raw key(s) live in technicalSource below, always
+  // visible in the detail view.
+  key           String
+  friendlyLabel String
+  description   String?           @db.Text
+  // Deliberately nullable and free-text, never "x"/"%" unless the real
+  // unit is proven (Part 13, mandatory) -- see
+  // docs/progression/xp-stacking-investigation.md for why most XP
+  // fields carry an explicit "unidade nao confirmada" unit rather than
+  // a percent sign.
+  unit          String?
+  // { file, key, shape: 'flat'|'perTier' } -- the exact source this row
+  // was generated from, always traceable back to a real config line.
+  technicalSource Json
+  riskLevel     ProgressionRiskLevel @default(MEDIUM)
+  // null = Portal has no opinion yet (never a false drift, same rule
+  // LegacyCatalogEffectiveStateService already established). A flat
+  // number here against a perTier effectiveValue means "one target
+  // applies to every tier" (e.g. reset.cap's policy target = 20).
+  desiredValue    Json?
+  desiredReason   String?          @db.Text
+  effectiveValue  Json?
+  driftStatus     ProgressionDriftStatus @default(NOT_CHECKED)
+  // PHASE V -- see ProgressionPolicyStatus's own comment for the
+  // driftStatus/policyStatus distinction. Set from real product
+  // classification (this phase's own VIP policy drift matrix), reset on
+  // every reseed alongside riskLevel/description -- this is analysis
+  // truth, not an individual admin's desired-state opinion, so it is
+  // NOT protected from reseed the way desiredValue is.
+  policyStatus    ProgressionPolicyStatus @default(NOT_EVALUATED)
+  sourceLastReadAt DateTime?
+  sourceFingerprint String?
+  internalNotes   String?          @db.Text
+  version         Int              @default(1)
+  createdBy       String?
+  updatedBy       String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@unique([domain, key])
+  @@index([driftStatus])
+  @@index([riskLevel])
+  @@index([policyStatus])
+}

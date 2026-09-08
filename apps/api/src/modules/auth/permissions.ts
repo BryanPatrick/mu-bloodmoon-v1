@@ -47,6 +47,18 @@ export const permissionKeys = {
   adminStoreRefund: 'admin.store.refund',
   adminStoreDeliveries: 'admin.store.deliveries',
   adminStoreTest: 'admin.store.test',
+  // PHASE U (2026-09-03) -- the Progression control plane (XP/Drop/
+  // Reset/Master Reset). Per Bryan's own OQ-032 closure: admin
+  // control-plane ACCESS is RBAC (these three keys); real GameServer
+  // MUTATION is this `.sync` permission PLUS a runtime kill switch
+  // (PROGRESSION_RUNTIME_SYNC_ENABLED), never a separate portal-management
+  // flag layered on top of RBAC. No `.approve` key -- unlike Store's
+  // review->publish pipeline, a progression desired-state edit has no
+  // separate approval step in this foundation phase; `.edit` is the
+  // terminal action.
+  adminProgressionView: 'admin.progression.view',
+  adminProgressionEdit: 'admin.progression.edit',
+  adminProgressionSync: 'admin.progression.sync',
   adminMarketplaceManage: 'admin.marketplace.manage',
   adminMarketplaceView: 'admin.marketplace.view',
   adminMarketplaceListingsModerate: 'admin.marketplace.listings.moderate',
