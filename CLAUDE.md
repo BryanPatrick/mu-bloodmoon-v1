@@ -19,44 +19,70 @@ below duplicates `AGENTS.md`.
   that does not include the public `github.com/anthropics/skills`
   repo — confirmed empty results for real, popular official skills
   during this session's own audit.
-- **Skill discovery does not hot-reload mid-session.** Writing a new
-  `SKILL.md` to `~/.claude/skills/<name>/` or `.claude/skills/<name>/`
-  does not make it callable within the same session — confirmed
-  directly (`Skill(name)` returned "Unknown skill" immediately after
-  writing the file). A fresh session is required to confirm discovery.
-  Never claim a newly-written skill is "validated" without an actual
-  fresh-session test.
+- **Global skill discovery (`~/.claude/skills/`) refreshes within a
+  session, but not instantaneously.** Corrected 2026-09-08: an earlier
+  note in this file claimed discovery never hot-reloads mid-session —
+  that was wrong, or at least incomplete. Confirmed directly this same
+  session: `Skill(bloodmoon-deploy)` returned "Unknown skill"
+  immediately after the file was first written, but a later invocation
+  (after a few more tool calls, no session restart) successfully loaded
+  it — and a *second* invocation right after an `Edit` to the file
+  picked up the edit, while the *first* invocation right after that
+  same edit had still served the pre-edit content. There is a real but
+  short propagation delay of unknown, non-zero duration between a
+  write/edit to `~/.claude/skills/<name>/SKILL.md` and that content
+  being reliably served — never trust the very next invocation
+  immediately after a write as proof of either success or failure;
+  re-check after a few turns. **Project-local** (`.claude/skills/<name>/`
+  inside a git worktree) discovery timing was only tested once, with
+  zero delay, and failed — whether it also refreshes given more time is
+  genuinely unconfirmed, not proven negative.
 
 ## Blood Moon skills — canonical source
 
 - `~/.claude/skills/` is the canonical git repo for `bloodmoon-*`
   skills (approved 2026-09-08) — tracks only `bloodmoon-*/`, never
   official Anthropic skills (`frontend-design`, etc.), via its own
-  `.gitignore`. See `docs/architecture/engineering-governance.md`'s
-  skill-canonicalization section for the move plan (not yet executed
-  for `bloodmoon-deploy`).
+  `.gitignore`.
 - `frontend-design`: physically installed at
   `~/.claude/skills/frontend-design/`, byte-verified against the
-  official repo. `DISCOVERY = PENDING_NEW_SESSION` — do not reinstall,
-  do not claim it's confirmed working until a fresh session proves it.
-- `bloodmoon-deploy` v0.1: still project-local at
-  `mu-bloodmoon-ops-hardening/.claude/skills/bloodmoon-deploy/`, not
-  yet moved to the canonical location.
+  official repo, **and confirmed discoverable and loadable this same
+  session** (`Skill(frontend-design)` returned its real content,
+  matching the official repo).
+- `bloodmoon-deploy`: canonicalized 2026-09-08 to
+  `~/.claude/skills/bloodmoon-deploy/`, hash-verified identical to the
+  `mu-bloodmoon-ops-hardening` origin before being edited to add
+  governance-pack references, and **confirmed discoverable and loadable
+  this same session** with the post-edit content
+  (`Skill(bloodmoon-deploy)` returned the updated `SKILL.md`, including
+  the new "Engineering governance" section). The project-local origin
+  copy at `mu-bloodmoon-ops-hardening/.claude/skills/bloodmoon-deploy/`
+  is intentionally left in place — see the removal criteria below.
 
-### `bloodmoon-deploy` canonicalization plan (not yet executed)
+### `bloodmoon-deploy` canonicalization — done, origin preserved
 
-1. Preserve origin — untouched, still at
+1. Origin preserved — untouched, still at
    `mu-bloodmoon-ops-hardening/.claude/skills/bloodmoon-deploy/`.
-2. Hash computed (2026-09-08, prep only): `SKILL.md`
-   `sha256:41617742...`, `references/migration-and-remote-access.md`
-   `sha256:2a15ecb2...`.
-3. Copy to `~/.claude/skills/bloodmoon-deploy/` — **not done yet**.
-4. Compare hash post-copy — pending step 3.
-5. Do not remove the origin copy yet, regardless of step 4's result.
-6. Remove the project-local copy only after a **new session** confirms
-   the canonical copy is discovered and activates correctly — this
-   session cannot perform that validation (see "skill discovery does
-   not hot-reload" above).
+2. Hash computed (2026-09-08): `SKILL.md` `sha256:41617742...`,
+   `references/migration-and-remote-access.md` `sha256:2a15ecb2...`.
+3. Copied to `~/.claude/skills/bloodmoon-deploy/`.
+4. Hash compared post-copy — identical, confirmed via `diff` (zero
+   output) before any edit was made to the canonical copy.
+5. The canonical copy was then edited (only the copy, never the
+   origin) to add an "Engineering governance" section pointing at
+   `docs/architecture/engineering-governance.md` and
+   `branch-and-release-governance.md` — no content duplicated, only
+   references + one-line invariants per this project's own "critical
+   invariants may repeat a sentence" rule.
+6. Committed inside `~/.claude/skills/`'s own git repo (see that repo's
+   own log for the commit hash).
+7. Origin copy at `mu-bloodmoon-ops-hardening/.claude/skills/bloodmoon-deploy/`
+   is **still not removed** — Bryan's own criteria for removing it
+   (global skill discovered, `bloodmoon-deploy` activatable,
+   `frontend-design` activatable, no regression) are now all
+   individually true, confirmed within this session — but removal
+   itself is a separate, not-yet-authorized cleanup step, not implied
+   by discovery working.
 
 ### `bloodmoon-deploy` audit against 2026-09-08 governance
 
