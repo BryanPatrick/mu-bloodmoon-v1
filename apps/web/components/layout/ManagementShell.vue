@@ -173,7 +173,8 @@ const administrativeItems: MenuItem[] = [
       { label: 'Pedidos', to: '/painel/admin/loja?tab=orders', permission: permissions.adminStoreOrders },
       { label: 'Entregas', to: '/painel/admin/loja?tab=deliveries', permission: permissions.adminStoreDeliveries },
       { label: 'Estornos', to: '/painel/admin/loja?tab=orders&status=REFUND_PENDING', permission: permissions.adminStoreRefund },
-      { label: 'Importação do catálogo', to: '/painel/admin/loja?tab=products&modo=importacao', permission: permissions.adminStoreProducts }
+      { label: 'Importação do catálogo', to: '/painel/admin/loja?tab=products&modo=importacao', permission: permissions.adminStoreProducts },
+      { label: 'Catálogo legado (X-Shop/CashShop)', to: '/painel/admin/catalogo-legado', permission: permissions.adminStoreLegacyCatalogView }
     ]
   },
   {
