@@ -306,7 +306,7 @@ export const SLOT_REGISTRY: SlotDefinition[] = [
 
   // STORE -- Part U: currency icons are global/singleton; individual
   // products remain ShopProduct/StoreCategory (existing commerce module).
-  orderedList('store.currencyIcon', 'STORE', 'Icones de moeda', 'Icone de cada moeda da loja (WCoin/Goblin Point/Hunt Point).', {
+  orderedList('store.currencyIcon', 'STORE', 'Icones de moeda', 'Icone de cada moeda da loja (WCoin/Blood Coin/Hunt Point).', {
     itemShape: { currency: 'TEXT', iconAssetId: 'REFERENCE' },
     maxItems: 3,
     minItems: 3

@@ -522,7 +522,7 @@ const mapApiAccount = (account: ApiAccount): ManagedAccount => ({
   twoFactorEnabled: Boolean(account.twoFactorEnabled),
   currencies: {
     WCoin: account.currencies.WCOIN || account.currencies.WCoin || 0,
-    'Goblin Point': account.currencies.GOBLIN_POINT || account.currencies['Goblin Point'] || 0,
+    'Blood Coin': account.currencies.GOBLIN_POINT || account.currencies['Blood Coin'] || 0,
     'Hunt Point': account.currencies.HUNT_POINT || account.currencies['Hunt Point'] || 0
   }
 })

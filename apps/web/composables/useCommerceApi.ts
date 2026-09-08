@@ -203,13 +203,13 @@ export type ChargebackDispersalTrace = {
 
 const currencyFromApi: Record<ApiCurrencyCode, CurrencyCode> = {
   WCOIN: 'WCoin',
-  GOBLIN_POINT: 'Goblin Point',
+  GOBLIN_POINT: 'Blood Coin',
   HUNT_POINT: 'Hunt Point'
 }
 
 const currencyToApi: Record<CurrencyCode, ApiCurrencyCode> = {
   WCoin: 'WCOIN',
-  'Goblin Point': 'GOBLIN_POINT',
+  'Blood Coin': 'GOBLIN_POINT',
   'Hunt Point': 'HUNT_POINT'
 }
 
