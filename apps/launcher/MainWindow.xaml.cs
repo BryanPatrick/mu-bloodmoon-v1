@@ -356,7 +356,19 @@ public partial class MainWindow : Window
             ShowToast("O cliente ainda não foi verificado. Use VERIFICAR ARQUIVOS em Configurações.");
             return;
         }
-        if (_context.UnifiedAccount?.GameReady != true)
+        // feature/launcher-play-gate -- checks the same provisioning
+        // granularity as LauncherRuntimePolicy (PENDING/PROVISIONING/
+        // FAILED), not just the bare GameReady bool this check used to
+        // read alone -- an account stuck FAILED got the same generic
+        // "not ready yet" message as one still PENDING, which is the
+        // real bug this phase's audit found and must not regress.
+        var provisioningStatus = _context.UnifiedAccount?.ProvisioningStatus ?? "NONE";
+        if (provisioningStatus == "FAILED")
+        {
+            ShowToast("NÃO FOI POSSÍVEL PREPARAR SUA CONTA DE JOGO.");
+            return;
+        }
+        if (provisioningStatus is "PENDING" or "PROVISIONING" || _context.UnifiedAccount?.GameReady != true)
         {
             ShowToast("A CONTA DE JOGO AINDA NÃO ESTÁ PRONTA.");
             return;

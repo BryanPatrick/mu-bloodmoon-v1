@@ -113,9 +113,18 @@ public partial class HomePage : UserControl, ILauncherPage
 
         var serverAvailable = !state.ServerState.MaintenanceActive &&
             !string.Equals(state.ServerState.Status, "OFFLINE", StringComparison.OrdinalIgnoreCase);
-        var gameAccountReady = _context.UnifiedAccount?.GameReady ?? !_context.IsLoggedIn;
+        // feature/launcher-play-gate -- gameReady/provisioningStatus read
+        // straight from GET /launcher/me (UnifiedAccount), same real
+        // signal PlayGateEngine's parallel work used; accountRestricted
+        // has no real backend trigger yet (see LauncherRuntimePolicy's
+        // own header comment), passed as false, never inferred as true.
         var play = LauncherRuntimePolicy.ResolvePlayButton(
-            _context.UpdateState, _context.IsLoggedIn, serverAvailable, gameAccountReady);
+            _context.UpdateState,
+            _context.IsLoggedIn,
+            serverAvailable,
+            gameReady: _context.UnifiedAccount?.GameReady ?? !_context.IsLoggedIn,
+            provisioningStatus: _context.UnifiedAccount?.ProvisioningStatus ?? "NONE",
+            accountRestricted: false);
         PlayButton.IsEnabled = play.IsEnabled;
         PlayButton.Content = play.Label;
     }
@@ -193,6 +202,11 @@ public partial class HomePage : UserControl, ILauncherPage
         _context.StartGame?.Invoke();
     }
 
+    // feature/launcher-play-gate -- re-evaluates the real gate here too,
+    // not just via PlayButton.IsEnabled. A disabled WPF Button does not
+    // raise Click, so this is defense-in-depth against a stale/
+    // unrefreshed IsEnabled value, not the only check (ported from
+    // PlayGateEngine's own IsEnabled/AllowsGameLaunch split).
     private void PlayButton_Click(object sender, RoutedEventArgs e)
     {
         if (!_context.IsLoggedIn)
@@ -200,6 +214,23 @@ public partial class HomePage : UserControl, ILauncherPage
             _context.RequestLogin?.Invoke();
             return;
         }
+
+        var serverAvailable = !(_context.Bootstrap?.Server.Maintenance.Active ?? false) &&
+            !string.Equals(_context.Bootstrap?.Server.Status, "OFFLINE", StringComparison.OrdinalIgnoreCase);
+        var play = LauncherRuntimePolicy.ResolvePlayButton(
+            _context.UpdateState,
+            _context.IsLoggedIn,
+            serverAvailable,
+            gameReady: _context.UnifiedAccount?.GameReady ?? false,
+            provisioningStatus: _context.UnifiedAccount?.ProvisioningStatus ?? "NONE",
+            accountRestricted: false);
+
+        if (!play.AllowsGameLaunch)
+        {
+            _context.ShowToast?.Invoke(play.ReasonText ?? "O jogo não está disponível no momento.");
+            return;
+        }
+
         _context.StartGame?.Invoke();
     }
 

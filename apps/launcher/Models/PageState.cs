@@ -12,12 +12,29 @@ namespace BloodMoon.Launcher.Models;
 // only here, never automatically reused on the internal pages.
 // ---------------------------------------------------------------------
 
+// ProvisioningFailed/AccountRestricted added for feature/launcher-play-gate
+// (2026-09-08) -- ported from the parallel PlayGateEngine work, which
+// found GameAccountNotReady collapsed two real, distinct outcomes
+// (still-provisioning vs. provisioning failed outright) into one state,
+// and had no state at all for a Payment-Risk-driven account restriction
+// (forward-looking: PaymentRiskAction.ACCOUNT_RESTRICTION exists in the
+// API's enum but has no real enforcement wiring yet -- modeled here so
+// LauncherRuntimePolicy has a place to report it once one exists, never
+// inferred as already happening).
 public enum PlayState
 {
     NotLoggedIn,
     ReadyToPlay,
     GameAccountNotReady,
-    ServerOffline
+    ProvisioningFailed,
+    AccountRestricted,
+    ServerOffline,
+    // Added alongside ProvisioningFailed/AccountRestricted -- the
+    // patcher/update-state blockers (Checking/Downloading/Verifying/
+    // Error/UpdateAvailable) are a real, distinct reason Play is
+    // unavailable; reusing ReadyToPlay for that case would be a false
+    // signal to anything that reads State instead of IsEnabled directly.
+    ClientNotReady
 }
 
 public sealed class ServerStatusState
