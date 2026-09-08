@@ -130,6 +130,15 @@ export class AccountDeletionService {
       await tx.twoFactorRecoveryCode.deleteMany({ where: { accountId } })
       await tx.accountPermission.deleteMany({ where: { accountId } })
 
+      // Exit feedback (Bryan, 2026-08-30): unlink, never delete -- the
+      // structured reasons/otherText survive for product analytics, but
+      // the direct accountId linkage is removed the moment there is no
+      // longer a legitimate need for it (the account is gone).
+      await tx.accountDeletionFeedback.updateMany({
+        where: { accountId },
+        data: { accountId: null, anonymizedAt: new Date() }
+      })
+
       await tx.accountDeletionRecord.create({
         data: {
           accountId,
@@ -220,6 +229,27 @@ export class AccountDeletionService {
 
     await this.prisma.$transaction(async (tx) => {
       for (const accountId of accountIds) {
+        // Queue the real GameServer-side PURGE_GAME_ACCOUNT command before
+        // deleting the Portal row -- mirrors executeNormalDeletion()'s own
+        // ANONYMIZE_GAME_ACCOUNT queueing exactly. Must run before
+        // tx.account.delete() below: GameAccountIdentity is only reachable
+        // through the still-live Account row, and GameBridgeJob.accountId
+        // is onDelete:SetNull, so it will already read back as null the
+        // moment the delete below commits -- legacyLogin/betaCycleId are
+        // captured into the job's own payload precisely so the sender
+        // (AccountLifecycleBridgeService) never needs that relation.
+        const identity = await tx.gameAccountIdentity.findUnique({ where: { accountId } })
+        if (identity?.legacyLogin) {
+          await tx.gameBridgeJob.create({
+            data: {
+              accountId,
+              operation: 'PURGE_GAME_ACCOUNT',
+              idempotencyKey: `pre-beta-purge:${accountId}:${randomUUID()}`,
+              payload: { accountId, legacyLogin: identity.legacyLogin, betaCycleId }
+            }
+          })
+        }
+
         // AccountCurrency is the one accountId-keyed relation on Account
         // that is NOT onDelete:Cascade (confirmed by direct schema
         // inspection -- every other accountId relation is Cascade, and the

@@ -89,6 +89,14 @@ export const permissionKeys = {
   adminGameProvisioningManage: 'admin.game-provisioning.manage',
   adminVipSyncView: 'admin.vip-sync.view',
   adminVipSyncManage: 'admin.vip-sync.manage',
+  // GameBridge extension plan Part 5 + Bryan's follow-up decision
+  // (2026-08-30): PURGE_GAME_ACCOUNT is irreversible and restricted to
+  // SUPER_ADMIN by default -- ADMIN does not automatically inherit
+  // destructive purge permission, unlike every other admin.* key here.
+  // Delegating it to ADMIN in the future must be a deliberate,
+  // separately-reviewed change, not an artifact of the blanket
+  // adminAccountsStatusManage permission NORMAL_ACCOUNT_DELETION uses.
+  adminAccountsPurgeManage: 'admin.accounts.purge.manage',
   adminRoadmapView: 'admin.roadmap.view',
   adminRoadmapCreate: 'admin.roadmap.create',
   adminRoadmapEdit: 'admin.roadmap.edit',

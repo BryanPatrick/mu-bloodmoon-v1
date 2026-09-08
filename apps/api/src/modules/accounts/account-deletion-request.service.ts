@@ -5,6 +5,7 @@ import { AuditService } from '../audit/audit.service'
 import { MailTransportService } from '../auth/mail-transport.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
 import { AccountDeletionService } from './account-deletion.service'
+import { EXIT_FEEDBACK_REASON_CODES, type ExitFeedbackPayload } from './account-deletion.contract'
 
 // Phase 15. Self-service deletion for real players -- request -> strong
 // (emailed token) confirmation -> grace period -> execution. Mirrors
@@ -27,7 +28,52 @@ export class AccountDeletionRequestService {
     private readonly deletion: AccountDeletionService
   ) {}
 
-  async requestDeletion(user: AuthenticatedUser, context: { ip: string | null, device: string | null }) {
+  async requestDeletion(
+    user: AuthenticatedUser,
+    context: { ip: string | null, device: string | null },
+    feedback?: ExitFeedbackPayload
+  ) {
+    // Structured exit feedback (Bryan, 2026-08-30): shown before this
+    // request is created, always optional, always best-effort -- a
+    // malformed or failed write here must never prevent the deletion
+    // request itself ("O questionário não pode impedir a exclusão").
+    // Unknown reason codes are silently dropped rather than rejecting the
+    // whole submission -- a forward-compatible client sending a code this
+    // server doesn't know yet should not lose data it CAN store (otherText,
+    // any recognized codes) over the one it can't.
+    if (feedback && Array.isArray(feedback.reasons) && feedback.reasons.length > 0) {
+      const reasons = feedback.reasons
+        .filter((r) => r && EXIT_FEEDBACK_REASON_CODES.includes(r.code))
+        .map((r) => ({ code: r.code, detail: typeof r.detail === 'string' ? r.detail.slice(0, 500) : undefined }))
+        .slice(0, 20)
+      const retentionInteraction = feedback.retentionInteraction
+        ? {
+            offered: Boolean(feedback.retentionInteraction.offered),
+            offerCodes: Array.isArray(feedback.retentionInteraction.offerCodes)
+              ? feedback.retentionInteraction.offerCodes.filter((c) => EXIT_FEEDBACK_REASON_CODES.includes(c))
+              : [],
+            helpAccepted: Boolean(feedback.retentionInteraction.helpAccepted),
+            ticketCreated: Boolean(feedback.retentionInteraction.ticketCreated),
+            continuedAnyway: Boolean(feedback.retentionInteraction.continuedAnyway)
+          }
+        : undefined
+
+      if (reasons.length > 0 || feedback.otherText) {
+        try {
+          await this.prisma.accountDeletionFeedback.create({
+            data: {
+              accountId: user.id,
+              reasons: reasons as object,
+              otherText: feedback.otherText?.slice(0, 2000),
+              retentionInteraction: retentionInteraction as object | undefined
+            }
+          })
+        } catch {
+          // Best-effort, deliberately swallowed -- see comment above.
+        }
+      }
+    }
+
     const existing = await this.prisma.accountDeletionRequest.findUnique({ where: { accountId: user.id } })
     if (existing && (existing.status === 'REQUESTED' || existing.status === 'CONFIRMED')) {
       return { status: existing.status, alreadyPending: true as const }
@@ -246,6 +292,50 @@ export class AccountDeletionRequestService {
       recharges,
       purchases
     }
+  }
+
+  // Bryan's 2026-08-30 follow-up, Part 5: product analytics over exit
+  // feedback must be answerable WITHOUT needing player identity -- this
+  // reads only `reasons`/`submittedAt`, never `accountId` (present or
+  // anonymized), so it works identically before and after a given row's
+  // account link is cleared by executeNormalDeletion(). In-memory
+  // aggregation (not a raw JSON_TABLE query) because this table's real
+  // volume is small and this keeps the JSON-array shape (account-deletion.contract.ts's
+  // ExitFeedbackReason[]) as the single source of truth for parsing it,
+  // rather than duplicating that shape into SQL.
+  async exitFeedbackSummary(windowDays = 30) {
+    const rows = await this.prisma.accountDeletionFeedback.findMany({
+      select: { reasons: true, submittedAt: true }
+    })
+
+    const windowMs = Math.max(1, windowDays) * 86_400_000
+    const cutoff = Date.now() - windowMs
+    const priorCutoff = cutoff - windowMs
+
+    const currentCounts = new Map<string, number>()
+    const priorCounts = new Map<string, number>()
+    let totalSubmissions = 0
+
+    for (const row of rows) {
+      totalSubmissions++
+      const reasons = Array.isArray(row.reasons) ? (row.reasons as Array<{ code?: unknown }>) : []
+      const submittedAtMs = row.submittedAt.getTime()
+      const bucket = submittedAtMs >= cutoff ? currentCounts : submittedAtMs >= priorCutoff ? priorCounts : null
+      if (!bucket) continue
+      for (const reason of reasons) {
+        if (typeof reason?.code !== 'string') continue
+        bucket.set(reason.code, (bucket.get(reason.code) ?? 0) + 1)
+      }
+    }
+
+    const codes = new Set([...currentCounts.keys(), ...priorCounts.keys()])
+    const byReason = [...codes].map((code) => ({
+      code,
+      currentWindowCount: currentCounts.get(code) ?? 0,
+      priorWindowCount: priorCounts.get(code) ?? 0
+    })).sort((a, b) => b.currentWindowCount - a.currentWindowCount)
+
+    return { totalSubmissions, windowDays, byReason }
   }
 
   private gracePeriodDays() {

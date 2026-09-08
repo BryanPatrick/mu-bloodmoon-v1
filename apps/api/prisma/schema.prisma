@@ -409,9 +409,14 @@ enum GameBridgeOperation {
   // never a generic "run this SQL against the GameServer" capability.
   // Payloads are fixed shapes ({accountId, legacyLogin[, betaCycleId]}),
   // enforced by account-deletion.service.ts, not by this enum alone.
-  // Neither has a real worker-side handler yet, for the same reason
-  // GRANT_VIP doesn't: no sanctioned write path into the production
-  // MuOnline SQL Server exists anywhere in this project yet.
+  // GameBridge extension plan (docs/gamebridge/gamebridge-agent-extension-plan.md):
+  // both now have a real sender, AccountLifecycleBridgeService
+  // (apps/api/src/modules/accounts/account-lifecycle-bridge.service.ts),
+  // gated behind ACCOUNT_LIFECYCLE_BRIDGE_ENABLED (default off) and the
+  // Agent's own GAME_BRIDGE_ANONYMIZE_ENABLED/GAME_BRIDGE_PURGE_ENABLED
+  // kill switches (also default off) -- the stored procedures themselves
+  // remain reviewed but unexecuted pending a real SQL Server test
+  // environment (docs/environment/sql-server-test-environment.md).
   ANONYMIZE_GAME_ACCOUNT
   PURGE_GAME_ACCOUNT
 }
@@ -700,6 +705,29 @@ model AccountDeletionRequest {
   cancelledAt          DateTime?
 
   @@index([status, scheduledExecutionAt])
+}
+
+// Bryan's 2026-08-30 follow-up: structured exit feedback for the
+// self-service account deletion flow (docs/accounts/account-deletion-architecture.md).
+// accountId is nullable and unindexed as a FK on purpose -- this row must
+// survive account anonymization (see AccountDeletionService.executeNormalDeletion,
+// which unlinks accountId to null and stamps anonymizedAt rather than
+// deleting the row). No @relation to Account by design -- PRE_BETA_PURGE's
+// real hard `account.delete()` must never be blocked by a dangling
+// reference from analytics data that carries zero financial/legal weight.
+model AccountDeletionFeedback {
+  id                  String    @id @default(uuid())
+  accountId           String?
+  reasons             Json
+  otherText           String?   @db.VarChar(2000)
+  // Phase K (2026-08-30) Part 12: ExitRetentionInteraction shape
+  // (account-deletion.contract.ts) -- observational only, never read back
+  // to gate anything; survives anonymization the same way `reasons` does.
+  retentionInteraction Json?
+  submittedAt         DateTime  @default(now())
+  anonymizedAt        DateTime?
+
+  @@index([accountId])
 }
 
 // Phase 14 Part D. PRE_BETA_PURGE's operational record -- intentionally a
