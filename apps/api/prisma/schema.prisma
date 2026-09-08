@@ -3327,3 +3327,161 @@ enum LauncherAssetStorageProvider {
   LOCAL
   R2
 }
+
+// ============================================================
+// Survey foundation (Phase K, Part 15, 2026-08-30). Architecture only --
+// no UI is built against this yet, per Bryan's explicit "do not build an
+// unnecessarily huge frontend now." Modeled for the future periodic
+// player-questionnaire system discussed with Bryan, reusing the same
+// no-hard-FK-on-accountId precedent as AccountDeletionFeedback for any
+// response that may need to survive/outlive the account, and the same
+// campaign/trigger/audience shape a future survey admin UI can build on.
+// ============================================================
+
+enum SurveyStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  CLOSED
+}
+
+enum SurveyQuestionType {
+  SINGLE_CHOICE
+  MULTI_CHOICE
+  RATING
+  FREE_TEXT
+}
+
+// Set per Survey, not per response -- a survey is either anonymous or
+// identified by design, never mixed (avoids a response silently
+// reintroducing identity into a survey meant to be anonymous).
+enum SurveyParticipationMode {
+  ANONYMOUS
+  IDENTIFIED
+}
+
+enum SurveyTriggerType {
+  ACCOUNT_AGE
+  FIRST_RESET
+  POST_EVENT
+  POST_SUPPORT
+  POST_PURCHASE
+  OPEN_BETA
+  MANUAL_CAMPAIGN
+  PERIODIC
+}
+
+model Survey {
+  id                String                  @id @default(uuid())
+  title             String                  @db.VarChar(200)
+  description       String?                 @db.VarChar(2000)
+  status            SurveyStatus            @default(DRAFT)
+  participationMode SurveyParticipationMode @default(ANONYMOUS)
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+
+  questions SurveyQuestion[]
+  campaigns SurveyCampaign[]
+  responses SurveyResponse[]
+}
+
+model SurveyQuestion {
+  id       String             @id @default(uuid())
+  surveyId String
+  order    Int
+  text     String             @db.VarChar(500)
+  type     SurveyQuestionType
+  required Boolean            @default(false)
+
+  survey  Survey         @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  options SurveyOption[]
+  answers SurveyAnswer[]
+
+  @@index([surveyId])
+}
+
+model SurveyOption {
+  id         String @id @default(uuid())
+  questionId String
+  label      String @db.VarChar(200)
+  order      Int
+
+  question SurveyQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  answers  SurveyAnswer[]
+
+  @@index([questionId])
+}
+
+// A named run of a Survey against a specific SurveyAudience, on a
+// specific SurveyTriggerType. Kept separate from Survey itself so the
+// same question set can be reused across multiple campaigns (e.g. the
+// same satisfaction survey triggered both POST_EVENT and PERIODIC).
+model SurveyCampaign {
+  id          String            @id @default(uuid())
+  surveyId    String
+  name        String            @db.VarChar(200)
+  triggerType SurveyTriggerType
+  status      SurveyStatus      @default(DRAFT)
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime          @default(now())
+
+  survey    Survey           @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  audiences SurveyAudience[]
+  responses SurveyResponse[]
+
+  @@index([surveyId])
+}
+
+// Deliberately minimal/generic (ruleType+ruleValue) rather than a rigid
+// per-criterion schema -- audience targeting rules are a product decision
+// not yet made; this just reserves the shape so a future admin UI has
+// somewhere real to write to instead of inventing its own table.
+model SurveyAudience {
+  id         String   @id @default(uuid())
+  campaignId String
+  ruleType   String   @db.VarChar(100)
+  ruleValue  String   @db.VarChar(500)
+  createdAt  DateTime @default(now())
+
+  campaign SurveyCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
+}
+
+// accountId is nullable and NOT a relation field on purpose, mirroring
+// AccountDeletionFeedback's precedent -- an IDENTIFIED-mode response may
+// still need to outlive the account (anonymized rather than cascaded);
+// an ANONYMOUS-mode response never populates accountId at all.
+model SurveyResponse {
+  id          String    @id @default(uuid())
+  surveyId    String
+  campaignId  String?
+  accountId   String?
+  submittedAt DateTime  @default(now())
+  anonymizedAt DateTime?
+
+  survey   Survey          @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  campaign SurveyCampaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  answers  SurveyAnswer[]
+
+  @@index([surveyId])
+  @@index([campaignId])
+  @@index([accountId])
+}
+
+model SurveyAnswer {
+  id         String  @id @default(uuid())
+  responseId String
+  questionId String
+  optionId   String?
+  freeText   String? @db.VarChar(2000)
+
+  response SurveyResponse @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  question SurveyQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  option   SurveyOption?  @relation(fields: [optionId], references: [id], onDelete: SetNull)
+
+  @@index([responseId])
+  @@index([questionId])
+  @@index([optionId])
+}
