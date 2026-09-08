@@ -146,6 +146,9 @@ export type MarketplaceTask = {
 export type MarketplaceEconomy = {
   publicationFee: number
   saleFeePercent: number
+  wcoinTaxPercent: number
+  goblinPointTaxPercent: number
+  huntPointTaxPercent: number
   listingDurationHours: number
   maxListings: number
   vipDiscountPercent: number

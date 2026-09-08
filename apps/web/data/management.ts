@@ -1,6 +1,10 @@
 import type { UserRole } from '~/data/security'
 
-export type CurrencyCode = 'WCoin' | 'Goblin Point' | 'Hunt Point'
+// Player-facing display name only -- the technical enum stays GOBLIN_POINT
+// (apps/api/prisma/schema.prisma's CurrencyCode). Bryan's decision (Fase
+// AD, 2026-09-05): the Goblin Point currency is publicly branded "Blood
+// Coin"; Lucas already renamed the GameServer-facing side to match.
+export type CurrencyCode = 'WCoin' | 'Blood Coin' | 'Hunt Point'
 
 export type ManagedAccountStatus = 'Ativa' | 'Bloqueada' | 'Pendente'
 
@@ -68,7 +72,7 @@ export const managedAccounts: ManagedAccount[] = [
     characters: 3,
     currencies: {
       WCoin: 1250,
-      'Goblin Point': 340,
+      'Blood Coin': 340,
       'Hunt Point': 8750
     },
     twoFactorEnabled: true
@@ -86,7 +90,7 @@ export const managedAccounts: ManagedAccount[] = [
     characters: 2,
     currencies: {
       WCoin: 50,
-      'Goblin Point': 0,
+      'Blood Coin': 0,
       'Hunt Point': 320
     },
     twoFactorEnabled: false
@@ -104,7 +108,7 @@ export const managedAccounts: ManagedAccount[] = [
     characters: 1,
     currencies: {
       WCoin: 0,
-      'Goblin Point': 0,
+      'Blood Coin': 0,
       'Hunt Point': 0
     },
     twoFactorEnabled: false
@@ -196,7 +200,7 @@ export const shopProducts: ShopProduct[] = [
     category: 'Servico',
     description: 'Credito de reset especial para temporada.',
     price: 120,
-    currency: 'Goblin Point',
+    currency: 'Blood Coin',
     status: 'Ativo',
     stock: 'Ilimitado'
   },
@@ -218,8 +222,8 @@ export const rechargePacks: RechargePack[] = [
   { id: 'wcoin-1200', currency: 'WCoin', amount: 1200, bonus: 100, price: '39,90', highlight: true },
   { id: 'wcoin-2600', currency: 'WCoin', amount: 2600, bonus: 300, price: '79,90' },
   { id: 'wcoin-5500', currency: 'WCoin', amount: 5500, bonus: 800, price: '149,90' },
-  { id: 'gp-340', currency: 'Goblin Point', amount: 340, bonus: 0, price: '19,90' },
-  { id: 'gp-850', currency: 'Goblin Point', amount: 850, bonus: 50, price: '39,90' },
+  { id: 'gp-340', currency: 'Blood Coin', amount: 340, bonus: 0, price: '19,90' },
+  { id: 'gp-850', currency: 'Blood Coin', amount: 850, bonus: 50, price: '39,90' },
   { id: 'hp-1000', currency: 'Hunt Point', amount: 1000, bonus: 0, price: '14,90' },
   { id: 'hp-8750', currency: 'Hunt Point', amount: 8750, bonus: 1250, price: '99,90', highlight: true }
 ]

@@ -16,6 +16,7 @@ import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import { GameAccountIdentityService } from '../game-account-identity/game-account-identity.service'
 import { GameAccountProvisioningService } from '../game-account-identity/game-account-provisioning.service'
+import { currentAccountPhase, OPEN_BETA_NOTICE_TERMS_KEY, OPEN_BETA_NOTICE_VERSION } from '../beta-lifecycle/open-beta-window.config'
 import type {
   ChangePasswordRequest,
   ChangePasswordResponse,
@@ -287,6 +288,10 @@ export class AuthService {
           personalIdHash: await bcrypt.hash(personalId, 12),
           role: 'PLAYER',
           status: 'ACTIVE',
+          // Open Beta P0 foundation. Explicitly computed from the
+          // server-side Open Beta window config at THIS moment, never
+          // left to the schema's PRE_BETA default drifting in by accident.
+          accountPhase: currentAccountPhase(),
           currencies: {
             create: [
               { currency: 'WCOIN', balance: 0 },
@@ -294,6 +299,17 @@ export class AuthService {
               { currency: 'HUNT_POINT', balance: 0 }
             ]
           },
+          // Open Beta P0 foundation (Part L/M) -- versioned, auditable
+          // acceptance, never a bare boolean. Only recorded when the
+          // caller actually sent the current notice version; absent for
+          // pre-Beta-notice-UI callers (see auth.contract.ts).
+          ...(payload.acceptedOpenBetaNoticeVersion === OPEN_BETA_NOTICE_VERSION
+            ? {
+                termsAcceptances: {
+                  create: [{ termsKey: OPEN_BETA_NOTICE_TERMS_KEY, termsVersion: OPEN_BETA_NOTICE_VERSION }]
+                }
+              }
+            : {}),
           // Phase 3B, feature-flagged, OFF by default. See
           // docs/game-data/game-account-provisioning-contract.md Part I and
           // docs/accounts/unified-account-implementation.md's activation

@@ -40,7 +40,7 @@
               Moeda
               <select v-model="form.currency" class="h-11 rounded-md border border-white/10 bg-white/10 px-4 text-sm font-bold text-white outline-none placeholder:text-white/45 focus:border-blood-400/70">
                 <option class="bg-zinc-950 text-white" value="WCOIN">WCOIN</option>
-                <option class="bg-zinc-950 text-white" value="GOBLIN_POINT">GOBLIN_POINT</option>
+                <option class="bg-zinc-950 text-white" value="GOBLIN_POINT">Blood Coin</option>
                 <option class="bg-zinc-950 text-white" value="HUNT_POINT">HUNT_POINT</option>
               </select>
             </label>

@@ -96,7 +96,7 @@
 
 <script setup lang="ts">
 import {
-  Activity, BarChart3, Bell, ChevronDown, FileSearch, LayoutDashboard, LayoutTemplate, Map, PackageCheck,
+  Activity, ArrowLeftRight, BarChart3, Bell, ChevronDown, Crown, FileSearch, LayoutDashboard, LayoutTemplate, Lock, Map, PackageCheck,
   ListTodo, MessageCircle, PanelLeftClose, PanelLeftOpen, Settings, Shield, ShoppingBag,
   Store, TicketCheck, UserCog, Users
 } from 'lucide-vue-next'
@@ -298,9 +298,12 @@ const playerItems: MenuItem[] = [
   { label: 'Meu perfil social', to: '/comunidade?painel=perfil', icon: UserCog },
   { label: 'Guildas', to: '/guilds', icon: Shield },
   { label: 'Minhas compras', to: '/painel/compras', icon: PackageCheck },
+  { label: 'Transferir WC', to: '/painel/transferencias', icon: ArrowLeftRight },
+  { label: 'VIP', to: '/painel/vip', icon: Crown },
   { label: 'Meus anúncios', to: '/painel/marketplace?visao=meus-anuncios', icon: ShoppingBag },
   { label: 'Notificações', to: '/painel/notificacoes', icon: Bell },
   { label: 'Suporte', to: '/painel/suporte', icon: TicketCheck },
+  { label: 'Privacidade e meus dados', to: '/painel/privacidade', icon: Lock },
   { label: 'Configurações', to: '/painel/configuracoes', icon: Settings }
 ]
 

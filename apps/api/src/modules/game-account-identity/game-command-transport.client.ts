@@ -2,16 +2,59 @@ import { createHash, createHmac, randomUUID } from 'node:crypto'
 import { Injectable } from '@nestjs/common'
 import type { GameCredentialEnvelope } from './game-credential-envelope.service'
 
-export type CreateGameCommandEnvelope = {
+type BaseGameCommandEnvelope = {
   commandId: string
   provisioningRequestId: string
-  commandType: 'CREATE_GAME_ACCOUNT'
   environment: string
   serverId: string
   legacyLogin: string
   expiresAt: string
+}
+
+export type CreateGameCommandEnvelope = BaseGameCommandEnvelope & {
+  commandType: 'CREATE_GAME_ACCOUNT'
   credential: GameCredentialEnvelope
 }
+
+// GameBridge extension plan (docs/gamebridge/gamebridge-agent-extension-plan.md)
+// Part 1/2: only the envelope *shape* is per-command-type -- this client's
+// auth/signing/timeout/error-mapping plumbing is reused unchanged for all
+// five types (Part 1: "The class itself... is generic -- reusable for new
+// command types with no change").
+// Phase L fix (2026-08-31): vipExpiresAt/desiredVipExpiresAt are REQUIRED
+// (desiredVipExpiresAt only when desiredLevel > 0) -- a real, reproduced
+// bug (docs/vip/wz-setaccountlevel-coexistence.md) found that
+// dbo.bm_GrantVip/dbo.bm_SyncVipTier previously never wrote
+// MEMB_INFO.AccountExpireDate, so the native dbo.WZ_GetAccountLevel
+// procedure (fired on every login) silently reverted every GameBridge VIP
+// grant to AL0 on the player's very next login. Named "vipExpiresAt", not
+// "expiresAt", specifically to avoid colliding with this same envelope's
+// OWN `expiresAt` (the command's queue TTL -- an unrelated concept).
+export type GrantVipCommandEnvelope = BaseGameCommandEnvelope & {
+  commandType: 'GRANT_VIP'
+  payload: { targetLevel: 1 | 2 | 3, vipExpiresAt: string }
+}
+
+export type SyncVipTierCommandEnvelope = BaseGameCommandEnvelope & {
+  commandType: 'SYNC_VIP_TIER'
+  payload: { desiredLevel: 0 | 1 | 2 | 3, desiredVipExpiresAt?: string }
+}
+
+export type AnonymizeGameAccountCommandEnvelope = BaseGameCommandEnvelope & {
+  commandType: 'ANONYMIZE_GAME_ACCOUNT'
+}
+
+export type PurgeGameAccountCommandEnvelope = BaseGameCommandEnvelope & {
+  commandType: 'PURGE_GAME_ACCOUNT'
+  payload: { betaCycleId: string }
+}
+
+export type GameCommandEnvelope =
+  | CreateGameCommandEnvelope
+  | GrantVipCommandEnvelope
+  | SyncVipTierCommandEnvelope
+  | AnonymizeGameAccountCommandEnvelope
+  | PurgeGameAccountCommandEnvelope
 
 export type GameCommandState = {
   commandId: string
@@ -19,6 +62,7 @@ export type GameCommandState = {
   status: 'CREATED' | 'QUEUED' | 'AVAILABLE' | 'CLAIMED' | 'SUCCEEDED' | 'FAILED_RETRYABLE' | 'FAILED_FINAL' | 'EXPIRED'
   resultCode: string | null
   membGuid: number | null
+  detailJson: string | null
   completedAt: string | null
   attemptCount: number
   expiresAt: string
@@ -26,7 +70,7 @@ export type GameCommandState = {
 
 @Injectable()
 export class GameCommandTransportClient {
-  async create(command: CreateGameCommandEnvelope): Promise<void> {
+  async create(command: GameCommandEnvelope): Promise<void> {
     const response = await this.request('POST', '/internal/game-commands', JSON.stringify(command))
     if (!response.ok) throw new Error(`GAME_COMMAND_CREATE_${safeHttpCode(response.status)}`)
   }

@@ -25,7 +25,7 @@
       >
         <option value="">Todas as moedas</option>
         <option value="WCOIN">WCoin</option>
-        <option value="GOBLIN_POINT">Goblin Point</option>
+        <option value="GOBLIN_POINT">Blood Coin</option>
         <option value="HUNT_POINT">Hunt Point</option>
       </select>
     </div>

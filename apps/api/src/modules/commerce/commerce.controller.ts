@@ -30,6 +30,7 @@ import { CommerceService } from './commerce.service'
 import type { LegacyCatalogBulkPayload, LegacyCatalogItemUpdatePayload, LegacyCatalogQuery } from './legacy-catalog-config.service'
 import { LegacyCatalogConfigService } from './legacy-catalog-config.service'
 import { LegacyCatalogEffectiveStateService } from './legacy-catalog-effective-state.service'
+import { PaymentReconciliationService } from './payment-reconciliation.service'
 import { StoreAdminService } from './store-admin.service'
 
 @Controller()
@@ -38,7 +39,8 @@ export class CommerceController {
     private readonly commerceService: CommerceService,
     private readonly storeAdminService: StoreAdminService,
     private readonly legacyCatalogConfig: LegacyCatalogConfigService,
-    private readonly legacyCatalogEffectiveState: LegacyCatalogEffectiveStateService
+    private readonly legacyCatalogEffectiveState: LegacyCatalogEffectiveStateService,
+    private readonly paymentReconciliation: PaymentReconciliationService
   ) {}
 
   @Get('shop/products')
@@ -483,5 +485,29 @@ export class CommerceController {
   @RequirePermissions(permissionKeys.adminOrdersOperate)
   resyncRecharge(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
     return this.commerceService.resyncRechargeFromProvider(id, user)
+  }
+
+  @Get('admin/finance/recharges/:id/chargeback-trace')
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  @RequirePermissions(permissionKeys.adminChargebackView)
+  chargebackTrace(@Param('id') id: string) {
+    return this.commerceService.getChargebackDispersalTrace(id)
+  }
+
+  @Get('admin/finance/reconciliation')
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  @RequirePermissions(permissionKeys.adminFinancialReportsView)
+  paymentReconciliationReport() {
+    return this.paymentReconciliation.findAnomalies()
+  }
+
+  @Post('admin/finance/reconciliation/provider-poll')
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  @RequirePermissions(permissionKeys.adminOrdersOperate)
+  triggerProviderPoll() {
+    return this.paymentReconciliation.pollProviderForStuckPayments()
   }
 }

@@ -82,6 +82,8 @@ export const permissionKeys = {
   adminMarketplaceEconomyManage: 'admin.marketplace.economy.manage',
   adminMarketplaceTasksManage: 'admin.marketplace.tasks.manage',
   adminMarketplaceReportsView: 'admin.marketplace.reports.view',
+  adminVipManage: 'admin.vip.manage',
+  adminBetaLifecycleManage: 'admin.beta-lifecycle.manage',
   adminCommunityView: 'admin.community.view',
   adminCommunityPostsModerate: 'admin.community.posts.moderate',
   adminCommunityCommentsModerate: 'admin.community.comments.moderate',
@@ -110,6 +112,16 @@ export const permissionKeys = {
   adminGameDataView: 'admin.game-data.view',
   adminGameProvisioningView: 'admin.game-provisioning.view',
   adminGameProvisioningManage: 'admin.game-provisioning.manage',
+  adminVipSyncView: 'admin.vip-sync.view',
+  adminVipSyncManage: 'admin.vip-sync.manage',
+  // GameBridge extension plan Part 5 + Bryan's follow-up decision
+  // (2026-08-30): PURGE_GAME_ACCOUNT is irreversible and restricted to
+  // SUPER_ADMIN by default -- ADMIN does not automatically inherit
+  // destructive purge permission, unlike every other admin.* key here.
+  // Delegating it to ADMIN in the future must be a deliberate,
+  // separately-reviewed change, not an artifact of the blanket
+  // adminAccountsStatusManage permission NORMAL_ACCOUNT_DELETION uses.
+  adminAccountsPurgeManage: 'admin.accounts.purge.manage',
   adminRoadmapView: 'admin.roadmap.view',
   adminRoadmapCreate: 'admin.roadmap.create',
   adminRoadmapEdit: 'admin.roadmap.edit',
@@ -120,6 +132,23 @@ export const permissionKeys = {
   adminReferencesManage: 'admin.references.manage',
   adminFinanceManage: 'admin.finance.manage',
   adminRechargeManage: 'admin.recharge.manage',
+  // PHASE P (2026-08-31): the chargeback dispersal trace is a real
+  // read-only report (WalletLedgerService.traceChargebackDispersal()),
+  // but still real financial data about potentially multiple accounts,
+  // gated distinctly from ordinary finance viewing (adminFinanceView).
+  adminChargebackView: 'admin.chargeback.view',
+  // PHASE P (2026-08-31): acting on a chargeback case (notes/resolution)
+  // is more consequential than viewing the read-only dispersal trace --
+  // separately gated, same reasoning as adminRechargeRefund vs.
+  // adminOrdersOperate above.
+  adminChargebackManage: 'admin.chargeback.manage',
+  // PHASE P (2026-08-31): antifraud foundation -- risk case visibility and
+  // the ability to apply/lift a case action (MANUAL_REVIEW/
+  // PAYMENT_RESTRICTION/TRANSFER_RESTRICTION/ACCOUNT_RESTRICTION) are
+  // gated separately, same "do not assume all ADM roles can act on this"
+  // principle as every other finance-sensitive permission in this file.
+  adminRiskView: 'admin.risk.view',
+  adminRiskManage: 'admin.risk.manage',
   adminSystemManage: 'admin.system.manage',
   adminGuildsView: 'admin.guilds.view',
   adminGuildsModerate: 'admin.guilds.moderate',

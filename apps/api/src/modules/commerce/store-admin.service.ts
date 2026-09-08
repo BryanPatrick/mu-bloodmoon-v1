@@ -18,6 +18,7 @@ import type { AuthenticatedUser } from '../auth/auth.types'
 import { permissionKeys } from '../auth/permissions'
 import { classifyLegacyCatalogKey } from './legacy-catalog-policy'
 import { ObservabilityService } from '../observability/observability.service'
+import { WalletLedgerService } from '../wallet/wallet-ledger.service'
 import type {
   CommerceQuery,
   ShopProductPayload,
@@ -100,7 +101,8 @@ export class StoreAdminService implements OnModuleInit, OnModuleDestroy {
   constructor(
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
-    private readonly observability: ObservabilityService
+    private readonly observability: ObservabilityService,
+    private readonly walletLedger: WalletLedgerService
   ) {}
 
   onModuleInit() {
@@ -1044,10 +1046,12 @@ export class StoreAdminService implements OnModuleInit, OnModuleDestroy {
         })
         if (!claimed.count) throw new BadRequestException('Este pedido ja foi encerrado.')
         const wallet = await tx.accountCurrency.findUnique({ where: { accountId_currency: { accountId: order.accountId, currency: order.currency } } })
-        await tx.accountCurrency.upsert({
-          where: { accountId_currency: { accountId: order.accountId, currency: order.currency } },
-          create: { accountId: order.accountId, currency: order.currency, balance: order.price },
-          update: { balance: { increment: order.price } }
+        await this.walletLedger.credit(tx, order.accountId, order.currency, order.price, {
+          idempotencyKey: `admin-purchase-refund:${order.id}`,
+          type: 'REFUND',
+          sourceType: 'PurchaseIntent',
+          sourceId: order.id,
+          metadata: { actorId: user.id, actorUsername: user.username, reason: payload.reason || null }
         })
         if (order.variantId && order.variant?.stock !== null) {
           await tx.shopProductVariant.update({ where: { id: order.variantId }, data: { stock: { increment: order.quantity } } })
