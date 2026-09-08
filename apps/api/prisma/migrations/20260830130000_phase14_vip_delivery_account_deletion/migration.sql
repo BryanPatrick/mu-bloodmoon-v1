@@ -13,10 +13,10 @@
 --      visibility column-default drift -- predates this phase entirely.
 
 -- AlterTable
-ALTER TABLE `account` ADD COLUMN `deletedAt` DATETIME(3) NULL;
+ALTER TABLE `Account` ADD COLUMN `deletedAt` DATETIME(3) NULL;
 
 -- AlterTable
-ALTER TABLE `gamebridgejob` MODIFY `operation` ENUM('LOCK_ITEM', 'RELEASE_ITEM', 'TRANSFER_ITEM', 'DELIVER_ITEM', 'CREDIT_CURRENCY', 'SYNC_INVENTORY', 'GRANT_VIP', 'ANONYMIZE_GAME_ACCOUNT', 'PURGE_GAME_ACCOUNT') NOT NULL;
+ALTER TABLE `GameBridgeJob` MODIFY `operation` ENUM('LOCK_ITEM', 'RELEASE_ITEM', 'TRANSFER_ITEM', 'DELIVER_ITEM', 'CREDIT_CURRENCY', 'SYNC_INVENTORY', 'GRANT_VIP', 'ANONYMIZE_GAME_ACCOUNT', 'PURGE_GAME_ACCOUNT') NOT NULL;
 
 -- CreateTable
 CREATE TABLE `AccountDeletionRecord` (

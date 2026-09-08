@@ -13,7 +13,7 @@
 -- column-default drift).
 
 -- AlterTable
-ALTER TABLE `vipbenefitconfig` ADD COLUMN `commandCostReductionPercent` INTEGER NOT NULL DEFAULT 0,
+ALTER TABLE `VipBenefitConfig` ADD COLUMN `commandCostReductionPercent` INTEGER NOT NULL DEFAULT 0,
     ADD COLUMN `warehouseBonusPages` INTEGER NOT NULL DEFAULT 0;
 
 -- Seed: Bryan's approved first commercial VIP price table (2026-08-30).
