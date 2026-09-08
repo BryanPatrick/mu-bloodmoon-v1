@@ -12,6 +12,7 @@ import { AdminObservabilityModule } from './modules/admin-observability/admin-ob
 import { AuthModule } from './modules/auth/auth.module'
 import { CharactersModule } from './modules/characters/characters.module'
 import { CommerceModule } from './modules/commerce/commerce.module'
+import { ProgressionModule } from './modules/progression/progression.module'
 import { WebSourceModule } from './modules/web-source/web-source.module'
 import { MarketplaceModule } from './modules/marketplace/marketplace.module'
 import { CommunityModule } from './modules/community/community.module'
@@ -82,6 +83,7 @@ export type ApiModuleName = typeof apiModules[number]
     AdminObservabilityModule,
     CharactersModule,
     CommerceModule,
+    ProgressionModule,
     WebSourceModule,
     MarketplaceModule,
     CommunityModule,
