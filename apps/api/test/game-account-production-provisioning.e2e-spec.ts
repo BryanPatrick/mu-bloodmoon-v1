@@ -59,7 +59,7 @@ describe('Phase 3D-A Portal provisioning dispatcher', () => {
     expect(identity.provisioningStatus).toBe('PROVISIONING')
 
     transport.state = { commandId: first.commandId, provisioningRequestId: first.provisioningRequestId,
-      status: 'SUCCEEDED', resultCode: 'SUCCEEDED', membGuid: 987654,
+      status: 'SUCCEEDED', resultCode: 'SUCCEEDED', membGuid: 987654, detailJson: null,
       completedAt: new Date().toISOString(), attemptCount: 1, expiresAt: new Date(Date.now() + 60_000).toISOString() }
     expect(await service.reconcile(account.id)).toBe('SUCCEEDED')
     const active = await prisma.gameAccountIdentity.findUniqueOrThrow({ where: { accountId: account.id } })
