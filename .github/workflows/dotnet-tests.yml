@@ -23,6 +23,10 @@ on:
       - '.github/workflows/dotnet-tests.yml'
   workflow_dispatch: {}
 
+permissions:
+  contents: read
+  checks: write
+
 jobs:
   dotnet-test:
     name: ${{ matrix.name }}
@@ -66,3 +70,17 @@ jobs:
           name: test-results-${{ matrix.results-name }}
           path: ./TestResults/${{ matrix.results-name }}.trx
           retention-days: 30
+
+      # Publishes a real Check Run with per-test pass/fail counts, visible
+      # directly on the commit/PR page with no sign-in required -- the raw
+      # trx artifact above needs an authenticated GitHub session to open,
+      # which defeats the point of "genuine, inspectable evidence" for
+      # anyone who isn't already signed in.
+      - name: Publish test results summary
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: ${{ matrix.name }} — results
+          path: ./TestResults/${{ matrix.results-name }}.trx
+          reporter: dotnet-trx
+          fail-on-error: false
