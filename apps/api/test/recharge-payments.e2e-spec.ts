@@ -444,6 +444,33 @@ describe('Mercado Pago recharge payments', () => {
     expect(updated?.approvedAt).not.toBeNull()
   })
 
+  // ── PHASE O: LEDGER_PROVENANCE -- the credit's own ledger row is
+  // self-describing (base/bonus/gross/provider), not just reconstructable
+  // via a join back to RechargeIntent ──
+  it('LEDGER_PROVENANCE: records base/bonus/gross/provider directly on the WalletLedgerEntry, not only on RechargeIntent', async () => {
+    const { intentId, externalOrderId, externalReference } = await createCheckoutIntent(runId('ORD-ledger-provenance'))
+    fetchHandler = async () =>
+      jsonResponse(
+        mockOrderBody({ id: externalOrderId, external_reference: externalReference, total_amount: '19.90', status: 'processed', status_detail: 'accredited' })
+      )
+    await sendWebhook(externalOrderId, runId('req-ledger-provenance'))
+
+    const intent = await prisma.rechargeIntent.findUniqueOrThrow({ where: { id: intentId } })
+    expect(intent.status).toBe('PAID')
+
+    const ledgerRow = await prisma.walletLedgerEntry.findFirst({
+      where: { sourceType: 'RechargeIntent', sourceId: intent.id, type: 'WC_PURCHASE_CREDIT' }
+    })
+    expect(ledgerRow).toBeDefined()
+    expect(ledgerRow?.paymentProvenanceRef).toBe(intent.id)
+    expect(ledgerRow?.grossAmount).toBe(intent.amount + intent.bonus)
+    const metadata = ledgerRow?.metadata as { baseAmount?: number; bonusAmount?: number; grossPaidBRL?: string; provider?: string } | null
+    expect(metadata?.baseAmount).toBe(intent.amount)
+    expect(metadata?.bonusAmount).toBe(intent.bonus)
+    expect(metadata?.grossPaidBRL).toBe(intent.price)
+    expect(metadata?.provider).toBe(intent.provider)
+  })
+
   // ── Scenario 8: rejected payment -> FAILED, no credit ──
   it('marks a rejected payment as FAILED without crediting the wallet', async () => {
     const { intentId, externalOrderId, externalReference } = await createCheckoutIntent(

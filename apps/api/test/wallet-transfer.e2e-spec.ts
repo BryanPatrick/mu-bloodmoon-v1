@@ -239,7 +239,7 @@ describe('Direct WC transfer -- Phase Q', () => {
   // that wiring belongs to whichever release VIP itself is isolated
   // into, not this one. The store-purchase and transfer assertions below
   // are both real, shipped enforcement in this release.
-  it('ACCOUNT_RESTRICTION_BLOCKS_TRANSFER_AND_PURCHASE: a commercial hold blocks transfer and store purchase', async () => {
+  it('ACCOUNT_RESTRICTION_BLOCKS_TRANSFER_AND_VIP_AND_PURCHASE: a commercial hold blocks all three commercial actions', async () => {
     const sender = await makePlayerWithBalance('acctrestrict', 1000)
     const recipient = await makePlayerWithBalance('acctrestrictrecv', 0)
     const token = await issueToken(sender.id)
@@ -264,6 +264,10 @@ describe('Direct WC transfer -- Phase Q', () => {
     expect(transferBlocked.status).toBe(403)
 
     const senderUser = { id: sender.id, username: sender.username, name: sender.name, email: sender.email, role: 'PLAYER' as const, permissions: [], twoFactorEnabled: false }
+
+    const { VipService } = await import('../src/modules/vip/vip.service')
+    const vipService = app.get(VipService)
+    await expect(vipService.purchase(senderUser, { tier: 'BRONZE', durationDays: 7 })).rejects.toThrow()
 
     const { CommerceService } = await import('../src/modules/commerce/commerce.service')
     const commerceService = app.get(CommerceService)

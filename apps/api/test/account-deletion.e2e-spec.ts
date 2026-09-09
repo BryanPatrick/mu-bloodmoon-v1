@@ -24,18 +24,21 @@ describe('Account deletion -- Phase 14 Part D', () => {
   let app: import('@nestjs/common').INestApplication
   let prisma: import('../src/database/prisma.service').PrismaService
   let deletion: import('../src/modules/accounts/account-deletion.service').AccountDeletionService
+  let walletLedger: import('../src/modules/wallet/wallet-ledger.service').WalletLedgerService
 
   beforeAll(async () => {
     const { Test } = await import('@nestjs/testing')
     const { AppModule } = await import('../src/app.module')
     const { PrismaService } = await import('../src/database/prisma.service')
     const { AccountDeletionService } = await import('../src/modules/accounts/account-deletion.service')
+    const { WalletLedgerService } = await import('../src/modules/wallet/wallet-ledger.service')
 
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile()
     app = moduleRef.createNestApplication()
     await app.init()
     prisma = app.get(PrismaService)
     deletion = app.get(AccountDeletionService)
+    walletLedger = app.get(WalletLedgerService)
   }, 60000)
 
   afterAll(async () => app?.close())
@@ -72,10 +75,24 @@ describe('Account deletion -- Phase 14 Part D', () => {
 
   let admin: { id: string, username: string }
   let rechargePackage: { id: string }
+  let shopProduct: { id: string }
   beforeAll(async () => {
     admin = await makeAccount('deladmin')
     rechargePackage = await prisma.rechargePackage.create({
       data: { key: `test-package-${suffix()}`, currency: 'WCOIN', amount: 100, price: '10.00' }
+    })
+    shopProduct = await prisma.shopProduct.create({
+      data: {
+        key: `test-product-${suffix()}`,
+        slug: `test-product-${suffix()}`,
+        name: 'Deletion Test Product',
+        short: 'DEL',
+        category: 'Servico',
+        description: 'Fixture product for account-deletion financial-retention tests.',
+        price: 50,
+        currency: 'WCOIN',
+        status: 'ACTIVE'
+      }
     })
   })
 
@@ -104,7 +121,7 @@ describe('Account deletion -- Phase 14 Part D', () => {
 
   test('NORMAL_DELETION_PRESERVES_AUDIT_AND_PAYMENT_HISTORY', async () => {
     const account = await makeAccount('normalpreserve')
-    await prisma.rechargeIntent.create({
+    const rechargeIntent = await prisma.rechargeIntent.create({
       data: {
         accountId: account.id,
         packageId: rechargePackage.id,
@@ -117,11 +134,55 @@ describe('Account deletion -- Phase 14 Part D', () => {
       }
     })
 
+    // PHASE P (2026-08-31), Part 16 -- the pre-existing version of this
+    // test only ever checked RechargeIntent. Extended to also cover
+    // WalletLedgerEntry and PurchaseIntent, per ACCOUNT_DELETED_FINANCIAL_
+    // RECORD_PRESERVED: both must survive NORMAL_ACCOUNT_DELETION exactly
+    // like RechargeIntent does. Confirmed by schema inspection this phase:
+    // both relations use `onDelete: Cascade`, same as RechargeIntent.account
+    // -- but that FK action never actually fires here, because
+    // executeNormalDeletion only ever UPDATEs the Account row (anonymize
+    // in place) and never DELETEs it; a real hard delete is only reachable
+    // via PRE_BETA_PURGE, which separately refuses when paid recharge OR
+    // paid purchase history exists (assessPreBetaPurgeEligibility). This
+    // test exists to prove that structural argument holds in practice, not
+    // just in the schema comment.
+    await prisma.$transaction((tx) =>
+      walletLedger.credit(tx, account.id, 'WCOIN', 100, {
+        idempotencyKey: `recharge-credit:${rechargeIntent.id}`,
+        type: 'WC_PURCHASE_CREDIT',
+        sourceType: 'RechargeIntent',
+        sourceId: rechargeIntent.id,
+        paymentProvenanceRef: rechargeIntent.id
+      })
+    )
+    const purchaseIntent = await prisma.purchaseIntent.create({
+      data: {
+        accountId: account.id,
+        productId: shopProduct.id,
+        quantity: 1,
+        price: 50,
+        currency: 'WCOIN',
+        status: 'COMPLETED',
+        correlationId: `del-preserve-purchase-${suffix()}`
+      }
+    })
+
     await deletion.executeNormalDeletion(asActor(admin), account.id)
 
     const recharge = await prisma.rechargeIntent.findFirst({ where: { accountId: account.id } })
     expect(recharge).not.toBeNull()
     expect(recharge?.status).toBe('PAID')
+
+    const ledgerEntry = await prisma.walletLedgerEntry.findFirst({ where: { sourceType: 'RechargeIntent', sourceId: rechargeIntent.id } })
+    expect(ledgerEntry).not.toBeNull()
+    expect(ledgerEntry?.accountId).toBe(account.id)
+    expect(ledgerEntry?.netAmount).toBe(100)
+
+    const purchase = await prisma.purchaseIntent.findUnique({ where: { id: purchaseIntent.id } })
+    expect(purchase).not.toBeNull()
+    expect(purchase?.status).toBe('COMPLETED')
+    expect(purchase?.accountId).toBe(account.id)
   })
 
   test('NORMAL_DELETION_DELETES_SESSIONS_AND_RECOVERY_CODES_OUTRIGHT', async () => {
