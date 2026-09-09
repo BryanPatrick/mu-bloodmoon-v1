@@ -7,6 +7,11 @@
     "dev": "nuxt dev",
     "build": "nuxt build",
     "generate": "nuxt generate",
-    "preview": "nuxt preview .output"
+    "preview": "nuxt preview .output",
+    "typecheck": "vue-tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vue-tsc": "^3.3.11"
   }
 }
