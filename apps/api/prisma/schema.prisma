@@ -4152,6 +4152,52 @@ enum LauncherAssetStorageProvider {
   R2
 }
 
+// ============================================================
+// Player preferences foundation (Phase K, "Player preferences
+// foundation" instruction, 2026-08-30). Reusable notification/visibility
+// preference architecture -- no UI built against this yet. The
+// ESSENTIAL/OPTIONAL split is a hard constraint: PlayerPreferenceCategory
+// is a property of the DEFINITION (the catalog entry), not something a
+// player or admin can flip per-row -- a definition seeded as ESSENTIAL
+// has no player-facing toggle in this design at all, so security/
+// account-critical/required-service messages are never modeled as
+// something a player COULD disable in the first place.
+// ============================================================
+
+enum PlayerPreferenceCategory {
+  ESSENTIAL
+  OPTIONAL
+}
+
+// The catalog of preference keys. Seeded by product/engineering, not
+// player-created. `category` is fixed per key -- see the constraint note
+// above.
+model PlayerPreferenceDefinition {
+  key         String                   @id @db.VarChar(64)
+  label       String                   @db.VarChar(200)
+  description String?                  @db.VarChar(500)
+  category    PlayerPreferenceCategory
+  createdAt   DateTime                 @default(now())
+
+  preferences PlayerPreference[]
+}
+
+// One row per (account, definition) the player has an explicit choice
+// recorded for. Absence of a row means "use the definition's default"
+// (not modeled here -- a UI-layer concern), not "disabled."
+model PlayerPreference {
+  id             String   @id @default(uuid())
+  accountId      String
+  definitionKey  String
+  enabled        Boolean
+  updatedAt      DateTime @updatedAt
+
+  definition PlayerPreferenceDefinition @relation(fields: [definitionKey], references: [key], onDelete: Cascade)
+
+  @@unique([accountId, definitionKey])
+  @@index([accountId])
+}
+
 // PHASE U (2026-09-03) -- Progression control plane (XP/Drop/Reset/
 // Master Reset). Same desired-state/effective-state/drift shape as
 // LegacyCatalogItem (ADR-0024) -- see docs/decisions/0025-progression-
