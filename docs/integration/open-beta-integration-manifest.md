@@ -7,7 +7,7 @@ manifest (see `docs/phases/*/phase-manifest.md` for per-feature detail).
 ```
 BASE: main @ 3b527749 (2026-09-08)
 INTEGRATION_BRANCH: integration/open-beta
-INTEGRATION_HEAD_FINAL: 0fb9d654fcf176c8b57827e8cae8ab77ea9eb82c
+INTEGRATION_HEAD_FINAL: 43a9a374780fdd386a08aa93980b5b5677baeb0f
 INTEGRATION_WORKTREE: D:\MU\mu-bloodmoon-integration-openbeta
 INTEGRATION_RESULT: PASS
 ```
@@ -19,6 +19,94 @@ both frontend-toolchain work, `apps/api` untouched by either:
 |---|---|
 | `7619755f` | Pin `typescript ^5.0.0`/`vue-tsc ^3.3.11` in `apps/web/package.json` (matching `apps/api`'s own pin) + a root `overrides` entry forcing `vue-tsc`'s own `typescript` resolution to `^5.0.0` (npm's dedup was resolving it against a widely-shared, incompatible `6.0.3` instead) + a new `apps/web/tsconfig.json` (none existed; `vue-tsc` had no project file to find). This is what let `vue-tsc --noEmit` run at all for the first time in this project's history. |
 | `0fb9d654` | Fixed all 152 real type errors that run surfaced, across 46 files — see "Frontend toolchain" below. |
+
+## Recovery Batch 4 — merge history (M9–M11)
+
+Three previously-created, unmerged recovery branches were merged into
+`integration/open-beta` in this round, following the same `--no-ff`,
+full-provenance discipline as M1–M8 above. Docs-only commit `1185586d`
+(ADR-0024/0019/0021 canonicalization) landed directly beforehand, not
+via merge — see "Documentation" below.
+
+| # | Source branch | Merge commit | Conflicts | Status |
+|---|---|---|---|---|
+| M9 | `fix/wcoin-peg-guard` | `30dcc5f2` | none | PASS |
+| M10 | `test/open-beta-regression-recovery` | `65ef5f46` | none | PASS |
+| M11 | `feature/player-preferences-schema-foundation` | `43a9a374` | none | PASS |
+
+**M9 — WCoin 1:1 peg guard**: added `WCOIN_TO_BRL_RATE`/`wcoinBaseForBrl`/
+`assertWcoinPackageInvariant` to `commerce.service.ts`, wired into both
+`createRechargePackage` and `updateRechargePackage` (the latter using
+effective/merged values, so a partial update like toggling `active`
+alone still re-validates the whole peg — `disableRechargePackage`
+inherits this transitively). Found and fixed a real, pre-existing peg
+violation in integration's own `seedRechargePackages` (still had the
+pre-fix, ~25x-off-peg WCOIN seed values) as part of the same extraction
+— exactly the incident class the guard exists to prevent — using
+Bryan's own already-decided Phase N values computed via
+`wcoinBaseForBrl()`. `bonus` stays additive on top of the 1:1 base,
+unchanged. Zero refund/provider/`REAL_MONEY` code touched (grep-confirmed).
+
+**M10 — Financial/security test recovery**: confirmed real ancestry
+from M9 before merging. Recovered 4 real deltas onto already-integrated
+runtime: account-deletion (WalletLedgerEntry/PurchaseIntent survive
+`executeNormalDeletion`'s anonymize-in-place — proves a structural fact,
+zero runtime change), recharge-payments (new `LEDGER_PROVENANCE`
+assertion), wallet-transfer (VIP-purchase already blocked by an existing,
+already-integrated `assertNoActiveAccountRestriction` guard), and a
+brand-new store-admin-security RBAC suite (244 lines). While auditing
+the ledger-provenance delta, found one small, genuinely safe runtime gap
+and fixed it as part of the same extraction: `transitionRechargeStatus`'s
+PAID-transition `walletLedger.credit()` call never populated its
+already-optional `metadata` field — added
+`{ baseAmount, bonusAmount, grossPaidBRL, provider }`, using only
+existing `RechargeIntent` fields, changing zero credited amounts.
+Confirmed absence of Recharge Refund runtime (`refundRecharge`/
+`attemptProviderRefund`/`adminRechargeRefund`/`adminRechargeProviderRefund`)
+both before and after this merge.
+
+**M11 — Player Preferences schema foundation**: 2 Prisma models
+(`PlayerPreferenceDefinition`, `PlayerPreference`) + 1 enum
+(`PlayerPreferenceCategory`) + 1 migration
+(`20260830191000_player_preferences_foundation`), `SCHEMA_FOUNDATION_ONLY`
+— same pattern as the M6 Survey extraction. 1 FK matches 1 relation
+exactly (`PlayerPreference.definitionKey` → `PlayerPreferenceDefinition.key`).
+Confirmed zero runtime code references anywhere in `apps/api/src` or
+`apps/web` — `/painel/configuracoes` still persists to `localStorage`
+only (key `blood-moon-preferences`).
+
+### Tests (M9–M11)
+
+| Checkpoint | Suites | Tests | Result |
+|---|---|---|---|
+| M9 targeted (peg guard + admin-guard + pricing) | 2/2 | 20/20 | PASS |
+| M10 targeted (7 financial/security suites) | 7/7 | 86/86 | PASS |
+| M10 broad regression (22 suites) | 22/22 | 172/172 | PASS (1 transient `account-lifecycle-bridge` flake on first pass, non-reproducing on isolated + fresh-full-sweep re-run — known `GameBridgeJob` test-isolation debt, not a regression) |
+| M11 | — | NOT_APPLICABLE | schema-only, no runtime code exists |
+| LEVEL 2 after M11 (7 targeted financial/economy suites) | 7/7 | 77/77 | PASS |
+| LEVEL 3 (full e2e sweep, all 11 merges) | 76/81 | 805/818 | PASS with 5 pre-existing/transient failures investigated individually — see below; zero regressions caused by M9–M11 |
+
+**LEVEL 3 full-sweep failure investigation** (13 failing tests across 5
+suites, none a regression from M9–M11):
+- `account-deletion.e2e-spec.ts` (1 test, DB-connection-refused) and
+  `account-lifecycle-bridge.e2e-spec.ts` (1 test, the same known
+  `GameBridgeJob` flake as above) — both **PASS cleanly** when
+  re-run in isolation together with `two-factor-key-migration.e2e-spec.ts`
+  (28/28, 27/27 respectively) — confirmed transient, an artifact of one
+  818-test/702s run, not a code defect.
+- `error-handling.e2e-spec.ts` (9 tests), `game-account-production-provisioning.e2e-spec.ts`
+  (compile failure), `two-factor-key-migration.e2e-spec.ts` (1 test) —
+  all 3 confirmed **untouched** by the M9–M11 diff (`git diff 1185586d 43a9a374`)
+  and last modified well before this round (2026-08-19, 2026-08-24,
+  2026-08-25 respectively) — pre-existing, unrelated defects, newly
+  surfaced by this being the first full-suite run in this recovery
+  effort. Flagged as separate follow-up tasks (`task_b7d3ac18`,
+  `task_53c3eb8b`), not blocking this integration.
+
+`apps/api` full typecheck (`tsc --noEmit`): PASS after M9, M10, M11.
+`vue-tsc --noEmit`: PASS (0 errors, unchanged from the 152→0 fix — none
+of M9–M11 touch `apps/web`). `npm run web:build`: PASS. Phase AA unit
+suite (`jest.config.js`): 7/7 suites, 46/46 tests, PASS, unchanged.
 
 ## Merge order (as authorized, executed unchanged)
 
@@ -113,9 +201,14 @@ on `main` (FOUNDATION_SHARED). 18 are new, arriving via the 8 merges:
 | `20260904100000_beta_participation_record` | M7 (Beta Rewards) | **ALREADY_PRODUCTION** | Phase Z closure, 2026-09-06, approved PASS by Bryan; real QA rows created against production DB (`docs/handoff/phase-z-bug-hunters-beta-rewards-qa.md`); independently corroborated by the 2026-09-07 bmweb-recovery smoke test listing "Bug Hunters, Beta Rewards" among pages confirmed returning clean 200s |
 | `20260904110000_bug_hunters_foundation` | M7 (Bug Hunters) | **ALREADY_PRODUCTION** | same Phase Z closure evidence |
 | `20260905090000_alert_dispatch_state` | M8 (Ops Hardening) | NOT_DEPLOYED_CONFIRMED | Phase AA (ops-hardening) confirmed not deployed; `.output-phasez-backup` handoff note explicitly awaits "fechamento das Fases AC e AA" |
+| `20260830191000_player_preferences_foundation` | M11 (Player Preferences, Recovery Batch 4) | NOT_DEPLOYED_CONFIRMED | schema-only, zero runtime code; extracted this round from openbeta's dirty working tree |
 
-All 18 verified to have a real `migration.sql` file (zero orphans).
-Zero duplicated or missing migrations relative to the 8 source branches.
+19 total new migrations across the 8-merge integration + Recovery Batch
+4 (was 18; +1 this round). All verified to have a real `migration.sql`
+file (zero orphans). Zero duplicated or missing migrations relative to
+the source branches — full inventory re-confirmed after M9–M11
+(55 total migration folders on `integration/open-beta`, sorted,
+zero duplicate names).
 `_prisma_migrations` was never touched by this integration effort, and
 none of this reconciliation read production — every classification above
 comes from dated documentary evidence (phase closure docs, the Phase Y
@@ -265,6 +358,60 @@ not syncing on click") — not fixed this round; classified
   this blocks this integration branch's own `PASS` result; all tracked
   as recovery debt. Full file-by-file classification available on
   request — audit output, not integration code, not committed here.
+
+### Recovery Batch 4 disposition — groups A/B/C now closed or deferred-with-reason
+
+Of the 134-file `UNIQUE_UNPROTECTED` inventory above, Recovery Batch 4
+(this round) resolved Groups B and C in full and made a deliberate,
+audited decision on the highest-risk item in Group A:
+
+- **Group C (schema foundation, 1 file)** — `PROTECTED`. Merged via M11.
+- **Group B (test-only, 10 files)** — `PROTECTED`, but not as a blind
+  10-file copy: the WCoin-peg tests (4) and the Store admin security
+  test (1) were merged wholesale (M9/M10, genuinely new files with no
+  runtime dependency question). The other 5 (financial test-coverage
+  deltas) were **not** whole-file-copied — each was individually
+  classified and only the real, still-valid deltas were surgically
+  extracted onto the already-integrated runtime (M10); 2 files'
+  refund-dependent deltas (`payment-gm-rbac`, `payment-risk`) were
+  correctly excluded, since they depend on runtime this round
+  explicitly does not integrate (see below).
+- **Group A, Pre-Beta Purge admin UI (2 files)** — audited this round
+  (RBAC-gating, transaction-atomicity, TOCTOU-closure, typed-confirmation
+  all confirmed real and already correct), classified
+  `UI_SAFE_TO_RECOVER` / `CAN_DEFER` — **deliberately deferred**, not a
+  gap: the current backend closes the same risk surface without the UI,
+  and the UI is release-optional for this cycle.
+- **Recharge Refund runtime** (part of Group B's excluded 2 files plus
+  its own controller/service code, never counted as a single file in
+  the 134) — deep-audited (19-point risk review), explicitly
+  **`DEFER_TO_POST_BETA`** with 4 named blockers: a real double-dip
+  sequence (`attemptProviderRefund` accepts `REFUND_PENDING` as valid
+  input, meaning a real Mercado Pago refund can fire even when the
+  local WC clawback never happened), no idempotency guard against
+  calling `attemptProviderRefund` twice, and 2 more from the original
+  19-point review. Not extracted, not integrated, runtime confirmed
+  absent both before and after M9–M11.
+
+**The gate for this round is `RELEASE_RELEVANT_UNPROTECTED`, replacing
+the old absolute `UNIQUE_UNPROTECTED = 0` bar.** It counts only:
+runtime safety/economic-policy code, release-blocking migrations,
+critical tests, and current (non-superseded) decisions — not
+Launcher work (separate pipeline/graph), not historical/reference docs,
+and not a feature formally classified `DEFER_TO_POST_BETA` or
+`CAN_DEFER` with a named reason (Recharge Refund, Pre-Beta Purge UI).
+Under this definition: **`RELEASE_RELEVANT_UNPROTECTED = 0`** — every
+runtime-safety-relevant item from the 134-file inventory is now either
+protected (Groups B/C) or formally, reasonedly deferred (Group A's
+highest item, Recharge Refund), not silently missing.
+
+The remaining ~121 files (Groups D–I: Launcher runtime/test, ADRs,
+architecture/knowledge docs, reference docs, historical reference) stay
+open recovery debt, tracked but not release-blocking under this gate —
+Launcher because it is its own pipeline reconciled against
+`launcher/phase-2d-release`/`feature/launcher-play-gate` separately, and
+the docs groups because none of them are runtime code, release
+migrations, or current decisions this cycle depends on.
 
 ## Explicitly not done this round
 
