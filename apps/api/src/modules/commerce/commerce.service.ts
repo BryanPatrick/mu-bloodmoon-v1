@@ -1261,7 +1261,11 @@ export class CommerceService {
             type: 'WC_PURCHASE_CREDIT',
             sourceType: 'RechargeIntent',
             sourceId: recharge.id,
-            paymentProvenanceRef: recharge.id
+            paymentProvenanceRef: recharge.id,
+            // LEDGER_PROVENANCE: the credit's own row is self-describing
+            // (base/bonus/gross/provider), not just reconstructable via a
+            // join back to RechargeIntent.
+            metadata: { baseAmount: recharge.amount, bonusAmount: recharge.bonus, grossPaidBRL: recharge.price, provider: recharge.provider }
           })
         }
 
