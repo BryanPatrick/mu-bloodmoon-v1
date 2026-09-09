@@ -85,50 +85,93 @@ regen, resolved, not a real defect).
 54 total migrations on `integration/open-beta`. 36 were already present
 on `main` (FOUNDATION_SHARED). 18 are new, arriving via the 8 merges:
 
-| Migration | Source |
-|---|---|
-| `20260830120000_open_beta_p0_foundation` | Payment Risk / Blood Coin foundation (via M5 ancestry) |
-| `20260830121500_vip_product_config` | VIP (via M5 ancestry) |
-| `20260830130000_phase14_vip_delivery_account_deletion` | VIP / Account Deletion (via M5 ancestry) |
-| `20260830140000_phase15_vip_benefit_fields_and_pricing_seed` | VIP (via M5 ancestry) |
-| `20260830150000_phase15_account_deletion_request` | Account Lifecycle / Privacy (via M5 ancestry) |
-| `20260830160000_gamebridge_vip_sync_state` | VIP/GameBridge (via M5 ancestry) |
-| `20260830170000_account_deletion_feedback` | Account Lifecycle / Privacy (via M5 ancestry) |
-| `20260830180000_account_deletion_feedback_retention_interaction` | Account Lifecycle / Privacy (via M5 ancestry) |
-| `20260830190000_survey_foundation` | M6 (Survey) |
-| `20260831120000_vip_sync_drift_observability` | VIP (via M5 ancestry) |
-| `20260831130000_phase_p_payment_risk_and_chargeback_case` | Payment Risk (via M5 ancestry) |
-| `20260902100000_phase_s_legacy_catalog_item` | M4 (Legacy Catalog) |
-| `20260902110000_phase_t_legacy_catalog_effective_state` | M4 (Legacy Catalog) |
-| `20260903120000_phase_u_progression_config_item` | M3 (Progression) |
-| `20260904090000_phase_v_progression_policy_status` | M3 (Progression) |
-| `20260904100000_beta_participation_record` | M7 (Beta Rewards) |
-| `20260904110000_bug_hunters_foundation` | M7 (Bug Hunters) |
-| `20260905090000_alert_dispatch_state` | M8 (Ops Hardening) |
+| Migration | Source | Production status | Evidence |
+|---|---|---|---|
+| `20260830120000_open_beta_p0_foundation` | Payment Risk / Blood Coin foundation (via M5 ancestry) | NOT_DEPLOYED_CONFIRMED | Phase Y inventory (2026-09-04): "all 16 [uncommitted+committed-openbeta-only migrations]... NOT_IN_PRODUCTION" |
+| `20260830121500_vip_product_config` | VIP (via M5 ancestry) | NOT_DEPLOYED_CONFIRMED | Phase Y inventory, same blanket finding |
+| `20260830130000_phase14_vip_delivery_account_deletion` | VIP / Account Deletion (via M5 ancestry) | NOT_DEPLOYED_CONFIRMED | Phase Y inventory |
+| `20260830140000_phase15_vip_benefit_fields_and_pricing_seed` | VIP (via M5 ancestry) | NOT_DEPLOYED_CONFIRMED | Phase Y inventory |
+| `20260830150000_phase15_account_deletion_request` | Account Lifecycle / Privacy (via M5 ancestry) | NOT_DEPLOYED_CONFIRMED | Phase Y inventory; distinct from the base NORMAL_ACCOUNT_DELETION flow, which Phase Y separately confirms already-in-production on `main` |
+| `20260830160000_gamebridge_vip_sync_state` | VIP/GameBridge (via M5 ancestry) | NOT_DEPLOYED_CONFIRMED | Phase Y inventory; reinforced by `docs/vip/wz-setaccountlevel-coexistence.md`: "GRANT_VIP has no real, wired production caller anywhere in the Portal today" |
+| `20260830170000_account_deletion_feedback` | Account Lifecycle / Privacy (via M5 ancestry) | NOT_DEPLOYED_CONFIRMED | Phase Y inventory; feature branch (`feature/account-lifecycle-gamebridge`) did not exist as an isolatable artifact before this session |
+| `20260830180000_account_deletion_feedback_retention_interaction` | Account Lifecycle / Privacy (via M5 ancestry) | NOT_DEPLOYED_CONFIRMED | same as above |
+| `20260830190000_survey_foundation` | M6 (Survey) | NOT_DEPLOYED_CONFIRMED | Phase Y Batch E ("low priority, not yet isolated"); `feature/survey-schema-foundation` created this session |
+| `20260831120000_vip_sync_drift_observability` | VIP (via M5 ancestry) | NOT_DEPLOYED_CONFIRMED | Phase Y inventory |
+| `20260831130000_phase_p_payment_risk_and_chargeback_case` | Payment Risk (via M5 ancestry) | **ALREADY_PRODUCTION** | Phase AC closure, 2026-09-07, `PHASE_AC_PRODUCTION = PASS`: RISK_ADMIN_QA and CHARGEBACK_ADMIN_QA both tested live as Super Admin post-deploy |
+| `20260902100000_phase_s_legacy_catalog_item` | M4 (Legacy Catalog) | NOT_DEPLOYED_CONFIRMED | Phase Y Batch C ("ready, pending isolation"); `feature/legacy-catalog-control-plane` created this session |
+| `20260902110000_phase_t_legacy_catalog_effective_state` | M4 (Legacy Catalog) | NOT_DEPLOYED_CONFIRMED | same as above |
+| `20260903120000_phase_u_progression_config_item` | M3 (Progression) | NOT_DEPLOYED_CONFIRMED | Phase Y Batch D ("ready, pending isolation"); `feature/progression-reset-control-plane` created this session |
+| `20260904090000_phase_v_progression_policy_status` | M3 (Progression) | NOT_DEPLOYED_CONFIRMED | same as above |
+| `20260904100000_beta_participation_record` | M7 (Beta Rewards) | **ALREADY_PRODUCTION** | Phase Z closure, 2026-09-06, approved PASS by Bryan; real QA rows created against production DB (`docs/handoff/phase-z-bug-hunters-beta-rewards-qa.md`); independently corroborated by the 2026-09-07 bmweb-recovery smoke test listing "Bug Hunters, Beta Rewards" among pages confirmed returning clean 200s |
+| `20260904110000_bug_hunters_foundation` | M7 (Bug Hunters) | **ALREADY_PRODUCTION** | same Phase Z closure evidence |
+| `20260905090000_alert_dispatch_state` | M8 (Ops Hardening) | NOT_DEPLOYED_CONFIRMED | Phase AA (ops-hardening) confirmed not deployed; `.output-phasez-backup` handoff note explicitly awaits "fechamento das Fases AC e AA" |
 
 All 18 verified to have a real `migration.sql` file (zero orphans).
 Zero duplicated or missing migrations relative to the 8 source branches.
-`_prisma_migrations` was never touched by this integration effort.
+`_prisma_migrations` was never touched by this integration effort, and
+none of this reconciliation read production — every classification above
+comes from dated documentary evidence (phase closure docs, the Phase Y
+production-readiness inventory, project memory) gathered during the
+Post-Integration Gate (openbeta final audit + production evidence
+reconciliation), not a live database read.
 
-**Production status of these 18 migrations is UNKNOWN** — determining
-this requires real production evidence (a live `_prisma_migrations`
-read against the production database), which is out of this round's
-authorized scope (no production access, no production migrations).
-This is registered as a follow-up task, not guessed here.
+**MIGRATIONS_ALREADY_PRODUCTION** = [`phase_p_payment_risk_and_chargeback_case`, `beta_participation_record`, `bug_hunters_foundation`] (3)
+**MIGRATIONS_NEW_NEXT_DEPLOY** = the other 15, all NOT_DEPLOYED_CONFIRMED
+**MIGRATIONS_STILL_UNKNOWN** = none — every one of the 18 has dated evidence either way.
+
+A definitive live confirmation (`SELECT migration_name FROM _prisma_migrations`,
+read-only) remains available but was not run — not required to close any
+UNKNOWN here, so `PRODUCTION_READ_REQUIRED = NO` for this specific
+question.
 
 ## Known gaps (non-blocking for this integration branch)
 
 - `apps/web` has no dedicated `typecheck` script and `vue-tsc` fails
   with `ERR_PACKAGE_PATH_NOT_EXPORTED` due to an unpinned `typescript`
   dependency hoisting to an incompatible version — pre-existing,
-  already documented, confirmed unchanged by this integration. Tracked
-  as a separate follow-up task, not fixed here per explicit instruction.
+  already documented, confirmed unchanged by this integration.
+  `BLOCKS_INTEGRATION = NO`, `BLOCKS_DEPLOY = NO` (the real Nuxt build
+  via `npm run web:build` is unaffected), `BLOCKS_REPRODUCIBLE_BUILD =
+  YES` (an unpinned transitive resolution is not deterministic across
+  machines). Registered as a background task
+  (`task_fcb2178a`, "Pin typescript/vue-tsc in apps/web"), not fixed
+  here per explicit instruction.
 - .NET test suites (Launcher, GameBridge Agent) remain
   `IMPLEMENTED_NOT_EXECUTABLE` — no .NET SDK on this machine (only the
-  runtime). Verified by manual code trace where feasible.
-- Production deployment status for Phase Z (Bug Hunters/Beta Rewards)
-  and the Privacy/Account-Lifecycle/Payment-Risk/VIP chain is UNKNOWN
-  and requires a dedicated evidence-reconciliation task.
+  runtime, confirmed again this round). Verified by manual code trace
+  where feasible. Registered as a background task (`task_a9e0e694`,
+  "Set up .NET SDK test execution for GameBridge Agent/Launcher") with
+  a concrete GitHub Actions proposal (windows-latest runner,
+  `actions/setup-dotnet` 8.0.x — the Launcher suite targets
+  `net8.0-windows`/WPF and needs a Windows runner; the GameBridge Agent
+  suite targets plain `net8.0`). No `.sln` exists; each `dotnet test`
+  invocation targets its `.csproj` directly. Not installed locally per
+  standing instruction not to alter the global environment without
+  authorization.
+- **Resolved this round** (was UNKNOWN, now reconciled — see the
+  Post-Integration Gate report): Payment Risk/Chargeback and Phase Z
+  (Bug Hunters/Beta Rewards) are `ALREADY_PRODUCTION`, confirmed via
+  dated closure docs (Phase AC 2026-09-07, Phase Z 2026-09-06). VIP
+  (baseline + delivery/sync), Legacy Catalog, Progression, Account
+  Lifecycle Bridge, and AccountDeletionFeedback remain
+  `NOT_DEPLOYED_CONFIRMED` as of the latest evidence found — see the
+  migrations table above for the full per-migration breakdown.
+- **New, still open**: the openbeta worktree audit (`OPENBETA_FINAL_AUDIT`,
+  this round) found `UNIQUE_UNPROTECTED = 137` files never captured by
+  any of the 8 merged branches — most significantly a real, uncommitted
+  admin "recharge refund / provider-refund" feature (`commerce.service.ts`'s
+  `refundRecharge`/`attemptProviderRefund`, permission keys
+  `adminRechargeRefund`/`adminRechargeProviderRefund`, 3 controller
+  endpoints, 3 e2e specs), a WCOIN 1:1 peg guard function
+  (`assertWcoinPackageInvariant`/`wcoinBaseForBrl`) with its own e2e
+  coverage, a Super-Admin Pre-Beta Purge UI page, real Launcher
+  Scale/DPI/Accessibility and Auth/Captcha/2FA subsystems (incorrectly
+  assumed obsolete in an earlier round — revalidated and found live,
+  wired, and substantial), 23 of 28 architecture-decision records, and
+  a large knowledge-hub documentation tree. None of these block this
+  integration branch's own `PASS` result; all are tracked as debt for a
+  future extraction round. Full file-by-file manifest delivered
+  separately (not committed here — audit output, not integration code).
 
 ## Explicitly not done this round
 
