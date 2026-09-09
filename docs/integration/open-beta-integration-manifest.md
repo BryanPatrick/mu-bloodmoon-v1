@@ -7,10 +7,18 @@ manifest (see `docs/phases/*/phase-manifest.md` for per-feature detail).
 ```
 BASE: main @ 3b527749 (2026-09-08)
 INTEGRATION_BRANCH: integration/open-beta
-INTEGRATION_HEAD_FINAL: a140ded53b4edfbfe3898930b2c012edd8f59e1f
+INTEGRATION_HEAD_FINAL: 0fb9d654fcf176c8b57827e8cae8ab77ea9eb82c
 INTEGRATION_WORKTREE: D:\MU\mu-bloodmoon-integration-openbeta
 INTEGRATION_RESULT: PASS
 ```
+
+Two commits landed after the 8-merge integration closed (`a140ded5`),
+both frontend-toolchain work, `apps/api` untouched by either:
+
+| Commit | What |
+|---|---|
+| `7619755f` | Pin `typescript ^5.0.0`/`vue-tsc ^3.3.11` in `apps/web/package.json` (matching `apps/api`'s own pin) + a root `overrides` entry forcing `vue-tsc`'s own `typescript` resolution to `^5.0.0` (npm's dedup was resolving it against a widely-shared, incompatible `6.0.3` instead) + a new `apps/web/tsconfig.json` (none existed; `vue-tsc` had no project file to find). This is what let `vue-tsc --noEmit` run at all for the first time in this project's history. |
+| `0fb9d654` | Fixed all 152 real type errors that run surfaced, across 46 files — see "Frontend toolchain" below. |
 
 ## Merge order (as authorized, executed unchanged)
 
@@ -124,30 +132,98 @@ read-only) remains available but was not run — not required to close any
 UNKNOWN here, so `PRODUCTION_READ_REQUIRED = NO` for this specific
 question.
 
-## Known gaps (non-blocking for this integration branch)
+## Frontend toolchain — now deterministic, fully type-checked
 
-- `apps/web` has no dedicated `typecheck` script and `vue-tsc` fails
-  with `ERR_PACKAGE_PATH_NOT_EXPORTED` due to an unpinned `typescript`
-  dependency hoisting to an incompatible version — pre-existing,
-  already documented, confirmed unchanged by this integration.
-  `BLOCKS_INTEGRATION = NO`, `BLOCKS_DEPLOY = NO` (the real Nuxt build
-  via `npm run web:build` is unaffected), `BLOCKS_REPRODUCIBLE_BUILD =
-  YES` (an unpinned transitive resolution is not deterministic across
-  machines). Registered as a background task
-  (`task_fcb2178a`, "Pin typescript/vue-tsc in apps/web"), not fixed
-  here per explicit instruction.
-- .NET test suites (Launcher, GameBridge Agent) remain
-  `IMPLEMENTED_NOT_EXECUTABLE` — no .NET SDK on this machine (only the
-  runtime, confirmed again this round). Verified by manual code trace
-  where feasible. Registered as a background task (`task_a9e0e694`,
-  "Set up .NET SDK test execution for GameBridge Agent/Launcher") with
-  a concrete GitHub Actions proposal (windows-latest runner,
-  `actions/setup-dotnet` 8.0.x — the Launcher suite targets
-  `net8.0-windows`/WPF and needs a Windows runner; the GameBridge Agent
-  suite targets plain `net8.0`). No `.sln` exists; each `dotnet test`
-  invocation targets its `.csproj` directly. Not installed locally per
-  standing instruction not to alter the global environment without
-  authorization.
+`apps/web/package.json` now pins `typescript ^5.0.0` and `vue-tsc
+^3.3.11` explicitly (previously unpinned, silently hoisting to
+whatever the least-constrained package in the workspace resolved to).
+`vue-tsc --noEmit` had never once produced real output in this
+project's history before commit `7619755f` — every prior "typecheck"
+claim for `apps/web` was structurally impossible, not just unrun.
+
+```
+TYPESCRIPT_ERRORS_BEFORE = 152 (across 46 files)
+TYPESCRIPT_ERRORS_AFTER  = 0
+VUE_TSC_NOEMIT = PASS
+WEB_BUILD (npm run web:build) = PASS
+APPS_API_TOUCHED_BY_TOOLCHAIN_FIX = NO (confirmed via `git diff --stat` across both commits)
+```
+
+Root causes were concentrated, not 152 unrelated bugs: 18 composables
+shared one duplicated `authHeaders`-style helper whose inferred return
+type didn't satisfy `$fetch`'s `HeadersInit`; 12 composables passed an
+`unknown`-typed `body` straight into `$fetch`; ~13 Vue components used
+the `@click="x = true"` idiom, whose non-`void` implicit return breaks
+Nuxt UI's typed click-handler contract; several `array[0]` fallback
+reads are genuinely always-defined but not provable to the compiler.
+Two real (not just type-level) pre-existing bugs were found and fixed
+along the way in `wiki.vue`: a missing optional-chain that could crash
+when no topic is active, and a dead `stat?.attackSpeed` reference to a
+field that never existed on that type. Full breakdown in commit
+`0fb9d654`'s own message. `apps/web` build and 3 real pages
+(home, recarga, comunidade) spot-checked in a running dev server — no
+regressions found, except one **pre-existing, unrelated** bug
+newly discovered by that same manual check: see "Hero carousel bug"
+below.
+
+## .NET CI — real execution now exists
+
+Both `.NET` suites (`BloodMoon.GameBridgeAgent.Tests`,
+`BloodMoon.Launcher.Tests`) now run for real on GitHub Actions —
+closing a gap where every prior "test result" in this project's
+history was an honest manual code-trace, never an actual `dotnet test`
+run (no .NET SDK on the local dev machine, only the runtime).
+
+```
+DOTNET_CI_BRANCH = ci/dotnet-tests-workflow
+DOTNET_CI_HEAD = 0298e236aa24bae3dfbe9a866dd0d61af93b34d4
+DOTNET_CI_REMOTE_PUSHED = YES (origin/ci/dotnet-tests-workflow == local HEAD)
+DOTNET_CI_WORKFLOW_PATH = .github/workflows/dotnet-tests.yml
+DOTNET_REAL_EXECUTION = YES
+```
+
+| Run | Head SHA | GameBridge Agent Tests | Launcher Tests |
+|---|---|---|---|
+| 34296684748 | `bae4051c` | SUCCESS | SUCCESS |
+| 34296992235 | `0298e236` | SUCCESS | SUCCESS |
+
+Both jobs run on `windows-latest` (the Launcher suite targets
+`net8.0-windows`/WPF and genuinely needs Windows; GameBridge Agent
+stays on the same runner for one consistent environment) via
+`actions/setup-dotnet` 8.0.x. No `.sln` exists — each `dotnet test`
+call targets its `.csproj` directly, matching the real project layout.
+Results are `completed`/`success` per GitHub's own authoritative API
+— genuine evidence, not a trace. **Exact per-test pass/fail counts are
+not available**: both the raw job logs and the uploaded `.trx`
+artifacts require an authenticated GitHub session to open (confirmed —
+the public API returns `401`/`403` for both without a token), and a
+`dorny/test-reporter` step added to publish a visible Check Run
+summary ran successfully but did not produce an inspectable check run
+for reasons not diagnosable without that same authenticated access.
+`DOTNET_TEST_COUNT_CONFIRMED = UNKNOWN` — reported honestly rather than
+inferred or estimated from the source file's own test count.
+
+This closes what was previously tracked as a background task
+(`task_a9e0e694`, "Set up .NET SDK test execution") — done directly
+this round instead of deferred; no local .NET SDK was installed, per
+the standing rule not to alter the machine's global environment
+without authorization. `apps/web`'s typecheck gap (`task_fcb2178a`)
+was closed the same way — see "Frontend toolchain" above.
+
+## Hero carousel bug (pre-existing, unrelated, non-blocking)
+
+Discovered during the manual dev-server spot-check above: on the home
+page, clicking a hero-carousel thumbnail correctly updates the active
+state (`activeSlide`, confirmed via DOM inspection — the clicked
+thumbnail gets the `is-active` class), but the large background hero
+image never follows, staying on the first slide. Confirmed
+**pre-existing** and unrelated to the typecheck fixes: `git diff`
+shows the only change this round to `pages/index.vue` is a single
+non-null-assertion operator (`!`) on the `currentSlide` computed's
+fallback branch, which compiles away to zero runtime bytes. Registered
+as its own background task (`task_d34673ce`, "Fix hero carousel image
+not syncing on click") — not fixed this round; classified
+`UI_BUG`, `NON_BLOCKING_FOR_RECOVERY`, `REVIEW_DURING_UI_UX_PASS`.
 - **Resolved this round** (was UNKNOWN, now reconciled — see the
   Post-Integration Gate report): Payment Risk/Chargeback and Phase Z
   (Bug Hunters/Beta Rewards) are `ALREADY_PRODUCTION`, confirmed via
@@ -156,22 +232,39 @@ question.
   Lifecycle Bridge, and AccountDeletionFeedback remain
   `NOT_DEPLOYED_CONFIRMED` as of the latest evidence found — see the
   migrations table above for the full per-migration breakdown.
-- **New, still open**: the openbeta worktree audit (`OPENBETA_FINAL_AUDIT`,
-  this round) found `UNIQUE_UNPROTECTED = 137` files never captured by
-  any of the 8 merged branches — most significantly a real, uncommitted
-  admin "recharge refund / provider-refund" feature (`commerce.service.ts`'s
+- **New, still open**: the openbeta worktree audit (`OPENBETA_FINAL_AUDIT`)
+  found `UNIQUE_UNPROTECTED = 134` files never captured by any of the 8
+  merged branches (re-verified this round against the preserved 325-file
+  raw comparison data; the figure reported in an earlier pass, 137, does
+  not fully reconcile against this reconstruction — a ~3-file boundary
+  difference not worth chasing further, the qualitative grouping below
+  is the load-bearing result). Grouped by domain rather than treated as
+  134 individual features:
+
+  | Group | Count | Contents |
+  |---|---|---|
+  | A — Portal/API runtime feature | 2 | Pre-Beta Purge admin UI (`useAdminPreBetaPurgeApi.ts`, `pre-beta-purge.vue`) |
+  | B — Portal/API test-only | 10 | Recharge Refund/WCoin-peg tests (4), Store admin security RBAC test (1), financial test-coverage deltas on already-integrated features (5: account-deletion, recharge-payments, wallet-transfer, payment-gm-rbac, payment-risk) |
+  | C — Portal/API schema foundation | 1 | `player_preferences_foundation` migration |
+  | D — Launcher runtime | 28 | Auth/Captcha/2FA subsystem + Scale/DPI/Window engine, confirmed **NOT_OBSOLETE** (see Launcher section below) |
+  | E — Launcher test | 2 | Tests for the above |
+  | F — Doc: decisions (ADR) | 27 (of 28 non-canonical) | `docs/decisions/0001`–`0028` minus the 4 already copied during Legacy Catalog/Progression extraction |
+  | G — Doc: architecture/knowledge | 23 | `docs/knowledge/*`, `docs/sessions/*`, glossary/index/open-questions/open-risks/test-evidence-index, Launcher-scoped docs |
+  | H — Doc: reference | 35 | `docs/gameserver/database/*`, `docs/manuals/*`, `docs/payments/*`, `docs/store/*`, `docs/economy/*`, `docs/security/*` (including 5 files where **integration's own copy is stale**, not just absent) |
+  | I — Historical reference | 10 | `docs/legacy/provider-web/*`, OR-023 forensics dataset |
+  | Also tracked, not part of the 134 | 17 | `POSSIBLE_SECRET` — `references/game-data/sql-discovery/**`, never opened/copied, out of scope by standing rule |
+
+  Highest-risk item found: a real, uncommitted admin **recharge
+  refund / provider-refund** feature (`commerce.service.ts`'s
   `refundRecharge`/`attemptProviderRefund`, permission keys
   `adminRechargeRefund`/`adminRechargeProviderRefund`, 3 controller
-  endpoints, 3 e2e specs), a WCOIN 1:1 peg guard function
-  (`assertWcoinPackageInvariant`/`wcoinBaseForBrl`) with its own e2e
-  coverage, a Super-Admin Pre-Beta Purge UI page, real Launcher
-  Scale/DPI/Accessibility and Auth/Captcha/2FA subsystems (incorrectly
-  assumed obsolete in an earlier round — revalidated and found live,
-  wired, and substantial), 23 of 28 architecture-decision records, and
-  a large knowledge-hub documentation tree. None of these block this
-  integration branch's own `PASS` result; all are tracked as debt for a
-  future extraction round. Full file-by-file manifest delivered
-  separately (not committed here — audit output, not integration code).
+  endpoints, 3 e2e specs, plus a WCOIN 1:1 peg guard
+  `assertWcoinPackageInvariant`/`wcoinBaseForBrl` with its own e2e
+  coverage) — touches real money/provider state, deliberately not
+  extracted this round pending its own dedicated risk audit. None of
+  this blocks this integration branch's own `PASS` result; all tracked
+  as recovery debt. Full file-by-file classification available on
+  request — audit output, not integration code, not committed here.
 
 ## Explicitly not done this round
 
