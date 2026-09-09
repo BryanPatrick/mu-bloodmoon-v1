@@ -68,6 +68,41 @@ export function parseBrlPrice(price: string): number {
   return Number.isFinite(parsed) ? parsed : 0
 }
 
+// ADR-0008: WCoin pegged 1:1 with R$ -- the universal Blood Moon
+// commercial peg. wcoinBaseForBrl() is the single place that rate is
+// expressed in code -- every WCOIN RechargePackage's base `amount` must
+// equal this, computed from its own `price`, never hand-typed
+// separately (a real historical incident sold 500 WC for R$19,90, ~25x
+// off this peg, because the amount and price were independently
+// hand-authored and silently drifted).
+export const WCOIN_TO_BRL_RATE = 1
+export function wcoinBaseForBrl(priceBrl: string): number {
+  return Math.round(parseBrlPrice(priceBrl) * WCOIN_TO_BRL_RATE)
+}
+
+// Re-validated on every create AND update (using the EFFECTIVE
+// currency/amount/price -- current values merged with whatever the
+// payload actually changes), not just at creation -- so changing only
+// `bonus` or `active` on an existing WCOIN package still re-proves the
+// base amount still matches its price, and a currency/amount/price
+// edit can never drift the peg even partially. Deliberately rejects
+// non-integer BRL prices for WCOIN packages too (Option A of three
+// alternatives, see docs/open-questions.md OQ-022) -- a reversible,
+// conservative default, not a final product decision on fractional
+// pricing. Only applies to currency === 'WCOIN'; GOBLIN_POINT/HUNT_POINT
+// packages have no peg rule and are unaffected.
+function assertWcoinPackageInvariant(currency: string, amount: number, price: string) {
+  if (currency !== 'WCOIN') return
+  const priceBrl = parseBrlPrice(price)
+  if (!Number.isInteger(priceBrl)) {
+    throw new BadRequestException(`Pacotes WCOIN devem ter preco em reais inteiros (recebido: R$${priceBrl}). Ver docs/open-questions.md OQ-022 para a decisao de politica pendente sobre precos fracionados.`)
+  }
+  const expectedAmount = wcoinBaseForBrl(price)
+  if (amount !== expectedAmount) {
+    throw new BadRequestException(`Pacote WCOIN fora do peg 1:1: preco R$${priceBrl} deveria conceder ${expectedAmount} WC base, recebido ${amount}.`)
+  }
+}
+
 const seedProducts: ShopProductPayload[] = [
   {
     key: 'vip-bronze',
@@ -115,11 +150,19 @@ const seedProducts: ShopProductPayload[] = [
   }
 ]
 
-const seedRechargePackages: RechargePackagePayload[] = [
-  { key: 'wcoin-500', currency: 'WCOIN', amount: 500, bonus: 0, price: '19,90' },
-  { key: 'wcoin-1200', currency: 'WCOIN', amount: 1200, bonus: 100, price: '39,90', highlight: true },
-  { key: 'wcoin-2600', currency: 'WCOIN', amount: 2600, bonus: 300, price: '79,90' },
-  { key: 'wcoin-5500', currency: 'WCOIN', amount: 5500, bonus: 800, price: '149,90' },
+export const seedRechargePackages: RechargePackagePayload[] = [
+  // PHASE N (2026-08-31): the previous seed data here (wcoin-500/1200/
+  // 2600/5500) hand-typed its `amount` independently of `price` and
+  // drifted ~25x off the 1:1 peg (500 WC for R$19,90) -- the exact real
+  // incident assertWcoinPackageInvariant above exists to prevent from
+  // recurring. Replaced with these peg-correct values (computed via
+  // wcoinBaseForBrl, never hand-typed) to actually satisfy the guard;
+  // this is Bryan's own already-resolved Phase N decision, not a new
+  // price-point choice made here.
+  { key: 'wcoin-10', currency: 'WCOIN', amount: wcoinBaseForBrl('10,00'), bonus: 0, price: '10,00' },
+  { key: 'wcoin-20', currency: 'WCOIN', amount: wcoinBaseForBrl('20,00'), bonus: 0, price: '20,00' },
+  { key: 'wcoin-50', currency: 'WCOIN', amount: wcoinBaseForBrl('50,00'), bonus: 5, price: '50,00', highlight: true },
+  { key: 'wcoin-100', currency: 'WCOIN', amount: wcoinBaseForBrl('100,00'), bonus: 0, price: '100,00' },
   { key: 'gp-340', currency: 'GOBLIN_POINT', amount: 340, bonus: 0, price: '19,90' },
   { key: 'gp-850', currency: 'GOBLIN_POINT', amount: 850, bonus: 50, price: '39,90' },
   { key: 'hp-1000', currency: 'HUNT_POINT', amount: 1000, bonus: 0, price: '14,90' },
@@ -432,6 +475,7 @@ export class CommerceService {
   }
 
   async createRechargePackage(payload: RechargePackagePayload, user: AuthenticatedUser) {
+    assertWcoinPackageInvariant(payload.currency, Math.max(1, Number(payload.amount) || 1), payload.price)
     const pack = await this.prisma.rechargePackage.create({ data: rechargePackageData(payload) })
     await this.audit.record({
       actorId: user.id,
@@ -449,6 +493,11 @@ export class CommerceService {
     if (!current) {
       throw new NotFoundException(`Recharge package not found: ${id}`)
     }
+
+    const effectiveCurrency = payload.currency ?? current.currency
+    const effectiveAmount = payload.amount !== undefined ? Math.max(1, Number(payload.amount) || 1) : current.amount
+    const effectivePrice = payload.price ? payload.price.trim() : current.price
+    assertWcoinPackageInvariant(effectiveCurrency, effectiveAmount, effectivePrice)
 
     const pack = await this.prisma.rechargePackage.update({
       where: { id },
