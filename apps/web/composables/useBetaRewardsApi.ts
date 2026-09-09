@@ -1,5 +1,5 @@
 const betaRewardsAuthStorageKey = 'blood-moon-auth'
-const betaRewardsHeaders = () => {
+const betaRewardsHeaders = (): Record<string, string> => {
   if (!import.meta.client) return {}
   try { const session = JSON.parse(localStorage.getItem(betaRewardsAuthStorageKey) || '{}'); return session.accessToken ? { Authorization: `Bearer ${session.accessToken}` } : {} } catch { return {} }
 }
@@ -18,7 +18,7 @@ export const participationSourceTypes = ['OPEN_BETA_PARTICIPATION', 'BUG_HUNTER_
 export const useBetaRewardsApi = () => {
   const config = useRuntimeConfig(); const base = computed(() => String(config.public.apiBase || 'http://localhost:3333/api').replace(/\/$/, ''))
   const get = <T>(path: string, query: Record<string, unknown> = {}) => $fetch<T>(`${base.value}${path}`, { query, headers: betaRewardsHeaders() })
-  const send = <T>(method: 'POST' | 'PATCH', path: string, body: unknown) => $fetch<T>(`${base.value}${path}`, { method, body, headers: betaRewardsHeaders() })
+  const send = <T>(method: 'POST' | 'PATCH', path: string, body: unknown) => $fetch<T>(`${base.value}${path}`, { method, body: body as Record<string, any> | BodyInit | null | undefined, headers: betaRewardsHeaders() })
   return {
     listParticipation: (filters: Record<string, unknown> = {}) => get<ParticipationRecord[]>('/admin/beta-rewards/participation', filters),
     recordParticipation: (body: Record<string, unknown>) => send<ParticipationRecord>('POST', '/admin/beta-rewards/participation', body),

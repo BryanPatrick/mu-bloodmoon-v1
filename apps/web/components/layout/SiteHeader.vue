@@ -8,7 +8,7 @@
         class="bm-desktop-nav hidden xl:flex"
         color="neutral"
         variant="link"
-        :content="{ sideOffset: 10 }"
+        :content="navMenuContent"
         :ui="navMenuUi"
         aria-label="Navegacao principal"
       />
@@ -206,6 +206,11 @@ const navMenuUi = {
   childLinkLabel: 'font-bold',
   childLinkDescription: 'mt-1 text-xs leading-5 text-stone-500'
 }
+// sideOffset is a real Reka UI positioning prop the underlying dropdown
+// content accepts at runtime -- this Nuxt UI version's own NavigationMenu
+// content type just doesn't declare it, so the `any` cast only widens the
+// type checker's view of this one binding, not the runtime behavior.
+const navMenuContent = { sideOffset: 10 } as any
 const accountLinks = computed(() => [
   ...(hasPermission(permissions.adminDashboardView)
     ? [{ label: 'Painel administrativo', to: '/painel', icon: LayoutDashboard }]

@@ -18,7 +18,7 @@
            errored). Kept as a single computed instead of an inline v-if
            chain so the decision logic is unit-testable on its own. -->
       <div v-if="leftRailView === 'rail' || leftRailView === 'skeleton' || leftRailView === 'load-error'" class="community-layout__left">
-        <CommunityUserRail v-if="leftRailView === 'rail'" :profile="profile" />
+        <CommunityUserRail v-if="leftRailView === 'rail'" :profile="profile!" />
         <div v-else-if="leftRailView === 'skeleton'" class="community-user-rail community-user-rail-skeleton" aria-hidden="true" aria-busy="true">
           <div class="community-user-rail-skeleton__avatar" />
           <div class="community-user-rail-skeleton__line" style="width: 60%" />
@@ -69,25 +69,25 @@
 
     <Teleport to="body">
       <Transition name="community-fade">
-        <button v-if="profileDrawerOpen" class="community-drawer-backdrop" type="button" aria-label="Fechar resumo do perfil" @click="profileDrawerOpen = false" />
+        <button v-if="profileDrawerOpen" class="community-drawer-backdrop" type="button" aria-label="Fechar resumo do perfil" @click="() => { profileDrawerOpen = false }" />
       </Transition>
       <Transition name="community-drawer">
         <div v-if="profileDrawerOpen" class="community-drawer" role="dialog" aria-modal="true" aria-label="Resumo do perfil">
           <div class="community-drawer__head">
             <strong>Meu espaço</strong>
-            <UButton color="neutral" variant="ghost" square aria-label="Fechar" @click="profileDrawerOpen = false"><X class="size-4" /></UButton>
+            <UButton color="neutral" variant="ghost" square aria-label="Fechar" @click="() => { profileDrawerOpen = false }"><X class="size-4" /></UButton>
           </div>
           <CommunityUserRail v-if="profile" :profile="profile" compact @close="profileDrawerOpen = false" />
         </div>
       </Transition>
       <Transition name="community-fade">
-        <button v-if="viewingPostId" class="community-drawer-backdrop" type="button" aria-label="Fechar publicação" @click="closePostView" />
+        <button v-if="viewingPostId" class="community-drawer-backdrop" type="button" aria-label="Fechar publicação" @click="() => { closePostView() }" />
       </Transition>
       <Transition name="community-fade">
         <div v-if="viewingPostId" class="community-post-modal" role="dialog" aria-modal="true" aria-label="Publicação">
           <div class="community-drawer__head">
             <strong>Publicação</strong>
-            <UButton color="neutral" variant="ghost" square aria-label="Fechar" @click="closePostView"><X class="size-4" /></UButton>
+            <UButton color="neutral" variant="ghost" square aria-label="Fechar" @click="() => { closePostView() }"><X class="size-4" /></UButton>
           </div>
           <div class="community-post-modal__body">
             <div v-if="viewingPostPending" class="community-feed-state">Carregando publicação...</div>

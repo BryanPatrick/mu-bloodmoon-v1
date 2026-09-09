@@ -50,14 +50,14 @@ const readAccessToken = () => {
   }
 }
 
-const headers = () => (readAccessToken() ? { Authorization: `Bearer ${readAccessToken()}` } : {})
+const headers = (): Record<string, string> => (readAccessToken() ? { Authorization: `Bearer ${readAccessToken()}` } : {})
 
 export const useVipApi = () => {
   const config = useRuntimeConfig()
   const apiBase = computed(() => String(config.public.apiBase || 'http://localhost:3333/api').replace(/\/$/, ''))
 
   const get = <T>(path: string) => $fetch<T>(`${apiBase.value}${path}`, { headers: headers() })
-  const send = <T>(method: 'POST', path: string, body?: unknown) => $fetch<T>(`${apiBase.value}${path}`, { method, body, headers: headers() })
+  const send = <T>(method: 'POST', path: string, body?: unknown) => $fetch<T>(`${apiBase.value}${path}`, { method, body: body as Record<string, any> | BodyInit | null | undefined, headers: headers() })
 
   return {
     listCatalog: () => get<VipCatalogItem[]>('/vip/catalog'),

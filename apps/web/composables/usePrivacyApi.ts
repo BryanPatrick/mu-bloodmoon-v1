@@ -62,7 +62,7 @@ const readAccessToken = () => {
   }
 }
 
-const authHeaders = () => readAccessToken() ? { Authorization: `Bearer ${readAccessToken()}` } : {}
+const authHeaders = (): Record<string, string> => readAccessToken() ? { Authorization: `Bearer ${readAccessToken()}` } : {}
 
 export const usePrivacyApi = () => {
   const config = useRuntimeConfig()

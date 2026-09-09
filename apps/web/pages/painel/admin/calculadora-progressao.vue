@@ -155,7 +155,7 @@ const toggle = async (id: string) => {
   try {
     const result = await api.calculatorValidateSelection([...selected.value])
     if (!result.valid) {
-      const c = result.conflicts[0]
+      const c = result.conflicts[0]!
       conflictWarning.value = `${modifierName(c.a)} + ${modifierName(c.b)} (mesmo grupo ${c.stackGroupKey}, só um pode estar ativo)`
       selected.value.delete(id)
     }

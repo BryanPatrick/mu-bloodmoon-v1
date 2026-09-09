@@ -106,14 +106,14 @@ const readAccessToken = () => {
   }
 }
 
-const headers = () => (readAccessToken() ? { Authorization: `Bearer ${readAccessToken()}` } : {})
+const headers = (): Record<string, string> => (readAccessToken() ? { Authorization: `Bearer ${readAccessToken()}` } : {})
 
 export const useLegacyCatalogApi = () => {
   const config = useRuntimeConfig()
   const apiBase = computed(() => String(config.public.apiBase || 'http://localhost:3333/api').replace(/\/$/, ''))
 
   const get = <T>(path: string, query: Record<string, unknown> = {}) => $fetch<T>(`${apiBase.value}${path}`, { query, headers: headers() })
-  const send = <T>(method: 'POST' | 'PATCH', path: string, body?: unknown) => $fetch<T>(`${apiBase.value}${path}`, { method, body, headers: headers() })
+  const send = <T>(method: 'POST' | 'PATCH', path: string, body?: unknown) => $fetch<T>(`${apiBase.value}${path}`, { method, body: body as Record<string, any> | BodyInit | null | undefined, headers: headers() })
 
   return {
     list: (query: LegacyCatalogListQuery = {}) =>

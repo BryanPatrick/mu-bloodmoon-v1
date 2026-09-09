@@ -117,7 +117,7 @@ export type StoreDelivery = {
 
 const authStorageKey = 'blood-moon-auth'
 
-const accessHeaders = () => {
+const accessHeaders = (): Record<string, string> => {
   if (!import.meta.client) return {}
   try {
     const saved = localStorage.getItem(authStorageKey)
@@ -134,7 +134,7 @@ export const useStoreApi = () => {
   const get = <T>(url: string, query: Record<string, unknown> = {}) =>
     $fetch<T>(`${base.value}${url}`, { query, headers: accessHeaders() })
   const send = <T>(method: 'POST' | 'PATCH' | 'DELETE', url: string, body?: unknown) =>
-    $fetch<T>(`${base.value}${url}`, { method, body, headers: accessHeaders() })
+    $fetch<T>(`${base.value}${url}`, { method, body: body as Record<string, any> | BodyInit | null | undefined, headers: accessHeaders() })
 
   return {
     publicProducts: (query: Record<string, unknown> = {}) => get<StoreList<StoreProduct>>('/shop/products', query),

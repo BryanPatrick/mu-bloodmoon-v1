@@ -65,7 +65,7 @@ export const useAdminContentApi = () => {
   const sendAdmin = <T>(method: 'POST' | 'PATCH' | 'DELETE', path: string, body?: unknown) =>
     $fetch<T>(`${apiBase.value}${path}`, {
       method,
-      body,
+      body: body as Record<string, any> | BodyInit | null | undefined,
       headers: readAccessToken()
         ? { Authorization: `Bearer ${readAccessToken()}` }
         : {}

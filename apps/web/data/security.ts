@@ -175,5 +175,5 @@ export const isTwoFactorMandatory = (role?: UserRole) => Boolean(role) && role !
 export const roleHasPermission = (role: UserRole | undefined, permission: Permission) => {
   if (!role) return false
   const roleAccess = rolePermissions[role]
-  return roleAccess.includes('*') || roleAccess.includes(permission)
+  return roleAccess[0] === '*' || (roleAccess as Permission[]).includes(permission)
 }

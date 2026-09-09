@@ -275,7 +275,7 @@ const readAccessToken = () => {
   }
 }
 
-const headers = () => readAccessToken() ? { Authorization: `Bearer ${readAccessToken()}` } : {}
+const headers = (): Record<string, string> => readAccessToken() ? { Authorization: `Bearer ${readAccessToken()}` } : {}
 
 const mapProduct = (product: ApiProduct): ShopProduct => ({
   id: product.id,
@@ -326,7 +326,7 @@ export const useCommerceApi = () => {
     $fetch<T>(`${apiBase.value}${path}`, { query, headers: headers() })
 
   const send = <T>(method: 'POST' | 'PATCH' | 'DELETE', path: string, body?: unknown) =>
-    $fetch<T>(`${apiBase.value}${path}`, { method, body, headers: headers() })
+    $fetch<T>(`${apiBase.value}${path}`, { method, body: body as Record<string, any> | BodyInit | null | undefined, headers: headers() })
 
   return {
     listProducts: async (admin = false) => {

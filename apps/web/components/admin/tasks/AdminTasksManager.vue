@@ -169,7 +169,7 @@
       <form class="bm-task-dialog max-w-3xl" @submit.prevent="createTask">
         <header class="flex items-center justify-between border-b border-white/10 pb-3">
           <div><p class="bm-kicker">Nova demanda</p><h2 class="font-display text-xl font-black">Criar tarefa</h2></div>
-          <UButton icon="i-lucide-x" color="neutral" variant="ghost" square @click="showCreate = false" />
+          <UButton icon="i-lucide-x" color="neutral" variant="ghost" square @click="() => { showCreate = false }" />
         </header>
         <div class="grid gap-3 pt-4 md:grid-cols-2">
           <label class="md:col-span-2">Título<input v-model="form.title" class="bm-admin-input mt-1" required></label>
@@ -186,7 +186,7 @@
           <label>ID da entidade<input v-model="form.entityId" class="bm-admin-input mt-1"></label>
         </div>
         <footer class="mt-4 flex justify-end gap-2 border-t border-white/10 pt-3">
-          <UButton color="neutral" variant="soft" @click="showCreate = false">Cancelar</UButton>
+          <UButton color="neutral" variant="soft" @click="() => { showCreate = false }">Cancelar</UButton>
           <UButton type="submit" color="primary" :loading="saving">Criar tarefa</UButton>
         </footer>
       </form>

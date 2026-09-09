@@ -118,8 +118,8 @@ const paymentsEnabled = computed(() => config.public.realMoneyPaymentsEnabled ==
 const commerceApi = useCommerceApi()
 const packs = ref<RechargePack[]>([])
 const currencies = computed(() => Array.from(new Set(packs.value.map((pack) => pack.currency))))
-const selectedCurrency = ref(rechargePacks[0].currency)
-const selectedPack = ref<RechargePack>(rechargePacks[0])
+const selectedCurrency = ref(rechargePacks[0]!.currency)
+const selectedPack = ref<RechargePack>(rechargePacks[0]!)
 const message = ref('')
 const creatingCheckout = ref(false)
 const checkout = ref<RechargeCheckout | null>(null)
@@ -163,14 +163,14 @@ const loadPacks = async () => {
     message.value = 'API indisponivel. Pacotes locais nao serao usados como fallback.'
   }
 
-  selectedCurrency.value = currencies.value[0] || rechargePacks[0].currency
-  selectedPack.value = visiblePacks.value.find((pack) => pack.highlight) || visiblePacks.value[0] || rechargePacks[0]
+  selectedCurrency.value = currencies.value[0] || rechargePacks[0]!.currency
+  selectedPack.value = visiblePacks.value.find((pack) => pack.highlight) || visiblePacks.value[0] || rechargePacks[0]!
 }
 
 const visiblePacks = computed(() => packs.value.filter((pack) => pack.currency === selectedCurrency.value))
 
 watch(selectedCurrency, () => {
-  selectedPack.value = visiblePacks.value.find((pack) => pack.highlight) || visiblePacks.value[0]
+  selectedPack.value = visiblePacks.value.find((pack) => pack.highlight) || visiblePacks.value[0] || rechargePacks[0]!
 })
 
 const continuePayment = async () => {

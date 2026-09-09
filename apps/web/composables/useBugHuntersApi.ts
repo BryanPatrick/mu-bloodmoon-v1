@@ -1,5 +1,5 @@
 const bugHuntersAuthStorageKey = 'blood-moon-auth'
-const bugHuntersHeaders = () => {
+const bugHuntersHeaders = (): Record<string, string> => {
   if (!import.meta.client) return {}
   try { const session = JSON.parse(localStorage.getItem(bugHuntersAuthStorageKey) || '{}'); return session.accessToken ? { Authorization: `Bearer ${session.accessToken}` } : {} } catch { return {} }
 }
@@ -22,7 +22,7 @@ export const bugReportStatuses = ['OPEN', 'TRIAGE', 'NEEDS_INFO', 'CONFIRMED', '
 export const useBugHuntersApi = () => {
   const config = useRuntimeConfig(); const base = computed(() => String(config.public.apiBase || 'http://localhost:3333/api').replace(/\/$/, ''))
   const get = <T>(path: string, query: Record<string, unknown> = {}) => $fetch<T>(`${base.value}${path}`, { query, headers: bugHuntersHeaders() })
-  const send = <T>(method: 'POST' | 'PATCH', path: string, body: unknown) => $fetch<T>(`${base.value}${path}`, { method, body, headers: bugHuntersHeaders() })
+  const send = <T>(method: 'POST' | 'PATCH', path: string, body: unknown) => $fetch<T>(`${base.value}${path}`, { method, body: body as Record<string, any> | BodyInit | null | undefined, headers: bugHuntersHeaders() })
   return {
     // Player
     ownReports: () => get<BugReportSummary[]>('/account/bug-reports'),

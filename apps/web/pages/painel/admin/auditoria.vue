@@ -61,7 +61,7 @@
             <p class="text-[10px] uppercase text-white/40">{{ item.actorRole || 'SYSTEM' }}</p>
           </div>
           <span class="w-fit rounded-sm px-2 py-1 text-[10px] font-black" :class="resultClass(item.result)">{{ item.result }}</span>
-          <UButton color="neutral" variant="soft" size="xs" @click="selected = item">Ver</UButton>
+          <UButton color="neutral" variant="soft" size="xs" @click="() => { selected = item }">Ver</UButton>
         </article>
       </section>
 

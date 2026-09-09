@@ -480,7 +480,7 @@ const setCards = computed<SetCard[]>(() => {
   return Array.from(grouped.values())
     .map(({ imagePriority, ...card }) => ({
       ...card,
-      pieces: card.pieces.sort((a, b) => setPieceNames.indexOf(a.split(' ')[0]) - setPieceNames.indexOf(b.split(' ')[0]))
+      pieces: card.pieces.sort((a, b) => setPieceNames.indexOf(a.split(' ')[0]!) - setPieceNames.indexOf(b.split(' ')[0]!))
     }))
     .sort((a, b) => a.className.localeCompare(b.className, 'pt-BR') || a.name.localeCompare(b.name, 'pt-BR'))
 })

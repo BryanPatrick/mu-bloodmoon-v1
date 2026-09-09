@@ -679,7 +679,7 @@
                 >
                   <img
                     v-if="equipmentCatalogPreviewImage(item)"
-                    :src="equipmentCatalogPreviewImage(item)"
+                    :src="equipmentCatalogPreviewImage(item) ?? undefined"
                     :alt="`${item.name} preview`"
                     class="max-h-10 max-w-10 object-contain"
                     loading="lazy"
@@ -865,7 +865,7 @@
               equipamentos, mapas, monstros e guias conforme a wiki for sendo detalhada.
             </p>
             <NuxtLink
-              v-if="!activeTopic.disabled"
+              v-if="activeTopic && !activeTopic.disabled"
               :to="`/guias/${activeSectionKey}/${activeTopic.key}`"
               class="bm-button-glass mt-5 inline-flex rounded-md px-4 py-3 text-sm font-black"
             >
@@ -1064,7 +1064,7 @@
                   class="max-h-[260px] max-w-full rounded-sm object-contain"
                   loading="lazy"
                   decoding="async"
-                  :src="equipmentCatalogPreviewImage(selectedEquipmentDisplayItem)"
+                  :src="equipmentCatalogPreviewImage(selectedEquipmentDisplayItem) ?? undefined"
                 >
                 <div v-else class="text-center">
                   <p class="font-display text-4xl font-black text-white/18">{{ selectedEquipmentDisplayItem.name }}</p>
@@ -1677,7 +1677,7 @@ const fairyElfProfile = {
 }
 
 const activeFairyElfStyle = computed(() =>
-  fairyElfProfile.styles[activeFairyElfStyleIndex.value % fairyElfProfile.styles.length] || fairyElfProfile.styles[0]
+  fairyElfProfile.styles[activeFairyElfStyleIndex.value % fairyElfProfile.styles.length] || fairyElfProfile.styles[0]!
 )
 
 const radarPoint = (index: number, value: number, maxValue: number) => {
@@ -2158,7 +2158,7 @@ const splitAncientSetEffectText = (value: string) => {
   }
 
   return matches
-    .map((match) => `${match[1].trim()} ${match[2].trim()}`.replace(/\s+:/, ':'))
+    .map((match) => `${match[1]!.trim()} ${match[2]!.trim()}`.replace(/\s+:/, ':'))
     .filter(Boolean)
 }
 
@@ -2255,7 +2255,7 @@ const inferMinSeason = (name: string, types: string[] = []) => {
   const masteryFamily = Object.keys(masterySeasonByFamily).find((family) => normalizedName.includes(family.toLowerCase()))
 
   if (masteryFamily) {
-    return masterySeasonByFamily[masteryFamily]
+    return masterySeasonByFamily[masteryFamily]!
   }
 
   if (types.includes('Socket')) {
@@ -2269,7 +2269,7 @@ const equipmentItemMinSeason = (item: GuideEquipmentItem | GuideEquipmentSummary
   const masteryFamily = Object.keys(masterySeasonByFamily).find((family) => normalized.includes(family.toLowerCase()))
 
   if (masteryFamily) {
-    return masterySeasonByFamily[masteryFamily]
+    return masterySeasonByFamily[masteryFamily]!
   }
 
   if (item.category === 'Set Lucky') {
@@ -2400,7 +2400,7 @@ const equipmentCatalogItems = computed(() => {
   return muEquipmentIndex.value.filter((item) =>
     categorySet.has(item.category) &&
     equipmentItemMinSeason(item) <= wikiSeason.value &&
-    (!config?.filter || config.filter(item))
+    (!config?.filter || config?.filter(item))
   )
 })
 const equipmentCatalogCategories = computed(() =>
@@ -2856,7 +2856,7 @@ const selectedEquipmentStatRows = computed(() => {
     { label: 'Categoria', value: item.category },
     { label: 'Normal drop', value: item.listStats.normalDrop },
     { label: 'Excellent drop', value: selectedEquipmentAvailableQualities.value.includes('excellent') ? item.listStats.excellentDrop : undefined },
-    { label: 'Attack speed', value: stat?.attackSpeed ?? item.listStats.attackSpeed },
+    { label: 'Attack speed', value: item.listStats.attackSpeed },
     { label: 'Defense', value: stat?.defense },
     { label: 'Damage min', value: stat?.damageMin },
     { label: 'Damage max', value: stat?.damageMax },
@@ -2974,7 +2974,7 @@ const selectedSetPiecesWithData = computed(() => {
       ...piece,
       title: baseTitle,
       displayTitle,
-      image: ancientPart?.image.publicPath || ancientPart?.image.sourceUrl || assetPiece?.image || guideItem?.image.publicPath || guideItem?.image.sourceUrl,
+      image: ancientPart?.image.publicPath || ancientPart?.image.sourceUrl || assetPiece?.image || guideItem?.image.publicPath || guideItem?.image.sourceUrl || undefined,
       defense,
       defenseLabel: piece.key === 'armor' ? 'Armor' : 'Defense',
       speedLabel,
@@ -2999,7 +2999,7 @@ const selectedSetPiecesWithData = computed(() => {
         aliases: [category],
         title: part.name,
         displayTitle: part.name,
-        image: part.image.publicPath || part.image.sourceUrl,
+        image: part.image.publicPath || part.image.sourceUrl || undefined,
         defense: stat?.damageMax ?? stat?.defense ?? '-',
         defenseLabel: stat?.damageMax ? 'Damage max' : category === 'Shield' ? 'Defense' : 'Info',
         speedLabel: '',
@@ -3130,7 +3130,6 @@ const loadSetCardsFromApi = async () => {
           searchText: set.searchText || [
             set.name,
             set.guideName,
-            set.category,
             set.characterName,
             ...set.evolutions,
             ...set.setTypes,
@@ -3243,13 +3242,13 @@ watch(equipmentCatalogTotalPages, (totalPages) => {
 
 watch(selectedAvailableQualities, (qualities) => {
   if (qualities.length && !qualities.includes(setQuality.value)) {
-    setQuality.value = qualities[0]
+    setQuality.value = qualities[0]!
   }
 })
 
 watch(selectedEquipmentAvailableQualities, (qualities) => {
   if (qualities.length && !qualities.includes(selectedEquipmentQuality.value)) {
-    selectedEquipmentQuality.value = qualities[0]
+    selectedEquipmentQuality.value = qualities[0]!
   }
 })
 

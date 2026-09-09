@@ -156,7 +156,7 @@
             class="mt-7 flex items-center justify-center gap-2"
             aria-label="Paginação"
           >
-            <UButton color="neutral" variant="soft" :disabled="page <= 1" square @click="page--"
+            <UButton color="neutral" variant="soft" :disabled="page <= 1" square @click="() => { page-- }"
               ><ChevronLeft class="size-4" /></UButton
             ><button
               v-for="number in visiblePages"
@@ -172,7 +172,7 @@
               variant="soft"
               :disabled="page >= activeTotalPages"
               square
-              @click="page++"
+              @click="() => { page++ }"
               ><ChevronRight class="size-4"
             /></UButton>
           </nav>

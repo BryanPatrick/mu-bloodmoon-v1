@@ -392,7 +392,7 @@ const activeTab = ref<'filas' | 'reconciliacao' | 'risco' | 'chargebacks'>('fila
 onMounted(async () => {
   loadSession()
   if (visibleTabs.value.length && !visibleTabs.value.some((tab) => tab.key === activeTab.value)) {
-    activeTab.value = visibleTabs.value[0].key
+    activeTab.value = visibleTabs.value[0]!.key
   }
   if (hasPermission(permissions.adminFinancialReportsView)) {
     await loadFinancialQueues()
