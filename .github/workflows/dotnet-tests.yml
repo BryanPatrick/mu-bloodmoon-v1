@@ -1,0 +1,68 @@
+name: .NET tests (GameBridge Agent / Launcher)
+
+# GitHub-hosted runners come with .NET SDKs preinstalled, so this never
+# touches the local dev machine's global environment -- the standing
+# project rule ("nao instalar SDK .NET automaticamente, nao alterar
+# ambiente global sem autorizacao") applies to this repo's own dev
+# machines, not to CI. Both jobs run on windows-latest: the Launcher
+# suite targets net8.0-windows/WPF and genuinely needs Windows, and the
+# GameBridge Agent suite is kept on the same runner type for a single,
+# simple, consistent environment rather than splitting across OSes.
+on:
+  push:
+    branches:
+      - '**'
+    paths:
+      - 'apps/game-bridge-agent/**'
+      - 'apps/launcher/**'
+      - '.github/workflows/dotnet-tests.yml'
+  pull_request:
+    paths:
+      - 'apps/game-bridge-agent/**'
+      - 'apps/launcher/**'
+      - '.github/workflows/dotnet-tests.yml'
+  workflow_dispatch: {}
+
+jobs:
+  dotnet-test:
+    name: ${{ matrix.name }}
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: GameBridge Agent Tests
+            project: apps/game-bridge-agent/BloodMoon.GameBridgeAgent.Tests/BloodMoon.GameBridgeAgent.Tests.csproj
+            results-name: game-bridge-agent
+          - name: Launcher Tests
+            project: apps/launcher/BloodMoon.Launcher.Tests/BloodMoon.Launcher.Tests.csproj
+            results-name: launcher
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore "${{ matrix.project }}"
+
+      - name: Test
+        run: >
+          dotnet test "${{ matrix.project }}"
+          --configuration Release
+          --no-restore
+          --logger "trx;LogFileName=${{ matrix.results-name }}.trx"
+          --logger "console;verbosity=normal"
+          --results-directory ./TestResults
+
+      # Always upload results, including on failure, so a red run still
+      # leaves a real, inspectable pass/fail record instead of just a
+      # log scroll.
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.results-name }}
+          path: ./TestResults/${{ matrix.results-name }}.trx
+          retention-days: 30
