@@ -7,9 +7,10 @@ manifest (see `docs/phases/*/phase-manifest.md` for per-feature detail).
 ```
 BASE: main @ 3b527749 (2026-09-08)
 INTEGRATION_BRANCH: integration/open-beta
-INTEGRATION_HEAD_FINAL: 43a9a374780fdd386a08aa93980b5b5677baeb0f
+INTEGRATION_HEAD_FINAL: fceadc5b24cb335b53e4a0fc737c8e7565584c7a
 INTEGRATION_WORKTREE: D:\MU\mu-bloodmoon-integration-openbeta
 INTEGRATION_RESULT: PASS
+KNOWN_REPRODUCIBLE_TEST_FAILURES: 0
 ```
 
 Two commits landed after the 8-merge integration closed (`a140ded5`),
@@ -107,6 +108,45 @@ suites, none a regression from M9–M11):
 `vue-tsc --noEmit`: PASS (0 errors, unchanged from the 152→0 fix — none
 of M9–M11 touch `apps/web`). `npm run web:build`: PASS. Phase AA unit
 suite (`jest.config.js`): 7/7 suites, 46/46 tests, PASS, unchanged.
+
+## Test stabilization (M12) — 819/819, zero known reproducible failures
+
+The 3 pre-existing/unrelated defects flagged at the end of the M9–M11
+round (`task_b7d3ac18`, `task_53c3eb8b`) were resolved this round on
+branch `fix/integration-test-stabilization`, merged as **M12**
+(`git merge --no-ff`, merge commit `fceadc5b`, zero conflicts). Two more
+defects of the identical root-cause class were discovered and fixed
+along the way, surfaced only by actually proving full-sweep
+repeatability (2 consecutive complete runs) rather than accepting a
+single green pass. **6 commits total, all test-only except one narrowly
+scoped production fix:**
+
+| Commit | Purpose | Files | Runtime behavior changed |
+|---|---|---|---|
+| `9825015c` | `error-handling.e2e-spec.ts`'s test module never provided `Http5xxBurstDetector`, a 3rd constructor dependency `SafeExceptionFilter` gained when Phase AA's alerting work landed. Added the real (dependency-free) provider. | 1 test file | NO |
+| `16c92220` | `game-account-production-provisioning.e2e-spec.ts`'s fixture didn't set `GameCommandState`'s `detailJson` field (TS2741 compile error) after the field was added by unrelated VIP GameBridge delivery work. Added `detailJson: null`. | 1 test file | NO |
+| `a2d974c2` | **GameBridgeJob batch-crowding flake** (`account-lifecycle-bridge.e2e-spec.ts`). Root cause: this suite's own "unconfigured transport" tests intentionally leave jobs permanently `PENDING` — over many historical runs against the persistent local dev DB, 48 such rows had accumulated. `runOnceWithLock()`'s dispatch query orders by `availableAt asc` and takes only `batchSize` (20), so once the backlog exceeds that, a freshly-created job (always the newest) never enters the batch. Fixed with the same `deleteMany` cleanup pattern already established in `vip-delivery.e2e-spec.ts` for the identical bug class. Verified 3 independent clean runs. | 1 test file | NO |
+| `9172de7b` | **Real root cause of the two-factor-key-migration failure** (not what it first looked like). `migrate-two-factor-keys.ts` had an unconditional top-level `void main().catch(...)` with no `require.main` guard — so the test's own `await import(...)` of this module (to reuse `dryRunPass`/`realRunPass`/`emptySummary`) *also* silently triggered a real, unscoped, mutating migration pass over the entire shared `account` table as an unawaited side effect, racing the test's own explicit calls. Fixed with a `require.main === module` guard (zero behavior change for the real CLI entrypoint, `node dist/apps/api/src/migrate-two-factor-keys.js` per `package.json`'s `migrate:two-factor-keys` script) plus an optional `accountIds` scoping parameter, defaulting to unscoped/global (`main()`'s own call never passes it). | 1 src file | **YES, narrowly** — only the previously-buggy import-without-CLI-invocation path changes; the real CLI usage is untouched (see commit body for the full explanation) |
+| `11d34250` | Companion to the above: every `dryRunPass`/`realRunPass` call in the test now passes its own created account id(s), making each test's ARRANGE/ACT/ASSERT self-contained — immune to residual rows or any concurrent process exercising these same global functions against the same shared DB. Tightened 2 assertions from approximate (`toBeGreaterThan(0)`) to exact (`toBe(1)`), now provable given the scoping. Verified 3 independent runs, 6/6 tests each. | 1 test file | NO |
+| `d03d195f` | **Same crowding-class bug, different module** — discovered while proving full-sweep repeatability (see below). `community-moderation.e2e-spec.ts`/`community-e2e-journey.e2e-spec.ts` assert a freshly-created report appears in the admin moderation queue (`GET /api/admin/community/reports?status=NEW`), which orders oldest-first with a default `pageSize` of 25. 31 leftover `status=NEW` reports from an earlier session had accumulated, crowding out fresh reports once the backlog reached the page size. Same established `deleteMany` cleanup pattern, scoped to `status='NEW'`. Verified 2 consecutive runs, 50/50 tests together. | 2 test files | NO |
+
+**Full-sweep repeatability, proven, not asserted:**
+
+| Run | Suites | Tests | Result |
+|---|---|---|---|
+| Targeted (4 originally-known suites together) | 4/4 | 24/24 | PASS |
+| Full sweep run 1 (pre community-fix) | 81/81 | 819/819 | PASS |
+| Full sweep run 2 (pre community-fix) | 80/81 | 818/819 | 1 failure — `account-deletion.e2e-spec.ts`, `Can't reach database server`, confirmed transient (4th occurrence of this exact signature across sessions, always resolves clean in isolation — re-ran isolated, 15/15 PASS) |
+| Full sweep run 2b (same session, before the community fix) | 79/81 | 816/819 | 2 new failures — `community-moderation.e2e-spec.ts`/`community-e2e-journey.e2e-spec.ts`, root-caused live (see `d03d195f` above), not dismissed as pre-existing without proof |
+| Both 4-suite + 2-suite targeted groups, post community-fix | 6/6 | 74/74 | PASS |
+| **Full sweep run A (post all fixes)** | **81/81** | **819/819** | **PASS** |
+| **Full sweep run B (post all fixes)** | **81/81** | **819/819** | **PASS** |
+| Post-merge full sweep (on `integration/open-beta` @ `fceadc5b`) | 81/81 | 819/819 | PASS |
+
+`KNOWN_REPRODUCIBLE_TEST_FAILURES = 0`. `apps/api` typecheck/build,
+`vue-tsc`, `npm run web:build`, Prisma validate/generate all PASS
+post-merge. Migration count unchanged at 55 (M12 added zero migrations).
+Zero secret-prone files touched across all 6 commits.
 
 ## Merge order (as authorized, executed unchanged)
 
@@ -413,11 +453,37 @@ Launcher because it is its own pipeline reconciled against
 the docs groups because none of them are runtime code, release
 migrations, or current decisions this cycle depends on.
 
+## Main promotion gate (M12 round)
+
+Evaluated against the 12-criterion gate, all against `integration/open-beta`
+@ `fceadc5b` (post-M12 merge):
+
+| Criterion | Result |
+|---|---|
+| `INTEGRATION_WORKTREE_CLEAN` | YES |
+| `PRISMA_VALIDATE` | PASS |
+| `PRISMA_GENERATE` | PASS |
+| `API_TYPECHECK` | PASS |
+| `API_BUILD` | PASS |
+| `VUE_TSC` | PASS |
+| `WEB_BUILD` | PASS |
+| `FULL_SWEEP_RUN_1` (pre-merge, on `fix/integration-test-stabilization`) | PASS (81/81, 819/819) |
+| `FULL_SWEEP_RUN_2` (pre-merge, repeatability proof) | PASS (81/81, 819/819) |
+| `POST_MERGE_FULL_SWEEP` (on `integration/open-beta` @ `fceadc5b`) | PASS (81/81, 819/819) |
+| `KNOWN_REPRODUCIBLE_TEST_FAILURES` | 0 |
+| `RELEASE_RELEVANT_UNPROTECTED` | 0 |
+| `MIGRATIONS_UNKNOWN` | 0 |
+| `WCOIN_PEG_GUARD` | PROTECTED |
+| `NO_KNOWN_RUNTIME_SAFETY_REGRESSION` | YES |
+| `PRODUCTION_EVIDENCE_RECONCILED` | YES (inherited from Recovery Batch 4, unchanged) |
+
+`READY_TO_PROMOTE_INTEGRATION_TO_MAIN = YES` — all criteria met.
+
 ## Explicitly not done this round
 
-No merge of `integration/open-beta` into `main`. No deploy. No
-production migration. No cPanel/Cloudflare/GameServer/real SQL Server
-/real GameBridge activity (0 real commands sent, all Agent kill
-switches confirmed default `false`). No openbeta cleanup. No branch
-deletion or archival. No production tags. Launcher work untouched
-(separate pipeline, `feature/launcher-play-gate`).
+No deploy. No production migration. No cPanel/Cloudflare/GameServer/
+real SQL Server/real GameBridge activity (0 real commands sent, all
+Agent kill switches confirmed default `false`). No openbeta cleanup. No
+branch deletion or archival. No production tags. Launcher work
+untouched (separate pipeline, `feature/launcher-play-gate`). No
+Recharge Refund extraction. No Pre-Beta Purge UI extraction.
