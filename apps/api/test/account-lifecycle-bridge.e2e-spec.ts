@@ -45,6 +45,22 @@ describe('Account lifecycle GameBridge sender -- unconfigured transport (real cl
     await app.init()
     prisma = app.get(PrismaService)
     bridge = app.get(AccountLifecycleBridgeService)
+
+    // Test-isolation hygiene (same root cause as vip-delivery.e2e-spec.ts's
+    // own GRANT_VIP cleanup): every test in this describe block deliberately
+    // leaves its job PENDING forever (that's the whole point -- proving an
+    // unconfigured transport doesn't falsely complete a retry), so against
+    // the persistent local dev DB these accumulate across every run of this
+    // file, ever. Once that backlog exceeds runOnceWithLock()'s batchSize
+    // (default 20, ordered by availableAt asc), a freshly-created job in
+    // THIS run is always newer than the backlog and never enters the
+    // take(batchSize) window -- confirmed via direct query: 48 leftover
+    // PENDING rows for these 2 operations before this fix. Scoped narrowly
+    // to the 2 operations this file's sender handles, on the local dev DB
+    // only -- never run against a shared or production database.
+    await prisma.gameBridgeJob.deleteMany({
+      where: { operation: { in: ['ANONYMIZE_GAME_ACCOUNT', 'PURGE_GAME_ACCOUNT'] }, status: { in: ['PENDING', 'FAILED'] } }
+    })
   }, 60000)
 
   afterAll(async () => app?.close())
@@ -153,6 +169,16 @@ describe('Account lifecycle GameBridge sender -- full state machine (fake transp
     prisma = app.get(PrismaService)
     bridge = app.get(AccountLifecycleBridgeService)
     auditModel = prisma.auditEvent
+
+    // Same test-isolation hygiene as the describe block above -- this
+    // block's own jobs normally reach a terminal state via the fake
+    // transport, but a large leftover PENDING backlog from the previous
+    // block (or earlier runs) can still crowd a freshly-created job out of
+    // runOnceWithLock()'s take(batchSize) window before this block's tests
+    // ever get to exercise their own dispatch/reconcile logic.
+    await prisma.gameBridgeJob.deleteMany({
+      where: { operation: { in: ['ANONYMIZE_GAME_ACCOUNT', 'PURGE_GAME_ACCOUNT'] }, status: { in: ['PENDING', 'FAILED'] } }
+    })
   }, 60000)
 
   afterAll(async () => app?.close())
