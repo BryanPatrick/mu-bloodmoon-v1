@@ -42,11 +42,11 @@ describe('Two-factor key migration (security hardening)', () => {
   const createdAccountIds: string[] = []
 
   afterAll(async () => {
-    // This suite's realRunPass()/dryRunPass() calls necessarily scan the
-    // whole Account table (that's the real script's actual job) -- clean
-    // up only what this file itself created, so it doesn't add to the
-    // shared bloodmoon_local_claude database's growing pile of test-era
-    // 2FA rows for the next session to wade through.
+    // Every dryRunPass()/realRunPass() call in this file is scoped to the
+    // specific account id(s) each test created (see migrate-two-factor-keys.ts's
+    // accountIds parameter), so cleanup here is just tidiness -- it doesn't
+    // add to the shared bloodmoon_local_claude database's growing pile of
+    // test-era 2FA rows for the next session to wade through.
     if (createdAccountIds.length) {
       await prisma?.account.deleteMany({ where: { id: { in: createdAccountIds } } })
     }
@@ -84,16 +84,16 @@ describe('Two-factor key migration (security hardening)', () => {
     const account = await makeV1Account()
 
     const summary = migration.emptySummary()
-    await migration.dryRunPass(prisma, twoFactor, 'v2', summary)
+    // Scoped to this test's own account id: bloodmoon_local_claude is
+    // shared and persistent across e2e runs AND across concurrent sessions
+    // (see project memory on concurrent-session DB risk) -- an unscoped
+    // pass would race against any other process exercising this same
+    // global migration function against the same table mid-test. Passing
+    // this test's own id makes the ARRANGE/ACT/ASSERT fully self-contained,
+    // immune to both residual rows and concurrent mutation.
+    await migration.dryRunPass(prisma, twoFactor, 'v2', summary, [account.id])
 
-    // Not asserting summary.failed === 0 table-wide: bloodmoon_local_claude
-    // is shared and persistent across e2e runs (by design, see
-    // docs/operations/local-test-database-isolation.md), so it can
-    // legitimately carry undecryptable 2FA rows left by unrelated test
-    // files that used a different TWO_FACTOR_ENCRYPTION_KEY. The specific,
-    // real property this test verifies is that THIS account is found,
-    // reported as migratable, and left untouched (dry-run writes nothing).
-    expect(summary.migrated).toBeGreaterThan(0)
+    expect(summary.migrated).toBe(1)
     expect(summary.failedAccountIds).not.toContain(account.id)
 
     const unchanged = await prisma.account.findUniqueOrThrow({ where: { id: account.id } })
@@ -104,30 +104,24 @@ describe('Two-factor key migration (security hardening)', () => {
     const account = await makeV1Account('MIGRATEDVALUE')
 
     const summary = migration.emptySummary()
-    await migration.realRunPass(prisma, twoFactor, 'v2', summary)
+    await migration.realRunPass(prisma, twoFactor, 'v2', summary, [account.id])
 
     const updated = await prisma.account.findUniqueOrThrow({ where: { id: account.id } })
     expect(twoFactor.keyVersionOf(updated.twoFactorSecret as string)).toBe('v2')
     expect(twoFactor.decrypt(updated.twoFactorSecret as string)).toBe('MIGRATEDVALUE')
   })
 
-  it('is idempotent -- a second run right after the first always finds nothing left, regardless of table contents', async () => {
-    await makeV1Account('IDEMPOTENCYCHECK')
+  it('is idempotent -- a second run right after the first always finds nothing left for this account', async () => {
+    const account = await makeV1Account('IDEMPOTENCYCHECK')
 
-    // Whatever this first pass does (including absorbing any stray v1 rows
-    // left by other tests in this file), the defining idempotency property
-    // is that nothing should ever remain for the very next pass -- this
-    // holds regardless of how many rows existed beforehand.
-    await migration.realRunPass(prisma, twoFactor, 'v2', migration.emptySummary())
+    // Scoped to this account's own id -- the defining idempotency property
+    // is that nothing remains for THIS row on the very next pass.
+    await migration.realRunPass(prisma, twoFactor, 'v2', migration.emptySummary(), [account.id])
 
     const second = migration.emptySummary()
-    await migration.realRunPass(prisma, twoFactor, 'v2', second)
-    // The real idempotency property: nothing newly succeeds on the second
-    // pass. (Not asserting scanned===0 -- a permanently-undecryptable
-    // straggler row from an unrelated test/session legitimately gets
-    // re-scanned and re-fail every run by design, since a future run with
-    // a corrected key should still retry it; that's correct, not a bug.)
+    await migration.realRunPass(prisma, twoFactor, 'v2', second, [account.id])
     expect(second.migrated).toBe(0)
+    expect(second.alreadyCurrent).toBe(1)
   })
 
   it('an already-migrated (v2) record is correctly skipped and left untouched', async () => {
@@ -149,7 +143,7 @@ describe('Two-factor key migration (security hardening)', () => {
     createdAccountIds.push(account.id)
 
     const summary = migration.emptySummary()
-    await migration.realRunPass(prisma, twoFactor, 'v2', summary)
+    await migration.realRunPass(prisma, twoFactor, 'v2', summary, [account.id])
 
     const unchanged = await prisma.account.findUniqueOrThrow({ where: { id: account.id } })
     expect(unchanged.twoFactorSecret).toBe(v2Encrypted) // byte-for-byte untouched
@@ -173,9 +167,9 @@ describe('Two-factor key migration (security hardening)', () => {
     createdAccountIds.push(corrupted.id)
 
     const summary = migration.emptySummary()
-    await migration.realRunPass(prisma, twoFactor, 'v2', summary)
+    await migration.realRunPass(prisma, twoFactor, 'v2', summary, [good.id, corrupted.id])
 
-    expect(summary.failed).toBeGreaterThanOrEqual(1)
+    expect(summary.failed).toBe(1)
     expect(summary.failedAccountIds).toContain(corrupted.id)
 
     const goodUpdated = await prisma.account.findUniqueOrThrow({ where: { id: good.id } })
@@ -207,7 +201,7 @@ describe('Two-factor key migration (security hardening)', () => {
     createdAccountIds.push(account.id)
 
     const summary = migration.emptySummary()
-    await migration.realRunPass(prisma, twoFactor, 'v2', summary)
+    await migration.realRunPass(prisma, twoFactor, 'v2', summary, [account.id])
 
     const updated = await prisma.account.findUniqueOrThrow({ where: { id: account.id } })
     expect(twoFactor.keyVersionOf(updated.twoFactorPending as string)).toBe('v2')
