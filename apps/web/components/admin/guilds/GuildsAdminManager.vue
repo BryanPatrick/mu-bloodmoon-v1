@@ -190,20 +190,20 @@ const canXpRules = computed(() => hasPermission(permissions.adminGuildsXpRulesMa
 const canAudit = computed(() => hasPermission(permissions.adminAuditView))
 
 const tabs = [
-  { key: 'guilds', label: 'Guildas', icon: Shield },
-  { key: 'levels', label: 'Níveis', icon: TrendingUp },
-  { key: 'xp-rules', label: 'Regras de XP', icon: Award },
-  { key: 'members', label: 'Membros', icon: Users },
+  { key: 'guilds', label: 'Guildas', icon: Shield, preview: false },
+  { key: 'levels', label: 'Níveis', icon: TrendingUp, preview: false },
+  { key: 'xp-rules', label: 'Regras de XP', icon: Award, preview: false },
+  { key: 'members', label: 'Membros', icon: Users, preview: false },
   { key: 'roles', label: 'Papéis', icon: ShieldCheck, preview: true },
-  { key: 'treasury', label: 'Tesouraria', icon: Coins },
-  { key: 'vault', label: 'Cofre', icon: Package },
+  { key: 'treasury', label: 'Tesouraria', icon: Coins, preview: false },
+  { key: 'vault', label: 'Cofre', icon: Package, preview: false },
   { key: 'requests', label: 'Solicitações', icon: FileText, preview: true },
   { key: 'projects', label: 'Projetos', icon: ChartColumn, preview: true },
-  { key: 'reports', label: 'Relatórios', icon: LayoutDashboard },
+  { key: 'reports', label: 'Relatórios', icon: LayoutDashboard, preview: false },
   { key: 'guides', label: 'Guias', icon: FileText, preview: true },
   { key: 'events', label: 'Eventos', icon: FileText, preview: true },
   { key: 'alliances', label: 'Alianças', icon: Handshake, preview: true },
-  { key: 'audit', label: 'Auditoria', icon: FileSearch }
+  { key: 'audit', label: 'Auditoria', icon: FileSearch, preview: false }
 ] as const
 const visibleTabs = tabs
 

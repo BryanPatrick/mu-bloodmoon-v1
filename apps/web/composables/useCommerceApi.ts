@@ -115,15 +115,101 @@ export type RechargeDetail = CommerceRecharge & {
   }>
 }
 
+// PHASE P (2026-08-31) -- antifraud/chargeback/reconciliation admin
+// surface. Kept as raw pass-through types (no PT-BR label mapping like
+// the recharge/purchase status maps above) since these are new, admin-
+// only concepts with no pre-existing player-facing vocabulary to match.
+export type PaymentRiskSeverity = 'INFO' | 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'
+export type PaymentRiskCaseStatus = 'OPEN' | 'UNDER_REVIEW' | 'CLEARED' | 'CONFIRMED_FRAUD' | 'CLOSED'
+export type PaymentRiskAction = 'MANUAL_REVIEW' | 'PAYMENT_RESTRICTION' | 'TRANSFER_RESTRICTION' | 'ACCOUNT_RESTRICTION'
+
+export type PaymentRiskSignal = {
+  id: string
+  signalType: string
+  severity: PaymentRiskSeverity
+  reason: string
+  evidence: Record<string, unknown> | null
+  sourceType: string | null
+  sourceId: string | null
+  detectedAt: string
+}
+
+export type PaymentRiskCaseAction = {
+  id: string
+  action: PaymentRiskAction
+  reason: string
+  performedByUsername: string
+  performedAt: string
+  liftedAt: string | null
+}
+
+export type PaymentRiskCase = {
+  id: string
+  accountId: string | null
+  username: string | null
+  status: PaymentRiskCaseStatus
+  highestSeverity: PaymentRiskSeverity
+  summary: string
+  reviewNotes: string | null
+  resolution: string | null
+  openedAt: string
+  resolvedAt: string | null
+  signals: PaymentRiskSignal[]
+  actions: PaymentRiskCaseAction[]
+}
+
+export type ChargebackCaseStatus = 'OPEN' | 'UNDER_REVIEW' | 'CLEARED' | 'CONFIRMED_FRAUD' | 'CLOSED'
+
+export type ChargebackCase = {
+  id: string
+  rechargeIntentId: string
+  accountId: string | null
+  username: string | null
+  provider: string
+  externalOrderId: string | null
+  currency: ApiCurrencyCode
+  originalAmountCredited: number
+  accountBalanceAtCaseOpen: number | null
+  dispersalTraceSnapshot: { originAccountId: string | null; involvedAccountIds: string[]; dispersalChain: Array<{ hop: number, fromAccountId: string, toAccountId: string, amount: number, type: string, occurredAt: string }>, truncated: boolean } | null
+  providerChargebackReason: string | null
+  chargebackDate: string | null
+  status: ChargebackCaseStatus
+  reviewNotes: string | null
+  resolution: string | null
+  resolvedAt: string | null
+  createdAt: string
+  rechargePrice: string
+}
+
+export type ReconciliationRow = {
+  rechargeIntentId: string
+  accountId: string
+  issue: 'PAID_WITHOUT_LEDGER_CREDIT' | 'STUCK_NON_TERMINAL'
+  status: string
+  detail: string
+  createdAt: string
+}
+
+export type ChargebackDispersalTrace = {
+  rechargeIntentId: string
+  originAccountId: string | null
+  originCurrency: ApiCurrencyCode | null
+  originAmount: number | null
+  originatedAt: string | null
+  dispersalChain: Array<{ hop: number, fromAccountId: string, toAccountId: string, ledgerEntryId: string, amount: number, type: string, occurredAt: string }>
+  involvedAccountIds: string[]
+  truncated: boolean
+}
+
 const currencyFromApi: Record<ApiCurrencyCode, CurrencyCode> = {
   WCOIN: 'WCoin',
-  GOBLIN_POINT: 'Goblin Point',
+  GOBLIN_POINT: 'Blood Coin',
   HUNT_POINT: 'Hunt Point'
 }
 
 const currencyToApi: Record<CurrencyCode, ApiCurrencyCode> = {
   WCoin: 'WCOIN',
-  'Goblin Point': 'GOBLIN_POINT',
+  'Blood Coin': 'GOBLIN_POINT',
   'Hunt Point': 'HUNT_POINT'
 }
 
@@ -189,7 +275,7 @@ const readAccessToken = () => {
   }
 }
 
-const headers = () => readAccessToken() ? { Authorization: `Bearer ${readAccessToken()}` } : {}
+const headers = (): Record<string, string> => readAccessToken() ? { Authorization: `Bearer ${readAccessToken()}` } : {}
 
 const mapProduct = (product: ApiProduct): ShopProduct => ({
   id: product.id,
@@ -240,7 +326,7 @@ export const useCommerceApi = () => {
     $fetch<T>(`${apiBase.value}${path}`, { query, headers: headers() })
 
   const send = <T>(method: 'POST' | 'PATCH' | 'DELETE', path: string, body?: unknown) =>
-    $fetch<T>(`${apiBase.value}${path}`, { method, body, headers: headers() })
+    $fetch<T>(`${apiBase.value}${path}`, { method, body: body as Record<string, any> | BodyInit | null | undefined, headers: headers() })
 
   return {
     listProducts: async (admin = false) => {
@@ -308,6 +394,23 @@ export const useCommerceApi = () => {
     updatePurchaseStatus: (id: string, status: CommercePurchase['status']) =>
       send('PATCH', `/admin/finance/purchases/${id}/status`, { status: purchaseStatusToApi[status] }),
     updateRechargeStatus: (id: string, status: CommerceRechargeStatus, reason?: string) =>
-      send('PATCH', `/admin/finance/recharges/${id}/status`, { status: rechargeStatusToApi[status], reason })
+      send('PATCH', `/admin/finance/recharges/${id}/status`, { status: rechargeStatusToApi[status], reason }),
+
+    // PHASE P (2026-08-31) additions below --
+
+    getChargebackTrace: (id: string) => get<ChargebackDispersalTrace>(`/admin/finance/recharges/${id}/chargeback-trace`),
+    getReconciliationReport: () => get<ReconciliationRow[]>('/admin/finance/reconciliation'),
+    triggerProviderPoll: () => send<{ enabled: boolean, candidates: number, polled: number, failed: number }>('POST', '/admin/finance/reconciliation/provider-poll'),
+
+    listRiskCases: (query: { status?: string, page?: string } = {}) => get<ApiList<PaymentRiskCase>>('/admin/finance/risk-cases', query),
+    getRiskCase: (id: string) => get<PaymentRiskCase>(`/admin/finance/risk-cases/${id}`),
+    applyRiskAction: (id: string, action: PaymentRiskAction, reason: string) => send<PaymentRiskCaseAction>('POST', `/admin/finance/risk-cases/${id}/actions`, { action, reason }),
+    liftRiskAction: (actionId: string) => send('POST', `/admin/finance/risk-cases/actions/${actionId}/lift`),
+    resolveRiskCase: (id: string, status: 'CLEARED' | 'CONFIRMED_FRAUD' | 'CLOSED', resolution: string) => send<PaymentRiskCase>('POST', `/admin/finance/risk-cases/${id}/resolve`, { status, resolution }),
+
+    listChargebackCases: (query: { status?: string, page?: string } = {}) => get<ApiList<ChargebackCase>>('/admin/finance/chargeback-cases', query),
+    getChargebackCase: (id: string) => get<ChargebackCase>(`/admin/finance/chargeback-cases/${id}`),
+    updateChargebackCaseNotes: (id: string, reviewNotes: string) => send('PATCH', `/admin/finance/chargeback-cases/${id}/notes`, { reviewNotes }),
+    resolveChargebackCase: (id: string, status: 'CLEARED' | 'CONFIRMED_FRAUD' | 'CLOSED', resolution: string) => send<ChargebackCase>('POST', `/admin/finance/chargeback-cases/${id}/resolve`, { status, resolution })
   }
 }

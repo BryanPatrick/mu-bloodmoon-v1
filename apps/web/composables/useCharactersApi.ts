@@ -31,7 +31,7 @@ export const useCharactersApi = () => {
   const config = useRuntimeConfig()
   const apiBase = computed(() => String(config.public.apiBase || 'http://localhost:3333/api').replace(/\/$/, ''))
 
-  const headers = () => readAccessToken() ? { Authorization: `Bearer ${readAccessToken()}` } : {}
+  const headers = (): Record<string, string> => readAccessToken() ? { Authorization: `Bearer ${readAccessToken()}` } : {}
 
   return {
     list: (query: { search?: string, className?: string, status?: string } = {}) =>

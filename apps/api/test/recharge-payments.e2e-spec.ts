@@ -83,6 +83,7 @@ describe('Mercado Pago recharge payments', () => {
   let httpServer: import('http').Server
   let prisma: import('../src/database/prisma.service').PrismaService
   let commerceService: import('../src/modules/commerce/commerce.service').CommerceService
+  let walletLedger: import('../src/modules/wallet/wallet-ledger.service').WalletLedgerService
 
   beforeAll(async () => {
     const { Test } = await import('@nestjs/testing')
@@ -90,6 +91,7 @@ describe('Mercado Pago recharge payments', () => {
     const { SafeExceptionFilter } = await import('../src/common/safe-exception.filter')
     const { PrismaService } = await import('../src/database/prisma.service')
     const { CommerceService } = await import('../src/modules/commerce/commerce.service')
+    const { WalletLedgerService } = await import('../src/modules/wallet/wallet-ledger.service')
 
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile()
     app = moduleRef.createNestApplication()
@@ -99,6 +101,7 @@ describe('Mercado Pago recharge payments', () => {
     httpServer = app.getHttpServer()
     prisma = app.get(PrismaService)
     commerceService = app.get(CommerceService)
+    walletLedger = app.get(WalletLedgerService)
   }, 60000)
 
   afterAll(async () => {
@@ -441,6 +444,33 @@ describe('Mercado Pago recharge payments', () => {
     expect(updated?.approvedAt).not.toBeNull()
   })
 
+  // ── PHASE O: LEDGER_PROVENANCE -- the credit's own ledger row is
+  // self-describing (base/bonus/gross/provider), not just reconstructable
+  // via a join back to RechargeIntent ──
+  it('LEDGER_PROVENANCE: records base/bonus/gross/provider directly on the WalletLedgerEntry, not only on RechargeIntent', async () => {
+    const { intentId, externalOrderId, externalReference } = await createCheckoutIntent(runId('ORD-ledger-provenance'))
+    fetchHandler = async () =>
+      jsonResponse(
+        mockOrderBody({ id: externalOrderId, external_reference: externalReference, total_amount: '19.90', status: 'processed', status_detail: 'accredited' })
+      )
+    await sendWebhook(externalOrderId, runId('req-ledger-provenance'))
+
+    const intent = await prisma.rechargeIntent.findUniqueOrThrow({ where: { id: intentId } })
+    expect(intent.status).toBe('PAID')
+
+    const ledgerRow = await prisma.walletLedgerEntry.findFirst({
+      where: { sourceType: 'RechargeIntent', sourceId: intent.id, type: 'WC_PURCHASE_CREDIT' }
+    })
+    expect(ledgerRow).toBeDefined()
+    expect(ledgerRow?.paymentProvenanceRef).toBe(intent.id)
+    expect(ledgerRow?.grossAmount).toBe(intent.amount + intent.bonus)
+    const metadata = ledgerRow?.metadata as { baseAmount?: number; bonusAmount?: number; grossPaidBRL?: string; provider?: string } | null
+    expect(metadata?.baseAmount).toBe(intent.amount)
+    expect(metadata?.bonusAmount).toBe(intent.bonus)
+    expect(metadata?.grossPaidBRL).toBe(intent.price)
+    expect(metadata?.provider).toBe(intent.provider)
+  })
+
   // ── Scenario 8: rejected payment -> FAILED, no credit ──
   it('marks a rejected payment as FAILED without crediting the wallet', async () => {
     const { intentId, externalOrderId, externalReference } = await createCheckoutIntent(
@@ -553,21 +583,23 @@ describe('Mercado Pago recharge payments', () => {
       runId('ORD-scenario-12')
     )
 
-    // Patch the service's own creditCurrency (not the Prisma delegate --
+    // Patch WalletLedgerService's own credit() (not the Prisma delegate --
     // $transaction hands the callback a distinct transactional `tx` proxy,
     // so patching prisma.accountCurrency.upsert directly would not actually
-    // intercept the call made through `tx` inside the transaction).
-    const service = commerceService as unknown as {
-      creditCurrency: (...args: unknown[]) => Promise<void>
+    // intercept the call made through `tx` inside the transaction). All
+    // real currency credits (including RechargeIntent's) now route through
+    // this one shared service -- see wallet-ledger.service.ts.
+    const service = walletLedger as unknown as {
+      credit: (...args: unknown[]) => Promise<void>
     }
-    const originalCreditCurrency = service.creditCurrency.bind(service)
+    const originalCredit = service.credit.bind(service)
     let shouldFail = true
-    service.creditCurrency = async (...args: unknown[]) => {
+    service.credit = async (...args: unknown[]) => {
       if (shouldFail) {
         shouldFail = false
         throw new Error('simulated transient credit failure')
       }
-      return originalCreditCurrency(...args)
+      return originalCredit(...args)
     }
 
     fetchHandler = async () =>
@@ -648,7 +680,7 @@ describe('Mercado Pago recharge payments', () => {
       )?.balance || 0
     expect(walletAfterThird).toBe(walletAfterSecond)
 
-    service.creditCurrency = originalCreditCurrency
+    service.credit = originalCredit
   })
 
   // ── Regression: client-sent price is ignored -- only packageId is accepted ──

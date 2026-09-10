@@ -22,9 +22,9 @@ public sealed class GameCredentialDecryptorTests
     public void ModifiedCiphertextFailsAuthentication()
     {
         var command = BuildCommand("Secret1234");
-        var bytes = Convert.FromBase64String(command.Credential.Ciphertext);
+        var bytes = Convert.FromBase64String(command.Credential!.Ciphertext);
         bytes[0] ^= 1;
-        command = command with { Credential = command.Credential with { Ciphertext = Convert.ToBase64String(bytes) } };
+        command = command with { Credential = command.Credential! with { Ciphertext = Convert.ToBase64String(bytes) } };
         Assert.Throws<AuthenticationTagMismatchException>(() => new GameCredentialDecryptor(new Keys(Key)).Decrypt(command));
     }
 
@@ -48,7 +48,7 @@ public sealed class GameCredentialDecryptorTests
     public void MissingKeyVersionFailsSafely()
     {
         var command = BuildCommand("Secret1234") with
-        { Credential = BuildCommand("Secret1234").Credential with { KeyVersion = "v99" } };
+        { Credential = BuildCommand("Secret1234").Credential! with { KeyVersion = "v99" } };
         var error = Assert.Throws<CryptographicException>(() => new GameCredentialDecryptor(new Keys(Key)).Decrypt(command));
         Assert.Equal("CREDENTIAL_KEY_VERSION_UNAVAILABLE", error.Message);
     }

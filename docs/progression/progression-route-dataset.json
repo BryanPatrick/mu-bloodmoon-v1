@@ -1,0 +1,794 @@
+{
+  "generatedAt": "2026-09-03T11:41:38.712Z",
+  "sourceMethod": "RemoteOps read-only download (bm-remote download/hash), same technique as Phase R/S/T/U",
+  "sourceFiles": [
+    {
+      "file": "Data/Monster/Monster.txt",
+      "sha256": "61D8890C00E91A2C9275B2F12704D119434A8D3FF64AD051AAE95CBB061790EB",
+      "bytes": 204882
+    },
+    {
+      "file": "Data/Maps/MapManager.txt",
+      "sha256": "7DEE7CB283F0D01B10E5EF2069F6F55F3B52DB3400021343733301E8EC95CB60",
+      "bytes": 15816
+    },
+    {
+      "file": "Data/Monster/MonsterSetBase.txt",
+      "sha256": "852893D08BB9A48D90CDAE42E84F5E82B23848BC4FAF7A80A06FBF40B0731667",
+      "bytes": 356398
+    }
+  ],
+  "totals": {
+    "monstersInMonsterTxt": 549,
+    "mapsInMapManager": 67,
+    "totalSpawnRows": 3171,
+    "normalMonsterSpawnRows": 407,
+    "goldenBossSpawnRows": 72,
+    "mapsWithNormalMonsterSpawns": 15
+  },
+  "notes": [
+    "scriptType 2 = Normal Monster (used for the route dataset below).",
+    "scriptType 3 = Bone King/Golden Monster spawns (listed separately, goldenBossesByMap).",
+    "scriptType 0 = NPC/Guard/Trap (excluded, not a combat monster).",
+    "scriptType 1 = Spots (excluded, not a directly-spawned monster).",
+    "scriptType 4 = Blood Castle/event monsters (excluded from the open-world route dataset).",
+    "Spawn PRESENCE is read directly from MonsterSetBase.txt -- never inferred from a monster existing in Monster.txt alone, per Phase V Part 9 instruction."
+  ],
+  "progressionRoutes": [
+    {
+      "mapIndex": 24,
+      "mapName": "Kalima 1",
+      "itemDropRate": 0,
+      "excItemDropRate": 100,
+      "setItemDropRate": 0,
+      "experienceRate": 100,
+      "monsterLevelMin": 17,
+      "monsterLevelMax": 52,
+      "monsterCount": 8,
+      "monsters": [
+        {
+          "index": 147,
+          "name": "Aegis",
+          "level": 17,
+          "maxLife": 440,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 148,
+          "name": "Rogue Centurion",
+          "level": 19,
+          "maxLife": 500,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 146,
+          "name": "Blood Soldier",
+          "level": 21,
+          "maxLife": 600,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 144,
+          "name": "Death Angel",
+          "level": 24,
+          "maxLife": 740,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 149,
+          "name": "Necron",
+          "level": 28,
+          "maxLife": 900,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 145,
+          "name": "Death Centurion",
+          "level": 33,
+          "maxLife": 1250,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 160,
+          "name": "Schriker",
+          "level": 40,
+          "maxLife": 1800,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 161,
+          "name": "Illusion of Kundun",
+          "level": 52,
+          "maxLife": 300000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        }
+      ]
+    },
+    {
+      "mapIndex": 25,
+      "mapName": "Kalima 2",
+      "itemDropRate": 0,
+      "excItemDropRate": 100,
+      "setItemDropRate": 0,
+      "experienceRate": 100,
+      "monsterLevelMin": 32,
+      "monsterLevelMax": 65,
+      "monsterCount": 8,
+      "monsters": [
+        {
+          "index": 177,
+          "name": "Aegis",
+          "level": 32,
+          "maxLife": 1000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 178,
+          "name": "Rogue Centurion",
+          "level": 34,
+          "maxLife": 1200,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 176,
+          "name": "Blood Soldier",
+          "level": 37,
+          "maxLife": 1400,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 174,
+          "name": "Death Angel",
+          "level": 40,
+          "maxLife": 1800,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 179,
+          "name": "Necron",
+          "level": 44,
+          "maxLife": 2300,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 175,
+          "name": "Death Centurion",
+          "level": 48,
+          "maxLife": 3000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 180,
+          "name": "Schriker",
+          "level": 53,
+          "maxLife": 3900,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 181,
+          "name": "Illusion of Kundun",
+          "level": 65,
+          "maxLife": 600000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        }
+      ]
+    },
+    {
+      "mapIndex": 26,
+      "mapName": "Kalima 3",
+      "itemDropRate": 0,
+      "excItemDropRate": 100,
+      "setItemDropRate": 0,
+      "experienceRate": 100,
+      "monsterLevelMin": 46,
+      "monsterLevelMax": 81,
+      "monsterCount": 8,
+      "monsters": [
+        {
+          "index": 185,
+          "name": "Aegis",
+          "level": 46,
+          "maxLife": 2700,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 186,
+          "name": "Rogue Centurion",
+          "level": 48,
+          "maxLife": 3100,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 184,
+          "name": "Blood Soldier",
+          "level": 50,
+          "maxLife": 3650,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 182,
+          "name": "Death Angel",
+          "level": 53,
+          "maxLife": 4400,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 187,
+          "name": "Necron",
+          "level": 58,
+          "maxLife": 5300,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 183,
+          "name": "Death Centurion",
+          "level": 63,
+          "maxLife": 6600,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 188,
+          "name": "Schriker",
+          "level": 69,
+          "maxLife": 8400,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 189,
+          "name": "Illusion of Kundun",
+          "level": 81,
+          "maxLife": 1400000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        }
+      ]
+    },
+    {
+      "mapIndex": 27,
+      "mapName": "Kalima 4",
+      "itemDropRate": 0,
+      "excItemDropRate": 100,
+      "setItemDropRate": 0,
+      "experienceRate": 100,
+      "monsterLevelMin": 62,
+      "monsterLevelMax": 100,
+      "monsterCount": 8,
+      "monsters": [
+        {
+          "index": 193,
+          "name": "Aegis",
+          "level": 62,
+          "maxLife": 6000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 194,
+          "name": "Rogue Centurion",
+          "level": 66,
+          "maxLife": 6900,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 192,
+          "name": "Blood Soldier",
+          "level": 70,
+          "maxLife": 8800,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 190,
+          "name": "Death Angel",
+          "level": 74,
+          "maxLife": 12000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 195,
+          "name": "Necron",
+          "level": 78,
+          "maxLife": 16000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 191,
+          "name": "Death Centurion",
+          "level": 83,
+          "maxLife": 22500,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 196,
+          "name": "Schriker",
+          "level": 88,
+          "maxLife": 30000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 197,
+          "name": "Illusion of Kundun",
+          "level": 100,
+          "maxLife": 5000000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        }
+      ]
+    },
+    {
+      "mapIndex": 28,
+      "mapName": "Kalima 5",
+      "itemDropRate": 0,
+      "excItemDropRate": 100,
+      "setItemDropRate": 0,
+      "experienceRate": 100,
+      "monsterLevelMin": 79,
+      "monsterLevelMax": 117,
+      "monsterCount": 8,
+      "monsters": [
+        {
+          "index": 263,
+          "name": "Aegis",
+          "level": 79,
+          "maxLife": 18000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 264,
+          "name": "Rogue Centurion",
+          "level": 82,
+          "maxLife": 21000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 262,
+          "name": "Blood Soldier",
+          "level": 85,
+          "maxLife": 26000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 260,
+          "name": "Death Angel",
+          "level": 88,
+          "maxLife": 31000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 265,
+          "name": "Necron",
+          "level": 93,
+          "maxLife": 38500,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 261,
+          "name": "Death Centurion",
+          "level": 98,
+          "maxLife": 48000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 266,
+          "name": "Schriker",
+          "level": 105,
+          "maxLife": 60000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 267,
+          "name": "Illusion of Kundun",
+          "level": 117,
+          "maxLife": 10000000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        }
+      ]
+    },
+    {
+      "mapIndex": 38,
+      "mapName": "Kanturu 2",
+      "itemDropRate": 0,
+      "excItemDropRate": 100,
+      "setItemDropRate": 0,
+      "experienceRate": 100,
+      "monsterLevelMin": 80,
+      "monsterLevelMax": 80,
+      "monsterCount": 2,
+      "monsters": [
+        {
+          "index": 106,
+          "name": "Laser Trap",
+          "level": 80,
+          "maxLife": 1000,
+          "itemRate": 200,
+          "moneyRate": 10
+        },
+        {
+          "index": 105,
+          "name": "Canon Trap",
+          "level": 80,
+          "maxLife": 1000,
+          "itemRate": 200,
+          "moneyRate": 10
+        }
+      ]
+    },
+    {
+      "mapIndex": 29,
+      "mapName": "Kalima 6",
+      "itemDropRate": 0,
+      "excItemDropRate": 100,
+      "setItemDropRate": 0,
+      "experienceRate": 100,
+      "monsterLevelMin": 95,
+      "monsterLevelMax": 140,
+      "monsterCount": 8,
+      "monsters": [
+        {
+          "index": 271,
+          "name": "Aegis",
+          "level": 95,
+          "maxLife": 42000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 272,
+          "name": "Rogue Centurion",
+          "level": 98,
+          "maxLife": 48500,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 270,
+          "name": "Blood Soldier",
+          "level": 101,
+          "maxLife": 56000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 268,
+          "name": "Death Angel",
+          "level": 105,
+          "maxLife": 65000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 273,
+          "name": "Necron",
+          "level": 109,
+          "maxLife": 75500,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 269,
+          "name": "Death Centurion",
+          "level": 114,
+          "maxLife": 87500,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 274,
+          "name": "Schriker",
+          "level": 119,
+          "maxLife": 105000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        },
+        {
+          "index": 338,
+          "name": "Illusion of Kundun",
+          "level": 140,
+          "maxLife": 1400000,
+          "itemRate": 999999999,
+          "moneyRate": 300
+        }
+      ]
+    },
+    {
+      "mapIndex": 2,
+      "mapName": "Devias",
+      "itemDropRate": 0,
+      "excItemDropRate": 100,
+      "setItemDropRate": 0,
+      "experienceRate": 100,
+      "monsterLevelMin": 128,
+      "monsterLevelMax": 128,
+      "monsterCount": 1,
+      "monsters": [
+        {
+          "index": 805,
+          "name": "Lycan",
+          "level": 128,
+          "maxLife": 2300000,
+          "itemRate": 100,
+          "moneyRate": 0
+        }
+      ]
+    },
+    {
+      "mapIndex": 4,
+      "mapName": "Lost Tower",
+      "itemDropRate": 0,
+      "excItemDropRate": 100,
+      "setItemDropRate": 0,
+      "experienceRate": 100,
+      "monsterLevelMin": 128,
+      "monsterLevelMax": 128,
+      "monsterCount": 1,
+      "monsters": [
+        {
+          "index": 804,
+          "name": "Kronus",
+          "level": 128,
+          "maxLife": 2200000,
+          "itemRate": 100,
+          "moneyRate": 0
+        }
+      ]
+    },
+    {
+      "mapIndex": 7,
+      "mapName": "Atlans",
+      "itemDropRate": 0,
+      "excItemDropRate": 100,
+      "setItemDropRate": 0,
+      "experienceRate": 100,
+      "monsterLevelMin": 128,
+      "monsterLevelMax": 128,
+      "monsterCount": 1,
+      "monsters": [
+        {
+          "index": 49,
+          "name": "Hydra",
+          "level": 128,
+          "maxLife": 2100000,
+          "itemRate": 100,
+          "moneyRate": 0
+        }
+      ]
+    },
+    {
+      "mapIndex": 8,
+      "mapName": "Tarkan",
+      "itemDropRate": 0,
+      "excItemDropRate": 100,
+      "setItemDropRate": 0,
+      "experienceRate": 100,
+      "monsterLevelMin": 128,
+      "monsterLevelMax": 128,
+      "monsterCount": 1,
+      "monsters": [
+        {
+          "index": 801,
+          "name": "Farao",
+          "level": 128,
+          "maxLife": 2150000,
+          "itemRate": 100,
+          "moneyRate": 0
+        }
+      ]
+    },
+    {
+      "mapIndex": 37,
+      "mapName": "Kanturu 1",
+      "itemDropRate": 0,
+      "excItemDropRate": 100,
+      "setItemDropRate": 0,
+      "experienceRate": 100,
+      "monsterLevelMin": 128,
+      "monsterLevelMax": 128,
+      "monsterCount": 1,
+      "monsters": [
+        {
+          "index": 803,
+          "name": "Rei Orc",
+          "level": 128,
+          "maxLife": 2500000,
+          "itemRate": 100,
+          "moneyRate": 0
+        }
+      ]
+    },
+    {
+      "mapIndex": 51,
+      "mapName": "Elbeland",
+      "itemDropRate": 0,
+      "excItemDropRate": 100,
+      "setItemDropRate": 0,
+      "experienceRate": 100,
+      "monsterLevelMin": 128,
+      "monsterLevelMax": 128,
+      "monsterCount": 1,
+      "monsters": [
+        {
+          "index": 806,
+          "name": "Coelho",
+          "level": 128,
+          "maxLife": 2000000,
+          "itemRate": 100,
+          "moneyRate": 0
+        }
+      ]
+    },
+    {
+      "mapIndex": 36,
+      "mapName": "Kalima 7",
+      "itemDropRate": 0,
+      "excItemDropRate": 100,
+      "setItemDropRate": 0,
+      "experienceRate": 100,
+      "monsterLevelMin": 147,
+      "monsterLevelMax": 147,
+      "monsterCount": 1,
+      "monsters": [
+        {
+          "index": 275,
+          "name": "Kundun",
+          "level": 147,
+          "maxLife": 3000000,
+          "itemRate": 100,
+          "moneyRate": 0
+        }
+      ]
+    },
+    {
+      "mapIndex": 33,
+      "mapName": "Aida",
+      "itemDropRate": 0,
+      "excItemDropRate": 100,
+      "setItemDropRate": 0,
+      "experienceRate": 100,
+      "monsterLevelMin": 180,
+      "monsterLevelMax": 180,
+      "monsterCount": 1,
+      "monsters": [
+        {
+          "index": 802,
+          "name": "BloodMoon",
+          "level": 180,
+          "maxLife": 8000000,
+          "itemRate": 100,
+          "moneyRate": 0
+        }
+      ]
+    }
+  ],
+  "goldenBossesByMap": {
+    "0": [
+      "Death King",
+      "Death Bone",
+      "Red Dragon",
+      "Golden Budge Dragon",
+      "Golden Derkon",
+      "White wizard",
+      "Destructive ogre soldier",
+      "Destructive ogre archer",
+      "Cursed Goblin",
+      "Cursed Santa"
+    ],
+    "1": [
+      "Golden Dark Knight"
+    ],
+    "2": [
+      "Red Dragon",
+      "Golden Titan",
+      "Golden Soldier",
+      "Golden Derkon",
+      "White wizard",
+      "Destructive ogre soldier",
+      "Destructive ogre archer",
+      "Cursed Goblin",
+      "Cursed Santa"
+    ],
+    "3": [
+      "Death King",
+      "Death Bone",
+      "Red Dragon",
+      "Golden Goblin",
+      "Golden Derkon",
+      "White wizard",
+      "Destructive ogre soldier",
+      "Destructive ogre archer",
+      "Cursed Goblin",
+      "Cursed Santa"
+    ],
+    "4": [
+      "Golden Devil",
+      "Pouch of Blessing",
+      "Lunar Rabbit",
+      "Fire Flame Ghost"
+    ],
+    "7": [
+      "Golden Lizard King",
+      "Golden Vepar",
+      "Pouch of Blessing",
+      "Lunar Rabbit",
+      "Fire Flame Ghost"
+    ],
+    "8": [
+      "Golden Tantalos",
+      "Golden Wheel",
+      "Pouch of Blessing",
+      "Lunar Rabbit",
+      "Fire Flame Ghost"
+    ],
+    "10": [
+      "Golden Crust"
+    ],
+    "33": [
+      "Golden Stone Golem",
+      "Pouch of Blessing",
+      "Lunar Rabbit",
+      "Fire Flame Ghost"
+    ],
+    "37": [
+      "Golden Satyros",
+      "Great Golden Dragon",
+      "Pouch of Blessing",
+      "Lunar Rabbit",
+      "Fire Flame Ghost"
+    ],
+    "38": [
+      "Golden Twin Tail"
+    ],
+    "51": [
+      "Golden Derkon",
+      "Golden Rabbit",
+      "Moss"
+    ],
+    "56": [
+      "Golden Napin",
+      "Sapi Queen",
+      "Medusa"
+    ],
+    "57": [
+      "Golden Iron Knight",
+      "Great Golden Dragon",
+      "Pouch of Blessing",
+      "Lunar Rabbit",
+      "Fire Flame Ghost"
+    ]
+  }
+}

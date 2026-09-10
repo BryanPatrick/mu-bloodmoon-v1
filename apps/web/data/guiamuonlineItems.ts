@@ -63,7 +63,7 @@ const normalizeLabel = (value: string) =>
     .trim()
     .toLowerCase()
 
-export const guiamuonlineArmorItems = (equipmentIndex as GuideEquipmentSummary[]).filter((item) =>
+export const guiamuonlineArmorItems = (equipmentIndex as unknown as GuideEquipmentSummary[]).filter((item) =>
   armorCategories.has(item.category)
 )
 

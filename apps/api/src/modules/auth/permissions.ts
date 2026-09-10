@@ -47,6 +47,31 @@ export const permissionKeys = {
   adminStoreRefund: 'admin.store.refund',
   adminStoreDeliveries: 'admin.store.deliveries',
   adminStoreTest: 'admin.store.test',
+  // PHASE S (2026-09-02) -- the X-Shop/CashShop admin control plane
+  // desired-state layer. `sync` is deliberately its OWN key, separate
+  // from `edit` -- editing the Portal's own desired-state record is a
+  // normal content operation; a future real GameServer sync action is
+  // materially more sensitive (Part N's own explicit instruction) and
+  // must never be granted merely because an account already has edit
+  // access. No GameServer sync is implemented yet (see
+  // legacy-catalog-config.service.ts) -- this key exists now so the
+  // eventual sync endpoint has an RBAC boundary ready on day one rather
+  // than reusing `edit` out of convenience later.
+  adminStoreLegacyCatalogView: 'admin.store.legacy-catalog.view',
+  adminStoreLegacyCatalogEdit: 'admin.store.legacy-catalog.edit',
+  adminStoreLegacyCatalogSync: 'admin.store.legacy-catalog.sync',
+  // PHASE U (2026-09-03) -- the Progression control plane (XP/Drop/
+  // Reset/Master Reset). Per Bryan's own OQ-032 closure: admin
+  // control-plane ACCESS is RBAC (these three keys); real GameServer
+  // MUTATION is this `.sync` permission PLUS a runtime kill switch
+  // (PROGRESSION_RUNTIME_SYNC_ENABLED), never a separate portal-management
+  // flag layered on top of RBAC. No `.approve` key -- unlike Store's
+  // review->publish pipeline, a progression desired-state edit has no
+  // separate approval step in this foundation phase; `.edit` is the
+  // terminal action.
+  adminProgressionView: 'admin.progression.view',
+  adminProgressionEdit: 'admin.progression.edit',
+  adminProgressionSync: 'admin.progression.sync',
   adminMarketplaceManage: 'admin.marketplace.manage',
   adminMarketplaceView: 'admin.marketplace.view',
   adminMarketplaceListingsModerate: 'admin.marketplace.listings.moderate',
@@ -57,6 +82,15 @@ export const permissionKeys = {
   adminMarketplaceEconomyManage: 'admin.marketplace.economy.manage',
   adminMarketplaceTasksManage: 'admin.marketplace.tasks.manage',
   adminMarketplaceReportsView: 'admin.marketplace.reports.view',
+  adminVipManage: 'admin.vip.manage',
+  adminBetaLifecycleManage: 'admin.beta-lifecycle.manage',
+  // Phase Z: BetaParticipationRecord (eligibility fact) view/generate are
+  // separately gated from adminBetaLifecycleManage (cleanup dry-run) --
+  // same "do not assume all ADM roles can act on this" principle as
+  // every other admin.* split in this file. `.generate` is the
+  // consequential one: it creates real BetaRewardEntitlement rows.
+  adminBetaRewardsView: 'admin.beta-rewards.view',
+  adminBetaRewardsGenerate: 'admin.beta-rewards.generate',
   adminCommunityView: 'admin.community.view',
   adminCommunityPostsModerate: 'admin.community.posts.moderate',
   adminCommunityCommentsModerate: 'admin.community.comments.moderate',
@@ -85,6 +119,16 @@ export const permissionKeys = {
   adminGameDataView: 'admin.game-data.view',
   adminGameProvisioningView: 'admin.game-provisioning.view',
   adminGameProvisioningManage: 'admin.game-provisioning.manage',
+  adminVipSyncView: 'admin.vip-sync.view',
+  adminVipSyncManage: 'admin.vip-sync.manage',
+  // GameBridge extension plan Part 5 + Bryan's follow-up decision
+  // (2026-08-30): PURGE_GAME_ACCOUNT is irreversible and restricted to
+  // SUPER_ADMIN by default -- ADMIN does not automatically inherit
+  // destructive purge permission, unlike every other admin.* key here.
+  // Delegating it to ADMIN in the future must be a deliberate,
+  // separately-reviewed change, not an artifact of the blanket
+  // adminAccountsStatusManage permission NORMAL_ACCOUNT_DELETION uses.
+  adminAccountsPurgeManage: 'admin.accounts.purge.manage',
   adminRoadmapView: 'admin.roadmap.view',
   adminRoadmapCreate: 'admin.roadmap.create',
   adminRoadmapEdit: 'admin.roadmap.edit',
@@ -95,6 +139,23 @@ export const permissionKeys = {
   adminReferencesManage: 'admin.references.manage',
   adminFinanceManage: 'admin.finance.manage',
   adminRechargeManage: 'admin.recharge.manage',
+  // PHASE P (2026-08-31): the chargeback dispersal trace is a real
+  // read-only report (WalletLedgerService.traceChargebackDispersal()),
+  // but still real financial data about potentially multiple accounts,
+  // gated distinctly from ordinary finance viewing (adminFinanceView).
+  adminChargebackView: 'admin.chargeback.view',
+  // PHASE P (2026-08-31): acting on a chargeback case (notes/resolution)
+  // is more consequential than viewing the read-only dispersal trace --
+  // separately gated, same reasoning as adminRechargeRefund vs.
+  // adminOrdersOperate above.
+  adminChargebackManage: 'admin.chargeback.manage',
+  // PHASE P (2026-08-31): antifraud foundation -- risk case visibility and
+  // the ability to apply/lift a case action (MANUAL_REVIEW/
+  // PAYMENT_RESTRICTION/TRANSFER_RESTRICTION/ACCOUNT_RESTRICTION) are
+  // gated separately, same "do not assume all ADM roles can act on this"
+  // principle as every other finance-sensitive permission in this file.
+  adminRiskView: 'admin.risk.view',
+  adminRiskManage: 'admin.risk.manage',
   adminSystemManage: 'admin.system.manage',
   adminGuildsView: 'admin.guilds.view',
   adminGuildsModerate: 'admin.guilds.moderate',
@@ -105,6 +166,13 @@ export const permissionKeys = {
   adminLauncherContentEdit: 'admin.launcher.content.edit',
   adminLauncherContentPublish: 'admin.launcher.content.publish',
   adminLauncherAssetsManage: 'admin.launcher.assets.manage',
+  // Phase Z: Bug Hunters staff triage -- view is listing/filtering/
+  // reading a report (including its own internal notes); triage is every
+  // consequential action (assign, status change, staff severity, reply,
+  // internal note, mark reward-eligible). Same view/consequential-action
+  // split as every other admin.* pair in this file.
+  adminBugHuntersView: 'admin.bug-hunters.view',
+  adminBugHuntersTriage: 'admin.bug-hunters.triage',
   accountManage: 'account.manage',
   charactersManage: 'characters.manage',
   shopAccess: 'shop.access',
@@ -112,6 +180,10 @@ export const permissionKeys = {
   communityAccess: 'community.access',
   rechargeAccess: 'recharge.access',
   guildsAccess: 'guilds.access',
+  // Phase Z: every player gets this by default, same tier as
+  // shopAccess/communityAccess above -- submitting/viewing your own bug
+  // reports is a baseline Beta feature, not a delegated admin privilege.
+  bugHuntersAccess: 'bug-hunters.access',
   guidesFutureView: 'guides.future.view',
   gmDashboardView: 'gm.dashboard.view',
   gmCharactersView: 'gm.characters.view',
@@ -151,7 +223,8 @@ const playerPermissions: PermissionKey[] = [
   permissionKeys.marketplaceAccess,
   permissionKeys.communityAccess,
   permissionKeys.rechargeAccess,
-  permissionKeys.guildsAccess
+  permissionKeys.guildsAccess,
+  permissionKeys.bugHuntersAccess
 ]
 
 const gmPermissions: PermissionKey[] = [

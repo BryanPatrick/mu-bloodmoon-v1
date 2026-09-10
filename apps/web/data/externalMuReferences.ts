@@ -29,7 +29,7 @@ const toolItemUrl = 'https://muonlinefanz.com/tools/items/'
 const monsterUrl = 'https://muonlinefanz.com/tools/mobs/'
 const mapUrl = 'https://muonlinefanz.com/tools/maps/'
 
-const characters: Seed[] = [
+const characters: Seed[] = ([
   ['Dark Knight', 'dark-knight', 'v6-prioridade'],
   ['Fairy Elf', 'elf', 'v6-prioridade'],
   ['Dark Wizard', 'dark-wizard', 'v6-prioridade'],
@@ -37,7 +37,7 @@ const characters: Seed[] = [
   ['Magic Gladiator', 'magic-gladiator', 'v6-prioridade'],
   ['Dark Lord', 'dark-lord', 'v6-prioridade'],
   ['Rage Fighter', 'rage-fighter', 'validar']
-].map(([title, slug, compatibility]) => ({
+] as [string, string, string][]).map(([title, slug, compatibility]) => ({
   title,
   group: 'Personagens',
   category: 'Personagem externo',
@@ -396,5 +396,5 @@ export const externalMuReferenceAssets: DevReferenceAsset[] = [
     source: megamu,
     sourceUrl: 'https://megamu.net/forum/showthread.php?tid=11675',
     notes: 'Fonte adicional para skills, NPCs, quests e sistemas por versao.'
-  }
+  } as DevReferenceAsset
 ].map((asset) => ('status' in asset ? asset : toCatalogAsset(asset)))

@@ -37,7 +37,7 @@ const itemLevel = computed(() => Number(data.value.level || data.value.itemLevel
 const quality = computed(() => String(data.value.quality || data.value.type || 'normal').toLowerCase())
 const qualityLabel = computed(() => quality.value.includes('ancient') ? 'Ancient' : quality.value.includes('socket') ? 'Socket' : quality.value.includes('excellent') ? 'Excellent' : quality.value.includes('epic') ? 'Épico' : 'Normal')
 const qualityClass = computed(() => `quality-${qualityLabel.value.toLowerCase()}`)
-const currencyLabel = computed(() => ({ WCOIN: 'WCoin', GOBLIN_POINT: 'GP', HUNT_POINT: 'HP' }[props.listing.currency] || props.listing.currency))
+const currencyLabel = computed(() => ({ WCOIN: 'WCoin', GOBLIN_POINT: 'Blood Coin', HUNT_POINT: 'HP' }[props.listing.currency] || props.listing.currency))
 const relativeDate = computed(() => new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' }).format(new Date(props.listing.createdAt)))
 </script>
 

@@ -21,13 +21,13 @@
       <template v-else-if="guild">
         <GuildProfileHeader :guild="guild" :can-manage="canManage">
           <template v-if="canManage" #actions>
-            <UButton color="neutral" variant="soft" size="sm" @click="showEditor = true">
+            <UButton color="neutral" variant="soft" size="sm" @click="() => { showEditor = true }">
               <Pencil class="size-4" />Editar perfil
             </UButton>
             <!-- Visually and behaviorally separate from "Editar perfil":
             LEADER-only (not OFFICER, unlike profile edit), and distinctly
             styled since it's a destructive, step-up-gated action. -->
-            <UButton v-if="isLeader" color="error" variant="outline" size="sm" @click="showDisbandModal = true">
+            <UButton v-if="isLeader" color="error" variant="outline" size="sm" @click="() => { showDisbandModal = true }">
               <ShieldAlert class="size-4" />Encerrar guilda
             </UButton>
           </template>

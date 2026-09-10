@@ -198,7 +198,7 @@ const heroSlides = [
   { image: '/images/guide-elfa-hero.png', alt: 'Fairy Elf em posição de combate', position: 'object-center' },
   { image: '/images/guide-dark-lord-hero.png', alt: 'Dark Lord em Blood Castle', position: 'object-right' }
 ]
-const currentSlide = computed(() => heroSlides[activeSlide.value] || heroSlides[0])
+const currentSlide = computed(() => heroSlides[activeSlide.value] || heroSlides[0]!)
 let interval: ReturnType<typeof setInterval> | undefined
 onMounted(() => { interval = setInterval(() => { activeSlide.value = (activeSlide.value + 1) % heroSlides.length }, 7000) })
 onBeforeUnmount(() => clearInterval(interval))

@@ -150,7 +150,7 @@ export const useAdminObservabilityApi = () => {
   const apiBase = computed(() =>
     String(config.public.apiBase || 'http://localhost:3333/api').replace(/\/$/, '')
   )
-  const headers = () =>
+  const headers = (): Record<string, string> =>
     accessToken() ? { Authorization: `Bearer ${accessToken()}` } : {}
   const request = <T>(path: string, options: Record<string, unknown> = {}) =>
     $fetch<T>(`${apiBase.value}${path}`, {

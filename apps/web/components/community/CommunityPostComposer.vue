@@ -145,7 +145,7 @@ onBeforeUnmount(releasePreviews)
         <div class="post-form__footer">
           <USelect v-model="visibility" :items="visibilityItems" value-key="value" class="w-40" />
           <UButton type="button" color="neutral" variant="outline" :disabled="saving" @click="status = 'DRAFT'; save()"><Save class="size-4" />Rascunho</UButton>
-          <UButton type="submit" color="primary" :loading="saving" @click="status = 'PUBLISHED'"><Send class="size-4" />Publicar</UButton>
+          <UButton type="submit" color="primary" :loading="saving" @click="() => { status = 'PUBLISHED' }"><Send class="size-4" />Publicar</UButton>
         </div>
       </form>
     </template>

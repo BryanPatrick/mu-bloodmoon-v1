@@ -2,6 +2,7 @@ export const permissions = {
   adminDashboardView: 'admin.dashboard.view',
   adminAccountsView: 'admin.accounts.view',
   adminAccountsStatusManage: 'admin.accounts.status.manage',
+  adminAccountsPurgeManage: 'admin.accounts.purge.manage',
   adminRolesManage: 'admin.roles.manage',
   adminContentManage: 'admin.content.manage',
   adminAuditView: 'admin.audit.view',
@@ -27,6 +28,9 @@ export const permissions = {
   adminStoreRefund: 'admin.store.refund',
   adminStoreDeliveries: 'admin.store.deliveries',
   adminStoreTest: 'admin.store.test',
+  adminStoreLegacyCatalogView: 'admin.store.legacy-catalog.view',
+  adminStoreLegacyCatalogEdit: 'admin.store.legacy-catalog.edit',
+  adminStoreLegacyCatalogSync: 'admin.store.legacy-catalog.sync',
   adminMarketplaceManage: 'admin.marketplace.manage',
   adminMarketplaceView: 'admin.marketplace.view',
   adminMarketplaceListingsModerate: 'admin.marketplace.listings.moderate',
@@ -73,6 +77,12 @@ export const permissions = {
   adminReferencesManage: 'admin.references.manage',
   adminFinanceManage: 'admin.finance.manage',
   adminRechargeManage: 'admin.recharge.manage',
+  // PHASE P (2026-08-31): see apps/api/src/modules/auth/permissions.ts's
+  // matching comments.
+  adminChargebackView: 'admin.chargeback.view',
+  adminChargebackManage: 'admin.chargeback.manage',
+  adminRiskView: 'admin.risk.view',
+  adminRiskManage: 'admin.risk.manage',
   adminSystemManage: 'admin.system.manage',
   adminGuildsView: 'admin.guilds.view',
   adminGuildsModerate: 'admin.guilds.moderate',
@@ -83,6 +93,10 @@ export const permissions = {
   adminLauncherContentEdit: 'admin.launcher.content.edit',
   adminLauncherContentPublish: 'admin.launcher.content.publish',
   adminLauncherAssetsManage: 'admin.launcher.assets.manage',
+  adminBetaRewardsView: 'admin.beta-rewards.view',
+  adminBetaRewardsGenerate: 'admin.beta-rewards.generate',
+  adminBugHuntersView: 'admin.bug-hunters.view',
+  adminBugHuntersTriage: 'admin.bug-hunters.triage',
   accountManage: 'account.manage',
   charactersManage: 'characters.manage',
   shopAccess: 'shop.access',
@@ -90,6 +104,7 @@ export const permissions = {
   communityAccess: 'community.access',
   rechargeAccess: 'recharge.access',
   guildsAccess: 'guilds.access',
+  bugHuntersAccess: 'bug-hunters.access',
   guidesFutureView: 'guides.future.view',
   gmDashboardView: 'gm.dashboard.view',
   gmCharactersView: 'gm.characters.view',
@@ -120,7 +135,8 @@ const playerPermissions: Permission[] = [
   permissions.marketplaceAccess,
   permissions.communityAccess,
   permissions.rechargeAccess,
-  permissions.guildsAccess
+  permissions.guildsAccess,
+  permissions.bugHuntersAccess
 ]
 
 const gmPermissions: Permission[] = [
@@ -159,5 +175,5 @@ export const isTwoFactorMandatory = (role?: UserRole) => Boolean(role) && role !
 export const roleHasPermission = (role: UserRole | undefined, permission: Permission) => {
   if (!role) return false
   const roleAccess = rolePermissions[role]
-  return roleAccess.includes('*') || roleAccess.includes(permission)
+  return roleAccess[0] === '*' || (roleAccess as Permission[]).includes(permission)
 }

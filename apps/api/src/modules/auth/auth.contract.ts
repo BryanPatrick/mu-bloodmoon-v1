@@ -18,6 +18,12 @@ export type RegisterRequest = {
   email: string
   reference?: string
   captchaToken: string
+  // Open Beta P0 foundation (Part L/M). Optional so existing callers
+  // that predate the Beta notice UI keep working -- when present and it
+  // matches the current OPEN_BETA_NOTICE_VERSION, the acceptance is
+  // recorded as an auditable AccountTermsAcceptance row, never as a bare
+  // boolean.
+  acceptedOpenBetaNoticeVersion?: number
 }
 
 export type ChangePasswordRequest = {

@@ -76,6 +76,12 @@ const guardedEmit = (busy: { value: boolean }, run: () => void) => {
   run()
   setTimeout(() => { busy.value = false }, 4000)
 }
+// Named so the template can reference them by identifier instead of
+// passing busyRepost/busySave directly -- a ref referenced by name inside
+// a template expression is auto-unwrapped to its plain value by Vue's
+// compiler, which broke guardedEmit's own `{ value: boolean }` contract.
+const onRepostClick = () => guardedEmit(busyRepost, () => emit('repost', props.post))
+const onSaveClick = () => guardedEmit(busySave, () => emit('save', props.post))
 const reactionMenu = (target: CommunityPostView | CommunityCommentView, comment = false) => [reactionOptions.map((item) => ({
   label: item.label, icon: item.icon,
   onSelect: () => comment
@@ -124,7 +130,7 @@ const onImgError = (event: Event) => { (event.target as HTMLImageElement).src = 
   <article class="community-post">
     <header class="community-post__header">
       <img :src="post.author.avatarUrl || '/favicon.png'" :alt="post.author.name" @error="onImgError">
-      <CommunityProfileHoverCard :username="post.author.username" :name="post.author.name" :avatar-url="post.author.avatarUrl || undefined">
+      <CommunityProfileHoverCard :username="post.author.username" :name="post.author.name" :avatar-url="post.author.avatarUrl || '/favicon.png'">
         <div class="min-w-0 flex-1 cursor-pointer">
           <strong>{{ post.author.name }}</strong>
           <p class="community-post__byline">@{{ post.author.username }} · {{ createdLabel }} <span v-if="post.edited">· Editado</span></p>
@@ -151,11 +157,11 @@ const onImgError = (event: Event) => { (event.target as HTMLImageElement).src = 
         <button type="button" :disabled="busyReact" :class="{ 'is-active': post.viewer.reactions.length }" aria-label="Reagir"><Heart class="size-4" />{{ post.reactions }}</button>
       </UDropdownMenu>
       <button type="button" :class="{ 'is-active': commentsOpen }" @click="commentsOpen = !commentsOpen"><MessageCircle class="size-4" />{{ post.comments }}</button>
-      <button type="button" :disabled="busyRepost" :class="{ 'is-active': post.viewer.reposted }" @click="guardedEmit(busyRepost, () => emit('repost', post))"><Repeat2 class="size-4" />{{ post.reposts || '' }}</button>
-      <UDropdownMenu :items="[[{ label: 'Repostar na Community', icon: Repeat2, onSelect: () => guardedEmit(busyRepost, () => emit('repost', post)) }, { label: 'Copiar link', icon: Copy, onSelect: () => emit('copy', post) }]]">
+      <button type="button" :disabled="busyRepost" :class="{ 'is-active': post.viewer.reposted }" @click="onRepostClick()"><Repeat2 class="size-4" />{{ post.reposts || '' }}</button>
+      <UDropdownMenu :items="[[{ label: 'Repostar na Community', icon: Repeat2, onSelect: () => onRepostClick() }, { label: 'Copiar link', icon: Copy, onSelect: () => emit('copy', post) }]]">
         <button type="button" aria-label="Compartilhar"><Share2 class="size-4" /></button>
       </UDropdownMenu>
-      <button class="ml-auto" type="button" :disabled="busySave" :class="{ 'is-active': post.viewer.saved }" aria-label="Salvar publicação" @click="guardedEmit(busySave, () => emit('save', post))"><Bookmark class="size-4" />{{ post.saves || '' }}</button>
+      <button class="ml-auto" type="button" :disabled="busySave" :class="{ 'is-active': post.viewer.saved }" aria-label="Salvar publicação" @click="onSaveClick()"><Bookmark class="size-4" />{{ post.saves || '' }}</button>
     </footer>
 
     <section v-if="commentsOpen" class="community-comments" aria-label="Comentários">

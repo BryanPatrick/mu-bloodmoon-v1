@@ -79,10 +79,10 @@
                 </div>
                 <p class="mt-3 text-[10px] uppercase text-white/35">Noticias (somente leitura -- editar em Conteudo &gt; Noticias)</p>
                 <div class="mt-1 grid grid-cols-2 gap-2">
-                  <div v-for="n in fixtureList(fixtures?.news)" :key="n.id" class="rounded border border-white/10 bg-white/5 p-2 text-[10px]"><strong class="block text-white/80">{{ n.title }}</strong>{{ n.cardSummary }}</div>
+                  <div v-for="n in fixtureList(fixtures?.news)" :key="n.id as string" class="rounded border border-white/10 bg-white/5 p-2 text-[10px]"><strong class="block text-white/80">{{ n.title }}</strong>{{ n.cardSummary }}</div>
                 </div>
                 <button class="mt-3 flex gap-2" type="button" @click="openSlot('home.socials')">
-                  <span v-for="s in slotValueList('home.socials')" :key="s.id" class="rounded border border-dashed border-white/15 px-2 py-1 text-[10px]">{{ s.label || s.id }}</span>
+                  <span v-for="s in slotValueList('home.socials')" :key="s.id as string" class="rounded border border-dashed border-white/15 px-2 py-1 text-[10px]">{{ s.label || s.id }}</span>
                   <span v-if="!slotValueList('home.socials').length" class="text-[10px] text-white/30">[editar redes sociais]</span>
                 </button>
                 <div class="mt-2 flex gap-3 text-[10px] text-white/40">
@@ -95,7 +95,7 @@
               <template v-else-if="currentPage === 'ACCOUNT'">
                 <p class="text-xs uppercase text-white/40">Personagens ({{ previewStateLabels[previewState] }})</p>
                 <div class="mt-2 grid gap-2">
-                  <div v-for="c in accountCharacters" :key="c.id" class="flex items-center gap-2 rounded border border-white/10 bg-white/5 p-2 text-xs">
+                  <div v-for="c in accountCharacters" :key="c.id as string" class="flex items-center gap-2 rounded border border-white/10 bg-white/5 p-2 text-xs">
                     <button class="rounded border border-dashed border-white/20 px-1 text-[9px] hover:border-crimson-400" @click="openSlot('account.classIcon')">[icone]</button>
                     <span class="font-bold text-white">{{ c.name }}</span><span class="text-white/40">{{ c.className }} · lvl {{ c.level }}</span>
                   </div>
@@ -107,32 +107,32 @@
               <template v-else-if="currentPage === 'NEWS'">
                 <p class="text-[10px] uppercase text-white/35">Lista de noticias (editar em Conteudo &gt; Noticias)</p>
                 <div class="mt-2 grid gap-2">
-                  <div v-for="n in fixtureList(fixtures?.news)" :key="n.id" class="rounded border border-white/10 bg-white/5 p-2 text-xs"><strong class="block">{{ n.title }}</strong><span class="text-white/45">{{ n.launcherSummary }}</span></div>
+                  <div v-for="n in fixtureList(fixtures?.news)" :key="n.id as string" class="rounded border border-white/10 bg-white/5 p-2 text-xs"><strong class="block">{{ n.title }}</strong><span class="text-white/45">{{ n.launcherSummary }}</span></div>
                 </div>
               </template>
 
               <template v-else-if="currentPage === 'EVENTS'">
                 <button class="block w-full rounded border border-dashed border-white/20 p-3 text-left text-xs hover:border-crimson-400" @click="openSlot('events.activeBanner')">[banner da pagina de eventos]</button>
                 <div class="mt-2 grid gap-2">
-                  <div v-for="e in fixtureList(fixtures?.events)" :key="e.id" class="rounded border border-white/10 bg-white/5 p-2 text-xs"><strong>{{ e.name }}</strong> — {{ e.shortDescription }}</div>
+                  <div v-for="e in fixtureList(fixtures?.events)" :key="e.id as string" class="rounded border border-white/10 bg-white/5 p-2 text-xs"><strong>{{ e.name }}</strong> — {{ e.shortDescription }}</div>
                 </div>
               </template>
 
               <template v-else-if="currentPage === 'RANKING'">
                 <button class="mb-2 rounded border border-dashed border-white/20 px-2 py-1 text-[10px] hover:border-crimson-400" @click="openSlot('ranking.classIcon')">[icones de classe]</button>
                 <table class="w-full text-xs"><tbody>
-                  <tr v-for="r in fixtureList(fixtures?.ranking)" :key="r.position" class="border-b border-white/5"><td class="py-1 text-white/40">#{{ r.position }}</td><td class="font-bold">{{ r.characterName }}</td><td class="text-white/45">{{ r.className }} · lvl {{ r.level }}</td></tr>
+                  <tr v-for="r in fixtureList(fixtures?.ranking)" :key="r.position as string" class="border-b border-white/5"><td class="py-1 text-white/40">#{{ r.position }}</td><td class="font-bold">{{ r.characterName }}</td><td class="text-white/45">{{ r.className }} · lvl {{ r.level }}</td></tr>
                 </tbody></table>
               </template>
 
               <template v-else-if="currentPage === 'STORE'">
                 <button class="block w-full rounded border border-dashed border-white/20 p-2 text-left text-[10px] hover:border-crimson-400" @click="openSlot('store.featuredBannerImage')">[banner de destaque]</button>
                 <button class="mt-2 flex gap-2" @click="openSlot('store.currencyIcon')">
-                  <span v-for="c in slotValueList('store.currencyIcon')" :key="c.currency" class="rounded border border-dashed border-white/15 px-2 py-1 text-[10px]">{{ c.currency }}</span>
+                  <span v-for="c in slotValueList('store.currencyIcon')" :key="c.currency as string" class="rounded border border-dashed border-white/15 px-2 py-1 text-[10px]">{{ c.currency }}</span>
                 </button>
                 <p class="mt-3 text-[10px] uppercase text-white/35">Produtos (editar em Loja)</p>
                 <div class="mt-1 grid grid-cols-2 gap-2">
-                  <div v-for="p in fixtureList(fixtures?.storeProducts)" :key="p.id" class="rounded border border-white/10 bg-white/5 p-2 text-[10px]"><strong class="block">{{ p.name }}</strong>{{ p.price }} {{ p.currency }}</div>
+                  <div v-for="p in fixtureList(fixtures?.storeProducts)" :key="p.id as string" class="rounded border border-white/10 bg-white/5 p-2 text-[10px]"><strong class="block">{{ p.name }}</strong>{{ p.price }} {{ p.currency }}</div>
                 </div>
               </template>
 

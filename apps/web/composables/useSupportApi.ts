@@ -1,5 +1,5 @@
 const supportAuthStorageKey = 'blood-moon-auth'
-const supportHeaders = () => {
+const supportHeaders = (): Record<string, string> => {
   if (!import.meta.client) return {}
   try { const session = JSON.parse(localStorage.getItem(supportAuthStorageKey) || '{}'); return session.accessToken ? { Authorization: `Bearer ${session.accessToken}` } : {} } catch { return {} }
 }
@@ -10,7 +10,7 @@ export type ModerationRecord = { id: string; accountId: string; type: string; re
 export const useSupportApi = () => {
   const config = useRuntimeConfig(); const base = computed(() => String(config.public.apiBase || 'http://localhost:3333/api').replace(/\/$/, ''))
   const get = <T>(path: string, query: Record<string, unknown> = {}) => $fetch<T>(`${base.value}${path}`, { query, headers: supportHeaders() })
-  const send = <T>(method: 'POST' | 'PATCH', path: string, body: unknown) => $fetch<T>(`${base.value}${path}`, { method, body, headers: supportHeaders() })
+  const send = <T>(method: 'POST' | 'PATCH', path: string, body: unknown) => $fetch<T>(`${base.value}${path}`, { method, body: body as Record<string, any> | BodyInit | null | undefined, headers: supportHeaders() })
   return {
     ownTickets: () => get<SupportTicket[]>('/account/tickets'), createTicket: (body: Record<string, unknown>) => send<SupportTicket>('POST', '/account/tickets', body),
     adminTickets: (status = '') => get<SupportTicket[]>('/admin/tickets', { status: status || undefined }), updateTicket: (id: string, body: Record<string, unknown>) => send<SupportTicket>('PATCH', `/admin/tickets/${id}`, body),

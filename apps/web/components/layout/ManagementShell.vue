@@ -96,7 +96,7 @@
 
 <script setup lang="ts">
 import {
-  Activity, BarChart3, Bell, ChevronDown, FileSearch, LayoutDashboard, LayoutTemplate, Map, PackageCheck,
+  Activity, ArrowLeftRight, BarChart3, Bell, Bug, ChevronDown, Crown, FileSearch, LayoutDashboard, LayoutTemplate, Lock, Map, PackageCheck,
   ListTodo, MessageCircle, PanelLeftClose, PanelLeftOpen, Settings, Shield, ShoppingBag,
   Store, TicketCheck, UserCog, Users
 } from 'lucide-vue-next'
@@ -173,7 +173,8 @@ const administrativeItems: MenuItem[] = [
       { label: 'Pedidos', to: '/painel/admin/loja?tab=orders', permission: permissions.adminStoreOrders },
       { label: 'Entregas', to: '/painel/admin/loja?tab=deliveries', permission: permissions.adminStoreDeliveries },
       { label: 'Estornos', to: '/painel/admin/loja?tab=orders&status=REFUND_PENDING', permission: permissions.adminStoreRefund },
-      { label: 'Importação do catálogo', to: '/painel/admin/loja?tab=products&modo=importacao', permission: permissions.adminStoreProducts }
+      { label: 'Importação do catálogo', to: '/painel/admin/loja?tab=products&modo=importacao', permission: permissions.adminStoreProducts },
+      { label: 'Catálogo legado (X-Shop/CashShop)', to: '/painel/admin/catalogo-legado', permission: permissions.adminStoreLegacyCatalogView }
     ]
   },
   {
@@ -232,6 +233,12 @@ const administrativeItems: MenuItem[] = [
     permission: permissions.gmEventsView
   },
   {
+    label: 'Bug Hunters',
+    to: '/painel/admin/bug-hunters',
+    icon: Bug,
+    permission: permissions.adminBugHuntersView
+  },
+  {
     label: 'Launcher Studio',
     to: '/painel/admin/launcher-studio',
     icon: LayoutTemplate,
@@ -282,7 +289,8 @@ const administrativeItems: MenuItem[] = [
       { label: 'Administradores', to: '/painel/admin/contas?perfil=admin', permission: permissions.adminRolesManage, roles: ['super-admin'] },
       { label: 'Moedas', to: '/painel/admin/financeiro?secao=moedas', permission: permissions.adminFinanceManage, roles: ['super-admin'] },
       { label: 'Integrações', to: '/painel/admin/sistema?secao=integracoes', permission: permissions.adminServerSettingsManage, roles: ['super-admin'] },
-      { label: 'Configurações gerais', to: '/painel/admin/sistema', permission: permissions.adminServerSettingsManage, roles: ['super-admin'] }
+      { label: 'Configurações gerais', to: '/painel/admin/sistema', permission: permissions.adminServerSettingsManage, roles: ['super-admin'] },
+      { label: 'Recompensas de Beta', to: '/painel/admin/beta-rewards', permission: permissions.adminBetaRewardsView, roles: ['super-admin'] }
     ]
   }
 ]
@@ -297,9 +305,13 @@ const playerItems: MenuItem[] = [
   { label: 'Meu perfil social', to: '/comunidade?painel=perfil', icon: UserCog },
   { label: 'Guildas', to: '/guilds', icon: Shield },
   { label: 'Minhas compras', to: '/painel/compras', icon: PackageCheck },
+  { label: 'Transferir WC', to: '/painel/transferencias', icon: ArrowLeftRight },
+  { label: 'VIP', to: '/painel/vip', icon: Crown },
   { label: 'Meus anúncios', to: '/painel/marketplace?visao=meus-anuncios', icon: ShoppingBag },
   { label: 'Notificações', to: '/painel/notificacoes', icon: Bell },
   { label: 'Suporte', to: '/painel/suporte', icon: TicketCheck },
+  { label: 'Privacidade e meus dados', to: '/painel/privacidade', icon: Lock },
+  { label: 'Bug Hunters', to: '/painel/bug-hunters', icon: Bug },
   { label: 'Configurações', to: '/painel/configuracoes', icon: Settings }
 ]
 
@@ -314,6 +326,7 @@ const gmItems: MenuItem[] = [
   { label: 'Guildas', to: '/guilds', icon: Shield },
   { label: 'Notificações', to: '/painel/notificacoes', icon: Bell },
   { label: 'Suporte', to: '/painel/suporte', icon: TicketCheck },
+  { label: 'Bug Hunters', to: '/painel/bug-hunters', icon: Bug },
   { label: 'Configurações', to: '/painel/configuracoes', icon: Settings }
 ]
 

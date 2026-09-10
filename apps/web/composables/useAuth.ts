@@ -108,7 +108,7 @@ const writeJson = (key: string, value: unknown) => {
 
 const apiCurrencyLabels: Record<string, string> = {
   WCOIN: 'WCoin',
-  GOBLIN_POINT: 'Goblin Point',
+  GOBLIN_POINT: 'Blood Coin',
   HUNT_POINT: 'Hunt Point'
 }
 

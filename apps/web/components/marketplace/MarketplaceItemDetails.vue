@@ -7,7 +7,7 @@
             <p class="bm-kicker">{{ listing.itemCategory }}</p>
             <h2 class="mt-1 font-display text-2xl font-black uppercase text-white">{{ listing.itemName }}</h2>
           </div>
-          <UButton color="neutral" variant="ghost" square aria-label="Fechar" @click="isOpen = false"><X class="size-4" /></UButton>
+          <UButton color="neutral" variant="ghost" square aria-label="Fechar" @click="() => { isOpen = false }"><X class="size-4" /></UButton>
         </header>
 
         <div class="grid gap-4 p-4 md:grid-cols-[220px_1fr]">
@@ -74,7 +74,7 @@ const stats = computed(() => [
   { label: 'Durabilidade', value: String(data.value.durability || '--') },
   { label: 'Origem', value: props.listing?.sellerCharacter?.name || 'Inventário do jogador' }
 ])
-const currencyLabel = computed(() => props.listing ? ({ WCOIN: 'WCoin', GOBLIN_POINT: 'GP', HUNT_POINT: 'HP' }[props.listing.currency] || props.listing.currency) : '')
+const currencyLabel = computed(() => props.listing ? ({ WCOIN: 'WCoin', GOBLIN_POINT: 'Blood Coin', HUNT_POINT: 'HP' }[props.listing.currency] || props.listing.currency) : '')
 const modalUi = { content: 'max-w-4xl bg-transparent shadow-none ring-0', overlay: 'bg-black/75 backdrop-blur-sm' }
 </script>
 

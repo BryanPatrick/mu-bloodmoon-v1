@@ -14,7 +14,7 @@ const normalizeLabel = (value: string) =>
 const detailLoaders = import.meta.glob<DetailModule>('./mu-equipment-details/*.json')
 const categoryCache = new Map<string, Promise<GuideEquipmentItem[]>>()
 
-export const muEquipmentIndex = equipmentIndex as GuideEquipmentSummary[]
+export const muEquipmentIndex = equipmentIndex as unknown as GuideEquipmentSummary[]
 
 export const muEquipmentCategories = Array.from(
   new Set(muEquipmentIndex.map((item) => item.category))

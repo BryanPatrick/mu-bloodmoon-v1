@@ -12,8 +12,16 @@ import { AdminObservabilityModule } from './modules/admin-observability/admin-ob
 import { AuthModule } from './modules/auth/auth.module'
 import { CharactersModule } from './modules/characters/characters.module'
 import { CommerceModule } from './modules/commerce/commerce.module'
+import { ProgressionModule } from './modules/progression/progression.module'
 import { WebSourceModule } from './modules/web-source/web-source.module'
 import { MarketplaceModule } from './modules/marketplace/marketplace.module'
+import { WalletModule } from './modules/wallet/wallet.module'
+import { WalletTransferModule } from './modules/wallet-transfer/wallet-transfer.module'
+import { VipModule } from './modules/vip/vip.module'
+import { VipSyncModule } from './modules/vip-sync/vip-sync.module'
+import { BetaLifecycleModule } from './modules/beta-lifecycle/beta-lifecycle.module'
+import { BetaRewardsModule } from './modules/beta-rewards/beta-rewards.module'
+import { BugHuntersModule } from './modules/bug-hunters/bug-hunters.module'
 import { CommunityModule } from './modules/community/community.module'
 import { MuServerExportModule } from './modules/muserver-export/muserver-export.module'
 import { WikiModule } from './modules/wiki/wiki.module'
@@ -33,6 +41,7 @@ import { GameAccountIdentityModule } from './modules/game-account-identity/game-
 import { GameProvisioningReconciliationModule } from './modules/game-provisioning-reconciliation/game-provisioning-reconciliation.module'
 import { IntegrationsDiscordModule } from './modules/integrations-discord/integrations-discord.module'
 import { LauncherStudioModule } from './modules/launcher-studio/launcher-studio.module'
+import { AlertingModule } from './modules/alerting/alerting.module'
 
 export const apiModules = [
   'auth',
@@ -82,8 +91,16 @@ export type ApiModuleName = typeof apiModules[number]
     AdminObservabilityModule,
     CharactersModule,
     CommerceModule,
+    ProgressionModule,
     WebSourceModule,
     MarketplaceModule,
+    WalletModule,
+    WalletTransferModule,
+    VipModule,
+    VipSyncModule,
+    BetaLifecycleModule,
+    BetaRewardsModule,
+    BugHuntersModule,
     CommunityModule,
     MuServerExportModule,
     WikiModule,
@@ -100,7 +117,8 @@ export type ApiModuleName = typeof apiModules[number]
     GameAccountIdentityModule,
     GameProvisioningReconciliationModule,
     IntegrationsDiscordModule,
-    LauncherStudioModule
+    LauncherStudioModule,
+    AlertingModule
   ]
 })
 export class AppModule implements NestModule {

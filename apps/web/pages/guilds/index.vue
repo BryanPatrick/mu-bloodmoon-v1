@@ -8,7 +8,7 @@
       (an unaffiliated character to lead it) is resolved inside the modal,
       which shows a clear message instead of a form when there is none --
       avoids an extra fetch just to decide whether to render the button. -->
-      <UButton v-if="user" color="error" class="guilds-hero__create" @click="showCreateModal = true">Criar guilda</UButton>
+      <UButton v-if="user" color="error" class="guilds-hero__create" @click="() => { showCreateModal = true }">Criar guilda</UButton>
     </header>
 
     <GuildCreateModal v-if="showCreateModal" @close="showCreateModal = false" @created="showCreateModal = false" />

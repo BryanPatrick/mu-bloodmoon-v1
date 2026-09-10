@@ -2,7 +2,7 @@
   <div class="grid gap-4">
     <AdminObservabilityHeader :eyebrow="eyebrow" :title="title" :description="description">
       <div class="flex gap-2">
-        <UButton v-if="kind === 'work' && canCreate" color="primary" @click="createOpen = true">
+        <UButton v-if="kind === 'work' && canCreate" color="primary" @click="() => { createOpen = true }">
           <Plus class="size-4" /> Registrar trabalho
         </UButton>
         <UButton color="neutral" variant="soft" :loading="loading" @click="load">
@@ -77,7 +77,7 @@
           <label class="grid gap-1 text-xs font-black text-white/65">Evidência ou referência<textarea v-model="workForm.evidence" class="bm-activity-input min-h-20 py-3" placeholder="URL, arquivo, commit ou observação" /></label>
           <p v-if="formError" class="text-xs font-bold text-red-200">{{ formError }}</p>
           <div class="flex justify-end gap-2">
-            <UButton color="neutral" variant="ghost" @click="createOpen = false">Cancelar</UButton>
+            <UButton color="neutral" variant="ghost" @click="() => { createOpen = false }">Cancelar</UButton>
             <UButton type="submit" :loading="saving">Salvar registro</UButton>
           </div>
         </form>

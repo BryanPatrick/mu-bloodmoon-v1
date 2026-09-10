@@ -162,10 +162,10 @@ const form = reactive(emptyForm())
 const updateForm = reactive({ title: '', content: '', newStatus: '', newProgress: 0, evidence: '' })
 const taskForm = reactive({ title: '', description: '', assigneeId: '', dueAt: '' })
 const relationForm = reactive({ type: 'NEWS', entityId: '' })
-const metrics = computed(() => [
+const metrics = computed(() => ([
   ['Iniciativas', 'total'], ['Rascunhos', 'drafts'], ['Em revisao', 'review'], ['Atrasadas', 'overdue'], ['Sem atualizacao', 'stale'],
   ['Em desenvolvimento', 'development'], ['Em testes', 'testing'], ['Concluidas', 'completed'], ['Canceladas', 'cancelled'], ['Tarefas pendentes', 'pendingTasks']
-].map(([label, key]) => ({ label, value: Number(summary.value[key] || 0) })))
+] as [string, string][]).map(([label, key]) => ({ label, value: Number(summary.value[key] || 0) })))
 const allSelected = computed(() => items.value.length > 0 && items.value.every((item) => selectedIds.has(item.id)))
 const load = async () => { loading.value = true; try { const [list, stats] = await Promise.all([api.list({ ...query, page: page.value, pageSize: 24 }), api.summary()]); items.value = list.items; total.value = list.total; totalPages.value = list.totalPages; summary.value = stats; noticeError.value = false } catch { notice.value = 'Nao foi possivel carregar o Roadmap Admin.'; noticeError.value = true } finally { loading.value = false } }
 const debouncedLoad = () => { clearTimeout(debounce); debounce = setTimeout(() => { page.value = 1; load() }, 300) }

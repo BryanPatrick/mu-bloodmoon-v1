@@ -1,0 +1,31 @@
+---
+status: LEGAL_REVIEW_REQUIRED
+category: payments/legal
+audience: internal (product + legal review)
+lastVerified: 2026-08-30
+---
+
+# Financial Retention Policy — Phase 15
+
+Bryan's instruction: financial records (`RechargeIntent`, `PurchaseIntent`) may carry an independent retention obligation and must never be deleted alongside the account; unnecessary personal data on them can be anonymized/unlinked; the architecture must not depend on a legal decision that hasn't been made yet.
+
+## What's already true in code (verified, not new this document)
+
+- `NORMAL_ACCOUNT_DELETION` never deletes `RechargeIntent`/`PurchaseIntent` rows — confirmed in [`account-deletion-architecture.md`](../accounts/account-deletion-architecture.md)'s dependency map (#3, `PRESERVE`) and in `account-deletion.service.ts`'s transaction (no `rechargeIntent`/`purchaseIntent` mutation appears anywhere in `executeNormalDeletion`).
+- `PRE_BETA_PURGE` refuses to purge any account with a `PAID`/`REFUND_PENDING`/`REFUNDED` `RechargeIntent` or a `PAID`/`DELIVERING`/`COMPLETED`/`REFUND_PENDING`/`REFUNDED` `PurchaseIntent` (tested — `PRE_BETA_PURGE_REFUSES_PAID_RECHARGE_HISTORY`) — so a real cascading delete can never reach financial records either.
+
+Both of these facts hold **independent of any retention-duration decision** — they're structural (the deletion code doesn't touch these tables at all), not time-based. This is the sense in which "architecture doesn't depend on the legal decision" is already true today, not a future promise.
+
+## What's still open (genuinely `LEGAL_REVIEW_REQUIRED`, not decided here)
+
+1. **Retention duration.** How long must `RechargeIntent`/`PurchaseIntent` rows survive after the owning account is deleted — a fixed statutory period (Brazilian tax/accounting law), or indefinite? Not answered by this document; no code enforces a duration because none is known yet.
+2. **What counts as "unnecessary personal data" on a financial record that can be anonymized/unlinked, vs. what must stay linked for audit purposes.** `RechargeIntent`/`PurchaseIntent` carry `accountId` (a link, not raw PII) plus payment-provider fields (`externalReference`, `paymentIdempotencyKey`, `externalOrderId`, `paymentMethod`) — none of these are direct personal data (name/email/address) today; they're provider-side transaction identifiers. If Bryan/legal decide even these need scrubbing after some period, that's a new requirement, not implied by anything built so far.
+3. **Whether "unlink" means nulling `accountId`** (breaking the FK, matching the existing `WalletLedgerEntry`/`GameBridgeJob`/`AuditEvent` nullable-FK pattern already used elsewhere in this schema) or something else. Not decided — flagged as the natural technical shape if/when this is approved, not implemented.
+
+## Configurability requirement (per Bryan: no hardcoded numbers)
+
+If/when a retention duration is confirmed, the correct implementation shape (not built this phase, since no duration exists to configure yet) is a single admin-configurable setting — most naturally a new field on an existing config table (e.g. alongside `MarketplaceEconomyConfig`, or a small dedicated `FinancialRetentionConfig` row) — read by a scheduled process that only *unlinks* (never deletes) rows older than the configured threshold. Explicitly not a magic number in code, matching the same discipline already applied to VIP pricing (Phase 15's `VipProductConfig` seed) and the WC tax rates (Phase 13).
+
+## Status
+
+`FINANCIAL_RETENTION = LEGAL_REVIEW_REQUIRED, NO_DURATION_CONFIGURED, STRUCTURALLY_PRESERVED_REGARDLESS`. This document exists so the eventual legal decision has a clear, already-scoped place to land — not to make that decision.

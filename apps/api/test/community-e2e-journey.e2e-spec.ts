@@ -65,6 +65,16 @@ describe('Community end-to-end beta journey (Etapa 14, real data, no mocks, no r
     httpServer = app.getHttpServer()
     prisma = app.get(PrismaService)
 
+    // Test-isolation hygiene (same root cause class as vip-delivery.e2e-spec.ts's
+    // GRANT_VIP cleanup / account-lifecycle-bridge.e2e-spec.ts's GameBridgeJob
+    // cleanup): step 15's moderation-queue assertion queries status='NEW'
+    // reports ordered oldest-first with the admin endpoint's default
+    // pageSize (25) -- against the persistent local dev DB, leftover NEW
+    // reports from earlier runs/sessions accumulate and can crowd this
+    // journey's own freshly-created report out of the first page. Scoped to
+    // status='NEW' only, on the local dev DB.
+    await prisma.communityReport.deleteMany({ where: { status: 'NEW' } })
+
     // Same cooldown relaxation as every other Community E2E spec -- the
     // journey creates several posts/comments back-to-back.
     await prisma.communityPolicy.upsert({

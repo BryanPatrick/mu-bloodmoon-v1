@@ -14,6 +14,7 @@ import type { Server } from 'node:http'
 import { SafeExceptionFilter } from '../src/common/safe-exception.filter'
 import { RequestContextService } from '../src/common/request-context.service'
 import { ObservabilityService } from '../src/modules/observability/observability.service'
+import { Http5xxBurstDetector } from '../src/modules/alerting/http-5xx-burst-detector'
 
 @Controller('error-contract')
 class ErrorContractController {
@@ -104,6 +105,7 @@ describe('Global API error contract', () => {
       providers: [
         RequestContextService,
         SafeExceptionFilter,
+        Http5xxBurstDetector,
         { provide: ObservabilityService, useValue: { recordSystemError } }
       ]
     }).compile()

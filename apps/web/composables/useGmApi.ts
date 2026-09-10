@@ -74,7 +74,7 @@ const readAccessToken = () => {
   }
 }
 
-const authHeaders = () => readAccessToken() ? { Authorization: `Bearer ${readAccessToken()}` } : {}
+const authHeaders = (): Record<string, string> => readAccessToken() ? { Authorization: `Bearer ${readAccessToken()}` } : {}
 
 const cleanQuery = (query: Record<string, unknown>) =>
   Object.fromEntries(Object.entries(query).filter(([, value]) => value !== undefined && value !== null && value !== ''))

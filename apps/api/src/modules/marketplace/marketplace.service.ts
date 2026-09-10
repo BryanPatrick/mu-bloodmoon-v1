@@ -4,7 +4,9 @@ import type { Account, CurrencyCode, GameBridgeJob, GameBridgeStatus, Marketplac
 import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
+import { PaymentRiskService } from '../commerce/payment-risk.service'
 import { ObservabilityService } from '../observability/observability.service'
+import { WalletLedgerService } from '../wallet/wallet-ledger.service'
 import type {
   CreateMarketplaceListingPayload,
   CreateMarketplaceOrderPayload,
@@ -63,7 +65,9 @@ export class MarketplaceService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
-    private readonly observability: ObservabilityService
+    private readonly observability: ObservabilityService,
+    private readonly walletLedger: WalletLedgerService,
+    private readonly paymentRisk: PaymentRiskService
   ) {}
 
   async listPublic(query: MarketplaceQuery) {
@@ -216,11 +220,18 @@ export class MarketplaceService {
       }
     }
 
+    const operationId = randomUUID()
     const result = await this.prisma.$transaction(async (tx) => {
       const seller = await tx.account.findUnique({ where: { id: user.id } })
       if (!seller) throw new BadRequestException('Conta vendedora invalida.')
       if (economy?.publicationFee) {
-        await this.debitCurrency(tx, seller, payload.currency, economy.publicationFee)
+        // Paid to the platform for listing the item, not to another
+        // player -- STORE_PURCHASE, never the P2P tax path.
+        await this.walletLedger.debit(tx, seller.id, payload.currency, economy.publicationFee, {
+          idempotencyKey: `market-publication-fee:${operationId}`,
+          type: 'STORE_PURCHASE',
+          sourceType: 'PlayerMarketListing.publicationFee'
+        })
       }
       const listing = await tx.playerMarketListing.create({
         data: {
@@ -371,10 +382,46 @@ export class MarketplaceService {
     return this.mapListing(updated)
   }
 
+  // PHASE Q DECISION CLOSURE (2026-08-31) -- Bryan's own instruction:
+  // "audit the actual Market settlement flow" before deciding whether
+  // TRANSFER_RESTRICTION should cover any Market action. Real findings,
+  // per action (traced from this file's own code, not assumed):
+  //
+  //   MARKET_LIST (createListing)   -- no P2P WC movement at all (only an
+  //     optional STORE_PURCHASE-type publication FEE to the platform,
+  //     never to another player)                          -> ALLOW
+  //   MARKET_CANCEL (cancelListing) -- no WC movement whatsoever          -> ALLOW
+  //   MARKET_BUY (createOrder, below) -- debits the BUYER's WC
+  //     IMMEDIATELY, at order-creation time, addressed at a SPECIFIC
+  //     seller (via the listing) -- this is the exact "restricted
+  //     account initiates outbound P2P WC movement toward another
+  //     player" pattern TRANSFER_RESTRICTION exists to stop, even
+  //     though the seller isn't credited until settlement later. This
+  //     answers the Core Question directly: yes, buying moves a
+  //     restricted account's WC toward another specific player.       -> BLOCK
+  //   MARKET_SETTLEMENT (updateOrderStatus, COMPLETED) -- fulfills an
+  //     ALREADY-created, already-paid order; blocking it would strand
+  //     a legitimate seller's payout and a legitimate buyer's item for
+  //     an order that already happened (possibly before the
+  //     restriction even existed) -- this is completion/reconciliation,
+  //     not new initiation, and crediting the SELLER here is the
+  //     seller RECEIVING money, not dispersing it.                    -> ALLOW
+  //   MARKET_SELL (the seller's own side of a completed order) --
+  //     identical reasoning to settlement: the seller is RECEIVING,
+  //     never blocked.                                                -> ALLOW
+  //   REFUND (updateOrderStatus, REFUNDED) -- credits the buyer back,
+  //     the buyer RECEIVING, never blocked.                           -> ALLOW
+  //
+  // Only ONE real enforcement point follows from this: createOrder
+  // (Market BUY) is the sole Market action gated behind
+  // assertNoActiveTransferRestriction(). See ADR-0022 for the full
+  // table and the closed OQ-024.
   async createOrder(payload: CreateMarketplaceOrderPayload, user: AuthenticatedUser) {
     if (!payload.listingId?.trim()) {
       throw new BadRequestException('listingId e obrigatorio.')
     }
+
+    await this.paymentRisk.assertNoActiveTransferRestriction(user.id)
 
     const order = await this.prisma.$transaction(async (tx) => {
       const listing = await tx.playerMarketListing.findUnique({
@@ -404,11 +451,27 @@ export class MarketplaceService {
       }
 
       const economy = await tx.marketplaceEconomyConfig.findUnique({ where: { id: 'default' } })
-      const fee = Math.floor(
-        listing.price * Math.max(0, Math.min(100, economy?.saleFeePercent || 0)) / 100
-      )
+      // Display estimate only -- the AUTHORITATIVE fee is computed by
+      // WalletLedgerService.settleTaxedCredit() at completion time
+      // (updateOrderStatus, below), against the seller's real fee
+      // accumulator state at that moment, not this snapshot. Storing an
+      // estimate here lets the buyer/seller see an approximate fee
+      // immediately without pretending the accumulator has already
+      // settled anything.
+      const currencyTaxPercent =
+        listing.currency === 'WCOIN'
+          ? economy?.wcoinTaxPercent ?? 10
+          : listing.currency === 'GOBLIN_POINT'
+            ? economy?.goblinPointTaxPercent ?? 5
+            : economy?.huntPointTaxPercent ?? 5
+      const estimatedFee = Math.floor((listing.price * Math.max(0, Math.min(100, currencyTaxPercent))) / 100)
       const correlationId = randomUUID()
-      await this.debitCurrency(tx, buyer, listing.currency, listing.price)
+      await this.walletLedger.debit(tx, buyer.id, listing.currency, listing.price, {
+        idempotencyKey: `market-order-debit:${correlationId}`,
+        type: 'PLAYER_MARKET_PURCHASE',
+        sourceType: 'PlayerMarketOrder',
+        metadata: { listingId: listing.id, role: 'buyer' }
+      })
 
       const row = await tx.playerMarketOrder.create({
         data: {
@@ -417,8 +480,8 @@ export class MarketplaceService {
           price: listing.price,
           currency: listing.currency,
           status: 'DELIVERING',
-          fee,
-          sellerAmount: listing.price - fee,
+          fee: estimatedFee,
+          sellerAmount: listing.price - estimatedFee,
           correlationId,
           paidAt: new Date(),
           metadata: { escrow: true }
@@ -605,14 +668,33 @@ export class MarketplaceService {
     }
 
     const status = enumOrFallback(payload.status, orderStatuses, order.status)
+    let settledFee: number | null = null
+    let settledSellerAmount: number | null = null
     const updated = await this.prisma.$transaction(async (tx) => {
       if (status === 'COMPLETED' && order.status !== 'COMPLETED') {
-        await this.creditCurrency(
+        // Authoritative fee settlement happens HERE, not at order
+        // creation -- the accumulator touch and the real balance credit
+        // must happen atomically in the same transaction, at the same
+        // logical moment, or two orders for the same seller completing
+        // close together could interleave against a stale accumulator
+        // snapshot. This is also where CONCURRENT_PURCHASE_SAFE actually
+        // gets its guarantee: Prisma's transaction here serializes
+        // concurrent completions for the same seller/currency row.
+        const settlement = await this.walletLedger.settleTaxedCredit(
           tx,
           order.listing.sellerAccountId,
+          order.buyerAccountId,
           order.currency,
-          order.sellerAmount || order.price
+          order.price,
+          {
+            idempotencyKey: `market-order-settle:${order.correlationId}`,
+            type: 'PLAYER_MARKET_PURCHASE',
+            sourceType: 'PlayerMarketOrder',
+            sourceId: order.id
+          }
         )
+        settledFee = settlement.feeAmountCollected
+        settledSellerAmount = settlement.netAmount
         await tx.playerMarketListing.update({
           where: { id: order.listingId },
           data: { status: 'SOLD', soldAt: new Date() }
@@ -628,13 +710,21 @@ export class MarketplaceService {
       }
 
       if (status === 'REFUNDED' && order.status !== 'REFUNDED') {
-        await this.creditCurrency(tx, order.buyerAccountId, order.currency, order.price)
+        await this.walletLedger.credit(tx, order.buyerAccountId, order.currency, order.price, {
+          idempotencyKey: `market-order-refund:${order.correlationId}`,
+          type: 'REFUND',
+          sourceType: 'PlayerMarketOrder',
+          sourceId: order.id
+        })
       }
 
       return tx.playerMarketOrder.update({
         where: { id },
         data: {
           status,
+          // Overwrite the creation-time estimate with the real,
+          // accumulator-settled values now that they're known.
+          ...(settledFee !== null ? { fee: settledFee, sellerAmount: settledSellerAmount! } : {}),
           ...(status === 'COMPLETED' ? { deliveredAt: new Date() } : {}),
           ...(status === 'CANCELLED' || status === 'REFUNDED' ? { cancelledAt: new Date() } : {})
         },
@@ -741,26 +831,6 @@ export class MarketplaceService {
     }
 
     return this.mapBridgeJob(updated)
-  }
-
-  private async creditCurrency(tx: Prisma.TransactionClient, accountId: string, currency: CurrencyCode, amount: number) {
-    await tx.accountCurrency.upsert({
-      where: { accountId_currency: { accountId, currency } },
-      create: { accountId, currency, balance: Math.max(0, amount) },
-      update: { balance: { increment: Math.max(0, amount) } }
-    })
-  }
-
-  private async debitCurrency(tx: Prisma.TransactionClient, account: Account, currency: CurrencyCode, amount: number) {
-    const wallet = await tx.accountCurrency.findUnique({ where: { accountId_currency: { accountId: account.id, currency } } })
-    const balance = wallet?.balance || 0
-    if (balance < amount) {
-      throw new BadRequestException('Saldo insuficiente para comprar este item.')
-    }
-    await tx.accountCurrency.update({
-      where: { accountId_currency: { accountId: account.id, currency } },
-      data: { balance: { decrement: amount } }
-    })
   }
 
   private mapListing(row: PlayerMarketListing & { seller?: Account, sellerCharacter?: { name: string, className: string } | null, orders?: PlayerMarketOrder[] }) {

@@ -24,4 +24,17 @@ public sealed class AgentOptions
     public string GameCredentialKeyRingPath { get; set; } = "secrets/game-credential-keys.dpapi.json";
     public int CommandPollIntervalSeconds { get; set; } = 10;
     public int CommandMaxBackoffSeconds { get; set; } = 120;
+
+    // GameBridge extension plan Part 14 -- four independent kill switches,
+    // not one global switch, so disabling one operation never forces
+    // disabling the already-production-proven CREATE_GAME_ACCOUNT path.
+    // Deliberately default false: enabling any of these is a separate,
+    // explicit decision from "the code compiles/deploys" -- see
+    // docs/gamebridge/gamebridge-agent-extension-plan.md Part 14.
+    // PurgeEnabled defaults false even after the others are turned on,
+    // per Bryan's decision (it's the only irreversible operation).
+    public bool GrantVipEnabled { get; set; } = false;
+    public bool SyncVipTierEnabled { get; set; } = false;
+    public bool AnonymizeEnabled { get; set; } = false;
+    public bool PurgeEnabled { get; set; } = false;
 }

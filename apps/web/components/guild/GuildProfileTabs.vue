@@ -308,12 +308,12 @@ const charactersApi = useCharactersApi()
 const { user } = useAuth()
 
 const tabs = [
-  { key: 'overview', label: 'Visão Geral', icon: Info },
-  { key: 'members', label: 'Membros', icon: Users },
-  { key: 'level', label: 'Guild Level', icon: TrendingUp },
-  { key: 'xp', label: 'Guild XP', icon: Award },
-  { key: 'requests', label: 'Solicitações', icon: Package },
-  { key: 'projects', label: 'Projetos', icon: ChartColumn },
+  { key: 'overview', label: 'Visão Geral', icon: Info, preview: false },
+  { key: 'members', label: 'Membros', icon: Users, preview: false },
+  { key: 'level', label: 'Guild Level', icon: TrendingUp, preview: false },
+  { key: 'xp', label: 'Guild XP', icon: Award, preview: false },
+  { key: 'requests', label: 'Solicitações', icon: Package, preview: false },
+  { key: 'projects', label: 'Projetos', icon: ChartColumn, preview: false },
   { key: 'treasury', label: 'Tesouraria', icon: Coins, preview: true },
   { key: 'vault', label: 'Cofre', icon: Package, preview: true },
   { key: 'feed', label: 'Feed', icon: MessagesSquare, preview: true },

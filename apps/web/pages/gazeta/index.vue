@@ -109,7 +109,7 @@ const { data: cmsStories } = await useAsyncData(
 const demoStories = createChronicleDemoStories()
 const stories = computed(() => (cmsStories.value.length ? cmsStories.value : demoStories))
 const isDemoEdition = computed(() => !cmsStories.value.length)
-const leadStory = computed(() => stories.value[0] || demoStories[0])
+const leadStory = computed(() => stories.value[0] || demoStories[0]!)
 const activeCategory = ref('Últimas')
 const categoryOptions = [
   'Últimas',

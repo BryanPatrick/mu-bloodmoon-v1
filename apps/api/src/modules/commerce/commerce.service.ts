@@ -1,6 +1,5 @@
 ﻿import { BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common'
 import type {
-  Account,
   CurrencyCode,
   Prisma,
   PurchaseIntentStatus,
@@ -18,6 +17,9 @@ import { ObservabilityService } from '../observability/observability.service'
 import { PAYMENT_PROVIDER, type PaymentProvider } from '../payments/payment-provider.interface'
 import { PaymentWebhookEventService } from '../payments/payment-webhook-event.service'
 import { mapMercadoPagoOrderStatus } from '../payments/mercadopago.status-map'
+import { WalletLedgerService } from '../wallet/wallet-ledger.service'
+import { ChargebackCaseService } from './chargeback-case.service'
+import { PaymentRiskService } from './payment-risk.service'
 import type {
   CommerceQuery,
   CreatePurchaseIntentPayload,
@@ -33,7 +35,21 @@ const rechargeTransitions: Record<RechargeIntentStatus, RechargeIntentStatus[]> 
   PREPARED: ['PENDING', 'PROCESSING', 'PAID', 'FAILED', 'CANCELLED', 'MANUAL_REVIEW'],
   PENDING: ['PROCESSING', 'PAID', 'FAILED', 'CANCELLED', 'MANUAL_REVIEW'],
   PROCESSING: ['PAID', 'FAILED', 'CANCELLED', 'MANUAL_REVIEW'],
-  PAID: ['REFUND_PENDING', 'REFUNDED', 'CANCELLED'],
+  // PHASE P (2026-08-31): a real bug this phase's own testing surfaced --
+  // PAID -> MANUAL_REVIEW was missing, which structurally blocked the
+  // ONE realistic chargeback scenario (Mercado Pago reports
+  // status=charged_back on an order well AFTER the original approval
+  // webhook already moved this recharge to PAID). Without this,
+  // reconcileWithProvider's own mapMercadoPagoOrderStatus('charged_back')
+  // -> transitionRechargeStatus(..., 'MANUAL_REVIEW') call would have
+  // thrown "Transicao invalida: PAID -> MANUAL_REVIEW" for every real
+  // chargeback, silently preventing ChargebackCaseService from ever
+  // running. Deliberately NOT paired with a clawback in this branch (see
+  // the transaction body below) -- WC stays exactly where it is while a
+  // human reviews the case; an explicit REFUNDED transition (which
+  // already claws back, with the REFUND_PENDING fallback) is a separate,
+  // deliberate later decision, matching "no automatic clawback."
+  PAID: ['REFUND_PENDING', 'REFUNDED', 'CANCELLED', 'MANUAL_REVIEW'],
   MANUAL_REVIEW: ['PAID', 'FAILED', 'CANCELLED', 'REFUND_PENDING'],
   REFUND_PENDING: ['REFUNDED', 'MANUAL_REVIEW'],
   FAILED: ['CANCELLED'],
@@ -50,6 +66,41 @@ export function parseBrlPrice(price: string): number {
   const normalized = price.trim().replace(/\./g, '').replace(',', '.')
   const parsed = Number(normalized.replace(/[^\d.-]/g, ''))
   return Number.isFinite(parsed) ? parsed : 0
+}
+
+// ADR-0008: WCoin pegged 1:1 with R$ -- the universal Blood Moon
+// commercial peg. wcoinBaseForBrl() is the single place that rate is
+// expressed in code -- every WCOIN RechargePackage's base `amount` must
+// equal this, computed from its own `price`, never hand-typed
+// separately (a real historical incident sold 500 WC for R$19,90, ~25x
+// off this peg, because the amount and price were independently
+// hand-authored and silently drifted).
+export const WCOIN_TO_BRL_RATE = 1
+export function wcoinBaseForBrl(priceBrl: string): number {
+  return Math.round(parseBrlPrice(priceBrl) * WCOIN_TO_BRL_RATE)
+}
+
+// Re-validated on every create AND update (using the EFFECTIVE
+// currency/amount/price -- current values merged with whatever the
+// payload actually changes), not just at creation -- so changing only
+// `bonus` or `active` on an existing WCOIN package still re-proves the
+// base amount still matches its price, and a currency/amount/price
+// edit can never drift the peg even partially. Deliberately rejects
+// non-integer BRL prices for WCOIN packages too (Option A of three
+// alternatives, see docs/open-questions.md OQ-022) -- a reversible,
+// conservative default, not a final product decision on fractional
+// pricing. Only applies to currency === 'WCOIN'; GOBLIN_POINT/HUNT_POINT
+// packages have no peg rule and are unaffected.
+function assertWcoinPackageInvariant(currency: string, amount: number, price: string) {
+  if (currency !== 'WCOIN') return
+  const priceBrl = parseBrlPrice(price)
+  if (!Number.isInteger(priceBrl)) {
+    throw new BadRequestException(`Pacotes WCOIN devem ter preco em reais inteiros (recebido: R$${priceBrl}). Ver docs/open-questions.md OQ-022 para a decisao de politica pendente sobre precos fracionados.`)
+  }
+  const expectedAmount = wcoinBaseForBrl(price)
+  if (amount !== expectedAmount) {
+    throw new BadRequestException(`Pacote WCOIN fora do peg 1:1: preco R$${priceBrl} deveria conceder ${expectedAmount} WC base, recebido ${amount}.`)
+  }
 }
 
 const seedProducts: ShopProductPayload[] = [
@@ -99,11 +150,19 @@ const seedProducts: ShopProductPayload[] = [
   }
 ]
 
-const seedRechargePackages: RechargePackagePayload[] = [
-  { key: 'wcoin-500', currency: 'WCOIN', amount: 500, bonus: 0, price: '19,90' },
-  { key: 'wcoin-1200', currency: 'WCOIN', amount: 1200, bonus: 100, price: '39,90', highlight: true },
-  { key: 'wcoin-2600', currency: 'WCOIN', amount: 2600, bonus: 300, price: '79,90' },
-  { key: 'wcoin-5500', currency: 'WCOIN', amount: 5500, bonus: 800, price: '149,90' },
+export const seedRechargePackages: RechargePackagePayload[] = [
+  // PHASE N (2026-08-31): the previous seed data here (wcoin-500/1200/
+  // 2600/5500) hand-typed its `amount` independently of `price` and
+  // drifted ~25x off the 1:1 peg (500 WC for R$19,90) -- the exact real
+  // incident assertWcoinPackageInvariant above exists to prevent from
+  // recurring. Replaced with these peg-correct values (computed via
+  // wcoinBaseForBrl, never hand-typed) to actually satisfy the guard;
+  // this is Bryan's own already-resolved Phase N decision, not a new
+  // price-point choice made here.
+  { key: 'wcoin-10', currency: 'WCOIN', amount: wcoinBaseForBrl('10,00'), bonus: 0, price: '10,00' },
+  { key: 'wcoin-20', currency: 'WCOIN', amount: wcoinBaseForBrl('20,00'), bonus: 0, price: '20,00' },
+  { key: 'wcoin-50', currency: 'WCOIN', amount: wcoinBaseForBrl('50,00'), bonus: 5, price: '50,00', highlight: true },
+  { key: 'wcoin-100', currency: 'WCOIN', amount: wcoinBaseForBrl('100,00'), bonus: 0, price: '100,00' },
   { key: 'gp-340', currency: 'GOBLIN_POINT', amount: 340, bonus: 0, price: '19,90' },
   { key: 'gp-850', currency: 'GOBLIN_POINT', amount: 850, bonus: 50, price: '39,90' },
   { key: 'hp-1000', currency: 'HUNT_POINT', amount: 1000, bonus: 0, price: '14,90' },
@@ -228,7 +287,10 @@ export class CommerceService {
     private readonly audit: AuditService,
     private readonly observability: ObservabilityService,
     @Inject(PAYMENT_PROVIDER) private readonly paymentProvider: PaymentProvider,
-    private readonly webhookEvents: PaymentWebhookEventService
+    private readonly webhookEvents: PaymentWebhookEventService,
+    private readonly walletLedger: WalletLedgerService,
+    private readonly paymentRisk: PaymentRiskService,
+    private readonly chargebackCase: ChargebackCaseService
   ) {}
 
   async ensureSeeded() {
@@ -413,6 +475,7 @@ export class CommerceService {
   }
 
   async createRechargePackage(payload: RechargePackagePayload, user: AuthenticatedUser) {
+    assertWcoinPackageInvariant(payload.currency, Math.max(1, Number(payload.amount) || 1), payload.price)
     const pack = await this.prisma.rechargePackage.create({ data: rechargePackageData(payload) })
     await this.audit.record({
       actorId: user.id,
@@ -430,6 +493,11 @@ export class CommerceService {
     if (!current) {
       throw new NotFoundException(`Recharge package not found: ${id}`)
     }
+
+    const effectiveCurrency = payload.currency ?? current.currency
+    const effectiveAmount = payload.amount !== undefined ? Math.max(1, Number(payload.amount) || 1) : current.amount
+    const effectivePrice = payload.price ? payload.price.trim() : current.price
+    assertWcoinPackageInvariant(effectiveCurrency, effectiveAmount, effectivePrice)
 
     const pack = await this.prisma.rechargePackage.update({
       where: { id },
@@ -460,6 +528,10 @@ export class CommerceService {
   }
 
   async createPurchaseIntent(payload: CreatePurchaseIntentPayload, user: AuthenticatedUser) {
+    // PHASE Q (2026-08-31), Part 5 -- ACCOUNT_RESTRICTION covers store
+    // purchases too (commercial action), never login/game access.
+    await this.paymentRisk.assertNoActiveAccountRestriction(user.id, 'criacao de compra na loja')
+
     const now = new Date()
 
     // Part V/W -- enforced only once an operator has actually configured a
@@ -573,11 +645,14 @@ export class CommerceService {
         if (!reserved.count) throw new BadRequestException('Insufficient product stock')
       }
 
-      const charged = await tx.accountCurrency.updateMany({
-        where: { accountId: user.id, currency, balance: { gte: totalPrice } },
-        data: { balance: { decrement: totalPrice } }
+      // Buying FROM the platform, not another player -- STORE_PURCHASE,
+      // never P2P-taxed.
+      await this.walletLedger.debit(tx, user.id, currency, totalPrice, {
+        idempotencyKey: `store-purchase-debit:${correlationId}`,
+        type: 'STORE_PURCHASE',
+        sourceType: 'PurchaseIntent',
+        metadata: { productId: product.id, variantId: variant?.id || null, quantity }
       })
-      if (!charged.count) throw new BadRequestException('Insufficient balance')
 
       return tx.purchaseIntent.create({
         data: {
@@ -685,6 +760,14 @@ export class CommerceService {
   // page refresh is safe without any extra short-circuit logic here.
   async createRechargeCheckout(id: string, user: AuthenticatedUser) {
     this.assertRealMoneyPaymentsEnabled()
+    // PHASE P/Q (2026-08-31): the real enforcement point for
+    // PAYMENT_RESTRICTION and ACCOUNT_RESTRICTION -- see
+    // payment-risk.service.ts's own header comment. Checked before any
+    // provider call, never inside the webhook/reconciliation paths (those
+    // only ever move an ALREADY-created order forward, never start a new
+    // charge).
+    await this.paymentRisk.assertNoActivePaymentRestriction(user.id)
+    await this.paymentRisk.assertNoActiveAccountRestriction(user.id, 'criacao de checkout de recarga')
     const recharge = await this.prisma.rechargeIntent.findUnique({ where: { id }, include: { account: true, package: true } })
     if (!recharge) {
       throw new NotFoundException(`Recharge not found: ${id}`)
@@ -945,10 +1028,34 @@ export class CommerceService {
   // Shared by the webhook path and the admin manual re-sync button. Always
   // works from an order already fetched directly from Mercado Pago -- never
   // from a webhook body's own fields.
+  // PHASE P (2026-08-31), Part 13 -- the thin entry point
+  // PaymentReconciliationService.pollProviderForStuckPayments() calls per
+  // candidate. Reuses the exact same reconcileWithProvider ->
+  // transitionRechargeStatus idempotent path a real webhook or the
+  // manual admin resync already goes through -- a 'system-poll' source
+  // keeps its own audit trail distinguishable, never a new code path.
+  async reconcileFromProviderPoll(id: string) {
+    const recharge = await this.prisma.rechargeIntent.findUnique({ where: { id } })
+    if (!recharge || !recharge.externalOrderId) return null
+    const order = await this.paymentProvider.getOrder(recharge.externalOrderId)
+    return this.reconcileWithProvider(order, recharge, { source: 'system-poll' })
+  }
+
+  // Read-only wrapper around WalletLedgerService.traceChargebackDispersal --
+  // the admin "Rastrear dispersao" UI action and ChargebackCaseService's
+  // own snapshot-at-open-time both go through the same tracer.
+  async getChargebackDispersalTrace(rechargeIntentId: string) {
+    const recharge = await this.prisma.rechargeIntent.findUnique({ where: { id: rechargeIntentId } })
+    if (!recharge) {
+      throw new NotFoundException(`Recharge not found: ${rechargeIntentId}`)
+    }
+    return this.walletLedger.traceChargebackDispersal(rechargeIntentId)
+  }
+
   private async reconcileWithProvider(
     order: Awaited<ReturnType<PaymentProvider['getOrder']>>,
     recharge: RechargeIntent,
-    actor: { source: 'admin' | 'webhook'; actorId?: string; actorUsername?: string }
+    actor: { source: 'admin' | 'webhook' | 'system-poll'; actorId?: string; actorUsername?: string }
   ) {
     if (recharge.externalOrderId && order.externalOrderId !== recharge.externalOrderId) {
       return this.transitionRechargeStatus(recharge.id, 'MANUAL_REVIEW', {
@@ -1037,11 +1144,23 @@ export class CommerceService {
       }
 
       if (payload.status === 'COMPLETED' && purchase.status !== 'COMPLETED') {
-        await this.debitCurrency(tx, purchase.account, purchase.currency, purchase.price)
+        await this.walletLedger.debit(tx, purchase.accountId, purchase.currency, purchase.price, {
+          idempotencyKey: `admin-purchase-complete-debit:${purchase.id}`,
+          type: 'ADMIN_ADJUSTMENT',
+          sourceType: 'PurchaseIntent',
+          sourceId: purchase.id,
+          metadata: { actorId: user.id, actorUsername: user.username, previousStatus: purchase.status }
+        })
       }
 
       if (purchase.status === 'COMPLETED' && payload.status === 'CANCELLED') {
-        await this.creditCurrency(tx, purchase.accountId, purchase.currency, purchase.price)
+        await this.walletLedger.credit(tx, purchase.accountId, purchase.currency, purchase.price, {
+          idempotencyKey: `admin-purchase-cancel-credit:${purchase.id}`,
+          type: 'ADMIN_ADJUSTMENT',
+          sourceType: 'PurchaseIntent',
+          sourceId: purchase.id,
+          metadata: { actorId: user.id, actorUsername: user.username, previousStatus: purchase.status }
+        })
       }
 
       const updated = await tx.purchaseIntent.update({
@@ -1098,7 +1217,7 @@ export class CommerceService {
     id: string,
     nextStatus: RechargeIntentStatus,
     options: {
-      source: 'admin' | 'webhook'
+      source: 'admin' | 'webhook' | 'system-poll'
       actorId?: string
       actorUsername?: string
       reason?: string
@@ -1110,7 +1229,13 @@ export class CommerceService {
       }>
     }
   ) {
-    return this.prisma.$transaction(
+    // PHASE P (2026-08-31): captured inside the transaction below, then
+    // used to fire risk/chargeback hooks AFTER it commits -- these are
+    // advisory (never allowed to affect the financial transaction's own
+    // atomicity or roll it back), so they deliberately run outside it.
+    let hook: { kind: 'PAID' | 'FAILED' | 'MANUAL_REVIEW'; recharge: { id: string; accountId: string; price: string; createdAt: Date }; reason?: string } | null = null
+
+    const result = await this.prisma.$transaction(
       async (tx) => {
         const recharge = await tx.rechargeIntent.findUnique({ where: { id }, include: { account: true, package: true } })
         if (!recharge) {
@@ -1127,11 +1252,31 @@ export class CommerceService {
         let refundClawbackFailed = false
 
         if (nextStatus === 'PAID' && recharge.status !== 'PAID') {
-          await this.creditCurrency(tx, recharge.accountId, recharge.currency, amount)
+          // The real-money -> WC provenance link (Part E/F traceability):
+          // this ledger row's paymentProvenanceRef is the RechargeIntent
+          // itself, answering "which payment created this WC credit?"
+          // directly from the ledger, not by cross-referencing tables.
+          await this.walletLedger.credit(tx, recharge.accountId, recharge.currency, amount, {
+            idempotencyKey: `recharge-credit:${recharge.id}`,
+            type: 'WC_PURCHASE_CREDIT',
+            sourceType: 'RechargeIntent',
+            sourceId: recharge.id,
+            paymentProvenanceRef: recharge.id,
+            // LEDGER_PROVENANCE: the credit's own row is self-describing
+            // (base/bonus/gross/provider), not just reconstructable via a
+            // join back to RechargeIntent.
+            metadata: { baseAmount: recharge.amount, bonusAmount: recharge.bonus, grossPaidBRL: recharge.price, provider: recharge.provider }
+          })
         }
 
         if (recharge.status === 'PAID' && nextStatus === 'CANCELLED') {
-          await this.debitCurrency(tx, recharge.account, recharge.currency, amount)
+          await this.walletLedger.debit(tx, recharge.accountId, recharge.currency, amount, {
+            idempotencyKey: `recharge-cancel-clawback:${recharge.id}`,
+            type: 'PAYMENT_REVERSAL',
+            sourceType: 'RechargeIntent',
+            sourceId: recharge.id,
+            paymentProvenanceRef: recharge.id
+          })
         }
 
         if (recharge.status === 'PAID' && nextStatus === 'REFUNDED') {
@@ -1139,13 +1284,31 @@ export class CommerceService {
           // Never let that silently corrupt the transition -- fall back to
           // REFUND_PENDING and raise a CRITICAL alert for a human instead.
           try {
-            await this.debitCurrency(tx, recharge.account, recharge.currency, amount)
+            await this.walletLedger.debit(tx, recharge.accountId, recharge.currency, amount, {
+              idempotencyKey: `recharge-refund-clawback:${recharge.id}`,
+              type: 'PAYMENT_REVERSAL',
+              sourceType: 'RechargeIntent',
+              sourceId: recharge.id,
+              paymentProvenanceRef: recharge.id
+            })
           } catch {
             refundClawbackFailed = true
           }
         }
 
         const effectiveStatus = refundClawbackFailed ? 'REFUND_PENDING' : nextStatus
+
+        // PHASE P (2026-08-31): capture for the risk/chargeback hooks
+        // fired after this transaction commits -- see this method's own
+        // opening comment for why they run outside it.
+        if (effectiveStatus === 'PAID' || effectiveStatus === 'FAILED' || effectiveStatus === 'MANUAL_REVIEW') {
+          hook = {
+            kind: effectiveStatus,
+            recharge: { id: recharge.id, accountId: recharge.accountId, price: recharge.price, createdAt: recharge.createdAt },
+            reason: options.reason
+          }
+        }
+
         const updated = await tx.rechargeIntent.update({
           where: { id },
           data: {
@@ -1162,7 +1325,12 @@ export class CommerceService {
           include: { account: true, package: true }
         })
 
-        const action = options.source === 'admin' ? 'admin.finance.recharge.status' : 'recharge.webhook.status'
+        const action =
+          options.source === 'admin'
+            ? 'admin.finance.recharge.status'
+            : options.source === 'system-poll'
+              ? 'system.finance.recharge.provider-poll-status'
+              : 'recharge.webhook.status'
         await this.audit.record({
           actorId: options.actorId,
           actorUsername: options.actorUsername,
@@ -1199,26 +1367,52 @@ export class CommerceService {
       },
       { isolationLevel: 'Serializable' }
     )
-  }
 
-  private async creditCurrency(tx: Prisma.TransactionClient, accountId: string, currency: CurrencyCode, amount: number) {
-    await tx.accountCurrency.upsert({
-      where: { accountId_currency: { accountId, currency } },
-      create: { accountId, currency, balance: Math.max(0, amount) },
-      update: { balance: { increment: Math.max(0, amount) } }
-    })
-  }
-
-  private async debitCurrency(tx: Prisma.TransactionClient, account: Account, currency: CurrencyCode, amount: number) {
-    const wallet = await tx.accountCurrency.findUnique({ where: { accountId_currency: { accountId: account.id, currency } } })
-    const balance = wallet?.balance || 0
-    if (balance < amount) {
-      throw new BadRequestException('Saldo insuficiente para concluir a operacao.')
+    if (hook) {
+      await this.fireRiskHooks(hook)
     }
-    await tx.accountCurrency.update({
-      where: { accountId_currency: { accountId: account.id, currency } },
-      data: { balance: { decrement: amount } }
-    })
+
+    return result
+  }
+
+  // PHASE P (2026-08-31) -- the one dispatcher every recharge status
+  // transition's risk/chargeback consequence flows through. Advisory
+  // only: a failure here is caught and reported, never re-thrown, so a
+  // risk-service outage can never break a real payment transition.
+  private async fireRiskHooks(hook: {
+    kind: 'PAID' | 'FAILED' | 'MANUAL_REVIEW'
+    recharge: { id: string; accountId: string; price: string; createdAt: Date }
+    reason?: string
+  }) {
+    try {
+      if (hook.kind === 'PAID') {
+        await this.paymentRisk.evaluateOnRechargePaid({
+          id: hook.recharge.id,
+          accountId: hook.recharge.accountId,
+          amountBRL: parseBrlPrice(hook.recharge.price),
+          paidAt: new Date()
+        })
+      } else if (hook.kind === 'FAILED') {
+        await this.paymentRisk.evaluateOnRechargeFailed({ id: hook.recharge.id, accountId: hook.recharge.accountId, createdAt: new Date() })
+      } else if (hook.kind === 'MANUAL_REVIEW') {
+        if (hook.reason?.startsWith('charged_back:')) {
+          await this.chargebackCase.openCaseForRecharge(hook.recharge.id, { providerChargebackReason: hook.reason })
+          await this.paymentRisk.evaluateOnChargeback({ id: hook.recharge.id, accountId: hook.recharge.accountId })
+        } else {
+          await this.paymentRisk.evaluateOnManualReview({ id: hook.recharge.id, accountId: hook.recharge.accountId }, hook.reason)
+        }
+      }
+    } catch (error) {
+      await this.observability.recordOperationalEvent({
+        module: 'payment-risk',
+        severity: 'CRITICAL',
+        eventType: 'PAYMENT_RISK_HOOK_FAILED',
+        entityType: 'RechargeIntent',
+        entityId: hook.recharge.id,
+        description: `Falha ao avaliar sinais de risco para a recarga ${hook.recharge.id}.`,
+        data: { kind: hook.kind, error: error instanceof Error ? error.message : 'unknown' }
+      })
+    }
   }
 
   private mapPurchase(item: Prisma.PurchaseIntentGetPayload<{ include: { account: true, product: true } }>) {
