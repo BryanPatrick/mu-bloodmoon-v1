@@ -66,6 +66,17 @@ describe('Community moderation, reports, sanctions, and audit (real data, no par
     httpServer = app.getHttpServer()
     prisma = app.get(PrismaService)
 
+    // Test-isolation hygiene (same root cause class as vip-delivery.e2e-spec.ts's
+    // GRANT_VIP cleanup / account-lifecycle-bridge.e2e-spec.ts's GameBridgeJob
+    // cleanup): this suite's own moderation-queue assertions query
+    // status='NEW' reports ordered oldest-first with the admin endpoint's
+    // default pageSize (25) -- against the persistent local dev DB, leftover
+    // NEW reports from earlier runs/sessions accumulate (confirmed: 31 stale
+    // rows found from a prior day's session) and can crowd a freshly-created
+    // report out of the first page before this suite's own test ever gets to
+    // see it in the queue. Scoped to status='NEW' only, on the local dev DB.
+    await prisma.communityReport.deleteMany({ where: { status: 'NEW' } })
+
     // Same cooldown relaxation as Etapa 9/10's specs -- irrelevant to this
     // spec's own assertions, kept only so post/report creation isn't
     // accidentally rate-limited while the suite runs.
