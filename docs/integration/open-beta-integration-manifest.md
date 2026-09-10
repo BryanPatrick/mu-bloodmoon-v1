@@ -256,14 +256,29 @@ production-readiness inventory, project memory) gathered during the
 Post-Integration Gate (openbeta final audit + production evidence
 reconciliation), not a live database read.
 
-**MIGRATIONS_ALREADY_PRODUCTION** = [`phase_p_payment_risk_and_chargeback_case`, `beta_participation_record`, `bug_hunters_foundation`] (3)
-**MIGRATIONS_NEW_NEXT_DEPLOY** = the other 15, all NOT_DEPLOYED_CONFIRMED
-**MIGRATIONS_STILL_UNKNOWN** = none — every one of the 18 has dated evidence either way.
+**CORRECTED 2026-09-10, via a real live read** (Pre-Deploy Remediation
+round — `SELECT migration_name, started_at, finished_at, rolled_back_at,
+applied_steps_count FROM _prisma_migrations`, read-only, through
+phpMyAdmin over the existing authenticated cPanel session, no new
+Remote Database Access created): the documentary reconciliation below
+undercounted `MIGRATIONS_ALREADY_PRODUCTION` by 7. Full detail,
+including the drift check and the absent-table confirmation for the
+genuinely-pending set, is in
+`docs/deployments/predeploy-2026-09-10-open-beta-consolidation/deploy-manifest.md`'s
+`MIGRATION_HISTORY_FINDING` section.
 
-A definitive live confirmation (`SELECT migration_name FROM _prisma_migrations`,
-read-only) remains available but was not run — not required to close any
-UNKNOWN here, so `PRODUCTION_READ_REQUIRED = NO` for this specific
-question.
+**MIGRATIONS_ALREADY_PRODUCTION** = [`phase_p_payment_risk_and_chargeback_case`, `beta_participation_record`, `bug_hunters_foundation`, `open_beta_p0_foundation`, `vip_product_config`, `phase14_vip_delivery_account_deletion`, `phase15_vip_benefit_fields_and_pricing_seed`, `phase15_account_deletion_request`, `account_deletion_feedback`, `account_deletion_feedback_retention_interaction`] (10 — real deploy ran 2026-09-05 ~16:45, confirmed clean, zero schema drift against this repo's current migration files)
+**MIGRATIONS_NEW_NEXT_DEPLOY** = the other 9: `gamebridge_vip_sync_state`, `survey_foundation`, `player_preferences_foundation`, `vip_sync_drift_observability`, `phase_s_legacy_catalog_item`, `phase_t_legacy_catalog_effective_state`, `phase_u_progression_config_item`, `phase_v_progression_policy_status`, `alert_dispatch_state` — all confirmed genuinely absent (both from `_prisma_migrations` and via an `information_schema.tables` check on their key tables)
+**MIGRATIONS_STILL_UNKNOWN** = none — every one of the 19 has either dated documentary evidence or, now, a direct live-read confirmation.
+
+`PRODUCTION_READ_REQUIRED` was answered `NO` when this section was
+first written (documentary evidence alone, no live read) — the live
+read done 2026-09-10 for the Pre-Deploy Remediation round's own
+migration-history preflight (a stricter bar than this manifest
+originally needed to close) is what caught the undercount above. The
+original documentary classification (3 already-production, 15 new)
+is superseded by the corrected counts above, not reproduced here to
+avoid stale figures sitting next to the correct ones.
 
 ## Frontend toolchain — now deterministic, fully type-checked
 
