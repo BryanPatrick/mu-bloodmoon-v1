@@ -86,16 +86,28 @@ async function main() {
 // id-based cursor (nothing gets updated, so offset-based paging would
 // still be safe, but a cursor is used anyway to match the real-run path's
 // shape and avoid relying on row-count-shrinks-as-you-go semantics here).
+//
+// accountIds is test-only scoping: production's own main() below never
+// passes it, so the real migration always remains genuinely global
+// (every account in the table, by design -- that's its actual job).
+// two-factor-key-migration.e2e-spec.ts passes its own created account
+// id(s) so its assertions are immune to a concurrent process (another
+// session, another suite) exercising this same global function against
+// the same shared local dev database mid-test.
 export async function dryRunPass(
   prisma: PrismaService,
   twoFactor: TwoFactorService,
   activeVersion: string,
-  summary: Summary
+  summary: Summary,
+  accountIds?: string[]
 ) {
   let cursor: string | undefined
   for (;;) {
     const batch = await prisma.account.findMany({
-      where: { OR: [{ twoFactorSecret: { not: null } }, { twoFactorPending: { not: null } }] },
+      where: {
+        OR: [{ twoFactorSecret: { not: null } }, { twoFactorPending: { not: null } }],
+        ...(accountIds ? { id: { in: accountIds } } : {})
+      },
       select: { id: true, twoFactorSecret: true, twoFactorPending: true },
       orderBy: { id: 'asc' },
       take: BATCH_SIZE,
@@ -146,12 +158,16 @@ export async function realRunPass(
   prisma: PrismaService,
   twoFactor: TwoFactorService,
   activeVersion: string,
-  summary: Summary
+  summary: Summary,
+  accountIds?: string[]
 ) {
   let cursor: string | undefined
   for (;;) {
     const batch = await prisma.account.findMany({
-      where: { OR: [{ twoFactorSecret: { not: null } }, { twoFactorPending: { not: null } }] },
+      where: {
+        OR: [{ twoFactorSecret: { not: null } }, { twoFactorPending: { not: null } }],
+        ...(accountIds ? { id: { in: accountIds } } : {})
+      },
       select: { id: true, twoFactorSecret: true, twoFactorPending: true },
       orderBy: { id: 'asc' },
       take: BATCH_SIZE,
@@ -189,7 +205,16 @@ function safeMessage(error: unknown): string {
   return message.slice(0, 191)
 }
 
-void main().catch((error: unknown) => {
-  logger.error(`2FA key migration failed: ${safeMessage(error)}`)
-  process.exitCode = 1
-})
+// Only run as the CLI entrypoint (`node dist/apps/api/src/migrate-two-factor-keys.js`,
+// per package.json's migrate:two-factor-keys script). Without this guard,
+// two-factor-key-migration.e2e-spec.ts's `await import(...)` of this
+// module -- done to reuse dryRunPass/realRunPass/emptySummary -- would
+// also unconditionally trigger this real, unscoped, mutating migration
+// run against whatever database that test happens to be pointed at, as
+// an unawaited side effect racing the test's own explicit calls.
+if (require.main === module) {
+  void main().catch((error: unknown) => {
+    logger.error(`2FA key migration failed: ${safeMessage(error)}`)
+    process.exitCode = 1
+  })
+}
