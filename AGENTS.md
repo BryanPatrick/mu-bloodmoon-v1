@@ -104,6 +104,15 @@ note in `docs/README.md` itself.
     documentation first; if it doesn't answer the question, search and
     document what's found, marking `UNKNOWN`/`NEEDS_VALIDATION` rather
     than guessing.
+23. **Host storage preflight before any space-consuming host action**
+    (deploy, upload, archive extraction, `npm install`, `prisma
+    generate`, backup, restore, `.output` replacement, runtime update,
+    package creation) — collect account quota, host filesystem, and
+    inode usage, and classify PASS/WARN/FAIL against the operation's
+    own estimated peak extra space, never percentage alone. FAIL means
+    STOP — do not proceed without resolving the space or getting fresh,
+    explicit authorization. Full procedure, thresholds, and worked
+    examples: `docs/operations/host-storage-preflight.md`.
 
 ## Where things live
 
