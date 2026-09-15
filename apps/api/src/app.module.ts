@@ -42,6 +42,7 @@ import { GameProvisioningReconciliationModule } from './modules/game-provisionin
 import { IntegrationsDiscordModule } from './modules/integrations-discord/integrations-discord.module'
 import { LauncherStudioModule } from './modules/launcher-studio/launcher-studio.module'
 import { AlertingModule } from './modules/alerting/alerting.module'
+import { HealthModule } from './modules/health/health.module'
 
 export const apiModules = [
   'auth',
@@ -82,6 +83,7 @@ export type ApiModuleName = typeof apiModules[number]
       isGlobal: true
     }),
     DatabaseModule,
+    HealthModule,
     ObservabilityModule,
     AuthModule,
     AccountsModule,
