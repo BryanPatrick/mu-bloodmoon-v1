@@ -88,6 +88,91 @@ jobs:
           MYSQL="mariadb -h127.0.0.1 -ubloodmoon_ci -pbloodmoon_ci_pw bloodmoon_ci"
           $MYSQL -e "DROP TABLE IF EXISTS JsonCastProbe;"
 
+  mariadb106-probe:
+    name: "MariaDB 10.6 -- does production's real engine accept CAST(0 AS JSON)?"
+    # Added after production's read-only audit showed MariaDB 10.6.19 with
+    # this exact migration already successfully applied AND the resulting
+    # row holding a correct value (0, valid JSON, type INTEGER) -- directly
+    # contradicting the mariadb11-probe result above. This job tests whether
+    # MariaDB 10.6 genuinely behaves differently from MariaDB 11 for this
+    # syntax, rather than assuming. Every step here is written to report the
+    # real outcome either way (via step `if:` conditions on a recorded
+    # result) rather than asserting a single expected answer, since this is
+    # an open empirical question, not a known fact being reproduced.
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:10.6
+        env:
+          MARIADB_DATABASE: bloodmoon_ci
+          MARIADB_USER: bloodmoon_ci
+          MARIADB_PASSWORD: bloodmoon_ci_pw
+          MARIADB_ROOT_PASSWORD: bloodmoon_ci_root_pw
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=12
+    steps:
+      - name: Install MariaDB client
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq mariadb-client
+
+      - name: Report actual MariaDB 10.6 server version
+        run: mariadb -h127.0.0.1 -ubloodmoon_ci -pbloodmoon_ci_pw bloodmoon_ci -e "SELECT VERSION();"
+
+      - name: Create probe table
+        run: |
+          set -euo pipefail
+          MYSQL="mariadb -h127.0.0.1 -ubloodmoon_ci -pbloodmoon_ci_pw bloodmoon_ci"
+          $MYSQL -e "CREATE TABLE JsonCastProbe (id INT PRIMARY KEY AUTO_INCREMENT, label VARCHAR(50), value JSON);"
+
+      - name: Attempt CAST(0 AS JSON) on MariaDB 10.6 (records outcome, never fails this step either way)
+        id: attempt
+        run: |
+          MYSQL="mariadb -h127.0.0.1 -ubloodmoon_ci -pbloodmoon_ci_pw bloodmoon_ci"
+          if $MYSQL -e "INSERT INTO JsonCastProbe (label, value) VALUES ('original106', CAST(0 AS JSON));" 2>/tmp/106.err; then
+            echo "result=succeeded" >> "$GITHUB_OUTPUT"
+          else
+            echo "result=failed" >> "$GITHUB_OUTPUT"
+            cat /tmp/106.err
+          fi
+
+      - name: "REPORT: CAST(0 AS JSON) SUCCEEDED on MariaDB 10.6"
+        if: steps.attempt.outputs.result == 'succeeded'
+        run: echo "CONFIRMED -- CAST(0 AS JSON) works on MariaDB 10.6, matching production's real success. This is a MariaDB-10.6-vs-11 behavior difference, not a real current production risk."
+
+      - name: "REPORT: CAST(0 AS JSON) FAILED on MariaDB 10.6"
+        if: steps.attempt.outputs.result == 'failed'
+        run: echo "CONFIRMED -- CAST(0 AS JSON) also fails on MariaDB 10.6. Production's success needs a different explanation (not this engine's version)."
+
+      - name: Candidate syntax MUST PASS on MariaDB 10.6 -- '0'
+        run: |
+          set -euo pipefail
+          MYSQL="mariadb -h127.0.0.1 -ubloodmoon_ci -pbloodmoon_ci_pw bloodmoon_ci"
+          $MYSQL -e "INSERT INTO JsonCastProbe (label, value) VALUES ('candidate', '0');"
+          echo "Confirmed: '0' inserts successfully on MariaDB 10.6."
+
+      - name: Verify the candidate's stored value is semantically a valid JSON 0 on MariaDB 10.6
+        run: |
+          set -euo pipefail
+          MYSQL="mariadb -h127.0.0.1 -ubloodmoon_ci -pbloodmoon_ci_pw bloodmoon_ci -N -B"
+          VALID=$($MYSQL -e "SELECT JSON_VALID(value) FROM JsonCastProbe WHERE label='candidate';")
+          TYPE=$($MYSQL -e "SELECT JSON_TYPE(value) FROM JsonCastProbe WHERE label='candidate';")
+          RAW=$($MYSQL -e "SELECT value FROM JsonCastProbe WHERE label='candidate';")
+          echo "JSON_VALID=$VALID JSON_TYPE=$TYPE RAW=$RAW"
+          if [ "$VALID" != "1" ]; then echo "FAIL: stored value is not valid JSON"; exit 1; fi
+          if [ "$TYPE" != "INTEGER" ]; then echo "FAIL: stored JSON_TYPE is '$TYPE', expected INTEGER"; exit 1; fi
+          if [ "$RAW" != "0" ]; then echo "FAIL: stored raw JSON text is '$RAW', expected 0"; exit 1; fi
+          echo "Confirmed: '0' stores as a semantically valid JSON integer 0 on MariaDB 10.6."
+
+      - name: Drop probe table
+        if: always()
+        run: |
+          MYSQL="mariadb -h127.0.0.1 -ubloodmoon_ci -pbloodmoon_ci_pw bloodmoon_ci"
+          $MYSQL -e "DROP TABLE IF EXISTS JsonCastProbe;"
+
   mysql8-probe:
     name: "MySQL 8 -- confirm candidate '0' stays compatible"
     runs-on: ubuntu-latest
