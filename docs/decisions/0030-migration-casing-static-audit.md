@@ -1,17 +1,23 @@
 ---
-status: ACTIVE — interim safeguard implemented; full CI-Linux-container validation deferred
+status: ACTIVE — both safeguards implemented (static audit + real Linux/MariaDB CI)
 category: decisions
 audience: internal (engineering)
-lastVerified: 2026-09-10
-confidence: CONFIRMED (real incident evidence, twice)
+lastVerified: 2026-09-16
+confidence: CONFIRMED (real incident evidence, twice; both defenses now proven)
 ---
 
 # ADR-0030: Migration Table-Casing Static Audit
 
-**DATE**: 2026-09-10
-**STATUS**: ACTIVE. Static audit script implemented and wired into
-`npm run check`; full CI-Linux-container validation registered as
-follow-up debt, not built this round.
+**DATE**: 2026-09-10 (static audit); **UPDATED**: 2026-09-16 (real Linux/
+MariaDB CI validation added — this was option 1 below, previously
+deferred).
+
+**STATUS**: ACTIVE. Both defenses now exist: the static audit script
+(`npm run db:check-migration-casing`, wired into `npm run check`) and a
+real GitHub Actions workflow
+(`.github/workflows/database-migrations-linux.yml`) that applies every
+migration from an empty database on genuinely case-sensitive Linux
+MariaDB. See "2026-09-16 update" below for what changed and why.
 
 ## Why this ADR exists
 
@@ -44,12 +50,19 @@ called for:
    MySQL/MariaDB** (container-based). This is the only fully faithful
    reproduction of the production failure mode — it would have caught
    the actual failure, not just this class of bug in the abstract.
-   **Not implemented this round**: this repository has no GitHub
-   Actions workflow (or any CI pipeline) at all yet — `find .github`
-   returns nothing. Standing one up is a real, separate undertaking
-   (choosing a runner strategy, wiring service containers, deciding
-   what else belongs in first-time CI) that deserves its own scoped
-   effort rather than being bundled into an incident-response fix.
+   ~~Not implemented this round: this repository has no GitHub Actions
+   workflow (or any CI pipeline) at all yet — `find .github` returns
+   nothing.~~ **Implemented 2026-09-16** —
+   `.github/workflows/database-migrations-linux.yml`; see the
+   "2026-09-16 update" section below. Correction to the original
+   2026-09-10 claim: `.github/workflows/` was empty on `main` at the
+   time, but a real, working GitHub Actions workflow already existed on
+   the unmerged `ci/dotnet-tests-workflow` branch (.NET test suites for
+   the GameBridge Agent and Launcher, added 2026-09-08) — this repo
+   was not a completely blank CI slate, just one where no workflow had
+   reached `main` yet. Standing up *this* workflow was still a real,
+   separate undertaking (runner/service-container strategy specific to
+   migrations), just not starting from literally zero prior art.
 2. **A static audit script** cross-referencing every migration's
    referenced table names (`ALTER TABLE`, `CREATE INDEX ... ON`,
    `REFERENCES`, `DROP TABLE`, `CREATE VIEW`) against the canonical
@@ -81,10 +94,76 @@ specific constraint behavior) that casing-only static analysis cannot.
   incident; the same class of bug could theoretically exist for
   column names and is not currently audited).
 
-## Follow-up (not built this round)
+## Follow-up
 
-`LINUX_CASE_SENSITIVE_MIGRATION_VALIDATION_REQUIRED` — stand up a real
+~~`LINUX_CASE_SENSITIVE_MIGRATION_VALIDATION_REQUIRED` — stand up a real
 CI pipeline (this repo currently has none) with a Linux MySQL/MariaDB
 service container running `prisma migrate deploy` end-to-end against
 every migration in order, as the fuller safeguard option 1 above
-describes. Tracked as spawned follow-up task `task_e710a571`.
+describes. Tracked as spawned follow-up task `task_e710a571`.~~
+**RESOLVED 2026-09-16** — see below. Two smaller items remain open:
+merging `.github/workflows/database-migrations-linux.yml` (currently on
+branch `ci/linux-mariadb-migration-validation`, not yet on `main`) and,
+separately, merging the pre-existing `ci/dotnet-tests-workflow` branch
+(unrelated to this ADR, but the other piece of this repo's CI debt).
+
+## 2026-09-16 update — real Linux/MariaDB CI implemented
+
+**Why the static check alone still wasn't enough**: the static audit
+(option 2) only ever reads migration SQL as text — it cannot see
+anything that requires an actual database engine to manifest: character
+set/collation mismatches, SQL MySQL accepts but MariaDB rejects (or vice
+versa), engine-specific constraint/index behavior, or a casing bug in a
+*column* reference rather than a table reference (explicitly out of the
+static script's scope — see "What this does not cover" above). Only
+running the real migrations against a real, case-sensitive Linux
+database closes that gap.
+
+**Windows vs. Linux, restated precisely**: every migration in this
+project is authored and locally tested on Windows/macOS, where MySQL
+table identifiers are case-*insensitive* by default
+(`lower_case_table_names` effectively behaving as 1/2 on those
+filesystems) — `progressionconfigitem` and `ProgressionConfigItem`
+resolve to the same table. Production runs Linux, where the default
+(`lower_case_table_names=0`) makes them two different identifiers. No
+amount of local testing, however thorough, can surface this difference;
+only running on a real Linux database engine can.
+
+**Proof the new workflow would have caught the real 2026-09-10 bug**:
+the `historical-bug-detector-proof` job builds a temporary, throwaway
+fixture (two migration files, never touching real migration history)
+reproducing the exact bug shape — a `CREATE TABLE` for
+`` `ProgressionConfigItem` `` followed by an `ALTER TABLE` referencing
+`` `progressionconfigitem` `` — and asserts the static script's exit
+code is non-zero against it, then asserts exit code zero against the
+corrected version. Confirmed locally while building this workflow (not
+just assumed): `FAIL (1 casing mismatch(es) found)` against the bad
+fixture, `PASS (2 migration files, 1 tables, 0 casing mismatches)`
+against the corrected one. Separately, the `linux-mariadb-migration`
+job's own case-sensitivity step performs the equivalent live proof
+directly against the real CI MariaDB instance (`CREATE TABLE
+CaseSensitivityProof` then `ALTER TABLE casesensitivityproof` — asserted
+to fail with a "doesn't exist" error) — two independent proofs, one
+static/script-level and one live/database-level, that this defense is
+real and not just assumed to work.
+
+**A real bug found while building this**: `check-migration-table-casing.mjs`
+resolves its optional directory argument via
+`join(process.cwd(), process.argv[2])`, which does not special-case an
+already-absolute path — passing an absolute fixture directory (e.g. from
+`mktemp -d`) silently produces a bogus concatenated path and crashes with
+`ENOENT` instead of running the real check. The CI workflow works around
+this by creating fixtures at a path relative to the repo root instead of
+using `mktemp -d`. The script itself was not changed (out of scope for
+this round — the workaround is sufficient and doesn't touch the
+already-verified static-audit logic); worth a future minor fix so any
+other caller isn't surprised by the same thing.
+
+**Defense in depth, now complete**: static audit (`npm run
+db:check-migration-casing`, milliseconds, no infrastructure, catches
+this specific bug class in local dev / `npm run check` / pre-commit-
+adjacent workflows) **+** real Linux/MariaDB CI
+(`.github/workflows/database-migrations-linux.yml`, slower, real
+infrastructure, catches this bug class for real plus anything else
+genuinely Linux/MariaDB-specific). Neither replaces the other; each
+covers a gap the other has.
