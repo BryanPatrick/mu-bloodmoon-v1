@@ -1,0 +1,220 @@
+import { CommerceService } from './commerce.service'
+
+const original = {
+  enabled: process.env.ASAAS_ENABLED,
+  environment: process.env.ASAAS_ENVIRONMENT,
+  nodeEnv: process.env.NODE_ENV,
+  apiKey: process.env.ASAAS_API_KEY
+}
+
+beforeEach(() => {
+  process.env.ASAAS_ENABLED = 'true'
+  process.env.ASAAS_ENVIRONMENT = 'sandbox'
+  process.env.ASAAS_API_KEY = '$aact_hmlg_fake_test_only'
+  process.env.NODE_ENV = 'test'
+})
+afterEach(() => {
+  for (const [key, value] of Object.entries({
+    ASAAS_ENABLED: original.enabled,
+    ASAAS_ENVIRONMENT: original.environment,
+    NODE_ENV: original.nodeEnv,
+    ASAAS_API_KEY: original.apiKey
+  })) {
+    if (value === undefined) delete process.env[key]
+    else process.env[key] = value
+  }
+})
+
+function fixture() {
+  const recharge = {
+    id: 'recharge-1',
+    accountId: 'account-1',
+    packageId: 'pack-1',
+    currency: 'WCOIN',
+    amount: 10,
+    bonus: 0,
+    price: '10,00',
+    status: 'PREPARED',
+    provider: 'asaas',
+    providerEnvironment: 'sandbox',
+    providerCreateState: 'NONE',
+    correlationId: 'reference-1',
+    externalReference: null as string | null,
+    externalOrderId: null as string | null,
+    updatedAt: new Date(),
+    createdAt: new Date(),
+    account: { username: 'qa', email: 'qa@example.invalid' },
+    package: { key: 'wcoin-10' }
+  }
+  const order = {
+    externalOrderId: 'pay_1',
+    externalReference: 'reference-1',
+    providerCustomerId: 'cus_1',
+    totalAmountBRL: 10,
+    paymentMethod: 'PIX',
+    status: 'PENDING'
+  }
+  const prisma = {
+    rechargeIntent: {
+      findUnique: jest.fn(async () => ({ ...recharge })),
+      updateMany: jest.fn(
+        async ({
+          where,
+          data
+        }: {
+          where: Record<string, unknown>
+          data: Record<string, unknown>
+        }) => {
+          for (const [key, expected] of Object.entries(where)) {
+            if (key === 'id') continue
+            if ((recharge as unknown as Record<string, unknown>)[key] !== expected)
+              return { count: 0 }
+          }
+          Object.assign(recharge, data, { updatedAt: new Date() })
+          return { count: 1 }
+        }
+      ),
+      create: jest.fn()
+    },
+    rechargePackage: {
+      findUnique: jest.fn(async () => ({
+        id: 'pack-1',
+        active: true,
+        currency: 'WCOIN',
+        amount: 10,
+        bonus: 0,
+        price: '10,00'
+      }))
+    },
+    providerCustomer: { findUniqueOrThrow: jest.fn(async () => ({ providerCustomerId: 'cus_1' })) }
+  }
+  const asaas = {
+    assertSandboxEnabled: jest.fn(),
+    createOrder: jest.fn(async () => ({
+      externalOrderId: 'pay_1',
+      status: 'PENDING',
+      paymentMethod: 'PIX',
+      qrCode: 'fake-pix'
+    })),
+    getOrder: jest.fn(async () => order),
+    findPaymentByExternalReference: jest.fn(async (): Promise<typeof order | null> => null),
+    getCheckout: jest.fn(async () => ({
+      externalOrderId: 'pay_1',
+      status: 'PENDING',
+      paymentMethod: 'PIX',
+      qrCode: 'fake-pix'
+    }))
+  }
+  const billing = { ensureAsaasCustomer: jest.fn(async () => 'cus_1') }
+  const noop = { record: jest.fn(), recordOperationalEvent: jest.fn() }
+  const risk = {
+    assertNoActivePaymentRestriction: jest.fn(),
+    assertNoActiveAccountRestriction: jest.fn()
+  }
+  const service = new CommerceService(
+    prisma as never,
+    noop as never,
+    noop as never,
+    {} as never,
+    {} as never,
+    {} as never,
+    risk as never,
+    {} as never,
+    asaas as never,
+    billing as never
+  )
+  const user = { id: 'account-1', username: 'qa' } as never
+  return { recharge, order, prisma, asaas, service, user }
+}
+
+describe('Asaas checkout reservation (mock provider, no DB/network)', () => {
+  it('refuses an existing WCoin bonus package before creating an intent', async () => {
+    const f = fixture()
+    f.prisma.rechargePackage.findUnique.mockResolvedValueOnce({
+      id: 'pack-1',
+      active: true,
+      currency: 'WCOIN',
+      amount: 50,
+      bonus: 5,
+      price: '50,00'
+    })
+    await expect(f.service.createRechargeIntent({ packageId: 'pack-1' }, f.user)).rejects.toThrow(
+      'sem bonus'
+    )
+    expect(f.prisma.rechargeIntent.create).not.toHaveBeenCalled()
+  })
+
+  it('rejects ambiguous dot-decimal package prices in the Asaas path', async () => {
+    const f = fixture()
+    f.prisma.rechargePackage.findUnique.mockResolvedValueOnce({
+      id: 'pack-1',
+      active: true,
+      currency: 'WCOIN',
+      amount: 10,
+      bonus: 0,
+      price: '10.00'
+    })
+    await expect(f.service.createRechargeIntent({ packageId: 'pack-1' }, f.user)).rejects.toThrow(
+      'R$1 = 1 WC'
+    )
+    expect(f.prisma.rechargeIntent.create).not.toHaveBeenCalled()
+  })
+
+  it('cannot start a Mercado Pago checkout while Asaas sandbox mode is selected', async () => {
+    const f = fixture()
+    f.recharge.provider = 'mercadopago'
+    await expect(f.service.createRechargeCheckout('recharge-1', f.user)).rejects.toThrow(
+      'MERCADO_PAGO_CHECKOUT_DISABLED_DURING_ASAAS_SANDBOX'
+    )
+    expect(f.asaas.createOrder).not.toHaveBeenCalled()
+  })
+
+  it('reserves once: concurrent checkout cannot issue a second POST', async () => {
+    const f = fixture()
+    let release!: () => void
+    const held = new Promise<void>((resolve) => {
+      release = resolve
+    })
+    let entered!: () => void
+    const started = new Promise<void>((resolve) => {
+      entered = resolve
+    })
+    f.asaas.createOrder.mockImplementationOnce(async () => {
+      entered()
+      await held
+      return {
+        externalOrderId: 'pay_1',
+        status: 'PENDING',
+        paymentMethod: 'PIX',
+        qrCode: 'fake-pix'
+      }
+    })
+    const first = f.service.createRechargeCheckout('recharge-1', f.user)
+    await started
+    await expect(f.service.createRechargeCheckout('recharge-1', f.user)).rejects.toThrow(
+      'ASAAS_PAYMENT_CREATION_IN_PROGRESS'
+    )
+    release()
+    await expect(first).resolves.toMatchObject({ externalOrderId: 'pay_1', status: 'PENDING' })
+    expect(f.asaas.createOrder).toHaveBeenCalledTimes(1)
+    expect(f.recharge.providerCreateState).toBe('CREATED')
+  })
+
+  it('marks timeout ambiguous, then recovers by reference without repeating POST', async () => {
+    const f = fixture()
+    f.asaas.createOrder.mockRejectedValueOnce(new Error('timeout'))
+    await expect(f.service.createRechargeCheckout('recharge-1', f.user)).rejects.toThrow(
+      'ASAAS_PAYMENT_RECONCILE_REQUIRED'
+    )
+    expect(f.recharge.providerCreateState).toBe('RECONCILE_REQUIRED')
+    await expect(f.service.createRechargeCheckout('recharge-1', f.user)).rejects.toThrow(
+      'ASAAS_PAYMENT_RECONCILE_REQUIRED'
+    )
+    f.asaas.findPaymentByExternalReference.mockResolvedValueOnce(f.order)
+    await expect(f.service.createRechargeCheckout('recharge-1', f.user)).resolves.toMatchObject({
+      externalOrderId: 'pay_1'
+    })
+    expect(f.asaas.createOrder).toHaveBeenCalledTimes(1)
+    expect(f.recharge.providerCreateState).toBe('CREATED')
+  })
+})

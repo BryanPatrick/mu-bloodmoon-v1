@@ -27,6 +27,7 @@ import type {
   UpdateRechargeStatusPayload
 } from './commerce.contract'
 import { CommerceService } from './commerce.service'
+import { BillingProfileService } from '../payments/billing-profile.service'
 import type { LegacyCatalogBulkPayload, LegacyCatalogItemUpdatePayload, LegacyCatalogQuery } from './legacy-catalog-config.service'
 import { LegacyCatalogConfigService } from './legacy-catalog-config.service'
 import { LegacyCatalogEffectiveStateService } from './legacy-catalog-effective-state.service'
@@ -40,7 +41,8 @@ export class CommerceController {
     private readonly storeAdminService: StoreAdminService,
     private readonly legacyCatalogConfig: LegacyCatalogConfigService,
     private readonly legacyCatalogEffectiveState: LegacyCatalogEffectiveStateService,
-    private readonly paymentReconciliation: PaymentReconciliationService
+    private readonly paymentReconciliation: PaymentReconciliationService,
+    private readonly billingProfile: BillingProfileService
   ) {}
 
   @Get('shop/products')
@@ -73,6 +75,12 @@ export class CommerceController {
   @UseGuards(JwtAuthGuard)
   createRecharge(@Body() payload: CreateRechargeIntentPayload, @CurrentUser() user: AuthenticatedUser) {
     return this.commerceService.createRechargeIntent(payload, user)
+  }
+
+  @Post('recharge/billing-profile')
+  @UseGuards(JwtAuthGuard)
+  saveBillingProfile(@Body() payload: { legalName: string; cpfCnpj: string; country?: string }, @CurrentUser() user: AuthenticatedUser) {
+    return this.billingProfile.saveForAccount(user.id, payload)
   }
 
   @Post('recharge/intents/:id/checkout')

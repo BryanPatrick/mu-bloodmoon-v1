@@ -1,6 +1,5 @@
 ﻿import { BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common'
 import type {
-  CurrencyCode,
   Prisma,
   PurchaseIntentStatus,
   RechargeIntent,
@@ -16,6 +15,11 @@ import type { AuthenticatedUser } from '../auth/auth.types'
 import { ObservabilityService } from '../observability/observability.service'
 import { PAYMENT_PROVIDER, type PaymentProvider } from '../payments/payment-provider.interface'
 import { PaymentWebhookEventService } from '../payments/payment-webhook-event.service'
+import { AsaasPaymentProvider } from '../payments/asaas.provider'
+import { BillingProfileService } from '../payments/billing-profile.service'
+import { loadAsaasConfig } from '../payments/asaas.config'
+import { mapAsaasPaymentStatus } from '../payments/asaas.status-map'
+import { UnauthorizedException } from '@nestjs/common'
 import { mapMercadoPagoOrderStatus } from '../payments/mercadopago.status-map'
 import { WalletLedgerService } from '../wallet/wallet-ledger.service'
 import { ChargebackCaseService } from './chargeback-case.service'
@@ -25,6 +29,7 @@ import type {
   CreatePurchaseIntentPayload,
   CreateRechargeIntentPayload,
   MercadoPagoWebhookInput,
+  AsaasWebhookInput,
   RechargePackagePayload,
   ShopProductPayload,
   UpdatePurchaseStatusPayload,
@@ -66,6 +71,15 @@ export function parseBrlPrice(price: string): number {
   const normalized = price.trim().replace(/\./g, '').replace(',', '.')
   const parsed = Number(normalized.replace(/[^\d.-]/g, ''))
   return Number.isFinite(parsed) ? parsed : 0
+}
+
+// The legacy parser above accepts both separators ambiguously. Asaas PIX
+// accepts only an unambiguous whole-BRL representation ("10"/"10,00").
+function asaasWholeBrl(price: string): number | null {
+  const match = /^([1-9]\d*)(?:,00)?$/.exec(price.trim())
+  if (!match) return null
+  const amount = Number(match[1])
+  return Number.isSafeInteger(amount) ? amount : null
 }
 
 // ADR-0008: WCoin pegged 1:1 with R$ -- the universal Blood Moon
@@ -290,7 +304,9 @@ export class CommerceService {
     private readonly webhookEvents: PaymentWebhookEventService,
     private readonly walletLedger: WalletLedgerService,
     private readonly paymentRisk: PaymentRiskService,
-    private readonly chargebackCase: ChargebackCaseService
+    private readonly chargebackCase: ChargebackCaseService,
+    private readonly asaas: AsaasPaymentProvider,
+    private readonly billingProfile: BillingProfileService
   ) {}
 
   async ensureSeeded() {
@@ -707,10 +723,16 @@ export class CommerceService {
   }
 
   async createRechargeIntent(payload: CreateRechargeIntentPayload, user: AuthenticatedUser) {
-    this.assertRealMoneyPaymentsEnabled()
+    const asaasSandbox = loadAsaasConfig().enabled
+    if (asaasSandbox) this.asaas.assertSandboxEnabled()
+    else this.assertRealMoneyPaymentsEnabled()
     const pack = await this.prisma.rechargePackage.findUnique({ where: { id: payload.packageId } })
     if (!pack || !pack.active) {
       throw new NotFoundException('Recharge package not available')
+    }
+    if (asaasSandbox && (pack.currency !== 'WCOIN' || pack.bonus !== 0 ||
+      asaasWholeBrl(pack.price) === null || pack.amount !== asaasWholeBrl(pack.price))) {
+      throw new BadRequestException('Pacote incompativel com a regra Asaas sandbox: R$1 = 1 WC, sem bonus.')
     }
 
     const recharge = await this.prisma.rechargeIntent.create({
@@ -721,6 +743,8 @@ export class CommerceService {
         amount: pack.amount,
         bonus: pack.bonus,
         price: pack.price,
+        provider: asaasSandbox ? 'asaas' : 'mercadopago',
+        providerEnvironment: asaasSandbox ? 'sandbox' : 'production',
         correlationId: randomUUID()
       },
       include: {
@@ -759,7 +783,6 @@ export class CommerceService {
   // code) rather than creating a duplicate charge, so a double-click or a
   // page refresh is safe without any extra short-circuit logic here.
   async createRechargeCheckout(id: string, user: AuthenticatedUser) {
-    this.assertRealMoneyPaymentsEnabled()
     // PHASE P/Q (2026-08-31): the real enforcement point for
     // PAYMENT_RESTRICTION and ACCOUNT_RESTRICTION -- see
     // payment-risk.service.ts's own header comment. Checked before any
@@ -775,6 +798,11 @@ export class CommerceService {
     if (recharge.accountId !== user.id) {
       throw new ForbiddenException('Access denied')
     }
+    if (recharge.provider === 'asaas') return this.createAsaasCheckout(recharge)
+    if (loadAsaasConfig().enabled) {
+      throw new ServiceUnavailableException('MERCADO_PAGO_CHECKOUT_DISABLED_DURING_ASAAS_SANDBOX')
+    }
+    this.assertRealMoneyPaymentsEnabled()
     const payableStatuses: RechargeIntentStatus[] = ['PREPARED', 'PENDING', 'PROCESSING']
     if (!payableStatuses.includes(recharge.status)) {
       throw new BadRequestException('Esta recarga nao pode mais ser paga -- inicie uma nova.')
@@ -856,6 +884,100 @@ export class CommerceService {
     }
   }
 
+  private async createAsaasCheckout(
+    recharge: RechargeIntent & { account: { email: string }; package: { key: string } }
+  ) {
+    this.asaas.assertSandboxEnabled()
+    if (!loadAsaasConfig().apiKey) throw new ServiceUnavailableException('ASAAS_SANDBOX_KEY_MISSING')
+    const amountBRL = asaasWholeBrl(recharge.price)
+    if (recharge.providerEnvironment !== 'sandbox' || recharge.currency !== 'WCOIN' ||
+      recharge.bonus !== 0 || amountBRL === null || recharge.amount !== amountBRL) {
+      throw new BadRequestException('Recarga Asaas fora do contrato 1 WC = R$1, sem bonus.')
+    }
+    if (!(['PREPARED', 'PENDING', 'PROCESSING'] as RechargeIntentStatus[]).includes(recharge.status)) {
+      throw new BadRequestException('Esta recarga nao pode mais ser paga.')
+    }
+    const reference = recharge.externalReference || recharge.correlationId || recharge.id
+    const customerId = await this.billingProfile.ensureAsaasCustomer(recharge.accountId)
+    const mapping = await this.prisma.providerCustomer.findUniqueOrThrow({
+      where: { accountId_provider_environment: { accountId: recharge.accountId, provider: 'asaas', environment: 'sandbox' } }
+    })
+    if (mapping.providerCustomerId !== customerId) throw new ServiceUnavailableException('ASAAS_CUSTOMER_MAPPING_MISMATCH')
+
+    if (recharge.externalOrderId) {
+      const order = await this.asaas.getOrder(recharge.externalOrderId)
+      this.assertAsaasOrderMatches(order, recharge, customerId, reference)
+      const checkout = await this.asaas.getCheckout(order.externalOrderId)
+      return { ...checkout, id: recharge.id, status: recharge.status }
+    }
+
+    if (recharge.providerCreateState !== 'NONE') {
+      if (recharge.providerCreateState === 'RESERVED' && Date.now() - recharge.updatedAt.getTime() < 30_000) {
+        throw new ServiceUnavailableException('ASAAS_PAYMENT_CREATION_IN_PROGRESS')
+      }
+      const recovered = await this.asaas.findPaymentByExternalReference(reference)
+      if (!recovered) {
+        await this.prisma.rechargeIntent.updateMany({
+          where: { id: recharge.id, externalOrderId: null }, data: { providerCreateState: 'RECONCILE_REQUIRED' }
+        })
+        throw new ServiceUnavailableException('ASAAS_PAYMENT_RECONCILE_REQUIRED')
+      }
+      this.assertAsaasOrderMatches(recovered, recharge, customerId, reference)
+      await this.prisma.rechargeIntent.updateMany({
+        where: { id: recharge.id, externalOrderId: null },
+        data: { externalOrderId: recovered.externalOrderId, providerCreateState: 'CREATED', externalStatus: recovered.status, paymentMethod: 'PIX' }
+      })
+      const checkout = await this.asaas.getCheckout(recovered.externalOrderId)
+      return { ...checkout, id: recharge.id, status: recharge.status }
+    }
+
+    const reserved = await this.prisma.rechargeIntent.updateMany({
+      where: { id: recharge.id, provider: 'asaas', providerEnvironment: 'sandbox', providerCreateState: 'NONE', externalOrderId: null },
+      data: { providerCreateState: 'RESERVED', externalReference: reference }
+    })
+    if (reserved.count !== 1) throw new ServiceUnavailableException('ASAAS_PAYMENT_CREATION_IN_PROGRESS')
+
+    try {
+      const order = await this.asaas.createOrder({
+        correlationId: recharge.correlationId || reference, externalReference: reference,
+        idempotencyKey: reference, amountBRL: amountBRL!,
+        description: `Recarga Blood Moon -- ${recharge.package.key}`,
+        payerEmail: recharge.account.email, payerCustomerId: customerId
+      })
+      const verified = await this.asaas.getOrder(order.externalOrderId)
+      if (verified.externalOrderId !== order.externalOrderId) {
+        throw new ServiceUnavailableException('ASAAS_PAYMENT_RESPONSE_MISMATCH')
+      }
+      this.assertAsaasOrderMatches(verified, recharge, customerId, reference)
+      const saved = await this.prisma.rechargeIntent.updateMany({
+        where: { id: recharge.id, providerCreateState: 'RESERVED', externalOrderId: null },
+        data: { externalOrderId: order.externalOrderId, providerCreateState: 'CREATED',
+          externalStatus: verified.status, paymentMethod: 'PIX', status: 'PENDING' }
+      })
+      if (saved.count !== 1) throw new ServiceUnavailableException('ASAAS_PAYMENT_SAVE_CONFLICT')
+      return { ...order, id: recharge.id, status: 'PENDING' }
+    } catch {
+      await this.prisma.rechargeIntent.updateMany({
+        where: { id: recharge.id, providerCreateState: 'RESERVED', externalOrderId: null },
+        data: { providerCreateState: 'RECONCILE_REQUIRED' }
+      })
+      throw new ServiceUnavailableException('ASAAS_PAYMENT_RECONCILE_REQUIRED')
+    }
+  }
+
+  private assertAsaasOrderMatches(
+    order: Awaited<ReturnType<AsaasPaymentProvider['getOrder']>>,
+    recharge: RechargeIntent,
+    customerId: string,
+    reference: string
+  ) {
+    if ((recharge.externalOrderId && recharge.externalOrderId !== order.externalOrderId) ||
+      order.externalReference !== reference || order.providerCustomerId !== customerId ||
+      order.totalAmountBRL !== asaasWholeBrl(recharge.price) || order.paymentMethod !== 'PIX') {
+      throw new ServiceUnavailableException('ASAAS_PAYMENT_RECONCILE_REQUIRED')
+    }
+  }
+
   async getRechargeForAccount(id: string, user: AuthenticatedUser) {
     const recharge = await this.prisma.rechargeIntent.findUnique({ where: { id }, include: { account: true, package: true } })
     if (!recharge || recharge.accountId !== user.id) {
@@ -921,6 +1043,10 @@ export class CommerceService {
     }
     if (!recharge.externalOrderId) {
       throw new BadRequestException('Esta recarga ainda nao tem uma order no Mercado Pago.')
+    }
+    if (recharge.provider === 'asaas') {
+      const order = await this.asaas.getOrder(recharge.externalOrderId)
+      return this.reconcileAsaasOrder(order, recharge, 'admin')
     }
     const order = await this.paymentProvider.getOrder(recharge.externalOrderId)
     return this.reconcileWithProvider(order, recharge, { source: 'admin', actorId: user.id, actorUsername: user.username })
@@ -1037,8 +1163,127 @@ export class CommerceService {
   async reconcileFromProviderPoll(id: string) {
     const recharge = await this.prisma.rechargeIntent.findUnique({ where: { id } })
     if (!recharge || !recharge.externalOrderId) return null
+    if (recharge.provider === 'asaas') {
+      const order = await this.asaas.getOrder(recharge.externalOrderId)
+      return this.reconcileAsaasOrder(order, recharge, 'system-poll')
+    }
     const order = await this.paymentProvider.getOrder(recharge.externalOrderId)
     return this.reconcileWithProvider(order, recharge, { source: 'system-poll' })
+  }
+
+  async handleAsaasWebhook(input: AsaasWebhookInput) {
+    this.asaas.assertSandboxEnabled()
+    if (!this.asaas.validateWebhookSignature({ signatureHeader: input.token, requestId: undefined, dataId: undefined })) {
+      throw new UnauthorizedException('Webhook nao autorizado.')
+    }
+    const eventId = input.body?.id
+    const topic = input.body?.event
+    const paymentId = input.body?.payment?.id
+    if (!eventId || !topic || !paymentId || eventId.length > 190 || topic.length > 80 || paymentId.length > 190) {
+      throw new BadRequestException('Evento Asaas invalido.')
+    }
+    const claim = await this.webhookEvents.recordAndClaim({
+      provider: 'asaas', topic, eventId, externalOrderId: paymentId,
+      signatureValid: true, rawPayload: { id: eventId, event: topic, payment: { id: paymentId } }
+      // Never pass asaas-access-token as signatureHeader: it is a secret.
+    })
+    if (claim.outcome === 'duplicate-processed') return { received: true, duplicate: true }
+    const recognized = new Set([
+      'PAYMENT_CREATED', 'PAYMENT_UPDATED', 'PAYMENT_CONFIRMED', 'PAYMENT_RECEIVED',
+      'PAYMENT_OVERDUE', 'PAYMENT_DELETED', 'PAYMENT_REFUND_IN_PROGRESS',
+      'PAYMENT_REFUNDED', 'PAYMENT_PARTIALLY_REFUNDED',
+      'PAYMENT_CHARGEBACK_REQUESTED', 'PAYMENT_CHARGEBACK_DISPUTE',
+      'PAYMENT_AWAITING_CHARGEBACK_REVERSAL'
+    ])
+    if (!recognized.has(topic)) {
+      await this.webhookEvents.markIgnored(claim.eventId, 'unknown_asaas_event')
+      return { received: true, ignored: true }
+    }
+    try {
+      const order = await this.asaas.getOrder(paymentId)
+      if (order.externalOrderId !== paymentId) {
+        await this.webhookEvents.markIgnored(claim.eventId, 'provider_payment_id_mismatch')
+        await this.observability.recordOperationalEvent({
+          module: 'store', severity: 'CRITICAL', eventType: 'ASAAS_PAYMENT_ID_MISMATCH',
+          entityType: 'PaymentWebhookEvent', entityId: claim.eventId,
+          description: 'Webhook Asaas divergiu do ID retornado na consulta ao provedor.',
+          data: { eventId, paymentId }
+        })
+        return { received: true, ignored: true }
+      }
+      const recharge = order.externalReference
+        ? await this.prisma.rechargeIntent.findUnique({ where: { externalReference: order.externalReference } })
+        : null
+      if (!recharge || recharge.provider !== 'asaas' || recharge.providerEnvironment !== 'sandbox') {
+        await this.webhookEvents.markIgnored(claim.eventId, 'unmatched_asaas_payment')
+        await this.observability.recordOperationalEvent({
+          module: 'store', severity: 'CRITICAL', eventType: 'ASAAS_UNMATCHED_PAYMENT',
+          entityType: 'PaymentWebhookEvent', entityId: claim.eventId,
+          description: 'Pagamento Asaas sem recarga sandbox correspondente.',
+          data: { eventId, paymentId }
+        })
+        return { received: true, ignored: true }
+      }
+      await this.reconcileAsaasOrder(order, recharge, 'webhook', topic === 'PAYMENT_RECEIVED', topic)
+      await this.webhookEvents.markProcessed(claim.eventId, recharge.id)
+      return { received: true }
+    } catch (error) {
+      await this.webhookEvents.markFailed(claim.eventId, 'asaas_reconcile_failed')
+      throw error
+    }
+  }
+
+  private async reconcileAsaasOrder(
+    order: Awaited<ReturnType<AsaasPaymentProvider['getOrder']>>,
+    recharge: RechargeIntent,
+    source: 'admin' | 'webhook' | 'system-poll',
+    allowAutomaticCredit = true,
+    eventType?: string
+  ) {
+    if (recharge.provider !== 'asaas' || recharge.providerEnvironment !== 'sandbox') {
+      throw new ServiceUnavailableException('ASAAS_PROVIDER_ENVIRONMENT_MISMATCH')
+    }
+    const mapping = await this.prisma.providerCustomer.findUnique({
+      where: { accountId_provider_environment: { accountId: recharge.accountId, provider: 'asaas', environment: 'sandbox' } }
+    })
+    const mismatch = !order.externalReference || order.externalReference !== recharge.externalReference ||
+      !mapping?.providerCustomerId || order.providerCustomerId !== mapping.providerCustomerId ||
+      (recharge.externalOrderId && recharge.externalOrderId !== order.externalOrderId) ||
+      order.paymentMethod !== 'PIX' || recharge.currency !== 'WCOIN' || recharge.bonus !== 0 ||
+      asaasWholeBrl(recharge.price) === null ||
+      recharge.amount !== asaasWholeBrl(recharge.price) ||
+      order.totalAmountBRL !== asaasWholeBrl(recharge.price)
+    if (mismatch) {
+      return this.transitionRechargeStatus(recharge.id, 'MANUAL_REVIEW', {
+        source, reason: 'asaas_payment_contract_mismatch'
+      })
+    }
+    if (!recharge.externalOrderId) {
+      await this.prisma.rechargeIntent.updateMany({
+        where: { id: recharge.id, externalOrderId: null },
+        data: { externalOrderId: order.externalOrderId, providerCreateState: 'CREATED' }
+      })
+    }
+    const mapped = mapAsaasPaymentStatus(order.status)
+    if (eventType?.startsWith('PAYMENT_REFUND') || eventType === 'PAYMENT_PARTIALLY_REFUNDED') {
+      mapped.status = 'MANUAL_REVIEW'
+      mapped.reason = 'asaas_refund_review'
+    }
+    if (eventType?.startsWith('PAYMENT_CHARGEBACK') || eventType === 'PAYMENT_AWAITING_CHARGEBACK_REVERSAL') {
+      mapped.status = 'MANUAL_REVIEW'
+      mapped.reason = `charged_back:asaas:${eventType.toLowerCase()}`
+    }
+    if (!allowAutomaticCredit && mapped.status === 'PAID') mapped.status = 'PROCESSING'
+    if (recharge.status === 'PAID' && ['PENDING', 'PROCESSING'].includes(mapped.status)) {
+      return this.transitionRechargeStatus(recharge.id, recharge.status, { source })
+    }
+    if (recharge.status === 'MANUAL_REVIEW' && ['PENDING', 'PROCESSING'].includes(mapped.status)) {
+      return this.transitionRechargeStatus(recharge.id, recharge.status, { source })
+    }
+    return this.transitionRechargeStatus(recharge.id, mapped.status, {
+      source, reason: mapped.reason,
+      extra: { externalStatus: order.status, paymentMethod: order.paymentMethod, lastWebhookAt: source === 'webhook' ? new Date() : undefined }
+    })
   }
 
   // Read-only wrapper around WalletLedgerService.traceChargebackDispersal --
@@ -1198,6 +1443,10 @@ export class CommerceService {
   }
 
   async updateRechargeStatus(id: string, payload: UpdateRechargeStatusPayload, user: AuthenticatedUser) {
+    const target = await this.prisma.rechargeIntent.findUnique({ where: { id }, select: { provider: true } })
+    if (target?.provider === 'asaas' && payload.status !== 'MANUAL_REVIEW') {
+      throw new ServiceUnavailableException('ASAAS_ADMIN_FINANCIAL_OVERRIDE_DISABLED')
+    }
     if (['CANCELLED', 'REFUNDED', 'MANUAL_REVIEW'].includes(payload.status) && !payload.reason?.trim()) {
       throw new BadRequestException('Informe um motivo para esta alteracao de status.')
     }

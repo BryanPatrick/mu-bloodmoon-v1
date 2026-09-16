@@ -18,6 +18,7 @@ export type CreateOrderInput = {
   amountBRL: number
   description: string
   payerEmail: string
+  payerCustomerId?: string
 }
 
 export type CreateOrderResult = {
@@ -37,6 +38,10 @@ export type OrderStatusResult = {
   statusDetail?: string
   totalAmountBRL: number
   paymentMethod?: string
+  providerCustomerId?: string
+  qrCode?: string
+  qrCodeBase64?: string
+  ticketUrl?: string
 }
 
 export type WebhookVerificationInput = {

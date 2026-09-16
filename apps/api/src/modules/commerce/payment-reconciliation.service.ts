@@ -243,6 +243,7 @@ export class PaymentReconciliationService implements OnModuleInit, OnModuleDestr
     // what the poll finds.
     const candidates = await this.prisma.rechargeIntent.findMany({
       where: {
+        provider: 'mercadopago',
         externalOrderId: { not: null },
         updatedAt: { lt: notPolledSince },
         status: { in: ['PENDING', 'PROCESSING', 'REFUND_PENDING', 'MANUAL_REVIEW'] }

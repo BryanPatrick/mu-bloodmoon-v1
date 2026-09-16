@@ -105,6 +105,9 @@ arquivo-por-arquivo de tudo.
 
 ## Economia, VIP e comércio
 
+Implementação local Asaas sandbox (Fase 2, sem chamadas ao provedor ou produção):
+[`docs/payments/asaas-sandbox-phase2.md`](payments/asaas-sandbox-phase2.md).
+
 | Pasta | O que contém |
 |---|---|
 | [`docs/vip/`](vip/) | Auditoria profunda de VIP, matriz de benefícios, decisões de benefício, prontidão de produto, o [fluxo de dados ponta a ponta](vip/vip-end-to-end-data-flow.md), e a [auditoria de coexistência WZ_SetAccountLevel](vip/wz-setaccountlevel-coexistence.md) (bug crítico real encontrado e corrigido, Fase L) |

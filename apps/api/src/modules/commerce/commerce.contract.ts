@@ -178,3 +178,8 @@ export type MercadoPagoWebhookInput = {
   dataId: string | undefined
   body: { action: string; type: string; data: { id: string } }
 }
+
+export type AsaasWebhookInput = {
+  token: string | undefined
+  body: { id?: string; event?: string; payment?: { id?: string } }
+}

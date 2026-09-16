@@ -186,6 +186,13 @@ enum RechargeIntentStatus {
   REFUNDED
 }
 
+enum ProviderCreateState {
+  NONE
+  RESERVED
+  RECONCILE_REQUIRED
+  CREATED
+}
+
 enum CharacterRuntimeStatus {
   ONLINE
   OFFLINE
@@ -603,6 +610,8 @@ model Account {
   auditEvents               AuditEvent[]                @relation("AuditActor")
   purchases                 PurchaseIntent[]
   recharges                 RechargeIntent[]
+  billingProfile            BillingProfile?
+  providerCustomers         ProviderCustomer[]
   characters                AccountCharacter[]
   guildsFounded             Guild[]                     @relation("GuildFounder")
   guildMemberships          GuildMember[]               @relation("GuildMemberAccount")
@@ -2099,6 +2108,36 @@ model RechargePackage {
   @@index([active])
 }
 
+// Billing PII is encrypted by BillingProfileService; never expose these
+// ciphertext fields through a public DTO or use the document as an ID.
+model BillingProfile {
+  id                    String   @id @default(uuid())
+  accountId             String   @unique
+  legalNameCiphertext   String   @db.Text
+  cpfCnpjCiphertext     String   @db.Text
+  country               String   @default("BR") @db.VarChar(2)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  account               Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+}
+
+model ProviderCustomer {
+  id                 String   @id @default(uuid())
+  accountId          String
+  provider           String   @db.VarChar(40)
+  environment        String   @db.VarChar(20)
+  externalReference  String   @db.VarChar(191)
+  providerCustomerId String?  @db.VarChar(191)
+  createState        ProviderCreateState @default(NONE)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  account            Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@unique([accountId, provider, environment])
+  @@unique([provider, environment, externalReference])
+  @@unique([provider, environment, providerCustomerId])
+}
+
 model PurchaseIntent {
   id                     String               @id @default(uuid())
   accountId              String
@@ -2214,6 +2253,8 @@ model RechargeIntent {
   price                 String
   status                RechargeIntentStatus  @default(PREPARED)
   provider              String                @default("mercadopago") @db.VarChar(40)
+  providerEnvironment   String                @default("production") @db.VarChar(20)
+  providerCreateState   ProviderCreateState   @default(NONE)
   // Audit-chain id for the whole Blood Moon operation. Kept deliberately
   // separate from externalReference/paymentIdempotencyKey below -- their
   // values coincide today but they are different concepts (see those
@@ -2245,7 +2286,7 @@ model RechargeIntent {
   @@index([accountId])
   @@index([packageId])
   @@index([status])
-  @@index([externalOrderId])
+  @@unique([provider, providerEnvironment, externalOrderId])
 }
 
 model PaymentWebhookEvent {

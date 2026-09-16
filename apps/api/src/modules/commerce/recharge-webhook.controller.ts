@@ -27,4 +27,17 @@ export class RechargeWebhookController {
     }
     return this.commerceService.handleMercadoPagoWebhook({ signature, requestId, dataId, body })
   }
+
+  @Post('asaas')
+  @HttpCode(200)
+  asaasWebhook(
+    @Req() request: Request,
+    @Headers('asaas-access-token') token: string | undefined,
+    @Body() body: { id?: string; event?: string; payment?: { id?: string } }
+  ) {
+    if (isWebhookRateLimited(request.ip || 'unknown')) {
+      throw new ServiceUnavailableException('Muitas notificacoes recebidas -- tente novamente em instantes.')
+    }
+    return this.commerceService.handleAsaasWebhook({ token, body })
+  }
 }

@@ -4,6 +4,8 @@ import { ObservabilityModule } from '../observability/observability.module'
 import { PAYMENT_PROVIDER } from './payment-provider.interface'
 import { MercadoPagoProvider } from './mercadopago.provider'
 import { PaymentWebhookEventService } from './payment-webhook-event.service'
+import { AsaasPaymentProvider } from './asaas.provider'
+import { BillingProfileService } from './billing-profile.service'
 
 // Deliberately NOT importing ThrottlerModule.forRoot() here: @nestjs/throttler
 // is effectively global once registered, and this app already registers it
@@ -17,9 +19,11 @@ import { PaymentWebhookEventService } from './payment-webhook-event.service'
   imports: [AuditModule, ObservabilityModule],
   providers: [
     MercadoPagoProvider,
+    AsaasPaymentProvider,
+    BillingProfileService,
     { provide: PAYMENT_PROVIDER, useExisting: MercadoPagoProvider },
     PaymentWebhookEventService
   ],
-  exports: [PAYMENT_PROVIDER, PaymentWebhookEventService]
+  exports: [PAYMENT_PROVIDER, AsaasPaymentProvider, BillingProfileService, PaymentWebhookEventService]
 })
 export class PaymentsModule {}
