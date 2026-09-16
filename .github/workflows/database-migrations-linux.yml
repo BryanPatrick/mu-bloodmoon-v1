@@ -232,6 +232,24 @@ jobs:
         working-directory: apps/api
         run: npx prisma migrate status
 
+      # Confirms the migration-compatibility fix (CAST(0 AS JSON) -> '0' in
+      # 20260723003000_launcher_integration) actually produces the correct,
+      # semantically valid JSON value when applied for real through the
+      # full migrate-deploy replay -- not just in the separate, isolated
+      # probe-json-cast-compatibility.yml workflow.
+      - name: Verify launcher-online-players setting after real replay
+        run: |
+          set -euo pipefail
+          MYSQL="mariadb -h127.0.0.1 -ubloodmoon_ci -pbloodmoon_ci_pw bloodmoon_ci -N -B"
+          VALUE=$($MYSQL -e "SELECT value FROM SiteSetting WHERE \`key\` = 'launcher-online-players';")
+          VALID=$($MYSQL -e "SELECT JSON_VALID(value) FROM SiteSetting WHERE \`key\` = 'launcher-online-players';")
+          TYPE=$($MYSQL -e "SELECT JSON_TYPE(value) FROM SiteSetting WHERE \`key\` = 'launcher-online-players';")
+          echo "launcher-online-players: value=$VALUE JSON_VALID=$VALID JSON_TYPE=$TYPE"
+          if [ "$VALUE" != "0" ]; then echo "FAIL: expected value '0', got '$VALUE'"; exit 1; fi
+          if [ "$VALID" != "1" ]; then echo "FAIL: expected JSON_VALID=1, got '$VALID'"; exit 1; fi
+          if [ "$TYPE" != "INTEGER" ]; then echo "FAIL: expected JSON_TYPE=INTEGER, got '$TYPE'"; exit 1; fi
+          echo "OK: launcher-online-players correctly holds a valid JSON integer 0 after the real full migration replay."
+
       # Direct query of _prisma_migrations rather than parsing
       # `migrate status` text output, which is not a stable machine-
       # readable format across Prisma versions.
