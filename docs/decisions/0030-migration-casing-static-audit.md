@@ -167,3 +167,27 @@ adjacent workflows) **+** real Linux/MariaDB CI
 infrastructure, catches this bug class for real plus anything else
 genuinely Linux/MariaDB-specific). Neither replaces the other; each
 covers a gap the other has.
+
+**A second real bug found once this actually ran on GitHub Actions**:
+the first real remote run (2026-09-16, run id `35127972977`) failed at
+`npm ci` in the `linux-mariadb-migration` job -- before any database or
+Prisma step executed. Node 22.17.0 (this workflow's pinned version)
+bundles npm 10.9.2, which rejected the committed `package-lock.json`
+with `npm error code EUSAGE` / "Missing: `<pkg>` from lock file" for a
+cluster of packages (`pinia@3.0.4`, `oxc-parser`/`rolldown` platform
+bindings, `@vue/devtools-*`). All of these are declared `optional: true`
+under `peerDependenciesMeta` by a nested
+`node_modules/nuxt/node_modules/vue-router@5.1.0` -- npm 10.9.2's `npm
+ci` sync check incorrectly treats these optional peers as required.
+Confirmed this is an npm-version issue, not real repo drift: `npm ci`
+against this exact commit succeeds cleanly with npm 11.19.0 (verified
+locally, 1665 packages installed, exit 0), and this branch's own commit
+never touched `package.json`/`package-lock.json`. Fixed by adding an
+`npm install -g npm@11.19.0` step before `npm ci` in the
+`linux-mariadb-migration` job -- workflow-only, no lockfile change.
+Left as an open follow-up: this repo's `package.json` has no
+`packageManager`/npm `engines` pin at all, so any future CI job or
+contributor machine that happens to use an npm version with the same
+optional-peer-dependency handling gap could hit this again outside this
+one workflow -- worth a repo-wide npm version pin in its own right, not
+bundled into this CI-validation task's scope.
