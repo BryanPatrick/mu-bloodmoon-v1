@@ -164,12 +164,14 @@ This same audit is also what grounded the 503 incident's own storage
 correlation that day: `ACCOUNT_STORAGE_CAUSE = UNLIKELY`,
 `VISIBLE_HOST_FILESYSTEM_CAUSE = UNLIKELY`, `INODE_EXHAUSTION = NO` — all
 three read healthy from inside this account's CageFS view, which is
-useful, real evidence *against* the hosting provider's storage hypothesis
-for that specific incident, while explicitly not proving the shared
-host had no problem (see CageFS limitations above) — the outage's real
-cause turned out to be at the LSAPI/CloudLinux Node Selector layer, not
-storage. See `docs/operations/incident-response-runbook.md` for the
-outage itself.
+useful, real evidence *against* account storage exhaustion for that
+specific incident, while explicitly not proving the shared host had no
+problem (see CageFS limitations above). The earlier statement that
+~~the outage's real cause turned out to be at the LSAPI/CloudLinux Node
+Selector layer, not storage~~ was too definitive: the missing host
+launchers identify the most likely failing **layer**, but the exact
+root cause and recovery mechanism remain unconfirmed. See the
+[incident closeout](../incidents/2026-09-15-production-node-lsapi-503.md).
 
 ## Prior art
 

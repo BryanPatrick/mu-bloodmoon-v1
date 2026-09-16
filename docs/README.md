@@ -121,7 +121,8 @@ arquivo-por-arquivo de tudo.
 | Pasta | O que contém |
 |---|---|
 | [`docs/environment/`](environment/) | Estado do ambiente de desenvolvimento local: `development-environment.md` (SDKs/ferramentas instaladas), `sql-server-test-environment.md` (bloqueio de instalação do SQL Server, ainda não resolvido) |
-| [`docs/operations/`](operations/) | Isolamento de banco de teste local, retenção de logs, saúde/reconciliação de provisionamento |
+| [`docs/operations/`](operations/) | Isolamento de banco de teste local, retenção de logs, saúde/reconciliação de provisionamento e design de monitoramento externo de disponibilidade |
+| [`docs/incidents/`](incidents/) | Fechamentos factuais de incidentes de produção; inclui o [503 Node/LSAPI de 15/09/2026](incidents/2026-09-15-production-node-lsapi-503.md), recuperado sem causa raiz exata confirmada |
 | [`docs/testing/`](testing/) | Baseline de teste do Beta, portão incremental de qualidade |
 | [`docs/handoff/`](handoff/) | Documentos de transição/estado atual por área (comunidade, guilds, comércio Beta, bloqueadores) |
 
