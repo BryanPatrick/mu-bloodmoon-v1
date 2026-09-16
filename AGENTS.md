@@ -113,6 +113,26 @@ note in `docs/README.md` itself.
     STOP — do not proceed without resolving the space or getting fresh,
     explicit authorization. Full procedure, thresholds, and worked
     examples: `docs/operations/host-storage-preflight.md`.
+24. **Applied migrations are immutable by default.** Once a
+    `migration.sql` has `finished_at` set in ANY persistent environment
+    (local dev, CI, staging, production), it must not be edited
+    casually — a normal fix is a new, later migration. An exception
+    requires all of: (1) a documented reason; (2) the old checksum;
+    (3) the new checksum; (4) an inventory of every environment where
+    it's already applied; (5) a real from-zero replay proving the new
+    content still applies cleanly; (6) cross-engine/compatibility
+    validation where relevant; (7) direct verification of the
+    migration's actual real-world effect, not just its recorded
+    status; (8) an explicit checksum-reconciliation plan per
+    environment; (9) fresh, explicit authorization before any
+    production reconciliation write; (10) incident/decision
+    documentation recording all of the above. This is not optional
+    tooling behavior to lean on — confirmed empirically (Prisma
+    5.22.0): a modified already-applied migration produces **no
+    warning and no failure** from either `prisma migrate status` or
+    `prisma migrate deploy`, both exit 0. Nothing in the tooling
+    enforces this; only this rule does. Full incident, procedure, and
+    evidence: `docs/decisions/0030-migration-casing-static-audit.md`.
 
 ## Where things live
 

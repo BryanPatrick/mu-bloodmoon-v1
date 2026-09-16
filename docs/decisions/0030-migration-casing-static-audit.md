@@ -1,23 +1,29 @@
 ---
-status: ACTIVE — both safeguards implemented (static audit + real Linux/MariaDB CI)
+status: ACTIVE — static audit + real Linux/MariaDB CI + migration-immutability governance, all implemented
 category: decisions
 audience: internal (engineering)
 lastVerified: 2026-09-16
-confidence: CONFIRMED (real incident evidence, twice; both defenses now proven)
+confidence: CONFIRMED (real incident evidence, three times now; all defenses proven empirically)
 ---
 
 # ADR-0030: Migration Table-Casing Static Audit
 
 **DATE**: 2026-09-10 (static audit); **UPDATED**: 2026-09-16 (real Linux/
 MariaDB CI validation added — this was option 1 below, previously
-deferred).
+deferred); **UPDATED AGAIN**: 2026-09-16 (same day — that new CI
+immediately found a second, unrelated real bug: a `CAST(... AS JSON)`
+MariaDB incompatibility, plus a pre-existing, previously-undiscovered
+migration-history checksum drift. See "2026-09-16 update, part 2"
+below.)
 
-**STATUS**: ACTIVE. Both defenses now exist: the static audit script
-(`npm run db:check-migration-casing`, wired into `npm run check`) and a
+**STATUS**: ACTIVE. Three defenses now exist: the static audit script
+(`npm run db:check-migration-casing`, wired into `npm run check`), a
 real GitHub Actions workflow
 (`.github/workflows/database-migrations-linux.yml`) that applies every
 migration from an empty database on genuinely case-sensitive Linux
-MariaDB. See "2026-09-16 update" below for what changed and why.
+MariaDB, and the migration-immutability governance rule (`AGENTS.md`
+invariant 24). See "2026-09-16 update" and "2026-09-16 update, part 2"
+below for what changed and why.
 
 ## Why this ADR exists
 
@@ -191,3 +197,111 @@ contributor machine that happens to use an npm version with the same
 optional-peer-dependency handling gap could hit this again outside this
 one workflow -- worth a repo-wide npm version pin in its own right, not
 bundled into this CI-validation task's scope.
+
+## 2026-09-16 update, part 2 -- a real CAST(...AS JSON) incompatibility, a historical migration edit, and migration-immutability governance
+
+Once `linux-mariadb-migration` was actually green end-to-end, it
+immediately surfaced a second, genuinely different bug (not a casing
+bug): `apps/api/prisma/migrations/20260723003000_launcher_integration/migration.sql`
+used `CAST(0 AS JSON)` for the `launcher-online-players` `SiteSetting`
+value. MySQL 8.0.17+ accepts this syntax; MariaDB never has --
+confirmed both empirically (fails with error 1064 on real `mariadb:11`
+*and* `mariadb:10.6` Docker images) and via MariaDB's own issue tracker
+(`MDEV-26448`, closed "Not a Bug"). This is a different bug class from
+the casing incidents above -- a MySQL/MariaDB SQL-dialect gap, not a
+case-sensitivity gap -- caught only because real Linux/MariaDB CI now
+exists at all.
+
+**Why production wasn't actually broken.** Production runs MariaDB
+`10.6.19-MariaDB-cll-lve-log` (CloudLinux's own patched build for
+shared/LVE hosting, confirmed via a read-only `SELECT VERSION()`
+against `mubloodxz_bloodmoon`) -- and yet this exact migration had
+already applied there successfully, with `SiteSetting.value` for
+`launcher-online-players` correctly holding a valid JSON integer `0`.
+This directly contradicts stock MariaDB's behavior (confirmed by
+testing the closest available Docker image, `mariadb:10.6`, which
+*also* rejects the syntax) -- the leading, evidence-consistent
+explanation is that CloudLinux's patched build carries hosting-
+compatibility leniency that stock/upstream MariaDB does not. Not
+independently confirmed against a CloudLinux changelog. The practical
+consequence: this was a **CI/portability gap** (a from-zero replay on
+generic Linux MariaDB would fail), not a **live production incident**
+-- production was never at risk from the original syntax.
+
+**The fix**: `CAST(0 AS JSON)` -> `'0'` (a bare JSON scalar integer
+needs no cast at all). Proven byte-for-byte semantically identical to
+the original on MariaDB 10.6, MariaDB 11, and MySQL 8 -- inserted into
+a throwaway probe table via an isolated workflow
+(`.github/workflows/probe-json-cast-compatibility.yml`), verifying
+`JSON_VALID`/`JSON_TYPE`/raw value all match across all three engines.
+The real `linux-mariadb-migration` job was also extended with a direct,
+self-asserting check of the actual `SiteSetting` row after a real
+from-zero replay -- not just the isolated probe -- so the fix is proven
+both in isolation and in the real migration path.
+
+**A historical migration had already been silently edited once
+before, undiscovered until this investigation.** Production's recorded
+checksum for this migration (`0c029c02...9be46`) did not match the
+tracked file on disk at any point examined this round -- not the
+`CAST(0 AS JSON)` version this incident started with, not the `'0'`
+fix. Full git-history search (`git rev-list --all --objects`, not just
+`--follow` on the current branch) found the exact match: an earlier
+blob, first committed 2026-07-28, using a bare `0` literal (no cast, no
+quotes) -- byte-for-byte identical (SHA-256 match) to what production
+actually has recorded. A later, entirely unrelated commit
+(`0eef9c90`, "feat(auth): finalize GM RBAC", 2026-08-13) incidentally
+edited this already-applied migration's file, changing the bare `0` to
+`CAST(0 AS JSON)` -- three weeks after the migration had already shipped
+to production -- with no apparent awareness the file had already been
+applied anywhere. This is precisely the class of mistake this ADR's new
+governance rule (below) exists to prevent; it had already happened once,
+silently, before this rule existed.
+
+**Prisma's own checksum check does not enforce this -- confirmed
+empirically, not assumed.** Using the exact project Prisma version
+(5.22.0), a disposable local SQLite database was used to apply a tiny
+migration, confirm it `APPLIED`, modify the file afterward, and run
+the same commands production's real deploy process uses:
+`prisma migrate status` reported "Database schema is up to date!"
+(exit 0) and `prisma migrate deploy` reported "No pending migrations to
+apply." (exit 0) -- both completely silent about a checksum that had
+provably changed (independently verified: the file's new SHA-256 did
+not match the checksum recorded in `_prisma_migrations`). **Neither
+command warns nor fails.** This means nothing in the tooling itself
+would ever have caught the 2026-08-13 edit, or would catch a repeat --
+enforcement has to be a project rule, not something Prisma provides.
+
+**Reconciliation, completed 2026-09-16.** All three environments where
+this migration was already applied held different checksums from each
+other (production: the original bare-`0` blob's checksum; both
+`bloodmoon_local` and `bloodmoon_local_claude`: the `CAST(0 AS JSON)`
+version's checksum, since both were populated after the 2026-08-13
+edit). Each was reconciled to the new canonical checksum
+(`b87b4f0e...ac37726`) via a guarded, optimistic-locked `UPDATE`
+(`WHERE migration_name = ... AND checksum = <expected old value>`,
+verified `ROWS_AFFECTED = 1` each time, verified unchanged
+`finished_at`/`rolled_back_at`/`applied_steps_count`, verified zero
+`SiteSetting` data change) -- local environments first, production last
+and separately authorized. All three now hold the same checksum.
+
+**New governance rule adopted**: `AGENTS.md` invariant 24, "Applied
+migrations are immutable by default" -- summarized there, full
+rationale here. Directly motivated by the empirical Prisma finding
+above: since the tooling provides no automatic enforcement, the
+checksum column's value as an audit signal depends entirely on this
+rule being followed, not on `migrate deploy` catching a violation.
+
+**Permanent CI shape, as of this update**: three jobs in
+`database-migrations-linux.yml` -- static casing audit, a
+historical-bug-detector proof (fixture-based, no real migration
+history touched), and the real `linux-mariadb-migration` job (case-
+sensitivity proof, `prisma validate`/`generate`, `migrate deploy` from
+an empty database across all real migrations, a direct
+`launcher-online-players` value assertion, and the migration-count/
+pending/failed assertion). The isolated JSON-CAST probe workflow
+(`probe-json-cast-compatibility.yml`) is retained, not archived-and-
+removed: it is lightweight (three short jobs -- MariaDB 10.6, MariaDB
+11, MySQL 8 -- no real migration history touched, triggers only on
+changes to itself), and stands as a reusable
+pattern for validating any *future* cross-engine SQL-portability
+question the same way, not just this one incident.
