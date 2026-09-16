@@ -107,6 +107,7 @@ arquivo-por-arquivo de tudo.
 
 Implementação local Asaas sandbox (Fase 2, sem chamadas ao provedor ou produção):
 [`docs/payments/asaas-sandbox-phase2.md`](payments/asaas-sandbox-phase2.md).
+Validação Fase 3: [MySQL integrado aprovado; migração limpa em MariaDB bloqueada](payments/asaas-sandbox-phase3.md).
 
 | Pasta | O que contém |
 |---|---|

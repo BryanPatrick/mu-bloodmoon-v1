@@ -7,6 +7,11 @@ lastVerified: 2026-09-16
 
 # Asaas sandbox — Phase 2 local implementation
 
+Phase 3 follow-up (2026-09-16): the real-DB MySQL suite passed, but the clean
+MariaDB migration chain is blocked by a historical launcher migration. See
+[`asaas-sandbox-phase3.md`](asaas-sandbox-phase3.md); Phase 2's original
+mock-only status below is retained as phase history.
+
 This phase adds a **disabled-by-default, sandbox-only** Asaas adapter to the
 existing financial domain. It neither replaces `RechargeIntent` with a new
 Order/Payment model nor creates a second wallet or delivery pipeline. No real
