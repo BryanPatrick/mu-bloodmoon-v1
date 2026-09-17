@@ -44,3 +44,14 @@ cannot be a credential-only switch.
 
 Technical details, tests and go-live checklist:
 [`asaas-sandbox-phase2.md`](../payments/asaas-sandbox-phase2.md).
+
+## Phase 6 evidence addendum (2026-09-17)
+
+The sandbox-only architecture remains in force. Real Sandbox customer,
+PIX, provider lookup, automatic webhook delivery and exactly-once WC
+credit passed on an isolated local database. The provider's `deleted`
+flag must be honored even when `status` remains `OVERDUE`; the adapter
+was corrected and re-tested. See
+[`asaas-sandbox-phase6.md`](../payments/asaas-sandbox-phase6.md).
+This evidence permits a production-readiness review, not production
+enablement; retention and operational deployment gates remain open.

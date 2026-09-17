@@ -189,6 +189,16 @@ describe('Asaas sandbox adapter (mock HTTP only)', () => {
     await expect(new AsaasPaymentProvider().findPaymentByExternalReference('ref')).rejects.toThrow()
   })
 
+  it('treats deleted=true as cancellation even when Asaas retains OVERDUE status', async () => {
+    global.fetch = jest.fn(async () => reply({
+      id: 'pay_cancelled', customer: 'cus_1', billingType: 'PIX',
+      value: 10, externalReference: 'ref', status: 'OVERDUE', deleted: true
+    })) as typeof fetch
+    const order = await new AsaasPaymentProvider().getOrder('pay_cancelled')
+    expect(order.status).toBe('DELETED')
+    expect(mapAsaasPaymentStatus(order.status).status).toBe('CANCELLED')
+  })
+
   it('fails closed on provider unavailability and never invokes refunds', async () => {
     global.fetch = jest.fn(async () => {
       throw new Error('timeout')

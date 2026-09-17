@@ -15,6 +15,7 @@ type AsaasPayment = {
   customer: string
   externalReference?: string
   status: string
+  deleted?: boolean
   value: number
   billingType: string
   invoiceUrl?: string
@@ -152,7 +153,9 @@ export class AsaasPaymentProvider implements PaymentProvider {
     return {
       externalOrderId: payment.id,
       externalReference: payment.externalReference || null,
-      status: payment.status,
+      // Asaas Sandbox can retain OVERDUE after DELETE while setting
+      // deleted=true. Use the deletion flag for reconciliation.
+      status: payment.deleted === true ? 'DELETED' : payment.status,
       totalAmountBRL: payment.value,
       paymentMethod: payment.billingType,
       providerCustomerId: payment.customer,

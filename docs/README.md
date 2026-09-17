@@ -109,6 +109,7 @@ Implementação local Asaas sandbox (Fase 2, sem chamadas ao provedor ou produç
 [`docs/payments/asaas-sandbox-phase2.md`](payments/asaas-sandbox-phase2.md).
 Validação Fase 3: [MySQL integrado aprovado; migração limpa em MariaDB bloqueada](payments/asaas-sandbox-phase3.md).
 Validação local Fase 5: [MySQL/MariaDB em paridade, proteção de purge e preparação para credenciais Sandbox](payments/asaas-sandbox-phase5.md). O bloqueio histórico de migração MariaDB da Fase 3 foi corrigido na migração canônica e revalidado; não houve chamada real à Asaas.
+Validação Fase 6: [contrato real com Asaas Sandbox, PIX, webhook e correção de cancelamento](payments/asaas-sandbox-phase6.md). O teste permaneceu isolado; não autoriza produção.
 Manual operacional do Super ADM para esta proteção: [purge de contas com cobrança Asaas](manuals/super-admin/asaas-purge-safeguard.md).
 
 | Pasta | O que contém |
