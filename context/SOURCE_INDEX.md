@@ -42,6 +42,7 @@ actually supplied — never created speculatively.
 | SRC-REPO-015 | CODE/DOC | `architecture/agent-orchestration-foundation:docs/architecture/notification-intelligence.md` (commit `7b8c2799`) | CURRENT_DOC (proposal) | Read in full, Phase 10 |
 | SRC-REPO-016 | HANDOFF | `payments/asaas-local-hardening-claude:docs/payments/asaas-sandbox-phase4-claude-handoff.md` (commit `223b111c`) | ACCEPTED_HANDOFF (status `HANDOFF_FOR_CODEX`, unconsumed) | Read in full, Phase 10 |
 | SRC-REPO-017 | EXECUTABLE_FACT | `git log`/`git diff --stat` across `payments/asaas-sandbox`, `payments/asaas-local-hardening-claude`, `main` | EXECUTABLE_FACT | Run directly, Phase 10 |
+| SRC-OPENBETA-* | REPOSITORY_DOC (125 rows) | `mu-bloodmoon-v1-openbeta` untracked working tree, preserved to `preservation/openbeta-untracked/`, HEAD `2811522d` | HISTORICAL_SOURCE (per-group nuance — see manifest) | All 125 hash-verified (PASS); 21 ADRs + `open-questions.md`/`open-risks.md`/`decisions/README.md`/6 `knowledge/*` siblings read in full; the rest (gameserver/manuals/legacy/payments/etc.) title+frontmatter-read, not deep-read. Full detail: [`preservation/OPENBETA_UNTRACKED_MANIFEST.md`](preservation/OPENBETA_UNTRACKED_MANIFEST.md). ID scheme: `SRC-OPENBETA-<n>` = the `<n>`th alphabetical row of `preservation/_hashes_reference.tsv` — see the manifest's own "Source IDs" section for why a flat 125-row table isn't duplicated here. |
 
 ## Knowledge Hub sources (`D:\MU\hub`, separate repository)
 

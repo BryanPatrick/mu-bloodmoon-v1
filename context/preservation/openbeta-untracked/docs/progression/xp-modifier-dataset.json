@@ -1,0 +1,488 @@
+{
+  "generatedFrom": {
+    "effectTxt": "C:\\MuServer\\Data\\Effect.txt (production, downloaded read-only this phase)",
+    "bonusManagerDat": "C:\\MuServer\\Data\\Event\\BonusManager.dat (production, downloaded read-only this phase)",
+    "customPetTxt": "C:\\MuServer\\Data\\Custom\\CustomPet.txt (production, downloaded read-only this phase)",
+    "commonDat": "GameServerInfo - Common.dat (production, hash-verified prior phases, unchanged)"
+  },
+  "modifierGroups": [
+    {
+      "group": "BASE_SERVER_RATE",
+      "name": "Base server XP rate (Bryan product policy)",
+      "value": "50x",
+      "source": "Bryan's authoritative Phase X Decision 1",
+      "confidence": "CONFIRMED (product policy)"
+    },
+    {
+      "group": "ACCOUNT_LEVEL_VIP",
+      "name": "AddExperienceRate_AL0-3",
+      "value": "50/60/60/60",
+      "source": "Common.dat (production)",
+      "confidence": "CONFIRMED (raw value) / UNKNOWN (relation to 50x base)"
+    },
+    {
+      "group": "MAP",
+      "name": "MapManager.txt ExperienceRate",
+      "value": "100 (all 67 maps, neutral per vendor convention)",
+      "source": "MapManager.txt (production, current)",
+      "confidence": "CONFIRMED"
+    },
+    {
+      "group": "PARTY",
+      "name": "PartyGeneralExperience1-7 / PartySpecialExperience1-7",
+      "value": "100/75/80/80/80/80/80 (both families)",
+      "source": "Common.dat (production)",
+      "confidence": "CONFIRMED (values) / UNKNOWN (\"special\" party class-composition rule)"
+    },
+    {
+      "group": "EVENT",
+      "name": "AddEventExperienceRate_AL0-3",
+      "value": "300 (flat, all tiers)",
+      "source": "Common.dat (production)",
+      "confidence": "CONFIRMED"
+    },
+    {
+      "group": "EVENT_SCHEDULED_BONUS",
+      "name": "BonusManager.dat (BonusIndex=0, EXP%)",
+      "value": "BonusValue_AL0-3=100/100/100/100, Map 33, MonsterLevel 110-130, one schedule entry (Month=5,Day=27,15:23)",
+      "source": "BonusManager.dat (production, current)",
+      "confidence": "CONFIRMED (raw config) / UNKNOWN (percentage-vs-additive convention, recurring-vs-one-time schedule semantics)"
+    },
+    {
+      "group": "QUEST",
+      "name": "AddQuestExperienceRate_AL0-3",
+      "value": "100 (flat, all tiers)",
+      "source": "Common.dat (production)",
+      "confidence": "CONFIRMED"
+    },
+    {
+      "group": "PET",
+      "name": "CustomPet.txt IncExperience/IncMasterExperience columns",
+      "value": "mechanism exists, ZERO pets currently configured (file has header only)",
+      "source": "CustomPet.txt (production, current)",
+      "confidence": "CONFIRMED (mechanism exists, real vendor-named columns) / NOT_CURRENTLY_ACTIVE (empty)"
+    },
+    {
+      "group": "RANDOM_BONUS",
+      "name": "ExperienceRandomAditional",
+      "value": "0 (inert)",
+      "source": "Common.dat (production)",
+      "confidence": "CONFIRMED"
+    }
+  ],
+  "itemModifiers": [
+    {
+      "itemId": "6699",
+      "name": "Seal of Ascension",
+      "source": "Effect.txt (production, current)",
+      "effectIndex": 29,
+      "group": 60,
+      "xpBonusRaw": "50",
+      "xpBonusRaw2": null,
+      "bonusUnit": "UNKNOWN (raw config value -- relationship to AddExperienceRate_AL0-3 or to base 50x not proven)",
+      "durationSeconds": 1800,
+      "stackGroup": "EFFECT_GROUP_60",
+      "confidence": "CONFIRMED (raw value, name, group) / UNKNOWN (exact XP math relationship)"
+    },
+    {
+      "itemId": "6699",
+      "name": "Seal of Ascension",
+      "source": "Effect.txt (production, current)",
+      "effectIndex": 40,
+      "group": 60,
+      "xpBonusRaw": "50",
+      "xpBonusRaw2": null,
+      "bonusUnit": "UNKNOWN (raw config value -- relationship to AddExperienceRate_AL0-3 or to base 50x not proven)",
+      "durationSeconds": 1800,
+      "stackGroup": "EFFECT_GROUP_60",
+      "confidence": "CONFIRMED (raw value, name, group) / UNKNOWN (exact XP math relationship)"
+    },
+    {
+      "itemId": "6749",
+      "name": "Master Seal of Ascension",
+      "source": "Effect.txt (production, current)",
+      "effectIndex": 101,
+      "group": 60,
+      "xpBonusRaw": "50",
+      "xpBonusRaw2": null,
+      "bonusUnit": "UNKNOWN (raw config value -- relationship to AddExperienceRate_AL0-3 or to base 50x not proven)",
+      "durationSeconds": 1800,
+      "stackGroup": "EFFECT_GROUP_60",
+      "confidence": "CONFIRMED (raw value, name, group) / UNKNOWN (exact XP math relationship)"
+    },
+    {
+      "itemId": "6759",
+      "name": "Party Experience Bonus",
+      "source": "Effect.txt (production, current)",
+      "effectIndex": 112,
+      "group": 24,
+      "xpBonusRaw": "90",
+      "xpBonusRaw2": "10",
+      "bonusUnit": "UNKNOWN (raw config value -- relationship to AddExperienceRate_AL0-3 or to base 50x not proven)",
+      "durationSeconds": 1800,
+      "stackGroup": "EFFECT_GROUP_24",
+      "confidence": "CONFIRMED (raw value, name, group) / UNKNOWN (exact XP math relationship)"
+    },
+    {
+      "itemId": "6833",
+      "name": "Talisman of Ascension 1",
+      "source": "Effect.txt (production, current)",
+      "effectIndex": 190,
+      "group": 115,
+      "xpBonusRaw": "50",
+      "xpBonusRaw2": null,
+      "bonusUnit": "UNKNOWN (raw config value -- relationship to AddExperienceRate_AL0-3 or to base 50x not proven)",
+      "durationSeconds": 1800,
+      "stackGroup": "EFFECT_GROUP_115",
+      "confidence": "CONFIRMED (raw value, name, group) / UNKNOWN (exact XP math relationship)"
+    },
+    {
+      "itemId": "6834",
+      "name": "Talisman of Ascension 2",
+      "source": "Effect.txt (production, current)",
+      "effectIndex": 191,
+      "group": 115,
+      "xpBonusRaw": "100",
+      "xpBonusRaw2": null,
+      "bonusUnit": "UNKNOWN (raw config value -- relationship to AddExperienceRate_AL0-3 or to base 50x not proven)",
+      "durationSeconds": 1800,
+      "stackGroup": "EFFECT_GROUP_115",
+      "confidence": "CONFIRMED (raw value, name, group) / UNKNOWN (exact XP math relationship)"
+    },
+    {
+      "itemId": "6835",
+      "name": "Talisman of Ascension 3",
+      "source": "Effect.txt (production, current)",
+      "effectIndex": 192,
+      "group": 115,
+      "xpBonusRaw": "200",
+      "xpBonusRaw2": null,
+      "bonusUnit": "UNKNOWN (raw config value -- relationship to AddExperienceRate_AL0-3 or to base 50x not proven)",
+      "durationSeconds": 1800,
+      "stackGroup": "EFFECT_GROUP_115",
+      "confidence": "CONFIRMED (raw value, name, group) / UNKNOWN (exact XP math relationship)"
+    },
+    {
+      "itemId": "6836",
+      "name": "Seal of Ascension",
+      "source": "Effect.txt (production, current)",
+      "effectIndex": 193,
+      "group": 60,
+      "xpBonusRaw": "100",
+      "xpBonusRaw2": null,
+      "bonusUnit": "UNKNOWN (raw config value -- relationship to AddExperienceRate_AL0-3 or to base 50x not proven)",
+      "durationSeconds": 1800,
+      "stackGroup": "EFFECT_GROUP_60",
+      "confidence": "CONFIRMED (raw value, name, group) / UNKNOWN (exact XP math relationship)"
+    },
+    {
+      "itemId": "6837",
+      "name": "Master Seal of Ascension",
+      "source": "Effect.txt (production, current)",
+      "effectIndex": 194,
+      "group": 60,
+      "xpBonusRaw": "100",
+      "xpBonusRaw2": null,
+      "bonusUnit": "UNKNOWN (raw config value -- relationship to AddExperienceRate_AL0-3 or to base 50x not proven)",
+      "durationSeconds": 1800,
+      "stackGroup": "EFFECT_GROUP_60",
+      "confidence": "CONFIRMED (raw value, name, group) / UNKNOWN (exact XP math relationship)"
+    }
+  ],
+  "compatibilityMatrix": [
+    {
+      "modifierA": "Seal of Ascension (idx29, item6699)",
+      "modifierB": "Seal of Ascension (idx40, item6699)",
+      "canCoexist": "NO",
+      "stackBehavior": "MUTUALLY_EXCLUSIVE (same Effect.txt Group -- vendor doc: \"Group: so um efeito ativo por grupo\" / \"um efeito ativo por Group\")",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial (CONFIRMED_VENDOR_DOC)",
+      "confidence": "CONFIRMED"
+    },
+    {
+      "modifierA": "Seal of Ascension (idx29, item6699)",
+      "modifierB": "Master Seal of Ascension (idx101, item6749)",
+      "canCoexist": "NO",
+      "stackBehavior": "MUTUALLY_EXCLUSIVE (same Effect.txt Group -- vendor doc: \"Group: so um efeito ativo por grupo\" / \"um efeito ativo por Group\")",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial (CONFIRMED_VENDOR_DOC)",
+      "confidence": "CONFIRMED"
+    },
+    {
+      "modifierA": "Seal of Ascension (idx29, item6699)",
+      "modifierB": "Seal of Ascension (idx193, item6836)",
+      "canCoexist": "NO",
+      "stackBehavior": "MUTUALLY_EXCLUSIVE (same Effect.txt Group -- vendor doc: \"Group: so um efeito ativo por grupo\" / \"um efeito ativo por Group\")",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial (CONFIRMED_VENDOR_DOC)",
+      "confidence": "CONFIRMED"
+    },
+    {
+      "modifierA": "Seal of Ascension (idx29, item6699)",
+      "modifierB": "Master Seal of Ascension (idx194, item6837)",
+      "canCoexist": "NO",
+      "stackBehavior": "MUTUALLY_EXCLUSIVE (same Effect.txt Group -- vendor doc: \"Group: so um efeito ativo por grupo\" / \"um efeito ativo por Group\")",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial (CONFIRMED_VENDOR_DOC)",
+      "confidence": "CONFIRMED"
+    },
+    {
+      "modifierA": "Seal of Ascension (idx40, item6699)",
+      "modifierB": "Master Seal of Ascension (idx101, item6749)",
+      "canCoexist": "NO",
+      "stackBehavior": "MUTUALLY_EXCLUSIVE (same Effect.txt Group -- vendor doc: \"Group: so um efeito ativo por grupo\" / \"um efeito ativo por Group\")",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial (CONFIRMED_VENDOR_DOC)",
+      "confidence": "CONFIRMED"
+    },
+    {
+      "modifierA": "Seal of Ascension (idx40, item6699)",
+      "modifierB": "Seal of Ascension (idx193, item6836)",
+      "canCoexist": "NO",
+      "stackBehavior": "MUTUALLY_EXCLUSIVE (same Effect.txt Group -- vendor doc: \"Group: so um efeito ativo por grupo\" / \"um efeito ativo por Group\")",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial (CONFIRMED_VENDOR_DOC)",
+      "confidence": "CONFIRMED"
+    },
+    {
+      "modifierA": "Seal of Ascension (idx40, item6699)",
+      "modifierB": "Master Seal of Ascension (idx194, item6837)",
+      "canCoexist": "NO",
+      "stackBehavior": "MUTUALLY_EXCLUSIVE (same Effect.txt Group -- vendor doc: \"Group: so um efeito ativo por grupo\" / \"um efeito ativo por Group\")",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial (CONFIRMED_VENDOR_DOC)",
+      "confidence": "CONFIRMED"
+    },
+    {
+      "modifierA": "Master Seal of Ascension (idx101, item6749)",
+      "modifierB": "Seal of Ascension (idx193, item6836)",
+      "canCoexist": "NO",
+      "stackBehavior": "MUTUALLY_EXCLUSIVE (same Effect.txt Group -- vendor doc: \"Group: so um efeito ativo por grupo\" / \"um efeito ativo por Group\")",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial (CONFIRMED_VENDOR_DOC)",
+      "confidence": "CONFIRMED"
+    },
+    {
+      "modifierA": "Master Seal of Ascension (idx101, item6749)",
+      "modifierB": "Master Seal of Ascension (idx194, item6837)",
+      "canCoexist": "NO",
+      "stackBehavior": "MUTUALLY_EXCLUSIVE (same Effect.txt Group -- vendor doc: \"Group: so um efeito ativo por grupo\" / \"um efeito ativo por Group\")",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial (CONFIRMED_VENDOR_DOC)",
+      "confidence": "CONFIRMED"
+    },
+    {
+      "modifierA": "Seal of Ascension (idx193, item6836)",
+      "modifierB": "Master Seal of Ascension (idx194, item6837)",
+      "canCoexist": "NO",
+      "stackBehavior": "MUTUALLY_EXCLUSIVE (same Effect.txt Group -- vendor doc: \"Group: so um efeito ativo por grupo\" / \"um efeito ativo por Group\")",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial (CONFIRMED_VENDOR_DOC)",
+      "confidence": "CONFIRMED"
+    },
+    {
+      "modifierA": "Talisman of Ascension 1 (idx190, item6833)",
+      "modifierB": "Talisman of Ascension 2 (idx191, item6834)",
+      "canCoexist": "NO",
+      "stackBehavior": "MUTUALLY_EXCLUSIVE (same Effect.txt Group -- vendor doc: \"Group: so um efeito ativo por grupo\" / \"um efeito ativo por Group\")",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial (CONFIRMED_VENDOR_DOC)",
+      "confidence": "CONFIRMED"
+    },
+    {
+      "modifierA": "Talisman of Ascension 1 (idx190, item6833)",
+      "modifierB": "Talisman of Ascension 3 (idx192, item6835)",
+      "canCoexist": "NO",
+      "stackBehavior": "MUTUALLY_EXCLUSIVE (same Effect.txt Group -- vendor doc: \"Group: so um efeito ativo por grupo\" / \"um efeito ativo por Group\")",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial (CONFIRMED_VENDOR_DOC)",
+      "confidence": "CONFIRMED"
+    },
+    {
+      "modifierA": "Talisman of Ascension 2 (idx191, item6834)",
+      "modifierB": "Talisman of Ascension 3 (idx192, item6835)",
+      "canCoexist": "NO",
+      "stackBehavior": "MUTUALLY_EXCLUSIVE (same Effect.txt Group -- vendor doc: \"Group: so um efeito ativo por grupo\" / \"um efeito ativo por Group\")",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial (CONFIRMED_VENDOR_DOC)",
+      "confidence": "CONFIRMED"
+    },
+    {
+      "modifierA": "Seal of Ascension (idx29, item6699)",
+      "modifierB": "Party Experience Bonus (idx112, item6759)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Seal of Ascension (idx29, item6699)",
+      "modifierB": "Talisman of Ascension 1 (idx190, item6833)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Seal of Ascension (idx29, item6699)",
+      "modifierB": "Talisman of Ascension 2 (idx191, item6834)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Seal of Ascension (idx29, item6699)",
+      "modifierB": "Talisman of Ascension 3 (idx192, item6835)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Seal of Ascension (idx40, item6699)",
+      "modifierB": "Party Experience Bonus (idx112, item6759)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Seal of Ascension (idx40, item6699)",
+      "modifierB": "Talisman of Ascension 1 (idx190, item6833)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Seal of Ascension (idx40, item6699)",
+      "modifierB": "Talisman of Ascension 2 (idx191, item6834)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Seal of Ascension (idx40, item6699)",
+      "modifierB": "Talisman of Ascension 3 (idx192, item6835)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Master Seal of Ascension (idx101, item6749)",
+      "modifierB": "Party Experience Bonus (idx112, item6759)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Master Seal of Ascension (idx101, item6749)",
+      "modifierB": "Talisman of Ascension 1 (idx190, item6833)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Master Seal of Ascension (idx101, item6749)",
+      "modifierB": "Talisman of Ascension 2 (idx191, item6834)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Master Seal of Ascension (idx101, item6749)",
+      "modifierB": "Talisman of Ascension 3 (idx192, item6835)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Party Experience Bonus (idx112, item6759)",
+      "modifierB": "Talisman of Ascension 1 (idx190, item6833)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Party Experience Bonus (idx112, item6759)",
+      "modifierB": "Talisman of Ascension 2 (idx191, item6834)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Party Experience Bonus (idx112, item6759)",
+      "modifierB": "Talisman of Ascension 3 (idx192, item6835)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Party Experience Bonus (idx112, item6759)",
+      "modifierB": "Seal of Ascension (idx193, item6836)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Party Experience Bonus (idx112, item6759)",
+      "modifierB": "Master Seal of Ascension (idx194, item6837)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Talisman of Ascension 1 (idx190, item6833)",
+      "modifierB": "Seal of Ascension (idx193, item6836)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Talisman of Ascension 1 (idx190, item6833)",
+      "modifierB": "Master Seal of Ascension (idx194, item6837)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Talisman of Ascension 2 (idx191, item6834)",
+      "modifierB": "Seal of Ascension (idx193, item6836)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Talisman of Ascension 2 (idx191, item6834)",
+      "modifierB": "Master Seal of Ascension (idx194, item6837)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Talisman of Ascension 3 (idx192, item6835)",
+      "modifierB": "Seal of Ascension (idx193, item6836)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    },
+    {
+      "modifierA": "Talisman of Ascension 3 (idx192, item6835)",
+      "modifierB": "Master Seal of Ascension (idx194, item6837)",
+      "canCoexist": "YES",
+      "stackBehavior": "DIFFERENT_GROUPS -- both can be active simultaneously per the one-active-effect-per-group rule; exact numeric stacking (additive/multiplicative) with each other NOT proven",
+      "source": "Effect.txt (production, current) + Effect.htm vendor tutorial",
+      "confidence": "CONFIRMED (can coexist) / UNKNOWN (numeric combination)"
+    }
+  ],
+  "notes": [
+    "Only Effect.txt Group membership is CONFIRMED as the real stacking mechanism (vendor doc: one active effect per Group).",
+    "CustomJewel.txt/CustomWing.txt exist but grant stat bonuses, not XP bonuses -- confirmed out of scope by column inspection, not assumed.",
+    "CustomRingInvoker.txt exists but is a monster-summoning mechanism, not an XP modifier -- confirmed out of scope, zero active rows besides a commented-out example.",
+    "No item/seal/pet dataset claims a specific mathematical XP formula relationship -- every raw Value1/Value2 is reported as CONFIRMED only as a raw number, never translated into an assumed percentage or multiplier without vendor proof."
+  ]
+}

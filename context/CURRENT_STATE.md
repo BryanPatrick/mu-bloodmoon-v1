@@ -11,14 +11,17 @@ Kept deliberately short — this is a snapshot for bootstrap, not a
 history. For history, see [`docs/README.md`](../docs/README.md)'s own
 running phase log, `docs/decisions/`, and `docs/handoff/`.
 
-## Repository / branch (Phase 10, updated)
+## Repository / branch (Phase 11, updated)
 
 - Canonical primary worktree: `D:\MU\mu-bloodmoon-v1`.
-- Current branch: `phase-9/context-pack-v1-foundation`, HEAD `0f06046c`,
-  clean. **Not merged into `main` — deliberately, per Phase 10 DECISÕES
-  #4; merge gate is repository reconciliation PASS + validation PASS +
-  a real independent content review PASS**, none of the last one done
-  yet (see [`DEFERRED.md`](DEFERRED.md)).
+- Current branch: `phase-9/context-pack-v1-foundation` (see the git log
+  for the exact current HEAD — this file doesn't hardcode a commit SHA
+  that goes stale the moment another commit lands). Clean tree.
+  **Not merged into `main` — deliberately; merge gate is preservation
+  PASS + validation PASS + secret scan PASS + a real independent
+  content review PASS**, only the last one still outstanding (see
+  [`DEFERRED.md`](DEFERRED.md) and
+  [`docs/operations/context-pack-independent-review.md`](../docs/operations/context-pack-independent-review.md)).
 - `main` itself: HEAD `f5fd099a`, 91 commits ahead of `origin/main`
   (confirmed via `git branch -v`), not pushed.
 - **Origin relationship**: `origin` = `github.com/BryanPatrick/mu-bloodmoon-v1`.
@@ -31,11 +34,14 @@ running phase log, `docs/decisions/`, and `docs/handoff/`.
   Codex→Claude handoff pending Codex's return), `governance/engineering-pack`
   (canonical home of `AGENTS.md`/bootstrap protocol).
 - **`mu-bloodmoon-v1-openbeta`**: 220 dirty entries (143 untracked, 77
-  modified), unchanged since a 2026-09-08 finding — holds real,
-  otherwise-uncaptured content (full ADR set, `open-questions.md`,
-  `open-risks.md`, most of `docs/knowledge/*`, `docs/gameserver/`,
-  `docs/store/`). Real data-loss risk, not fixed this phase (read-only
-  scope) — see [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md) OQ-CTX-005.
+  modified), unchanged since a 2026-09-08 finding. **A byte-exact,
+  hash-verified copy of all 125 untracked documentation files now
+  exists** at [`preservation/openbeta-untracked/`](preservation/openbeta-untracked/)
+  (Phase 11) — the originals are untouched, and whether to actually
+  commit/integrate this content anywhere real remains open (see
+  [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md) OQ-CTX-005). Includes the
+  only known copies of the real player/admin/super-admin/technical
+  manuals (OQ-CTX-008).
 - `D:\MU\` also holds ~19 other `mu-bloodmoon-*` worktrees not inspected
   this phase (out of named scope). Confirm branch/worktree before any
   non-trivial action — `AGENTS.md` invariant 2.
@@ -88,6 +94,6 @@ See [`domains/payments.md`](domains/payments.md).
   [`DEFERRED.md`](DEFERRED.md)).
 - No ChatGPT conversation transcript has been ingested into this pack or
   the Knowledge Hub.
-- No production Knowledge Hub mutation (read-only `SELECT` only, Phase
-  10) and no production Blood Moon change occurred.
-- This Context Pack is **not merged** into `main` (Phase 10 DECISÕES #4).
+- No production Knowledge Hub mutation (read-only `SELECT` only, every
+  phase) and no production Blood Moon change occurred.
+- This Context Pack is **not merged** into `main`.

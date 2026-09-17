@@ -13,13 +13,13 @@ Two real, independent decision systems already existed before this
 pack. Neither is renumbered or replaced:
 
 1. **Blood Moon ADRs** — [`docs/decisions/0NNN-*.md`](../docs/decisions/),
-   a stable, already-in-use numeric scheme (currently, on `main`: 0019,
-   0021, 0023, 0024, 0025, 0026, 0028, 0029, 0030 — confirmed via
-   `git ls-tree`; numbers 0001-0018, 0020, 0022, 0027 are referenced by
-   `docs/README.md`'s narrative but **not present on this branch**, see
-   [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md) OQ-CTX-001). This pack
-   indexes them by their real number below — it never invents a
-   parallel ID for a decision that already has one.
+   a stable, already-in-use numeric scheme: 0001-0030 in total (9
+   tracked on `main`; 21 — `0001-0018`/`0020`/`0022`/`0027` — real,
+   read in full Phase 11, preserved from `mu-bloodmoon-v1-openbeta`'s
+   untracked working tree, see
+   [`ADR_INDEX.md`](ADR_INDEX.md) for the complete table). This pack
+   indexes them by their real number — it never invents a parallel ID
+   for a decision that already has one.
 2. **Knowledge Hub decisions** — structured rows in the Hub's own
    `decisions` table (production: 26 real rows per the Phase 6 read-only
    audit, not re-verified this session). These have opaque database IDs
@@ -59,23 +59,14 @@ from assumption (matches `docs/README.md`'s own standing rule: a
 documented gap, e.g. ADR-0016's RMT-policy gap, is preferred over an
 invented decision).
 
-## Index of real ADRs present on `main` (by real number, real title)
+## Index of real ADRs
 
-| ADR | Title | Status |
-|---|---|---|
-| [0019](../docs/decisions/0019-payment-operational-closure-phase-p.md) | Payment operational closure — Phase P | ACTIVE |
-| [0021](../docs/decisions/0021-payment-restriction-and-transfer-policy.md) | Payment restriction and transfer policy | ACTIVE |
-| [0023](../docs/decisions/0023-store-catalog-decision-closure.md) | Store catalog decision closure | ACTIVE |
-| [0024](../docs/decisions/0024-legacy-shop-control-plane.md) | Legacy shop control plane | ACTIVE |
-| [0025](../docs/decisions/0025-progression-control-plane.md) | Progression control plane | PARTIALLY SUPERSEDED by 0029 |
-| [0026](../docs/decisions/0026-progression-evidence-and-balance-readiness.md) | Progression evidence and balance readiness | PARTIALLY SUPERSEDED by 0029 |
-| [0028](../docs/decisions/0028-xp-stack-and-progression-calculator.md) | XP stack and progression calculator | PARTIALLY SUPERSEDED by 0029 |
-| [0029](../docs/decisions/0029-progression-reset-policy-current-ruling.md) | Progression reset policy — current ruling | ACTIVE (supersedes parts of 0025/0026/0028) |
-| [0030](../docs/decisions/0030-migration-casing-static-audit.md) | Migration table-casing static audit + migration immutability governance | ACTIVE |
-
-"PARTIALLY SUPERSEDED" is copied directly from `docs/architecture/engineering-governance.md`'s
-own description of ADR-0029 — this pack does not independently judge
-which parts, since that judgment already lives in ADR-0029 itself.
+See [`ADR_INDEX.md`](ADR_INDEX.md) for the full 0001-0030 table (9
+tracked on `main`, 21 real, preserved-from-openbeta, read in full Phase
+11 — see [`preservation/OPENBETA_UNTRACKED_MANIFEST.md`](preservation/OPENBETA_UNTRACKED_MANIFEST.md)).
+"PARTIALLY SUPERSEDED" (0025/0026/0028, by 0029) is copied directly
+from `docs/architecture/engineering-governance.md`'s own description —
+this pack does not independently judge which parts.
 
 ## Decision-count accounting (corrected Phase 10 — discovered vs. reviewed vs. indexed are different numbers)
 
@@ -86,8 +77,8 @@ different, explicitly separated numbers, per the correction this phase
 was asked to make:
 
 ```
-REPO_DECISIONS_REVIEWED = 9   (0019, 0021, 0023, 0024, 0025, 0026, 0028, 0029, 0030 read/cited this
-                                session or Phase 9; 0030 read in full both phases)
+REPO_DECISIONS_REVIEWED = 30  (all of 0001-0030 -- 9 tracked-on-main + 21 preserved-from-openbeta,
+                                every one read in full as of Phase 11; see ADR_INDEX.md)
 HUB_DECISIONS_DISCOVERED = 26 (matches the Phase 6 prior-session count, now confirmed directly)
 HUB_DECISIONS_REVIEWED   = 26 (every row's real `decision` text was read this phase, not just counted)
 HUB_DECISIONS_INDEXED    = 26 (all 26 now have a domain mapping + staleness cross-check in

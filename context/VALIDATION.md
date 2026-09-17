@@ -41,6 +41,24 @@ It checks:
   (`EXECUTABLE_FACT`/`CANONICAL_DECISION`/`CURRENT_DOC`/
   `ACCEPTED_HANDOFF`/`HISTORICAL_SOURCE`/`AI_CANDIDATE`) — an unknown
   value would mean the two docs have drifted.
+- **(Phase 11)** Every file listed in
+  `preservation/_hashes_reference.tsv` still exists under
+  `preservation/openbeta-untracked/` at the exact hash recorded when it
+  was preserved — a real, re-runnable hash-integrity check, not just
+  the one-time manual verification done at copy time. A missing file or
+  a hash mismatch both fail the run.
+
+**Deliberate exclusion, Phase 11**: `preservation/openbeta-untracked/`
+itself is walked only by the hash-integrity check above — its 125
+files are frozen, foreign archival copies (per Part 4's own "copy
+exactly, never rewrite" rule) with their own status vocabulary and
+their own relative links pointing into a `docs/` tree this pack didn't
+preserve in full. Applying this pack's own authoring-convention checks
+(status enum, link-resolves-to-a-real-file, secret pattern) to them
+produced ~115 false positives the first time this was tried (every
+preserved file's own real, legitimate status value, plus links into
+files this preservation pass didn't copy) — excluded on purpose, not
+an oversight.
 
 It deliberately does **not** check ADR content correctness, Knowledge
 Hub state, or anything requiring network/database access — that's out
@@ -56,6 +74,10 @@ over-engineering Part 26 warns against for the value it'd add.
 
 Phase 9's first run found 20 broken links (files not yet created at
 that point) — all resolved, re-run PASS. Phase 10 extended the script
-(SRC-* duplicate/undefined-reference checks, authority-level check) and
-re-ran after every batch of edits; final Phase 10 state: **PASS, 28
-files, 0 issues**.
+(SRC-* duplicate/undefined-reference checks, authority-level check),
+final Phase 10 state: PASS, 28 files. Phase 11 added the preservation
+hash-integrity check, initially over-applied the authoring-convention
+checks to the new archive (115 false positives, self-caught and fixed
+by excluding the archive from those specific checks), then re-ran
+clean: **PASS, 30 files (+ 125/125 preserved files hash-verified),
+0 issues**.

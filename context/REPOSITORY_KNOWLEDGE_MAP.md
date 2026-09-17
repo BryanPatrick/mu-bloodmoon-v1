@@ -5,7 +5,7 @@ audience: internal
 lastVerified: 2026-09-17
 ---
 
-# Repository knowledge map (Phase 10)
+# Repository knowledge map (Phase 10, updated Phase 11)
 
 Read-only reconciliation across every relevant local worktree/branch of
 `mu-bloodmoon-v1`, plus the Knowledge Hub. Produced to close the gap
@@ -65,6 +65,23 @@ ever** — but all of them are real files, sitting untracked in
 | `docs/gameserver/` (whole dir) | **C** | untracked in openbeta, zero history anywhere |
 | `docs/store/` (whole dir) | **C** | untracked in openbeta, zero history anywhere |
 
+**Phase 11 update — the real scope is 125 files, not ~24.** A full
+enumeration of every untracked entry under `docs/` (plus `AGENTS.md`/
+`CLAUDE.md`) found 125 real files, not just the handful Phase 10 had
+specifically checked — including the entire `docs/manuals/`,
+`docs/legacy/provider-web/`, `docs/protocols/`, `docs/sessions/`,
+`docs/privacy/`, `docs/progression/` trees, plus scattered files across
+`docs/economy/`, `docs/gamebridge/`, `docs/launcher/`, `docs/payments/`,
+`docs/product/`, `docs/security/`, `docs/vip/`. All 125 were copied
+byte-exact into
+[`preservation/openbeta-untracked/`](preservation/openbeta-untracked/)
+this phase, hash-verified (125/125 PASS) — see
+[`preservation/OPENBETA_UNTRACKED_MANIFEST.md`](preservation/OPENBETA_UNTRACKED_MANIFEST.md)
+for the full breakdown. Of the 125: 35 are byte-identical to what
+`main` already tracks, 7 are `main`-superset originals (main added a
+dated freshness note, never a contradiction), and 83 are genuinely
+found nowhere else — the real Category-C set.
+
 **Every single one is Category C — "referenced but never committed,"
 never A (exists elsewhere as real commits) and never B (existed, was
 deleted)**. `git log --all --diff-filter=A` returning zero hits for a
@@ -93,9 +110,45 @@ finding "openbeta has 143 untracked files at loss risk," confirmed
 **still true today**, unchanged since that finding).
 
 **This is a live, real data-loss risk, not a documentation curiosity.**
-None of this content is lost yet — but it exists in exactly one place,
-uncommitted, in a worktree with 220 dirty entries. See
+Phase 11 reduced the *loss* risk (a hash-verified copy now exists
+outside that one worktree) but not the *integration* question — see
 [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md) OQ-CTX-005.
+
+### README reference reconciliation (Part 10, Phase 11)
+
+Every path `docs/README.md` (tracked on `main`) names that isn't
+present on `main`, classified:
+
+| Path/group | Classification | Note |
+|---|---|---|
+| `docs/open-questions.md`, `docs/open-risks.md` | `PRESERVED_UNTRACKED` | Read in full Phase 11 — see manifest Group 3 |
+| `docs/decisions/README.md`, ADRs 0001-0018/0020/0022/0027 | `PRESERVED_UNTRACKED` | Read in full Phase 11 — see `ADR_INDEX.md` |
+| `docs/knowledge/module-map.md` + 5 siblings | `PRESERVED_UNTRACKED` | See manifest Group 4 |
+| `docs/gameserver/` (13 files) | `PRESERVED_UNTRACKED` | See manifest Group 5 |
+| `docs/store/` (2 files) | `PRESERVED_UNTRACKED` | Both `DRAFT_FOR_REVIEW` — see manifest Group 6 |
+| `docs/manuals/{player,admin,super-admin,technical}/*.md` | `PRESERVED_UNTRACKED` | **Not previously flagged by Phase 10** — found this phase, see `OPEN_QUESTIONS.md` OQ-CTX-008 |
+| ADR-0025/0026/0028 (referenced as "partially superseded by 0029") | `CANONICAL_REPLACEMENT_EXISTS` | ADR-0029 (tracked on `main`) is the real, current replacement for the parts it names |
+| ADR-0013 (X-Shop item review pending) | `CANONICAL_REPLACEMENT_EXISTS` | ADR-0023 (tracked on `main`) closes the item-level review |
+| ADR-0011 (transfer minimum, not implemented) | `CANONICAL_REPLACEMENT_EXISTS` | ADR-0022 + the real `/painel/transferencias` feature (tracked on `main`'s own phase narrative) |
+| No path found genuinely `OBSOLETE_REFERENCE` or `UNRESOLVED` | — | Every path checked this phase and last resolved to either `PRESERVED_UNTRACKED` or `CANONICAL_REPLACEMENT_EXISTS` — none were found to be a pure dead reference with nothing behind it anywhere |
+
+`main`'s own `docs/README.md` was **not modified** — this table is a
+recommendation for a future correction, per Part 10's own instruction,
+never applied here.
+
+## 8. Preservation summary (Phase 11)
+
+```
+UNTRACKED_KNOWLEDGE_FILES_FOUND     = 125
+UNTRACKED_KNOWLEDGE_FILES_PRESERVED = 125
+PRESERVATION_ROOT                    = context/preservation/openbeta-untracked/
+PRESERVATION_MANIFEST                = context/preservation/OPENBETA_UNTRACKED_MANIFEST.md
+HASH_INTEGRITY                       = PASS (125/125)
+ORIGINALS_DELETED                    = NO (never touched)
+```
+Full per-file classification, provenance, and authority: the manifest
+above. `ADR_INDEX.md` covers the 21 preserved ADRs specifically, in
+more depth than the manifest's own Group 2 summary.
 
 ## 4. Worktree knowledge map
 
@@ -176,15 +229,21 @@ findings:
   responses). None of the three decisions marks the others as
   `superseded`. This is a genuine Hub-internal inconsistency —
   recorded as a conflict, not fixed by editing any decision (that would
-  be exactly the "silently reconcile" this phase forbids). All three
-  ADR-style decisions also predate this repository's Phases O-X
-  (2026-08-31 onward: real Mercado Pago integration, VIP purchase,
-  direct WC transfer, dozens of new payment/progression tests) by
-  three-plus weeks — the `SITE_BETA_BLOCKED`/`NO-GO` results are almost
-  certainly stale relative to current repo evidence on at least the
-  payment-gateway and test-coverage blockers, but this phase does not
-  unilaterally mark them `superseded` without Bryan's decision — see
-  `OPEN_QUESTIONS.md` OQ-CTX-006.
+  be exactly the "silently reconcile" this phase forbids).
+
+  **Phase 11 update**: the preserved `open-questions.md`/`open-risks.md`
+  (real, read in full, `mu-bloodmoon-v1-openbeta`) were checked for
+  independent corroboration of the *other* blockers `cf5f14c2`/
+  `53034c0c` cite (CAPTCHA without rate limiting, store payment
+  gateway, marketplace/escrow/GameBridge homologation, a 404-page
+  crash, zero test coverage outside Community, HTTPS/TLS absence).
+  **Result: neither document mentions any of these specific blockers
+  at all** — they're silent on this, not confirming or denying. The
+  password-recovery contradiction (`fa8e9ad0`) stands as the one
+  concretely-evidenced piece; the rest of the blocker list remains
+  genuinely `UNKNOWN`, still not `SUPERSEDED` by anything this or the
+  prior phase found. See `OPEN_QUESTIONS.md` OQ-CTX-006 (refined, not
+  closed).
 
 ## 7. What this document is not
 

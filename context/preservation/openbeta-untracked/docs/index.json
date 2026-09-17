@@ -1,0 +1,2662 @@
+{
+  "_meta": {
+    "description": "Machine-readable index of docs/ documents. NOT an exhaustive audit -- most entries carry status=NOT_AUDITED_THIS_PASS, meaning their real current status was not individually re-verified during Phase M (2026-08-31). Entries with a real status/lastVerified were either created or directly re-verified this phase. Extend incrementally as documents are touched, not by retroactively guessing metadata for unverified files.",
+    "generated": "2026-08-31",
+    "totalDocuments": 219,
+    "auditedThisPass": 66
+  },
+  "documents": [
+    {
+      "document": "README.md",
+      "domain": "general",
+      "type": "index",
+      "status": "LIVING_INDEX",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "ALL"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "accounts/account-deletion-architecture.md",
+      "domain": "accounts",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "accounts/game-account-identity.md",
+      "domain": "accounts",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "accounts/game-account-provisioning.md",
+      "domain": "accounts",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "accounts/pre-beta-account-review.md",
+      "domain": "accounts",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "accounts/unified-account-implementation.md",
+      "domain": "accounts",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "accounts/unified-registration.md",
+      "domain": "accounts",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "admin-navigation.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "admin-reports.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "admin-tasks.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "assets/central-asset-library.md",
+      "domain": "assets",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "catalogs/commerce-item-catalog.md",
+      "domain": "commerce",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "chronicles-architecture.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "community-architecture-audit.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "community.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "current-admincp-catalog.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "current-web-source-catalog.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "database/migration-history-reconciliation.md",
+      "domain": "database",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0001-vip-source-of-truth.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0002-gamebridge-least-privilege-and-sql-audit.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0003-pixpayments-preserve-dormant.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0004-open-beta-account-lifecycle.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0005-beta-reward-entitlement-preservation.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0006-account-deletion-two-mode-architecture.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0007-data-retention-current-stance.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE (category split formalized, durations LEGAL_REVIEW_REQUIRED)",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0008-wcoin-1to1-peg-with-brl.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE (discrepancy RESOLVED and fixed locally)",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0009-wcoin-currency-tax-model.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0010-vip-tier-product-naming-abstraction.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0011-direct-wcoin-transfer-minimum.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "DECIDED_BUT_NOT_IMPLEMENTED",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0012-cashshop-no-standard-gear-sales.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0013-xshop-review-methodology.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "METHODOLOGY_DECIDED (re-confirmed pending, Phase N)",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0014-launcher-cms-asset-fallback-strategy.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0015-bug-hunters-reward-model.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE (policy persisted, Phase N)",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0016-rmt-policy-gap.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE (policy persisted, Phase N)",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0017-modular-component-product-direction.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ARCHITECTURAL_DIRECTION",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0018-payment-architecture-phase-o.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE, tested locally",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "PAYMENTS",
+        "VIP",
+        "GAMEBRIDGE",
+        "WCOIN"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0019-payment-operational-closure-phase-p.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE, tested locally",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "PAYMENTS",
+        "VIP",
+        "ECONOMY",
+        "WCOIN"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0020-wcoin-integer-brl-policy-final.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE, final",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "PAYMENTS",
+        "ECONOMY",
+        "WCOIN"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0021-payment-restriction-and-transfer-policy.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE, tested locally",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "PAYMENTS",
+        "VIP",
+        "ECONOMY",
+        "WCOIN"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0022-phase-q-decision-closure.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE, tested locally, live-verified in browser",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "PAYMENTS",
+        "VIP",
+        "ECONOMY",
+        "WCOIN",
+        "MARKETPLACE"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/README.md",
+      "domain": "decisions",
+      "type": "index",
+      "status": "ESTABLISHED",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "ALL"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "deployment-architecture.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "design-history/README.md",
+      "domain": "design",
+      "type": "index",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "design-system.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "design/achievements-visual-system.md",
+      "domain": "design",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "design/asset-inventory.md",
+      "domain": "design",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "design/figma-handoff-v1.5.md",
+      "domain": "design",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "design/visual-audit.md",
+      "domain": "design",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "design/visual-identity.md",
+      "domain": "design",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "economy/cashshop-full-inventory.md",
+      "domain": "economy",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "economy/legacy-dmn-cms-and-currency-investigation.md",
+      "domain": "economy",
+      "type": "reference",
+      "status": "FINDING_FOR_BRYAN_REVIEW",
+      "lastVerified": "2026-09-02",
+      "relatedModules": ["ECONOMY", "WCOIN"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "economy/xshop-commercial-review.md",
+      "domain": "economy",
+      "type": "reference",
+      "status": "DRAFT_FOR_REVIEW",
+      "lastVerified": "2026-09-02",
+      "relatedModules": ["ECONOMY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "economy/xshop-bryan-decision-table.md",
+      "domain": "economy",
+      "type": "reference",
+      "status": "DECISION_TABLE_PENDING_BRYAN_REVIEW",
+      "lastVerified": "2026-09-02",
+      "relatedModules": ["ECONOMY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "economy/cashshop-commercial-review.md",
+      "domain": "economy",
+      "type": "reference",
+      "status": "DRAFT_FOR_REVIEW",
+      "lastVerified": "2026-09-02",
+      "relatedModules": ["ECONOMY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "economy/cashshop-bryan-decision-table.md",
+      "domain": "economy",
+      "type": "reference",
+      "status": "DECISION_TABLE_PENDING_BRYAN_REVIEW",
+      "lastVerified": "2026-09-02",
+      "relatedModules": ["ECONOMY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "economy/xshop-cashshop-release-candidates.md",
+      "domain": "economy",
+      "type": "reference",
+      "status": "DRAFT_FOR_REVIEW",
+      "lastVerified": "2026-09-02",
+      "relatedModules": ["ECONOMY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "economy/cashshop-rental-empirical-test-runbook.md",
+      "domain": "economy",
+      "type": "reference",
+      "status": "RUNBOOK_READY_NOT_EXECUTED",
+      "lastVerified": "2026-09-02",
+      "relatedModules": ["ECONOMY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "economy/accessory-balance-test-plan.md",
+      "domain": "economy",
+      "type": "reference",
+      "status": "TEST_PLAN_NOT_YET_EXECUTED",
+      "lastVerified": "2026-09-02",
+      "relatedModules": ["ECONOMY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0023-store-catalog-decision-closure.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE, tested locally, live-verified in browser",
+      "lastVerified": "2026-09-02",
+      "relatedModules": ["ECONOMY", "PAYMENTS"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0024-legacy-shop-control-plane.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE, tested locally, live-verified in browser",
+      "lastVerified": "2026-09-02",
+      "relatedModules": ["ECONOMY", "PAYMENTS"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "economy/xshop-cashshop-config-field-matrix.md",
+      "domain": "economy",
+      "type": "reference",
+      "status": "DRAFT_FOR_REVIEW",
+      "lastVerified": "2026-09-02",
+      "relatedModules": ["ECONOMY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0025-progression-control-plane.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE, tested locally",
+      "lastVerified": "2026-09-03",
+      "relatedModules": ["ECONOMY", "VIP"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "progression/progression-config-field-matrix.md",
+      "domain": "progression",
+      "type": "reference",
+      "status": "DRAFT_FOR_REVIEW",
+      "lastVerified": "2026-09-03",
+      "relatedModules": ["ECONOMY", "VIP"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "progression/xp-stacking-investigation.md",
+      "domain": "progression",
+      "type": "reference",
+      "status": "INVESTIGATION_COMPLETE",
+      "lastVerified": "2026-09-03",
+      "relatedModules": ["ECONOMY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "progression/progression-simulation-and-telemetry-readiness.md",
+      "domain": "progression",
+      "type": "reference",
+      "status": "DRAFT_FOR_REVIEW",
+      "lastVerified": "2026-09-03",
+      "relatedModules": ["ECONOMY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0026-progression-evidence-and-balance-readiness.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE, tested locally",
+      "lastVerified": "2026-09-04",
+      "relatedModules": ["ECONOMY", "VIP"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "progression/vip-progression-policy-drift-matrix.md",
+      "domain": "progression",
+      "type": "reference",
+      "status": "ACTIVE",
+      "lastVerified": "2026-09-04",
+      "relatedModules": ["ECONOMY", "VIP"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "progression/xp-formula-evidence-and-vendor-questions.md",
+      "domain": "progression",
+      "type": "reference",
+      "status": "INVESTIGATION_DEEPENED",
+      "lastVerified": "2026-09-04",
+      "relatedModules": ["ECONOMY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "progression/level-curve-monster-map-dataset.md",
+      "domain": "progression",
+      "type": "reference",
+      "status": "ACTIVE",
+      "lastVerified": "2026-09-04",
+      "relatedModules": ["ECONOMY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "progression/reset-audit-and-time-to-reset-model.md",
+      "domain": "progression",
+      "type": "reference",
+      "status": "ACTIVE",
+      "lastVerified": "2026-09-04",
+      "relatedModules": ["ECONOMY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "progression/balance-simulator-and-telemetry-readiness.md",
+      "domain": "progression",
+      "type": "reference",
+      "status": "ACTIVE",
+      "lastVerified": "2026-09-04",
+      "relatedModules": ["ECONOMY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "drop/or-023-forensics.md",
+      "domain": "economy",
+      "type": "reference",
+      "status": "ACTIVE",
+      "lastVerified": "2026-09-04",
+      "relatedModules": ["ECONOMY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0027-or-023-forensics-and-balance-inputs.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE",
+      "lastVerified": "2026-09-04",
+      "relatedModules": ["ECONOMY", "VIP"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "progression/xp-vendor-package-pt-br.md",
+      "domain": "progression",
+      "type": "reference",
+      "status": "READY",
+      "lastVerified": "2026-09-04",
+      "relatedModules": ["ECONOMY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "progression/vendor-response-intake-template.md",
+      "domain": "progression",
+      "type": "reference",
+      "status": "TEMPLATE",
+      "lastVerified": "2026-09-04",
+      "relatedModules": ["ECONOMY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "progression/balance-inputs-playtime-and-vip-power.md",
+      "domain": "progression",
+      "type": "reference",
+      "status": "ACTIVE",
+      "lastVerified": "2026-09-04",
+      "relatedModules": ["ECONOMY", "VIP"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "gameserver/non-production-test-instance-status.md",
+      "domain": "gameserver",
+      "type": "reference",
+      "status": "ACTIVE",
+      "lastVerified": "2026-09-04",
+      "relatedModules": ["ECONOMY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "progression/xp-stack-inventory.md",
+      "domain": "progression",
+      "type": "reference",
+      "status": "ACTIVE",
+      "lastVerified": "2026-09-04",
+      "relatedModules": ["ECONOMY", "VIP"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "progression/spot-dataset-analysis.md",
+      "domain": "progression",
+      "type": "reference",
+      "status": "ACTIVE",
+      "lastVerified": "2026-09-04",
+      "relatedModules": ["ECONOMY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "decisions/0028-xp-stack-and-progression-calculator.md",
+      "domain": "decisions",
+      "type": "adr",
+      "status": "ACTIVE, tested locally",
+      "lastVerified": "2026-09-04",
+      "relatedModules": ["ECONOMY", "VIP"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "store/store-channel-boundaries.md",
+      "domain": "store",
+      "type": "reference",
+      "status": "DRAFT_FOR_REVIEW",
+      "lastVerified": "2026-09-02",
+      "relatedModules": ["ECONOMY", "PAYMENTS"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "store/store-product-taxonomy.md",
+      "domain": "store",
+      "type": "reference",
+      "status": "DRAFT_FOR_REVIEW",
+      "lastVerified": "2026-09-02",
+      "relatedModules": ["ECONOMY", "PAYMENTS"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "economy/lucky-set-rental-empirical-test-plan.md",
+      "domain": "economy",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "economy/xshop-batch-review-groups.md",
+      "domain": "economy",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "economy/xshop-full-inventory.md",
+      "domain": "economy",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "environment/development-environment.md",
+      "domain": "environment",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "environment/sql-server-test-environment.md",
+      "domain": "environment",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/account-identity.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/account-linking-contract.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/architecture.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/cloudflare-resources.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/deployment-topology.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/event-envelope.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/game-account-provisioning-contract.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/game-command-path.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/legacy-web-intelligence/account.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/legacy-web-intelligence/character.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/legacy-web-intelligence/currencies.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/legacy-web-intelligence/guild.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/legacy-web-intelligence/inventory-warehouse.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/legacy-web-intelligence/online-status.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/legacy-web-intelligence/overview.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/legacy-web-intelligence/query-catalog.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/legacy-web-intelligence/rankings.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/legacy-web-intelligence/stored-procedures.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/phase-1-report.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/production-command-transport.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/read-models/account-snapshot.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/schema/README.md",
+      "domain": "game-data",
+      "type": "index",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/schema/discovery/README.md",
+      "domain": "game-data",
+      "type": "index",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/schema/join-keys-unknown.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/schema/v1-character-reset-master-level.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/schema/v1-rankings.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/schema/v2-account-guild-currencies-warehouse.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/security-boundaries.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-data/unified-account.md",
+      "domain": "game-data",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "game-vps-sqlserver-transition.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "gamebridge/gamebridge-agent-extension-plan.md",
+      "domain": "gamebridge",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "gamebridge/gamebridge-local-testing.md",
+      "domain": "gamebridge",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "gamebridge/gamebridge-second-review-package.md",
+      "domain": "gamebridge",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "gameserver/database/account-data-map.md",
+      "domain": "gameserver",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "gameserver/database/character-data-map.md",
+      "domain": "gameserver",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "gameserver/database/data-dictionary.md",
+      "domain": "gameserver",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "gameserver/database/database-overview.md",
+      "domain": "gameserver",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "gameserver/database/economy-data-map.md",
+      "domain": "gameserver",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "gameserver/database/lab-environment.md",
+      "domain": "gameserver",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "gameserver/database/legacy-unknown-structures.md",
+      "domain": "gameserver",
+      "type": "reference",
+      "status": "ACTIVE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "GAMESERVER"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "gameserver/database/logical-relationships.md",
+      "domain": "gameserver",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "gameserver/database/privacy-data-map.md",
+      "domain": "gameserver",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "gameserver/database/stored-procedures.md",
+      "domain": "gameserver",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "gameserver/database/table-classification.md",
+      "domain": "gameserver",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "gameserver/database/views-triggers-functions.md",
+      "domain": "gameserver",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "glossary.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "guild-product-backlog.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "handoff/auth-recovery-provider-blocker.md",
+      "domain": "handoff",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "handoff/beta-commerce-strategy.md",
+      "domain": "handoff",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "handoff/commercial-experience-phase-1.md",
+      "domain": "handoff",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "handoff/community-current-state.md",
+      "domain": "handoff",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "handoff/guilds-mvp.md",
+      "domain": "handoff",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "handoff/mercadopago-recharge-payments.md",
+      "domain": "handoff",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "handoff/production-tls-validation.md",
+      "domain": "handoff",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "handoff/release-preview-production-readiness.md",
+      "domain": "handoff",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "handoff/site-beta-checklist.md",
+      "domain": "handoff",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "handoff/site-current-state.md",
+      "domain": "handoff",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "integrations/discord-read-api.md",
+      "domain": "integrations",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "knowledge-base-pipeline.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "knowledge/cleanup-recommendations.md",
+      "domain": "knowledge",
+      "type": "reference",
+      "status": "RECOMMENDATIONS_ONLY",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "ALL"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "knowledge/commercial-modularity.md",
+      "domain": "knowledge",
+      "type": "reference",
+      "status": "ARCHITECTURAL_DIRECTION",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "ALL"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "knowledge/conflict-resolution.md",
+      "domain": "knowledge",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "knowledge/current-vs-history-audit.md",
+      "domain": "knowledge",
+      "type": "reference",
+      "status": "PARTIAL",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "ALL"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "knowledge/documentation-book-structure.md",
+      "domain": "knowledge",
+      "type": "reference",
+      "status": "STRUCTURE_DEFINED",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "ALL"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "knowledge/knowledge-hub-boundary.md",
+      "domain": "knowledge",
+      "type": "reference",
+      "status": "ESTABLISHED",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "CORE"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "knowledge/knowledge-sweep.md",
+      "domain": "knowledge",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "knowledge/module-map.md",
+      "domain": "knowledge",
+      "type": "reference",
+      "status": "ESTABLISHED",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "ALL"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "knowledge/raw-capture.md",
+      "domain": "knowledge",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "knowledge/settings-architecture-direction.md",
+      "domain": "knowledge",
+      "type": "reference",
+      "status": "ARCHITECTURAL_DIRECTION",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "ADMIN",
+        "CMS",
+        "VIP",
+        "PRIVACY"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "knowledge/source-authority.md",
+      "domain": "knowledge",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "knowledge/vps-ingestion.md",
+      "domain": "knowledge",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "knowledge/wiki-preparation.md",
+      "domain": "knowledge",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "knowledge/youtube-ingestion.md",
+      "domain": "knowledge",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "launcher/api-contract.md",
+      "domain": "launcher",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "launcher/asset-contract.md",
+      "domain": "launcher",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "launcher/cache-and-fallback.md",
+      "domain": "launcher",
+      "type": "reference",
+      "status": "ACTIVE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "LAUNCHER"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "launcher/cms-launcher-studio.md",
+      "domain": "launcher",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "launcher/content-cache.md",
+      "domain": "launcher",
+      "type": "reference",
+      "status": "ACTIVE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "LAUNCHER"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "launcher/content-publishing.md",
+      "domain": "launcher",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "launcher/launcher-slot-registry.md",
+      "domain": "launcher",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "launcher/page-data-contracts.md",
+      "domain": "launcher",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "launcher/page-data-sources.md",
+      "domain": "launcher",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "launcher/remote-content-contract.md",
+      "domain": "launcher",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "launcher/remote-content.md",
+      "domain": "launcher",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "launcher/resolution-engine.md",
+      "domain": "launcher",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "launcher/launcher-scale-and-text-scale.md",
+      "domain": "launcher",
+      "type": "reference",
+      "status": "ACTIVE",
+      "lastVerified": "2026-09-04",
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "launcher/phase-2d-auth-captcha-play-gating.md",
+      "domain": "launcher",
+      "type": "reference",
+      "status": "ACTIVE",
+      "lastVerified": "2026-09-04",
+      "relatedModules": ["SECURITY"],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "launcher/resolution-profiles.md",
+      "domain": "launcher",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "launcher/runtime-architecture.md",
+      "domain": "launcher",
+      "type": "reference",
+      "status": "ACTIVE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "LAUNCHER"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "launcher/store-cart-terms.md",
+      "domain": "launcher",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "launcher/wpf-cms-binding.md",
+      "domain": "launcher",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "legacy/provider-web/account-lifecycle-legacy.md",
+      "domain": "legacy",
+      "type": "reference",
+      "status": "SECOND_PASS_COMPLETE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "GAMESERVER"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "legacy/provider-web/cron-and-background-jobs.md",
+      "domain": "legacy",
+      "type": "reference",
+      "status": "SECOND_PASS_COMPLETE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "GAMESERVER"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "legacy/provider-web/database-mapping.md",
+      "domain": "legacy",
+      "type": "reference",
+      "status": "SECOND_PASS_COMPLETE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "GAMESERVER"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "legacy/provider-web/dead-and-dormant-components.md",
+      "domain": "legacy",
+      "type": "reference",
+      "status": "SECOND_PASS_COMPLETE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "GAMESERVER"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "legacy/provider-web/module-inventory.md",
+      "domain": "legacy",
+      "type": "reference",
+      "status": "SECOND_PASS_COMPLETE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "GAMESERVER"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "legacy/provider-web/overview.md",
+      "domain": "legacy",
+      "type": "reference",
+      "status": "SECOND_PASS_COMPLETE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "GAMESERVER"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "legacy/provider-web/payments-legacy.md",
+      "domain": "legacy",
+      "type": "reference",
+      "status": "SECOND_PASS_COMPLETE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "GAMESERVER"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "legacy/provider-web/security-findings.md",
+      "domain": "legacy",
+      "type": "reference",
+      "status": "SECOND_PASS_COMPLETE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "GAMESERVER"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "legacy/provider-web/useful-historical-reference.md",
+      "domain": "legacy",
+      "type": "reference",
+      "status": "SECOND_PASS_COMPLETE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "GAMESERVER"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "legacy/provider-web/vip-legacy.md",
+      "domain": "legacy",
+      "type": "reference",
+      "status": "SECOND_PASS_COMPLETE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "GAMESERVER"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "management-flows.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "manuals/admin/manual-adm.md",
+      "domain": "manuals",
+      "type": "manual",
+      "status": "ACTIVE (Phase P/Q payments sections added)",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "PAYMENTS"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "manuals/player/manual-player.md",
+      "domain": "manuals",
+      "type": "manual",
+      "status": "ACTIVE (Phase P/Q payments sections added)",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "PAYMENTS"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "manuals/super-admin/manual-super-admin.md",
+      "domain": "manuals",
+      "type": "manual",
+      "status": "ACTIVE (Phase P/Q payments sections added)",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "PAYMENTS"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "manuals/technical/manual-operacao-tecnica.md",
+      "domain": "manuals",
+      "type": "manual",
+      "status": "ACTIVE (Phase P/Q payments sections added)",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "PAYMENTS"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "marketplace-game-bridge.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "marketplace.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "modular-cms-roadmap.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "nuxt-4-migration.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "observability-and-audit.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "open-questions.md",
+      "domain": "knowledge",
+      "type": "index",
+      "status": "LIVING_INDEX",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "ALL"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "open-risks.md",
+      "domain": "knowledge",
+      "type": "index",
+      "status": "LIVING_INDEX",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "ALL"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "operations/local-test-database-isolation.md",
+      "domain": "operations",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "operations/log-retention.md",
+      "domain": "operations",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "operations/provisioning-health.md",
+      "domain": "operations",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "operations/provisioning-reconciliation.md",
+      "domain": "operations",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "panel-access-model.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "payment-and-escrow-flow.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "payments/financial-retention-policy.md",
+      "domain": "payments",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "payments/payment-domain-model.md",
+      "domain": "payments",
+      "type": "reference",
+      "status": "ACTIVE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "PAYMENTS",
+        "VIP",
+        "WCOIN",
+        "GAMEBRIDGE"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "payments/payment-next-phase-requirements.md",
+      "domain": "payments",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "payments/payment-readiness-contract.md",
+      "domain": "payments",
+      "type": "reference",
+      "status": "READY_FOR_NEXT_PHASE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "PAYMENTS",
+        "VIP",
+        "ECONOMY",
+        "WCOIN"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "payments/payment-surfaces-comparison.md",
+      "domain": "payments",
+      "type": "reference",
+      "status": "ACTIVE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "PAYMENTS",
+        "GAMESERVER"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "privacy/privacy-center-migration-and-qa.md",
+      "domain": "privacy",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "privacy/privacy-center-overview.md",
+      "domain": "privacy",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "product/guild/01-functional-specification.md",
+      "domain": "product",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "product/guild/02-user-guide.md",
+      "domain": "product",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "product/guild/03-tester-guide.md",
+      "domain": "product",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "product/guild/04-executive-overview.md",
+      "domain": "product",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "product/guild/05-permissions-and-security.md",
+      "domain": "product",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "product/guild/06-flows-and-state-transitions.md",
+      "domain": "product",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "product/guild/07-known-limitations-and-backlog.md",
+      "domain": "product",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "product/guild/08-contextual-help-catalog.md",
+      "domain": "product",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "product/guild/README.md",
+      "domain": "product",
+      "type": "index",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "product/phase13/IMPLEMENTATION_SUMMARY.md",
+      "domain": "product",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "product/phase13/REMAINING_BLOCKERS.md",
+      "domain": "product",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "product/phase13/XSHOP_IMPLEMENTATION_NOTE.md",
+      "domain": "product",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "product/survey-foundation.md",
+      "domain": "product",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "project-structure.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "protocols/agent-bootstrap.md",
+      "domain": "protocols",
+      "type": "protocol",
+      "status": "ESTABLISHED",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "ALL"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "protocols/footnote-standard.md",
+      "domain": "protocols",
+      "type": "protocol",
+      "status": "ESTABLISHED",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "ALL"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "protocols/freshness-standard.md",
+      "domain": "protocols",
+      "type": "protocol",
+      "status": "ESTABLISHED",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "ALL"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "roadmap.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "security-model.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "security/data-classification.md",
+      "domain": "security",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "security/game-credential-envelope.md",
+      "domain": "security",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "security/game-write-boundary.md",
+      "domain": "security",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "security/gameserver-credential-audit.md",
+      "domain": "security",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "security/secret-incident-history.md",
+      "domain": "security",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "security/secret-rotation.md",
+      "domain": "security",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "security/two-factor-key-rotation.md",
+      "domain": "security",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "sessions/2026-08-31-phase-l-closure-and-phase-m-knowledge.md",
+      "domain": "sessions",
+      "type": "session-record",
+      "status": "COMPLETE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "ALL"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "sessions/2026-08-31-phase-n-policy-reconciliation.md",
+      "domain": "sessions",
+      "type": "session-record",
+      "status": "COMPLETE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "PAYMENTS",
+        "ECONOMY",
+        "WCOIN",
+        "VIP"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "sessions/README.md",
+      "domain": "sessions",
+      "type": "index",
+      "status": "ESTABLISHED",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "ALL"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "sessions/TEMPLATE.md",
+      "domain": "sessions",
+      "type": "template",
+      "status": "TEMPLATE",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "ALL"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "store.md",
+      "domain": "general",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "test-evidence-index.md",
+      "domain": "knowledge",
+      "type": "index",
+      "status": "LIVING_INDEX",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "ALL"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "testing/beta-test-baseline.md",
+      "domain": "testing",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "testing/incremental-quality-gate.md",
+      "domain": "testing",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "vip/vip-benefit-decisions.md",
+      "domain": "vip",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "vip/vip-benefit-matrix.md",
+      "domain": "vip",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "vip/vip-deep-audit.md",
+      "domain": "vip",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "vip/vip-end-to-end-data-flow.md",
+      "domain": "vip",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "vip/vip-product-readiness.md",
+      "domain": "vip",
+      "type": "reference",
+      "status": "NOT_AUDITED_THIS_PASS",
+      "lastVerified": null,
+      "relatedModules": [],
+      "supersedes": null,
+      "supersededBy": null
+    },
+    {
+      "document": "vip/wz-setaccountlevel-coexistence.md",
+      "domain": "vip",
+      "type": "reference",
+      "status": "CRITICAL_FIX_APPLIED_AND_TESTED_LOCALLY",
+      "lastVerified": "2026-08-31",
+      "relatedModules": [
+        "VIP",
+        "GAMEBRIDGE",
+        "GAMESERVER"
+      ],
+      "supersedes": null,
+      "supersededBy": null
+    }
+  ]
+}

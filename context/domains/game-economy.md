@@ -2,17 +2,15 @@
 status: ACTIVE
 category: context-pack-domain
 lastVerified: 2026-09-17
-classification: PARTIAL
+classification: POPULATED
 ---
 
 # Domain: Game economy
 
-**STATUS**: real product domain, partially sourced — ADR-0029 verified
-directly, the rest is `docs/README.md`'s narrative (not independently
-re-verified). No Phase 10 hardening beyond adding this classification —
-Part 14 asks for hardening only from *verified* sources, and this
-phase did not re-verify economy/progression content beyond §6's Hub
-decision cross-check (none of the 26 Hub decisions map to this domain).
+**STATUS**: hardened Phase 11 with 21 newly-read ADRs plus the
+preserved `open-questions.md`/`open-risks.md` (both read in full) as
+supporting sources — real, verified content, not `docs/README.md`
+narrative alone anymore.
 
 **Authoritative docs**: [`../../docs/economy/`](../../docs/economy/),
 [`../../docs/progression/`](../../docs/progression/),
@@ -34,9 +32,26 @@ exception). A real production drop-rate drift (OR-023 in
 last update this pack read — verify current state before assuming it's
 resolved.
 
-**Related decisions**: ADR-0029 (present, read this session).
-ADR-0025/0026/0028 present but only listed by filename this session, not
-read — see [`../SOURCE_INDEX.md`](../SOURCE_INDEX.md) honesty note.
+**Related decisions**: ADR-0029 (present on `main`, read Phase 9).
+ADR-0025/0026/0028 present on `main` but not read directly. **21 more
+ADRs read in full Phase 11** (preserved from `mu-bloodmoon-v1-openbeta`)
+— see [`../ADR_INDEX.md`](../ADR_INDEX.md), several of which are
+economy-domain: ADR-0008/0009/0011/0012/0016/0020 among others.
+Notably **ADR-0016 is the real RMT policy**: no official Blood Moon
+marketplace; player-to-player RMT is allowed, unmediated; account sale
+is an allowed direction with real safeguards still undesigned (see the
+preserved `open-questions.md`'s OQ-017). This closes what Phase 10 had
+only located but not read (`OPEN_QUESTIONS.md` OQ-CTX-003).
+
+**A production drop-rate drift, more precisely characterized than
+Phase 9 had it** (from the preserved `open-risks.md`'s OR-023, read in
+full Phase 11): 224 of 545 monsters were set to a `999999999` sentinel
+`ItemRate` between an unlogged July-Aug17 window; 10 named bosses were
+later reverted to normal by Sept 3, leaving **214 monsters still at the
+sentinel today** as of that document's own last verification
+(2026-09-04). Forensics are complete (ADR-0027); remediation was not
+decided as of that date — genuinely `UNKNOWN` whether it has been
+since.
 
 **Orchestration**: no Knowledge Hub task/decision for this domain has
 been created or examined this session.

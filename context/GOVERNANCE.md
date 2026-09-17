@@ -44,6 +44,18 @@ to fix — not a judgment call to make silently.
   explicitly-designed and explicitly-approved sync job could change
   this — not implemented, not assumed. See
   [`KNOWLEDGE_HUB_MAPPING.md`](KNOWLEDGE_HUB_MAPPING.md).
+- **Convergent evidence, Phase 11**: `preservation/openbeta-untracked/docs/knowledge/knowledge-hub-boundary.md`
+  (real, dated 2026-08-31, never committed) independently designed
+  nearly this exact split before this Context Pack existed — the same
+  "repo = current technical truth, Hub = operational/process history"
+  rule, with its own conflict-resolution ordering. Two independent
+  design passes converging on the same answer is real, if informal,
+  corroboration. That document also contains one now-disproven
+  technical guess (that the Hub is reachable via
+  `mcp__ccd_session_mgmt__*` — Phases 5-10's real work proved the
+  actual mechanism is a direct HTTP API + CLI) — not carried forward
+  here, and not edited in the preserved copy either (see
+  `OPEN_QUESTIONS.md` OQ-CTX-009).
 
 ## Source authority levels (Phase 10, Part 24)
 

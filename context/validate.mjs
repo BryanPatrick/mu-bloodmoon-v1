@@ -1,10 +1,15 @@
 #!/usr/bin/env node
 // Lightweight Context Pack self-check. No dependencies, no network.
-// Checks: broken relative doc links, unknown `status:` frontmatter values,
-// obvious secret-shaped strings, duplicate ADR/source-ID references,
-// undefined source-ID references, and unknown authority-level values.
+// Checks (on this pack's OWN authored files, not the frozen preservation
+// archive -- see PRESERVED_ARCHIVE below): broken relative doc links,
+// unknown `status:` frontmatter values, obvious secret-shaped strings,
+// duplicate ADR/source-ID references, undefined source-ID references,
+// unknown authority-level values. Plus (on the preservation archive
+// specifically): every preserved file's hash still matches what was
+// recorded at preservation time.
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
+import { createHash } from "node:crypto";
 
 const ROOT = dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]):/, "$1:"));
 const KNOWN_STATUS = new Set(["ACTIVE", "SUPERSEDED", "DEFERRED", "PROPOSED", "EXPERIMENTAL", "LIVING_INDEX", "ESTABLISHED"]);
@@ -18,9 +23,20 @@ const KNOWN_AUTHORITY = new Set([
 ]);
 const SECRET_PATTERN = /(akh_[A-Za-z0-9]{10,}|sk-[A-Za-z0-9]{10,}|AIza[A-Za-z0-9_-]{10,}|-----BEGIN [A-Z ]*PRIVATE KEY-----)/;
 
+// Preserved archival copies (context/preservation/openbeta-untracked/) are
+// frozen, foreign documents -- copied exactly, per Phase 11's own rule,
+// never rewritten to match this pack's authoring conventions (status
+// vocabulary, link targets, etc.). They get their own integrity check
+// (hash verification, below) but are deliberately excluded from the
+// authoring-convention checks below (status/link/secret) -- applying
+// this pack's own rules to someone else's frozen document is exactly
+// the wrong-scope mistake this comment exists to prevent re-introducing.
+const PRESERVED_ARCHIVE = join(ROOT, "preservation", "openbeta-untracked");
+
 function walk(dir, out = []) {
 	for (const entry of readdirSync(dir)) {
 		const full = join(dir, entry);
+		if (full === PRESERVED_ARCHIVE) continue;
 		const st = statSync(full);
 		if (st.isDirectory()) walk(full, out);
 		else if (entry.endsWith(".md")) out.push(full);
@@ -97,7 +113,7 @@ const sourceIndexPath = join(ROOT, "SOURCE_INDEX.md");
 const definedSrcIds = new Map(); // id -> count of table-row definitions
 try {
 	const text = readFileSync(sourceIndexPath, "utf8");
-	const rowPattern = /^\|\s*(SRC-(?:REPO|HUB)-\d+)\s*\|/gm;
+	const rowPattern = /^\|\s*(SRC-(?:REPO|HUB|OPENBETA)-\d+)\s*\|/gm;
 	let m;
 	while ((m = rowPattern.exec(text))) {
 		definedSrcIds.set(m[1], (definedSrcIds.get(m[1]) ?? 0) + 1);
@@ -107,7 +123,7 @@ try {
 	}
 
 	// Authority-level column (4th cell) of every defined row.
-	const authorityRowPattern = /^\|\s*(SRC-(?:REPO|HUB)-\d+)\s*\|[^|]*\|[^|]*\|\s*([^|]+?)\s*\|/gm;
+	const authorityRowPattern = /^\|\s*(SRC-(?:REPO|HUB|OPENBETA)-\d+)\s*\|[^|]*\|[^|]*\|\s*([^|]+?)\s*\|/gm;
 	while ((m = authorityRowPattern.exec(text))) {
 		const cell = m[2].replace(/\*\*/g, "").trim();
 		const token = cell.split(/[\s(]/)[0]; // tolerate trailing parenthetical notes
@@ -129,6 +145,35 @@ for (const id of referencedSrcIds) {
 	if (!definedSrcIds.has(id)) {
 		errors.push(`"${id}" is referenced somewhere in context/ but never defined in SOURCE_INDEX.md`);
 	}
+}
+
+// Preservation integrity (Phase 11, Part 25/26): every path recorded in
+// _hashes_reference.tsv must exist under openbeta-untracked/ with the
+// SAME hash it was recorded with. This re-verifies the same integrity
+// check done at copy time, but as a repeatable, re-runnable assertion
+// rather than a one-off manual pass -- catches silent drift if either
+// file is ever touched later.
+const preservationDir = join(ROOT, "preservation");
+const hashesRefPath = join(preservationDir, "_hashes_reference.tsv");
+try {
+	const tsv = readFileSync(hashesRefPath, "utf8").trim().split("\n");
+	for (const line of tsv) {
+		const [relPath, expectedHash] = line.split("\t");
+		if (!relPath || !expectedHash) continue;
+		const preservedPath = join(preservationDir, "openbeta-untracked", relPath);
+		let actual;
+		try {
+			actual = createHash("sha256").update(readFileSync(preservedPath)).digest("hex");
+		} catch {
+			errors.push(`preservation: "${relPath}" is listed in _hashes_reference.tsv but missing from openbeta-untracked/`);
+			continue;
+		}
+		if (actual !== expectedHash) {
+			errors.push(`preservation: "${relPath}" hash mismatch -- expected ${expectedHash}, got ${actual}`);
+		}
+	}
+} catch {
+	// _hashes_reference.tsv not present -- fine before Phase 11 exists / after it's ever removed deliberately.
 }
 
 if (errors.length) {

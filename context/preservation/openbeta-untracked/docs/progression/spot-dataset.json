@@ -1,0 +1,1174 @@
+{
+  "generatedFrom": {
+    "monsterSetBase": "D:\\MU\\RemoteData\\PhaseV\\MonsterSetBase.txt (Sept3/current, re-verified unchanged Phase W/X)",
+    "monster": "D:\\MU\\RemoteData\\PhaseV\\Monster.txt (Sept3/current)",
+    "mapManager": "D:\\MU\\RemoteData\\PhaseV\\MapManager.txt (Sept3/current)"
+  },
+  "groupingRule": "A spot = every scriptType=2 (\"Normal Monster\") spawn row sharing the same (MapNumber, Monster). This is the natural, non-arbitrary grouping unit in the source data -- no spatial clustering radius was invented. Individual spawn point coordinates are preserved via boundingBox (min/max X/Y across all spawn points in the spot), not collapsed to a centroid.",
+  "totalSpots": 58,
+  "totalMapsWithSpotData": 15,
+  "totalMapsOverall": 67,
+  "totalMonstersInSpots": 407,
+  "spots": [
+    {
+      "spotId": "map2-mon805",
+      "mapId": 2,
+      "mapName": "Devias",
+      "monsterId": 805,
+      "monsterName": "Lycan",
+      "monsterCount": 1,
+      "regenTime": 21600,
+      "boundingBox": {
+        "minX": 24,
+        "maxX": 24,
+        "minY": 228,
+        "maxY": 228
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map4-mon804",
+      "mapId": 4,
+      "mapName": "Lost Tower",
+      "monsterId": 804,
+      "monsterName": "Kronus",
+      "monsterCount": 1,
+      "regenTime": 21600,
+      "boundingBox": {
+        "minX": 30,
+        "maxX": 30,
+        "minY": 212,
+        "maxY": 212
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map7-mon49",
+      "mapId": 7,
+      "mapName": "Atlans",
+      "monsterId": 49,
+      "monsterName": "Hydra",
+      "monsterCount": 1,
+      "regenTime": 21600,
+      "boundingBox": {
+        "minX": 36,
+        "maxX": 36,
+        "minY": 219,
+        "maxY": 219
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map8-mon801",
+      "mapId": 8,
+      "mapName": "Tarkan",
+      "monsterId": 801,
+      "monsterName": "Farao",
+      "monsterCount": 1,
+      "regenTime": 21600,
+      "boundingBox": {
+        "minX": 159,
+        "maxX": 159,
+        "minY": 216,
+        "maxY": 216
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map24-mon144",
+      "mapId": 24,
+      "mapName": "Kalima 1",
+      "monsterId": 144,
+      "monsterName": "Death Angel",
+      "monsterCount": 9,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 105,
+        "maxX": 121,
+        "minY": 50,
+        "maxY": 95
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map24-mon145",
+      "mapId": 24,
+      "mapName": "Kalima 1",
+      "monsterId": 145,
+      "monsterName": "Death Centurion",
+      "monsterCount": 5,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 57,
+        "maxX": 87,
+        "minY": 71,
+        "maxY": 90
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map24-mon146",
+      "mapId": 24,
+      "mapName": "Kalima 1",
+      "monsterId": 146,
+      "monsterName": "Blood Soldier",
+      "monsterCount": 7,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 108,
+        "maxX": 121,
+        "minY": 9,
+        "maxY": 44
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map24-mon147",
+      "mapId": 24,
+      "mapName": "Kalima 1",
+      "monsterId": 147,
+      "monsterName": "Aegis",
+      "monsterCount": 11,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 28,
+        "maxX": 60,
+        "minY": 9,
+        "maxY": 75
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map24-mon148",
+      "mapId": 24,
+      "mapName": "Kalima 1",
+      "monsterId": 148,
+      "monsterName": "Rogue Centurion",
+      "monsterCount": 10,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 67,
+        "maxX": 109,
+        "minY": 6,
+        "maxY": 22
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map24-mon149",
+      "mapId": 24,
+      "mapName": "Kalima 1",
+      "monsterId": 149,
+      "monsterName": "Necron",
+      "monsterCount": 8,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 74,
+        "maxX": 118,
+        "minY": 76,
+        "maxY": 106
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map24-mon160",
+      "mapId": 24,
+      "mapName": "Kalima 1",
+      "monsterId": 160,
+      "monsterName": "Schriker",
+      "monsterCount": 10,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 29,
+        "maxX": 53,
+        "minY": 50,
+        "maxY": 109
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map24-mon161",
+      "mapId": 24,
+      "mapName": "Kalima 1",
+      "monsterId": 161,
+      "monsterName": "Illusion of Kundun",
+      "monsterCount": 1,
+      "regenTime": 10800,
+      "boundingBox": {
+        "minX": 26,
+        "maxX": 26,
+        "minY": 76,
+        "maxY": 76
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map25-mon174",
+      "mapId": 25,
+      "mapName": "Kalima 2",
+      "monsterId": 174,
+      "monsterName": "Death Angel",
+      "monsterCount": 9,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 105,
+        "maxX": 121,
+        "minY": 50,
+        "maxY": 95
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map25-mon175",
+      "mapId": 25,
+      "mapName": "Kalima 2",
+      "monsterId": 175,
+      "monsterName": "Death Centurion",
+      "monsterCount": 5,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 57,
+        "maxX": 87,
+        "minY": 71,
+        "maxY": 90
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map25-mon176",
+      "mapId": 25,
+      "mapName": "Kalima 2",
+      "monsterId": 176,
+      "monsterName": "Blood Soldier",
+      "monsterCount": 7,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 108,
+        "maxX": 121,
+        "minY": 9,
+        "maxY": 44
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map25-mon177",
+      "mapId": 25,
+      "mapName": "Kalima 2",
+      "monsterId": 177,
+      "monsterName": "Aegis",
+      "monsterCount": 11,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 28,
+        "maxX": 60,
+        "minY": 9,
+        "maxY": 75
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map25-mon178",
+      "mapId": 25,
+      "mapName": "Kalima 2",
+      "monsterId": 178,
+      "monsterName": "Rogue Centurion",
+      "monsterCount": 10,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 67,
+        "maxX": 109,
+        "minY": 6,
+        "maxY": 22
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map25-mon179",
+      "mapId": 25,
+      "mapName": "Kalima 2",
+      "monsterId": 179,
+      "monsterName": "Necron",
+      "monsterCount": 8,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 74,
+        "maxX": 118,
+        "minY": 76,
+        "maxY": 106
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map25-mon180",
+      "mapId": 25,
+      "mapName": "Kalima 2",
+      "monsterId": 180,
+      "monsterName": "Schriker",
+      "monsterCount": 10,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 29,
+        "maxX": 53,
+        "minY": 50,
+        "maxY": 109
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map25-mon181",
+      "mapId": 25,
+      "mapName": "Kalima 2",
+      "monsterId": 181,
+      "monsterName": "Illusion of Kundun",
+      "monsterCount": 1,
+      "regenTime": 10800,
+      "boundingBox": {
+        "minX": 26,
+        "maxX": 26,
+        "minY": 76,
+        "maxY": 76
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map26-mon182",
+      "mapId": 26,
+      "mapName": "Kalima 3",
+      "monsterId": 182,
+      "monsterName": "Death Angel",
+      "monsterCount": 9,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 105,
+        "maxX": 121,
+        "minY": 50,
+        "maxY": 95
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map26-mon183",
+      "mapId": 26,
+      "mapName": "Kalima 3",
+      "monsterId": 183,
+      "monsterName": "Death Centurion",
+      "monsterCount": 5,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 57,
+        "maxX": 87,
+        "minY": 71,
+        "maxY": 90
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map26-mon184",
+      "mapId": 26,
+      "mapName": "Kalima 3",
+      "monsterId": 184,
+      "monsterName": "Blood Soldier",
+      "monsterCount": 7,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 108,
+        "maxX": 121,
+        "minY": 9,
+        "maxY": 44
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map26-mon185",
+      "mapId": 26,
+      "mapName": "Kalima 3",
+      "monsterId": 185,
+      "monsterName": "Aegis",
+      "monsterCount": 11,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 28,
+        "maxX": 60,
+        "minY": 9,
+        "maxY": 75
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map26-mon186",
+      "mapId": 26,
+      "mapName": "Kalima 3",
+      "monsterId": 186,
+      "monsterName": "Rogue Centurion",
+      "monsterCount": 10,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 67,
+        "maxX": 109,
+        "minY": 6,
+        "maxY": 22
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map26-mon187",
+      "mapId": 26,
+      "mapName": "Kalima 3",
+      "monsterId": 187,
+      "monsterName": "Necron",
+      "monsterCount": 8,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 74,
+        "maxX": 118,
+        "minY": 76,
+        "maxY": 106
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map26-mon188",
+      "mapId": 26,
+      "mapName": "Kalima 3",
+      "monsterId": 188,
+      "monsterName": "Schriker",
+      "monsterCount": 10,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 29,
+        "maxX": 53,
+        "minY": 50,
+        "maxY": 109
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map26-mon189",
+      "mapId": 26,
+      "mapName": "Kalima 3",
+      "monsterId": 189,
+      "monsterName": "Illusion of Kundun",
+      "monsterCount": 1,
+      "regenTime": 10800,
+      "boundingBox": {
+        "minX": 26,
+        "maxX": 26,
+        "minY": 76,
+        "maxY": 76
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map27-mon190",
+      "mapId": 27,
+      "mapName": "Kalima 4",
+      "monsterId": 190,
+      "monsterName": "Death Angel",
+      "monsterCount": 9,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 105,
+        "maxX": 121,
+        "minY": 50,
+        "maxY": 95
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map27-mon191",
+      "mapId": 27,
+      "mapName": "Kalima 4",
+      "monsterId": 191,
+      "monsterName": "Death Centurion",
+      "monsterCount": 5,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 57,
+        "maxX": 87,
+        "minY": 71,
+        "maxY": 90
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map27-mon192",
+      "mapId": 27,
+      "mapName": "Kalima 4",
+      "monsterId": 192,
+      "monsterName": "Blood Soldier",
+      "monsterCount": 7,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 108,
+        "maxX": 121,
+        "minY": 9,
+        "maxY": 44
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map27-mon193",
+      "mapId": 27,
+      "mapName": "Kalima 4",
+      "monsterId": 193,
+      "monsterName": "Aegis",
+      "monsterCount": 11,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 28,
+        "maxX": 60,
+        "minY": 9,
+        "maxY": 75
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map27-mon194",
+      "mapId": 27,
+      "mapName": "Kalima 4",
+      "monsterId": 194,
+      "monsterName": "Rogue Centurion",
+      "monsterCount": 10,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 67,
+        "maxX": 109,
+        "minY": 6,
+        "maxY": 22
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map27-mon195",
+      "mapId": 27,
+      "mapName": "Kalima 4",
+      "monsterId": 195,
+      "monsterName": "Necron",
+      "monsterCount": 8,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 74,
+        "maxX": 118,
+        "minY": 76,
+        "maxY": 106
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map27-mon196",
+      "mapId": 27,
+      "mapName": "Kalima 4",
+      "monsterId": 196,
+      "monsterName": "Schriker",
+      "monsterCount": 10,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 29,
+        "maxX": 53,
+        "minY": 50,
+        "maxY": 109
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map27-mon197",
+      "mapId": 27,
+      "mapName": "Kalima 4",
+      "monsterId": 197,
+      "monsterName": "Illusion of Kundun",
+      "monsterCount": 1,
+      "regenTime": 10800,
+      "boundingBox": {
+        "minX": 26,
+        "maxX": 26,
+        "minY": 76,
+        "maxY": 76
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map28-mon260",
+      "mapId": 28,
+      "mapName": "Kalima 5",
+      "monsterId": 260,
+      "monsterName": "Death Angel",
+      "monsterCount": 9,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 105,
+        "maxX": 121,
+        "minY": 50,
+        "maxY": 95
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map28-mon261",
+      "mapId": 28,
+      "mapName": "Kalima 5",
+      "monsterId": 261,
+      "monsterName": "Death Centurion",
+      "monsterCount": 5,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 57,
+        "maxX": 87,
+        "minY": 71,
+        "maxY": 90
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map28-mon262",
+      "mapId": 28,
+      "mapName": "Kalima 5",
+      "monsterId": 262,
+      "monsterName": "Blood Soldier",
+      "monsterCount": 7,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 108,
+        "maxX": 121,
+        "minY": 9,
+        "maxY": 44
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map28-mon263",
+      "mapId": 28,
+      "mapName": "Kalima 5",
+      "monsterId": 263,
+      "monsterName": "Aegis",
+      "monsterCount": 11,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 28,
+        "maxX": 60,
+        "minY": 9,
+        "maxY": 75
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map28-mon264",
+      "mapId": 28,
+      "mapName": "Kalima 5",
+      "monsterId": 264,
+      "monsterName": "Rogue Centurion",
+      "monsterCount": 10,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 67,
+        "maxX": 109,
+        "minY": 6,
+        "maxY": 22
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map28-mon265",
+      "mapId": 28,
+      "mapName": "Kalima 5",
+      "monsterId": 265,
+      "monsterName": "Necron",
+      "monsterCount": 8,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 74,
+        "maxX": 118,
+        "minY": 76,
+        "maxY": 106
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map28-mon266",
+      "mapId": 28,
+      "mapName": "Kalima 5",
+      "monsterId": 266,
+      "monsterName": "Schriker",
+      "monsterCount": 10,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 29,
+        "maxX": 53,
+        "minY": 50,
+        "maxY": 109
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map28-mon267",
+      "mapId": 28,
+      "mapName": "Kalima 5",
+      "monsterId": 267,
+      "monsterName": "Illusion of Kundun",
+      "monsterCount": 1,
+      "regenTime": 10800,
+      "boundingBox": {
+        "minX": 26,
+        "maxX": 26,
+        "minY": 76,
+        "maxY": 76
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map29-mon268",
+      "mapId": 29,
+      "mapName": "Kalima 6",
+      "monsterId": 268,
+      "monsterName": "Death Angel",
+      "monsterCount": 9,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 105,
+        "maxX": 121,
+        "minY": 50,
+        "maxY": 95
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map29-mon269",
+      "mapId": 29,
+      "mapName": "Kalima 6",
+      "monsterId": 269,
+      "monsterName": "Death Centurion",
+      "monsterCount": 5,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 57,
+        "maxX": 87,
+        "minY": 71,
+        "maxY": 90
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map29-mon270",
+      "mapId": 29,
+      "mapName": "Kalima 6",
+      "monsterId": 270,
+      "monsterName": "Blood Soldier",
+      "monsterCount": 7,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 108,
+        "maxX": 121,
+        "minY": 9,
+        "maxY": 44
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map29-mon271",
+      "mapId": 29,
+      "mapName": "Kalima 6",
+      "monsterId": 271,
+      "monsterName": "Aegis",
+      "monsterCount": 11,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 28,
+        "maxX": 60,
+        "minY": 9,
+        "maxY": 75
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map29-mon272",
+      "mapId": 29,
+      "mapName": "Kalima 6",
+      "monsterId": 272,
+      "monsterName": "Rogue Centurion",
+      "monsterCount": 10,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 67,
+        "maxX": 109,
+        "minY": 6,
+        "maxY": 22
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map29-mon273",
+      "mapId": 29,
+      "mapName": "Kalima 6",
+      "monsterId": 273,
+      "monsterName": "Necron",
+      "monsterCount": 8,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 74,
+        "maxX": 118,
+        "minY": 76,
+        "maxY": 106
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map29-mon274",
+      "mapId": 29,
+      "mapName": "Kalima 6",
+      "monsterId": 274,
+      "monsterName": "Schriker",
+      "monsterCount": 16,
+      "regenTime": 10,
+      "boundingBox": {
+        "minX": 23,
+        "maxX": 53,
+        "minY": 50,
+        "maxY": 109
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map29-mon338",
+      "mapId": 29,
+      "mapName": "Kalima 6",
+      "monsterId": 338,
+      "monsterName": "Illusion of Kundun",
+      "monsterCount": 1,
+      "regenTime": 10800,
+      "boundingBox": {
+        "minX": 26,
+        "maxX": 26,
+        "minY": 76,
+        "maxY": 76
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map33-mon802",
+      "mapId": 33,
+      "mapName": "Aida",
+      "monsterId": 802,
+      "monsterName": "BloodMoon",
+      "monsterCount": 1,
+      "regenTime": 43200,
+      "boundingBox": {
+        "minX": 38,
+        "maxX": 38,
+        "minY": 44,
+        "maxY": 44
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map36-mon275",
+      "mapId": 36,
+      "mapName": "Kalima 7",
+      "monsterId": 275,
+      "monsterName": "Kundun",
+      "monsterCount": 1,
+      "regenTime": 28800,
+      "boundingBox": {
+        "minX": 35,
+        "maxX": 35,
+        "minY": 60,
+        "maxY": 60
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map37-mon803",
+      "mapId": 37,
+      "mapName": "Kanturu 1",
+      "monsterId": 803,
+      "monsterName": "Rei Orc",
+      "monsterCount": 1,
+      "regenTime": 21600,
+      "boundingBox": {
+        "minX": 78,
+        "maxX": 78,
+        "minY": 56,
+        "maxY": 56
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map38-mon105",
+      "mapId": 38,
+      "mapName": "Kanturu 2",
+      "monsterId": 105,
+      "monsterName": "Canon Trap",
+      "monsterCount": 14,
+      "regenTime": 3,
+      "boundingBox": {
+        "minX": 97,
+        "maxX": 201,
+        "minY": 70,
+        "maxY": 153
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map38-mon106",
+      "mapId": 38,
+      "mapName": "Kanturu 2",
+      "monsterId": 106,
+      "monsterName": "Laser Trap",
+      "monsterCount": 13,
+      "regenTime": 3,
+      "boundingBox": {
+        "minX": 138,
+        "maxX": 144,
+        "minY": 155,
+        "maxY": 183
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    },
+    {
+      "spotId": "map51-mon806",
+      "mapId": 51,
+      "mapName": "Elbeland",
+      "monsterId": 806,
+      "monsterName": "Coelho",
+      "monsterCount": 1,
+      "regenTime": 21600,
+      "boundingBox": {
+        "minX": 205,
+        "maxX": 205,
+        "minY": 36,
+        "maxY": 36
+      },
+      "wanderRange": [
+        30
+      ],
+      "confidence": "CONFIRMED",
+      "source": "MonsterSetBase.txt (scriptType=2), Monster.txt (RegenTime), MapManager.txt (map name) -- Sept3/current snapshot"
+    }
+  ]
+}
