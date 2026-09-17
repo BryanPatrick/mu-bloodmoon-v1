@@ -19,7 +19,10 @@ pack. Neither is renumbered or replaced:
    untracked working tree, see
    [`ADR_INDEX.md`](ADR_INDEX.md) for the complete table). This pack
    indexes them by their real number — it never invents a parallel ID
-   for a decision that already has one.
+   for a decision that already has one. **Phase 12 clarification:** the
+   21 preserved-only *files* remain `HISTORICAL_SOURCE` reference
+   material until individually promoted; indexing their historical
+   decision content does not make those files canonical on `main`.
 2. **Knowledge Hub decisions** — structured rows in the Hub's own
    `decisions` table (production: 26 real rows per the Phase 6 read-only
    audit, not re-verified this session). These have opaque database IDs
@@ -56,8 +59,10 @@ supersedes?, superseded_by?, sources[], related_docs[], last_verified
 ```
 Fields are optional where evidence is genuinely absent — never filled
 from assumption (matches `docs/README.md`'s own standing rule: a
-documented gap, e.g. ADR-0016's RMT-policy gap, is preferred over an
-invented decision).
+documented gap is preferred over an invented decision). ~~ADR-0016's
+RMT policy is a gap~~ was a stale example: Phase 11 read the preserved
+ADR-0016, which states the policy and leaves account-sale safeguards
+for later design.
 
 ## Index of real ADRs
 

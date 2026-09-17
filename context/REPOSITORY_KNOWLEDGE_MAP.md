@@ -169,7 +169,7 @@ governance** (the source-of-truth precedence `docs/architecture/engineering-gove
 already defines), never from raw file timestamp — per this phase's own
 explicit instruction.
 
-## 5. Asaas payments — real current state
+## 5. Asaas payments — Phase 11 snapshot, superseded in part by Phase 12
 
 ```
 Codex original implementation  = payments/asaas-sandbox (16753dc7, 08a1f30a)
@@ -199,6 +199,14 @@ on `payments/asaas-local-hardening-claude` (commit `223b111c`). Next
 step per that handoff: Codex re-runs the MySQL suite, then a real
 MariaDB 11 replay, before merging into `asaas-sandbox` — not this
 phase's job to do.
+
+**Phase 12 correction:** the "remaining sandbox work" block above is
+historical. Codex completed the local MySQL/MariaDB parity rerun on
+`payments/asaas-sandbox-phase5-codex` at `066ad3be`: 56/56 migrations
+and 48/48 DB tests on each engine, plus 114/114 API unit tests. The
+real Asaas Sandbox API has **not** been called or validated by that
+commit. The Phase 6 authorization is a new task, not proof of a call.
+No merge or production enablement followed from this review.
 
 ## 6. Knowledge Hub production decisions — read in full (READ-ONLY)
 

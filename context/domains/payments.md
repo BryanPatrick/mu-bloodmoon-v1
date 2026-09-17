@@ -17,8 +17,7 @@ this phase)**: three parallel pipelines (`RechargeIntent`/
 `SANDBOX_VALIDATION_REQUIRED`, risk/chargeback via explicit auditable
 signals.
 
-**CURRENT STATE — Asaas (read this phase, `payments/asaas-sandbox` +
-`payments/asaas-local-hardening-claude`)**:
+**CURRENT STATE — Asaas (Phase 12 review, three isolated branches)**:
 ```
 Codex original implementation  = payments/asaas-sandbox (16753dc7, 08a1f30a):
                                   local PIX sandbox adapter + validation
@@ -29,14 +28,18 @@ Claude hardening                = payments/asaas-local-hardening-claude
                                   real AAD-substitution gap)
 Canonical migration fix         = present on this branch (de941f30 merge),
                                   checksum verified b87b4f0e...ac37726
-Remaining sandbox work          = Codex's 120-test MySQL suite + a real
-                                  MariaDB 11 replay NOT yet re-run against
-                                  this branch's exact HEAD
-Production                      = NOT enabled; no real Asaas credentials
-                                  or network calls exist anywhere
+~~Remaining DB work~~             = completed on payments/asaas-sandbox-phase5-codex
+                                  (066ad3be): MySQL 8.4.10 and MariaDB 11.8.6,
+                                  56/56 migrations, 48/48 DB tests per engine,
+                                  114/114 common API unit tests
+Remaining Sandbox work          = real Asaas Sandbox authentication/customer/
+                                  PIX/webhook validation, not executed here
+Production                      = NOT enabled; no production call made here
 ```
 Full detail: `docs/payments/asaas-sandbox-phase4-claude-handoff.md` on
-`payments/asaas-local-hardening-claude`. See
+`payments/asaas-local-hardening-claude`, then
+`docs/payments/asaas-sandbox-phase5.md` on
+`payments/asaas-sandbox-phase5-codex`. See
 [`../REPOSITORY_KNOWLEDGE_MAP.md`](../REPOSITORY_KNOWLEDGE_MAP.md) §5.
 
 **ACTIVE DECISIONS**: ADR-0019, ADR-0021, ADR-0024 (present on `main`).
@@ -60,13 +63,13 @@ ADR-0003/0008/0011/0018/0020/0022 plus `docs/payments/payment-domain-model.md`/
 now preserved in full — see `../preservation/OPENBETA_UNTRACKED_MANIFEST.md`.
 
 **OPEN QUESTIONS**: is `cf5f14c2`/`53034c0c`'s payment-gateway blocker
-actually resolved (OQ-CTX-006); has the Asaas branch's MySQL/MariaDB
-suite been re-run since this phase (not this phase's job to run it).
+actually resolved (OQ-CTX-006); real provider Sandbox contract behavior
+is not yet tested. The local MySQL/MariaDB rerun is complete.
 
 **DEFERRED ITEMS**: real Asaas Sandbox homologation (real sandbox API
-key/customer/PIX call) — explicitly not attempted on either Asaas
-branch yet.
+key/customer/PIX call) — Phase 6 is authorized separately but no
+credential was available in the expected local locations during this
+review. No external request was made.
 
-**RELATED TASKS/HANDOFFS**: `docs/payments/asaas-sandbox-phase4-claude-handoff.md`
-(status `HANDOFF_FOR_CODEX`, real, current, unconsumed as of this
-phase).
+**RELATED TASKS/HANDOFFS**: Phase 4 handoff is consumed by the Phase 5
+local parity result; the real Sandbox contract remains a later task.

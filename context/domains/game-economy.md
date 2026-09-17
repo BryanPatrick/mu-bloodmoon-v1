@@ -26,8 +26,11 @@ CashShop catalog, and progression (XP/drop/reset/master reset). The
 real XP-stacking formula remains genuinely `UNKNOWN` after real
 investigation (not for lack of effort) — never state a combined XP
 percentage without checking `docs/progression/xp-stacking-investigation.md`
-first. Reset cap is 20 for all VIP tiers (ADR-0029, confirmed, no
-exception). A real production drop-rate drift (OR-023 in
+first. ~~Reset cap is 20 for all VIP tiers (ADR-0029, confirmed, no
+exception).~~ **Correction, Phase 12:** ADR-0029 expressly reopens
+the reset-cap policy; no target number is approved. The observed
+GameServer values are `{AL0:20, AL1:20, AL2:20, AL3:50}` and are not
+equivalent to a current policy decision. A real production drop-rate drift (OR-023 in
 `docs/README.md`'s narrative) was investigated but not fixed as of the
 last update this pack read — verify current state before assuming it's
 resolved.

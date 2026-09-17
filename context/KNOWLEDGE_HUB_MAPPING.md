@@ -70,13 +70,14 @@ Project `bloodmoon` (9 rows — real product decisions, older, cross-checked aga
 | `d1637a85` | privacy-visibility-partial-enforcement | (no matching domain — security/privacy) | 2026-08-08 | NEEDS_REVIEW — `docs/privacy/` has since seen real migration+QA work per `docs/README.md`'s Phase L narrative; this decision predates it |
 | `183be585` | community-beta-ready-e2e-111 | (no matching domain — community) | 2026-08-08 | NEEDS_REVIEW |
 | `86fc102b` | community-beta-ready-formal-audit | (no matching domain — community) | 2026-08-08 | NEEDS_REVIEW |
-| `cf5f14c2` | site-beta-blocked-6-blockers | payments / marketplace / security | 2026-08-08 | **NO — see REPOSITORY_KNOWLEDGE_MAP.md §6's conflict record; contradicted 13h later by `fa8e9ad0`, and predates Phases O-X's real payment/test work by 3+ weeks** |
-| `53034c0c` | no-go-public-launch-7-blockers | payments / marketplace / security | 2026-08-08 | **NO — same conflict as above** |
+| `cf5f14c2` | site-beta-blocked-6-blockers | payments / marketplace / security | 2026-08-08 | **UNRESOLVED — password-recovery blocker disproven, other cited blockers not freshly verified; see REPOSITORY_KNOWLEDGE_MAP.md §6** |
+| `53034c0c` | no-go-public-launch-7-blockers | payments / marketplace / security | 2026-08-08 | **UNRESOLVED — same partial conflict; requires fresh beta-readiness decision, not automatic supersession** |
 | `fa8e9ad0` | password-recovery-implemented | security | 2026-08-09 | YES — but contradicts `cf5f14c2`/`53034c0c` above, see conflict record |
 
-`community`, `security`/`privacy`, and `testing` are **not** among this
-pack's 12 domain stubs — a real gap this phase found (Part 25/§8), not
-silently forced into an ill-fitting existing domain. See
+Phase 12 added deliberately narrow `community`, `security`, and
+`testing` stubs. The earlier absence among the original 12 was a real
+gap; the stubs do not imply that the six older product decisions marked
+`NEEDS_REVIEW` above have now been revalidated. See
 `OPEN_QUESTIONS.md` OQ-CTX-007.
 
 ## How to query the Hub for real (when a task actually needs it)

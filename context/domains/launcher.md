@@ -18,8 +18,8 @@ scale (Compact 70% to Very Large 130%) and text scale (90%-115%) are
 independent, real `LayoutTransform`-based features, never a `Viewbox`
 (rejected earlier for blurring text).
 
-**Related decisions**: ADR-0014 (Launcher asset fallback) referenced by
-`docs/README.md`'s narrative, not present as a file on this branch.
+**Related decisions**: ADR-0014 (Launcher asset fallback) is preserved
+and was read in Phase 11; its original file remains absent from `main`.
 
 **Orchestration**: no Knowledge Hub task/decision for this domain has
 been created or examined this session.

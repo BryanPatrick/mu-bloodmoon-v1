@@ -30,8 +30,9 @@ running phase log, `docs/decisions/`, and `docs/handoff/`.
   [`REPOSITORY_KNOWLEDGE_MAP.md`](REPOSITORY_KNOWLEDGE_MAP.md)):
   `architecture/agent-orchestration-foundation` (real n8n/AI/notification
   design proposal, unmerged, not checked out anywhere), `payments/asaas-sandbox`
-  + `payments/asaas-local-hardening-claude` (real Asaas sandbox work,
-  Codex→Claude handoff pending Codex's return), `governance/engineering-pack`
+  + `payments/asaas-local-hardening-claude` +
+  `payments/asaas-sandbox-phase5-codex` (Asaas local DB-parity continuation),
+  `governance/engineering-pack`
   (canonical home of `AGENTS.md`/bootstrap protocol).
 - **`mu-bloodmoon-v1-openbeta`**: 220 dirty entries (143 untracked, 77
   modified), unchanged since a 2026-09-08 finding. **A byte-exact,
@@ -77,14 +78,21 @@ running phase log, `docs/decisions/`, and `docs/handoff/`.
   task `58358ff6` → `completed`, real actor `claude-code-real-staging`.
   See [`domains/orchestration.md`](domains/orchestration.md).
 
-## Asaas payments (Phase 10, new)
+## Asaas payments (Phase 12 review update)
 
 Codex built a sandbox PIX adapter (`payments/asaas-sandbox`); Claude
 hardened it (versioned PII encryption) and merged in the canonical
-migration fix (`payments/asaas-local-hardening-claude`); a real handoff
-doc awaits Codex's return to re-run the MySQL/MariaDB suite before any
-merge. Production Asaas: not enabled, no real credentials anywhere.
-See [`domains/payments.md`](domains/payments.md).
+migration fix (`payments/asaas-local-hardening-claude`). ~~The handoff
+awaits Codex's MySQL/MariaDB rerun.~~ Codex completed that local rerun
+on `payments/asaas-sandbox-phase5-codex` at
+`066ad3be6bf12ffad35e9daf86f6307f2a9cd428`: both engines applied
+56/56 migrations and passed 48/48 DB tests each; 114/114 common API
+unit tests passed. A pre-Beta purge guard now protects Asaas billing
+and pending payment evidence. This is local validation, **not** real
+Asaas Sandbox API validation or production enablement. No Sandbox key
+was found in this review session's expected local locations. See
+[`domains/payments.md`](domains/payments.md) and the Phase 5 report on
+the Asaas continuation branch.
 
 ## What is NOT true yet (explicit, so it isn't assumed)
 

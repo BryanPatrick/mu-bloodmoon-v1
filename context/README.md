@@ -90,6 +90,10 @@ without editing the original bootstrap protocol.
 | [`VALIDATION.md`](VALIDATION.md) | The lightweight consistency checks this pack runs on itself |
 | [`domains/`](domains/) | One short stub per domain, each pointing at its real authoritative docs — never a copy of them |
 
+Phase 12 adds `community`, `security` and `testing` as deliberately
+`STUB`/`PARTIAL` orientations only; no new product decision or claim of
+production readiness is implied.
+
 ## What this pack deliberately does not do yet
 
 - It does not ingest any ChatGPT conversation history. **No such

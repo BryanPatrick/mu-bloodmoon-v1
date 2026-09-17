@@ -15,7 +15,9 @@ decisions). This file is the condensed cross-check summary.
 Blood Moon ADRs total          = 30 (0001-0030)
   tracked on main               = 9
   preserved from openbeta, read = 21
-  fully current, no issues      = 25
+  ~~fully current, no issues~~  = 25 entries not flagged for supersession;
+                                  preserved-only currentness remains candidate,
+                                  not a blanket canonical promotion
   partially superseded          = 3  (0025/0026/0028, by 0029)
   implemented since original    = 2  (0011, 0013 -- now closed by 0022/0023)
 
@@ -23,7 +25,7 @@ Knowledge Hub decisions total  = 26
   discovered                    = 26
   reviewed (real content read)  = 26
   indexed (domain-mapped)       = 26
-  flagged NEEDS_REVIEW/stale     = 8  (2 flagged NO/stale: cf5f14c2, 53034c0c;
+  flagged NEEDS_REVIEW/stale     = 8  (2 unresolved/partly contradicted: cf5f14c2, 53034c0c;
                                        6 flagged NEEDS_REVIEW: fa3fd2f1, 8200f60a,
                                        3acb56e0, d1637a85, 183be585, 86fc102b)
 ```

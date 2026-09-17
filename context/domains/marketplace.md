@@ -20,12 +20,12 @@ five economic channels are documented as never-to-be-confused
 (`docs/README.md`'s Phase R narrative). A Marketplace purchase debits
 the buyer and moves WC directly to the seller, which is why
 `TRANSFER_RESTRICTION` was corrected to also block Marketplace purchases
-(ADR-0022 per that narrative — **file not present on `main`**, not
-independently confirmed this session).
+(ADR-0022, preserved and read in full in Phase 11; the file is still
+not integrated on `main`).
 
-**Related decisions**: none present-and-read on `main` this session for
-this specific domain — see [`../OPEN_QUESTIONS.md`](../OPEN_QUESTIONS.md)
-OQ-CTX-001.
+**Related decisions**: preserved ADR-0022 is verified historical
+decision evidence, not a canonical file on `main`; see
+[`../ADR_INDEX.md`](../ADR_INDEX.md).
 
 **Orchestration**: no Knowledge Hub task/decision for this domain has
 been created or examined this session.

@@ -12,7 +12,7 @@ node context/validate.mjs
 ```
 
 ```
-PASS (30 files checked, 0 issues)
+PASS (42 files checked, 0 issues) — Codex Phase 12 rerun after corrections
 ```
 
 Covers: broken relative links, unknown `status:` values, secret-shaped
@@ -20,6 +20,10 @@ strings, duplicate/undefined `SRC-*` references, unknown authority
 levels, and — new this phase — every one of the 125 preserved files'
 hash still matches what was recorded at preservation time (checked
 against `preservation/_hashes_reference.tsv`).
+
+This validator is structural, not semantic: before the Phase 12 review
+it passed while `BUSINESS_RULES.md` incorrectly asserted ADR-0029
+approved a 20-reset cap. Source-content cross-check remains essential.
 
 **Secret scan** (`git grep` across both `mu-bloodmoon-v1` and the
 separate Knowledge Hub repository, plus the new preservation archive):

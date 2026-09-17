@@ -15,7 +15,7 @@ Still genuinely open as of this review package:
 - `OQ-CTX-004` — should `context/` reconcile with other branches' docs?
 - `OQ-CTX-005` — should openbeta's 220 dirty files be committed somewhere real?
 - `OQ-CTX-006` — the Hub decision conflict (see `CONFLICTS.md`)
-- `OQ-CTX-007` — three decision domains (community/security/testing) have no `context/domains/` stub
+- `OQ-CTX-007` — stubs now exist (Phase 12), but the underlying Hub decisions still need individual current-state review
 - `OQ-CTX-008` — the four real manuals `docs/README.md` names don't exist on `main`
 - `OQ-CTX-009` — what happens to `knowledge-hub-boundary.md`'s one wrong technical detail if it's ever promoted out of the archive
 

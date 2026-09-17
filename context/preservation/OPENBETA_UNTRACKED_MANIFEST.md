@@ -79,8 +79,12 @@ per-ADR: [`../ADR_INDEX.md`](../ADR_INDEX.md). Classification:
 decision — none found contradicted by later evidence, though several
 have real, documented status *evolution* since 2026-08-31, tracked in
 `ADR_INDEX.md`'s `CURRENT?` column, not assumed here). Authority:
-`CANONICAL_DECISION` — **their real ADR numbers (0001-0018/0020/0022/0027)
-are the permanent identity; nothing here renumbers them.**
+~~`CANONICAL_DECISION` for the archived copies~~ **Phase 12
+correction:** the source authority of these uncommitted, preserved
+files is `HISTORICAL_SOURCE`; their decision content is individually
+reviewable `CURRENT_CANDIDATE`, not promoted wholesale. **Their real
+ADR numbers (0001-0018/0020/0022/0027) remain their identities;
+nothing here renumbers them.**
 `docs/decisions/README.md` itself: a real index for the *same* ADR
 system already in use on `main` (CONTEXT/DECISION/WHY/ALTERNATIVES/
 CONSEQUENCES/STATUS/DATE shape) — not a competing decision authority,

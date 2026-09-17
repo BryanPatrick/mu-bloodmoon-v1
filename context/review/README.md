@@ -22,6 +22,7 @@ finding, how to report): [`../../docs/operations/context-pack-independent-review
 5. [`CONFLICTS.md`](CONFLICTS.md) — every conflict found, unresolved ones flagged
 6. [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md) — condensed pointer to the real list
 7. [`VALIDATION_RESULT.md`](VALIDATION_RESULT.md) — last real `validate.mjs` run + secret scan
+8. [`CODEX_PHASE12_INDEPENDENT_REVIEW.md`](CODEX_PHASE12_INDEPENDENT_REVIEW.md) — findings, corrections, sufficiency test, and merge recommendation
 
 ## What you do NOT need to read first
 
