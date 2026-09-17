@@ -44,6 +44,8 @@ actually supplied — never created speculatively.
 | SRC-REPO-017 | EXECUTABLE_FACT | `git log`/`git diff --stat` across `payments/asaas-sandbox`, `payments/asaas-local-hardening-claude`, `main` | EXECUTABLE_FACT | Run directly, Phase 10 |
 | SRC-REPO-018 | REPOSITORY_DOC | `payments/asaas-sandbox-phase5-codex:docs/payments/asaas-sandbox-phase5.md` (commit `066ad3be`) | ACCEPTED_HANDOFF | Read and cross-checked in Phase 12; local DB parity report, no real provider call |
 | SRC-REPO-019 | REVIEW_REPORT | `context/review/CODEX_PHASE12_INDEPENDENT_REVIEW.md` (this branch) | CURRENT_DOC | Independent content audit, Phase 12; not an approval or merge authorization |
+| SRC-REPO-020 | REPOSITORY_DOC | `payments/asaas-sandbox-phase5-codex:docs/payments/asaas-sandbox-phase6.md` (commit `ed326e90`) | ACCEPTED_HANDOFF (isolated branch; not canonical production policy) | Read against real Sandbox/local DB test evidence, Phase 6 |
+| SRC-REPO-021 | REPOSITORY_DOC | `docs/handoff/auth-recovery-provider-blocker.md` (this branch) | CURRENT_DOC | Read in full for the Phase 12 beta NO-GO correction; deployed end-to-end QA remains open |
 | SRC-OPENBETA-* | REPOSITORY_DOC (125 rows) | `mu-bloodmoon-v1-openbeta` untracked working tree, preserved to `preservation/openbeta-untracked/`, HEAD `2811522d` | HISTORICAL_SOURCE (per-group nuance — see manifest) | All 125 hash-verified (PASS); 21 ADRs + `open-questions.md`/`open-risks.md`/`decisions/README.md`/6 `knowledge/*` siblings read in full; the rest (gameserver/manuals/legacy/payments/etc.) title+frontmatter-read, not deep-read. Full detail: [`preservation/OPENBETA_UNTRACKED_MANIFEST.md`](preservation/OPENBETA_UNTRACKED_MANIFEST.md). ID scheme: `SRC-OPENBETA-<n>` = the `<n>`th alphabetical row of `preservation/_hashes_reference.tsv` — see the manifest's own "Source IDs" section for why a flat 125-row table isn't duplicated here. |
 
 ## Knowledge Hub sources (`D:\MU\hub`, separate repository)
@@ -55,7 +57,7 @@ actually supplied — never created speculatively.
 | SRC-HUB-003 | REPOSITORY_DOC | `docs/operations/orchestration-remote-adoption.md` | CURRENT_DOC | Read earlier this session; not fully re-quoted |
 | SRC-HUB-004 | DATABASE_SCHEMA | Production `ai-knowledge-hub-db` — 44 tasks / 418 events (Phase 6 count) | HISTORICAL_SOURCE (count only, not re-verified) | Phase 6 read-only audit (prior session) |
 | SRC-HUB-005 | CODE | `src/repositories/*.ts`, `src/services/*.ts` (Hub Worker) | CURRENT_DOC | Read/edited across Phases 5-8 |
-| SRC-HUB-006 | KNOWLEDGE_HUB_DECISION | Production `ai-knowledge-hub-db`, `decisions` table, all 26 rows (`SELECT ... ORDER BY created_at ASC`) | CANONICAL_DECISION | **Read in full, Phase 10** — real read-only SQL, zero mutation; see `KNOWLEDGE_HUB_MAPPING.md` |
+| SRC-HUB-006 | KNOWLEDGE_HUB_DECISION | Production `ai-knowledge-hub-db`, `decisions` table, all 26 rows (`SELECT ... ORDER BY created_at ASC`) | CANONICAL_DECISION | **Read in full, Phase 10**; six targeted texts independently re-read read-only in Phase 12, zero mutation; see `KNOWLEDGE_HUB_MAPPING.md` |
 | SRC-HUB-007 | EXECUTABLE_FACT | Production `ai-knowledge-hub-db`, `decisions.created_at` timestamps used for the `cf5f14c2`/`53034c0c`/`fa8e9ad0` conflict timeline | EXECUTABLE_FACT | Read directly, Phase 10 |
 | SRC-HUB-008 | EXECUTABLE_FACT | Staging `ai-knowledge-hub-db-staging`, `tasks` table, active-task check before the idle-policy disable | EXECUTABLE_FACT | Read directly, Phase 10 |
 | SRC-HUB-009 | CODE/CONFIG | `wrangler.staging.jsonc`, `ORCHESTRATION_ENABLED` (`true` → `false`, commit `2feab7f` on `orchestration/mvp-phase-1`) | EXECUTABLE_FACT | Edited + deployed + verified (503 on a write attempt), Phase 10 |
@@ -80,8 +82,9 @@ Phase N brief, <date>" rather than given a `SRC-*` row, since they're
 not a stable artifact this pack can re-read later the way a file or a
 Hub row can.
 
-**Running totals** (Phase 10): 17 `SRC-REPO-*` + 9 `SRC-HUB-*` = 26
-sources, 0 `SOURCE_PENDING`.
+**Running totals**: ~~Phase 10: 17 `SRC-REPO-*` + 9 `SRC-HUB-*` = 26~~
+Phase 12: 21 `SRC-REPO-*` + 9 `SRC-HUB-*` = 30 sources,
+0 `SOURCE_PENDING`.
 
 ## Honesty note on partial reads
 

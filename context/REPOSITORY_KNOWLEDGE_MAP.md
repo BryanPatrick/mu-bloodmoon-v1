@@ -206,6 +206,13 @@ historical. Codex completed the local MySQL/MariaDB parity rerun on
 and 48/48 DB tests on each engine, plus 114/114 API unit tests. The
 real Asaas Sandbox API has **not** been called or validated by that
 commit. The Phase 6 authorization is a new task, not proof of a call.
+
+**Later Phase 6 evidence (2026-09-17):** commit `ed326e90` on the
+same isolated Asaas branch documents actual Sandbox API/customer/PIX,
+automatic webhook delivery, two exactly-once 10-WC credits, and a
+provider contract correction for `deleted=true` with retained
+`OVERDUE` status. This is not merged or production-enabled; see that
+branch's `docs/payments/asaas-sandbox-phase6.md`.
 No merge or production enablement followed from this review.
 
 ## 6. Knowledge Hub production decisions — read in full (READ-ONLY)
@@ -231,10 +238,11 @@ findings:
   `cf5f14c2` (2026-08-08T22:55, `SITE_BETA_BLOCKED`, 6 blockers
   including "recuperação de senha inexistente") and `53034c0c`
   (2026-08-08T23:01, formal `NO-GO`, same blocker restated) are
-  contradicted **within 13 hours** by decision `fa8e9ad0`
-  (2026-08-09T12:04), which documents a real, implemented password-
-  recovery flow (hashed single-use tokens, 30-min TTL, anti-enumeration
-  responses). None of the three decisions marks the others as
+  partly contradicted **within 13 hours** by decision `fa8e9ad0`
+  (2026-08-09T12:04), which documents implemented password-recovery
+  tokens/endpoints (hashed single-use tokens, 30-min TTL,
+  anti-enumeration responses), but **its own context says mail delivery
+  remained blocked** at that date. None of the three decisions marks the others as
   `superseded`. This is a genuine Hub-internal inconsistency —
   recorded as a conflict, not fixed by editing any decision (that would
   be exactly the "silently reconcile" this phase forbids).
@@ -247,8 +255,14 @@ findings:
   crash, zero test coverage outside Community, HTTPS/TLS absence).
   **Result: neither document mentions any of these specific blockers
   at all** — they're silent on this, not confirming or denying. The
-  password-recovery contradiction (`fa8e9ad0`) stands as the one
-  concretely-evidenced piece; the rest of the blocker list remains
+  ~~The password-recovery blocker was disproven by `fa8e9ad0`.~~
+  **Phase 12 independent recheck:** only the literal claim that no
+  password-recovery code exists is disproven. The later
+  `docs/handoff/auth-recovery-provider-blocker.md` documents SMTP
+  authentication and local mailbox delivery, but still leaves the
+  release blocker open until deployed end-to-end recovery is proven.
+  The preserved open-questions/open-risks files do not themselves
+  confirm resolution of password recovery. The rest of the blocker list remains
   genuinely `UNKNOWN`, still not `SUPERSEDED` by anything this or the
   prior phase found. See `OPEN_QUESTIONS.md` OQ-CTX-006 (refined, not
   closed).

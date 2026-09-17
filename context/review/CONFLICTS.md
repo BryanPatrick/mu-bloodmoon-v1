@@ -12,9 +12,11 @@ Full detail: [`../REPOSITORY_KNOWLEDGE_MAP.md`](../REPOSITORY_KNOWLEDGE_MAP.md) 
 ## 1. Knowledge Hub decision conflict — UNRESOLVED
 
 `cf5f14c2` + `53034c0c` (2026-08-08, `SITE_BETA_BLOCKED` / `NO-GO`, 6-7
-blockers including "password recovery doesn't exist") are contradicted
-13 hours later by `fa8e9ad0` (2026-08-09, a real, implemented
-password-recovery flow). None of the three marks another as
+blockers including "password recovery doesn't exist") are **partly**
+contradicted 13 hours later by `fa8e9ad0` (2026-08-09, implemented
+tokens/endpoints, while its own context says mail delivery was blocked).
+The later SMTP handoff still requires deployed end-to-end proof. None
+of the three marks another as
 superseded. Phase 11 checked the preserved `open-questions.md`/
 `open-risks.md` for corroboration on the *other* cited blockers
 (CAPTCHA, payment gateway, marketplace/escrow homologation, 404 crash,

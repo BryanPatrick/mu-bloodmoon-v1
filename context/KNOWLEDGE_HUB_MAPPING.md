@@ -70,9 +70,9 @@ Project `bloodmoon` (9 rows — real product decisions, older, cross-checked aga
 | `d1637a85` | privacy-visibility-partial-enforcement | (no matching domain — security/privacy) | 2026-08-08 | NEEDS_REVIEW — `docs/privacy/` has since seen real migration+QA work per `docs/README.md`'s Phase L narrative; this decision predates it |
 | `183be585` | community-beta-ready-e2e-111 | (no matching domain — community) | 2026-08-08 | NEEDS_REVIEW |
 | `86fc102b` | community-beta-ready-formal-audit | (no matching domain — community) | 2026-08-08 | NEEDS_REVIEW |
-| `cf5f14c2` | site-beta-blocked-6-blockers | payments / marketplace / security | 2026-08-08 | **UNRESOLVED — password-recovery blocker disproven, other cited blockers not freshly verified; see REPOSITORY_KNOWLEDGE_MAP.md §6** |
-| `53034c0c` | no-go-public-launch-7-blockers | payments / marketplace / security | 2026-08-08 | **UNRESOLVED — same partial conflict; requires fresh beta-readiness decision, not automatic supersession** |
-| `fa8e9ad0` | password-recovery-implemented | security | 2026-08-09 | YES — but contradicts `cf5f14c2`/`53034c0c` above, see conflict record |
+| `cf5f14c2` | site-beta-blocked-6-blockers | payments / marketplace / security | 2026-08-08 | **UNRESOLVED — the later implementation disproves literal code nonexistence, but end-to-end delivery/release remains unproven; see REPOSITORY_KNOWLEDGE_MAP.md §6** |
+| `53034c0c` | no-go-public-launch-7-blockers | payments / marketplace / security | 2026-08-08 | **UNRESOLVED — same partial conflict; requires fresh beta-readiness evidence, not automatic supersession** |
+| `fa8e9ad0` | password-recovery-design-and-implementation | security | 2026-08-09 | PARTIAL — tokens/endpoints implemented; its own context says mail delivery was blocked then; later SMTP work still awaits deployed end-to-end proof |
 
 Phase 12 added deliberately narrow `community`, `security`, and
 `testing` stubs. The earlier absence among the original 12 was a real

@@ -78,7 +78,7 @@ running phase log, `docs/decisions/`, and `docs/handoff/`.
   task `58358ff6` → `completed`, real actor `claude-code-real-staging`.
   See [`domains/orchestration.md`](domains/orchestration.md).
 
-## Asaas payments (Phase 12 review update)
+## Asaas payments (Phase 12 review, updated after Phase 6)
 
 Codex built a sandbox PIX adapter (`payments/asaas-sandbox`); Claude
 hardened it (versioned PII encryption) and merged in the canonical
@@ -88,11 +88,17 @@ on `payments/asaas-sandbox-phase5-codex` at
 `066ad3be6bf12ffad35e9daf86f6307f2a9cd428`: both engines applied
 56/56 migrations and passed 48/48 DB tests each; 114/114 common API
 unit tests passed. A pre-Beta purge guard now protects Asaas billing
-and pending payment evidence. This is local validation, **not** real
-Asaas Sandbox API validation or production enablement. No Sandbox key
-was found in this review session's expected local locations. See
-[`domains/payments.md`](domains/payments.md) and the Phase 5 report on
-the Asaas continuation branch.
+and pending payment evidence. ~~This is local validation, not real
+Asaas Sandbox API validation.~~ **Later on 2026-09-17, Phase 6 at
+`ed326e90` used a dedicated Sandbox key and proved real customer
+creation/reuse, PIX, provider lookup, automatic webhook delivery,
+two exactly-once 10-WC credits, overdue/cancellation and restart
+reconciliation.** One actual provider difference (`deleted=true` while
+`status=OVERDUE`) was fixed. The temporary webhook/tunnel/local DB
+were removed; synthetic Sandbox customer/charge evidence remains.
+This branch is still unmerged and production payments remain disabled.
+See [`domains/payments.md`](domains/payments.md) and the Phase 6 report
+on the Asaas continuation branch.
 
 ## What is NOT true yet (explicit, so it isn't assumed)
 

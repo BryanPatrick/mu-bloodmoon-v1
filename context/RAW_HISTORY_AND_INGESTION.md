@@ -38,8 +38,9 @@ to infer them):
   `SUPERSEDED_DECISIONS.md`) — never inferred from recency alone. This
   matches the real, direct discovery this phase made in the Knowledge
   Hub itself: `fa8e9ad0` (2026-08-09) is chronologically *after*
-  `cf5f14c2`/`53034c0c` (2026-08-08) and contradicts one of their cited
-  blockers, but none of the three is treated as automatically
+  `cf5f14c2`/`53034c0c` (2026-08-08) and partly contradicts the
+  literal nonexistence claim for recovery code, not the unproven
+  end-to-end delivery blocker. None of the three is treated as automatically
   superseding another — see `REPOSITORY_KNOWLEDGE_MAP.md` §6. The same
   rule that governs future chat-history promotion already governs this
   real, present-day case.

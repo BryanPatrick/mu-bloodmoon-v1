@@ -32,7 +32,7 @@ confidently *from context alone*, not that a lookup had already happened.
 | 9 | Preserved ADR-0016 allows unmediated player RMT; the old `BUSINESS_RULES.md` simultaneously called it unknown. | LOW before lookup | `ADR_INDEX.md` vs. old `BUSINESS_RULES.md` | YES |
 | 10 | ADR-0025/0026/0028 are only partly superseded by 0029. | HIGH | `SUPERSEDED_DECISIONS.md` | NO |
 | 11 | Four full manuals are preserved but absent from `main`. | HIGH as branch fact | `OPEN_QUESTIONS.md` OQ-CTX-008 | NO |
-| 12 | Old SITE_BETA_BLOCKED/NO-GO is unresolved; one cited blocker is disproven. | HIGH for conflict, LOW for current GO/NO-GO | `REPOSITORY_KNOWLEDGE_MAP.md` §6 | NO |
+| 12 | Old SITE_BETA_BLOCKED/NO-GO is unresolved. The pack originally overstated that password recovery was disproven; later source lookup shows code exists but deployed email/reset QA remains open. | LOW before lookup | `REPOSITORY_KNOWLEDGE_MAP.md` §6 | YES |
 | 13 | No *real Codex* staging pilot had run at the pack's snapshot date. | HIGH as dated snapshot | `DEFERRED.md` | NO |
 | 14 | Repo wins for current technical documentation; Hub wins for operational state/history. | HIGH | `GOVERNANCE.md` | NO |
 | 15 | No ChatGPT history was imported. | HIGH | `RAW_HISTORY_AND_INGESTION.md` | NO |
@@ -42,10 +42,11 @@ confidently *from context alone*, not that a lookup had already happened.
 | 19 | OR-023 forensics finished; remediation remains unknown after the cited date. | HIGH about uncertainty | `domains/game-economy.md` | NO |
 | 20 | A future chat export enters as `SOURCE`/`CHAT_TRANSCRIPT`, never direct authority. | HIGH | `RAW_HISTORY_AND_INGESTION.md` | NO |
 
-Result before deeper lookup: 18 unambiguous from context; 2 required
-targeted source lookup (9, 16); 1 of those 2 was internally ambiguous
-(9); zero answers were necessarily factually wrong, but the source
-status/provenance on both was stale. This is not a quality score.
+Result before deeper lookup: 17 sound answers from context; 3 required
+targeted source lookup (9, 12, 16); 1 was internally ambiguous (9);
+1 was materially misleading from context (12). The initial Phase 12
+pass counted 18/2/0, but the independent Hub text recheck below exposed
+the error in question 12. This is not a quality score.
 
 ## Evidence-backed findings and corrections
 
@@ -69,8 +70,11 @@ status/provenance on both was stale. This is not a quality score.
    individual review as `CURRENT_CANDIDATE`; none was promoted.
 4. **Premature old NO-GO dismissal, fixed.** The Hub mapping's
    `Current? = NO` for `cf5f14c2`/`53034c0c` implied the entire old
-   decision was stale, while §6 only disproves password recovery and
-   leaves other blockers unverified. Both rows now say `UNRESOLVED`.
+   decision was stale. A fresh read of the Hub text shows that
+   `fa8e9ad0` itself says email delivery was blocked then; the later
+   SMTP handoff still requires deployed end-to-end QA. Only the literal
+   claim of no recovery implementation is disproven. Both rows remain
+   `UNRESOLVED` and the supporting summaries were corrected.
    The Hub's real rows were not mutated.
 5. **Stale provenance/index text, fixed.** Phase 9 language in
    `BUSINESS_RULES.md`, `DEFERRED.md`, and several domain stubs still
@@ -96,9 +100,13 @@ status/provenance on both was stale. This is not a quality score.
   all 125 preserved file hashes against the manifest.
 - Hub mapping: the index covers 26 decisions, with the old NO-GO pair
   unresolved and six other Blood Moon decisions marked `NEEDS_REVIEW`.
-  This pass did not independently re-read production D1 decision text;
-  the mapping sample is cross-checked against its recorded evidence,
-  not falsely reported as a fresh database audit. A read-only staging
+  Phase 12 continuation independently re-read six targeted production
+  D1 decision texts read-only: the two old NO-GO records, the later
+  recovery record, and three Hub/orchestration authority records.
+  All 26 rows still have Hub status `active`; none has a supersession
+  link, and no title is payment-related. No row was changed. The
+  targeted text recheck exposed the recovery overstatement above.
+  A read-only staging
   D1 query found only synthetic `codex-staging`, no real Codex actor.
 - Open questions/risks: preserved OQ-005/0016 was rechecked as resolved;
   preserved OQ-018-021 and OR-023 remain uncertain/current-state
@@ -114,8 +122,19 @@ status/provenance on both was stale. This is not a quality score.
 
 ## Beta-readiness evidence required later (no GO/NO-GO decision here)
 
+`BETA_NO_GO_CURRENT_EVIDENCE`: the historical decisions genuinely
+recorded six/seven blockers on 2026-08-08. **Confirmed current
+readiness gap:** the tracked SMTP handoff still requires a deployed
+mailbox request/reset/session-revocation test. **Disproven literal
+claim:** password-recovery code does not exist; tokens and endpoints
+were implemented later. **Unknown current blocker status:** CAPTCHA
+and rate limiting, payment-gateway/delivery availability, marketplace/
+escrow/GameBridge homologation, 404 behavior, non-Community test
+coverage, HTTPS/TLS, and recovery's actual deployed end-to-end result.
+No current GO/NO-GO is inferred from the old rows.
+
 Re-test the old six/seven cited blockers against current deployment:
-password-recovery end-to-end (already contradicted by later evidence),
+password-recovery end-to-end (not yet proven by the cited handoff),
 404/error handling, CAPTCHA plus rate limiting, payment-gateway
 availability and payment flow, marketplace/escrow/GameBridge claims,
 test coverage, and HTTPS/TLS. Capture deployed commit, environment,

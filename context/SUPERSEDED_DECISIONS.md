@@ -33,9 +33,11 @@ pointing away from any of them this phase. No ADR content was edited.
 All 26 Hub decisions were read this phase (see
 [`KNOWLEDGE_HUB_MAPPING.md`](KNOWLEDGE_HUB_MAPPING.md)). A real
 inconsistency was found — `cf5f14c2` ("SITE_BETA_BLOCKED") and
-`53034c0c` ("NO-GO for public launch") are contradicted 13 hours later
-by `fa8e9ad0` (a real, implemented password-recovery flow, one of the
-cited blockers) — but **none of the three is marked `SUPERSEDED` here**.
+`53034c0c` ("NO-GO for public launch") are **partly** contradicted 13
+hours later by `fa8e9ad0` (implemented recovery tokens/endpoints, but
+its own context says mail delivery was blocked). The later SMTP handoff
+still requires deployed end-to-end validation. **None of the three is
+marked `SUPERSEDED` here**.
 The Hub itself still records all three as `active` with
 `supersedes_decision_id = NULL`, and this pack does not silently
 reconcile a Hub-internal inconsistency by editing Hub state or by
