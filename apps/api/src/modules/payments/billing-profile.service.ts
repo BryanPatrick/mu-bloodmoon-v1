@@ -4,43 +4,38 @@ import {
   Injectable,
   ServiceUnavailableException
 } from '@nestjs/common'
-import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto'
 import { Prisma } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
 import { AsaasPaymentProvider } from './asaas.provider'
 import { loadAsaasConfig } from './asaas.config'
+import { BillingEnvelopeInvalidError, BillingKeyNotConfiguredError, openField, sealField } from './billing-crypto'
 
-function billingKey(): Buffer {
-  const encoded = process.env.BILLING_PII_KEY_B64 || ''
-  const key = Buffer.from(encoded, 'base64')
-  if (key.length !== 32) throw new ServiceUnavailableException('BILLING_PII_KEY_NOT_CONFIGURED')
-  return key
+// Thin wrappers binding the generic, version-aware billing-crypto module
+// to BillingProfile's two real fields, and translating its typed errors
+// into the same NestJS exception this service already threw for these
+// conditions (ServiceUnavailableException) -- API behavior for a
+// misconfigured/missing key or a corrupt envelope is unchanged from
+// before this file started using billing-crypto.ts.
+function seal(value: string, accountId: string, fieldName: 'legalName' | 'cpfCnpj'): string {
+  try {
+    return sealField(value, accountId, fieldName)
+  } catch (error) {
+    if (error instanceof BillingKeyNotConfiguredError) throw new ServiceUnavailableException('BILLING_PII_KEY_NOT_CONFIGURED')
+    throw error
+  }
 }
 
-function seal(value: string, accountId: string): string {
-  const iv = randomBytes(12)
-  const cipher = createCipheriv('aes-256-gcm', billingKey(), iv)
-  cipher.setAAD(Buffer.from(accountId))
-  const encrypted = Buffer.concat([cipher.update(value, 'utf8'), cipher.final()])
-  return [
-    'v1',
-    iv.toString('base64url'),
-    cipher.getAuthTag().toString('base64url'),
-    encrypted.toString('base64url')
-  ].join('.')
-}
-
-function open(value: string, accountId: string): string {
-  const [version, iv, tag, encrypted] = value.split('.')
-  if (version !== 'v1' || !iv || !tag || !encrypted)
+function open(value: string, accountId: string, fieldName: 'legalName' | 'cpfCnpj'): string {
+  try {
+    return openField(value, accountId, fieldName)
+  } catch (error) {
+    if (error instanceof BillingKeyNotConfiguredError) throw new ServiceUnavailableException('BILLING_PII_KEY_NOT_CONFIGURED')
+    if (error instanceof BillingEnvelopeInvalidError) throw new ServiceUnavailableException('BILLING_PII_ENVELOPE_INVALID')
+    // A GCM auth-tag failure (wrong key, wrong account/field AAD, or
+    // tampered ciphertext) lands here -- surfaced the same way as an
+    // invalid envelope, never as a decrypted-but-wrong plaintext.
     throw new ServiceUnavailableException('BILLING_PII_ENVELOPE_INVALID')
-  const decipher = createDecipheriv('aes-256-gcm', billingKey(), Buffer.from(iv, 'base64url'))
-  decipher.setAAD(Buffer.from(accountId))
-  decipher.setAuthTag(Buffer.from(tag, 'base64url'))
-  return Buffer.concat([
-    decipher.update(Buffer.from(encrypted, 'base64url')),
-    decipher.final()
-  ]).toString('utf8')
+  }
 }
 
 @Injectable()
@@ -69,8 +64,8 @@ export class BillingProfileService {
     const existing = await this.prisma.billingProfile.findUnique({ where: { accountId } })
     if (
       existing &&
-      open(existing.legalNameCiphertext, accountId) === legalName &&
-      open(existing.cpfCnpjCiphertext, accountId) === cpfCnpj
+      open(existing.legalNameCiphertext, accountId, 'legalName') === legalName &&
+      open(existing.cpfCnpjCiphertext, accountId, 'cpfCnpj') === cpfCnpj
     ) {
       return { configured: true, country: 'BR' }
     }
@@ -85,13 +80,13 @@ export class BillingProfileService {
       where: { accountId },
       create: {
         accountId,
-        legalNameCiphertext: seal(legalName, accountId),
-        cpfCnpjCiphertext: seal(cpfCnpj!, accountId),
+        legalNameCiphertext: seal(legalName, accountId, 'legalName'),
+        cpfCnpjCiphertext: seal(cpfCnpj!, accountId, 'cpfCnpj'),
         country: 'BR'
       },
       update: {
-        legalNameCiphertext: seal(legalName, accountId),
-        cpfCnpjCiphertext: seal(cpfCnpj!, accountId)
+        legalNameCiphertext: seal(legalName, accountId, 'legalName'),
+        cpfCnpjCiphertext: seal(cpfCnpj!, accountId, 'cpfCnpj')
       }
     })
     return { configured: true, country: 'BR' }
@@ -156,8 +151,8 @@ export class BillingProfileService {
 
     try {
       const providerCustomerId = await this.asaas.createCustomer({
-        legalName: open(profile.legalNameCiphertext, accountId),
-        cpfCnpj: open(profile.cpfCnpjCiphertext, accountId),
+        legalName: open(profile.legalNameCiphertext, accountId, 'legalName'),
+        cpfCnpj: open(profile.cpfCnpjCiphertext, accountId, 'cpfCnpj'),
         externalReference
       })
       await this.prisma.providerCustomer.update({

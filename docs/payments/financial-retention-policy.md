@@ -26,6 +26,40 @@ Both of these facts hold **independent of any retention-duration decision** — 
 
 If/when a retention duration is confirmed, the correct implementation shape (not built this phase, since no duration exists to configure yet) is a single admin-configurable setting — most naturally a new field on an existing config table (e.g. alongside `MarketplaceEconomyConfig`, or a small dedicated `FinancialRetentionConfig` row) — read by a scheduled process that only *unlinks* (never deletes) rows older than the configured threshold. Explicitly not a magic number in code, matching the same discipline already applied to VIP pricing (Phase 15's `VipProductConfig` seed) and the WC tax rates (Phase 13).
 
+## BillingProfile (added 2026-09-17, Asaas local-hardening phase)
+
+`BillingProfile` (encrypted `legalName`/`cpfCnpj`, see
+[`billing-pii-encryption.md`](billing-pii-encryption.md)) carries the
+same open retention-duration question as `RechargeIntent`/`PurchaseIntent`
+above, plus one structural difference this phase found and did **not**
+resolve: `BillingProfile.account` is `onDelete: Cascade` in
+`schema.prisma` — unlike `RechargeIntent`/`PurchaseIntent`, which are
+structurally excluded from every known deletion path regardless of any
+retention decision, `BillingProfile` would be *silently* removed the
+moment any code path ever hard-deletes the owning `Account` row. `git
+grep BillingProfile` across `apps/api/src/modules/accounts/` and
+`docs/accounts/` found zero references — this table has never been
+considered by the account-deletion architecture at all.
+
+Needed, not yet done: trace whether `NORMAL_ACCOUNT_DELETION` or
+`PRE_BETA_PURGE` (see [`account-deletion-architecture.md`](../accounts/account-deletion-architecture.md))
+can ever reach a real hard `Account` delete, and if so, either (a)
+change `BillingProfile.account`'s FK to `onDelete: Restrict` or
+`SetNull` (matching the nullable-FK unlink pattern already used
+elsewhere per this document's Configurability section) so it requires
+the same explicit, retention-aware handling `RechargeIntent`/
+`PurchaseIntent` already get, or (b) confirm no such path exists today
+and document why the current `Cascade` is safe. Distinguishing states
+for `BillingProfile` specifically, mirroring this document's own request
+for a lifecycle rather than a binary delete/keep: active account,
+account deletion requested, provider/legal retention required, retention
+complete, eligible for deletion/anonymization — none of these states
+exist in code today; this is a design note, not an implementation.
+
+`BILLING_PROFILE_RETENTION = LEGAL_REVIEW_REQUIRED (same open question as
+above) + CASCADE_FK_UNRESOLVED (new finding, needs its own follow-up
+independent of the duration question)`.
+
 ## Status
 
 `FINANCIAL_RETENTION = LEGAL_REVIEW_REQUIRED, NO_DURATION_CONFIGURED, STRUCTURALLY_PRESERVED_REGARDLESS`. This document exists so the eventual legal decision has a clear, already-scoped place to land — not to make that decision.
