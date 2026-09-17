@@ -8,40 +8,54 @@ lastVerified: 2026-09-17
 # Source index
 
 Stable IDs for everything this Context Pack actually drew from. Nothing
-below is invented — every `VERIFIED` row was read or run for real this
-session (or cites the specific prior phase where it was). Future
-`SRC-CHAT-*` IDs are reserved for real chat transcripts once actually
-supplied — never created speculatively.
+below is invented. Each row now carries an authority level (see
+`GOVERNANCE.md`'s Phase 10 addition) and, per Part 23, a commit ref
+where one makes the reference stable across branch-layout changes
+(preferred over a bare path when the source is a specific commit's
+content, not a living file this pack should always track the tip of).
+Future `SRC-CHAT-*` IDs are reserved for real chat transcripts once
+actually supplied — never created speculatively.
 
 ## Source types
 
 `REPOSITORY_DOC` / `CODE` / `DATABASE_SCHEMA` / `KNOWLEDGE_HUB_DECISION` /
 `HANDOFF` / `CHAT_TRANSCRIPT` / `ADMIN_DECISION` / `EXTERNAL_REFERENCE`
 
-## Repository sources (this repo, `mu-bloodmoon-v1`, branch `main`, HEAD `f5fd099a`)
+## Repository sources — `mu-bloodmoon-v1`
 
-| ID | Type | Path | Verified how |
-|---|---|---|---|
-| SRC-REPO-001 | REPOSITORY_DOC | `AGENTS.md` | Read in full, this session |
-| SRC-REPO-002 | REPOSITORY_DOC | `CLAUDE.md` | Read in full, this session |
-| SRC-REPO-003 | REPOSITORY_DOC | `docs/protocols/agent-bootstrap.md` | Read in full, this session |
-| SRC-REPO-004 | REPOSITORY_DOC | `docs/README.md` | Read (partial — 596/720 lines; large phase-log tail not read), this session |
-| SRC-REPO-005 | REPOSITORY_DOC | `docs/architecture/engineering-governance.md` | Read (first 80 lines), this session |
-| SRC-REPO-006 | REPOSITORY_DOC | `docs/decisions/0030-migration-casing-static-audit.md` | Read in full, this session |
-| SRC-REPO-007 | REPOSITORY_DOC | `docs/decisions/0019,0021,0023,0024,0025,0026,0028,0029.md` | Not read this session — listed via `git ls-tree` only; titles taken from filenames, not content |
-| SRC-REPO-008 | REPOSITORY_DOC | `knowledge/README.md` (root-level game-content library) | Read in full, this session |
-| SRC-REPO-009 | CODE/CONFIG | `git ls-tree -r HEAD -- docs/` (231 files) | Run directly, this session — authoritative for "what actually exists on `main`" |
-| SRC-REPO-010 | REPOSITORY_DOC | `docs/handoff/*` (10 files) | Listed via `git ls-tree`, not read this session |
+| ID | Type | Ref | Authority | Verified how |
+|---|---|---|---|---|
+| SRC-REPO-001 | REPOSITORY_DOC | `main:AGENTS.md` | CURRENT_DOC | Read in full |
+| SRC-REPO-002 | REPOSITORY_DOC | `main:CLAUDE.md` | CURRENT_DOC | Read in full |
+| SRC-REPO-003 | REPOSITORY_DOC | `main:docs/protocols/agent-bootstrap.md` | CURRENT_DOC | Read in full |
+| SRC-REPO-004 | REPOSITORY_DOC | `main:docs/README.md` (719 lines, commit `b89f3e25`) | CURRENT_DOC | Partial (596/720 lines) |
+| SRC-REPO-005 | REPOSITORY_DOC | `main:docs/architecture/engineering-governance.md` | CURRENT_DOC | Partial (first 80 lines) |
+| SRC-REPO-006 | REPOSITORY_DOC | `main:docs/decisions/0030-migration-casing-static-audit.md` | CANONICAL_DECISION | Read in full |
+| SRC-REPO-007 | REPOSITORY_DOC | `main:docs/decisions/{0019,0021,0023,0024,0025,0026,0028,0029}-*.md` | CANONICAL_DECISION | Listed via `git ls-tree` only; titles from filenames, not content |
+| SRC-REPO-008 | REPOSITORY_DOC | `main:knowledge/README.md` | CURRENT_DOC | Read in full |
+| SRC-REPO-009 | EXECUTABLE_FACT | `git ls-tree -r HEAD -- docs/` (231 files, `main`) | EXECUTABLE_FACT | Run directly |
+| SRC-REPO-010 | REPOSITORY_DOC | `main:docs/handoff/*` (10 files) | CURRENT_DOC | Listed only, not read |
+| SRC-REPO-011 | EXECUTABLE_FACT | `git log --all --diff-filter=A -- <path>` for every Phase-9-flagged missing file | EXECUTABLE_FACT | Run directly, Phase 10 — 0 hits for every path, across all 26 branches |
+| SRC-REPO-012 | REPOSITORY_DOC | Untracked files in `mu-bloodmoon-v1-openbeta` (`docs/decisions/0001-0028+README`, `docs/open-questions.md`, `docs/open-risks.md`, `docs/knowledge/module-map.md`+5 siblings, `docs/gameserver/`, `docs/store/`, original `AGENTS.md`/`CLAUDE.md`/`docs/README.md`) | HISTORICAL_SOURCE | Confirmed present + untracked via `git status --short`, Phase 10; content not individually read beyond filenames/diff-stats |
+| SRC-REPO-013 | CODE/DOC | `architecture/agent-orchestration-foundation:docs/architecture/engineering-agent-orchestration.md` (commit `7b8c2799`) | CURRENT_DOC (proposal, not a decision) | Read in full, Phase 10 |
+| SRC-REPO-014 | CODE/DOC | `architecture/agent-orchestration-foundation:docs/architecture/bloodmoon-ai-assistant.md` (commit `7b8c2799`) | CURRENT_DOC (proposal) | Read in full, Phase 10 |
+| SRC-REPO-015 | CODE/DOC | `architecture/agent-orchestration-foundation:docs/architecture/notification-intelligence.md` (commit `7b8c2799`) | CURRENT_DOC (proposal) | Read in full, Phase 10 |
+| SRC-REPO-016 | HANDOFF | `payments/asaas-local-hardening-claude:docs/payments/asaas-sandbox-phase4-claude-handoff.md` (commit `223b111c`) | ACCEPTED_HANDOFF (status `HANDOFF_FOR_CODEX`, unconsumed) | Read in full, Phase 10 |
+| SRC-REPO-017 | EXECUTABLE_FACT | `git log`/`git diff --stat` across `payments/asaas-sandbox`, `payments/asaas-local-hardening-claude`, `main` | EXECUTABLE_FACT | Run directly, Phase 10 |
 
 ## Knowledge Hub sources (`D:\MU\hub`, separate repository)
 
-| ID | Type | Path/Location | Verified how |
-|---|---|---|---|
-| SRC-HUB-001 | REPOSITORY_DOC | `docs/operations/orchestration-staging.md` | Read in full, earlier this session (pre-compaction) |
-| SRC-HUB-002 | REPOSITORY_DOC | `docs/operations/orchestration-staging-validation.md` | Read earlier this session; content large, not fully re-quoted here |
-| SRC-HUB-003 | REPOSITORY_DOC | `docs/operations/orchestration-remote-adoption.md` | Read earlier this session; content large, not fully re-quoted here |
-| SRC-HUB-004 | DATABASE_SCHEMA | Production `ai-knowledge-hub-db` — 44 tasks / 418 events / 26 decisions | Phase 6 read-only audit (prior session) — **not re-verified this session** |
-| SRC-HUB-005 | CODE | `src/repositories/*.ts`, `src/services/*.ts` (Hub Worker) | Read/edited across Phases 5-8 (prior sessions) |
+| ID | Type | Ref | Authority | Verified how |
+|---|---|---|---|---|
+| SRC-HUB-001 | REPOSITORY_DOC | `docs/operations/orchestration-staging.md` | CURRENT_DOC | Read in full, earlier this session |
+| SRC-HUB-002 | REPOSITORY_DOC | `docs/operations/orchestration-staging-validation.md` | CURRENT_DOC | Read earlier this session; not fully re-quoted |
+| SRC-HUB-003 | REPOSITORY_DOC | `docs/operations/orchestration-remote-adoption.md` | CURRENT_DOC | Read earlier this session; not fully re-quoted |
+| SRC-HUB-004 | DATABASE_SCHEMA | Production `ai-knowledge-hub-db` — 44 tasks / 418 events (Phase 6 count) | HISTORICAL_SOURCE (count only, not re-verified) | Phase 6 read-only audit (prior session) |
+| SRC-HUB-005 | CODE | `src/repositories/*.ts`, `src/services/*.ts` (Hub Worker) | CURRENT_DOC | Read/edited across Phases 5-8 |
+| SRC-HUB-006 | KNOWLEDGE_HUB_DECISION | Production `ai-knowledge-hub-db`, `decisions` table, all 26 rows (`SELECT ... ORDER BY created_at ASC`) | CANONICAL_DECISION | **Read in full, Phase 10** — real read-only SQL, zero mutation; see `KNOWLEDGE_HUB_MAPPING.md` |
+| SRC-HUB-007 | EXECUTABLE_FACT | Production `ai-knowledge-hub-db`, `decisions.created_at` timestamps used for the `cf5f14c2`/`53034c0c`/`fa8e9ad0` conflict timeline | EXECUTABLE_FACT | Read directly, Phase 10 |
+| SRC-HUB-008 | EXECUTABLE_FACT | Staging `ai-knowledge-hub-db-staging`, `tasks` table, active-task check before the idle-policy disable | EXECUTABLE_FACT | Read directly, Phase 10 |
+| SRC-HUB-009 | CODE/CONFIG | `wrangler.staging.jsonc`, `ORCHESTRATION_ENABLED` (`true` → `false`, commit `2feab7f` on `orchestration/mvp-phase-1`) | EXECUTABLE_FACT | Edited + deployed + verified (503 on a write attempt), Phase 10 |
 
 ## What is explicitly `SOURCE_PENDING` (believed to originate in a prior
 Bryan/ChatGPT conversation, but no transcript was ever supplied this
@@ -53,6 +67,18 @@ phase: no automatic access to Bryan's ChatGPT history exists, and none
 was fabricated. If a future session believes some piece of context
 originated in a prior chat, it should add a row here with status
 `SOURCE_PENDING` rather than write it into any other document as fact.
+
+**A related but distinct category, not `SOURCE_PENDING`**: a direct,
+current-session instruction from Bryan (e.g. `domains/bloodmoon-ai.md`'s
+answer-source-ladder concepts, given in this phase's own brief) is a
+real, attributable, dated source — just not a repository document and
+not a past ChatGPT transcript. These are cited in-place as "Bryan,
+Phase N brief, <date>" rather than given a `SRC-*` row, since they're
+not a stable artifact this pack can re-read later the way a file or a
+Hub row can.
+
+**Running totals** (Phase 10): 17 `SRC-REPO-*` + 9 `SRC-HUB-*` = 26
+sources, 0 `SOURCE_PENDING`.
 
 ## Honesty note on partial reads
 

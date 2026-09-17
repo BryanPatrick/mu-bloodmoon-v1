@@ -24,6 +24,26 @@ Promotion from raw to canonical is always a deliberate act (human or
 agent classification + cross-reference against existing decisions),
 never automatic.
 
+**Reconfirmed explicitly, Phase 10, Part 21** (these were implicit in
+the design above; stated directly here so a future reader doesn't have
+to infer them):
+
+- A statement repeated many times across raw history does **not**
+  become true by frequency — evidence count is a signal worth
+  recording (see the ingestion plan's dedupe step), never a substitute
+  for an actual source.
+- The most recent statement in a raw source does **not** automatically
+  supersede an earlier, canonical decision. Supersession is always
+  explicit — a new decision record naming what it replaces (see
+  `SUPERSEDED_DECISIONS.md`) — never inferred from recency alone. This
+  matches the real, direct discovery this phase made in the Knowledge
+  Hub itself: `fa8e9ad0` (2026-08-09) is chronologically *after*
+  `cf5f14c2`/`53034c0c` (2026-08-08) and contradicts one of their cited
+  blockers, but none of the three is treated as automatically
+  superseding another — see `REPOSITORY_KNOWLEDGE_MAP.md` §6. The same
+  rule that governs future chat-history promotion already governs this
+  real, present-day case.
+
 ## The critical constraint this whole pack was built under
 
 No ChatGPT conversation export or transcript was supplied this session.
@@ -54,6 +74,17 @@ Structured extraction output (never prose dumped into a doc):
 `new_decisions[]`, `changed_decisions[]`, `ideas[]`, `requirements[]`,
 `open_questions[]`, `tasks[]`, `knowledge_candidates[]`,
 `source_references[]`.
+
+**Future chat import boundary (Phase 10, Part 22)**: when a real
+transcript eventually enters this pipeline, it enters as a `SOURCE`
+(a `CHAT_TRANSCRIPT`-type row in `SOURCE_INDEX.md`, cited as evidence
+for whatever it supports) — **never as authority**. A chat message
+saying "we decided X" is evidence that X *might* have been decided, to
+be cross-referenced against `DECISIONS.md`/the Hub's real decisions
+(step 5 of the pipeline above) and validated (step 6) before anything
+is written as canonical (step 7). This is the same authority-level
+model `GOVERNANCE.md` already applies to every other source type —
+chat transcripts get no special exemption and no special elevation.
 
 ## Knowledge classification taxonomy (for anything promoted from raw history, or captured fresh)
 

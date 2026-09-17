@@ -1,12 +1,21 @@
 #!/usr/bin/env node
 // Lightweight Context Pack self-check. No dependencies, no network.
 // Checks: broken relative doc links, unknown `status:` frontmatter values,
-// obvious secret-shaped strings, and duplicate ADR references across files.
+// obvious secret-shaped strings, duplicate ADR/source-ID references,
+// undefined source-ID references, and unknown authority-level values.
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
 
 const ROOT = dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]):/, "$1:"));
 const KNOWN_STATUS = new Set(["ACTIVE", "SUPERSEDED", "DEFERRED", "PROPOSED", "EXPERIMENTAL", "LIVING_INDEX", "ESTABLISHED"]);
+const KNOWN_AUTHORITY = new Set([
+	"EXECUTABLE_FACT",
+	"CANONICAL_DECISION",
+	"CURRENT_DOC",
+	"ACCEPTED_HANDOFF",
+	"HISTORICAL_SOURCE",
+	"AI_CANDIDATE",
+]);
 const SECRET_PATTERN = /(akh_[A-Za-z0-9]{10,}|sk-[A-Za-z0-9]{10,}|AIza[A-Za-z0-9_-]{10,}|-----BEGIN [A-Z ]*PRIVATE KEY-----)/;
 
 function walk(dir, out = []) {
@@ -76,6 +85,49 @@ for (const [id, fileSet] of decIds) {
 		// two places -- this script can't detect that without parsing the
 		// decision body, so it's flagged for human review, not auto-failed.
 		continue;
+	}
+}
+
+// SRC-* IDs: definitions live in SOURCE_INDEX.md's table rows ("| SRC-REPO-001 | ...").
+// A defined ID appearing more than once as a table-row definition is a
+// real duplicate (unlike ADR/DEC-* references, which are expected to
+// repeat as citations). A reference elsewhere in context/ to an ID that
+// SOURCE_INDEX.md never defines is a missing-source bug.
+const sourceIndexPath = join(ROOT, "SOURCE_INDEX.md");
+const definedSrcIds = new Map(); // id -> count of table-row definitions
+try {
+	const text = readFileSync(sourceIndexPath, "utf8");
+	const rowPattern = /^\|\s*(SRC-(?:REPO|HUB)-\d+)\s*\|/gm;
+	let m;
+	while ((m = rowPattern.exec(text))) {
+		definedSrcIds.set(m[1], (definedSrcIds.get(m[1]) ?? 0) + 1);
+	}
+	for (const [id, count] of definedSrcIds) {
+		if (count > 1) errors.push(`SOURCE_INDEX.md: SRC-* id "${id}" is defined ${count} times (duplicate row)`);
+	}
+
+	// Authority-level column (4th cell) of every defined row.
+	const authorityRowPattern = /^\|\s*(SRC-(?:REPO|HUB)-\d+)\s*\|[^|]*\|[^|]*\|\s*([^|]+?)\s*\|/gm;
+	while ((m = authorityRowPattern.exec(text))) {
+		const cell = m[2].replace(/\*\*/g, "").trim();
+		const token = cell.split(/[\s(]/)[0]; // tolerate trailing parenthetical notes
+		if (token && !KNOWN_AUTHORITY.has(token)) {
+			errors.push(`SOURCE_INDEX.md: ${m[1]} has an unrecognized authority level "${token}"`);
+		}
+	}
+} catch {
+	errors.push("SOURCE_INDEX.md could not be read for SRC-* validation");
+}
+
+const referencedSrcIds = new Set();
+for (const file of files) {
+	const text = readFileSync(file, "utf8");
+	const ids = text.match(/SRC-(?:REPO|HUB)-\d+/g) || [];
+	for (const id of ids) referencedSrcIds.add(id);
+}
+for (const id of referencedSrcIds) {
+	if (!definedSrcIds.has(id)) {
+		errors.push(`"${id}" is referenced somewhere in context/ but never defined in SOURCE_INDEX.md`);
 	}
 }
 

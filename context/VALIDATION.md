@@ -29,15 +29,33 @@ It checks:
 - Any `DEC-<DOMAIN>-NNN` ID ever minted (currently zero, see
   `DECISIONS.md`) gets flagged for human review if it appears with
   inconsistent usage across files.
+- **(Phase 10)** Every `SRC-REPO-*`/`SRC-HUB-*` ID defined in
+  `SOURCE_INDEX.md`'s tables is defined exactly once (a duplicate row
+  is a real bug — two different sources sharing an ID). Every such ID
+  *referenced* anywhere else in `context/` actually has a defining row
+  in `SOURCE_INDEX.md` — a reference to a source this pack never
+  indexed is exactly the "missing referenced source" class of bug Part
+  26 asks for.
+- **(Phase 10)** Every source's Authority-level column value (in
+  `SOURCE_INDEX.md`) is one of the six levels `GOVERNANCE.md` defines
+  (`EXECUTABLE_FACT`/`CANONICAL_DECISION`/`CURRENT_DOC`/
+  `ACCEPTED_HANDOFF`/`HISTORICAL_SOURCE`/`AI_CANDIDATE`) — an unknown
+  value would mean the two docs have drifted.
 
 It deliberately does **not** check ADR content correctness, Knowledge
 Hub state, or anything requiring network/database access — that's out
-of scope for a lightweight, offline, pack-internal check.
+of scope for a lightweight, offline, pack-internal check. It also does
+not (Phase 10, by choice) try to detect an ACTIVE+SUPERSEDED status
+inconsistency generically — the one real instance of a compound status
+this pack uses (`docs/decisions/0025/0026/0028`'s "PARTIALLY SUPERSEDED")
+was verified by hand against `docs/architecture/engineering-governance.md`,
+and a generic parser for that shape would be exactly the
+over-engineering Part 26 warns against for the value it'd add.
 
-## Last real run (this session)
+## Runs this session
 
-First run found 20 broken links — all of them files this pack had not
-yet created (domain stubs, `VALIDATION.md` itself,
-`docs/operations/chat-history-ingestion.md`). Re-run after finishing the
-pack; result recorded in the Phase 9 final report's `CONTEXT_VALIDATION`
-field.
+Phase 9's first run found 20 broken links (files not yet created at
+that point) — all resolved, re-run PASS. Phase 10 extended the script
+(SRC-* duplicate/undefined-reference checks, authority-level check) and
+re-ran after every batch of edits; final Phase 10 state: **PASS, 28
+files, 0 issues**.

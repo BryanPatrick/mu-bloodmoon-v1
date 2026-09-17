@@ -26,15 +26,16 @@ pack. Neither is renumbered or replaced:
    today, no human-readable scheme.
 
 The brief that created this pack suggested a `DEC-<DOMAIN>-NNN`
-human-readable scheme (e.g. `DEC-PAYMENTS-001`). **Resolution**: that
-scheme is reserved for (a) giving Knowledge Hub decisions a
-human-readable label — deliberately **not done yet**, since assigning
-one honestly requires reading each decision's real content, which this
-session did not do (staging-only scope, no production Hub read
-performed this phase) — see [`DEFERRED.md`](DEFERRED.md); and (b) any
-future decision that is genuinely new and doesn't already have an ADR or
-a Hub row. **Zero `DEC-*` IDs have been minted so far** — this is an
-honest zero, not an oversight.
+human-readable scheme (e.g. `DEC-PAYMENTS-001`). **Resolution, updated
+Phase 10 by explicit instruction (DECISÕES #1)**: this scheme is
+**never minted as a canonical replacement ID** — Knowledge Hub decision
+IDs (real UUIDs, see below) and ADR numbers stay canonical permanently.
+An optional, non-canonical human-readable *alias* may be proposed for
+readability (see [`KNOWLEDGE_HUB_MAPPING.md`](KNOWLEDGE_HUB_MAPPING.md)'s
+per-decision table), but it always maps back to the real canonical ID
+and is never used in place of it. **Zero `DEC-*` IDs have ever been
+minted** — this remains an honest, permanent zero for this specific
+scheme, not a to-do.
 
 ## Status model (matches the existing ADR convention exactly)
 
@@ -76,11 +77,26 @@ invented decision).
 own description of ADR-0029 — this pack does not independently judge
 which parts, since that judgment already lives in ADR-0029 itself.
 
-## Knowledge Hub decisions
+## Decision-count accounting (corrected Phase 10 — discovered vs. reviewed vs. indexed are different numbers)
 
-Count only (Phase 6 audit, prior session, not re-verified this session):
-**26 real decisions** in production `ai-knowledge-hub-db`. No per-decision
-content is reproduced here — doing so without re-reading each one this
-session would risk restating something inaccurately. See
-[`KNOWLEDGE_HUB_MAPPING.md`](KNOWLEDGE_HUB_MAPPING.md) for how to query
-them for real when a task needs to.
+Phase 9 only *counted* the Hub's decisions (from a prior-phase audit,
+not re-read). Phase 10 actually read every one via a real, read-only
+`SELECT` against production `ai-knowledge-hub-db` — these are now
+different, explicitly separated numbers, per the correction this phase
+was asked to make:
+
+```
+REPO_DECISIONS_REVIEWED = 10  (0019, 0021, 0023, 0024, 0025, 0026, 0028, 0029, 0030 read/cited this
+                                session or Phase 9; 0030 read in full both phases)
+HUB_DECISIONS_DISCOVERED = 26 (matches the Phase 6 prior-session count, now confirmed directly)
+HUB_DECISIONS_REVIEWED   = 26 (every row's real `decision` text was read this phase, not just counted)
+HUB_DECISIONS_INDEXED    = 26 (all 26 now have a domain mapping + staleness cross-check in
+                                KNOWLEDGE_HUB_MAPPING.md — none marked NEEDS_REVIEW for being
+                                unreadable; several ARE marked NEEDS_REVIEW for being stale)
+```
+
+See [`KNOWLEDGE_HUB_MAPPING.md`](KNOWLEDGE_HUB_MAPPING.md) for the full
+per-decision table (domain, alias, currency check) and
+[`REPOSITORY_KNOWLEDGE_MAP.md`](REPOSITORY_KNOWLEDGE_MAP.md) §6 for the
+real conflict found between three of them (`cf5f14c2`/`53034c0c` vs.
+`fa8e9ad0`).

@@ -2,9 +2,16 @@
 status: ACTIVE
 category: context-pack-domain
 lastVerified: 2026-09-17
+classification: POPULATED
 ---
 
 # Domain: Knowledge Hub
+
+**STATUS**: real, live, all 26 production decisions read this phase
+(not just counted). Staging orchestration set to `ORCHESTRATION_ENABLED=false`
+this phase (idle policy, Part 29) — flip to `true` deliberately before
+the next real pilot/test, never left on by default. Production untouched
+(read-only `SELECT` only).
 
 **Authoritative docs** (separate repository, `D:\MU\hub`):
 `docs/operations/orchestration-remote-adoption.md`,
@@ -31,9 +38,10 @@ identifiers.
 [`orchestration.md`](orchestration.md) for the real actors that exist
 today.
 
-**Related decisions**: Knowledge Hub's own `decisions` table (26 real
-rows in production, Phase 6 audit, not re-verified this session) — see
-[`../DECISIONS.md`](../DECISIONS.md).
+**Related decisions**: all 26 production `decisions` rows read this
+phase — see [`../KNOWLEDGE_HUB_MAPPING.md`](../KNOWLEDGE_HUB_MAPPING.md)
+for the per-decision domain mapping and a real conflict found between
+three of them (`../REPOSITORY_KNOWLEDGE_MAP.md` §6).
 
 **Emergency control**: `ORCHESTRATION_ENABLED` — set per-environment in
 `wrangler.jsonc`/`wrangler.staging.jsonc`'s own `vars`, checked before

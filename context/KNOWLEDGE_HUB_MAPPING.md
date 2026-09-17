@@ -27,6 +27,58 @@ lastVerified: 2026-09-17
 - No silent auto-sync either direction. A future sync job is a real,
   separate, explicitly-approved piece of work — not assumed here.
 
+## The 26 production Knowledge Hub decisions (read in full, Phase 10, READ-ONLY)
+
+**Per DECISÕES #1 of the Phase 10 brief: Knowledge Hub decision IDs
+remain canonical. Nothing below mints a replacement `DEC-<DOMAIN>-NNN`
+ID — the "Alias" column is an optional, non-canonical human-readable
+label that always maps back to the real Hub UUID (shown truncated to 8
+chars; the full UUID is the only canonical identifier).** All 26 rows
+have Hub `status = active` and `supersedes_decision_id = NULL` — the
+"Current?" column below is this pack's own cross-check against repo
+evidence, not a Hub field, and is never written back to the Hub.
+
+Project `ai-knowledge-hub` (17 rows — decisions about the Hub tool itself):
+
+| Hub ID (8) | Alias (non-canonical) | Domain | Date | Current? |
+|---|---|---|---|---|
+| `8d0d0e44` | agent-agnostic-data-model | knowledge-hub | 2026-08-07 | YES |
+| `1c266e98` | apikey-agent-decoupling | knowledge-hub | 2026-08-07 | YES |
+| `77683ffc` | d1-storage-architecture | knowledge-hub / infrastructure | 2026-08-07 | YES |
+| `e42935db` | r2-reserved-future-artifacts | knowledge-hub / infrastructure | 2026-08-07 | YES (still unused, per Phase 8's own staging config choosing no R2 binding) |
+| `e9f9884f` | vectorize-future-d1-remains-authoritative | knowledge-hub | 2026-08-07 | YES |
+| `4db2f24f` | handoff-explicit-written-record | knowledge-hub / orchestration | 2026-08-07 | YES |
+| `0ae494c4` | apikey-sha256-hash-once | knowledge-hub / security | 2026-08-07 | YES |
+| `502ff391` | rate-limit-120-per-60s | knowledge-hub / infrastructure | 2026-08-07 | YES |
+| `de8755b6` | akh-cli-standard-interface | knowledge-hub | 2026-08-07 | YES |
+| `02946a67` | hub-truth-plus-git-cross-check | knowledge-hub / orchestration | 2026-08-07 | YES |
+| `a80d5856` | security-baseline-security-md | knowledge-hub / security | 2026-08-07 | YES |
+| `8a791970` | untrusted-content-policy | knowledge-hub / security | 2026-08-07 | YES |
+| `9a9b7288` | github-remote-backup | knowledge-hub / infrastructure | 2026-08-07 | YES |
+| `0a996cb3` | artifact-quarantine-on-upload | knowledge-hub | 2026-08-07 | YES |
+| `495f5232` | artifact-validation-magic-bytes | knowledge-hub | 2026-08-07 | YES |
+| `fa75a711` | knowledge-items-separate-from-ops-state | knowledge-hub | 2026-08-08 | YES |
+| `a5e54cc5` | knowledge-sources-never-operational-authority | knowledge-hub | 2026-08-08 | YES — directly informs this pack's own `RAW_HISTORY_AND_INGESTION.md` |
+
+Project `bloodmoon` (9 rows — real product decisions, older, cross-checked against repo evidence):
+
+| Hub ID (8) | Alias (non-canonical) | Domain | Date | Current? |
+|---|---|---|---|---|
+| `fa3fd2f1` | first-e2e-jest-supertest | (no matching context/ domain — testing methodology) | 2026-08-08 | NEEDS_REVIEW — not re-verified against current test suite shape |
+| `8200f60a` | community-media-local-storage-kept | (no matching domain — community/infrastructure) | 2026-08-08 | NEEDS_REVIEW |
+| `3acb56e0` | feed-load-more-not-cursor | (no matching domain — community) | 2026-08-08 | NEEDS_REVIEW |
+| `d1637a85` | privacy-visibility-partial-enforcement | (no matching domain — security/privacy) | 2026-08-08 | NEEDS_REVIEW — `docs/privacy/` has since seen real migration+QA work per `docs/README.md`'s Phase L narrative; this decision predates it |
+| `183be585` | community-beta-ready-e2e-111 | (no matching domain — community) | 2026-08-08 | NEEDS_REVIEW |
+| `86fc102b` | community-beta-ready-formal-audit | (no matching domain — community) | 2026-08-08 | NEEDS_REVIEW |
+| `cf5f14c2` | site-beta-blocked-6-blockers | payments / marketplace / security | 2026-08-08 | **NO — see REPOSITORY_KNOWLEDGE_MAP.md §6's conflict record; contradicted 13h later by `fa8e9ad0`, and predates Phases O-X's real payment/test work by 3+ weeks** |
+| `53034c0c` | no-go-public-launch-7-blockers | payments / marketplace / security | 2026-08-08 | **NO — same conflict as above** |
+| `fa8e9ad0` | password-recovery-implemented | security | 2026-08-09 | YES — but contradicts `cf5f14c2`/`53034c0c` above, see conflict record |
+
+`community`, `security`/`privacy`, and `testing` are **not** among this
+pack's 12 domain stubs — a real gap this phase found (Part 25/§8), not
+silently forced into an ill-fitting existing domain. See
+`OPEN_QUESTIONS.md` OQ-CTX-007.
+
 ## How to query the Hub for real (when a task actually needs it)
 
 Use the Hub's own CLI (`D:\MU\hub\cli\`) or a direct authenticated HTTP

@@ -2,9 +2,17 @@
 status: ACTIVE
 category: context-pack-domain
 lastVerified: 2026-09-17
+classification: PARTIAL
 ---
 
 # Domain: Game economy
+
+**STATUS**: real product domain, partially sourced — ADR-0029 verified
+directly, the rest is `docs/README.md`'s narrative (not independently
+re-verified). No Phase 10 hardening beyond adding this classification —
+Part 14 asks for hardening only from *verified* sources, and this
+phase did not re-verify economy/progression content beyond §6's Hub
+decision cross-check (none of the 26 Hub decisions map to this domain).
 
 **Authoritative docs**: [`../../docs/economy/`](../../docs/economy/),
 [`../../docs/progression/`](../../docs/progression/),

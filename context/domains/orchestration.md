@@ -2,9 +2,15 @@
 status: ACTIVE
 category: context-pack-domain
 lastVerified: 2026-09-17
+classification: POPULATED
 ---
 
 # Domain: Orchestration (task/resource/approval/review lifecycle)
+
+**STATUS**: proven end-to-end with a real (non-synthetic) pilot
+(below). Staging `ORCHESTRATION_ENABLED` set to `false` this phase
+(Part 29 idle policy) — the pilot below completed and staging was
+confirmed to have no other genuinely active task before disabling.
 
 **Authoritative docs**: `D:\MU\hub\docs\protocols\orchestration-primitives.md`,
 `D:\MU\hub\docs\policies\orchestration-risk-policy.md`.

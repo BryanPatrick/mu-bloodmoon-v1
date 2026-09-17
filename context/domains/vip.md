@@ -2,6 +2,7 @@
 status: ACTIVE
 category: context-pack-domain
 lastVerified: 2026-09-17
+classification: STUB
 ---
 
 # Domain: VIP
