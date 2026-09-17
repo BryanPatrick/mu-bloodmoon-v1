@@ -86,7 +86,7 @@ different, explicitly separated numbers, per the correction this phase
 was asked to make:
 
 ```
-REPO_DECISIONS_REVIEWED = 10  (0019, 0021, 0023, 0024, 0025, 0026, 0028, 0029, 0030 read/cited this
+REPO_DECISIONS_REVIEWED = 9   (0019, 0021, 0023, 0024, 0025, 0026, 0028, 0029, 0030 read/cited this
                                 session or Phase 9; 0030 read in full both phases)
 HUB_DECISIONS_DISCOVERED = 26 (matches the Phase 6 prior-session count, now confirmed directly)
 HUB_DECISIONS_REVIEWED   = 26 (every row's real `decision` text was read this phase, not just counted)
