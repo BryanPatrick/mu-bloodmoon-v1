@@ -1,5 +1,5 @@
 import { Injectable, Logger, type OnModuleDestroy, type OnModuleInit } from '@nestjs/common'
-import { PrismaClient } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
 import { ObservabilityService } from '../observability/observability.service'
 import { CommerceService } from './commerce.service'
@@ -326,7 +326,16 @@ function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-function safeMessage(error: unknown): string {
-  const message = error instanceof Error ? error.message : String(error)
-  return message.slice(0, 500)
+// Error.message may include a provider response or a future caller's PII.
+// Operational logs retain only a small allowlist of exception classes and
+// Prisma's non-sensitive error code, never arbitrary message text.
+export function safeMessage(error: unknown): string {
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    return /^P\d{4}$/.test(error.code) ? `Prisma:${error.code}` : 'PrismaError'
+  }
+  if (!(error instanceof Error)) return 'UnknownError'
+  return [
+    'AbortError', 'BadRequestException', 'ConflictException',
+    'NotFoundException', 'ServiceUnavailableException', 'TimeoutError'
+  ].includes(error.name) ? error.name : 'Error'
 }

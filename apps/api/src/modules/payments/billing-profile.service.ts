@@ -8,7 +8,7 @@ import { Prisma } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
 import { AsaasPaymentProvider } from './asaas.provider'
 import { loadAsaasConfig } from './asaas.config'
-import { BillingEnvelopeInvalidError, BillingKeyNotConfiguredError, openField, sealField } from './billing-crypto'
+import { BillingEnvelopeInvalidError, BillingKeyNotConfiguredError, keyVersionOf, openField, sealField } from './billing-crypto'
 
 // Thin wrappers binding the generic, version-aware billing-crypto module
 // to BillingProfile's two real fields, and translating its typed errors
@@ -44,6 +44,43 @@ export class BillingProfileService {
     private readonly prisma: PrismaService,
     private readonly asaas: AsaasPaymentProvider
   ) {}
+
+  // Read-only rotation inventory. Counts profiles depending on each key,
+  // without decrypting or returning account IDs, names, or documents.
+  async keyVersionInventory() {
+    const byVersion: Record<string, number> = {}
+    let totalProfiles = 0
+    let mixedProfiles = 0
+    let malformedProfiles = 0
+    let cursor: string | undefined
+    while (true) {
+      const rows = await this.prisma.billingProfile.findMany({
+        select: { id: true, legalNameCiphertext: true, cpfCnpjCiphertext: true },
+        orderBy: { id: 'asc' }, take: 250,
+        ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {})
+      })
+      if (rows.length === 0) break
+      for (const row of rows) {
+        totalProfiles++
+        const envelopes = [row.legalNameCiphertext, row.cpfCnpjCiphertext]
+        if (envelopes.some((value) => {
+          const parts = value.split('.')
+          return !parts.every(Boolean) ||
+            (parts.length === 5 ? parts[0] !== '1' : parts.length === 4 ? parts[0] !== 'v1' : true) ||
+            !/^v[1-9][0-9]{0,3}$/.test(keyVersionOf(value))
+        })) {
+          malformedProfiles++
+          continue
+        }
+        const versions = new Set(envelopes.map(keyVersionOf))
+        if (versions.size > 1) mixedProfiles++
+        for (const version of versions) byVersion[version] = (byVersion[version] || 0) + 1
+      }
+      cursor = rows[rows.length - 1].id
+      if (rows.length < 250) break
+    }
+    return { totalProfiles, byVersion, mixedProfiles, malformedProfiles }
+  }
 
   async saveForAccount(
     accountId: string,

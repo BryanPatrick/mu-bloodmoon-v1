@@ -7,6 +7,24 @@ lastVerified: 2026-08-30
 
 # Account Deletion Architecture — Phase 14 Part D
 
+## Phase 5 Asaas safety addendum (2026-09-17)
+
+The original eligibility inventory below predates the Asaas models.
+An isolated real-DB test found that `PRE_BETA_PURGE` previously allowed
+an account with `BillingProfile`, `ProviderCustomer`, and a pending
+Asaas `RechargeIntent`, so its cascading hard delete would have removed
+them. The Phase 5 eligibility check now blocks purge if **any** of
+these three records exists, including an unpaid/pending Asaas intent.
+The blocked candidate remains intact in the real-DB regression test.
+
+`NORMAL_ACCOUNT_DELETION` only anonymizes the existing Account row;
+real-DB tests confirm the encrypted BillingProfile, ProviderCustomer
+mapping and pending Asaas RechargeIntent remain. The schema's cascade
+FKs were not changed. Legal retention duration, later unlinking, and
+final disposal require an explicit product/legal decision. This
+addendum supersedes any broader assertion below that the former
+pre-Beta financial-status guard alone made Asaas data safe.
+
 Two modes, deliberately non-interchangeable, implemented this phase with real code and tests. **No production deletion was executed.** The real 9 accounts were only read (see [`pre-beta-account-review.md`](pre-beta-account-review.md)).
 
 ## The load-bearing finding that shapes this whole design

@@ -223,7 +223,7 @@ describe('Asaas Phase 3 against a real disposable database', () => {
     })
     expect(stored.legalNameCiphertext).not.toContain(name)
     expect(stored.cpfCnpjCiphertext).not.toContain(document)
-    expect(stored.legalNameCiphertext.startsWith('v1.')).toBe(true)
+    expect(stored.legalNameCiphertext.startsWith('1.v1.')).toBe(true)
     await billing.saveForAccount(temporary.id, {
       legalName: 'QA Billing Changed',
       cpfCnpj: document
@@ -232,6 +232,31 @@ describe('Asaas Phase 3 against a real disposable database', () => {
     await prisma.account.delete({ where: { id: temporary.id } })
     expect(await prisma.billingProfile.count({ where: { accountId: temporary.id } })).toBe(0)
     await billing.saveForAccount(accountId, { legalName: name, cpfCnpj: document })
+  })
+
+  it('counts old-key dependencies without decrypting or returning PII', async () => {
+    const originalActive = process.env.BILLING_PII_ACTIVE_KEY_VERSION
+    const originalV2 = process.env.BILLING_PII_KEY_V2_B64
+    const temporary = await prisma.account.create({ data: {
+      username: `billing_v2_${run}`, name: 'QA',
+      email: `billing-v2-${run}@example.invalid`, passwordHash: 'not-a-login'
+    } })
+    try {
+      process.env.BILLING_PII_KEY_V2_B64 = Buffer.alloc(32, 31).toString('base64')
+      process.env.BILLING_PII_ACTIVE_KEY_VERSION = 'v2'
+      await billing.saveForAccount(temporary.id, { legalName: 'Synthetic Billing V2', cpfCnpj: '11122233344' })
+      const inventory = await billing.keyVersionInventory()
+      expect(inventory.byVersion.v1).toBeGreaterThanOrEqual(1)
+      expect(inventory.byVersion.v2).toBeGreaterThanOrEqual(1)
+      expect(JSON.stringify(inventory)).not.toContain('11122233344')
+      expect(JSON.stringify(inventory)).not.toContain('Synthetic Billing V2')
+    } finally {
+      if (originalActive === undefined) delete process.env.BILLING_PII_ACTIVE_KEY_VERSION
+      else process.env.BILLING_PII_ACTIVE_KEY_VERSION = originalActive
+      if (originalV2 === undefined) delete process.env.BILLING_PII_KEY_V2_B64
+      else process.env.BILLING_PII_KEY_V2_B64 = originalV2
+      await prisma.account.delete({ where: { id: temporary.id } })
+    }
   })
 
   it('keeps one durable customer mapping under concurrent calls', async () => {

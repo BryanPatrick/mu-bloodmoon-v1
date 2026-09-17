@@ -185,11 +185,16 @@ export class AccountDeletionService {
     if (account.accountPhase !== 'PRE_BETA') reasons.push('ACCOUNT_PHASE_NOT_PRE_BETA')
     if (account.role !== 'PLAYER') reasons.push('NON_PLAYER_ROLE_REFUSED')
 
-    const [balances, paidRecharge, paidPurchase, vipGrant] = await Promise.all([
+    const [balances, paidRecharge, paidPurchase, vipGrant, billingProfile, providerCustomer, asaasRecharge] = await Promise.all([
       this.prisma.accountCurrency.findMany({ where: { accountId } }),
       this.prisma.rechargeIntent.count({ where: { accountId, status: { in: [...PAID_RECHARGE_STATUSES] } } }),
       this.prisma.purchaseIntent.count({ where: { accountId, status: { in: [...PAID_PURCHASE_STATUSES] } } }),
-      this.prisma.vipGrant.count({ where: { accountId } })
+      this.prisma.vipGrant.count({ where: { accountId } }),
+      this.prisma.billingProfile.count({ where: { accountId } }),
+      this.prisma.providerCustomer.count({ where: { accountId } }),
+      // A provider-side charge may exist even while local status is PENDING.
+      // Never cascade-delete its reconciliation and audit linkage.
+      this.prisma.rechargeIntent.count({ where: { accountId, provider: 'asaas' } })
     ])
     if (balances.some((b) => b.balance !== 0)) reasons.push('NONZERO_CURRENCY_BALANCE')
     if (paidRecharge > 0) reasons.push('HAS_PAID_RECHARGE_HISTORY')
@@ -199,6 +204,9 @@ export class AccountDeletionService {
     // test purchase) despite zero current balance -- checked explicitly
     // rather than left as a documented-but-unfixed gap.
     if (vipGrant > 0) reasons.push('HAS_VIP_GRANT_HISTORY')
+    if (billingProfile > 0) reasons.push('HAS_BILLING_PROFILE')
+    if (providerCustomer > 0) reasons.push('HAS_PROVIDER_CUSTOMER')
+    if (asaasRecharge > 0) reasons.push('HAS_ASAAS_RECHARGE_HISTORY')
 
     return { accountId, verdict: reasons.length > 0 ? 'BLOCKED' : 'WOULD_DELETE', reasons }
   }

@@ -119,6 +119,30 @@ describe('Account deletion -- Phase 14 Part D', () => {
     expect(row?.deletedAt).not.toBeNull()
   })
 
+  test('NORMAL_DELETION_PRESERVES_BILLING_CUSTOMER_AND_ASAAS_RECHARGE', async () => {
+    const account = await makeAccount('normalasaas')
+    await prisma.billingProfile.create({ data: {
+      accountId: account.id, legalNameCiphertext: 'synthetic-ciphertext-name',
+      cpfCnpjCiphertext: 'synthetic-ciphertext-document'
+    } })
+    await prisma.providerCustomer.create({ data: {
+      accountId: account.id, provider: 'asaas', environment: 'sandbox',
+      externalReference: `bm-account:${account.id}`, providerCustomerId: `cus-${suffix()}`,
+      createState: 'CREATED'
+    } })
+    const recharge = await prisma.rechargeIntent.create({ data: {
+      accountId: account.id, packageId: rechargePackage.id, provider: 'asaas',
+      providerEnvironment: 'sandbox', status: 'PENDING', currency: 'WCOIN',
+      amount: 100, bonus: 0, price: '100,00', externalReference: `asaas-${suffix()}`
+    } })
+    const result = await deletion.executeNormalDeletion(asActor(admin), account.id, 'synthetic deletion test')
+    expect(result.status).toBe('DELETED')
+    expect((await prisma.account.findUniqueOrThrow({ where: { id: account.id } })).deletedAt).not.toBeNull()
+    expect(await prisma.billingProfile.count({ where: { accountId: account.id } })).toBe(1)
+    expect(await prisma.providerCustomer.count({ where: { accountId: account.id } })).toBe(1)
+    expect(await prisma.rechargeIntent.count({ where: { id: recharge.id } })).toBe(1)
+  })
+
   test('NORMAL_DELETION_PRESERVES_AUDIT_AND_PAYMENT_HISTORY', async () => {
     const account = await makeAccount('normalpreserve')
     const rechargeIntent = await prisma.rechargeIntent.create({
@@ -315,6 +339,33 @@ describe('Account deletion -- Phase 14 Part D', () => {
     const assessment = await deletion.assessPreBetaPurgeEligibility(account.id)
     expect(assessment.verdict).toBe('BLOCKED')
     expect(assessment.reasons).toContain('HAS_PAID_RECHARGE_HISTORY')
+  })
+
+  test('PRE_BETA_PURGE_REFUSES_BILLING_CUSTOMER_AND_PENDING_ASAAS_PAYMENT', async () => {
+    const account = await makeAccount('purgeasaas', { accountPhase: 'PRE_BETA' })
+    await prisma.billingProfile.create({ data: {
+      accountId: account.id, legalNameCiphertext: 'synthetic-ciphertext-name',
+      cpfCnpjCiphertext: 'synthetic-ciphertext-document'
+    } })
+    await prisma.providerCustomer.create({ data: {
+      accountId: account.id, provider: 'asaas', environment: 'sandbox',
+      externalReference: `bm-account:${account.id}`, providerCustomerId: `cus-${suffix()}`,
+      createState: 'CREATED'
+    } })
+    const recharge = await prisma.rechargeIntent.create({ data: {
+      accountId: account.id, packageId: rechargePackage.id, provider: 'asaas',
+      providerEnvironment: 'sandbox', status: 'PENDING', currency: 'WCOIN',
+      amount: 100, bonus: 0, price: '100,00', externalReference: `asaas-${suffix()}`
+    } })
+    const assessment = await deletion.assessPreBetaPurgeEligibility(account.id)
+    expect(assessment.verdict).toBe('BLOCKED')
+    expect(assessment.reasons).toContain('HAS_BILLING_PROFILE')
+    expect(assessment.reasons).toContain('HAS_PROVIDER_CUSTOMER')
+    expect(assessment.reasons).toContain('HAS_ASAAS_RECHARGE_HISTORY')
+    await expect(deletion.executePreBetaPurge(asActor(admin), `cycle-${suffix()}`, [account.id])).rejects.toThrow()
+    expect(await prisma.billingProfile.count({ where: { accountId: account.id } })).toBe(1)
+    expect(await prisma.providerCustomer.count({ where: { accountId: account.id } })).toBe(1)
+    expect(await prisma.rechargeIntent.count({ where: { id: recharge.id } })).toBe(1)
   })
 
   test('PRE_BETA_PURGE_REFUSES_VIP_GRANT_HISTORY_GAP_FIX', async () => {

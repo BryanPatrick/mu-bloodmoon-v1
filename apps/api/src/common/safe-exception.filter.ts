@@ -49,6 +49,18 @@ const PUBLIC_ERROR_CODES = new Set([
   'PAYMENTS_DISABLED',
 ])
 
+// Exception messages and stacks may contain provider responses, billing PII or
+// credentials. Keep only a bounded class label in durable logs and stdout.
+const SAFE_INTERNAL_ERROR_NAMES = new Set([
+  'Error', 'TypeError', 'RangeError', 'SyntaxError',
+  'BadRequestException', 'ConflictException', 'NotFoundException',
+  'ServiceUnavailableException', 'PrismaClientKnownRequestError'
+])
+export function safeInternalErrorLabel(exception: unknown): string {
+  const name = exception instanceof Error ? exception.name : ''
+  return SAFE_INTERNAL_ERROR_NAMES.has(name) ? name : 'InternalError'
+}
+
 @Catch()
 @Injectable()
 export class SafeExceptionFilter implements ExceptionFilter {
@@ -75,22 +87,19 @@ export class SafeExceptionFilter implements ExceptionFilter {
       : Array.isArray(sourceMessage) ? sourceMessage.join('. ') : typeof sourceMessage === 'string' ? sourceMessage : 'Solicitacao invalida.'
 
     if (status >= 500) {
-      const internalMessage = exception instanceof Error
-        ? exception.message
-        : typeof sourceMessage === 'string'
-          ? sourceMessage
-          : 'Unhandled server exception'
+      const diagnosticMessage = exception instanceof Error ? exception.message : ''
+      const internalMessage = safeInternalErrorLabel(exception)
       const criticalPattern = /database|deadlock|rollback|escrow|duplicate delivery|connection refused/i
       await this.observability.recordSystemError({
-        severity: criticalPattern.test(internalMessage) ? 'CRITICAL' : 'ERROR',
-        errorCode: typeof sourceCode === 'string' ? sourceCode : null,
+        severity: criticalPattern.test(diagnosticMessage) ? 'CRITICAL' : 'ERROR',
+        errorCode: code ?? null,
         publicMessage: message,
         internalMessage,
-        stackTrace: exception instanceof Error ? exception.stack : null,
+        stackTrace: null,
         correlationId: requestId,
         userId: request.user?.id,
         accountId: request.user?.id,
-        requestPath: request.originalUrl || request.url,
+        requestPath: (request.originalUrl || request.url)?.split('?')[0],
         requestMethod: request.method,
         ipAddress: request.ip,
         userAgent: Array.isArray(request.headers?.['user-agent'])
@@ -102,7 +111,7 @@ export class SafeExceptionFilter implements ExceptionFilter {
           sessionId: request.user?.sessionId
         }
       })
-      console.error(`[${requestId}]`, exception)
+      console.error(`[${requestId}] ${internalMessage}`)
 
       // Part 13's "repeated 5xx threshold" -- distinct from the
       // per-fingerprint SystemError dedup above, this answers "how many

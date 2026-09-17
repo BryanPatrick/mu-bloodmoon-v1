@@ -92,8 +92,11 @@ data this phase):
    `v1`-versioned rows is zero — a read-only query
    (`SELECT COUNT(*) ... ` filtered by `keyVersionOf` per row, the same
    check `TwoFactorService`'s own rollout plan already uses for 2FA) —
-   not implemented as a running service this phase, but the primitive
-   (`keyVersionOf`) it would be built on is real, tested, and exported.
+   not implemented as a running service in Phase 4. Phase 5 added
+   `BillingProfileService.keyVersionInventory()`: a read-only, paginated
+   count of v1/v2/other/mixed profiles, without decryption, row IDs or PII.
+   Operators must still keep the old key until the relevant old-key
+   count is zero and a reviewed rotation procedure has completed.
 
 `v1 encrypt/decrypt`, `v2 encrypt/decrypt`, `ACTIVE=v1 writes v1`,
 `ACTIVE=v2 writes v2`, `v1 record decrypts while v2 active`, `missing
@@ -235,4 +238,12 @@ excluded from deletion, independent of any retention-duration decision),
 trace the full account-deletion service to confirm whether
 `NORMAL_ACCOUNT_DELETION` or `PRE_BETA_PURGE` could ever actually reach
 a hard `Account` delete that would trigger this cascade — flagged as a
-specific, scoped follow-up (see Codex handoff), not resolved here.
+specific, scoped follow-up (see Codex handoff), not resolved in Phase 4.
+
+Phase 5 traced both paths and added a conservative `PRE_BETA_PURGE`
+eligibility guard for any BillingProfile, ProviderCustomer or Asaas
+RechargeIntent, including pending intents. Real-DB tests show normal
+account deletion anonymizes the Account without removing these records;
+pre-Beta purge refuses such accounts. The cascade FK remains in the
+schema, so future hard-delete paths must be reviewed. The legal
+retention period and eventual disposal mechanism remain undecided.

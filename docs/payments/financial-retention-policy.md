@@ -2,14 +2,14 @@
 status: LEGAL_REVIEW_REQUIRED
 category: payments/legal
 audience: internal (product + legal review)
-lastVerified: 2026-08-30
+lastVerified: 2026-09-17
 ---
 
 # Financial Retention Policy — Phase 15
 
 Bryan's instruction: financial records (`RechargeIntent`, `PurchaseIntent`) may carry an independent retention obligation and must never be deleted alongside the account; unnecessary personal data on them can be anonymized/unlinked; the architecture must not depend on a legal decision that hasn't been made yet.
 
-## What's already true in code (verified, not new this document)
+## Historical Phase 15 assessment (superseded for Asaas by Phase 5 below)
 
 - `NORMAL_ACCOUNT_DELETION` never deletes `RechargeIntent`/`PurchaseIntent` rows — confirmed in [`account-deletion-architecture.md`](../accounts/account-deletion-architecture.md)'s dependency map (#3, `PRESERVE`) and in `account-deletion.service.ts`'s transaction (no `rechargeIntent`/`purchaseIntent` mutation appears anywhere in `executeNormalDeletion`).
 - `PRE_BETA_PURGE` refuses to purge any account with a `PAID`/`REFUND_PENDING`/`REFUNDED` `RechargeIntent` or a `PAID`/`DELIVERING`/`COMPLETED`/`REFUND_PENDING`/`REFUNDED` `PurchaseIntent` (tested — `PRE_BETA_PURGE_REFUSES_PAID_RECHARGE_HISTORY`) — so a real cascading delete can never reach financial records either.
@@ -56,10 +56,32 @@ account deletion requested, provider/legal retention required, retention
 complete, eligible for deletion/anonymization — none of these states
 exist in code today; this is a design note, not an implementation.
 
-`BILLING_PROFILE_RETENTION = LEGAL_REVIEW_REQUIRED (same open question as
-above) + CASCADE_FK_UNRESOLVED (new finding, needs its own follow-up
-independent of the duration question)`.
+Historical Phase 4 assessment above is superseded by the Phase 5 result
+below; it remains here to show why the guard was added.
+
+## Phase 5 addendum — account-deletion trace and guard (2026-09-17)
+
+Real-DB tests on the isolated MariaDB instance demonstrated that the
+old `PRE_BETA_PURGE` eligibility check could classify a test account
+with `BillingProfile`, `ProviderCustomer`, and a pending Asaas
+`RechargeIntent` as `WOULD_DELETE`. A hard delete would cascade those
+rows, so the earlier claim that the purge could never reach financial
+records was too broad. The test failed before the fix.
+
+The eligibility check now refuses purge whenever **any** billing
+profile, provider customer mapping, or Asaas recharge intent exists,
+regardless of payment status. `NORMAL_ACCOUNT_DELETION` still
+anonymizes the `Account` in place and preserves all three rows, as
+verified by a real-DB test. This is a conservative technical guard,
+not a legal retention-duration decision. The `onDelete: Cascade` FK
+itself is unchanged; any future hard-delete path must keep the guard
+or make retention explicit.
+
+`BILLING_PROFILE_RETENTION = LEGAL_REVIEW_REQUIRED; PRE_BETA_PURGE
+GUARD = IMPLEMENTED; NORMAL_DELETION = PRESERVES ENCRYPTED BILLING`.
 
 ## Status
 
-`FINANCIAL_RETENTION = LEGAL_REVIEW_REQUIRED, NO_DURATION_CONFIGURED, STRUCTURALLY_PRESERVED_REGARDLESS`. This document exists so the eventual legal decision has a clear, already-scoped place to land — not to make that decision.
+`FINANCIAL_RETENTION = LEGAL_REVIEW_REQUIRED, NO_DURATION_CONFIGURED,
+NORMAL_DELETION_PRESERVES, PRE_BETA_PURGE_HAS_ASAAS_GUARD`. This document
+does not decide the eventual legal retention period or disposal lifecycle.
