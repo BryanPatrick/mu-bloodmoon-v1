@@ -1,0 +1,287 @@
+name: Database migrations (Linux / MariaDB)
+
+# Real, end-to-end proof that every Prisma migration in
+# apps/api/prisma/migrations applies cleanly, from an empty database, on
+# genuinely case-sensitive Linux MySQL/MariaDB -- the exact production
+# failure mode a Windows/macOS local dev machine cannot reproduce (table
+# identifiers are case-INsensitive there). Deliberately separate from, and
+# complementary to, scripts/check-migration-table-casing.mjs's static
+# audit (docs/decisions/0030-migration-casing-static-audit.md): static
+# analysis catches the specific casing-mismatch bug class instantly with
+# zero infrastructure; this workflow catches that same class for real (not
+# just in the abstract), plus anything else genuinely Linux/MariaDB-
+# specific (collation, SQL-dialect differences, engine-specific constraint
+# behavior) that static text analysis cannot see.
+#
+# Real incident this exists to prevent from recurring:
+# 20260904090000_phase_v_progression_policy_status referenced
+# `progressionconfigitem` while the real table was `ProgressionConfigItem`
+# -- passed on every local Windows dev machine and in code review, then
+# failed atomically in production on 2026-09-10. See
+# docs/deployments/deploy-2026-09-10-migration-execution/deploy-manifest.md
+# for the full incident writeup.
+#
+# Uses mariadb:11 (the same image/version this repo's own E2E test
+# support already uses for disposable databases --
+# apps/api/test/support/disposable-mysql.ts) so the CI proof and the
+# existing local E2E path are validated against the same engine.
+
+on:
+  push:
+    branches:
+      - '**'
+    paths:
+      - 'apps/api/prisma/**'
+      - 'scripts/check-migration-table-casing.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/database-migrations-linux.yml'
+  pull_request:
+    paths:
+      - 'apps/api/prisma/**'
+      - 'scripts/check-migration-table-casing.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/database-migrations-linux.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22.17.0'
+
+jobs:
+  static-casing-check:
+    name: Static casing audit (all real migrations)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Run static migration table-casing audit
+        run: npm run db:check-migration-casing
+
+  historical-bug-detector-proof:
+    name: Prove the static audit would have caught the 2026-09-10 bug
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # Reproduces the exact historical bug shape (ALTER TABLE referencing
+      # the table in the wrong case) in a throwaway fixture directory --
+      # never touches apps/api/prisma/migrations, never enters real
+      # migration history, never committed (created and destroyed within
+      # this one ephemeral job). Proves the *detector*, not the repo's
+      # current state (that's static-casing-check's job).
+      #
+      # Deliberately a path RELATIVE to the repo root (checked-out cwd),
+      # not an absolute path from mktemp -d: the script joins its argv[2]
+      # onto process.cwd() (`join(process.cwd(), process.argv[2])`), which
+      # does not special-case an already-absolute argument -- passing an
+      # absolute fixture path here would silently produce a bogus
+      # concatenated path and crash with ENOENT instead of exercising the
+      # detector's real logic (confirmed locally while building this
+      # workflow).
+      - name: Build a fixture reproducing the historical casing bug
+        run: |
+          set -euo pipefail
+          FIXDIR=".ci-fixture-bad/migrations"
+          mkdir -p "$FIXDIR/00000000000000_create_table"
+          cat > "$FIXDIR/00000000000000_create_table/migration.sql" <<'SQL'
+          CREATE TABLE `ProgressionConfigItem` (
+            `id` VARCHAR(191) NOT NULL,
+            PRIMARY KEY (`id`)
+          );
+          SQL
+          mkdir -p "$FIXDIR/00000000000001_bad_casing"
+          cat > "$FIXDIR/00000000000001_bad_casing/migration.sql" <<'SQL'
+          ALTER TABLE `progressionconfigitem` ADD COLUMN `policyStatus` VARCHAR(191) NOT NULL DEFAULT 'NOT_EVALUATED';
+          SQL
+          echo "FIXTURE_DIR_BAD=$FIXDIR" >> "$GITHUB_ENV"
+
+      - name: Detector MUST fail on the bad-casing fixture
+        run: |
+          set -euo pipefail
+          if node scripts/check-migration-table-casing.mjs "$FIXTURE_DIR_BAD" > /tmp/bad-output.txt 2>&1; then
+            echo "FAIL: static audit passed a fixture with the exact historical casing bug -- detector is broken."
+            cat /tmp/bad-output.txt
+            exit 1
+          fi
+          echo "OK: static audit correctly rejected the bad-casing fixture:"
+          cat /tmp/bad-output.txt
+          grep -q "progressionconfigitem" /tmp/bad-output.txt
+
+      - name: Build the corrected fixture (same shape, correct casing)
+        run: |
+          set -euo pipefail
+          FIXDIR=".ci-fixture-good/migrations"
+          mkdir -p "$FIXDIR/00000000000000_create_table"
+          cat > "$FIXDIR/00000000000000_create_table/migration.sql" <<'SQL'
+          CREATE TABLE `ProgressionConfigItem` (
+            `id` VARCHAR(191) NOT NULL,
+            PRIMARY KEY (`id`)
+          );
+          SQL
+          mkdir -p "$FIXDIR/00000000000001_good_casing"
+          cat > "$FIXDIR/00000000000001_good_casing/migration.sql" <<'SQL'
+          ALTER TABLE `ProgressionConfigItem` ADD COLUMN `policyStatus` VARCHAR(191) NOT NULL DEFAULT 'NOT_EVALUATED';
+          SQL
+          echo "FIXTURE_DIR_GOOD=$FIXDIR" >> "$GITHUB_ENV"
+
+      - name: Detector MUST pass on the corrected fixture (no false positive)
+        run: node scripts/check-migration-table-casing.mjs "$FIXTURE_DIR_GOOD"
+
+  linux-mariadb-migration:
+    name: Migrate from zero on real case-sensitive Linux MariaDB
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:11
+        env:
+          MARIADB_DATABASE: bloodmoon_ci
+          MARIADB_USER: bloodmoon_ci
+          MARIADB_PASSWORD: bloodmoon_ci_pw
+          MARIADB_ROOT_PASSWORD: bloodmoon_ci_root_pw
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=12
+    env:
+      # Temporary, CI-local credentials only -- never production, never a
+      # real secret. This is the one and only DATABASE_URL this workflow
+      # ever uses.
+      DATABASE_URL: mysql://bloodmoon_ci:bloodmoon_ci_pw@127.0.0.1:3306/bloodmoon_ci
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # Node 22.17.0 bundles npm 10.9.2, which fails `npm ci` on this
+      # lockfile with "Missing: <pkg> from lock file" for several packages
+      # (pinia@3.0.4, oxc-parser/rolldown platform bindings, @vue/devtools-*)
+      # that are all declared `optional: true` in peerDependenciesMeta by a
+      # nested nuxt/node_modules/vue-router@5.1.0 -- npm 10.9.2 incorrectly
+      # treats these optional peers as required during npm ci's lockfile-
+      # sync check. npm 11.19.0 (confirmed locally: `npm ci` against this
+      # exact commit succeeds cleanly) handles optional peers correctly.
+      # This is a real npm-version-sensitivity bug, not actual lockfile
+      # drift -- package.json/package-lock.json are unmodified by this
+      # branch. See docs/decisions/0030-migration-casing-static-audit.md
+      # for the follow-up note tracking this as a separate repo-hygiene
+      # item.
+      - name: Upgrade npm (10.9.2 bundled with Node 22.17.0 mishandles this lockfile's optional peer deps)
+        run: npm install -g npm@11.19.0
+
+      # Observed once (run 35147000048, 2026-09-16): a transient ECONNRESET
+      # while @prisma/engines' postinstall downloaded its binary from
+      # Prisma's CDN -- a GitHub-runner-to-CDN network blip, not a real
+      # code/lockfile/migration issue. Resolved by re-running; not retried
+      # automatically here since a spurious retry could mask a real,
+      # reproducible failure -- if this recurs often, revisit with an
+      # explicit retry step instead of assuming it's always transient.
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Install MariaDB client (for direct SQL proof + migration status query)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq mariadb-client
+
+      # Lives entirely in a throwaway table, dropped immediately after --
+      # never touches any real migration or table this project actually
+      # uses. This is what CASE_SENSITIVITY_PROOF in the final report
+      # refers to: a live demonstration, in this exact CI database, that
+      # table identifiers really are case-sensitive here -- not an
+      # assumption about MariaDB's default behavior.
+      - name: Live proof -- this database is genuinely case-sensitive for table identifiers
+        run: |
+          set -euo pipefail
+          MYSQL="mariadb -h127.0.0.1 -ubloodmoon_ci -pbloodmoon_ci_pw bloodmoon_ci"
+          $MYSQL -e "CREATE TABLE CaseSensitivityProof (id INT PRIMARY KEY);"
+          if $MYSQL -e "ALTER TABLE casesensitivityproof ADD COLUMN probe INT;" 2>/tmp/case-proof.err; then
+            echo "FAIL: wrong-case ALTER TABLE succeeded -- this database is NOT case-sensitive for table names, the whole premise of this workflow does not hold here."
+            cat /tmp/case-proof.err
+            exit 1
+          fi
+          echo "OK: wrong-case reference correctly failed, proving live case-sensitivity:"
+          cat /tmp/case-proof.err
+          grep -qi "doesn't exist\|does not exist\|unknown table" /tmp/case-proof.err
+          $MYSQL -e "DROP TABLE CaseSensitivityProof;"
+
+      - name: Prisma validate
+        working-directory: apps/api
+        run: npx prisma validate
+
+      - name: Prisma generate
+        working-directory: apps/api
+        run: npx prisma generate
+
+      # The same real mechanism used against production (see
+      # docs/deployment-architecture.md / the bloodmoon-deploy skill) --
+      # never `prisma db push`, which would silently skip exactly the kind
+      # of migration-history issue this workflow exists to catch.
+      - name: Prisma migrate deploy (all migrations, from an empty database)
+        working-directory: apps/api
+        run: npx prisma migrate deploy
+
+      - name: Prisma migrate status (informational)
+        working-directory: apps/api
+        run: npx prisma migrate status
+
+      # Confirms the migration-compatibility fix (CAST(0 AS JSON) -> '0' in
+      # 20260723003000_launcher_integration) actually produces the correct,
+      # semantically valid JSON value when applied for real through the
+      # full migrate-deploy replay -- not just in the separate, isolated
+      # probe-json-cast-compatibility.yml workflow.
+      - name: Verify launcher-online-players setting after real replay
+        run: |
+          set -euo pipefail
+          MYSQL="mariadb -h127.0.0.1 -ubloodmoon_ci -pbloodmoon_ci_pw bloodmoon_ci -N -B"
+          VALUE=$($MYSQL -e "SELECT value FROM SiteSetting WHERE \`key\` = 'launcher-online-players';")
+          VALID=$($MYSQL -e "SELECT JSON_VALID(value) FROM SiteSetting WHERE \`key\` = 'launcher-online-players';")
+          TYPE=$($MYSQL -e "SELECT JSON_TYPE(value) FROM SiteSetting WHERE \`key\` = 'launcher-online-players';")
+          echo "launcher-online-players: value=$VALUE JSON_VALID=$VALID JSON_TYPE=$TYPE"
+          if [ "$VALUE" != "0" ]; then echo "FAIL: expected value '0', got '$VALUE'"; exit 1; fi
+          if [ "$VALID" != "1" ]; then echo "FAIL: expected JSON_VALID=1, got '$VALID'"; exit 1; fi
+          if [ "$TYPE" != "INTEGER" ]; then echo "FAIL: expected JSON_TYPE=INTEGER, got '$TYPE'"; exit 1; fi
+          echo "OK: launcher-online-players correctly holds a valid JSON integer 0 after the real full migration replay."
+
+      # Direct query of _prisma_migrations rather than parsing
+      # `migrate status` text output, which is not a stable machine-
+      # readable format across Prisma versions.
+      - name: Verify migration count / pending / failed directly against _prisma_migrations
+        run: |
+          set -euo pipefail
+          MYSQL="mariadb -h127.0.0.1 -ubloodmoon_ci -pbloodmoon_ci_pw bloodmoon_ci -N -B"
+          TOTAL=$($MYSQL -e "SELECT COUNT(*) FROM _prisma_migrations;")
+          PENDING=$($MYSQL -e "SELECT COUNT(*) FROM _prisma_migrations WHERE finished_at IS NULL AND rolled_back_at IS NULL;")
+          FAILED=$($MYSQL -e "SELECT COUNT(*) FROM _prisma_migrations WHERE rolled_back_at IS NOT NULL;")
+          LOCAL_COUNT=$(find apps/api/prisma/migrations -mindepth 1 -maxdepth 1 -type d | wc -l)
+          echo "MIGRATION_COUNT=$TOTAL"
+          echo "LOCAL_MIGRATION_DIR_COUNT=$LOCAL_COUNT"
+          echo "PENDING_MIGRATIONS=$PENDING"
+          echo "FAILED_MIGRATIONS=$FAILED"
+          if [ "$TOTAL" != "$LOCAL_COUNT" ]; then
+            echo "FAIL: applied migration count ($TOTAL) does not match the number of migration directories in the repo ($LOCAL_COUNT)."
+            exit 1
+          fi
+          if [ "$PENDING" != "0" ]; then
+            echo "FAIL: $PENDING pending migration(s) found."
+            exit 1
+          fi
+          if [ "$FAILED" != "0" ]; then
+            echo "FAIL: $FAILED failed/rolled-back migration(s) found."
+            exit 1
+          fi
+          echo "OK: $TOTAL/$TOTAL migrations applied, 0 pending, 0 failed."
