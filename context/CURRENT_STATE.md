@@ -51,15 +51,18 @@ running phase log, `docs/decisions/`, and `docs/handoff/`.
 
 - Portal (`apps/web`, Nuxt) + API (`apps/api`, NestJS): accounts, VIP,
   economy, marketplace, community/guilds — live product surfaces.
+  **Commercial VIP tiers, current (Phase 14, `DEC-VIP-001`)**:
+  Free/Silver/Gold; Bronze commercially disabled, technical enum/schema
+  untouched — see [`domains/vip.md`](domains/vip.md).
 - GameServer integration: real, read/write-boundary-controlled via
   GameBridge — see [`domains/game-economy.md`](domains/game-economy.md).
   A separate, newer Game Data Platform pipeline
   (`apps/game-bridge-agent` + Cloudflare Worker) is architecture-approved
   and mid-implementation as of the most recent local plan on file
   (see `docs/game-data/`) — not yet deployed against real infrastructure.
-- Payments: real Mercado Pago integration, risk/chargeback control plane,
-  sandbox-validation-pending on refund/reconciliation adapters — see
-  [`domains/payments.md`](domains/payments.md).
+- Payments: real Mercado Pago integration remains, but **Asaas is the
+  current primary provider direction** (Phase 14, `DEC-PAYMENTS-001`) —
+  see [`domains/payments.md`](domains/payments.md).
 - Launcher (.NET/WPF desktop): auth + CAPTCHA + Play-gating shipped
   locally, scale/accessibility work shipped.
 

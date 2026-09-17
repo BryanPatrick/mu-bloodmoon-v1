@@ -2,7 +2,7 @@
 status: ACTIVE
 category: context-pack-domain
 lastVerified: 2026-09-17
-classification: STUB
+classification: PARTIAL
 ---
 
 # Domain: VIP
@@ -21,9 +21,23 @@ tier is blocked until the current one expires (reverses an earlier
 "last tier wins" behavior that could destroy prepaid value) — per
 `docs/README.md`'s Phase Q narrative.
 
+**Commercial tier state (Phase 14, current, dated decision — not older
+repository evidence)**: commercial VIP progression is `Free` / `Silver`
+/ `Gold`. `BRONZE_COMMERCIAL_ENABLED = false`. The Bronze technical
+enum/schema (`BRONZE` in the Portal's own Prisma `VipTier`, per
+preserved ADR-0010) is **not** removed or altered by this decision —
+it may remain dormant for compatibility/historical reasons. See
+[`../DECISIONS.md`](../DECISIONS.md) `DEC-VIP-001`. Note the real
+tension this creates with preserved ADR-0010 (which still describes
+Bronze as one of the four *active* Portal tiers, alongside Free/Silver/
+Gold) — that ADR is not edited or contradicted-in-place; it remains
+the accurate historical record of what was true when it was written,
+and `DEC-VIP-001` is the current, later ruling.
+
 **Related decisions**: ADR-0001 and ADR-0022 were read from the
 preservation archive in Phase 11; their files are not integrated on
-`main`.
+`main`. `DEC-VIP-001` (2026-09-17) is this pack's own first genuinely
+new decision record — see `DECISIONS.md`.
 
 **Orchestration**: no Knowledge Hub task/decision for this domain has
 been created or examined this session.

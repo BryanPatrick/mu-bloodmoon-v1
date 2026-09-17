@@ -22,6 +22,8 @@ promotion of the preserved file to canonical documentation on `main`.
 | Marketplace purchases + `TRANSFER_RESTRICTION` interaction | Per `docs/README.md`'s narrative (ADR-0022 correction) — not independently confirmed | UNKNOWN on this branch |
 | Knowledge Hub: a policy-required review/approval cannot be bypassed by never requesting it | CONFIRMED, this project (Hub Phase 6) | `D:\MU\hub\src\services\policyService.ts`, `D:\MU\hub\docs\policies\orchestration-risk-policy.md` |
 | Knowledge Hub: `ORCHESTRATION_ENABLED=false` fails writes before auth even runs | CONFIRMED, this project (Hub Phase 7) | `D:\MU\hub\src\index.ts` |
+| Commercial VIP tiers are Free/Silver/Gold; Bronze is commercially disabled (technical Bronze enum/schema not removed) | CONFIRMED — a current, dated business decision, not found in any older repository source (real ADR-0010 still describes Bronze as an active tier; that ADR predates this decision and is not edited) | [`DECISIONS.md`](DECISIONS.md) `DEC-VIP-001`, dated 2026-09-17 |
+| Asaas is the current primary payment-provider direction; Mercado Pago is dormant, not deleted, not permanently ruled out | CONFIRMED — a current, dated product-direction decision | [`DECISIONS.md`](DECISIONS.md) `DEC-PAYMENTS-001`, dated 2026-09-17 |
 
 ## Phase 12 provenance correction
 

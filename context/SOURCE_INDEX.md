@@ -42,6 +42,8 @@ actually supplied — never created speculatively.
 | SRC-REPO-015 | CODE/DOC | `architecture/agent-orchestration-foundation:docs/architecture/notification-intelligence.md` (commit `7b8c2799`) | CURRENT_DOC (proposal) | Read in full, Phase 10 |
 | SRC-REPO-016 | HANDOFF | `payments/asaas-local-hardening-claude:docs/payments/asaas-sandbox-phase4-claude-handoff.md` (commit `223b111c`) | ACCEPTED_HANDOFF (status `HANDOFF_FOR_CODEX`, unconsumed) | Read in full, Phase 10 |
 | SRC-REPO-017 | EXECUTABLE_FACT | `git log`/`git diff --stat` across `payments/asaas-sandbox`, `payments/asaas-local-hardening-claude`, `main` | EXECUTABLE_FACT | Run directly, Phase 10 |
+| SRC-REPO-022 | ADMIN_DECISION | Bryan, direct instruction, Phase 14 brief, 2026-09-17 — `DEC-VIP-001` (Bronze commercial tier disabled) | CANONICAL_DECISION | Recorded directly this session; no older source exists or was invented |
+| SRC-REPO-023 | ADMIN_DECISION | Bryan, direct instruction, Phase 14 brief, 2026-09-17 — `DEC-PAYMENTS-001` (Asaas primary, Mercado Pago dormant) | CANONICAL_DECISION | Recorded directly this session; no older source exists or was invented |
 | SRC-REPO-018 | REPOSITORY_DOC | `payments/asaas-sandbox-phase5-codex:docs/payments/asaas-sandbox-phase5.md` (commit `066ad3be`) | ACCEPTED_HANDOFF | Read and cross-checked in Phase 12; local DB parity report, no real provider call |
 | SRC-REPO-019 | REVIEW_REPORT | `context/review/CODEX_PHASE12_INDEPENDENT_REVIEW.md` (this branch) | CURRENT_DOC | Independent content audit, Phase 12; not an approval or merge authorization |
 | SRC-REPO-020 | REPOSITORY_DOC | `payments/asaas-sandbox-phase5-codex:docs/payments/asaas-sandbox-phase6.md` (head `56b05054`, core code at `ed326e90`) | ACCEPTED_HANDOFF (isolated branch; not canonical production policy) | Read against real Sandbox/local DB test evidence, Phase 6 |
@@ -83,8 +85,10 @@ not a stable artifact this pack can re-read later the way a file or a
 Hub row can.
 
 **Running totals**: ~~Phase 10: 17 `SRC-REPO-*` + 9 `SRC-HUB-*` = 26~~
-Phase 12: 21 `SRC-REPO-*` + 9 `SRC-HUB-*` = 30 sources,
-0 `SOURCE_PENDING`.
+~~Phase 12: 19 `SRC-REPO-*` + 9 `SRC-HUB-*` = 28~~
+Phase 14: 23 `SRC-REPO-*` + 9 `SRC-HUB-*` = 32 individually-numbered
+sources, plus the `SRC-OPENBETA-*` 125-file range (see the
+preservation manifest's own ID rule) = 157 total, 0 `SOURCE_PENDING`.
 
 ## Honesty note on partial reads
 

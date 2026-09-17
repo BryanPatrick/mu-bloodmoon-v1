@@ -36,9 +36,34 @@ IDs (real UUIDs, see below) and ADR numbers stay canonical permanently.
 An optional, non-canonical human-readable *alias* may be proposed for
 readability (see [`KNOWLEDGE_HUB_MAPPING.md`](KNOWLEDGE_HUB_MAPPING.md)'s
 per-decision table), but it always maps back to the real canonical ID
-and is never used in place of it. **Zero `DEC-*` IDs have ever been
-minted** — this remains an honest, permanent zero for this specific
-scheme, not a to-do.
+and is never used in place of it. The scheme's other reserved use —
+"any future decision that is genuinely new and doesn't already have an
+ADR or a Hub row" — was exercised for the first time in Phase 14 (see
+below); it remains reserved, never used to relabel something that
+already has a real ID.
+
+## Genuinely new decisions recorded directly in this pack (DEC-* scheme, first real use — Phase 14)
+
+Two current, real product/business decisions from Bryan with **no
+prior ADR, no prior Hub row, and no chat-history citation** (none was
+available or fabricated) — recorded here, dated to when they were
+actually given, per this project's own "never invent a historical
+source or date" rule:
+
+| ID | Title | Domain | Decision | Status | Date | Sources |
+|---|---|---|---|---|---|---|
+| `DEC-VIP-001` | Bronze commercial VIP tier disabled | vip | Commercial VIP progression is `Free`/`Silver`/`Gold`. `BRONZE_COMMERCIAL_ENABLED = false`. The Bronze technical enum/schema/history is **not** removed or altered by this decision — it may remain dormant for compatibility/historical reasons; this is a commercial-availability rule, not a data-model change. | ACTIVE | 2026-09-17 | ADMIN_DECISION / Bryan (direct instruction, this session, Phase 14) |
+| `DEC-PAYMENTS-001` | Asaas is the current primary payment-provider direction; Mercado Pago is dormant | payments | Asaas is the primary current provider direction. Mercado Pago's real, existing implementation is **not** removed and is **not** declared permanently unused — it is dormant, not planned for active use under current direction, and this may change with a future decision. | ACTIVE | 2026-09-17 | ADMIN_DECISION / Bryan (direct instruction, this session, Phase 14) |
+
+Both are recorded with today's real date because that is genuinely
+when Bryan gave the instruction — not because any older source was
+found or assumed. If a real, dated historical source (an ADR, a Hub
+decision, or a real chat transcript once imported) is ever found to
+predate this, it does not retroactively change these dates; a
+supersession or an amended provenance note would be added instead,
+per this project's own "never silently overwrite history" rule.
+Domain-file detail: [`domains/vip.md`](domains/vip.md),
+[`domains/payments.md`](domains/payments.md).
 
 ## Status model (matches the existing ADR convention exactly)
 

@@ -7,15 +7,25 @@ classification: POPULATED
 
 # Domain: Payments
 
-**STATUS**: Mercado Pago is the live provider; Asaas is a real,
-in-progress, sandbox-only second integration (not yet merged, not
-production-enabled).
+**STATUS**: Mercado Pago's implementation is live/real (unchanged), but
+**Asaas is now the current primary provider direction** (Phase 14,
+`DEC-PAYMENTS-001` — see below) while its own production enablement is
+still not authorized. Mercado Pago's code is dormant under this
+direction, not removed, not permanently ruled out.
+
+**Provider direction (Phase 14, current, dated decision — not older
+repository evidence)**: `DEC-PAYMENTS-001` (2026-09-17): Asaas is the
+current primary payment-provider direction; Mercado Pago is dormant,
+not planned for active use under current direction. Neither
+implementation is deleted by this decision, and the direction may
+change with a future one. See [`../DECISIONS.md`](../DECISIONS.md).
 
 **CURRENT STATE — Mercado Pago (unchanged from Phase 9, not re-verified
 this phase)**: three parallel pipelines (`RechargeIntent`/
 `PurchaseIntent`/`VipEntitlement`), refund/reconciliation adapters
 `SANDBOX_VALIDATION_REQUIRED`, risk/chargeback via explicit auditable
-signals.
+signals. Real and unremoved — currently dormant by product direction,
+not by any technical deficiency found this session.
 
 **CURRENT STATE — Asaas (Phase 12 review, Phase 6 evidence on an isolated branch)**:
 ```
