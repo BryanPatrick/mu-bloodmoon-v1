@@ -73,10 +73,14 @@ explicit Jest `--testRegex` override and temporary Sandbox-only
 environment variables.
 The temporary route-restricted proxy is
 `apps/api/scripts/asaas-sandbox-webhook-proxy.mjs`. The temporary
-Sandbox webhook was deleted after the live delivery test; the tunnel
-and proxy were stopped. The synthetic provider customer and three
-Sandbox charges remain as test evidence. Local disposable DB teardown
-is recorded in the final handoff.
+Sandbox webhook was deleted after the live delivery test; a follow-up
+provider list found zero Phase 6 webhooks. The tunnel and proxy were
+stopped. The isolated local schema and its dedicated DB user were
+removed after counts/encryption checks; port 13316 was closed. The
+synthetic provider customer and three Sandbox charges remain as test
+evidence (two received, one deleted). These Sandbox records are
+recoverable through the provider account; the local disposable rows
+were intentionally removed and are not recoverable from this test DB.
 
 API unit suite: 115/115 PASS. API structure/type check: PASS. Real
 Sandbox suite: 6/6 PASS, including real webhook delivery. The
