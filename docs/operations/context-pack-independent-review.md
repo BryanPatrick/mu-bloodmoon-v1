@@ -1,23 +1,46 @@
 ---
-status: ACTIVE
+status: COMPLETED — kept as reusable methodology for future reviews
 category: operations
-audience: internal (the assigned independent reviewer)
+audience: internal (whoever runs the next independent review)
 lastVerified: 2026-09-17
 ---
 
 # Context Pack independent review — reviewer instructions
 
+## Status (Phase 15 update)
+
+**The real independent review this document exists to drive has
+happened.** A real Codex session performed it against branch
+`phase-9/context-pack-v1-foundation` (base `63e9a7a7`) — see
+[`../../context/review/CODEX_PHASE12_INDEPENDENT_REVIEW.md`](../../context/review/CODEX_PHASE12_INDEPENDENT_REVIEW.md)
+for the actual findings, corrections applied, and its own boundaries
+section. `REAL_INDEPENDENT_REVIEW_PENDING` is no longer accurate for
+that round — it is now `COMPLETE`. The branch was subsequently merged
+into `main` (fast-forward, Phase 14) after an independent Phase 13
+merge-gate inspection found no real documentation defect (Codex's own
+`CHANGES_REQUIRED` recommendation was based on future-work items Bryan
+explicitly ruled non-blocking, not a factual defect — see Phase 13's
+report in this session's history for the reasoning).
+
+**This document's methodology remains real and reusable** — the
+objective/finding-categories/review-package/test-questions below are
+not specific to that one round. Whoever runs the *next* independent
+review (a future batch, a future real Codex staging pilot's content
+review, or a review of whatever changes next) should follow the same
+process again, fresh, rather than treating the Phase 12 findings as
+covering anything created after them.
+
 ## Who this is for
 
 A real, independent agent (Codex, or another human/agent explicitly
-assigned by Bryan) reviewing `context/` on branch
-`phase-9/context-pack-v1-foundation` before it merges into `main`. **Not
-`codex-staging`** — that synthetic Knowledge Hub fixture already
+assigned by Bryan) reviewing `context/` — now on `main`, previously on
+`phase-9/context-pack-v1-foundation` before its merge. **Not
+`codex-staging`** — that synthetic Knowledge Hub fixture only ever
 lifecycle-validated the orchestration mechanics (see
-`context/domains/orchestration.md`) and does not count as this review,
-by explicit instruction (Phase 10, Part 37). If no real Codex/independent
-session is assigned yet, this review's status is
-`REAL_INDEPENDENT_REVIEW_PENDING` — do not fake one to close the gap.
+`context/domains/orchestration.md`) and never counted as content
+review, by explicit instruction (Phase 10, Part 37). For a *future*
+round with no reviewer assigned yet, that round's status is
+`REAL_INDEPENDENT_REVIEW_PENDING` — never fake one to close that gap.
 
 ## Your objective
 
@@ -124,9 +147,14 @@ candidate for this test, but the two are not the same exercise.
 
 ## What happens after your review
 
-Per the Phase 11 merge gate: preservation PASS (done) + validator PASS
-(done) + secret scan PASS (done) + **your real independent review
-PASS** + any critical findings resolved. Only then does merging
-`phase-9/context-pack-v1-foundation` into `main` become appropriate —
-and even then, that merge itself needs its own explicit go-ahead, not
-an automatic follow-on from your review passing.
+For the round this document was originally written for: **already
+happened** — preservation PASS, validator PASS, secret scan PASS, the
+real independent review (Codex, Phase 12), a Phase 13 merge-gate
+inspection, and the fast-forward merge into `main` (Phase 14), in that
+order, each with its own explicit go-ahead from Bryan rather than an
+automatic follow-on from the previous step passing.
+
+For a *future* round: the same sequence applies again — review PASS,
+critical findings resolved, then (only with fresh, explicit
+authorization) whatever integration step is appropriate for that
+round's own changes.

@@ -21,6 +21,18 @@ narrative but **does not exist on this branch** (confirmed via
 `git ls-tree`) — see [`../OPEN_QUESTIONS.md`](../OPEN_QUESTIONS.md)
 OQ-CTX-001.
 
+**Currency naming (Phase 15, real code evidence)**: **Blood Coin** is
+the public/player-facing name for the technical `GOBLIN_POINT`
+currency — confirmed live in current `main` code (`apps/api`'s
+`GOBLIN_POINT` enum unchanged throughout commerce/marketplace/guilds;
+`apps/web`'s UI layer, e.g. `slot-registry.ts`'s "WCoin/Blood
+Coin/Hunt Point" label), from real, dated rename commits `2811522d`/
+`9a18c53d` on `main`. See [`../BUSINESS_RULES.md`](../BUSINESS_RULES.md)
+for the full citation. WCoin and Hunt Point are the other two
+currencies in the same three-currency system; this pack has not
+separately verified whether either has its own public-vs-technical
+naming split.
+
 **One-paragraph orientation**: covers WCoin/GP/HP currency, X-Shop/
 CashShop catalog, and progression (XP/drop/reset/master reset). The
 real XP-stacking formula remains genuinely `UNKNOWN` after real
