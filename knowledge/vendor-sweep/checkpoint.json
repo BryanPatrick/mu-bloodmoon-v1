@@ -1,6 +1,6 @@
 {
   "sweepId": "knowledge-sweep-2026-08-25",
-  "lastUpdatedUtc": "2026-08-27T14:10:00Z",
+  "lastUpdatedUtc": "2026-09-18T17:56:13.956Z",
   "status": "PARTIAL",
   "phase6Completed": [
     "Real VPS access via existing RemoteOps tooling (D:\\MU\\Tools\\RemoteOps\\bm-remote.cmd, SSH-key-based, read-only). Inventoried Data\\Custom (90 files), Data\\Event (16 files), Data\\Command (does not exist as a folder -- commands live in GameServer\\DATA\\GameServerInfo-Command.dat/CommandGM.dat instead), Data\\Util (5 files), Data root (18 top-level subfolders total), and GameServer\\DATA (9 files) via inventory-json. Downloaded and read ~20 real config files.",
@@ -85,5 +85,11 @@
     "6. To continue real verification: verification-queue.json's remaining QUEUED items, or Data/Event/CustomEventEntryLevel.dat (file confirmed present, content unread) are the best next targets.",
     "7. When writing a Node script that touches a real path string, ALWAYS use double backslashes ('D:\\\\\\\\MU\\\\\\\\...') and verify with `node --check` before running -- this phase caught both a for-loop missing-closing-brace bug and a single-backslash path-corruption bug this way.",
     "8. `node scripts/knowledge-query.mjs source <videoId>` shows a single video's full pipeline status; `claims <system>` and `entity/map/item/event <name>` are the fastest ways to check existing coverage before extracting a new claim, to avoid accidental duplicates."
+  ],
+  "phase18dCompleted": [
+    "Phase 18D (2026-09-18): registered the 3 priority Buy-Vip videos (gqtSk1pdti4, Jia1TrtgZfY, XUeN6U74zME) as KI-042/043/044 with CLAIM-100..122; extraction was agent-authored (this sweep has never had an automated claim extractor) and cross-checked against a blind second extraction and Blood Moon's preserved real config.",
+    "Counts changed: videos with a knowledge-index entry 39 -> 42; pure-RAW videos not yet normalized 69 -> 66 (27 P0 unchanged); the \"69\" in notStarted[0] and resumeInstructions[4] above is superseded by 66.",
+    "Real-config finding: Blood Moon's /buyvip command block is present but DISABLED and unconfigured, and CustomBuyVipAndCoin.txt is entirely commented out (CLAIM-101, CLAIM-118).",
+    "Re-run the three generators after any claim edit: knowledge-transcript-inventory.mjs, knowledge-canonical-facts.mjs --write, knowledge-provenance-report.mjs --write."
   ]
 }

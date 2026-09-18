@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-27T13:50:09.899Z",
+  "generatedAt": "2026-09-18T17:56:13.956Z",
   "format": "JSON graph -- flat nodes[]/edges[] arrays, each node/edge has a stable id. Chosen over SQLite/JSONL to match this sweep's existing convention (plain JSON files, no new runtime dependency) and because the graph is currently small (30 nodes, 33 edges) -- revisit as a JSONL or SQLite store if it grows past a few hundred nodes and querying flat JSON becomes unwieldy.",
   "nodes": [
     {
@@ -534,6 +534,53 @@
       "name": "CustomPix",
       "bloodMoonStatus": "BLOODMOON_CONFIRMED",
       "note": "BLOODMOON_ONLY_OR_UNDOCUMENTED_CANDIDATE (Part L) -- present but disabled, placeholder URL never configured."
+    },
+    {
+      "id": "SYS-buy-vip-command",
+      "type": "SYSTEM",
+      "name": "CustomBuyVip (native /buyvip command)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "config block present but DISABLED and unconfigured on Blood Moon (CLAIM-101)"
+    },
+    {
+      "id": "SYS-custom-buy-vip-and-coin",
+      "type": "SYSTEM",
+      "name": "CustomBuyVipAndCoin",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "file present but every row commented out on Blood Moon (CLAIM-118)"
+    },
+    {
+      "id": "CFG-gameserverinfo-command-dat",
+      "type": "CONFIG",
+      "name": "GameServer/DATA/GameServerInfo - Command.dat",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "CFG-custombuyvipandcoin-txt",
+      "type": "CONFIG",
+      "name": "Data/Custom/CustomBuyVipAndCoin.txt",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED"
+    },
+    {
+      "id": "SRC-KI-042",
+      "type": "SOURCE",
+      "name": "KI-042 (gqtSk1pdti4)"
+    },
+    {
+      "id": "SRC-KI-043",
+      "type": "SOURCE",
+      "name": "KI-043 (Jia1TrtgZfY)"
+    },
+    {
+      "id": "SRC-KI-044",
+      "type": "SOURCE",
+      "name": "KI-044 (XUeN6U74zME)"
+    },
+    {
+      "id": "SRC-real-config-buyvip",
+      "type": "SOURCE",
+      "name": "real Command.dat + CustomBuyVipAndCoin.txt + Message.txt (preserved Phase 6/10/11 downloads, read 2026-09-18)",
+      "sourceAuthority": "REAL_BLOODMOON_CONFIG"
     }
   ],
   "edges": [
@@ -1101,6 +1148,176 @@
       "to": "SYS-custom-event-time",
       "status": "BLOODMOON_CONFIRMED",
       "note": "Same underlying vendor feature, tracked under 2 node ids from different sweep phases -- not merged to avoid losing either node's edge history."
+    },
+    {
+      "from": "SYS-buy-vip-command",
+      "type": "CONFIGURED_BY",
+      "to": "CFG-gameserverinfo-command-dat"
+    },
+    {
+      "from": "SYS-custom-buy-vip-and-coin",
+      "type": "CONFIGURED_BY",
+      "to": "CFG-custombuyvipandcoin-txt"
+    },
+    {
+      "from": "SYS-buy-vip-command",
+      "type": "RELATED_TO",
+      "to": "SYS-custom-buy-vip-and-coin"
+    },
+    {
+      "from": "SRC-KI-042",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-100"
+    },
+    {
+      "from": "SRC-KI-043",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-100"
+    },
+    {
+      "from": "SRC-real-config-buyvip",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-100"
+    },
+    {
+      "from": "SRC-real-config-buyvip",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-101"
+    },
+    {
+      "from": "SRC-KI-042",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-102"
+    },
+    {
+      "from": "SRC-KI-042",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-103"
+    },
+    {
+      "from": "SRC-KI-043",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-103"
+    },
+    {
+      "from": "SRC-real-config-buyvip",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-103"
+    },
+    {
+      "from": "SRC-KI-042",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-104"
+    },
+    {
+      "from": "SRC-real-config-buyvip",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-104"
+    },
+    {
+      "from": "SRC-KI-042",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-105"
+    },
+    {
+      "from": "SRC-KI-043",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-105"
+    },
+    {
+      "from": "SRC-KI-042",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-106"
+    },
+    {
+      "from": "SRC-KI-043",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-106"
+    },
+    {
+      "from": "SRC-KI-043",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-107"
+    },
+    {
+      "from": "SRC-KI-043",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-108"
+    },
+    {
+      "from": "SRC-KI-042",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-109"
+    },
+    {
+      "from": "SRC-KI-042",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-110"
+    },
+    {
+      "from": "SRC-KI-044",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-111"
+    },
+    {
+      "from": "SRC-real-config-buyvip",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-111"
+    },
+    {
+      "from": "SRC-KI-044",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-112"
+    },
+    {
+      "from": "SRC-KI-044",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-113"
+    },
+    {
+      "from": "SRC-KI-044",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-114"
+    },
+    {
+      "from": "SRC-KI-044",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-115"
+    },
+    {
+      "from": "SRC-KI-044",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-116"
+    },
+    {
+      "from": "SRC-KI-044",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-117"
+    },
+    {
+      "from": "SRC-real-config-buyvip",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-118"
+    },
+    {
+      "from": "CLAIM-107",
+      "type": "RELATED_TO",
+      "to": "CLAIM-091"
+    },
+    {
+      "from": "CLAIM-104",
+      "type": "RELATED_TO",
+      "to": "CLAIM-098"
+    },
+    {
+      "from": "CLAIM-104",
+      "type": "RELATED_TO",
+      "to": "CLAIM-123"
+    },
+    {
+      "from": "CLAIM-123",
+      "type": "RELATED_TO",
+      "to": "CLAIM-124"
     }
   ],
   "note": "CLAIM-* ids referenced as edge endpoints are NOT duplicated as separate nodes here to avoid redundancy with atomic-claims.json -- treat them as a second node namespace (claims) that this graph references but atomic-claims.json owns. Phase 3 adds the first real MONSTER/ITEM/EVENT/NPC/MAP entities (from Data/EventItemBagManager.txt, Data/EventItemBag/, and 3 real CustomEvent*.txt files) -- see knowledge/vendor-sweep/entities/gameplay-entities.json for the full roster (17 monster identities including a 19-boss 'Golden series' bundle, 17 item identities, 11 event groupings), only the headline entities are represented as individual graph nodes here to keep the graph a navigable summary rather than a full duplicate of the entities file. The MAP-1->MONSTER->ITEM edges are explicitly marked _INFERRED in their edge type name, per the required FACT/INFERENCE separation -- no edge here claims a config-explicit monster-kill-drops-item relationship, since none was found. Maps are numeric-ID-only (0, 1, 40) -- no name has been confirmed for any of them from real evidence, only from generic MU memory, which this sweep deliberately does not use."

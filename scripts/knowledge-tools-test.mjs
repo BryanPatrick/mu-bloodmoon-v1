@@ -117,6 +117,54 @@ check('knowledge-graph.json Phase 5 additions pass structural validation (node-i
   if (!out.includes('All structural checks passed')) throw new Error('Phase 5 graph additions broke validation -- see the EVT-devil-square vs EVENT-devil-square id-mismatch bug caught during this same phase for the failure mode this guards against')
 })
 
+// --- Phase 18D lookup-regression additions (Cash/VIP cluster) ---
+
+const expectAll = (out, ids, label) => {
+  for (const id of ids) if (!out.includes(id)) throw new Error(`${label}: expected ${id} in output`)
+}
+
+check('lookup regression 1: legacy web Cash flow resolves to the DmN claims (entry side, LEGACY)', () => {
+  expectAll(run('knowledge-query.mjs', ['query', 'dmn cms']), ['CLAIM-123', 'CLAIM-124'], 'query "dmn cms"')
+})
+
+check('lookup regression 2: in-game Buy Vip resolves to KI-042/KI-043 and the native-command claims', () => {
+  expectAll(run('knowledge-query.mjs', ['source', 'gqtSk1pdti4']), ['KI-042', 'CLAIM-100', 'CLAIM-104', 'CLAIM-110'], 'source gqtSk1pdti4')
+  expectAll(run('knowledge-query.mjs', ['source', 'Jia1TrtgZfY']), ['KI-043', 'CLAIM-107', 'CLAIM-108'], 'source Jia1TrtgZfY')
+  expectAll(run('knowledge-query.mjs', ['query', 'BUY_VIP']), ['CLAIM-101', 'KI-042'], 'query BUY_VIP (separator-insensitive)')
+})
+
+check('lookup regression 3: Buy Vip And Coin resolves to KI-044 and the CustomBuyVipAndCoin claims', () => {
+  expectAll(run('knowledge-query.mjs', ['source', 'XUeN6U74zME']), ['KI-044', 'CLAIM-111', 'CLAIM-113', 'CLAIM-117'], 'source XUeN6U74zME')
+  expectAll(run('knowledge-query.mjs', ['query', 'CUSTOM_BUY_VIP_AND_COIN']), ['KI-044', 'CLAIM-118'], 'query CUSTOM_BUY_VIP_AND_COIN')
+})
+
+check('lookup regression 4: current Asaas WC delivery resolves to the recharge-isolation claim, not to any vendor claim', () => {
+  const out = run('knowledge-query.mjs', ['query', 'asaas'])
+  expectAll(out, ['CLAIM-121'], 'query asaas')
+  if (/\[source KI-04[234]\]/.test(out)) throw new Error('a vendor video source leaked into the Asaas/current-system lookup')
+})
+
+check('lookup regression 5: XShop/CashShop reload behavior resolves to the explicit non-generalization claim', () => {
+  const out = run('knowledge-query.mjs', ['query', 'reload cashshop'])
+  expectAll(out, ['CLAIM-120'], 'query "reload cashshop"')
+  if (!out.includes('bloodMoonStatus=UNKNOWN')) throw new Error('CLAIM-120 must stay UNKNOWN -- reload behavior of CustomXShop/CashShopProduct is unproven')
+})
+
+check('critical Cash/VIP claims keep their evidence ceiling (no claim stronger than its evidence)', () => {
+  const claims = JSON.parse(readFileSync(join(ROOT, 'knowledge', 'vendor-sweep', 'atomic-claims.json'), 'utf8')).claims
+  const by = Object.fromEntries(claims.map(c => [c.claimId, c]))
+  // exact SQL table of the closed-source engine must stay INFERRED, never verified
+  if (by['CLAIM-119'].verificationStatus !== 'UNVERIFIED') throw new Error('CLAIM-119 (engine SQL table) was promoted without engine source')
+  // reload demonstrations are vendor-demonstrated only
+  for (const id of ['CLAIM-110', 'CLAIM-117']) if (by[id].verificationStatus !== 'UNVERIFIED') throw new Error(`${id} (reload) claims Blood Moon verification it does not have`)
+  // vendor-video-only behavior claims may not be BLOODMOON_CONFIRMED
+  for (const c of claims) {
+    if (Number(c.claimId.slice(6)) >= 100 && c.sourceAuthority === 'PROVIDER_TUTORIAL' && c.bloodMoonStatus === 'BLOODMOON_CONFIRMED') {
+      throw new Error(`${c.claimId}: a PROVIDER_TUTORIAL-only claim cannot be BLOODMOON_CONFIRMED`)
+    }
+  }
+})
+
 console.log('')
 if (failures === 0) {
   console.log('All knowledge tooling integration checks passed.')

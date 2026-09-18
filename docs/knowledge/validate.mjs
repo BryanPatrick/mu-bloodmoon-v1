@@ -10,10 +10,13 @@
 // default (it touches paths outside the repo and can be slow against
 // large preserved archives; it never rehashes file contents, only checks
 // existence).
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const ROOT = dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]):/, "$1:"));
+// fileURLToPath (not URL.pathname): the latter keeps percent-encoding and breaks
+// on any path containing a space, e.g. a "C:\Users\First Last\..." checkout.
+const ROOT = dirname(fileURLToPath(import.meta.url));
 const DEEP = process.argv.includes("--deep");
 
 const KNOWN_STATUS = new Set(["ACTIVE", "SUPERSEDED", "DEFERRED", "DRAFT_FOR_REVIEW", "FINDING_FOR_BRYAN_REVIEW"]);
@@ -113,6 +116,90 @@ for (const name of ["PROCEDURE_INDEX.md", "KNOWLEDGE_GAPS.md"]) {
 	}
 }
 
+// -- Docs <-> machine-artifact consistency (Phase 18D Part 14) ------------
+// The drift this catches: knowledge that exists in prose docs but not in
+// knowledge/vendor-sweep/*.json (or the reverse). Cheap: JSON reads plus
+// existence checks only, never hashing.
+const REPO_ROOT = resolve(ROOT, "..", "..");
+const MU_ROOT = resolve(REPO_ROOT, ".."); // the research tree lives beside the repo
+const VS = join(REPO_ROOT, "knowledge", "vendor-sweep");
+const KNOWN_CLAIM_TOPICS = new Set([
+	"drop-system", "systems", "operations", "progression", "events",
+	"monsters", "security", "commands", "maps",
+]);
+// Non-KI sourceId conventions already used by the sweep (direct config reads,
+// syntheses, code reads, doc cross-references).
+const ALLOWED_NON_KI_SOURCE =
+	/^(real-config-read|vendor-tutorial-normalization|synthesis-across-|internal-doc-cross-reference|code-read-)/;
+let machineSummary = "machine layer not found";
+try {
+	const index = JSON.parse(readFileSync(join(VS, "knowledge-index.json"), "utf8")).entries;
+	const claims = JSON.parse(readFileSync(join(VS, "atomic-claims.json"), "utf8")).claims;
+	const kiIds = new Set();
+	for (const e of index) {
+		if (kiIds.has(e.id)) errors.push(`knowledge-index.json: duplicate source id "${e.id}"`);
+		kiIds.add(e.id);
+	}
+
+	const researchTreePresent = existsSync(join(MU_ROOT, "Research"));
+	if (!researchTreePresent) {
+		warnings.push("external research tree (../Research) not present -- transcript path existence check skipped");
+	}
+	for (const e of index) {
+		if (!e.rawArtifact) {
+			errors.push(`knowledge-index.json: ${e.id} has no rawArtifact`);
+		} else if (researchTreePresent && !existsSync(join(MU_ROOT, e.rawArtifact))) {
+			errors.push(`knowledge-index.json: ${e.id} rawArtifact does not exist -> ${e.rawArtifact}`);
+		}
+	}
+
+	const seenStatement = new Map();
+	const claimIds = new Set(claims.map((c) => c.claimId));
+	const claimsBySource = new Map();
+	for (const c of claims) {
+		const kiTokens = [...(c.sourceId || "").matchAll(/KI-\d+/g)].map((m) => m[0]);
+		for (const t of kiTokens) {
+			if (!kiIds.has(t)) errors.push(`${c.claimId}: sourceId references missing source ${t}`);
+			claimsBySource.set(t, (claimsBySource.get(t) ?? 0) + 1);
+		}
+		if (kiTokens.length === 0 && !ALLOWED_NON_KI_SOURCE.test(c.sourceId || "")) {
+			errors.push(`${c.claimId}: sourceId "${c.sourceId}" is neither a KI-* id nor a known non-KI source convention`);
+		}
+		if (!KNOWN_CLAIM_TOPICS.has(c.topic)) errors.push(`${c.claimId}: unknown topic "${c.topic}"`);
+		const key = (c.statement || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+		if (seenStatement.has(key)) errors.push(`${c.claimId}: duplicate of ${seenStatement.get(key)} (same statement)`);
+		else seenStatement.set(key, c.claimId);
+	}
+
+	// Every video the docs list as registered must have a KI entry for that
+	// video and at least one claim (video source without a machine artifact).
+	const videoDoc = readFileSync(join(ROOT, "VIDEO_SOURCES.md"), "utf8");
+	const rowPattern = /^\|\s*`(KI-\d+)`\s*\|\s*`([A-Za-z0-9_-]{11})`/gm;
+	let vm;
+	let registeredVideos = 0;
+	while ((vm = rowPattern.exec(videoDoc))) {
+		registeredVideos++;
+		const entry = index.find((e) => e.id === vm[1]);
+		if (!entry) errors.push(`VIDEO_SOURCES.md lists ${vm[1]} but knowledge-index.json has no such entry`);
+		else if (!(entry.rawArtifact || "").includes(vm[2])) errors.push(`VIDEO_SOURCES.md: ${vm[1]} is listed for video ${vm[2]} but its rawArtifact is ${entry.rawArtifact}`);
+		else if (!claimsBySource.get(vm[1])) errors.push(`VIDEO_SOURCES.md lists ${vm[1]} (${vm[2]}) but no machine claim cites it`);
+	}
+
+	// Prose docs must not cite a claim/source id the machine layer lacks.
+	for (const file of files) {
+		const text = readFileSync(file, "utf8");
+		for (const m of text.matchAll(/CLAIM-(\d{3})/g)) {
+			if (!claimIds.has(m[0])) errors.push(`${file}: cites ${m[0]}, which does not exist in atomic-claims.json`);
+		}
+		for (const m of text.matchAll(/\bKI-(\d{3})\b/g)) {
+			if (!kiIds.has(m[0])) errors.push(`${file}: cites ${m[0]}, which does not exist in knowledge-index.json`);
+		}
+	}
+	machineSummary = `machine layer: ${index.length} sources, ${claims.length} claims, ${registeredVideos} registered-video rows cross-checked`;
+} catch (e) {
+	warnings.push(`machine-artifact checks skipped: ${e.message}`);
+}
+
 // -- Deep mode: verify referenced D:\... local paths exist --------------
 if (DEEP) {
 	const pathPattern = /`(D:\\[^`]+)`/g;
@@ -143,5 +230,5 @@ if (errors.length) {
 	for (const w of warnings) console.error(" ? " + w);
 	process.exit(1);
 }
-console.log(`PASS (${files.length} files checked, 0 errors, ${warnings.length} warning(s))`);
+console.log(`PASS (${files.length} files checked, 0 errors, ${warnings.length} warning(s); ${machineSummary})`);
 for (const w of warnings) console.log(" ? " + w);

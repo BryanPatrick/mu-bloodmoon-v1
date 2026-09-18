@@ -134,17 +134,16 @@ phase — the config store itself (`DmN_Config` or similar table/file) was not
 located. Low-risk gap: the currencies.md cross-check already independently
 confirms the target table shape.
 
-## Open decision needed from Bryan
+## DmN CMS schema — decision recorded (Phase 18D: `KEEP_DORMANT`)
 
 `docs/economy/legacy-dmn-cms-and-currency-investigation.md` (dated
 2026-08-30, status `FINDING_FOR_BRYAN_REVIEW`) reports this entire 74-table
 DMN CMS schema as still live in the production SQL Server database, fully
-provisioned, unused, undecided. **Not decided by this phase either** —
-flagged again here because it directly answers Section 6 (legacy vs.
-current comparison): this whole system is `LEGACY_ONLY`, `STILL_PRESENT`
-(not deleted), and `NOT_INTEGRATED` with the current Portal's
-`AccountCurrency`/`WalletLedgerService` economy, by deliberate,
-already-recorded decision (no equivalence assumed).
+provisioned and unused. It stayed undecided through Phase 18/18C; **Bryan's
+direction on 2026-09-18 is `KEEP_DORMANT`** (recorded below). This whole system
+is `LEGACY_ONLY`, `STILL_PRESENT` (not deleted), and `NOT_INTEGRATED` with the
+current Portal's `AccountCurrency`/`WalletLedgerService` economy, by
+deliberate, already-recorded decision (no equivalence assumed).
 
 ### DmN CMS schema classification (Phase 18C Part 16)
 
@@ -185,7 +184,7 @@ already-recorded decision (no equivalence assumed).
   chosen; (4) explicit, fresh, in-the-moment authorization for the specific
   destructive step, per this project's standing production-safety rules.
 
-### Decommission options (not chosen — Bryan's decision)
+### Decommission options (considered; `KEEP_DORMANT` chosen — see below)
 
 | Option | What it means | Trade-off |
 |---|---|---|
@@ -193,7 +192,17 @@ already-recorded decision (no equivalence assumed).
 | `ARCHIVE_THEN_REMOVE` | Full backup/export of all 74 tables + data, then `DROP` from production | Removes the "phantom sitting in production" concern permanently; requires the prerequisites above and fresh explicit authorization for the `DROP` step specifically — this project's standing rules make that a real, separate approval gate, not a rubber stamp |
 | `AUDIT_FURTHER` | Read the remaining ~65 unchecked tables' row counts/content before deciding anything | Lowest-risk way to rule out a surprise (e.g., a marketplace/referral table with real historical data not yet checked) before committing to either option above |
 
-No option is selected here, per this phase's explicit instruction.
+No option was selected by the earlier phases.
+
+**Decision recorded (Phase 18D, 2026-09-18) — source: Bryan's direction in the
+Phase 18D brief (`ADMIN_DECISION`, dated, not a backdated or invented source):
+`DmN CMS legacy schema = KEEP_DORMANT`.** Do not delete or decommission. Reason
+given: the schema is still valuable as historical/reference knowledge and the
+dependency audit is incomplete. Technical removal remains future work and
+keeps every prerequisite listed above; row counts (CLAIM-124) are a
+2026-08-30 point-in-time reading and must be re-checked before any future
+removal decision. The machine index records the schema as `LEGACY` /
+`LEGACY_DORMANT_SCHEMA`.
 
 ## Known worktree fragmentation risk
 
@@ -207,6 +216,34 @@ entirely. `mu-bloodmoon-v1` is the current, canonical source for economy/
 legacy-supplier knowledge; `mu-bloodmoon-legacy-catalog` is closer to an
 equipment/asset catalog plus an earlier snapshot of the same investigation.
 
+**Decision recorded (Phase 18D, 2026-09-18) — source: Bryan's direction in the
+Phase 18D brief (`ADMIN_DECISION`): `mu-bloodmoon-legacy-catalog =
+KEEP_WITH_STALE_WARNING`.** Not deleted, not archived, not merged. The other
+two options considered (`ARCHIVE_READ_ONLY`, `REMOVE_LATER_AFTER_VERIFIED_REDUNDANCY`)
+are not chosen; removal in particular is not verified redundant (its `knowledge/`
+and `references/` trees are only partly mirrored here).
+
+**Prepared warning — NOT yet applied.** The worktree is a separate git
+worktree on its own branch (`feature/legacy-catalog-control-plane`) and is
+currently clean; writing to it from this branch would leave it dirty and
+could interfere with any session using it, so the text below is prepared here
+for a one-file commit there once Bryan wants it applied. Suggested target:
+a banner at the very top of that worktree's `README.md`.
+
+```text
+> STALE COPY -- DO NOT USE AS THE CURRENT SOURCE.
+> This worktree (mu-bloodmoon-legacy-catalog, branch
+> feature/legacy-catalog-control-plane) is an older snapshot. The current source
+> of truth for Blood Moon code, docs, economy, legacy-supplier and knowledge
+> material is D:\MU\mu-bloodmoon-v1 (start at docs/knowledge/KNOWLEDGE_MASTER_INDEX.md).
+> Notably, docs/economy/ here is missing legacy-dmn-cms-and-currency-investigation.md
+> and several other files present in mu-bloodmoon-v1. Its README's reference to
+> C:\Users\Admin\Documents\BloodMoonBackups\ProjectCleanup\20260730-season6-scope
+> is stale: that content is at D:\MU\Deploy\Predeploy-Snapshots\20260730-season6-scope-cleanup\.
+> Kept for its equipment/asset catalog and as history; do not delete without a
+> verified-redundancy review.
+```
+
 ## Gaps
 
 - `D:\MU\BloodMoonBackups\{WebSource-web,game-vps,hostbr-web,project-references,ProjectCleanup}`
@@ -217,16 +254,14 @@ equipment/asset catalog plus an earlier snapshot of the same investigation.
   This specific pruned-scope snapshot is unconfirmed to exist anywhere
   reachable from this session. It may be present on a different machine, or
   the reference may be stale.
-- 3 real, already-captured-but-unprocessed YouTube transcripts are the most
-  direct vendor-documentation match for this exact question and remain
-  unread: `gqtSk1pdti4` "Custom Buy Vip - ADDED 8.3", `Jia1TrtgZfY` "Command
-  Buy Vip Check User - UPDATED 8.2", `XUeN6U74zME` "Custom Buy Vip And Coin
-  - UPDATED 7.7" (all P1, domains SHOP/CURRENCY, `rawTranscriptStatus:
-  CAPTURED`, everything downstream `NOT_STARTED` —
-  `knowledge/vendor-sweep/transcript-inventory.json`). These describe the
-  vendor engine's OWN in-game `/buy vip` command flow (distinct from the DMN
-  CMS website flow traced above) and are the single highest-value next
-  capture for this topic.
+- ~~3 real, already-captured-but-unprocessed YouTube transcripts … remain
+  unread~~ **RESOLVED (Phase 18C read them; Phase 18D registered them as
+  KI-042/043/044 with CLAIM-100..124).** They describe the vendor engine's OWN
+  in-game `/buyvip` command and `CustomBuyVipAndCoin` flows — the **spend side**,
+  distinct from the DMN web donation flow traced above (the **entry side**).
+  Both legacy paths are `LEGACY_ONLY`-dormant on Blood Moon: DmN never took a
+  real payment (CLAIM-124), and the `/buyvip` command is present but disabled
+  (CLAIM-101). Full comparison: `CASH_VIP_INTEGRATION_MAP.md`.
 - `controller.shop.php`/`model.shop.php` (in-game item/warehouse delivery,
   `UPDATE Warehouse SET Items = 0x... WHERE AccountId = :user`) were
   inventoried but not traced end-to-end this phase — a second, separate

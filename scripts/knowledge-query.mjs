@@ -32,7 +32,14 @@ function cmdQuery(term) {
   // containing both "ItemDrop.txt" and "VIP-tier", even though that exact
   // phrase never appears verbatim).
   const words = term.toLowerCase().split(/\s+/).filter(Boolean)
-  const matchesAll = (haystack) => words.every(w => haystack.includes(w))
+  // Separator-insensitive fallback (Phase 18D): taxonomy tokens such as BUY_VIP or
+  // CUSTOM_BUY_VIP_AND_COIN must also match "Buy Vip" / "CustomBuyVipAndCoin".
+  // Strictly a superset of the plain substring match -- never removes a hit.
+  const collapse = (s) => s.replace(/[\s_\-]+/g, '')
+  const matchesAll = (haystack) => {
+    const collapsed = collapse(haystack)
+    return words.every(w => haystack.includes(w) || (collapse(w) !== '' && collapsed.includes(collapse(w))))
+  }
   const claims = load('atomic-claims.json', { claims: [] }).claims
   const index = load('knowledge-index.json', { entries: [] }).entries
   const hits = []

@@ -50,14 +50,37 @@ queried directly this phase:
 
 | Metric | Count |
 |---|---|
-| Cataloged sources (`knowledge-index.json`) | 41 |
-| Atomic claims | ~99 (highest claim ID: CLAIM-098/099-range) |
-| project-gamers-oficial videos tracked | 108 |
+| Cataloged sources (`knowledge-index.json`) | **44** (41 before Phase 18D; +KI-042/043/044) |
+| Atomic claims | **124** (99 before Phase 18D; +CLAIM-100..124), of which 75 are canonical facts (`CONFIRMED_BY_*`) |
+| project-gamers-oficial videos tracked | 108 (42 with a KI entry and claims; 66 pure RAW) |
+| Verification queue | 58 items: 40 DONE, 3 QUEUED, 15 BLOCKED |
 | Wiki candidates | 4 (all `systems`/`guides` category, none promoted) |
 | Reference gaps tracked | 6 (5 `RESOLVED`, 1 `PARTIAL`) |
 
 See `docs/knowledge/knowledge-sweep.md` for the methodology (not duplicated
 here) and `TOPIC_COVERAGE.md` for per-topic breakdown.
+
+### Per-source registry fields (Phase 18D) — sources touched this phase
+
+`knowledge-index.json` is the machine-readable per-source registry (one entry
+per `KI-*` id, ids unique — checked by `validate.mjs`). Its older entries carry
+`id, title, sourceType, sourceAuthority, category, season, provider,
+rawArtifact, tags, entities, capturedAt, sourceDate, confidence, status`; they
+do **not** record a local file hash, `last_verified`, or a channel. The three
+sources below were registered with the full field set:
+
+| source_id | title | source_type | location | authority | status | version / context | hash_if_local (sha256) | last_verified | topics |
+|---|---|---|---|---|---|---|---|---|---|
+| `KI-042` | Custom Buy Vip — in-game VIP purchase button | `YOUTUBE_VIDEO` (`gqtSk1pdti4`, ProjectGamers Developers) | `Research/YouTube/project-gamers-oficial/transcripts/gqtSk1pdti4.pt.json` | `PROVIDER_TUTORIAL` | `BLOODMOON_LIKELY` | vendor ADDED 8.3 (2024-12-17); demo Season 6.17 | `4d6d90f18fe94fb15c956323cbec6a05c9298c1f8421e6cf216a4668b3194852` | 2026-09-18 | buy_vip, vip, cash, wcoin, game_currency |
+| `KI-043` | Command Buy Vip Check User — already-VIP stacking fix | `YOUTUBE_VIDEO` (`Jia1TrtgZfY`) | `…/transcripts/Jia1TrtgZfY.pt.json` | `PROVIDER_TUTORIAL` | `BLOODMOON_LIKELY` | vendor UPDATED 8.2 (2024-11-04); no season stated | `a6674904b86497a46b1780f2da734de542a110af01d0fefdec88abf61d0c35ea` | 2026-09-18 | buy_vip, vip, check-user, bugfix |
+| `KI-044` | Custom Buy Vip And Coin — item-purchase reward engine, skill delivery | `YOUTUBE_VIDEO` (`XUeN6U74zME`) | `…/transcripts/XUeN6U74zME.pt.json` | `PROVIDER_TUTORIAL` | `BLOODMOON_LIKELY` | vendor UPDATED 7.7 (2023-10-19); demo Season 4.6 | `49882833c16ca9edb0013c0146763061c73331ff713db8df54b3321453a58b10` | 2026-09-18 | custom_buy_vip_and_coin, vip, coin, npc, skill-delivery |
+
+~~"SOURCE_REGISTRY_NORMALIZED = YES (it already contained the requested fields)"~~
+**(18D correction of the Phase 18C report)**: that was overstated. This file is
+a system-level index; per-source hashes, `last_verified` and channel were
+recorded for these three sources only. Backfilling the other 41 vendor-sweep
+sources and the raw-archive rows is **not** done — it is tracked as
+`KNOWLEDGE_GAPS.md` GAP-P18-13.
 
 ## Repository documentation (`mu-bloodmoon-v1/docs/`, git-tracked, curated)
 

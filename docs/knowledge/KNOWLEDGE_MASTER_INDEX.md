@@ -61,7 +61,10 @@ TASK ("how do I do X?")
 | "Where is XShop configured?" | `docs/economy/xshop-cashshop-config-field-matrix.md` |
 | "How does current Asaas WC reach the game?" | `CASH_VIP_INTEGRATION_MAP.md` Part 4 — explicit gap, `NOT IMPLEMENTED / NOT ENABLED` |
 | "How is VIP bought in the legacy system?" | `CASH_VIP_INTEGRATION_MAP.md` Parts 1-3 — two distinct paths (web donation packages vs. in-game `/buyvip`), kept separate |
-| "How is Buy Vip And Coin implemented?" | `CASH_VIP_INTEGRATION_MAP.md` Part 1, `XUeN6U74zME` section |
+| "How is Buy Vip And Coin implemented?" | `CASH_VIP_INTEGRATION_MAP.md` Part 1, `XUeN6U74zME` section; machine: `node scripts/knowledge-query.mjs source XUeN6U74zME` (KI-044, CLAIM-111..117) |
+| "Is /buyvip or CustomBuyVipAndCoin active on Blood Moon?" | **No — present but disabled/inert** in the preserved snapshots: CLAIM-101 (`CommandBuyVipSwitch = 0`, prices 0) and CLAIM-118 (every row commented out); `CASH_VIP_INTEGRATION_MAP.md` Part 3 |
+| "Where does real money enter vs. get spent (legacy)?" | Entry: the DmN web donation flow — CLAIM-123, `LEGACY_SUPPLIER_INDEX.md`; spend: the in-game `/buyvip` / CustomBuyVipAndCoin — CLAIM-100..118. Never the same flow (`CASH_VIP_INTEGRATION_MAP.md` Part 2) |
+| "Machine-index lookup for the Cash/VIP cluster" | `node scripts/knowledge-query.mjs query "buy_vip"` (also `vip`, `coin`, `wcoin`, `cash`, `cashshop`, `xshop`, `game_currency`, `custom_buy_vip`, `custom_buy_vip_and_coin` — separator-insensitive since Phase 18D) |
 | "How do I change a GameServer setting?" | `PROCEDURE_INDEX.md` row "Configure a GameServer setting" → `KNOWLEDGE_NO_RUNBOOK` for most families (GAP-P18-07); the narrow Buy-Vip/Custom-config reload case is `RUNBOOK_READY` (see the next row of that table) |
 | "Does GameServer need a restart for a CashShop config change?" | `KNOWLEDGE_GAPS.md` GAP-P18-07 — `UNKNOWN` for `CustomXShop.txt`/`CashShopProduct.txt` specifically; a *different*, related config family (`Data/Command`/`Data/Custom`) is `LIVE_RELOAD_CONFIRMED` — don't conflate the two, `PROCEDURE_INDEX.md`'s reload row states the boundary explicitly |
 | "How do we publish a launcher update?" | `PROCEDURE_INDEX.md` — legacy documented in `ANALISE-LAUNCHER.md`; current system not re-verified this phase |
@@ -102,6 +105,21 @@ phase's final report.
 - **Operational procedures**: `PROCEDURE_INDEX.md`.
 - **Full source inventory**: `SOURCE_REGISTRY.md`.
 
+## Machine layer and its guardrails (Phase 18D)
+
+The prose docs and `knowledge/vendor-sweep/*.json` are two layers of the same
+knowledge and can drift apart. Guardrails that now exist:
+`node docs/knowledge/validate.mjs` (docs ↔ machine consistency: duplicate
+source ids, claims citing a missing source, unknown topics, duplicate claims,
+broken transcript paths, registered videos without a machine artifact, prose
+citing a claim that does not exist — each proven to fire by injecting the
+defect), `node scripts/knowledge-validate.mjs` (schema/graph integrity) and
+`node scripts/knowledge-tools-test.mjs` (21 checks incl. the Cash/VIP lookup
+regression and an "evidence ceiling" check that no vendor-video-only claim can
+be `BLOODMOON_CONFIRMED`). After editing any claim, re-run the three
+generators (`knowledge-transcript-inventory`, `knowledge-canonical-facts
+--write`, `knowledge-provenance-report --write`) — never hand-edit their outputs.
+
 ## Existing methodology (not re-created, already mature)
 
 - `docs/knowledge/knowledge-sweep.md` — the RAW→NORMALIZED→DERIVED→PRODUCT_USE
@@ -122,7 +140,7 @@ Current structured files (Hub + `knowledge/vendor-sweep/*.json` + this
 index) are sufficient for the lookup patterns tested this phase — every
 question resolved in 1-3 hops via file-path/topic routing, not free-text
 search. A full-text or vector index is not recommended yet: the corpus is
-still small enough (64 Hub items, 41 vendor-sweep sources, ~30 docs/economy
+still small enough (64 Hub items, 44 vendor-sweep sources / 124 claims, ~30 docs/economy
 + ADR files) for structured routing to outperform search infrastructure
 overhead. Revisit if/when the corpus grows past what a router table can
 reasonably enumerate, or if the 3 untranscribed videos (and any future

@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-27T13:50:23.196Z",
+  "generatedAt": "2026-09-18T18:06:41.188Z",
   "generatedBy": "scripts/knowledge-canonical-facts.mjs -- derived mechanically from atomic-claims.json, do not hand-edit, re-run instead",
   "rule": "A claim qualifies as canonical only when verificationStatus starts with CONFIRMED_BY_ (config/schema/runtime evidence). PROVIDER_TUTORIAL or COMMUNITY_TUTORIAL sourceAuthority alone, however plausible, is explicitly insufficient -- see docs/knowledge/source-authority.md.",
-  "canonicalFactCount": 66,
-  "totalClaims": 99,
+  "canonicalFactCount": 75,
+  "totalClaims": 124,
   "canonicalFacts": [
     {
       "claimId": "CLAIM-001",
@@ -718,6 +718,119 @@
       ],
       "topic": "monsters",
       "confidence": "CONFIRMED_RUNTIME"
+    },
+    {
+      "claimId": "CLAIM-100",
+      "statement": "Blood Moon's GameServerInfo - Command.dat contains a \"Command Buy Vip Settings\" block for the native in-game /buyvip <tipo> <dias> command, with three VIP slots (Vip1-3) that each carry three currency price values (PriceValue1-3).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomBuyVip",
+        "CommandBuyVip",
+        "GameServerInfo - Command.dat"
+      ],
+      "topic": "commands",
+      "confidence": "CONFIRMED_RUNTIME (preserved snapshot: Buy Vip block byte-identical in the Phase 6 download (2026-08-27) and the Phase 11 download (2026-08-29); not re-read live in Phase 18D)"
+    },
+    {
+      "claimId": "CLAIM-101",
+      "statement": "In the preserved snapshots of Blood Moon's config the native /buyvip command is present but disabled and unconfigured: CommandBuyVipSwitch = 0, all four CommandBuyVipEnable_AL flags = 0, all nine VIP price values = 0 and CommandBuyVipCheckUserSwitch = 0 (only CommandBuyVipMinDays = 15 and CommandBuyVipMaxDays = 30 hold non-zero values).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomBuyVip",
+        "CommandBuyVip",
+        "GameServerInfo - Command.dat"
+      ],
+      "topic": "commands",
+      "confidence": "CONFIRMED_RUNTIME (preserved snapshot: Buy Vip block byte-identical in the Phase 6 download (2026-08-27) and the Phase 11 download (2026-08-29); not re-read live in Phase 18D)"
+    },
+    {
+      "claimId": "CLAIM-103",
+      "statement": "The native /buyvip command prices each VIP slot in three currencies (WCoinC, WCoinP, GoblinPoint) and refuses the purchase when the caller's balances are insufficient: Blood Moon's message table (id 819) reports the caller's WCoinC/WCoinP/GoblinPoint balances against the VIP price in the same three currencies.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomBuyVip",
+        "WCoinC",
+        "WCoinP",
+        "GoblinPoint"
+      ],
+      "topic": "commands",
+      "confidence": "CONFIRMED_RUNTIME (preserved snapshot: message table and Buy Vip block byte-identical in the Phase 6 download (2026-08-27) and the Phase 11 download (2026-08-29); not re-read live in Phase 18D)"
+    },
+    {
+      "claimId": "CLAIM-104",
+      "statement": "The native /buyvip mechanism is a spend-only, in-game exchange of game currency the player already holds: its config block has no payment-gateway or URL field (unlike CustomPix, which carries a URL), and the vendor presents the default priced currency as the \"donate\" currency obtained elsewhere; it does not itself ingest real money.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomBuyVip",
+        "WCoinC",
+        "CustomPix"
+      ],
+      "topic": "commands",
+      "confidence": "CONFIRMED_RUNTIME (block structure; preserved snapshot: Buy Vip block byte-identical in the Phase 6 download (2026-08-27) and the Phase 11 download (2026-08-29); not re-read live in Phase 18D) / CONFIRMED_VENDOR_VIDEO (donate-currency remark)"
+    },
+    {
+      "claimId": "CLAIM-111",
+      "statement": "CustomBuyVipAndCoin.txt has two sections: section 0 (columns ItemType, ItemIndex, ItemLevel, ItemInvDel, AccountLevelSwitch, AccountLevelType, AccountLevelDays, CoinSwitch, WCoinC, WCoinP, GoblinPoint, Name) and section 1 (columns Class, ItemType, ItemIndex, ItemLevel, ItemInvDel, Name).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomBuyVipAndCoin",
+        "Data/Custom/"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (preserved Phase 11 download, 2026-08-29; not re-read live in Phase 18D)"
+    },
+    {
+      "claimId": "CLAIM-118",
+      "statement": "Blood Moon's preserved CustomBuyVipAndCoin.txt is inert: every data row in both sections is commented out, leaving only the vendor's template examples (a Golden Box, two Silver Box rows, and the class-1 \"Orb of Fire Slash\" 12/16 row), and the file is byte-identical to a lab MuServer-stage copy file-dated 2023-10-05.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomBuyVipAndCoin",
+        "Data/Custom/"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (preserved Phase 11 download, 2026-08-29; not re-read live in Phase 18D)"
+    },
+    {
+      "claimId": "CLAIM-121",
+      "statement": "On the code in this repository branch, crediting a paid recharge (RechargeIntent to a WC_PURCHASE_CREDIT ledger row via WalletLedgerService, currently through the Mercado Pago provider; the Asaas provider lives on other worktrees and was not audited) writes only the Portal's own ledger: the payments, wallet and commerce modules contain no reference to GameBridgeJob, CashShopData or MU_DATABASE_URL, so no automatic bridge from Portal WC into game currency exists in this code.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "AccountCurrency",
+        "WalletLedgerService",
+        "CashShopData",
+        "RechargeIntent",
+        "Asaas"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_STATIC_CODE_READ (grep, this branch only)"
+    },
+    {
+      "claimId": "CLAIM-123",
+      "statement": "In the preserved legacy Free MU CMS (DmN) PHP source, a confirmed web donation credits game currency through reward_user() then add_credits() then increase_credits(), a config-driven UPDATE of <table>.<column> = <column> + :credits whose target comes from admin config keys (credits_<server>|table_<type>, |credits_column_<type>, |account_column_<type>); the documented target for the game currencies is CashShopData (WCoinC, WCoinP, GoblinPoint).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "DmN CMS",
+        "CashShopData",
+        "WCoinC",
+        "WCoinP",
+        "GoblinPoint",
+        "reward_user",
+        "add_credits"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_STATIC_CODE_READ (preserved legacy source; the code path is read, the exact type-to-column config values were not -- GAP-P18-03)"
+    },
+    {
+      "claimId": "CLAIM-124",
+      "statement": "The legacy DmN web commerce layer was never used for a real payment: at the 2026-08-30 SQL investigation DmN_Vip_Packages, DmN_Vip_Users, DmN_Donate, DmN_Donate_Transactions, DmN_Donate_Orders, DmN_2CheckOut_Transactions and DmN_PagSeguro_Transactions all held 0 rows, and the only non-zero CashShopData balances belonged to the four known test accounts.",
+      "evidenceBasis": "CONFIRMED_BY_RUNTIME",
+      "entities": [
+        "DmN CMS",
+        "CashShopData",
+        "DmN_Donate_Transactions"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (SQL read on 2026-08-30; not re-run in Phase 18D)"
     }
   ],
   "explicitlyNotCanonical_contradicted": [
