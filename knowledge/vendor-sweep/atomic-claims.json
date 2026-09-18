@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T17:56:13.956Z",
+  "generatedAt": "2026-09-18T22:43:00.757Z",
   "schema": {
     "claimId": "string, CLAIM-NNN",
     "statement": "string, ONE atomic fact -- no 'and', no compound claims",
@@ -3299,6 +3299,430 @@
       "bloodMoonStatus": "BLOODMOON_CONFIRMED",
       "verificationStatus": "CONFIRMED_BY_RUNTIME",
       "confidence": "CONFIRMED_RUNTIME (SQL read on 2026-08-30; not re-run in Phase 18D)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "RemoteData/Phase6/CustomEventAuction.txt"
+        }
+      ],
+      "notes": "The strongest single source for GAP-P18-11. Note the indexing: this file numbers the slots 1-3 with 0 = zen (CLAIM-128). The comment is part of Blood Moon's live config file; who wrote it (vendor template vs an edit) is not established, but either way it is the server's own statement of the equivalence. Resolves GAP-P18-11 together with CLAIM-126/127. Analysis: docs/knowledge/CURRENCY_TERMINOLOGY.md.",
+      "claimId": "CLAIM-125",
+      "statement": "Blood Moon's real CustomEventAuction.txt documents its CoinType column as 0 = zen, 1 = Cash/WCoinc, 2 = Gold/WCoinP, 3 = PcPoint/GoblonPoint, 4 = Item -- an explicit pairing of the two currency name sets, slot for slot, written in the file itself (which spells \"WCoinc\" and \"GoblonPoint\"; who authored the comment is not established, it reads like the vendor's template).",
+      "sourceId": "real-config-read",
+      "sourceAuthority": "REAL_BLOODMOON_CONFIG",
+      "sourceLocation": "RemoteData/Phase6/CustomEventAuction.txt lines 11-16 (sha256 c3f149bf1243db6f3d27aed0e20f003d24b7060a008f2e9abfa90dca45a27d4c); preserved snapshot, read 2026-09-18; not re-read live (Phase 6 download, 2026-08-27)",
+      "entityTypes": [
+        "SYSTEM",
+        "CURRENCY",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomEventAuction",
+        "WCoinC",
+        "WCoinP",
+        "GoblinPoint",
+        "Cash",
+        "Gold",
+        "PcPoint"
+      ],
+      "topic": "systems",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "confidence": "CONFIRMED_RUNTIME (preserved snapshot, read 2026-09-18; not re-read live)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "RemoteData/Phase10/Message.utf8.txt; RemoteData/Phase11/GameServerInfo - Command.readable.txt"
+        }
+      ],
+      "notes": "Corrects GAP-P18-11's earlier sentence that Blood Moon used only the WCoin/GoblinPoint names. Message id 1140 pairs \"Cash/WCoinC\" in one sentence -- an independent first-hand pairing for slot 1 only.",
+      "claimId": "CLAIM-126",
+      "statement": "Blood Moon's real message table uses both currency label families for the same triple of balances -- \"WCoinC/WCoinP/GoblinPoint\" (ids 632, 780, 819) and \"Cash/Gold/PcPoint\" (ids 980, 1033, 1145), with both names in one string in id 1140 (\"Cash/WCoinC\") -- and the native /util command names its three coin operands Cash, Gold and PcPoint (disabled: CommandUtilSwitch = 0); no preserved Blood Moon file, searched vendor document or repository document treats the two name sets as different balances.",
+      "sourceId": "real-config-read",
+      "sourceAuthority": "REAL_BLOODMOON_CONFIG",
+      "sourceLocation": "RemoteData/Phase10/Message.utf8.txt ids 632, 780, 819, 980, 1033, 1140, 1145 (sha256 73f09c90a689d45992d70ebf602b7d33e1f397876615f1b9f3feeab12806ebd5); RemoteData/Phase11/GameServerInfo - Command.readable.txt lines 691, 706-710 (sha256 9d971e9f30038bdadedb302a27830b6296deb48cb9bf01ac0cb61a9a3d5b15d7); preserved snapshot, read 2026-09-18; not re-read live (Phase 10 download 2026-08-28, Phase 11 download 2026-08-29)",
+      "entityTypes": [
+        "SYSTEM",
+        "CURRENCY",
+        "CONFIG",
+        "COMMAND"
+      ],
+      "entities": [
+        "Message.txt",
+        "CommandUtil",
+        "WCoinC",
+        "WCoinP",
+        "GoblinPoint",
+        "Cash",
+        "Gold",
+        "PcPoint"
+      ],
+      "topic": "systems",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "confidence": "CONFIRMED_RUNTIME (preserved snapshot, read 2026-09-18; not re-read live); the \"no source separates them\" part is a negative result over the searched scope (RemoteData Phase 6/10/11, the vendor tutorials, repository docs), not a proof"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "schema_read",
+          "path": "sys.sql_modules for dbo.WZ_SetCoin in the LAB database -- read-only; requires Bryan's authorization, not done in Phase 20"
+        }
+      ],
+      "notes": "The comments are procedure source (so almost certainly vendor-written, not confirmed), this phase did not see them first-hand and the lab is not production. Add-vs-set semantics of the procedure are NOT preserved (GAP-P20-05). The first-hand pairing evidence is CLAIM-125/126; this claim is corroboration.",
+      "claimId": "CLAIM-127",
+      "statement": "The WZ_SetCoin stored procedure's own inline comments, as quoted in an earlier phase's preserved document, label @Value1 \"Cash | WCoinC\", @Value2 \"Gold | WCoinP\" and @Value3 \"PcPoints | GoblinPoint\", and it writes CashShopData.WCoinC / WCoinP / GoblinPoint respectively; the procedure body itself is not preserved in this repository.",
+      "sourceId": "internal-doc-cross-reference",
+      "sourceAuthority": "PROVIDER_DOCUMENTATION",
+      "sourceLocation": "context/preservation/openbeta-untracked/docs/economy/xshop-commercial-review.md lines 43-52 (quoting a read of the procedure in the local GameServer database lab); stored-procedures.md:88 and cashshop-commercial-review.md:65-75 for the target columns",
+      "entityTypes": [
+        "SYSTEM",
+        "CURRENCY",
+        "DATABASE"
+      ],
+      "entities": [
+        "WZ_SetCoin",
+        "CashShopData",
+        "WCoinC",
+        "WCoinP",
+        "GoblinPoint"
+      ],
+      "topic": "systems",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "confidence": "STRONG_EVIDENCE (SECOND-HAND: a preserved document quoting a lab-database read; the raw procedure text was searched for and not found in this repository)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "RemoteData/Phase6/CustomEventAuction.txt; RemoteData/Phase11/CustomCoinsOnline.readable.txt"
+        }
+      ],
+      "notes": "Design consequence recorded in docs/knowledge/GAME_CURRENCY_DELIVERY_ANALYSIS.md Part 4: a future currency command must carry a NAMED currency, not a slot number.",
+      "claimId": "CLAIM-128",
+      "statement": "Currency-slot numbering is not uniform across Blood Moon's subsystems: CustomEventAuction.txt CoinType is 1-3 with 0 = zen; CustomCoinsOnline.txt carries CoinType rows 0, 1 and 2 with no legend in the file (inferred 0-based); X-Shop prices are Coin0/Coin1/Coin2; the vendor Lua API uses Coin1/Coin2/Coin3 -- so a raw slot number must never be carried from one subsystem to another.",
+      "sourceId": "real-config-read",
+      "sourceAuthority": "REAL_BLOODMOON_CONFIG",
+      "sourceLocation": "RemoteData/Phase6/CustomEventAuction.txt lines 11-16; RemoteData/Phase11/CustomCoinsOnline.readable.txt rows 0-2 (sha256 fe8aa11192117cf3270481f2dee2229a0e881b45d0bd8f667a511248032a1e21); docs/economy/xshop-cashshop-config-field-matrix.md:34 (Coin0/1/2); Research/Vendor/Tutorials/Script Lua Interface Functions.rtf (ObjectGetCoin/AddCoin/SubCoin); preserved snapshot, read 2026-09-18; not re-read live",
+      "entityTypes": [
+        "SYSTEM",
+        "CURRENCY",
+        "CONFIG"
+      ],
+      "entities": [
+        "CustomEventAuction",
+        "CustomCoinsOnline",
+        "CustomXShop",
+        "ObjectAddCoin"
+      ],
+      "topic": "systems",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "confidence": "CONFIRMED_RUNTIME (the numbering as written in the files) / INFERENCE (that CustomCoinsOnline.txt is 0-based -- no legend, GAP-P20-06) (preserved snapshot, read 2026-09-18; not re-read live)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [],
+      "notes": "NOT_APPLICABLE verification: a decision record (same treatment as CLAIM-122). INFERENCE only, not a decision: the purchasable R$-pegged WC plays the role the legacy web called \"WCoin\"/\"Cash\" (WCoinC). ADR-0008:60-61 calls WCoin \"the in-game currency GameBridge/the GameServer actually understands\" without naming a column.",
+      "claimId": "CLAIM-129",
+      "statement": "No recorded decision maps the Portal's WCOIN currency to any GameServer currency (WCoinC, WCoinP or otherwise): the Prisma schema calls the engine labels \"a different, unreconciled currency domain\", the legacy-currency investigation states \"no equivalence is assumed and no integration was built\", and ADR-0008/0020/0022 define only the R$-to-WC peg; the status is UNRESOLVED, open by earlier decision.",
+      "sourceId": "internal-doc-cross-reference",
+      "sourceAuthority": "INTERNAL_DECISION",
+      "sourceLocation": "apps/api/prisma/schema.prisma:2054-2057; docs/economy/legacy-dmn-cms-and-currency-investigation.md:40; context/preservation/openbeta-untracked/docs/store/store-channel-boundaries.md:28-35; .../decisions/0008-wcoin-1to1-peg-with-brl.md:60-61",
+      "entityTypes": [
+        "SYSTEM",
+        "CURRENCY",
+        "DECISION"
+      ],
+      "entities": [
+        "WCOIN",
+        "WCoinC",
+        "WCoinP",
+        "AccountCurrency"
+      ],
+      "topic": "systems",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "NOT_APPLICABLE",
+      "confidence": "CONFIRMED_OPERATOR (recorded decisions/statements; a mapping decision is required from Bryan -- GAP-P20-01)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [],
+      "notes": "Rule kept: technical GOBLIN_POINT / public Blood Coin; never conflate Blood Coin with WC. Related contradiction (GP earn-only vs sold, HP native vs no analog): CONFLICTS.md item 8, GAP-P20-07.",
+      "claimId": "CLAIM-130",
+      "statement": "Blood Coin is the public, player-facing name (decided 2026-09-05) of the Portal currency whose technical code is GOBLIN_POINT; it is not WC (WCOIN), and whether the Portal's GOBLIN_POINT equals the engine's GoblinPoint is unconfirmed -- the claim that the GameServer side was renamed to match is unverified and no real game config or message contains \"Blood Coin\".",
+      "sourceId": "internal-doc-cross-reference",
+      "sourceAuthority": "INTERNAL_DECISION",
+      "sourceLocation": "docs/phases/blood-coin-public-name-completion/phase-manifest.md:4-11,122-139; context/BUSINESS_RULES.md:27; context/domains/game-economy.md:24-34; apps/web/data/management.ts:3-7; RemoteData/Phase6,10,11 (no \"Blood Coin\" found)",
+      "entityTypes": [
+        "SYSTEM",
+        "CURRENCY",
+        "DECISION"
+      ],
+      "entities": [
+        "GOBLIN_POINT",
+        "Blood Coin",
+        "GoblinPoint",
+        "WCOIN"
+      ],
+      "topic": "systems",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "NOT_APPLICABLE",
+      "confidence": "CONFIRMED_OPERATOR (decision recorded); game-side rename UNVERIFIED"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "apps/ (repository-wide search, ~330 matching files)"
+        }
+      ],
+      "notes": "Canonical names and the layering are in docs/knowledge/GAMEBRIDGE_DISAMBIGUATION.md. CASH_VIP_INTEGRATION_MAP.md previously distinguished two (CLAIM-122); Phase 20 found the rest.",
+      "claimId": "CLAIM-131",
+      "statement": "The word \"GameBridge\" names at least six distinct things in this repository -- GAME_COMMAND_TRANSPORT (HMAC to Worker/D1/Queue to Agent to SQL procedure), MARKETPLACE_DELIVERY_WORKER (an always-failing script), PORTAL_BRIDGE_JOB_OUTBOX (the shared GameBridgeJob table), GAME_DATA_TELEMETRY (read-only game-to-cloud ingest and heartbeat), GM_EVENT_EXECUTOR_STUB and a label-only future data dependency -- and a seventh in the vendor Lua \"bridge functions\" (engine event hooks); the Agent process hosts both GAME_COMMAND_TRANSPORT and GAME_DATA_TELEMETRY.",
+      "sourceId": "code-read-2026-09-18",
+      "sourceAuthority": "CURRENT_CODE",
+      "sourceLocation": "apps/game-bridge-agent/Program.cs:18-22,60-61; apps/api/scripts/process-game-bridge-jobs.mjs; apps/api/prisma/schema.prisma:392-422,3290; apps/game-data-worker/src/index.ts; apps/api/src/modules/gm/event-executors/game-bridge-event-executor.ts; Research/Vendor/Tutorials/Script Lua BridgeFunctions.rtf",
+      "entityTypes": [
+        "SYSTEM"
+      ],
+      "entities": [
+        "GameBridgeJob",
+        "GameCommandTransportClient",
+        "BloodMoon.GameBridgeAgent",
+        "MU_BRIDGE_ENABLED"
+      ],
+      "topic": "systems",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "confidence": "CONFIRMED_STATIC_CODE_READ (this branch; repository-wide term inventory)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "apps/api/scripts/process-game-bridge-jobs.mjs"
+        }
+      ],
+      "notes": "Latent hazard for any new outbox operation (GAP-P20-09). The GameBridgeOperation.CREDIT_CURRENCY enum value means marketplace seller credit and has no producer and no consumer; a Portal-recharge-to-game command must not reuse it.",
+      "claimId": "CLAIM-132",
+      "statement": "GameBridgeJob is a shared Portal-side outbox used by three features (marketplace escrow, VIP delivery via GRANT_VIP, account lifecycle via ANONYMIZE/PURGE), and the marketplace script process-game-bridge-jobs.mjs selects every PENDING job regardless of operation, so with MU_BRIDGE_ENABLED=true it would mark jobs owned by the other dispatchers PROCESSING and then FAILED.",
+      "sourceId": "code-read-2026-09-18",
+      "sourceAuthority": "CURRENT_CODE",
+      "sourceLocation": "apps/api/scripts/process-game-bridge-jobs.mjs:108-160; apps/api/prisma/schema.prisma:392-422,3290; apps/api/src/modules/vip/vip-delivery.service.ts:83-84; apps/api/src/modules/accounts/account-lifecycle-bridge.service.ts:105-106; deploy/docker-compose.production.yml:68-77",
+      "entityTypes": [
+        "SYSTEM",
+        "DATABASE"
+      ],
+      "entities": [
+        "GameBridgeJob",
+        "process-game-bridge-jobs",
+        "MU_BRIDGE_ENABLED",
+        "VipDeliveryService"
+      ],
+      "topic": "systems",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "confidence": "CONFIRMED_STATIC_CODE_READ (the selection query was read; the \"would fail them\" consequence follows from the read code, the flag has never been set true)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "apps/game-data-worker/src/commands.ts"
+        }
+      ],
+      "notes": "docs/gamebridge/gamebridge-agent-extension-plan.md:625 says the Worker was extended and tested locally -- true only of the uncommitted openbeta copy (CONFLICTS.md item 4). Loss risk: GAP-P20-02. Remote D1 state of migration 0004 is unknown.",
+      "claimId": "CLAIM-133",
+      "statement": "The committed Worker (apps/game-data-worker/src/commands.ts, identical blob on all 30 local branch tips) accepts only CREATE_GAME_ACCOUNT and its D1 schema.sql still has CHECK (command_type = 'CREATE_GAME_ACCOUNT'); the Portal client types, the Agent handlers and the D1 migration 0004 exist for GRANT_VIP, SYNC_VIP_TIER, ANONYMIZE_GAME_ACCOUNT and PURGE_GAME_ACCOUNT, but the Worker routing for them exists only as uncommitted changes in the mu-bloodmoon-v1-openbeta worktree -- so those four commands cannot flow end to end from committed code.",
+      "sourceId": "code-read-2026-09-18",
+      "sourceAuthority": "CURRENT_CODE",
+      "sourceLocation": "apps/game-data-worker/src/commands.ts:17,219-230; apps/game-data-worker/db/schema.sql:80; apps/game-data-worker/db/migrations/0004_gamebridge_extension_commands.sql; git hash-object comparison across local branch tips; mu-bloodmoon-v1-openbeta working tree (git diff --stat: commands.ts +189, schema.sql, commands.spec.ts)",
+      "entityTypes": [
+        "SYSTEM",
+        "DEPLOYMENT"
+      ],
+      "entities": [
+        "GAME_COMMAND_TRANSPORT",
+        "GRANT_VIP",
+        "commands.ts",
+        "game_command"
+      ],
+      "topic": "systems",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "confidence": "CONFIRMED_STATIC_CODE_READ + git blob comparison (2026-09-18); the openbeta working tree may change"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "runtime_observation",
+          "path": "read-only Agent heartbeat (GET /admin/game-data/status) or bm-sql -- to confirm the CURRENT state; not done in Phase 20"
+        }
+      ],
+      "notes": "Point-in-time. The raw evidence outranks later summaries (source-authority.md), but it is a snapshot.",
+      "claimId": "CLAIM-134",
+      "statement": "As of the preserved Phase 3D-A evidence (2026-08-24), the production command transport was deployed and active for CREATE_GAME_ACCOUNT only: the Worker, Queue and D1 (migration 0003) existed, the VPS task BloodMoonGameBridgeAgent was running, one real QA account was created with exactly the two authorised MU rows, and a response-loss / Agent-restart / lease-expiry replay wrote nothing twice; the production writer login's only permission is EXECUTE on dbo.DmN_CreateGameAccount; the four extension commands were not deployed and several later runbooks nevertheless say the Agent was never deployed.",
+      "sourceId": "internal-doc-cross-reference",
+      "sourceAuthority": "REAL_BLOODMOON_RUNTIME",
+      "sourceLocation": "references/game-data/sql-discovery/phase-3d-a-production-command-transport-20260824/raw/02-real-resources-and-deployment.txt, 03-real-qa-lifecycle.txt, 04-response-loss-restart-replay.txt; docs/security/game-write-boundary.md:7-14,27-33; docs/operations/provisioning-health.md:70-72; contradicted by docs/operations/deployment-rollback-runbook.md:125 (CONFLICTS.md item 3)",
+      "entityTypes": [
+        "SYSTEM",
+        "DEPLOYMENT"
+      ],
+      "entities": [
+        "BloodMoonGameBridgeAgent",
+        "bloodmoon_writer",
+        "DmN_CreateGameAccount",
+        "game_command"
+      ],
+      "topic": "operations",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_RUNTIME",
+      "confidence": "CONFIRMED_RUNTIME (preserved 2026-08-24 evidence, read 2026-09-18; current state NOT re-verified -- GAP-P20-02)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "apps/game-bridge-agent/Commands/ProvisioningLedger.cs"
+        }
+      ],
+      "notes": "The reason a currency command needs a SQL-side business key in the same transaction (docs/knowledge/GAME_CURRENCY_DELIVERY_ANALYSIS.md Part 5). The VIP gateway mints a new commandId after FAILED_FINAL/EXPIRED -- safe only because of the MAX rule.",
+      "claimId": "CLAIM-135",
+      "statement": "No currency-credit command exists in the command transport, and none of its idempotency layers is sufficient for an additive credit: the Worker, claim lease and Agent SQLite ledger are keyed by transport ids, the existing procedures are repeatable by nature (MAX rule, state checks, credential-hash replay), the SQL audit table's CommandId index is non-unique and no procedure consults it, and after a crash between a SQL commit and the ledger completion the ledger re-acquires the command after 30 seconds and calls the writer again.",
+      "sourceId": "code-read-2026-09-18",
+      "sourceAuthority": "CURRENT_CODE",
+      "sourceLocation": "apps/game-bridge-agent/Commands/GameCommandProcessor.cs:9-117; ProvisioningLedger.cs:33-49; GameCommandWorker.cs:188-195; apps/game-data-worker/src/commands.ts:31-67,87-122; mu-bloodmoon-v1-openbeta references/game-data/sql-discovery/gamebridge-extension-20260830/derived/proposed-bm-gamebridge-audit-table.sql:53 and proposed-bm-grant-vip-procedure.sql",
+      "entityTypes": [
+        "SYSTEM",
+        "DATABASE"
+      ],
+      "entities": [
+        "ProvisioningLedger",
+        "GameCommandProcessor",
+        "bm_GameBridgeAudit",
+        "bm_GrantVip"
+      ],
+      "topic": "systems",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "confidence": "CONFIRMED_STATIC_CODE_READ; the crash-window behaviour is read from code and was not executed (no test of that window was found in the Agent test files searched)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "runtime_observation",
+          "path": "a controlled test on a NON-production GameServer (a lab instance if one exists); production must not be used"
+        }
+      ],
+      "notes": "Also: a credit must cope with a missing CashShopData row (4 of 8 accounts had one in the 3D-A evidence; the legacy PHP had an INSERT fallback). Do not propagate reload behaviour of config files (CLAIM-110/117) to database-row visibility: different subsystem. GAP-P20-04, GAP-P20-05.",
+      "claimId": "CLAIM-136",
+      "statement": "No preserved evidence establishes whether an external write to CashShopData is visible to the GameServer on the next CashShop/X-Shop interaction, only after re-login, map change or window reopen, or is overwritten by the GameServer's in-memory value; the only precedent for an external write to a GameServer-owned field (MEMB_INFO.AccountLevel) is that the native WZ_GetAccountLevel procedure reverted it at the next login.",
+      "sourceId": "synthesis-across-currency-evidence",
+      "sourceAuthority": "INTERNAL_INFERENCE",
+      "sourceLocation": "docs/vip/wz-setaccountlevel-coexistence.md (the AccountLevel reversion, reproduced in the lab); Research/Vendor/Tutorials/Script Lua Interface Functions.rtf (ObjectGetCoin/AddCoin on a player index); docs/knowledge/LEGACY_SUPPLIER_INDEX.md (the earlier unsupported \"live\" statement, corrected in Phase 20)",
+      "entityTypes": [
+        "SYSTEM",
+        "CURRENCY",
+        "DATABASE"
+      ],
+      "entities": [
+        "CashShopData",
+        "WZ_SetCoin",
+        "ObjectAddCoin",
+        "WZ_GetAccountLevel"
+      ],
+      "topic": "systems",
+      "bloodMoonStatus": "UNKNOWN",
+      "verificationStatus": "UNVERIFIED",
+      "confidence": "UNKNOWN (absence of evidence, plus one adverse precedent; the \"in-memory copy\" hypothesis is INFERENCE only)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "Data/Script/ScriptMain.lua on the lab copy (contents not read in Phase 20)"
+        }
+      ],
+      "notes": "Substrate of \"Option C\" in the currency-delivery analysis -- as a possible LAST HOP, not a transport: a Lua consumer would still need something to write its outbox table into SQL Server. SQLQuery takes a raw string and a script would hold a SQL credential: not treated as safer.",
+      "claimId": "CLAIM-137",
+      "statement": "The vendor Lua scripting interface documents ObjectGetCoin/ObjectAddCoin/ObjectSubCoin on a player index, SQLConnect(ODBC name, user, password) and SQLQuery(query string) (plus async variants), and engine hook functions OnTimerThread, OnCharacterEntry and OnSQLAsyncResult; Blood Moon's data root contains Data\\Script\\ScriptMain.lua, Script\\TemplateScript.lua and Script\\WelcomeMessage.lua -- whether Blood Moon uses these hooks, and whether its build supports the async functions marked NEW, is not evidenced.",
+      "sourceId": "vendor-tutorial-normalization",
+      "sourceAuthority": "PROVIDER_DOCUMENTATION",
+      "sourceLocation": "Research/Vendor/Tutorials/Script Lua Interface Functions.rtf (lines ~154, 170-189, 1436-1462, 1621-1650); Script Lua BridgeFunctions.rtf; RemoteData/Phase10/data-root-inventory.json (script file names)",
+      "entityTypes": [
+        "SYSTEM",
+        "CURRENCY"
+      ],
+      "entities": [
+        "Lua",
+        "ObjectAddCoin",
+        "SQLQuery",
+        "OnTimerThread",
+        "OnCharacterEntry"
+      ],
+      "topic": "systems",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "confidence": "CONFIRMED_VENDOR_DOC (the API exists) / UNKNOWN (Blood Moon usage and build support)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "apps/game-bridge-agent/GameDatabase/IGameDatabaseWriter.cs"
+        }
+      ],
+      "notes": "Answers the \"GameServer ACK semantics\" question: there is none beyond SQL commit (GAP-P20-04).",
+      "claimId": "CLAIM-138",
+      "statement": "The only acknowledgement the command transport can give is that the stored procedure returned and committed: the Agent talks only to SQL Server, has no channel to the GameServer process, writes succeed whether the GameServer is online or offline, and the Worker/D1 result carries a status and result code, not proof that the game sees the change.",
+      "sourceId": "code-read-2026-09-18",
+      "sourceAuthority": "CURRENT_CODE",
+      "sourceLocation": "apps/game-bridge-agent/GameDatabase/IGameDatabaseWriter.cs; apps/game-bridge-agent/Commands/GameCommandWorker.cs:86-95; apps/game-data-worker/src/commands.ts:124-169; docs/game-data/deployment-topology.md",
+      "entityTypes": [
+        "SYSTEM"
+      ],
+      "entities": [
+        "GameCommandWorker",
+        "IGameDatabaseWriter",
+        "game_command"
+      ],
+      "topic": "systems",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "confidence": "CONFIRMED_STATIC_CODE_READ"
     }
   ]
 }

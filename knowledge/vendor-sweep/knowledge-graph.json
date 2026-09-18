@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T17:56:13.956Z",
+  "generatedAt": "2026-09-18T22:43:00.757Z",
   "format": "JSON graph -- flat nodes[]/edges[] arrays, each node/edge has a stable id. Chosen over SQLite/JSONL to match this sweep's existing convention (plain JSON files, no new runtime dependency) and because the graph is currently small (30 nodes, 33 edges) -- revisit as a JSONL or SQLite store if it grows past a few hundred nodes and querying flat JSON becomes unwieldy.",
   "nodes": [
     {
@@ -580,6 +580,61 @@
       "id": "SRC-real-config-buyvip",
       "type": "SOURCE",
       "name": "real Command.dat + CustomBuyVipAndCoin.txt + Message.txt (preserved Phase 6/10/11 downloads, read 2026-09-18)",
+      "sourceAuthority": "REAL_BLOODMOON_CONFIG"
+    },
+    {
+      "id": "SYS-game-command-transport",
+      "type": "SYSTEM",
+      "name": "GAME_COMMAND_TRANSPORT (Portal HMAC -> Worker/D1/Queue -> Agent -> SQL procedure)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "deployed and active for CREATE_GAME_ACCOUNT only as of 2026-08-24 (CLAIM-134); other command types not deployed and not runnable from committed code (CLAIM-133); no currency command (CLAIM-135)"
+    },
+    {
+      "id": "SYS-marketplace-delivery-worker",
+      "type": "SYSTEM",
+      "name": "MARKETPLACE_DELIVERY_WORKER (process-game-bridge-jobs.mjs)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "always-failing scaffold, MU_BRIDGE_ENABLED=false (CLAIM-132)"
+    },
+    {
+      "id": "SYS-portal-bridge-job-outbox",
+      "type": "SYSTEM",
+      "name": "PORTAL_BRIDGE_JOB_OUTBOX (GameBridgeJob table)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "shared by marketplace, VIP delivery and account lifecycle (CLAIM-132)"
+    },
+    {
+      "id": "SYS-game-data-telemetry",
+      "type": "SYSTEM",
+      "name": "GAME_DATA_TELEMETRY (read-only ingest + heartbeat)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "separate from the command transport but hosted in the same Agent process (CLAIM-131)"
+    },
+    {
+      "id": "CURRENCY-slot1-cash-wcoinc",
+      "type": "CURRENCY",
+      "name": "Cash = WCoinC (CashShopData.WCoinC)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "CONFIRMED pairing (CLAIM-125, CLAIM-126)"
+    },
+    {
+      "id": "CURRENCY-slot2-gold-wcoinp",
+      "type": "CURRENCY",
+      "name": "Gold = WCoinP (CashShopData.WCoinP)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "STRONGLY_SUPPORTED pairing (CLAIM-125, CLAIM-127)"
+    },
+    {
+      "id": "CURRENCY-slot3-pcpoint-goblinpoint",
+      "type": "CURRENCY",
+      "name": "PcPoint = GoblinPoint (CashShopData.GoblinPoint)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "STRONGLY_SUPPORTED pairing (CLAIM-125, CLAIM-127)"
+    },
+    {
+      "id": "SRC-real-config-currency",
+      "type": "SOURCE",
+      "name": "real CustomEventAuction.txt + Message.utf8.txt + Command.dat /util block + CustomCoinsOnline.txt (preserved Phase 6/10/11 downloads, read 2026-09-18)",
       "sourceAuthority": "REAL_BLOODMOON_CONFIG"
     }
   ],
@@ -1318,6 +1373,86 @@
       "from": "CLAIM-123",
       "type": "RELATED_TO",
       "to": "CLAIM-124"
+    },
+    {
+      "from": "SYS-portal-bridge-job-outbox",
+      "type": "RELATED_TO",
+      "to": "SYS-game-command-transport"
+    },
+    {
+      "from": "SYS-portal-bridge-job-outbox",
+      "type": "RELATED_TO",
+      "to": "SYS-marketplace-delivery-worker"
+    },
+    {
+      "from": "SYS-game-data-telemetry",
+      "type": "SIBLING_SYSTEM_OF",
+      "to": "SYS-game-command-transport"
+    },
+    {
+      "from": "CURRENCY-slot1-cash-wcoinc",
+      "type": "RELATED_TO",
+      "to": "CURRENCY-slot2-gold-wcoinp"
+    },
+    {
+      "from": "CURRENCY-slot2-gold-wcoinp",
+      "type": "RELATED_TO",
+      "to": "CURRENCY-slot3-pcpoint-goblinpoint"
+    },
+    {
+      "from": "SRC-real-config-currency",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-125"
+    },
+    {
+      "from": "SRC-real-config-currency",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-126"
+    },
+    {
+      "from": "SRC-real-config-currency",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-128"
+    },
+    {
+      "from": "CLAIM-125",
+      "type": "RELATED_TO",
+      "to": "CLAIM-126"
+    },
+    {
+      "from": "CLAIM-127",
+      "type": "RELATED_TO",
+      "to": "CLAIM-125"
+    },
+    {
+      "from": "CLAIM-128",
+      "type": "RELATED_TO",
+      "to": "CLAIM-125"
+    },
+    {
+      "from": "CLAIM-129",
+      "type": "RELATED_TO",
+      "to": "CLAIM-121"
+    },
+    {
+      "from": "CLAIM-131",
+      "type": "RELATED_TO",
+      "to": "CLAIM-122"
+    },
+    {
+      "from": "CLAIM-133",
+      "type": "RELATED_TO",
+      "to": "CLAIM-134"
+    },
+    {
+      "from": "CLAIM-135",
+      "type": "RELATED_TO",
+      "to": "CLAIM-134"
+    },
+    {
+      "from": "CLAIM-136",
+      "type": "RELATED_TO",
+      "to": "CLAIM-120"
     }
   ],
   "note": "CLAIM-* ids referenced as edge endpoints are NOT duplicated as separate nodes here to avoid redundancy with atomic-claims.json -- treat them as a second node namespace (claims) that this graph references but atomic-claims.json owns. Phase 3 adds the first real MONSTER/ITEM/EVENT/NPC/MAP entities (from Data/EventItemBagManager.txt, Data/EventItemBag/, and 3 real CustomEvent*.txt files) -- see knowledge/vendor-sweep/entities/gameplay-entities.json for the full roster (17 monster identities including a 19-boss 'Golden series' bundle, 17 item identities, 11 event groupings), only the headline entities are represented as individual graph nodes here to keep the graph a navigable summary rather than a full duplicate of the entities file. The MAP-1->MONSTER->ITEM edges are explicitly marked _INFERRED in their edge type name, per the required FACT/INFERENCE separation -- no edge here claims a config-explicit monster-kill-drops-item relationship, since none was found. Maps are numeric-ID-only (0, 1, 40) -- no name has been confirmed for any of them from real evidence, only from generic MU memory, which this sweep deliberately does not use."

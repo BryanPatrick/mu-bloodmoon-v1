@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-09-18T18:06:41.188Z",
+  "generatedAt": "2026-09-18T22:43:08.688Z",
   "generatedBy": "scripts/knowledge-canonical-facts.mjs -- derived mechanically from atomic-claims.json, do not hand-edit, re-run instead",
   "rule": "A claim qualifies as canonical only when verificationStatus starts with CONFIRMED_BY_ (config/schema/runtime evidence). PROVIDER_TUTORIAL or COMMUNITY_TUTORIAL sourceAuthority alone, however plausible, is explicitly insufficient -- see docs/knowledge/source-authority.md.",
-  "canonicalFactCount": 75,
-  "totalClaims": 124,
+  "canonicalFactCount": 84,
+  "totalClaims": 138,
   "canonicalFacts": [
     {
       "claimId": "CLAIM-001",
@@ -831,6 +831,129 @@
       ],
       "topic": "systems",
       "confidence": "CONFIRMED_RUNTIME (SQL read on 2026-08-30; not re-run in Phase 18D)"
+    },
+    {
+      "claimId": "CLAIM-125",
+      "statement": "Blood Moon's real CustomEventAuction.txt documents its CoinType column as 0 = zen, 1 = Cash/WCoinc, 2 = Gold/WCoinP, 3 = PcPoint/GoblonPoint, 4 = Item -- an explicit pairing of the two currency name sets, slot for slot, written in the file itself (which spells \"WCoinc\" and \"GoblonPoint\"; who authored the comment is not established, it reads like the vendor's template).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventAuction",
+        "WCoinC",
+        "WCoinP",
+        "GoblinPoint",
+        "Cash",
+        "Gold",
+        "PcPoint"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (preserved snapshot, read 2026-09-18; not re-read live)"
+    },
+    {
+      "claimId": "CLAIM-126",
+      "statement": "Blood Moon's real message table uses both currency label families for the same triple of balances -- \"WCoinC/WCoinP/GoblinPoint\" (ids 632, 780, 819) and \"Cash/Gold/PcPoint\" (ids 980, 1033, 1145), with both names in one string in id 1140 (\"Cash/WCoinC\") -- and the native /util command names its three coin operands Cash, Gold and PcPoint (disabled: CommandUtilSwitch = 0); no preserved Blood Moon file, searched vendor document or repository document treats the two name sets as different balances.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "Message.txt",
+        "CommandUtil",
+        "WCoinC",
+        "WCoinP",
+        "GoblinPoint",
+        "Cash",
+        "Gold",
+        "PcPoint"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (preserved snapshot, read 2026-09-18; not re-read live); the \"no source separates them\" part is a negative result over the searched scope (RemoteData Phase 6/10/11, the vendor tutorials, repository docs), not a proof"
+    },
+    {
+      "claimId": "CLAIM-128",
+      "statement": "Currency-slot numbering is not uniform across Blood Moon's subsystems: CustomEventAuction.txt CoinType is 1-3 with 0 = zen; CustomCoinsOnline.txt carries CoinType rows 0, 1 and 2 with no legend in the file (inferred 0-based); X-Shop prices are Coin0/Coin1/Coin2; the vendor Lua API uses Coin1/Coin2/Coin3 -- so a raw slot number must never be carried from one subsystem to another.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CustomEventAuction",
+        "CustomCoinsOnline",
+        "CustomXShop",
+        "ObjectAddCoin"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (the numbering as written in the files) / INFERENCE (that CustomCoinsOnline.txt is 0-based -- no legend, GAP-P20-06) (preserved snapshot, read 2026-09-18; not re-read live)"
+    },
+    {
+      "claimId": "CLAIM-131",
+      "statement": "The word \"GameBridge\" names at least six distinct things in this repository -- GAME_COMMAND_TRANSPORT (HMAC to Worker/D1/Queue to Agent to SQL procedure), MARKETPLACE_DELIVERY_WORKER (an always-failing script), PORTAL_BRIDGE_JOB_OUTBOX (the shared GameBridgeJob table), GAME_DATA_TELEMETRY (read-only game-to-cloud ingest and heartbeat), GM_EVENT_EXECUTOR_STUB and a label-only future data dependency -- and a seventh in the vendor Lua \"bridge functions\" (engine event hooks); the Agent process hosts both GAME_COMMAND_TRANSPORT and GAME_DATA_TELEMETRY.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "GameBridgeJob",
+        "GameCommandTransportClient",
+        "BloodMoon.GameBridgeAgent",
+        "MU_BRIDGE_ENABLED"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_STATIC_CODE_READ (this branch; repository-wide term inventory)"
+    },
+    {
+      "claimId": "CLAIM-132",
+      "statement": "GameBridgeJob is a shared Portal-side outbox used by three features (marketplace escrow, VIP delivery via GRANT_VIP, account lifecycle via ANONYMIZE/PURGE), and the marketplace script process-game-bridge-jobs.mjs selects every PENDING job regardless of operation, so with MU_BRIDGE_ENABLED=true it would mark jobs owned by the other dispatchers PROCESSING and then FAILED.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "GameBridgeJob",
+        "process-game-bridge-jobs",
+        "MU_BRIDGE_ENABLED",
+        "VipDeliveryService"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_STATIC_CODE_READ (the selection query was read; the \"would fail them\" consequence follows from the read code, the flag has never been set true)"
+    },
+    {
+      "claimId": "CLAIM-133",
+      "statement": "The committed Worker (apps/game-data-worker/src/commands.ts, identical blob on all 30 local branch tips) accepts only CREATE_GAME_ACCOUNT and its D1 schema.sql still has CHECK (command_type = 'CREATE_GAME_ACCOUNT'); the Portal client types, the Agent handlers and the D1 migration 0004 exist for GRANT_VIP, SYNC_VIP_TIER, ANONYMIZE_GAME_ACCOUNT and PURGE_GAME_ACCOUNT, but the Worker routing for them exists only as uncommitted changes in the mu-bloodmoon-v1-openbeta worktree -- so those four commands cannot flow end to end from committed code.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "GAME_COMMAND_TRANSPORT",
+        "GRANT_VIP",
+        "commands.ts",
+        "game_command"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_STATIC_CODE_READ + git blob comparison (2026-09-18); the openbeta working tree may change"
+    },
+    {
+      "claimId": "CLAIM-134",
+      "statement": "As of the preserved Phase 3D-A evidence (2026-08-24), the production command transport was deployed and active for CREATE_GAME_ACCOUNT only: the Worker, Queue and D1 (migration 0003) existed, the VPS task BloodMoonGameBridgeAgent was running, one real QA account was created with exactly the two authorised MU rows, and a response-loss / Agent-restart / lease-expiry replay wrote nothing twice; the production writer login's only permission is EXECUTE on dbo.DmN_CreateGameAccount; the four extension commands were not deployed and several later runbooks nevertheless say the Agent was never deployed.",
+      "evidenceBasis": "CONFIRMED_BY_RUNTIME",
+      "entities": [
+        "BloodMoonGameBridgeAgent",
+        "bloodmoon_writer",
+        "DmN_CreateGameAccount",
+        "game_command"
+      ],
+      "topic": "operations",
+      "confidence": "CONFIRMED_RUNTIME (preserved 2026-08-24 evidence, read 2026-09-18; current state NOT re-verified -- GAP-P20-02)"
+    },
+    {
+      "claimId": "CLAIM-135",
+      "statement": "No currency-credit command exists in the command transport, and none of its idempotency layers is sufficient for an additive credit: the Worker, claim lease and Agent SQLite ledger are keyed by transport ids, the existing procedures are repeatable by nature (MAX rule, state checks, credential-hash replay), the SQL audit table's CommandId index is non-unique and no procedure consults it, and after a crash between a SQL commit and the ledger completion the ledger re-acquires the command after 30 seconds and calls the writer again.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "ProvisioningLedger",
+        "GameCommandProcessor",
+        "bm_GameBridgeAudit",
+        "bm_GrantVip"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_STATIC_CODE_READ; the crash-window behaviour is read from code and was not executed (no test of that window was found in the Agent test files searched)"
+    },
+    {
+      "claimId": "CLAIM-138",
+      "statement": "The only acknowledgement the command transport can give is that the stored procedure returned and committed: the Agent talks only to SQL Server, has no channel to the GameServer process, writes succeed whether the GameServer is online or offline, and the Worker/D1 result carries a status and result code, not proof that the game sees the change.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "GameCommandWorker",
+        "IGameDatabaseWriter",
+        "game_command"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_STATIC_CODE_READ"
     }
   ],
   "explicitlyNotCanonical_contradicted": [

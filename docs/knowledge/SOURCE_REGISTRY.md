@@ -51,9 +51,9 @@ queried directly this phase:
 | Metric | Count |
 |---|---|
 | Cataloged sources (`knowledge-index.json`) | **44** (41 before Phase 18D; +KI-042/043/044) |
-| Atomic claims | **124** (99 before Phase 18D; +CLAIM-100..124), of which 75 are canonical facts (`CONFIRMED_BY_*`) |
+| Atomic claims | **138** (99 before Phase 18D; +CLAIM-100..124 in 18D; +CLAIM-125..138 in Phase 20), of which 84 are canonical facts (`CONFIRMED_BY_*`) |
 | project-gamers-oficial videos tracked | 108 (42 with a KI entry and claims; 66 pure RAW) |
-| Verification queue | 58 items: 40 DONE, 3 QUEUED, 15 BLOCKED |
+| Verification queue | 70 items: 49 DONE, 5 QUEUED, 16 BLOCKED |
 | Wiki candidates | 4 (all `systems`/`guides` category, none promoted) |
 | Reference gaps tracked | 6 (5 `RESOLVED`, 1 `PARTIAL`) |
 

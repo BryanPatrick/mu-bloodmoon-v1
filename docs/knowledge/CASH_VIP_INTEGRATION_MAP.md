@@ -16,7 +16,12 @@ current Portal's WC wallet into the game. Extends `LEGACY_SUPPLIER_INDEX.md`
 findings into the machine-readable vendor-sweep artifacts, cross-checked them
 against a blind second extraction and Blood Moon's preserved real config, and
 corrected several overstatements — see Part 7 and the visible ~~old~~ → new
-corrections inline.
+corrections inline. **Phase 20 (2026-09-18)** resolved the currency-naming gap
+(GAP-P18-11), split the word "GameBridge" into canonical names, audited the
+command channel and re-evaluated Options A–D — see Part 8, and the new files
+`CURRENCY_TERMINOLOGY.md`, `GAMEBRIDGE_DISAMBIGUATION.md` and
+`GAME_CURRENCY_DELIVERY_ANALYSIS.md`; Phase 20 corrections are marked
+**(Phase 20)** below.
 
 ## Part 1 — the 3 priority videos, processed
 
@@ -37,7 +42,10 @@ corrections inline.
   "WCoinC/WCoinP/GoblinPoint" *ou* "Cash/Gold/PCPoint" — ~~same underlying
   triple, vendor uses both naming conventions~~ **(18D correction)** two name
   sets joined by "ou" (or); the presenter never maps them one-to-one, so the
-  equivalence is UNRESOLVED — `KNOWLEDGE_GAPS.md` GAP-P18-11), a
+  equivalence is UNRESOLVED — `KNOWLEDGE_GAPS.md` GAP-P18-11; **(Phase 20)**
+  ~~UNRESOLVED~~ resolved from Blood Moon's own files: the two name sets are
+  paired slot-for-slot — Cash/WCoinC, Gold/WCoinP, PcPoint/GoblinPoint
+  (`CURRENCY_TERMINOLOGY.md`); the presenter's "ou" was just two labels), a
   "verify already VIP" toggle (recommended always ON — blocks buying a
   second VIP while one is active), min/max purchasable days, a currency
   selector (Zen was shown as technically possible but not recommended)
@@ -148,7 +156,7 @@ same currency names, but with no evidence they're the same code path.
 | **VALIDATION** | Gateway IPN/webhook signature validation (`validate_paypal_payment()` etc.) | Client-side price display + server-side "already VIP?" check; server-side skill/class eligibility (video 3) | Asaas webhook signature validation (existing pattern, not re-audited this phase) |
 | **DATABASE** | SQL Server (game DB) | SQL Server (game DB), inferred | MySQL (Portal's own DB, Prisma) |
 | **TABLE/FIELD** | `CashShopData.WCoinC/WCoinP/GoblinPoint` — CONFIRMED | Same table inferred, not confirmed; VIP grant likely `MEMB_INFO`-family, not confirmed | `AccountCurrency`/`WalletLedgerEntry` (Portal's own wallet — `WCOIN` `CurrencyCode`) |
-| **GAME VISIBILITY** | GameServer reads `CashShopData` live at CashShop/X-Shop interaction time — no separate sync | Instant, same-session (it IS the GameServer, by construction) | **NOT IMPLEMENTED** — Portal wallet is isolated from the game DB, see Part 4 |
+| **GAME VISIBILITY** | ~~GameServer reads `CashShopData` live at CashShop/X-Shop interaction time — no separate sync~~ **(Phase 20)** **UNKNOWN** — no preserved evidence says whether an external write to `CashShopData` is visible on the next interaction, only after re-login/map change/window reopen, or is overwritten by the GameServer's in-memory value (`GAME_CURRENCY_DELIVERY_ANALYSIS.md` Part 8) | ~~Instant, same-session (it IS the GameServer, by construction)~~ **(Phase 20)** the GameServer's *own* purchase path updates the balance through its own code, so it is consistent with itself; that says nothing about *external* writes | **NOT IMPLEMENTED** — Portal wallet is isolated from the game DB, see Part 4 |
 | **DELIVERY** | Currency only (no item/VIP in the traced DMN flow) | Currency, VIP, or item/skill (CustomBuyVipAndCoin is generic) | Currency only (WC), no game-side delivery yet |
 | **CURRENT STATUS** | Built, confirmed, **never used commercially** (0 real transactions, CLAIM-124) | Built and vendor-demonstrated, but **present-and-DISABLED on Blood Moon** in the preserved snapshots (2026-08-27 and 2026-08-29): `CommandBuyVipSwitch = 0`, all prices 0 (CLAIM-101); `CustomBuyVipAndCoin.txt` fully commented out (CLAIM-118). ~~usage status not independently verified~~ **(18D)** resolved from preserved config; live state not re-read since | **Active for Portal-side WC only**; game-side bridge is the acknowledged, tracked gap (CLAIM-121) |
 
@@ -163,6 +171,11 @@ Asaas (real payment)
   -> game-visible WC (CashShopData.WCoinC or equivalent)
 ```
 
+**(Phase 20)** ~~game-visible WC (CashShopData.WCoinC or equivalent)~~ — the
+target was never decided: Portal WC is **not mapped** to any game currency
+(`CURRENCY_TERMINOLOGY.md` Part 6). The canonical model, with what exists and
+what does not at each hop, is `GAME_CURRENCY_DELIVERY_ANALYSIS.md` Part 10.
+
 `docs/handoff/mercadopago-recharge-payments.md` (current system, already
 documented, not re-derived here) states explicitly that the recharge flow
 credits only the Portal's own wallet and "never touches `MU_DATABASE_URL`
@@ -176,7 +189,8 @@ candidates only).
 
 ### OPTION A — Direct controlled SQL/game-DB credit from apps/api
 
-- **Evidence**: `CashShopData` is a real, confirmed, live-read table; the
+- **Evidence**: `CashShopData` is a real, confirmed table ~~live-read~~
+  **(Phase 20: how live the GameServer's read is, is UNKNOWN)**; the
   legacy PHP flow proves the mechanism works in principle (config-driven
   `UPDATE ... SET col = col + :credits`).
 - **Advantages**: simplest, most direct; the GameServer already natively
@@ -211,7 +225,9 @@ candidates only).
   scope, same unfinished status as the Marketplace's own GameBridge
   dependency (tracked separately, Phase 17). Adds latency (queue, not
   instant).
-- **Idempotency**: `GameBridgeJob`'s existing pattern already covers this.
+- **Idempotency**: ~~`GameBridgeJob`'s existing pattern already covers this.~~
+  **(Phase 20)** Not sufficient for an additive credit — see the Phase 20 update
+  below.
 - **Rollback**: would need a new `REFUND_CURRENCY` job type designed.
 - **Game-online behavior**: same open question as Option A, unconfirmed.
 - **Security boundary**: best alignment with existing, already-approved
@@ -229,6 +245,19 @@ candidates only).
   build a channel from nothing — but the game-side agent's deployment status
   was not verified here, and which of the two mechanisms a future decision
   means by "GameBridge" must be settled in that decision (CLAIM-122).
+- **Phase 20 update — both open points closed.** *Which GameBridge:* Option B
+  means **`GAME_COMMAND_TRANSPORT`** (HMAC → Worker/D1/Queue → Agent → SQL
+  procedure); the marketplace scaffold is `MARKETPLACE_DELIVERY_WORKER` and is
+  not the substrate (`GAMEBRIDGE_DISAMBIGUATION.md`). *Deployment:* the channel
+  is deployed and active for **`CREATE_GAME_ACCOUNT` only** (2026-08-24
+  evidence); every other command type is implemented-not-deployed and, in
+  committed code, **cannot flow end to end** (the Worker accepts only
+  `CREATE_GAME_ACCOUNT`; the extension is uncommitted in
+  `mu-bloodmoon-v1-openbeta`). ~~`GameBridgeJob`'s existing pattern already
+  covers this [idempotency]~~ — **it does not**: the channel's idempotency is
+  keyed by transport ids or relies on naturally repeatable effects; an
+  additive credit needs a SQL-side business key
+  (`GAME_CURRENCY_DELIVERY_ANALYSIS.md` Parts 2 and 5).
 
 ### OPTION C — Native GameServer-supported mechanism (CustomPixSwitch or extending Buy Vip/Coin)
 
@@ -270,7 +299,12 @@ candidates only).
   fundamental question as A/D both ultimately need answered by Bryan.
 
 **No option is selected here.** This is evidence for a future
-architecture/security decision, not a recommendation ranking.
+architecture/security decision, not a recommendation ranking. **(Phase 20)**
+The re-evaluation and a *conditional recommendation* now live in
+`GAME_CURRENCY_DELIVERY_ANALYSIS.md` Parts 7 and 11 (Option B, nine gating
+prerequisites; A barred by ADR-0002/0023/0024 and by topology; D folds into
+B/A; C is an alternative *last hop*, not a transport). Still a recommendation
+for Bryan, not a decision.
 
 **Status (Phase 18D, 2026-09-18): `GAME_CURRENCY_DELIVERY = UNDECIDED`.**
 Options A, B, C and D all remain open candidates. The only observation worth
@@ -292,7 +326,8 @@ Portal wallet (AccountCurrency/WalletLedgerEntry)
   - currency only, WC -- isolated from the game DB (Part 4's gap)
 
 CashShopData (game DB)
-  - real, live-read by GameServer CashShop/X-Shop menus
+  - real; read by GameServer CashShop/X-Shop menus (~~live-read~~ **(Phase 20)**
+    freshness of external writes UNKNOWN)
   - WCoinC/WCoinP/GoblinPoint -- confirmed via Flow A's code trace + SQL introspection
   - written by legacy Flow A (dormant) and (inferred) by legacy Flow B
 
@@ -300,9 +335,11 @@ Marketplace escrow (PlayerMarketListing/PlayerMarketOrder + GameBridgeJob)
   - real, current, P2P item trading -- separate from currency purchase entirely
   - gated behind Phase 17's Marketplace Plan B work (not this phase's scope)
 
-GameBridge (apps/api/scripts/process-game-bridge-jobs.mjs)
+MARKETPLACE_DELIVERY_WORKER (apps/api/scripts/process-game-bridge-jobs.mjs)
   - deliberate always-fail scaffold, MU_BRIDGE_ENABLED=false
-  - the ONLY currently-planned live bridge into the game DB, unfinished
+  - ~~the ONLY currently-planned live bridge into the game DB, unfinished~~
+    (Phase 20) that sentence described this scaffold only; the live path into
+    the game DB is GAME_COMMAND_TRANSPORT (below)
 
 XShop/CashShop config (CustomXShop.txt/CashShopProduct.txt)
   - what's FOR SALE in-game, priced in WCoinC/WCoinP/GoblinPoint
@@ -314,11 +351,15 @@ Direct DB mechanisms
     delivery via raw binary warehouse write, confirmed present, not traced
     end-to-end this phase (GAP-P18-09, still open)
 
-Game-command transport (apps/api/src/modules/game-account-identity/, vip/)
+GAME_COMMAND_TRANSPORT (apps/api/src/modules/game-account-identity/, vip/)
   - generic HMAC-signed command channel: CREATE_GAME_ACCOUNT, GRANT_VIP,
     SYNC_VIP_TIER, ANONYMIZE_GAME_ACCOUNT, PURGE_GAME_ACCOUNT (18D)
-  - VIP grants reach MEMB_INFO.AccountLevel/AccountExpireDate through it; NO
-    currency-credit command type exists; deployment status not verified
+  - VIP grants are designed to reach MEMB_INFO.AccountLevel/AccountExpireDate
+    through it; NO currency-credit command type exists
+  - (Phase 20) ~~deployment status not verified~~ deployed + active for
+    CREATE_GAME_ACCOUNT only (2026-08-24 evidence, current state not re-checked);
+    the other four are implemented-not-deployed and not end-to-end runnable from
+    committed code (GAMEBRIDGE_DISAMBIGUATION.md Part 5)
 
 Native GameServer behavior
   - Buy Vip/Buy Vip And Coin (this document, Part 1) -- in-game
@@ -392,6 +433,18 @@ Blood Moon.
 
 Whether renewing the *same* tier is blocked by the check-user option; which
 field decides "is VIP"; whether a blocked player sees a message; whether the 8.3
-tooltip prices come from config; which of Cash/Gold/PCPoint maps to which of
-WCoinC/WCoinP/GoblinPoint (GAP-P18-11); and the exact SQL the engine executes
-(CLAIM-119).
+tooltip prices come from config; ~~which of Cash/Gold/PCPoint maps to which of
+WCoinC/WCoinP/GoblinPoint (GAP-P18-11)~~ **(Phase 20: resolved — paired
+slot-for-slot, `CURRENCY_TERMINOLOGY.md`)**; and the exact SQL the engine
+executes (CLAIM-119).
+
+## Part 8 — Phase 20: currency semantics and GameBridge disambiguation
+
+| Question | Result | Where |
+|---|---|---|
+| Cash/Gold/PcPoint vs WCoinC/WCoinP/GoblinPoint (GAP-P18-11) | Cash↔WCoinC **CONFIRMED**; Gold↔WCoinP and PcPoint↔GoblinPoint **STRONGLY_SUPPORTED**; slot numbering differs by subsystem | `CURRENCY_TERMINOLOGY.md` Part 4 |
+| What game currency is Portal WC? | **UNRESOLVED** (open by earlier decision) | ibid. Part 6 |
+| Blood Coin | technical `GOBLIN_POINT`, public "Blood Coin"; **not** WC; equality with the engine's GoblinPoint unconfirmed | ibid. Part 5 |
+| What is "GameBridge"? | seven things; canonical names fixed | `GAMEBRIDGE_DISAMBIGUATION.md` |
+| Can the command channel carry a credit? | as a channel yes; **not safe as-is** | `GAME_CURRENCY_DELIVERY_ANALYSIS.md` |
+| Recommendation | conditional Option B; decision-ready for the *mechanism* only | ibid. Parts 11–12 |

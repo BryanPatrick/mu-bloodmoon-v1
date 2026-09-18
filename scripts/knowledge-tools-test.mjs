@@ -165,6 +165,44 @@ check('critical Cash/VIP claims keep their evidence ceiling (no claim stronger t
   }
 })
 
+// --- Phase 20 lookup-regression additions (currency semantics + command channel) ---
+
+check('lookup regression 6: WZ_SetCoin / CashShopData resolve to the second-hand mapping claim and the UNKNOWN visibility claim', () => {
+  expectAll(run('knowledge-query.mjs', ['query', 'WZ_SetCoin']), ['CLAIM-127', 'CLAIM-136'], 'query WZ_SetCoin')
+  const out = run('knowledge-query.mjs', ['query', 'cashshopdata'])
+  expectAll(out, ['CLAIM-136'], 'query cashshopdata')
+  if (!out.includes('bloodMoonStatus=UNKNOWN')) throw new Error('CLAIM-136 (external CashShopData write visibility) must stay UNKNOWN')
+})
+
+check('lookup regression 7: "GameBridgeJob" / "GameCommandTransportClient" resolve to the disambiguation claims', () => {
+  expectAll(run('knowledge-query.mjs', ['query', 'GameBridgeJob']), ['CLAIM-131', 'CLAIM-132'], 'query GameBridgeJob')
+  expectAll(run('knowledge-query.mjs', ['query', 'GameCommandTransportClient']), ['CLAIM-131'], 'query GameCommandTransportClient')
+})
+
+check('lookup regression 8: Portal WCOIN resolves to the UNRESOLVED-mapping decision claim, Blood Coin to its own claim', () => {
+  expectAll(run('knowledge-query.mjs', ['query', 'WCOIN']), ['CLAIM-129'], 'query WCOIN')
+  expectAll(run('knowledge-query.mjs', ['query', 'Blood Coin']), ['CLAIM-130'], 'query "Blood Coin"')
+})
+
+check('Phase 20 claims keep their evidence ceiling (second-hand and unknown stay unverified)', () => {
+  const claims = JSON.parse(readFileSync(join(ROOT, 'knowledge', 'vendor-sweep', 'atomic-claims.json'), 'utf8')).claims
+  const by = Object.fromEntries(claims.map(c => [c.claimId, c]))
+  // WZ_SetCoin comments are second-hand (lab DB via a preserved doc); Lua usage on Blood Moon and CashShopData visibility are unproven
+  for (const id of ['CLAIM-127', 'CLAIM-136', 'CLAIM-137']) {
+    if (by[id].verificationStatus !== 'UNVERIFIED') throw new Error(`${id} claims verification it does not have`)
+  }
+  if (by['CLAIM-136'].bloodMoonStatus !== 'UNKNOWN') throw new Error('CLAIM-136 must stay UNKNOWN')
+  // a CONFIRMED_BY_* claim needs first-hand evidence: never inference or second-hand vendor documentation
+  for (const c of claims) {
+    if (Number(c.claimId.slice(6)) >= 125 && c.verificationStatus.startsWith('CONFIRMED_BY_') &&
+        ['INTERNAL_INFERENCE', 'PROVIDER_DOCUMENTATION', 'PROVIDER_TUTORIAL'].includes(c.sourceAuthority)) {
+      throw new Error(`${c.claimId}: ${c.sourceAuthority} cannot back a CONFIRMED_BY_* verification`)
+    }
+  }
+  // the Portal WC target is a decision record: it must not be promoted into a mapping
+  if (by['CLAIM-129'].verificationStatus !== 'NOT_APPLICABLE') throw new Error('CLAIM-129 is a decision record, not a verifiable mapping')
+})
+
 console.log('')
 if (failures === 0) {
   console.log('All knowledge tooling integration checks passed.')

@@ -1,6 +1,6 @@
 {
   "sweepId": "knowledge-sweep-2026-08-25",
-  "lastUpdatedUtc": "2026-09-18T17:56:13.956Z",
+  "lastUpdatedUtc": "2026-09-18T22:43:00.757Z",
   "status": "PARTIAL",
   "phase6Completed": [
     "Real VPS access via existing RemoteOps tooling (D:\\MU\\Tools\\RemoteOps\\bm-remote.cmd, SSH-key-based, read-only). Inventoried Data\\Custom (90 files), Data\\Event (16 files), Data\\Command (does not exist as a folder -- commands live in GameServer\\DATA\\GameServerInfo-Command.dat/CommandGM.dat instead), Data\\Util (5 files), Data root (18 top-level subfolders total), and GameServer\\DATA (9 files) via inventory-json. Downloaded and read ~20 real config files.",
@@ -90,6 +90,11 @@
     "Phase 18D (2026-09-18): registered the 3 priority Buy-Vip videos (gqtSk1pdti4, Jia1TrtgZfY, XUeN6U74zME) as KI-042/043/044 with CLAIM-100..122; extraction was agent-authored (this sweep has never had an automated claim extractor) and cross-checked against a blind second extraction and Blood Moon's preserved real config.",
     "Counts changed: videos with a knowledge-index entry 39 -> 42; pure-RAW videos not yet normalized 69 -> 66 (27 P0 unchanged); the \"69\" in notStarted[0] and resumeInstructions[4] above is superseded by 66.",
     "Real-config finding: Blood Moon's /buyvip command block is present but DISABLED and unconfigured, and CustomBuyVipAndCoin.txt is entirely commented out (CLAIM-101, CLAIM-118).",
+    "Re-run the three generators after any claim edit: knowledge-transcript-inventory.mjs, knowledge-canonical-facts.mjs --write, knowledge-provenance-report.mjs --write."
+  ],
+  "phase20Completed": [
+    "Phase 20 (2026-09-18): resolved GAP-P18-11 from Blood Moon's own files (CustomEventAuction.txt comment, message table, /util operands) -- CLAIM-125..128; recorded that the Portal WC target is unresolved and Blood Coin is GOBLIN_POINT (CLAIM-129/130); split the word \"GameBridge\" (CLAIM-131/132); audited the command transport, its deployment state and its idempotency (CLAIM-133..135, 138); recorded the unknown game-side visibility of external CashShopData writes (CLAIM-136) and the vendor Lua substrate (CLAIM-137).",
+    "No KI source was added (the evidence is configs, code and documents, not registered videos); claim total 124 -> 138. Extraction was agent-authored, as always for this sweep.",
     "Re-run the three generators after any claim edit: knowledge-transcript-inventory.mjs, knowledge-canonical-facts.mjs --write, knowledge-provenance-report.mjs --write."
   ]
 }

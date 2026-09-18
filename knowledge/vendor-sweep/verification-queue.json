@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T17:56:13.956Z",
+  "generatedAt": "2026-09-18T22:43:00.757Z",
   "schema": {
     "claimId": "references atomic-claims.json",
     "priority": "HIGH | MEDIUM | LOW",
@@ -692,14 +692,158 @@
       "evidenceRefs": [
         "docs/economy/legacy-dmn-cms-and-currency-investigation.md"
       ]
+    },
+    {
+      "claimId": "CLAIM-125",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "CustomEventAuction.txt CoinType comment",
+      "safeMethod": "local read of already-preserved files and repository code in Phase 20; no production, RemoteOps or SQL access",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- 0 = zen, 1 = Cash/WCoinc, 2 = Gold/WCoinP, 3 = PcPoint/GoblonPoint, 4 = Item read directly.",
+      "evidenceRefs": [
+        "RemoteData/Phase6/CustomEventAuction.txt",
+        "sha256:c3f149bf1243db6f3d27aed0e20f003d24b7060a008f2e9abfa90dca45a27d4c"
+      ]
+    },
+    {
+      "claimId": "CLAIM-126",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "message ids 632/780/819/980/1033/1140/1145 and /util operand names",
+      "safeMethod": "local read of already-preserved files and repository code in Phase 20; no production, RemoteOps or SQL access",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- both label families used for the same triple; id 1140 pairs Cash/WCoinC.",
+      "evidenceRefs": [
+        "RemoteData/Phase10/Message.utf8.txt",
+        "sha256:73f09c90a689d45992d70ebf602b7d33e1f397876615f1b9f3feeab12806ebd5",
+        "RemoteData/Phase11/GameServerInfo - Command.readable.txt",
+        "sha256:9d971e9f30038bdadedb302a27830b6296deb48cb9bf01ac0cb61a9a3d5b15d7"
+      ]
+    },
+    {
+      "claimId": "CLAIM-128",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "CoinType numbering in CustomEventAuction.txt and CustomCoinsOnline.txt",
+      "safeMethod": "local read of already-preserved files and repository code in Phase 20; no production, RemoteOps or SQL access",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG for the numbering as written; 0-based reading of CustomCoinsOnline.txt is inference (no legend).",
+      "evidenceRefs": [
+        "RemoteData/Phase6/CustomEventAuction.txt",
+        "RemoteData/Phase11/CustomCoinsOnline.readable.txt",
+        "sha256:fe8aa11192117cf3270481f2dee2229a0e881b45d0bd8f667a511248032a1e21"
+      ]
+    },
+    {
+      "claimId": "CLAIM-131",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "repository-wide GameBridge term inventory",
+      "safeMethod": "local read of already-preserved files and repository code in Phase 20; no production, RemoteOps or SQL access",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG (static read) -- six repository concepts plus the vendor Lua bridge functions.",
+      "evidenceRefs": [
+        "docs/knowledge/GAMEBRIDGE_DISAMBIGUATION.md"
+      ]
+    },
+    {
+      "claimId": "CLAIM-132",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "selection query of process-game-bridge-jobs.mjs and the outbox consumers",
+      "safeMethod": "local read of already-preserved files and repository code in Phase 20; no production, RemoteOps or SQL access",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG (static read) -- no operation filter in the marketplace script.",
+      "evidenceRefs": [
+        "apps/api/scripts/process-game-bridge-jobs.mjs"
+      ]
+    },
+    {
+      "claimId": "CLAIM-133",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "Worker commands.ts / schema.sql on committed branches vs the openbeta working tree",
+      "safeMethod": "local read of already-preserved files and repository code in Phase 20; no production, RemoteOps or SQL access",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- committed blob accepts CREATE_GAME_ACCOUNT only on all 30 local branch tips; extension only uncommitted in mu-bloodmoon-v1-openbeta.",
+      "evidenceRefs": [
+        "apps/game-data-worker/src/commands.ts"
+      ]
+    },
+    {
+      "claimId": "CLAIM-134",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "Phase 3D-A preserved production evidence",
+      "safeMethod": "local read of already-preserved files and repository code in Phase 20; no production, RemoteOps or SQL access",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_RUNTIME (preserved 2026-08-24 evidence read; CURRENT state not re-verified).",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-3d-a-production-command-transport-20260824/raw/02-real-resources-and-deployment.txt"
+      ]
+    },
+    {
+      "claimId": "CLAIM-135",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "idempotency layers of the command transport",
+      "safeMethod": "local read of already-preserved files and repository code in Phase 20; no production, RemoteOps or SQL access",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG (static read); the crash-window behaviour was not executed.",
+      "evidenceRefs": [
+        "apps/game-bridge-agent/Commands/ProvisioningLedger.cs"
+      ]
+    },
+    {
+      "claimId": "CLAIM-138",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "acknowledgement path of the command transport",
+      "safeMethod": "local read of already-preserved files and repository code in Phase 20; no production, RemoteOps or SQL access",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG (static read) -- SQL commit is the only acknowledgement.",
+      "evidenceRefs": [
+        "apps/game-bridge-agent/Commands/GameCommandWorker.cs"
+      ]
+    },
+    {
+      "claimId": "CLAIM-127",
+      "priority": "HIGH",
+      "verificationType": "schema_read",
+      "target": "dbo.WZ_SetCoin body and CashShopData DDL/defaults in the LAB database (read-only)",
+      "safeMethod": "read-only sys.sql_modules / sys.columns lookup in the lab database -- requires Bryan's authorization; NOT done in Phase 20 (no vendor SQL executed)",
+      "status": "QUEUED",
+      "result": "QUEUED -- second-hand today; would also settle add-vs-set semantics (GAP-P20-05).",
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-136",
+      "priority": "HIGH",
+      "verificationType": "runtime_observation",
+      "target": "visibility/overwrite of an external CashShopData write while the player is online",
+      "safeMethod": "a controlled test on a non-production GameServer; none is known to exist for this purpose",
+      "status": "BLOCKED",
+      "result": "BLOCKED -- no non-production GameServer instance is known; production must not be used (GAP-P20-04).",
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-137",
+      "priority": "LOW",
+      "verificationType": "file_read",
+      "target": "contents of Data/Script/ScriptMain.lua and which bridge hooks Blood Moon uses",
+      "safeMethod": "read the lab copy of the script files (not read in Phase 20)",
+      "status": "QUEUED",
+      "result": "QUEUED -- only the file names are known.",
+      "evidenceRefs": []
     }
   ],
   "summary": {
-    "total": 58,
-    "done": 40,
-    "queued": 3,
-    "blocked": 15,
+    "total": 70,
+    "done": 49,
+    "queued": 5,
+    "blocked": 16,
     "inProgress": 0,
-    "note": "CLAIM-014 and CLAIM-015 are intentionally absent from this queue -- CLAIM-014 is an operational/procedural claim (NOT_APPLICABLE verification per atomic-claims.json), and CLAIM-015 is explicitly OTHER_SERVER and must never be verified against Blood Moon (there is nothing to verify -- it is already correctly classified as not describing Blood Moon). Phase 5 (2026-08-27) added 16 new QUEUED/BLOCKED items for the P0-priority claims extracted this phase, deliberately left unexecuted -- per the explicit instruction to do only LIMITED real verification after bulk structuring, not to spend the whole phase re-verifying everything. Phase 6 (2026-08-27) real-VPS verification pass resolved 15 of the 16 items queued at the end of Phase 5 -- the remaining QUEUED/BLOCKED items are lower-priority or genuinely blocked (e.g. CLAIM-057's client-side-only tooltip behavior, which still has no safe read-only server-side check). Phase 18D (2026-09-18) added 21 items for CLAIM-100 and above (9 DONE against Blood Moon's preserved real config, code and SQL evidence; 12 BLOCKED because no non-production GameServer instance exists)."
+    "note": "CLAIM-014 and CLAIM-015 are intentionally absent from this queue -- CLAIM-014 is an operational/procedural claim (NOT_APPLICABLE verification per atomic-claims.json), and CLAIM-015 is explicitly OTHER_SERVER and must never be verified against Blood Moon (there is nothing to verify -- it is already correctly classified as not describing Blood Moon). Phase 5 (2026-08-27) added 16 new QUEUED/BLOCKED items for the P0-priority claims extracted this phase, deliberately left unexecuted -- per the explicit instruction to do only LIMITED real verification after bulk structuring, not to spend the whole phase re-verifying everything. Phase 6 (2026-08-27) real-VPS verification pass resolved 15 of the 16 items queued at the end of Phase 5 -- the remaining QUEUED/BLOCKED items are lower-priority or genuinely blocked (e.g. CLAIM-057's client-side-only tooltip behavior, which still has no safe read-only server-side check). Phase 18D (2026-09-18) added 21 items for CLAIM-100 and above (9 DONE against Blood Moon's preserved real config, code and SQL evidence; 12 BLOCKED because no non-production GameServer instance exists). Phase 20 (2026-09-18) added 12 items for CLAIM-125 and above (9 DONE from local reads of preserved files and repository code; 2 QUEUED awaiting Bryan's authorization for a read-only lab lookup; 1 BLOCKED because no non-production GameServer is known to exist)."
   }
 }

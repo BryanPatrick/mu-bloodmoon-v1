@@ -71,7 +71,9 @@ TASK ("how do I do X?")
 | "Where is the reset configuration?" | `context/ADR_INDEX.md` ADR-0025/ADR-0029 (`main`-tracked, `CANONICAL_DECISION`) — progression/reset control plane and current reset policy |
 | "Where is Blood Coin represented?" | `context/domains/game-economy.md` + `context/BUSINESS_RULES.md`; dedicated phase doc `docs/phases/blood-coin-public-name-completion/phase-manifest.md` |
 | "How does Marketplace escrow work?" | `docs/payment-and-escrow-flow.md`, `docs/marketplace-game-bridge.md` — real ledger/reservation code exists; GameBridge worker itself is a deliberate always-fail scaffold |
-| "Is GameBridge active?" | NO — `MU_BRIDGE_ENABLED=false` by default everywhere; see `CASH_VIP_INTEGRATION_MAP.md` Part 6 |
+| "Is GameBridge active?" | ~~NO — `MU_BRIDGE_ENABLED=false` by default everywhere~~ **(Phase 20)** the question is ambiguous — "GameBridge" names seven things (`GAMEBRIDGE_DISAMBIGUATION.md`). `MARKETPLACE_DELIVERY_WORKER`: no (`MU_BRIDGE_ENABLED=false`). `GAME_COMMAND_TRANSPORT`: **yes for `CREATE_GAME_ACCOUNT` only** (deployed 2026-08-24; state not re-verified); GRANT_VIP/SYNC_VIP_TIER/ANONYMIZE/PURGE not deployed and not runnable end to end from committed code |
+| "What is Portal WC in game terms?" / "Cash vs WCoinC?" / "Is Blood Coin WC?" | `CURRENCY_TERMINOLOGY.md` — Cash↔WCoinC CONFIRMED, Gold↔WCoinP and PcPoint↔GoblinPoint STRONGLY_SUPPORTED; Portal WC target **UNRESOLVED**; Blood Coin = `GOBLIN_POINT`, not WC |
+| "Can the command channel credit game currency? Which option?" | `GAME_CURRENCY_DELIVERY_ANALYSIS.md` — not safe as-is; conditional recommendation Option B with nine prerequisites; **not a decision** |
 | "Where are vendor tutorials?" | `VPS_DOCUMENTATION_INDEX.md` → `D:\MU\Research\Vendor\Tutorials\` (48 files, hash-verified) |
 | "Which videos are not processed?" | `VIDEO_SOURCES.md` + `KNOWLEDGE_GAPS.md` GAP-P18-01c |
 | "How did the legacy Cash purchase work?" | `LEGACY_SUPPLIER_INDEX.md` — this audit's central finding |
@@ -96,6 +98,9 @@ phase's final report.
 
 - **Vendor**: ProjectGamers engine + "Free MU CMS"/"DmN MuCMS" web package.
   See `LEGACY_SUPPLIER_INDEX.md`.
+- **Currency vocabulary and mapping (Phase 20)**: `CURRENCY_TERMINOLOGY.md`.
+- **What "GameBridge" means (Phase 20)**: `GAMEBRIDGE_DISAMBIGUATION.md`.
+- **Game-currency delivery analysis (Phase 20)**: `GAME_CURRENCY_DELIVERY_ANALYSIS.md`.
 - **VPS documentation**: `VPS_DOCUMENTATION_INDEX.md`.
 - **Video/tutorial sources**: `VIDEO_SOURCES.md`.
 - **External websites**: `EXTERNAL_SOURCES.md`.
@@ -140,7 +145,7 @@ Current structured files (Hub + `knowledge/vendor-sweep/*.json` + this
 index) are sufficient for the lookup patterns tested this phase — every
 question resolved in 1-3 hops via file-path/topic routing, not free-text
 search. A full-text or vector index is not recommended yet: the corpus is
-still small enough (64 Hub items, 44 vendor-sweep sources / 124 claims, ~30 docs/economy
+still small enough (64 Hub items, 44 vendor-sweep sources / 138 claims, ~30 docs/economy
 + ADR files) for structured routing to outperform search infrastructure
 overhead. Revisit if/when the corpus grows past what a router table can
 reasonably enumerate, or if the 3 untranscribed videos (and any future

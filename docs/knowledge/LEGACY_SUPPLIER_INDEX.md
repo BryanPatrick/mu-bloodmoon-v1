@@ -96,8 +96,12 @@ independently by direct SQL introspection
 finding) -- two independent methods agree.
     |
 GameServer's own in-game CashShop/X-Shop NPC menus read CashShopData
-DIRECTLY at interaction time -- no separate sync/push step exists or is
-needed, since it's the same live table.
+~~DIRECTLY at interaction time -- no separate sync/push step exists or is
+needed, since it's the same live table.~~
+(Phase 20 correction: that was an inference, not evidence. The menus use this
+table, but whether an *external* write -- like this PHP UPDATE -- is visible on
+the next interaction, only after re-login, or is overwritten by the GameServer's
+in-memory copy is UNKNOWN. See GAME_CURRENCY_DELIVERY_ANALYSIS.md Part 8.)
 ```
 
 File/function references (all in the preserved backup above):

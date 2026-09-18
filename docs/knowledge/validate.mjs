@@ -72,7 +72,8 @@ for (const file of files) {
 }
 
 // -- Duplicate GAP-* id check --------------------------------------------
-const gapIdRowPattern = /^\|\s*(GAP-P18-\d+[a-z]?)\s*\|/gm;
+// GAP-P<phase>-<n>: P18 (Phase 18 audit) and P20 (Phase 20 currency/command channel).
+const gapIdRowPattern = /^\|\s*(GAP-P\d+-\d+[a-z]?)\s*\|/gm;
 const gapDefCounts = new Map();
 const gapsFile = join(ROOT, "KNOWLEDGE_GAPS.md");
 try {
