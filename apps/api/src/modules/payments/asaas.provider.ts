@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common'
+import { Injectable, Logger, NotFoundException, ServiceUnavailableException } from '@nestjs/common'
 import { createHash, timingSafeEqual } from 'node:crypto'
 import type { PaymentProvider } from './payment-provider.interface'
 import type {
@@ -25,6 +25,7 @@ type AsaasPix = { payload?: string; encodedImage?: string }
 
 @Injectable()
 export class AsaasPaymentProvider implements PaymentProvider {
+  private readonly logger = new Logger(AsaasPaymentProvider.name)
   private config() {
     return loadAsaasConfig()
   }
@@ -190,12 +191,14 @@ export class AsaasPaymentProvider implements PaymentProvider {
           ...(init.headers || {})
         }
       })
+      if (!response.ok) this.logger.warn(`ASAAS_PROVIDER_HTTP_ERROR status=${response.status}`)
       if (response.status === 404) throw new NotFoundException('ASAAS_RESOURCE_NOT_FOUND')
       if (!response.ok) throw new ServiceUnavailableException(`ASAAS_HTTP_${response.status}`)
       return response.json() as Promise<T>
     } catch (error) {
       if (error instanceof NotFoundException || error instanceof ServiceUnavailableException)
         throw error
+      this.logger.warn('ASAAS_PROVIDER_TRANSPORT_ERROR')
       throw new ServiceUnavailableException('ASAAS_PROVIDER_UNAVAILABLE')
     } finally {
       clearTimeout(timeout)

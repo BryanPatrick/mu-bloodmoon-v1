@@ -62,6 +62,8 @@ beforeAll(async () => {
   process.env.MERCADO_PAGO_WEBHOOK_SECRET = WEBHOOK_SECRET
   process.env.MERCADO_PAGO_API_BASE_URL = 'https://mercadopago.invalid'
   process.env.REAL_MONEY_PAYMENTS_ENABLED = 'true'
+  process.env.MERCADO_PAGO_ENABLED = 'true'
+  process.env.ASAAS_ENABLED = 'false'
 
   global.fetch = jest.fn(async (input: string | URL | Request, init?: RequestInit) => {
     const url = typeof input === 'string' ? input : input.toString()

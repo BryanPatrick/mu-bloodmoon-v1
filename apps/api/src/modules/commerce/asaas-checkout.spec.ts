@@ -1,4 +1,11 @@
 import { CommerceService } from './commerce.service'
+import { CommerceController } from './commerce.controller'
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'
+import { StoreAdminService } from './store-admin.service'
+import { LegacyCatalogConfigService } from './legacy-catalog-config.service'
+import { LegacyCatalogEffectiveStateService } from './legacy-catalog-effective-state.service'
+import { PaymentReconciliationService } from './payment-reconciliation.service'
+import { BillingProfileService } from '../payments/billing-profile.service'
 
 const original = {
   enabled: process.env.ASAAS_ENABLED,
@@ -134,6 +141,46 @@ function fixture() {
 }
 
 describe('Asaas checkout reservation (mock provider, no DB/network)', () => {
+  it('blocks an authenticated direct HTTP recharge request before provider POST', async () => {
+    const { Test } = await import('@nestjs/testing')
+    const request = (await import('supertest')).default
+    const f = fixture()
+    process.env.ASAAS_FRONTEND_ENABLED = 'true'
+    process.env.ASAAS_PAYMENT_CREATION_ENABLED = 'false'
+    const moduleRef = await Test.createTestingModule({
+      controllers: [CommerceController],
+      providers: [
+        { provide: CommerceService, useValue: f.service },
+        { provide: StoreAdminService, useValue: {} },
+        { provide: LegacyCatalogConfigService, useValue: {} },
+        { provide: LegacyCatalogEffectiveStateService, useValue: {} },
+        { provide: PaymentReconciliationService, useValue: {} },
+        { provide: BillingProfileService, useValue: {} }
+      ]
+    }).overrideGuard(JwtAuthGuard).useValue({
+      canActivate: (context: { switchToHttp: () => { getRequest: () => { headers: { authorization?: string }; user?: unknown } } }) => {
+        const req = context.switchToHttp().getRequest()
+        if (req.headers.authorization !== 'Bearer synthetic-qa-token') return false
+        req.user = f.user
+        return true
+      }
+    }).compile()
+    const app = moduleRef.createNestApplication()
+    app.setGlobalPrefix('api')
+    await app.init()
+    try {
+      const response = await request(app.getHttpServer())
+        .post('/api/recharge/intents')
+        .set('Authorization', 'Bearer synthetic-qa-token')
+        .send({ packageId: 'pack-1' })
+      expect(response.status).toBe(503)
+      expect(f.prisma.rechargeIntent.create).not.toHaveBeenCalled()
+      expect(f.asaas.createOrder).not.toHaveBeenCalled()
+      expect(f.billing.ensureAsaasCustomer).not.toHaveBeenCalled()
+    } finally {
+      await app.close()
+    }
+  }, 60000)
   it.each([
     ['missing flags', undefined, undefined],
     ['frontend off', 'false', 'true'],

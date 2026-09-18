@@ -19,6 +19,11 @@ export default defineNuxtConfig({
   experimental: {
     appManifest: false
   },
+  nitro: {
+    // @nuxt/ui imports Tailwind's extensionless CJS subpath. If Nitro
+    // externalizes it, Node ESM cannot resolve it in the standalone output.
+    externals: { inline: ['tailwindcss/colors'] }
+  },
   vite: {
     optimizeDeps: {
       exclude: ['lucide-vue-next']

@@ -1,4 +1,5 @@
 import { CommerceService } from './commerce.service'
+import { RechargeWebhookController } from './recharge-webhook.controller'
 
 function fixture() {
   const recharge: Record<string, unknown> = {
@@ -157,6 +158,7 @@ function fixture() {
     asaas,
     webhook,
     service,
+    audit,
     notify,
     restart,
     balance: () => balance,
@@ -170,6 +172,7 @@ describe('Asaas webhook and WC credit (mock transactional DB, no network)', () =
     enabled: process.env.ASAAS_ENABLED,
     environment: process.env.ASAAS_ENVIRONMENT,
     webhook: process.env.ASAAS_WEBHOOK_PROCESSING_ENABLED,
+    reconciliation: process.env.ASAAS_RECONCILIATION_ENABLED,
     nodeEnv: process.env.NODE_ENV
   }
   beforeEach(() => {
@@ -183,7 +186,8 @@ describe('Asaas webhook and WC credit (mock transactional DB, no network)', () =
       NODE_ENV: originalFlags.nodeEnv,
       ASAAS_ENABLED: originalFlags.enabled,
       ASAAS_ENVIRONMENT: originalFlags.environment,
-      ASAAS_WEBHOOK_PROCESSING_ENABLED: originalFlags.webhook
+      ASAAS_WEBHOOK_PROCESSING_ENABLED: originalFlags.webhook,
+      ASAAS_RECONCILIATION_ENABLED: originalFlags.reconciliation
     })) {
       if (value === undefined) delete process.env[key]
       else process.env[key] = value
@@ -210,6 +214,16 @@ describe('Asaas webhook and WC credit (mock transactional DB, no network)', () =
       event: 'PAYMENT_RECEIVED',
       payment: { id: 'pay_1' }
     })
+  })
+
+  it('attributes an admin Asaas resync status transition to the operator', async () => {
+    const f = fixture()
+    process.env.ASAAS_RECONCILIATION_ENABLED = 'true'
+    const operator = { id: 'admin-qa', username: 'admin-qa' } as never
+    await f.service.resyncRechargeFromProvider('recharge-1', operator)
+    expect(f.audit.record).toHaveBeenCalledWith(expect.objectContaining({
+      actorId: 'admin-qa', actorUsername: 'admin-qa', action: 'admin.finance.recharge.status'
+    }))
   })
 
   it('concurrent duplicate events produce one ledger credit', async () => {
@@ -256,6 +270,40 @@ describe('Asaas webhook and WC credit (mock transactional DB, no network)', () =
     expect(f.asaas.getOrder).not.toHaveBeenCalled()
     expect(f.balance()).toBe(0)
     expect(f.events.has('evt_bad')).toBe(false)
+  })
+
+  it('routes HTTP webhook auth independently of disabled frontend and creation flags', async () => {
+    const { Test } = await import('@nestjs/testing')
+    const request = (await import('supertest')).default
+    const f = fixture()
+    const previousFrontend = process.env.ASAAS_FRONTEND_ENABLED
+    const previousCreation = process.env.ASAAS_PAYMENT_CREATION_ENABLED
+    process.env.ASAAS_FRONTEND_ENABLED = 'false'
+    process.env.ASAAS_PAYMENT_CREATION_ENABLED = 'false'
+    const moduleRef = await Test.createTestingModule({
+      controllers: [RechargeWebhookController],
+      providers: [{ provide: CommerceService, useValue: f.service }]
+    }).compile()
+    const app = moduleRef.createNestApplication()
+    app.setGlobalPrefix('api')
+    await app.init()
+    const path = '/api/payments/webhooks/asaas'
+    const payload = { id: 'evt_http', event: 'PAYMENT_UNKNOWN', payment: { id: 'pay_1' } }
+    try {
+      expect((await request(app.getHttpServer()).post(path).send(payload)).status).toBe(401)
+      expect((await request(app.getHttpServer()).post(path).set('asaas-access-token', 'wrong').send(payload)).status).toBe(401)
+      const accepted = await request(app.getHttpServer()).post(path).set('asaas-access-token', 'fake-token').send(payload)
+      expect(accepted.status).toBe(200)
+      expect(accepted.body).toEqual({ received: true, ignored: true })
+      expect(f.asaas.getOrder).not.toHaveBeenCalled()
+      expect(f.balance()).toBe(0)
+    } finally {
+      await app.close()
+      if (previousFrontend === undefined) delete process.env.ASAAS_FRONTEND_ENABLED
+      else process.env.ASAAS_FRONTEND_ENABLED = previousFrontend
+      if (previousCreation === undefined) delete process.env.ASAAS_PAYMENT_CREATION_ENABLED
+      else process.env.ASAAS_PAYMENT_CREATION_ENABLED = previousCreation
+    }
   })
 
   it.each([

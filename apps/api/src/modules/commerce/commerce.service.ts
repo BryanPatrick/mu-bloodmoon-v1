@@ -9,6 +9,7 @@ import type {
   ShopProductStatus
 } from '@prisma/client'
 import { randomUUID } from 'node:crypto'
+import { Logger } from '@nestjs/common'
 import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
@@ -296,6 +297,7 @@ const mapRechargePackage = (pack: RechargePackage) => ({
 
 @Injectable()
 export class CommerceService {
+  private readonly logger = new Logger(CommerceService.name)
   constructor(
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
@@ -725,8 +727,14 @@ export class CommerceService {
   async createRechargeIntent(payload: CreateRechargeIntentPayload, user: AuthenticatedUser) {
     const asaasConfig = loadAsaasConfig()
     const asaasSelected = asaasConfig.enabled
-    if (asaasSelected) assertAsaasCreationEnabled()
-    else this.assertRealMoneyPaymentsEnabled()
+    if (asaasSelected) {
+      this.logger.log('ASAAS_CREATE_ATTEMPT stage=intent')
+      try { assertAsaasCreationEnabled() }
+      catch (error) {
+        this.logger.warn('ASAAS_CREATE_BLOCKED stage=intent')
+        throw error
+      }
+    } else this.assertRealMoneyPaymentsEnabled()
     const pack = await this.prisma.rechargePackage.findUnique({ where: { id: payload.packageId } })
     if (!pack || !pack.active) {
       throw new NotFoundException('Recharge package not available')
@@ -800,7 +808,12 @@ export class CommerceService {
       throw new ForbiddenException('Access denied')
     }
     if (recharge.provider === 'asaas') {
-      assertAsaasCreationEnabled()
+      this.logger.log('ASAAS_CREATE_ATTEMPT stage=checkout')
+      try { assertAsaasCreationEnabled() }
+      catch (error) {
+        this.logger.warn('ASAAS_CREATE_BLOCKED stage=checkout')
+        throw error
+      }
       return this.createAsaasCheckout(recharge)
     }
     if (loadAsaasConfig().enabled) {
@@ -923,6 +936,7 @@ export class CommerceService {
         await this.prisma.rechargeIntent.updateMany({
           where: { id: recharge.id, externalOrderId: null }, data: { providerCreateState: 'RECONCILE_REQUIRED' }
         })
+        this.logger.warn('ASAAS_RECONCILE_REQUIRED source=checkout_recovery')
         throw new ServiceUnavailableException('ASAAS_PAYMENT_RECONCILE_REQUIRED')
       }
       this.assertAsaasOrderMatches(recovered, recharge, customerId, reference)
@@ -958,12 +972,14 @@ export class CommerceService {
           externalStatus: verified.status, paymentMethod: 'PIX', status: 'PENDING' }
       })
       if (saved.count !== 1) throw new ServiceUnavailableException('ASAAS_PAYMENT_SAVE_CONFLICT')
+      this.logger.log('ASAAS_CREATE_SUCCEEDED stage=checkout')
       return { ...order, id: recharge.id, status: 'PENDING' }
     } catch {
       await this.prisma.rechargeIntent.updateMany({
         where: { id: recharge.id, providerCreateState: 'RESERVED', externalOrderId: null },
         data: { providerCreateState: 'RECONCILE_REQUIRED' }
       })
+      this.logger.warn('ASAAS_RECONCILE_REQUIRED source=checkout_failure')
       throw new ServiceUnavailableException('ASAAS_PAYMENT_RECONCILE_REQUIRED')
     }
   }
@@ -1055,7 +1071,7 @@ export class CommerceService {
         order = await this.asaas.findPaymentByExternalReference(recharge.externalReference)
         if (!order) throw new ServiceUnavailableException('ASAAS_PAYMENT_RECONCILE_REQUIRED')
       }
-      return this.reconcileAsaasOrder(order, recharge, 'admin')
+      return this.reconcileAsaasOrder(order, recharge, 'admin', true, undefined, user)
     }
     if (!recharge.externalOrderId) {
       throw new BadRequestException('Esta recarga ainda nao tem uma order no Mercado Pago.')
@@ -1188,6 +1204,7 @@ export class CommerceService {
     if (!loadAsaasConfig().enabled || !loadAsaasConfig().webhookProcessingEnabled)
       throw new ServiceUnavailableException('ASAAS_WEBHOOK_PROCESSING_DISABLED')
     if (!this.asaas.validateWebhookSignature({ signatureHeader: input.token, requestId: undefined, dataId: undefined })) {
+      this.logger.warn('ASAAS_WEBHOOK_AUTH_REJECTED')
       throw new UnauthorizedException('Webhook nao autorizado.')
     }
     const eventId = input.body?.id
@@ -1201,6 +1218,7 @@ export class CommerceService {
       signatureValid: true, rawPayload: { id: eventId, event: topic, payment: { id: paymentId } }
       // Never pass asaas-access-token as signatureHeader: it is a secret.
     })
+    this.logger.log('ASAAS_WEBHOOK_ACCEPTED')
     if (claim.outcome === 'duplicate-processed') return { received: true, duplicate: true }
     const recognized = new Set([
       'PAYMENT_CREATED', 'PAYMENT_UPDATED', 'PAYMENT_CONFIRMED', 'PAYMENT_RECEIVED',
@@ -1243,6 +1261,7 @@ export class CommerceService {
       return { received: true }
     } catch (error) {
       await this.webhookEvents.markFailed(claim.eventId, 'asaas_reconcile_failed')
+      this.logger.error('ASAAS_WEBHOOK_PROCESSING_FAILED')
       throw error
     }
   }
@@ -1252,7 +1271,8 @@ export class CommerceService {
     recharge: RechargeIntent,
     source: 'admin' | 'webhook' | 'system-poll',
     allowAutomaticCredit = true,
-    eventType?: string
+    eventType?: string,
+    actor?: AuthenticatedUser
   ) {
     const asaasEnvironment = loadAsaasConfig().environment
     if (recharge.provider !== 'asaas' || recharge.providerEnvironment !== asaasEnvironment) {
@@ -1270,7 +1290,8 @@ export class CommerceService {
       order.totalAmountBRL !== asaasWholeBrl(recharge.price)
     if (mismatch) {
       return this.transitionRechargeStatus(recharge.id, 'MANUAL_REVIEW', {
-        source, reason: 'asaas_payment_contract_mismatch'
+        source, actorId: actor?.id, actorUsername: actor?.username,
+        reason: 'asaas_payment_contract_mismatch'
       })
     }
     if (!recharge.externalOrderId) {
@@ -1296,7 +1317,7 @@ export class CommerceService {
       return this.transitionRechargeStatus(recharge.id, recharge.status, { source })
     }
     return this.transitionRechargeStatus(recharge.id, mapped.status, {
-      source, reason: mapped.reason,
+      source, actorId: actor?.id, actorUsername: actor?.username, reason: mapped.reason,
       extra: { externalStatus: order.status, paymentMethod: order.paymentMethod, lastWebhookAt: source === 'webhook' ? new Date() : undefined }
     })
   }
@@ -1498,6 +1519,7 @@ export class CommerceService {
     // advisory (never allowed to affect the financial transaction's own
     // atomicity or roll it back), so they deliberately run outside it.
     let hook: { kind: 'PAID' | 'FAILED' | 'MANUAL_REVIEW'; recharge: { id: string; accountId: string; price: string; createdAt: Date }; reason?: string } | null = null
+    let asaasCommittedTransition: 'PAID' | 'MANUAL_REVIEW' | null = null
 
     const result = await this.prisma.$transaction(
       async (tx) => {
@@ -1520,17 +1542,22 @@ export class CommerceService {
           // this ledger row's paymentProvenanceRef is the RechargeIntent
           // itself, answering "which payment created this WC credit?"
           // directly from the ledger, not by cross-referencing tables.
-          await this.walletLedger.credit(tx, recharge.accountId, recharge.currency, amount, {
-            idempotencyKey: `recharge-credit:${recharge.id}`,
-            type: 'WC_PURCHASE_CREDIT',
-            sourceType: 'RechargeIntent',
-            sourceId: recharge.id,
-            paymentProvenanceRef: recharge.id,
-            // LEDGER_PROVENANCE: the credit's own row is self-describing
-            // (base/bonus/gross/provider), not just reconstructable via a
-            // join back to RechargeIntent.
-            metadata: { baseAmount: recharge.amount, bonusAmount: recharge.bonus, grossPaidBRL: recharge.price, provider: recharge.provider }
-          })
+          try {
+            await this.walletLedger.credit(tx, recharge.accountId, recharge.currency, amount, {
+              idempotencyKey: `recharge-credit:${recharge.id}`,
+              type: 'WC_PURCHASE_CREDIT',
+              sourceType: 'RechargeIntent',
+              sourceId: recharge.id,
+              paymentProvenanceRef: recharge.id,
+              // LEDGER_PROVENANCE: the credit's own row is self-describing
+              // (base/bonus/gross/provider), not just reconstructable via a
+              // join back to RechargeIntent.
+              metadata: { baseAmount: recharge.amount, bonusAmount: recharge.bonus, grossPaidBRL: recharge.price, provider: recharge.provider }
+            })
+          } catch (error) {
+            if (recharge.provider === 'asaas') this.logger.error('ASAAS_WALLET_CREDIT_FAILED')
+            throw error
+          }
         }
 
         if (recharge.status === 'PAID' && nextStatus === 'CANCELLED') {
@@ -1561,6 +1588,9 @@ export class CommerceService {
         }
 
         const effectiveStatus = refundClawbackFailed ? 'REFUND_PENDING' : nextStatus
+        if (recharge.provider === 'asaas' && (effectiveStatus === 'PAID' || effectiveStatus === 'MANUAL_REVIEW')) {
+          asaasCommittedTransition = effectiveStatus
+        }
 
         // PHASE P (2026-08-31): capture for the risk/chargeback hooks
         // fired after this transaction commits -- see this method's own
@@ -1631,6 +1661,9 @@ export class CommerceService {
       },
       { isolationLevel: 'Serializable' }
     )
+
+    if (asaasCommittedTransition === 'PAID') this.logger.log('ASAAS_WALLET_CREDIT_SUCCEEDED')
+    if (asaasCommittedTransition === 'MANUAL_REVIEW') this.logger.warn('ASAAS_MANUAL_REVIEW_TRANSITION')
 
     if (hook) {
       await this.fireRiskHooks(hook)

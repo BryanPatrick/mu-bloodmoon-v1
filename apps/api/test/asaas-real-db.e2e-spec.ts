@@ -138,6 +138,7 @@ describe('Asaas Phase 3 against a real disposable database', () => {
     const { WalletLedgerService } = await import('../src/modules/wallet/wallet-ledger.service')
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile()
     app = moduleRef.createNestApplication()
+    app.setGlobalPrefix('api')
     await app.init()
     prisma = app.get(PrismaService)
     commerce = app.get(CommerceService)
@@ -208,6 +209,37 @@ describe('Asaas Phase 3 against a real disposable database', () => {
 
   afterAll(async () => {
     await app?.close()
+  })
+
+  it('rejects a real-JWT player HTTP recharge while creation is off, before provider POST', async () => {
+    const { JwtService } = await import('@nestjs/jwt')
+    const request = (await import('supertest')).default
+    const account = await prisma.account.findUniqueOrThrow({ where: { id: accountId } })
+    const session = await prisma.accountSession.create({
+      data: { accountId, expiresAt: new Date(Date.now() + 60_000) }
+    })
+    const accessToken = await app.get(JwtService).signAsync({
+      sub: account.id, username: account.username, role: account.role,
+      sessionVersion: account.sessionVersion, sid: session.id
+    })
+    const previousCreation = process.env.ASAAS_PAYMENT_CREATION_ENABLED
+    const beforePayments = paymentPosts
+    const beforeCustomers = customerPosts
+    const beforeIntents = await prisma.rechargeIntent.count({ where: { accountId } })
+    process.env.ASAAS_PAYMENT_CREATION_ENABLED = 'false'
+    try {
+      const response = await request(app.getHttpServer())
+        .post('/api/recharge/intents')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({ packageId: package10 })
+      expect(response.status).toBe(503)
+      expect(paymentPosts).toBe(beforePayments)
+      expect(customerPosts).toBe(beforeCustomers)
+      expect(await prisma.rechargeIntent.count({ where: { accountId } })).toBe(beforeIntents)
+    } finally {
+      if (previousCreation === undefined) delete process.env.ASAAS_PAYMENT_CREATION_ENABLED
+      else process.env.ASAAS_PAYMENT_CREATION_ENABLED = previousCreation
+    }
   })
 
   it('encrypts billing data at rest, supports update, and cascades on account deletion', async () => {
