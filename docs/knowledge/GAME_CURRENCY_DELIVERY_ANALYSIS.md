@@ -89,7 +89,7 @@ the commands' nature.**
 | `PURGE_GAME_ACCOUNT` | yes | **no** | yes | yes, default off | `bm_PurgeGameAccount` (local) | no | row-absence = success | no |
 | **`CREDIT_GAME_CURRENCY`** | **does not exist** | — | — | — | — | — | — | — |
 
-Notes. "Committed" = identical blob `99a7b09b` on all 30 local branch tips
+Notes. "Committed" = identical blob `99a7b09b` on all 43 branch refs (39 local + 4 remote-tracking)
 (`schema.sql` still `CHECK (command_type = 'CREATE_GAME_ACCOUNT')`). The
 `GameBridgeOperation.CREDIT_CURRENCY` enum value is the *marketplace seller
 credit* — no producer, no consumer, unrelated. Agent test counts in older docs

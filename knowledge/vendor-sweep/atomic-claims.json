@@ -3555,10 +3555,10 @@
       ],
       "notes": "docs/gamebridge/gamebridge-agent-extension-plan.md:625 says the Worker was extended and tested locally -- true only of the uncommitted openbeta copy (CONFLICTS.md item 4). Loss risk: GAP-P20-02. Remote D1 state of migration 0004 is unknown.",
       "claimId": "CLAIM-133",
-      "statement": "The committed Worker (apps/game-data-worker/src/commands.ts, identical blob on all 30 local branch tips) accepts only CREATE_GAME_ACCOUNT and its D1 schema.sql still has CHECK (command_type = 'CREATE_GAME_ACCOUNT'); the Portal client types, the Agent handlers and the D1 migration 0004 exist for GRANT_VIP, SYNC_VIP_TIER, ANONYMIZE_GAME_ACCOUNT and PURGE_GAME_ACCOUNT, but the Worker routing for them exists only as uncommitted changes in the mu-bloodmoon-v1-openbeta worktree -- so those four commands cannot flow end to end from committed code.",
+      "statement": "The committed Worker (apps/game-data-worker/src/commands.ts, identical blob on all 43 branch refs (39 local + 4 remote-tracking)) accepts only CREATE_GAME_ACCOUNT and its D1 schema.sql still has CHECK (command_type = 'CREATE_GAME_ACCOUNT'); the Portal client types, the Agent handlers and the D1 migration 0004 exist for GRANT_VIP, SYNC_VIP_TIER, ANONYMIZE_GAME_ACCOUNT and PURGE_GAME_ACCOUNT, but the Worker routing for them exists only as uncommitted changes in the mu-bloodmoon-v1-openbeta worktree -- so those four commands cannot flow end to end from committed code.",
       "sourceId": "code-read-2026-09-18",
       "sourceAuthority": "CURRENT_CODE",
-      "sourceLocation": "apps/game-data-worker/src/commands.ts:17,219-230; apps/game-data-worker/db/schema.sql:80; apps/game-data-worker/db/migrations/0004_gamebridge_extension_commands.sql; git hash-object comparison across local branch tips; mu-bloodmoon-v1-openbeta working tree (git diff --stat: commands.ts +189, schema.sql, commands.spec.ts)",
+      "sourceLocation": "apps/game-data-worker/src/commands.ts:17,219-230; apps/game-data-worker/db/schema.sql:80; apps/game-data-worker/db/migrations/0004_gamebridge_extension_commands.sql; git rev-parse <ref>:path comparison across all 43 local and remote-tracking branch refs; mu-bloodmoon-v1-openbeta working tree (git diff --stat: commands.ts +189, schema.sql, commands.spec.ts)",
       "entityTypes": [
         "SYSTEM",
         "DEPLOYMENT"

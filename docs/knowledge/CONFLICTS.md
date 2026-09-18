@@ -90,7 +90,7 @@ edited.
   ("`commands.ts` estendidos para os 5 tipos de comando … implementado e testado
   localmente").
 - **Claim B** (no): the committed `apps/game-data-worker/src/commands.ts` is
-  the identical blob on all 30 local branch tips and accepts only
+  the identical blob on all 43 branch refs (39 local + 4 remote-tracking) and accepts only
   `CREATE_GAME_ACCOUNT` (`parseCreate`); `db/schema.sql` still has
   `CHECK (command_type = 'CREATE_GAME_ACCOUNT')`;
   `docs/architecture/control-plane-domain-audit.md:306-313` says the extension

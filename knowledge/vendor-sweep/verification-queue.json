@@ -766,7 +766,7 @@
       "target": "Worker commands.ts / schema.sql on committed branches vs the openbeta working tree",
       "safeMethod": "local read of already-preserved files and repository code in Phase 20; no production, RemoteOps or SQL access",
       "status": "DONE",
-      "result": "CONFIRMED_BY_CONFIG -- committed blob accepts CREATE_GAME_ACCOUNT only on all 30 local branch tips; extension only uncommitted in mu-bloodmoon-v1-openbeta.",
+      "result": "CONFIRMED_BY_CONFIG -- committed blob accepts CREATE_GAME_ACCOUNT only on all 43 branch refs (39 local + 4 remote-tracking); extension only uncommitted in mu-bloodmoon-v1-openbeta.",
       "evidenceRefs": [
         "apps/game-data-worker/src/commands.ts"
       ]

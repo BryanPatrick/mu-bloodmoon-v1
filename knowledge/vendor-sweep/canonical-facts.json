@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T22:43:08.688Z",
+  "generatedAt": "2026-09-18T22:46:51.092Z",
   "generatedBy": "scripts/knowledge-canonical-facts.mjs -- derived mechanically from atomic-claims.json, do not hand-edit, re-run instead",
   "rule": "A claim qualifies as canonical only when verificationStatus starts with CONFIRMED_BY_ (config/schema/runtime evidence). PROVIDER_TUTORIAL or COMMUNITY_TUTORIAL sourceAuthority alone, however plausible, is explicitly insufficient -- see docs/knowledge/source-authority.md.",
   "canonicalFactCount": 84,
@@ -906,7 +906,7 @@
     },
     {
       "claimId": "CLAIM-133",
-      "statement": "The committed Worker (apps/game-data-worker/src/commands.ts, identical blob on all 30 local branch tips) accepts only CREATE_GAME_ACCOUNT and its D1 schema.sql still has CHECK (command_type = 'CREATE_GAME_ACCOUNT'); the Portal client types, the Agent handlers and the D1 migration 0004 exist for GRANT_VIP, SYNC_VIP_TIER, ANONYMIZE_GAME_ACCOUNT and PURGE_GAME_ACCOUNT, but the Worker routing for them exists only as uncommitted changes in the mu-bloodmoon-v1-openbeta worktree -- so those four commands cannot flow end to end from committed code.",
+      "statement": "The committed Worker (apps/game-data-worker/src/commands.ts, identical blob on all 43 branch refs (39 local + 4 remote-tracking)) accepts only CREATE_GAME_ACCOUNT and its D1 schema.sql still has CHECK (command_type = 'CREATE_GAME_ACCOUNT'); the Portal client types, the Agent handlers and the D1 migration 0004 exist for GRANT_VIP, SYNC_VIP_TIER, ANONYMIZE_GAME_ACCOUNT and PURGE_GAME_ACCOUNT, but the Worker routing for them exists only as uncommitted changes in the mu-bloodmoon-v1-openbeta worktree -- so those four commands cannot flow end to end from committed code.",
       "evidenceBasis": "CONFIRMED_BY_CONFIG",
       "entities": [
         "GAME_COMMAND_TRANSPORT",
