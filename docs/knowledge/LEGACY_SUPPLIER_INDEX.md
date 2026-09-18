@@ -139,14 +139,61 @@ confirms the target table shape.
 `docs/economy/legacy-dmn-cms-and-currency-investigation.md` (dated
 2026-08-30, status `FINDING_FOR_BRYAN_REVIEW`) reports this entire 74-table
 DMN CMS schema as still live in the production SQL Server database, fully
-provisioned, unused, undecided. Options stated there: leave dormant and
-documented (now cross-linked from here too), formally decommission/drop the
-schema, or audit further. **Not decided by this phase either** — flagged
-again here because it directly answers Section 6 (legacy vs. current
-comparison): this whole system is `LEGACY_ONLY`, `STILL_PRESENT` (not
-deleted), and `NOT_INTEGRATED` with the current Portal's `AccountCurrency`/
-`WalletLedgerService` economy, by deliberate, already-recorded decision (no
-equivalence assumed).
+provisioned, unused, undecided. **Not decided by this phase either** —
+flagged again here because it directly answers Section 6 (legacy vs.
+current comparison): this whole system is `LEGACY_ONLY`, `STILL_PRESENT`
+(not deleted), and `NOT_INTEGRATED` with the current Portal's
+`AccountCurrency`/`WalletLedgerService` economy, by deliberate,
+already-recorded decision (no equivalence assumed).
+
+### DmN CMS schema classification (Phase 18C Part 16)
+
+**Classification: `LEGACY_DORMANT_SCHEMA`.**
+
+- **Known usage**: none commercially. 0 rows in `DmN_Vip_Packages`,
+  `DmN_Vip_Users`, `DmN_Donate`, `DmN_Donate_Transactions`,
+  `DmN_Donate_Orders`, `DmN_2CheckOut_Transactions`,
+  `DmN_PagSeguro_Transactions` — despite the code/schema being fully wired
+  for real payment gateways. Only `CashShopData` has nonzero rows (4, all
+  known test accounts).
+- **Historical purpose**: the DMN/"Free MU CMS" website's own commerce
+  layer (donation packages, VIP sales, a marketplace, a referral system,
+  vote-reward tracking, support tickets, ban list, GM tools, account/
+  character logs) — either an originally-planned web panel superseded
+  before launch by the current custom Nuxt/NestJS portal, or a vendor
+  package installed/evaluated and not adopted. Not determined which,
+  this phase or prior ones.
+- **Current observed usage**: dormant. No application in this repo reads
+  or writes any `DmN_*` table (confirmed by this phase's own code search —
+  `mu-bloodmoon-v1`'s current `apps/api`/`apps/web` never reference the
+  `DmN_*` prefix).
+- **Dependencies**: the legacy PHP website itself (`hostbr-web-20260716`
+  backup) is the only known consumer, and that website is not deployed —
+  it was replaced by the current Nuxt SSR site at the exact cutover point
+  documented in `websource-web-20260716`'s `.htaccess`/`index.php`
+  snapshots. No current production system depends on `DmN_*` tables.
+- **Decommission prerequisites** (evidence needed before any removal,
+  regardless of which option is eventually chosen): (1) a full, fresh
+  row-count sweep of all 74 tables immediately before any action, not just
+  the ~9 checked in the 2026-08-30 investigation, to rule out any
+  since-changed state; (2) explicit confirmation no scheduled job/trigger/
+  stored procedure anywhere in the SQL Server instance references these
+  tables (the 2026-08-17 VPS inventory found 0 stored procedures in
+  `MuOnline`, but the `DmN_*` tables were only discovered 2026-08-30 —
+  this specific cross-check was not re-run against them); (3) a full
+  backup/export of the schema+data before any `DROP`, regardless of option
+  chosen; (4) explicit, fresh, in-the-moment authorization for the specific
+  destructive step, per this project's standing production-safety rules.
+
+### Decommission options (not chosen — Bryan's decision)
+
+| Option | What it means | Trade-off |
+|---|---|---|
+| `KEEP_DORMANT` | Leave the schema exactly as-is, documented (as this file now does) | Zero risk, zero effort, but an indefinitely-growing "why does this exist" question for future agents/operators |
+| `ARCHIVE_THEN_REMOVE` | Full backup/export of all 74 tables + data, then `DROP` from production | Removes the "phantom sitting in production" concern permanently; requires the prerequisites above and fresh explicit authorization for the `DROP` step specifically — this project's standing rules make that a real, separate approval gate, not a rubber stamp |
+| `AUDIT_FURTHER` | Read the remaining ~65 unchecked tables' row counts/content before deciding anything | Lowest-risk way to rule out a surprise (e.g., a marketplace/referral table with real historical data not yet checked) before committing to either option above |
+
+No option is selected here, per this phase's explicit instruction.
 
 ## Known worktree fragmentation risk
 

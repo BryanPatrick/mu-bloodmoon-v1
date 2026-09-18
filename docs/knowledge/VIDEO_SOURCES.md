@@ -33,18 +33,53 @@ referenced anywhere — no unaudited channel references exist
 | Captured but zero downstream processing | At least 3 confirmed this phase: `gqtSk1pdti4`, `Jia1TrtgZfY`, `XUeN6U74zME` (all SHOP/CURRENCY domain, P1 priority) — see `KNOWLEDGE_GAPS.md` GAP-P18-01 |
 | `TRANSCRIPT_NOT_AVAILABLE` (no captions ever generated) | Tracked per-video in `failure-manifest.json`, not re-derived here |
 
-## High-value untranscribed/unprocessed videos (this audit's specific finding)
+## The 3 priority videos — processed 2026-09-18 (Phase 18C)
 
 | Video ID | Title | Domains | Priority | Status |
 |---|---|---|---|---|
-| `gqtSk1pdti4` | Custom Buy Vip — ADDED 8.3 | SHOP, CURRENCY, CONFIG, SYSTEM | P1 | RAW captured, nothing else started |
-| `Jia1TrtgZfY` | Command Buy Vip Check User — UPDATED 8.2 | COMMAND, SHOP, CURRENCY | P1 | RAW captured, nothing else started |
-| `XUeN6U74zME` | Custom Buy Vip And Coin — UPDATED 7.7 | SHOP, CURRENCY, CONFIG, SYSTEM | P1 | RAW captured, nothing else started |
+| `gqtSk1pdti4` | Custom Buy Vip — ADDED 8.3 | SHOP, CURRENCY, CONFIG, SYSTEM | P1 | **Extracted in full** → `CASH_VIP_INTEGRATION_MAP.md` Part 1 |
+| `Jia1TrtgZfY` | Command Buy Vip Check User — UPDATED 8.2 | COMMAND, SHOP, CURRENCY | P1 | **Extracted in full** → `CASH_VIP_INTEGRATION_MAP.md` Part 1 |
+| `XUeN6U74zME` | Custom Buy Vip And Coin — UPDATED 7.7 | SHOP, CURRENCY, CONFIG, SYSTEM | P1 | **Extracted in full** → `CASH_VIP_INTEGRATION_MAP.md` Part 1 |
 
-These are the single highest-value next capture for the Cash/WCoin topic —
-see `LEGACY_SUPPLIER_INDEX.md` for why (they describe the vendor engine's
-native in-game purchase-command path, a second flow distinct from the
-website/DMN-CMS flow already fully traced).
+Extracted by direct transcript read (not the automated `knowledge-*.mjs`
+pipeline — see `KNOWLEDGE_GAPS.md` GAP-P18-01b for that distinction).
+Together they describe the vendor engine's native in-game purchase/spend
+path (both a chat-command and a later in-game-menu form, plus a generic
+item-triggered reward mechanism covering VIP/currency/skill grants) — a
+second flow, kept explicitly distinct from the website/DMN-CMS flow in
+`LEGACY_SUPPLIER_INDEX.md` (see `CASH_VIP_INTEGRATION_MAP.md` Part 2).
+
+## Remaining backlog after this phase (real counts, `transcript-inventory.json`)
+
+| Priority | Total | Claims already extracted (any prior phase) | Raw only, unprocessed |
+|---|---|---|---|
+| P0 | 57 | 30 | 27 |
+| P1 | 20 | 6 + 3 (this phase) = 9 | 11 |
+| P2 | 17 | 1 | 16 |
+| P3 | 14 | 2 | 12 |
+
+**Remaining P1 backlog (11 videos)** — classified this phase, not
+processed (per instruction not to process all 108):
+
+| Video ID | Title | Classification |
+|---|---|---|
+| `FHPFZmqyDqI` | Custom Buy Vip And Coin — ADDED 7.0 | `DUPLICATE_TOPIC` — an older version of the now-processed `XUeN6U74zME` (7.7); low incremental value |
+| `daXFimBKtVM` | Command Buy Vip update 2.0.1.6 | `DUPLICATE_TOPIC` — likely predates the now-processed `Jia1TrtgZfY` (8.2) |
+| `0r_QHATVZKo` | Command Set Vip update 2.0.1.6 | `DUPLICATE_TOPIC` — same version line as above |
+| `KwzxnwjTTZE` | Adicionando Pacotes de Vip's e Moedas | `DUPLICATE_TOPIC` (suspected pair with the row below — near-identical title) |
+| `xAHo-_33feE` | Adicionando Pacotes Vips e Cash's | `DUPLICATE_TOPIC` (suspected pair with the row above) |
+| `e9NLT40zdls` | Vip Money Editor ProjectGamers | `P2` — distinct topic (an admin editor tool, not the purchase flow itself), real remaining value |
+| `ay5Da1fenLw` | Custom Npc Features for Class and Custom Damage for vips | `P2` — NPC/class feature, VIP-adjacent but not currency-flow |
+| `9blMRwQmATQ` | MuHelper for vips, Command Info And Custom Npc Gift for vips | `P2` — same reasoning |
+| `8Oq6AX3kVo0` | Custom Npc Collector And Command Gift for vips | `P2` — same reasoning |
+| `pNvSjmchQ4E` | Custom Drop New Box — UPDATE 4.1 | `NO_CURRENT_VALUE` (for the Cash/VIP topic specifically) — DROP-domain, not currency-flow; tagged P1 for a different reason |
+| `XA3JgQgsr9k` | Command Make & Drop Atualizados | `NO_CURRENT_VALUE` (for the Cash/VIP topic specifically) — same reasoning |
+
+This classification is this audit's own view layered on top of the
+existing tool-generated `priority` field — it does not overwrite
+`transcript-inventory.json` (that file is generator-owned, per
+`knowledge-sweep.md`'s "prefer `--write` generators over hand-editing"
+rule).
 
 ## Community source classified out-of-scope
 

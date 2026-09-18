@@ -59,18 +59,35 @@ TASK ("how do I do X?")
 |---|---|
 | "How does WCoin reach the game?" (legacy) | `LEGACY_SUPPLIER_INDEX.md` — full traced flow, file:line evidence |
 | "Where is XShop configured?" | `docs/economy/xshop-cashshop-config-field-matrix.md` |
-| "How do I change a GameServer setting?" | `PROCEDURE_INDEX.md` row "Configure a GameServer setting" → `KNOWLEDGE_NO_RUNBOOK`, reload/restart safety is a real, tracked unknown (GAP-P18-07) |
+| "How does current Asaas WC reach the game?" | `CASH_VIP_INTEGRATION_MAP.md` Part 4 — explicit gap, `NOT IMPLEMENTED / NOT ENABLED` |
+| "How is VIP bought in the legacy system?" | `CASH_VIP_INTEGRATION_MAP.md` Parts 1-3 — two distinct paths (web donation packages vs. in-game `/buyvip`), kept separate |
+| "How is Buy Vip And Coin implemented?" | `CASH_VIP_INTEGRATION_MAP.md` Part 1, `XUeN6U74zME` section |
+| "How do I change a GameServer setting?" | `PROCEDURE_INDEX.md` row "Configure a GameServer setting" → `KNOWLEDGE_NO_RUNBOOK` for most families (GAP-P18-07); the narrow Buy-Vip/Custom-config reload case is `RUNBOOK_READY` (see the next row of that table) |
+| "Does GameServer need a restart for a CashShop config change?" | `KNOWLEDGE_GAPS.md` GAP-P18-07 — `UNKNOWN` for `CustomXShop.txt`/`CashShopProduct.txt` specifically; a *different*, related config family (`Data/Command`/`Data/Custom`) is `LIVE_RELOAD_CONFIRMED` — don't conflate the two, `PROCEDURE_INDEX.md`'s reload row states the boundary explicitly |
 | "How do we publish a launcher update?" | `PROCEDURE_INDEX.md` — legacy documented in `ANALISE-LAUNCHER.md`; current system not re-verified this phase |
-| "Where is the reset configuration?" | `context/domains/` (current) — out of this audit's scope, not re-checked |
+| "Where is the reset configuration?" | `context/ADR_INDEX.md` ADR-0025/ADR-0029 (`main`-tracked, `CANONICAL_DECISION`) — progression/reset control plane and current reset policy |
+| "Where is Blood Coin represented?" | `context/domains/game-economy.md` + `context/BUSINESS_RULES.md`; dedicated phase doc `docs/phases/blood-coin-public-name-completion/phase-manifest.md` |
+| "How does Marketplace escrow work?" | `docs/payment-and-escrow-flow.md`, `docs/marketplace-game-bridge.md` — real ledger/reservation code exists; GameBridge worker itself is a deliberate always-fail scaffold |
+| "Is GameBridge active?" | NO — `MU_BRIDGE_ENABLED=false` by default everywhere; see `CASH_VIP_INTEGRATION_MAP.md` Part 6 |
+| "Where are vendor tutorials?" | `VPS_DOCUMENTATION_INDEX.md` → `D:\MU\Research\Vendor\Tutorials\` (48 files, hash-verified) |
+| "Which videos are not processed?" | `VIDEO_SOURCES.md` + `KNOWLEDGE_GAPS.md` GAP-P18-01c |
 | "How did the legacy Cash purchase work?" | `LEGACY_SUPPLIER_INDEX.md` — this audit's central finding |
 | "How do I restore the portal DB?" | `PROCEDURE_INDEX.md` → `bloodmoon-deploy` skill, `RUNBOOK_READY` |
 | "Where is a specific vendor tutorial?" | `VPS_DOCUMENTATION_INDEX.md` → `D:\MU\Research\Vendor\Tutorials\` |
+| "Where are production security procedures?" | `PROCEDURE_INDEX.md` row "Rotate a production credential" → `docs/security/secret-rotation.md`/`secret-incident-history.md` |
+| "How do I find a source's authority/version?" | `docs/knowledge/source-authority.md` — the 10-level scale, applied consistently across this whole system |
 
-Agent lookup test (informal, this session): every question above was
-answerable within 1-3 hops using only the files this audit produced plus
-pre-existing docs — no manual full-repo search was needed once the router
-above exists. Not a formalized 10-20-scenario test (Phase 18B §18 asks for
-that formally) — this is a smaller, honest proxy, not a substitute.
+Formal 20-scenario lookup test run 2026-09-18 (Phase 18C Part 14):
+20/20 scenarios resolved with a real answer; 6 `DIRECT_SUCCESS` (question
+already in this table verbatim before this phase), 13 `ONE_EXTRA_HOP`
+(answer existed but wasn't yet in this table — 8 of those were added to
+this table during this same pass, the rest route cleanly through
+`PROCEDURE_INDEX.md`/`SOURCE_REGISTRY.md`), 1 `AMBIGUOUS`-then-fixed (the
+GameServer restart question — a naive agent could wrongly generalize the
+Buy-Vip reload finding to X-Shop/CashShop.txt; both the gap register and
+the procedure row now state the boundary explicitly). 0 `MANUAL_SEARCH`,
+0 `WRONG_SOURCE`. Full per-scenario table not duplicated here — see this
+phase's final report.
 
 ## Legacy & vendor knowledge (this audit's focus)
 

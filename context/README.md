@@ -64,6 +64,16 @@ without editing the original bootstrap protocol.
    (kept deliberately shorter than a phase history).
 4. Your current task's domain — see [`domains/`](domains/) for a stub
    per domain, each pointing at the real authoritative docs.
+4.5. If your task touches legacy/vendor knowledge, a runbook, a source's
+   authority/version, or "how do I find X" more generally — go to
+   [`../docs/knowledge/KNOWLEDGE_MASTER_INDEX.md`](../docs/knowledge/KNOWLEDGE_MASTER_INDEX.md)
+   before searching `docs/` by hand. It routes to
+   [`../docs/knowledge/PROCEDURE_INDEX.md`](../docs/knowledge/PROCEDURE_INDEX.md)
+   (runbooks) and [`../docs/knowledge/SOURCE_REGISTRY.md`](../docs/knowledge/SOURCE_REGISTRY.md)
+   (every knowledge-bearing system, with real counts) — this Context Pack
+   does not duplicate that system, only points at it. Only load the deep
+   raw material (`knowledge/vendor-sweep/`, `D:\MU\Research\`, etc.) once
+   the router tells you which specific file you actually need.
 5. [`DECISIONS.md`](DECISIONS.md) — which real decisions (ADRs +
    Knowledge Hub) govern your domain.
 6. The latest relevant [`docs/handoff/`](../docs/handoff/) entry for your
@@ -89,6 +99,7 @@ without editing the original bootstrap protocol.
 | [`KNOWLEDGE_HUB_MAPPING.md`](KNOWLEDGE_HUB_MAPPING.md) | Context Pack concepts ↔ Knowledge Hub entities |
 | [`VALIDATION.md`](VALIDATION.md) | The lightweight consistency checks this pack runs on itself |
 | [`domains/`](domains/) | One short stub per domain, each pointing at its real authoritative docs — never a copy of them |
+| [`../docs/knowledge/KNOWLEDGE_MASTER_INDEX.md`](../docs/knowledge/KNOWLEDGE_MASTER_INDEX.md) | Deep knowledge system router (legacy/vendor material, Knowledge Hub, vendor-sweep, runbooks) — a sibling system to this pack, not part of it; see step 4.5 above |
 
 Phase 12 adds `community`, `security` and `testing` as deliberately
 `STUB`/`PARTIAL` orientations only; no new product decision or claim of
