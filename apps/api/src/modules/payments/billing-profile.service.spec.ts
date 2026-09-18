@@ -6,7 +6,9 @@ const original = {
   enabled: process.env.ASAAS_ENABLED,
   environment: process.env.ASAAS_ENVIRONMENT,
   nodeEnv: process.env.NODE_ENV,
-  apiKey: process.env.ASAAS_API_KEY
+  apiKey: process.env.ASAAS_API_KEY,
+  frontendEnabled: process.env.ASAAS_FRONTEND_ENABLED,
+  creationEnabled: process.env.ASAAS_PAYMENT_CREATION_ENABLED
 }
 
 beforeEach(() => {
@@ -14,6 +16,8 @@ beforeEach(() => {
   process.env.ASAAS_ENABLED = 'true'
   process.env.ASAAS_ENVIRONMENT = 'sandbox'
   process.env.ASAAS_API_KEY = '$aact_hmlg_fake_test_only'
+  process.env.ASAAS_FRONTEND_ENABLED = 'true'
+  process.env.ASAAS_PAYMENT_CREATION_ENABLED = 'true'
   process.env.NODE_ENV = 'test'
 })
 
@@ -23,7 +27,9 @@ afterEach(() => {
     ASAAS_ENABLED: original.enabled,
     ASAAS_ENVIRONMENT: original.environment,
     NODE_ENV: original.nodeEnv,
-    ASAAS_API_KEY: original.apiKey
+    ASAAS_API_KEY: original.apiKey,
+    ASAAS_FRONTEND_ENABLED: original.frontendEnabled,
+    ASAAS_PAYMENT_CREATION_ENABLED: original.creationEnabled
   }
   for (const [key, value] of Object.entries(values)) {
     if (value === undefined) delete process.env[key]

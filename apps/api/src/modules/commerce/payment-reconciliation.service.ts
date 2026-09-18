@@ -69,7 +69,7 @@ export interface ProviderPollResult {
 export interface PaymentReconciliationRow {
   rechargeIntentId: string
   accountId: string
-  issue: 'PAID_WITHOUT_LEDGER_CREDIT' | 'STUCK_NON_TERMINAL'
+  issue: 'PAID_WITHOUT_LEDGER_CREDIT' | 'STUCK_NON_TERMINAL' | 'ASAAS_RECONCILE_REQUIRED'
   status: string
   detail: string
   createdAt: string
@@ -129,7 +129,11 @@ export class PaymentReconciliationService implements OnModuleInit, OnModuleDestr
       await this.observability.recordOperationalEvent({
         module: 'store',
         severity: 'CRITICAL',
-        eventType: row.issue === 'PAID_WITHOUT_LEDGER_CREDIT' ? 'PAYMENT_RECONCILIATION_MISSING_CREDIT' : 'PAYMENT_RECONCILIATION_STUCK_NON_TERMINAL',
+        eventType: row.issue === 'PAID_WITHOUT_LEDGER_CREDIT'
+          ? 'PAYMENT_RECONCILIATION_MISSING_CREDIT'
+          : row.issue === 'ASAAS_RECONCILE_REQUIRED'
+            ? 'ASAAS_RECONCILE_REQUIRED'
+            : 'PAYMENT_RECONCILIATION_STUCK_NON_TERMINAL',
         entityType: 'RechargeIntent',
         entityId: row.rechargeIntentId,
         description: row.detail,
@@ -187,7 +191,7 @@ export class PaymentReconciliationService implements OnModuleInit, OnModuleDestr
 
     // STUCK_NON_TERMINAL: a recharge that's been PENDING/PROCESSING/
     // MANUAL_REVIEW for over an hour is a real candidate for the existing
-    // manual "Ressincronizar com Mercado Pago" action -- this job only
+    // manual "Ressincronizar com provedor" action -- this job only
     // surfaces the candidate, an admin still decides and clicks resync.
     const stuckSince = new Date(Date.now() - STUCK_NON_TERMINAL_THRESHOLD_MS)
     const stuck = await this.prisma.rechargeIntent.findMany({
@@ -200,7 +204,24 @@ export class PaymentReconciliationService implements OnModuleInit, OnModuleDestr
         accountId: recharge.accountId,
         issue: 'STUCK_NON_TERMINAL',
         status: recharge.status,
-        detail: `RechargeIntent ${recharge.id} has been ${recharge.status} for over an hour -- consider resyncing with Mercado Pago.`,
+        detail: `RechargeIntent ${recharge.id} has been ${recharge.status} for over an hour -- consider provider resync.`,
+        createdAt: recharge.createdAt.toISOString()
+      })
+    }
+
+    // Ambiguous Asaas creation must be visible even without an external ID.
+    // The admin resync action recovers by externalReference without POST.
+    const ambiguous = await this.prisma.rechargeIntent.findMany({
+      where: { provider: 'asaas', providerCreateState: 'RECONCILE_REQUIRED' },
+      select: { id: true, accountId: true, status: true, createdAt: true }
+    })
+    for (const recharge of ambiguous) {
+      rows.push({
+        rechargeIntentId: recharge.id,
+        accountId: recharge.accountId,
+        issue: 'ASAAS_RECONCILE_REQUIRED',
+        status: recharge.status,
+        detail: `Asaas RechargeIntent ${recharge.id} needs provider lookup by reference; no new charge should be created.`,
         createdAt: recharge.createdAt.toISOString()
       })
     }

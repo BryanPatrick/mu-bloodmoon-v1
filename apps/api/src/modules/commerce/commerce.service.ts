@@ -17,7 +17,7 @@ import { PAYMENT_PROVIDER, type PaymentProvider } from '../payments/payment-prov
 import { PaymentWebhookEventService } from '../payments/payment-webhook-event.service'
 import { AsaasPaymentProvider } from '../payments/asaas.provider'
 import { BillingProfileService } from '../payments/billing-profile.service'
-import { loadAsaasConfig } from '../payments/asaas.config'
+import { assertAsaasCreationEnabled, loadAsaasConfig } from '../payments/asaas.config'
 import { mapAsaasPaymentStatus } from '../payments/asaas.status-map'
 import { UnauthorizedException } from '@nestjs/common'
 import { mapMercadoPagoOrderStatus } from '../payments/mercadopago.status-map'
@@ -723,16 +723,17 @@ export class CommerceService {
   }
 
   async createRechargeIntent(payload: CreateRechargeIntentPayload, user: AuthenticatedUser) {
-    const asaasSandbox = loadAsaasConfig().enabled
-    if (asaasSandbox) this.asaas.assertSandboxEnabled()
+    const asaasConfig = loadAsaasConfig()
+    const asaasSelected = asaasConfig.enabled
+    if (asaasSelected) assertAsaasCreationEnabled()
     else this.assertRealMoneyPaymentsEnabled()
     const pack = await this.prisma.rechargePackage.findUnique({ where: { id: payload.packageId } })
     if (!pack || !pack.active) {
       throw new NotFoundException('Recharge package not available')
     }
-    if (asaasSandbox && (pack.currency !== 'WCOIN' || pack.bonus !== 0 ||
+    if (asaasSelected && (pack.currency !== 'WCOIN' || pack.bonus !== 0 ||
       asaasWholeBrl(pack.price) === null || pack.amount !== asaasWholeBrl(pack.price))) {
-      throw new BadRequestException('Pacote incompativel com a regra Asaas sandbox: R$1 = 1 WC, sem bonus.')
+      throw new BadRequestException('Pacote incompativel com a regra Asaas: R$1 = 1 WC, sem bonus.')
     }
 
     const recharge = await this.prisma.rechargeIntent.create({
@@ -743,8 +744,8 @@ export class CommerceService {
         amount: pack.amount,
         bonus: pack.bonus,
         price: pack.price,
-        provider: asaasSandbox ? 'asaas' : 'mercadopago',
-        providerEnvironment: asaasSandbox ? 'sandbox' : 'production',
+        provider: asaasSelected ? 'asaas' : 'mercadopago',
+        providerEnvironment: asaasSelected ? asaasConfig.environment : 'production',
         correlationId: randomUUID()
       },
       include: {
@@ -798,9 +799,12 @@ export class CommerceService {
     if (recharge.accountId !== user.id) {
       throw new ForbiddenException('Access denied')
     }
-    if (recharge.provider === 'asaas') return this.createAsaasCheckout(recharge)
+    if (recharge.provider === 'asaas') {
+      assertAsaasCreationEnabled()
+      return this.createAsaasCheckout(recharge)
+    }
     if (loadAsaasConfig().enabled) {
-      throw new ServiceUnavailableException('MERCADO_PAGO_CHECKOUT_DISABLED_DURING_ASAAS_SANDBOX')
+      throw new ServiceUnavailableException('MERCADO_PAGO_CHECKOUT_DISABLED_WHILE_ASAAS_SELECTED')
     }
     this.assertRealMoneyPaymentsEnabled()
     const payableStatuses: RechargeIntentStatus[] = ['PREPARED', 'PENDING', 'PROCESSING']
@@ -887,10 +891,9 @@ export class CommerceService {
   private async createAsaasCheckout(
     recharge: RechargeIntent & { account: { email: string }; package: { key: string } }
   ) {
-    this.asaas.assertSandboxEnabled()
-    if (!loadAsaasConfig().apiKey) throw new ServiceUnavailableException('ASAAS_SANDBOX_KEY_MISSING')
+    const asaasConfig = assertAsaasCreationEnabled()
     const amountBRL = asaasWholeBrl(recharge.price)
-    if (recharge.providerEnvironment !== 'sandbox' || recharge.currency !== 'WCOIN' ||
+    if (recharge.providerEnvironment !== asaasConfig.environment || recharge.currency !== 'WCOIN' ||
       recharge.bonus !== 0 || amountBRL === null || recharge.amount !== amountBRL) {
       throw new BadRequestException('Recarga Asaas fora do contrato 1 WC = R$1, sem bonus.')
     }
@@ -900,7 +903,7 @@ export class CommerceService {
     const reference = recharge.externalReference || recharge.correlationId || recharge.id
     const customerId = await this.billingProfile.ensureAsaasCustomer(recharge.accountId)
     const mapping = await this.prisma.providerCustomer.findUniqueOrThrow({
-      where: { accountId_provider_environment: { accountId: recharge.accountId, provider: 'asaas', environment: 'sandbox' } }
+      where: { accountId_provider_environment: { accountId: recharge.accountId, provider: 'asaas', environment: asaasConfig.environment } }
     })
     if (mapping.providerCustomerId !== customerId) throw new ServiceUnavailableException('ASAAS_CUSTOMER_MAPPING_MISMATCH')
 
@@ -932,7 +935,7 @@ export class CommerceService {
     }
 
     const reserved = await this.prisma.rechargeIntent.updateMany({
-      where: { id: recharge.id, provider: 'asaas', providerEnvironment: 'sandbox', providerCreateState: 'NONE', externalOrderId: null },
+      where: { id: recharge.id, provider: 'asaas', providerEnvironment: asaasConfig.environment, providerCreateState: 'NONE', externalOrderId: null },
       data: { providerCreateState: 'RESERVED', externalReference: reference }
     })
     if (reserved.count !== 1) throw new ServiceUnavailableException('ASAAS_PAYMENT_CREATION_IN_PROGRESS')
@@ -987,7 +990,7 @@ export class CommerceService {
   }
 
   private assertRealMoneyPaymentsEnabled(): void {
-    if (process.env.REAL_MONEY_PAYMENTS_ENABLED !== 'true') {
+    if (process.env.REAL_MONEY_PAYMENTS_ENABLED !== 'true' || process.env.MERCADO_PAGO_ENABLED !== 'true') {
       throw new ServiceUnavailableException({
         code: 'PAYMENTS_DISABLED',
         message: 'Recargas pagas estao temporariamente indisponiveis nesta versao de avaliacao.'
@@ -1041,12 +1044,21 @@ export class CommerceService {
     if (!recharge) {
       throw new NotFoundException(`Recharge not found: ${id}`)
     }
+    if (recharge.provider === 'asaas') {
+      if (!loadAsaasConfig().reconciliationEnabled) throw new ServiceUnavailableException('ASAAS_RECONCILIATION_DISABLED')
+      let order: Awaited<ReturnType<AsaasPaymentProvider['getOrder']>> | null
+      if (recharge.externalOrderId) {
+        order = await this.asaas.getOrder(recharge.externalOrderId)
+      } else {
+        if (recharge.providerCreateState !== 'RECONCILE_REQUIRED' || !recharge.externalReference)
+          throw new BadRequestException('Recarga Asaas sem referencia recuperavel.')
+        order = await this.asaas.findPaymentByExternalReference(recharge.externalReference)
+        if (!order) throw new ServiceUnavailableException('ASAAS_PAYMENT_RECONCILE_REQUIRED')
+      }
+      return this.reconcileAsaasOrder(order, recharge, 'admin')
+    }
     if (!recharge.externalOrderId) {
       throw new BadRequestException('Esta recarga ainda nao tem uma order no Mercado Pago.')
-    }
-    if (recharge.provider === 'asaas') {
-      const order = await this.asaas.getOrder(recharge.externalOrderId)
-      return this.reconcileAsaasOrder(order, recharge, 'admin')
     }
     const order = await this.paymentProvider.getOrder(recharge.externalOrderId)
     return this.reconcileWithProvider(order, recharge, { source: 'admin', actorId: user.id, actorUsername: user.username })
@@ -1164,6 +1176,7 @@ export class CommerceService {
     const recharge = await this.prisma.rechargeIntent.findUnique({ where: { id } })
     if (!recharge || !recharge.externalOrderId) return null
     if (recharge.provider === 'asaas') {
+      if (!loadAsaasConfig().reconciliationEnabled) throw new ServiceUnavailableException('ASAAS_RECONCILIATION_DISABLED')
       const order = await this.asaas.getOrder(recharge.externalOrderId)
       return this.reconcileAsaasOrder(order, recharge, 'system-poll')
     }
@@ -1172,7 +1185,8 @@ export class CommerceService {
   }
 
   async handleAsaasWebhook(input: AsaasWebhookInput) {
-    this.asaas.assertSandboxEnabled()
+    if (!loadAsaasConfig().enabled || !loadAsaasConfig().webhookProcessingEnabled)
+      throw new ServiceUnavailableException('ASAAS_WEBHOOK_PROCESSING_DISABLED')
     if (!this.asaas.validateWebhookSignature({ signatureHeader: input.token, requestId: undefined, dataId: undefined })) {
       throw new UnauthorizedException('Webhook nao autorizado.')
     }
@@ -1214,7 +1228,7 @@ export class CommerceService {
       const recharge = order.externalReference
         ? await this.prisma.rechargeIntent.findUnique({ where: { externalReference: order.externalReference } })
         : null
-      if (!recharge || recharge.provider !== 'asaas' || recharge.providerEnvironment !== 'sandbox') {
+      if (!recharge || recharge.provider !== 'asaas' || recharge.providerEnvironment !== loadAsaasConfig().environment) {
         await this.webhookEvents.markIgnored(claim.eventId, 'unmatched_asaas_payment')
         await this.observability.recordOperationalEvent({
           module: 'store', severity: 'CRITICAL', eventType: 'ASAAS_UNMATCHED_PAYMENT',
@@ -1240,11 +1254,12 @@ export class CommerceService {
     allowAutomaticCredit = true,
     eventType?: string
   ) {
-    if (recharge.provider !== 'asaas' || recharge.providerEnvironment !== 'sandbox') {
+    const asaasEnvironment = loadAsaasConfig().environment
+    if (recharge.provider !== 'asaas' || recharge.providerEnvironment !== asaasEnvironment) {
       throw new ServiceUnavailableException('ASAAS_PROVIDER_ENVIRONMENT_MISMATCH')
     }
     const mapping = await this.prisma.providerCustomer.findUnique({
-      where: { accountId_provider_environment: { accountId: recharge.accountId, provider: 'asaas', environment: 'sandbox' } }
+      where: { accountId_provider_environment: { accountId: recharge.accountId, provider: 'asaas', environment: asaasEnvironment } }
     })
     const mismatch = !order.externalReference || order.externalReference !== recharge.externalReference ||
       !mapping?.providerCustomerId || order.providerCustomerId !== mapping.providerCustomerId ||

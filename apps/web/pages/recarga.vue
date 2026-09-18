@@ -64,9 +64,10 @@
                 <span>R$ {{ selectedPack.price }}</span>
               </div>
             </div>
-            <button class="mt-5 w-full rounded-md bg-blood-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-blood-500 disabled:cursor-not-allowed disabled:opacity-50" type="button" :disabled="!paymentsEnabled || !selectedPack || creatingCheckout" @click="continuePayment">
-              {{ !paymentsEnabled ? 'Recargas indisponiveis' : creatingCheckout ? 'Gerando pagamento...' : 'Pagar com Pix' }}
+            <button v-if="paymentsEnabled" class="mt-5 w-full rounded-md bg-blood-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-blood-500 disabled:cursor-not-allowed disabled:opacity-50" type="button" :disabled="!selectedPackEligible || creatingCheckout" @click="continuePayment">
+              {{ creatingCheckout ? 'Gerando pagamento...' : 'Pagar com Pix' }}
             </button>
+            <p v-if="paymentsEnabled && !visiblePacks.length" class="mt-4 text-sm font-bold text-white/55">Nenhum pacote compativel com recarga PIX esta disponivel.</p>
           </template>
 
           <template v-else>
@@ -114,10 +115,15 @@ useSeoMeta({ title: 'Recarga de moedas' })
 
 const { loadSession, recordAudit, user } = useAuth()
 const config = useRuntimeConfig()
-const paymentsEnabled = computed(() => config.public.realMoneyPaymentsEnabled === true)
+const paymentsEnabled = computed(() => config.public.realMoneyPaymentsEnabled === true && config.public.asaasFrontendEnabled === true)
 const commerceApi = useCommerceApi()
 const packs = ref<RechargePack[]>([])
-const currencies = computed(() => Array.from(new Set(packs.value.map((pack) => pack.currency))))
+const asaasPacks = computed(() => packs.value.filter((pack) => {
+  const wholeBrl = /^([1-9]\d*)(?:,00)?$/.exec(pack.price.trim())
+  return pack.currency === 'WCoin' && pack.bonus === 0 &&
+    wholeBrl !== null && Number.isSafeInteger(Number(wholeBrl[1])) && Number(wholeBrl[1]) === pack.amount
+}))
+const currencies = computed(() => Array.from(new Set((paymentsEnabled.value ? asaasPacks.value : packs.value).map((pack) => pack.currency))))
 const selectedCurrency = ref(rechargePacks[0]!.currency)
 const selectedPack = ref<RechargePack>(rechargePacks[0]!)
 const message = ref('')
@@ -167,13 +173,16 @@ const loadPacks = async () => {
   selectedPack.value = visiblePacks.value.find((pack) => pack.highlight) || visiblePacks.value[0] || rechargePacks[0]!
 }
 
-const visiblePacks = computed(() => packs.value.filter((pack) => pack.currency === selectedCurrency.value))
+const visiblePacks = computed(() => (paymentsEnabled.value ? asaasPacks.value : packs.value)
+  .filter((pack) => pack.currency === selectedCurrency.value))
+const selectedPackEligible = computed(() => visiblePacks.value.some((pack) => pack.id === selectedPack.value.id))
 
 watch(selectedCurrency, () => {
   selectedPack.value = visiblePacks.value.find((pack) => pack.highlight) || visiblePacks.value[0] || rechargePacks[0]!
 })
 
 const continuePayment = async () => {
+  if (!paymentsEnabled.value || !selectedPackEligible.value) return
   if (!selectedPack.value) {
     return
   }

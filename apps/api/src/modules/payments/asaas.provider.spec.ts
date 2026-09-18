@@ -9,7 +9,9 @@ const saved = {
   baseUrl: process.env.ASAAS_BASE_URL,
   databaseUrl: process.env.DATABASE_URL,
   apiKey: process.env.ASAAS_API_KEY,
-  webhookToken: process.env.ASAAS_WEBHOOK_TOKEN
+  webhookToken: process.env.ASAAS_WEBHOOK_TOKEN,
+  frontendEnabled: process.env.ASAAS_FRONTEND_ENABLED,
+  creationEnabled: process.env.ASAAS_PAYMENT_CREATION_ENABLED
 }
 
 const reply = (value: unknown, status = 200) =>
@@ -22,6 +24,8 @@ beforeEach(() => {
   process.env.ASAAS_BASE_URL = 'https://api-sandbox.asaas.com/v3'
   process.env.ASAAS_API_KEY = '$aact_hmlg_fake_test_only'
   process.env.ASAAS_WEBHOOK_TOKEN = 'fake-webhook-token-test-only'
+  process.env.ASAAS_FRONTEND_ENABLED = 'true'
+  process.env.ASAAS_PAYMENT_CREATION_ENABLED = 'true'
 })
 
 afterEach(() => {
@@ -33,7 +37,9 @@ afterEach(() => {
     ASAAS_BASE_URL: saved.baseUrl,
     DATABASE_URL: saved.databaseUrl,
     ASAAS_API_KEY: saved.apiKey,
-    ASAAS_WEBHOOK_TOKEN: saved.webhookToken
+    ASAAS_WEBHOOK_TOKEN: saved.webhookToken,
+    ASAAS_FRONTEND_ENABLED: saved.frontendEnabled,
+    ASAAS_PAYMENT_CREATION_ENABLED: saved.creationEnabled
   })) {
     if (value === undefined) delete process.env[key]
     else process.env[key] = value

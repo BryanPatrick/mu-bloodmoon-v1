@@ -7,7 +7,7 @@ import type {
   OrderStatusResult,
   WebhookVerificationInput
 } from './payment-provider.types'
-import { loadAsaasConfig } from './asaas.config'
+import { assertAsaasCreationEnabled, loadAsaasConfig } from './asaas.config'
 
 type AsaasCustomer = { id: string; externalReference?: string }
 type AsaasPayment = {
@@ -29,9 +29,9 @@ export class AsaasPaymentProvider implements PaymentProvider {
     return loadAsaasConfig()
   }
 
-  assertSandboxEnabled() {
+  assertConfigured() {
     const config = this.config()
-    if (!config.enabled) throw new ServiceUnavailableException('ASAAS_SANDBOX_DISABLED')
+    if (!config.enabled) throw new ServiceUnavailableException('ASAAS_DISABLED')
     return config
   }
 
@@ -40,6 +40,7 @@ export class AsaasPaymentProvider implements PaymentProvider {
     cpfCnpj: string
     externalReference: string
   }): Promise<string> {
+    assertAsaasCreationEnabled()
     const customer = await this.request<AsaasCustomer>('/customers', {
       method: 'POST',
       body: JSON.stringify({
@@ -64,6 +65,7 @@ export class AsaasPaymentProvider implements PaymentProvider {
   }
 
   async createOrder(input: CreateOrderInput): Promise<CreateOrderResult> {
+    assertAsaasCreationEnabled()
     if (!input.payerCustomerId) throw new ServiceUnavailableException('ASAAS_CUSTOMER_REQUIRED')
     if (!Number.isSafeInteger(input.amountBRL) || input.amountBRL <= 0) {
       throw new ServiceUnavailableException('ASAAS_WCOIN_AMOUNT_INVALID')
@@ -131,6 +133,8 @@ export class AsaasPaymentProvider implements PaymentProvider {
   }
 
   async cancelOrder(externalOrderId: string): Promise<void> {
+    // Cancellation is an explicit financial action, never a reconciliation side effect.
+    assertAsaasCreationEnabled()
     await this.request(`/payments/${encodeURIComponent(externalOrderId)}`, { method: 'DELETE' })
   }
 
@@ -168,8 +172,10 @@ export class AsaasPaymentProvider implements PaymentProvider {
   }
 
   private async request<T = unknown>(path: string, init: RequestInit = {}): Promise<T> {
-    const config = this.assertSandboxEnabled()
-    if (!config.apiKey) throw new ServiceUnavailableException('ASAAS_SANDBOX_KEY_MISSING')
+    const config = this.assertConfigured()
+    if (!config.apiKey) throw new ServiceUnavailableException('ASAAS_API_KEY_MISSING')
+    if (init.method === 'POST' && (path === '/payments' || path === '/customers'))
+      assertAsaasCreationEnabled()
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 15000)
     try {
@@ -180,7 +186,7 @@ export class AsaasPaymentProvider implements PaymentProvider {
           accept: 'application/json',
           'content-type': 'application/json',
           access_token: config.apiKey,
-          'User-Agent': 'BloodMoon-Sandbox/1',
+          'User-Agent': 'BloodMoon/1',
           ...(init.headers || {})
         }
       })

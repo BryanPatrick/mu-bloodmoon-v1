@@ -4,13 +4,17 @@ const original = {
   enabled: process.env.ASAAS_ENABLED,
   environment: process.env.ASAAS_ENVIRONMENT,
   nodeEnv: process.env.NODE_ENV,
-  apiKey: process.env.ASAAS_API_KEY
+  apiKey: process.env.ASAAS_API_KEY,
+  frontendEnabled: process.env.ASAAS_FRONTEND_ENABLED,
+  creationEnabled: process.env.ASAAS_PAYMENT_CREATION_ENABLED
 }
 
 beforeEach(() => {
   process.env.ASAAS_ENABLED = 'true'
   process.env.ASAAS_ENVIRONMENT = 'sandbox'
   process.env.ASAAS_API_KEY = '$aact_hmlg_fake_test_only'
+  process.env.ASAAS_FRONTEND_ENABLED = 'true'
+  process.env.ASAAS_PAYMENT_CREATION_ENABLED = 'true'
   process.env.NODE_ENV = 'test'
 })
 afterEach(() => {
@@ -18,7 +22,9 @@ afterEach(() => {
     ASAAS_ENABLED: original.enabled,
     ASAAS_ENVIRONMENT: original.environment,
     NODE_ENV: original.nodeEnv,
-    ASAAS_API_KEY: original.apiKey
+    ASAAS_API_KEY: original.apiKey,
+    ASAAS_FRONTEND_ENABLED: original.frontendEnabled,
+    ASAAS_PAYMENT_CREATION_ENABLED: original.creationEnabled
   })) {
     if (value === undefined) delete process.env[key]
     else process.env[key] = value
@@ -124,10 +130,40 @@ function fixture() {
     billing as never
   )
   const user = { id: 'account-1', username: 'qa' } as never
-  return { recharge, order, prisma, asaas, service, user }
+  return { recharge, order, prisma, asaas, billing, service, user }
 }
 
 describe('Asaas checkout reservation (mock provider, no DB/network)', () => {
+  it.each([
+    ['missing flags', undefined, undefined],
+    ['frontend off', 'false', 'true'],
+    ['creation off', 'true', 'false']
+  ])('rejects direct checkout with %s before provider or billing calls', async (_case, frontend, creation) => {
+    const f = fixture()
+    if (frontend === undefined) delete process.env.ASAAS_FRONTEND_ENABLED
+    else process.env.ASAAS_FRONTEND_ENABLED = frontend
+    if (creation === undefined) delete process.env.ASAAS_PAYMENT_CREATION_ENABLED
+    else process.env.ASAAS_PAYMENT_CREATION_ENABLED = creation
+    await expect(f.service.createRechargeCheckout('recharge-1', f.user)).rejects.toThrow('PAYMENTS_DISABLED')
+    await expect(f.service.createRechargeIntent({ packageId: 'pack-1' }, f.user)).rejects.toThrow('PAYMENTS_DISABLED')
+    expect(f.asaas.createOrder).not.toHaveBeenCalled()
+    expect(f.billing.ensureAsaasCustomer).not.toHaveBeenCalled()
+    expect(f.prisma.rechargeIntent.create).not.toHaveBeenCalled()
+  })
+
+  it('keeps admin reconciliation separate from new charge creation', async () => {
+    const f = fixture()
+    process.env.ASAAS_PAYMENT_CREATION_ENABLED = 'false'
+    process.env.ASAAS_RECONCILIATION_ENABLED = 'true'
+    f.recharge.externalOrderId = null
+    f.recharge.externalReference = 'reference-1'
+    f.recharge.providerCreateState = 'RECONCILE_REQUIRED'
+    await expect(f.service.resyncRechargeFromProvider('recharge-1', f.user)).rejects.toThrow('ASAAS_PAYMENT_RECONCILE_REQUIRED')
+    expect(f.asaas.findPaymentByExternalReference).toHaveBeenCalledWith('reference-1')
+    expect(f.asaas.createOrder).not.toHaveBeenCalled()
+    delete process.env.ASAAS_RECONCILIATION_ENABLED
+  })
+
   it('refuses an existing WCoin bonus package before creating an intent', async () => {
     const f = fixture()
     f.prisma.rechargePackage.findUnique.mockResolvedValueOnce({
@@ -164,7 +200,7 @@ describe('Asaas checkout reservation (mock provider, no DB/network)', () => {
     const f = fixture()
     f.recharge.provider = 'mercadopago'
     await expect(f.service.createRechargeCheckout('recharge-1', f.user)).rejects.toThrow(
-      'MERCADO_PAGO_CHECKOUT_DISABLED_DURING_ASAAS_SANDBOX'
+      'MERCADO_PAGO_CHECKOUT_DISABLED_WHILE_ASAAS_SELECTED'
     )
     expect(f.asaas.createOrder).not.toHaveBeenCalled()
   })

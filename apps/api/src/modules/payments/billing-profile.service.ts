@@ -7,7 +7,7 @@ import {
 import { Prisma } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
 import { AsaasPaymentProvider } from './asaas.provider'
-import { loadAsaasConfig } from './asaas.config'
+import { assertAsaasCreationEnabled, loadAsaasConfig } from './asaas.config'
 import { BillingEnvelopeInvalidError, BillingKeyNotConfiguredError, keyVersionOf, openField, sealField } from './billing-crypto'
 
 // Thin wrappers binding the generic, version-aware billing-crypto module
@@ -86,7 +86,7 @@ export class BillingProfileService {
     accountId: string,
     input: { legalName: string; cpfCnpj: string; country?: string }
   ) {
-    this.asaas.assertSandboxEnabled()
+    assertAsaasCreationEnabled()
     const legalName = typeof input.legalName === 'string' ? input.legalName.trim() : ''
     const cpfCnpj = typeof input.cpfCnpj === 'string' ? input.cpfCnpj.replace(/\D/g, '') : ''
     if (
@@ -130,16 +130,16 @@ export class BillingProfileService {
   }
 
   async ensureAsaasCustomer(accountId: string): Promise<string> {
-    this.asaas.assertSandboxEnabled()
+    assertAsaasCreationEnabled()
     if (!loadAsaasConfig().apiKey)
-      throw new ServiceUnavailableException('ASAAS_SANDBOX_KEY_MISSING')
+      throw new ServiceUnavailableException('ASAAS_API_KEY_MISSING')
     const profile = await this.prisma.billingProfile.findUnique({ where: { accountId } })
     if (!profile)
-      throw new BadRequestException('Perfil de faturamento necessario para PIX sandbox.')
+      throw new BadRequestException('Perfil de faturamento necessario para PIX.')
     const externalReference = `bm-account:${accountId}`
     const existing = await this.prisma.providerCustomer.findUnique({
       where: {
-        accountId_provider_environment: { accountId, provider: 'asaas', environment: 'sandbox' }
+        accountId_provider_environment: { accountId, provider: 'asaas', environment: loadAsaasConfig().environment }
       }
     })
     if (existing?.providerCustomerId && existing.createState === 'CREATED')
@@ -151,7 +151,7 @@ export class BillingProfileService {
           data: {
             accountId,
             provider: 'asaas',
-            environment: 'sandbox',
+            environment: loadAsaasConfig().environment,
             externalReference,
             createState: 'RESERVED'
           }
@@ -165,7 +165,7 @@ export class BillingProfileService {
 
     const mapping = await this.prisma.providerCustomer.findUniqueOrThrow({
       where: {
-        accountId_provider_environment: { accountId, provider: 'asaas', environment: 'sandbox' }
+        accountId_provider_environment: { accountId, provider: 'asaas', environment: loadAsaasConfig().environment }
       }
     })
     if (mapping.providerCustomerId && mapping.createState === 'CREATED')

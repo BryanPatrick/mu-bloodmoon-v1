@@ -16,7 +16,7 @@ export type MercadoPagoConfig = {
 }
 
 export function loadMercadoPagoConfig(): MercadoPagoConfig {
-  const enabled = process.env.REAL_MONEY_PAYMENTS_ENABLED === 'true'
+  const enabled = process.env.REAL_MONEY_PAYMENTS_ENABLED === 'true' && process.env.MERCADO_PAGO_ENABLED === 'true'
   const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN?.trim() || ''
   const publicKey = process.env.MERCADO_PAGO_PUBLIC_KEY?.trim() || ''
   const webhookSecret = process.env.MERCADO_PAGO_WEBHOOK_SECRET?.trim() || ''

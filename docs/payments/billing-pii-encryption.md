@@ -182,6 +182,13 @@ a general logging-sanitization pass).
 
 ## Sandbox/production separation (audited, confirmed already robust)
 
+**Adendo Fase 7 (2026-09-18):** o texto abaixo registra a garantia
+histórica da Fase 4. A branch de prontidão passou a aceitar a URL de
+produção somente com ambiente explícito, chave compatível e flags de
+criação desligadas por padrão. O contrato operacional atual está em
+[`asaas-production-readiness.md`](asaas-production-readiness.md); a
+afirmação histórica "sandbox-only" abaixo não descreve a nova branch.
+
 `asaas.config.ts`'s `loadAsaasConfig()` was already correctly fail-closed
 before this phase touched anything — confirmed, not modified:
 `baseUrl`'s TypeScript type is `typeof ASAAS_SANDBOX_URL` (cannot even

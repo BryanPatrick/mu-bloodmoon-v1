@@ -3,6 +3,7 @@ import { MercadoPagoProvider } from './mercadopago.provider'
 const originalFetch = global.fetch
 const original = {
   enabled: process.env.REAL_MONEY_PAYMENTS_ENABLED,
+  mpEnabled: process.env.MERCADO_PAGO_ENABLED,
   token: process.env.MERCADO_PAGO_ACCESS_TOKEN,
   secret: process.env.MERCADO_PAGO_WEBHOOK_SECRET,
   baseUrl: process.env.MERCADO_PAGO_API_BASE_URL,
@@ -13,6 +14,7 @@ afterEach(() => {
   global.fetch = originalFetch
   for (const [key, value] of Object.entries({
     REAL_MONEY_PAYMENTS_ENABLED: original.enabled,
+    MERCADO_PAGO_ENABLED: original.mpEnabled,
     MERCADO_PAGO_ACCESS_TOKEN: original.token,
     MERCADO_PAGO_WEBHOOK_SECRET: original.secret,
     MERCADO_PAGO_API_BASE_URL: original.baseUrl,
@@ -26,6 +28,7 @@ afterEach(() => {
 it('keeps the Mercado Pago idempotent PIX request contract', async () => {
   process.env.NODE_ENV = 'test'
   process.env.REAL_MONEY_PAYMENTS_ENABLED = 'true'
+  process.env.MERCADO_PAGO_ENABLED = 'true'
   process.env.MERCADO_PAGO_ACCESS_TOKEN = 'fake-mp-test-token'
   process.env.MERCADO_PAGO_WEBHOOK_SECRET = 'fake-mp-test-secret'
   process.env.MERCADO_PAGO_API_BASE_URL = 'https://mercadopago.invalid'

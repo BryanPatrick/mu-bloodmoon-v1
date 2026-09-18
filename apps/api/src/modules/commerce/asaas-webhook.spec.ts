@@ -166,6 +166,36 @@ function fixture() {
 }
 
 describe('Asaas webhook and WC credit (mock transactional DB, no network)', () => {
+  const originalFlags = {
+    enabled: process.env.ASAAS_ENABLED,
+    environment: process.env.ASAAS_ENVIRONMENT,
+    webhook: process.env.ASAAS_WEBHOOK_PROCESSING_ENABLED,
+    nodeEnv: process.env.NODE_ENV
+  }
+  beforeEach(() => {
+    process.env.NODE_ENV = 'test'
+    process.env.ASAAS_ENABLED = 'true'
+    process.env.ASAAS_ENVIRONMENT = 'sandbox'
+    process.env.ASAAS_WEBHOOK_PROCESSING_ENABLED = 'true'
+  })
+  afterEach(() => {
+    for (const [key, value] of Object.entries({
+      NODE_ENV: originalFlags.nodeEnv,
+      ASAAS_ENABLED: originalFlags.enabled,
+      ASAAS_ENVIRONMENT: originalFlags.environment,
+      ASAAS_WEBHOOK_PROCESSING_ENABLED: originalFlags.webhook
+    })) {
+      if (value === undefined) delete process.env[key]
+      else process.env[key] = value
+    }
+  })
+  it('rejects a valid-looking webhook while processing flag is off', async () => {
+    const f = fixture()
+    process.env.ASAAS_WEBHOOK_PROCESSING_ENABLED = 'false'
+    await expect(f.notify('evt_disabled')).rejects.toThrow('ASAAS_WEBHOOK_PROCESSING_DISABLED')
+    expect(f.asaas.getOrder).not.toHaveBeenCalled()
+    expect(f.balance()).toBe(0)
+  })
   it('credits 10 WC once for the same delivered event twice', async () => {
     const f = fixture()
     await f.notify('evt_1')
@@ -220,6 +250,7 @@ describe('Asaas webhook and WC credit (mock transactional DB, no network)', () =
 
   it('invalid token and unknown event never look up or credit', async () => {
     const f = fixture()
+    await expect(f.service.handleAsaasWebhook({ token: undefined, body: { id: 'evt_missing', event: 'PAYMENT_RECEIVED', payment: { id: 'pay_1' } } })).rejects.toThrow()
     await expect(f.notify('evt_bad', 'PAYMENT_RECEIVED', 'pay_1', 'wrong')).rejects.toThrow()
     await f.notify('evt_unknown', 'PAYMENT_SOMETHING_NEW')
     expect(f.asaas.getOrder).not.toHaveBeenCalled()

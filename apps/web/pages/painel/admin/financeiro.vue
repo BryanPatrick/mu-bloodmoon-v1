@@ -127,7 +127,7 @@
                 Cancelar
               </button>
               <button class="rounded-md border border-white/10 bg-white/5 px-4 py-3 text-sm font-black text-white/75 sm:col-span-2" type="button" @click="toggleRechargeDetail(recharge.id)">
-                {{ expandedRechargeId === recharge.id ? 'Ocultar detalhes' : 'Detalhes (Mercado Pago)' }}
+                {{ expandedRechargeId === recharge.id ? 'Ocultar detalhes' : 'Detalhes do provedor' }}
               </button>
             </div>
           </div>
@@ -137,7 +137,7 @@
             <div v-else-if="rechargeDetail" class="grid gap-3">
               <div class="grid gap-2 text-xs font-bold text-white/70 sm:grid-cols-2">
                 <span>Provider: <strong class="text-white">{{ rechargeDetail.provider }}</strong></span>
-                <span>Order Mercado Pago: <strong class="text-white">{{ rechargeDetail.externalOrderId || '-' }}</strong></span>
+                <span>ID no provedor: <strong class="text-white">{{ rechargeDetail.externalOrderId || '-' }}</strong></span>
                 <span>Correlation ID: <strong class="text-white">{{ rechargeDetail.correlationId || '-' }}</strong></span>
                 <span>Metodo: <strong class="text-white">{{ rechargeDetail.paymentMethod || '-' }}</strong></span>
                 <span>Status provider: <strong class="text-white">{{ rechargeDetail.externalStatus || '-' }} / {{ rechargeDetail.externalStatusDetail || '-' }}</strong></span>
@@ -149,7 +149,7 @@
 
               <div class="flex flex-wrap gap-2">
                 <button class="w-fit rounded-md border border-white/10 bg-white/5 px-4 py-2 text-xs font-black text-white/75" type="button" :disabled="resyncing" @click="resyncRecharge(recharge.id)">
-                  {{ resyncing ? 'Ressincronizando...' : 'Ressincronizar com Mercado Pago' }}
+                  {{ resyncing ? 'Ressincronizando...' : 'Ressincronizar com provedor' }}
                 </button>
                 <button
                   v-if="hasPermission(permissions.adminChargebackView)"
@@ -534,10 +534,10 @@ const resyncRecharge = async (rechargeId: string) => {
     await loadFinancialQueues()
     rechargeDetail.value = await commerceApi.getRechargeDetail(rechargeId)
     isSuccess.value = true
-    message.value = 'Recarga ressincronizada com o Mercado Pago.'
+    message.value = 'Recarga ressincronizada com o provedor.'
   } catch (error) {
     isSuccess.value = false
-    message.value = error instanceof Error ? error.message : 'Nao foi possivel ressincronizar com o Mercado Pago.'
+    message.value = error instanceof Error ? error.message : 'Nao foi possivel ressincronizar com o provedor.'
   } finally {
     resyncing.value = false
   }

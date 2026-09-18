@@ -72,6 +72,10 @@ describe('Phase 6 — real Asaas Sandbox with isolated local DB', () => {
   beforeAll(async () => {
     assertSafeEnvironment()
     process.env.ASAAS_ENABLED = 'true'
+    process.env.ASAAS_FRONTEND_ENABLED = 'true'
+    process.env.ASAAS_PAYMENT_CREATION_ENABLED = 'true'
+    process.env.ASAAS_WEBHOOK_PROCESSING_ENABLED = 'true'
+    process.env.ASAAS_RECONCILIATION_ENABLED = 'true'
     process.env.ASAAS_WEBHOOK_TOKEN = webhookToken
     process.env.BILLING_PII_KEY_B64 = Buffer.alloc(32, 41).toString('base64')
     process.env.JWT_ACCESS_SECRET = 'disposable-local-phase6-access'
