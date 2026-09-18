@@ -35,6 +35,26 @@ function jsonOrNull(value: Prisma.InputJsonValue | undefined): Prisma.InputJsonV
 export class WalletLedgerService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /** Retry the entire aborted financial transaction, never an individual
+   * wallet statement. MariaDB can report 1020 under SERIALIZABLE after a
+   * concurrent writer; replaying only the increment would break the ledger
+   * invariant. The idempotency key remains authoritative across attempts. */
+  async runSerializableTransactionWithRetry<T>(operation: (tx: Prisma.TransactionClient) => Promise<T>): Promise<T> {
+    const maxAttempts = 8
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      try {
+        return await this.prisma.$transaction(operation, { isolationLevel: 'Serializable' })
+      } catch (error) {
+        const code = error && typeof error === 'object' && 'code' in error ? String(error.code) : ''
+        const message = error instanceof Error ? error.message : ''
+        const retryable = code === 'P2034' || /(?:code:\s*1020|Record has changed since last read)/i.test(message)
+        if (!retryable || attempt === maxAttempts - 1) throw error
+        await new Promise((resolve) => setTimeout(resolve, 20 * (attempt + 1) + Math.floor(Math.random() * 20)))
+      }
+    }
+    throw new Error('Unreachable wallet transaction retry state')
+  }
+
   private async ledgerRowForIdempotencyKey(tx: Prisma.TransactionClient, idempotencyKey: string) {
     return tx.walletLedgerEntry.findUnique({ where: { idempotencyKey } })
   }
@@ -55,6 +75,11 @@ export class WalletLedgerService {
     if (!Number.isInteger(amount) || amount <= 0) {
       throw new BadRequestException('Valor de credito invalido.')
     }
+
+    // The parent row exists even if this currency row does not. Serialize
+    // same-account credits before checking the idempotency key. A SERIALIZABLE
+    // conflict still requires retrying the *whole* transaction by its owner.
+    await tx.$queryRaw`SELECT id FROM Account WHERE id = ${accountId} FOR UPDATE`
 
     const existing = await this.ledgerRowForIdempotencyKey(tx, ctx.idempotencyKey)
     if (existing) return existing

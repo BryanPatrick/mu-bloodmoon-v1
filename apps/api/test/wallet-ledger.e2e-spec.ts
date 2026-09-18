@@ -174,6 +174,51 @@ describe('WalletLedgerService -- Open Beta P0', () => {
     expect(await walletLedger.getBalance(account.id, 'WCOIN')).toBe(100)
   })
 
+  it('FINANCIAL CONCURRENCY: distinct recharge intents credit one account exactly once each', async () => {
+    const account = await makeAccount('manycredits')
+    const pack = await prisma.rechargePackage.create({
+      data: { key: `concurrency-${randomUUID()}`, currency: 'WCOIN', amount: 7, price: '1,00' }
+    })
+    const intents = await Promise.all(Array.from({ length: 8 }, () => prisma.rechargeIntent.create({
+      data: { accountId: account.id, packageId: pack.id, currency: 'WCOIN', amount: 7, price: '1,00', provider: 'asaas', providerEnvironment: 'sandbox' }
+    })))
+
+    await Promise.all(intents.map((intent) => walletLedger.runSerializableTransactionWithRetry(
+      (tx) => walletLedger.credit(
+        tx, account.id, 'WCOIN', 7,
+        { idempotencyKey: `recharge-credit:${intent.id}`, type: 'WC_PURCHASE_CREDIT', sourceType: 'RechargeIntent', sourceId: intent.id, paymentProvenanceRef: intent.id }
+      )
+    )))
+
+    expect(await walletLedger.getBalance(account.id, 'WCOIN')).toBe(56)
+    const credits = await prisma.walletLedgerEntry.findMany({ where: { accountId: account.id, type: 'WC_PURCHASE_CREDIT' } })
+    expect(credits).toHaveLength(8)
+    expect(new Set(credits.map((entry) => entry.sourceId)).size).toBe(8)
+    expect(credits.every((entry) => entry.grossAmount === 7 && entry.netAmount === 7)).toBe(true)
+  })
+
+  it('FINANCIAL CONCURRENCY: duplicate delivery of one recharge intent credits only once', async () => {
+    const account = await makeAccount('repeatcredit')
+    const pack = await prisma.rechargePackage.create({
+      data: { key: `concurrency-${randomUUID()}`, currency: 'WCOIN', amount: 11, price: '1,00' }
+    })
+    const intent = await prisma.rechargeIntent.create({
+      data: { accountId: account.id, packageId: pack.id, currency: 'WCOIN', amount: 11, price: '1,00', provider: 'asaas', providerEnvironment: 'sandbox' }
+    })
+    const key = `recharge-credit:${intent.id}`
+
+    const entries = await Promise.all(Array.from({ length: 8 }, () => walletLedger.runSerializableTransactionWithRetry(
+      (tx) => walletLedger.credit(
+        tx, account.id, 'WCOIN', 11,
+        { idempotencyKey: key, type: 'WC_PURCHASE_CREDIT', sourceType: 'RechargeIntent', sourceId: intent.id, paymentProvenanceRef: intent.id }
+      )
+    )))
+
+    expect(new Set(entries.map((entry) => entry.id)).size).toBe(1)
+    expect(await walletLedger.getBalance(account.id, 'WCOIN')).toBe(11)
+    expect(await prisma.walletLedgerEntry.count({ where: { idempotencyKey: key } })).toBe(1)
+  })
+
   // -------------------------------------------------------------------
   // SERVER_REWARD_NOT_P2P_TAXED
   // -------------------------------------------------------------------

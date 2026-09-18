@@ -98,6 +98,7 @@ function fixture() {
     })
   }
   const wallet = {
+    runSerializableTransactionWithRetry: jest.fn(async (callback: (client: typeof tx) => Promise<unknown>) => prisma.$transaction(callback)),
     credit: jest.fn(
       async (
         _tx: unknown,

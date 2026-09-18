@@ -1521,8 +1521,12 @@ export class CommerceService {
     let hook: { kind: 'PAID' | 'FAILED' | 'MANUAL_REVIEW'; recharge: { id: string; accountId: string; price: string; createdAt: Date }; reason?: string } | null = null
     let asaasCommittedTransition: 'PAID' | 'MANUAL_REVIEW' | null = null
 
-    const result = await this.prisma.$transaction(
+    const result = await this.walletLedger.runSerializableTransactionWithRetry(
       async (tx) => {
+        // A serialization conflict aborts this entire attempt. Do not leak
+        // advisory post-commit state from an aborted attempt into the retry.
+        hook = null
+        asaasCommittedTransition = null
         const recharge = await tx.rechargeIntent.findUnique({ where: { id }, include: { account: true, package: true } })
         if (!recharge) {
           throw new NotFoundException(`Recharge not found: ${id}`)
@@ -1658,8 +1662,7 @@ export class CommerceService {
         })
 
         return this.mapRecharge(updated)
-      },
-      { isolationLevel: 'Serializable' }
+      }
     )
 
     if (asaasCommittedTransition === 'PAID') this.logger.log('ASAAS_WALLET_CREDIT_SUCCEEDED')

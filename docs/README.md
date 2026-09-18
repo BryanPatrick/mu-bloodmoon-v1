@@ -112,6 +112,7 @@ Validação local Fase 5: [MySQL/MariaDB em paridade, proteção de purge e prep
 Validação Fase 6: [contrato real com Asaas Sandbox, PIX, webhook e correção de cancelamento](payments/asaas-sandbox-phase6.md). O teste permaneceu isolado; não autoriza produção.
 Preparação Fase 7: [configuração de produção com flags desligadas, kill switch e runbook](payments/asaas-production-readiness.md). Implementada somente na branch local; não implantada/ativada em produção e ainda sujeita aos gates operacionais do runbook.
 Fechamento local Fase 7B: [prévia compilada corrigida, rotas, observabilidade e pendências de infraestrutura](payments/asaas-phase7b-deployability.md). Ainda não autoriza deploy ou habilitação de pagamentos.
+Revisão local Fase 7C: [concorrência financeira corrigida nos dois bancos e inventário de host somente leitura](payments/asaas-phase7c-concurrency-host-review.md). O webhook e os alertas de produção ainda não estão liberados.
 Operação administrativa futura: [reconciliação Asaas sem nova cobrança](manuals/super-admin/asaas-reconciliation.md).
 Manual operacional do Super ADM para esta proteção: [purge de contas com cobrança Asaas](manuals/super-admin/asaas-purge-safeguard.md).
 
