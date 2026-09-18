@@ -2,7 +2,7 @@
 status: ACTIVE
 category: context-pack-domain
 lastVerified: 2026-09-17
-classification: STUB
+classification: PARTIAL
 ---
 
 # Domain: Marketplace
@@ -26,6 +26,19 @@ not integrated on `main`).
 **Related decisions**: preserved ADR-0022 is verified historical
 decision evidence, not a canonical file on `main`; see
 [`../ADR_INDEX.md`](../ADR_INDEX.md).
+
+**Current implementation state (Phase 16, real code audit)**: real,
+transactional escrow (`MarketplaceEscrow`) — not just a naming idea —
+but GameBridge can never complete a job (`MU_BRIDGE_ENABLED=false`
+everywhere; the executor is a deliberate hard-fail scaffold). Any
+authenticated player can today debit real currency into an order that
+can never auto-complete; the only recovery is via four dev-only bypass
+endpoints the project's own docs already say must be removed before
+production. E2e test depth is thin (one dedicated spec, testing route
+safety not the buy/sell contract). A real, already-written Plan A
+(homologate) vs. Plan B (safely disable) analysis exists:
+`docs/handoff/beta-commerce-strategy.md`. Full current-state detail:
+`docs/handoff/open-beta-readiness-audit-2026-09-17.md` §1 item 4, §9.
 
 **Orchestration**: no Knowledge Hub task/decision for this domain has
 been created or examined this session.

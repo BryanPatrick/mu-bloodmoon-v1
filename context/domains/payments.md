@@ -81,6 +81,17 @@ now preserved in full — see `../preservation/OPENBETA_UNTRACKED_MANIFEST.md`.
 actually resolved (OQ-CTX-006); Phase 6's real Sandbox evidence does
 not establish production payment readiness or resolve the old beta NO-GO.
 
+**Loja (current WC-only store, distinct from Asaas/Mercado Pago), Phase
+16 real code audit**: no payment-gateway dependency exists anywhere in
+the codebase — purchase is a pure internal-currency debit, delivery is
+100% manual. A real, already-written Plan A/Plan B exists for whether
+to homologate or safely disable it for this specific Beta:
+`docs/handoff/beta-commerce-strategy.md`. Real-money payments are
+independently gated off at both frontend and backend
+(`assertRealMoneyPaymentsEnabled`) — confirmed a player cannot
+accidentally trigger a real charge today. Full detail:
+`docs/handoff/open-beta-readiness-audit-2026-09-17.md` §1 item 3, §4.
+
 **DEFERRED ITEMS**: ~~real Asaas Sandbox homologation was pending~~
 Phase 6 real Sandbox validation is recorded in the separate branch.
 Production enablement, retention policy and production-readiness review

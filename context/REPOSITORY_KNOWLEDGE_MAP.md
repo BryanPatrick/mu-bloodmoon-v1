@@ -267,6 +267,18 @@ findings:
   prior phase found. See `OPEN_QUESTIONS.md` OQ-CTX-006 (refined, not
   closed).
 
+  **Phase 16 update**: a fresh, evidence-based current-state audit now
+  exists — [`docs/handoff/open-beta-readiness-audit-2026-09-17.md`](../docs/handoff/open-beta-readiness-audit-2026-09-17.md).
+  It re-tests every 2026-08-08 blocker with reproducible current
+  evidence (live production checks + real code inspection) and finds
+  two real, previously-uncited items: an unrotated, publicly-exposed
+  production database credential (`CRITICAL`) and a web-frontend
+  security-headers gap (`HIGH`). It deliberately makes no GO/NO-GO call
+  and does not mutate the Hub's `cf5f14c2`/`53034c0c` decision — see
+  that document's own "Proposed new decision content" section for
+  exact, unwritten text Bryan could use to record a real, dated
+  decision.
+
 ## 7. What this document is not
 
 Not a duplicate of any of the docs it maps. Not a decision. Not a
