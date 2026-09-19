@@ -24,7 +24,7 @@ classification (everything below is `INTERNAL` or `SECRET_REFERENCE_ONLY`).
 ## GameServer
 
 - Real SQL Server, database `MuOnline`. Read/write boundary enforced via
-  GameBridge — `docs/security/game-write-boundary.md`.
+  GameBridge — `docs/security/game-write-boundary.md`. **[Writes: `GAME_COMMAND_TRANSPORT`; reads: `GAME_DATA_TELEMETRY` — `docs/knowledge/GAMEBRIDGE_DISAMBIGUATION.md`.]**
 - Local lab environment exists (`bloodmoon_gameserver_lab`, 145 tables)
   for schema investigation without touching production.
 

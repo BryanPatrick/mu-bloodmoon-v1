@@ -30,6 +30,8 @@ assume shared Cloudflare infrastructure with either.
 
 ## Read-only, absolutely
 
+> **Phase 20A note:** "read-only" here describes `GAME_DATA_TELEMETRY` only. The same Agent process also hosts the write path `GAME_COMMAND_TRANSPORT` (separate HMAC secrets, separate SQL login, separate local ledger) — see `docs/knowledge/GAMEBRIDGE_DISAMBIGUATION.md`.
+
 `GAME_WRITES_PERFORMED` is always `0`. `IGameDatabaseReader` has no
 write-capable member — not "unused," genuinely absent from the interface.
 

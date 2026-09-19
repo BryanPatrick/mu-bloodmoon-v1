@@ -299,7 +299,7 @@ previously did not exist anywhere in this stack.
 `DEPLOYMENT_ROLLBACK_RUNBOOK = PARTIAL` — the runbook itself is complete
 and honest, but it describes real, pre-existing gaps (no version-stamped
 artifact retention for API/Web, Launcher's exe layer can only self-update
-forward, the GameBridge Agent has never been deployed at all) that this
+forward, ~~the GameBridge Agent has never been deployed at all~~ **[annotation 2026-09-19, Phase 20A: contradicted by the 2026-08-24 Phase 3D-A evidence and by `provisioning-health.md` from this same phase — the Agent has run on the game VPS as a scheduled task (`BloodMoonGameBridgeAgent`, SYSTEM, at startup) since 2026-08-24 executing only `CREATE_GAME_ACCOUNT`; the four extension command types were never deployed. Verified read-only through Cloudflare D1 on 2026-09-19: heartbeat `gamebridge-agent-01` seen 21 s earlier and 53 signed command-claim polls in the preceding 10 minutes; the VPS-side task and binary were not inspected. See `docs/knowledge/GAMEBRIDGE_DISAMBIGUATION.md` Part 5.]**) that this
 phase's scope did not include fixing (that would mean touching the deploy
 scripts' packaging/retention behavior, out of scope for "operations
 hardening" as instructed — no deploy script changes beyond the alerting

@@ -1,0 +1,15 @@
+-- server=DESKTOP-9368KF9 database=bloodmoon_gameserver_raw_analysis readonly=1
+column_id	column_name	type_name	max_length	is_nullable	default_definition
+1	Account	varchar	10	False	NULL
+2	WCoinC	int	4	False	((0))
+3	WCoinP	int	4	False	((0))
+4	GoblinPoint	int	4	False	((0))
+-- end result set
+index_name	type_desc	is_primary_key	is_unique
+PK_CustomPlayToEarn	CLUSTERED	True	True
+-- end result set
+kind	referencing_object	type_desc
+-- end result set
+kind	row_count
+ROWCOUNT_APPROX	0
+-- end result set

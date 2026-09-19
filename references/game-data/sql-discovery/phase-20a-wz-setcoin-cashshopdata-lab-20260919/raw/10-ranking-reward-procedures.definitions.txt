@@ -1,0 +1,258 @@
+-- server=DESKTOP-9368KF9 database=bloodmoon_gameserver_raw_analysis readonly=1
+name	definition
+WZ_SetRankingDay	
+
+CREATE Procedure [dbo].[WZ_SetRankingDay] 
+@Value1 int,
+@Value2 int,
+@Value3 int,
+@Value4 int,
+@Value5 int,
+@Value6 int,
+@Value7 int,
+@Value8 int,
+@Value9 int
+AS
+BEGIN
+
+SET NOCOUNT ON
+SET XACT_ABORT ON
+
+DECLARE @Exist varchar(10)
+DECLARE @AccountID1 varchar(10)
+DECLARE @AccountID2 varchar(10)
+DECLARE @AccountID3 varchar(10)
+
+SELECT TOP 1 @AccountID1=AccountID FROM Character ORDER BY ResetDay DESC
+SELECT TOP 1 @AccountID2=AccountID FROM Character WHERE AccountID <> @AccountID1 ORDER BY ResetDay DESC
+SELECT TOP 1 @AccountID3=AccountID FROM Character WHERE AccountID <> @AccountID1 AND AccountID <> @AccountID2 ORDER BY ResetDay DESC
+
+-- Tipo 1: Update Cash | WCoinC
+IF @Value1 > 0 OR @Value2 > 0 OR @Value3 > 0 
+BEGIN
+	--Altere de acordo com sua versão
+	--Para Season 6/8
+	UPDATE CashShopData SET WCoinC = WCoinC + @Value1 WHERE AccountID = @AccountID1 --1 do rank
+	UPDATE CashShopData SET WCoinC = WCoinC + @Value2 WHERE AccountID = @AccountID2 --2 do rank
+	UPDATE CashShopData SET WCoinC = WCoinC + @Value3 WHERE AccountID = @AccountID3 --3 do rank
+	--Para Season 4
+	--UPDATE MEMB_INFO SET Cash = Cash + @Value1 WHERE memb___id = @Account 
+END
+
+-- Tipo 1: Update Gold | WCoinP
+IF @Value4 > 0 OR @Value5 > 0 OR @Value6 > 0 
+BEGIN
+	--Altere de acordo com sua versão
+	--Para Season 6/8
+	UPDATE CashShopData SET WCoinP = WCoinP + @Value4 WHERE AccountID = @AccountID1 --1 do rank
+	UPDATE CashShopData SET WCoinP = WCoinP + @Value5 WHERE AccountID = @AccountID2 --2 do rank
+	UPDATE CashShopData SET WCoinP = WCoinP + @Value6 WHERE AccountID = @AccountID3 --3 do rank
+	--Para Season 4
+	--UPDATE MEMB_INFO SET Cash = Cash + @Value1 WHERE memb___id = @Account 
+END
+
+-- Tipo 1: Update PcPoint | Goblin Point
+IF @Value7 > 0 OR @Value8 > 0 OR @Value9 > 0 
+BEGIN
+	--Altere de acordo com sua versão
+	--Para Season 6/8
+	UPDATE CashShopData SET GoblinPoint = GoblinPoint + @Value7 WHERE AccountID = @AccountID1 --1 do rank
+	UPDATE CashShopData SET GoblinPoint = GoblinPoint + @Value8 WHERE AccountID = @AccountID2 --2 do rank
+	UPDATE CashShopData SET GoblinPoint = GoblinPoint + @Value9 WHERE AccountID = @AccountID3 --3 do rank
+	--Para Season 4
+	--UPDATE MEMB_INFO SET Cash = Cash + @Value1 WHERE memb___id = @Account 
+END
+
+UPDATE Character SET ResetDay = 0
+
+SET NOCOUNT OFF
+SET XACT_ABORT OFF
+
+END
+
+
+
+
+
+
+
+
+
+
+
+
+WZ_SetRankingMon	
+
+CREATE Procedure [dbo].[WZ_SetRankingMon] 
+@Value1 int,
+@Value2 int,
+@Value3 int,
+@Value4 int,
+@Value5 int,
+@Value6 int,
+@Value7 int,
+@Value8 int,
+@Value9 int
+AS
+BEGIN
+
+SET NOCOUNT ON
+SET XACT_ABORT ON
+
+DECLARE @Exist varchar(10)
+DECLARE @AccountID1 varchar(10)
+DECLARE @AccountID2 varchar(10)
+DECLARE @AccountID3 varchar(10)
+
+SELECT TOP 1 @AccountID1=AccountID FROM Character ORDER BY ResetMon DESC
+SELECT TOP 1 @AccountID2=AccountID FROM Character WHERE AccountID <> @AccountID1 ORDER BY ResetMon DESC
+SELECT TOP 1 @AccountID3=AccountID FROM Character WHERE AccountID <> @AccountID1 AND AccountID <> @AccountID2 ORDER BY ResetMon DESC
+
+-- Tipo 1: Update Cash | WCoinC
+IF @Value1 > 0 OR @Value2 > 0 OR @Value3 > 0 
+BEGIN
+	--Altere de acordo com sua versão
+	--Para Season 6/8
+	UPDATE CashShopData SET WCoinC = WCoinC + @Value1 WHERE AccountID = @AccountID1 --1 do rank
+	UPDATE CashShopData SET WCoinC = WCoinC + @Value2 WHERE AccountID = @AccountID2 --2 do rank
+	UPDATE CashShopData SET WCoinC = WCoinC + @Value3 WHERE AccountID = @AccountID3 --3 do rank
+	--Para Season 4
+	--UPDATE PcPointData SET Cash = Cash + @Value1 WHERE AccountID = @AccountID1 --1 do rank
+	--UPDATE PcPointData SET Cash = Cash + @Value2 WHERE AccountID = @AccountID2 --2 do rank
+	--UPDATE PcPointData SET Cash = Cash + @Value3 WHERE AccountID = @AccountID3 --3 do rank
+END
+
+-- Tipo 1: Update Gold | WCoinP
+IF @Value4 > 0 OR @Value5 > 0 OR @Value6 > 0 
+BEGIN
+	--Altere de acordo com sua versão
+	--Para Season 6/8
+	UPDATE CashShopData SET WCoinP = WCoinP + @Value4 WHERE AccountID = @AccountID1 --1 do rank
+	UPDATE CashShopData SET WCoinP = WCoinP + @Value5 WHERE AccountID = @AccountID2 --2 do rank
+	UPDATE CashShopData SET WCoinP = WCoinP + @Value6 WHERE AccountID = @AccountID3 --3 do rank
+	--Para Season 4
+	--UPDATE PcPointData SET Gold = Gold + @Value1 WHERE AccountID = @AccountID1 --1 do rank
+	--UPDATE PcPointData SET Gold = Gold + @Value2 WHERE AccountID = @AccountID2 --2 do rank
+	--UPDATE PcPointData SET Gold = Gold + @Value3 WHERE AccountID = @AccountID3 --3 do rank
+END
+
+-- Tipo 1: Update PcPoint | Goblin Point
+IF @Value7 > 0 OR @Value8 > 0 OR @Value9 > 0 
+BEGIN
+	--Altere de acordo com sua versão
+	--Para Season 6/8
+	UPDATE CashShopData SET GoblinPoint = GoblinPoint + @Value7 WHERE AccountID = @AccountID1 --1 do rank
+	UPDATE CashShopData SET GoblinPoint = GoblinPoint + @Value8 WHERE AccountID = @AccountID2 --2 do rank
+	UPDATE CashShopData SET GoblinPoint = GoblinPoint + @Value9 WHERE AccountID = @AccountID3 --3 do rank
+	--Para Season 4
+	--UPDATE PcPointData SET PcPoint = PcPoint + @Value1 WHERE AccountID = @AccountID1 --1 do rank
+	--UPDATE PcPointData SET PcPoint = PcPoint + @Value2 WHERE AccountID = @AccountID2 --2 do rank
+	--UPDATE PcPointData SET PcPoint = PcPoint + @Value3 WHERE AccountID = @AccountID3 --3 do rank
+END
+
+UPDATE Character SET ResetMon = 0
+
+SET NOCOUNT OFF
+SET XACT_ABORT OFF
+
+END
+
+
+
+
+
+
+
+
+
+
+
+
+WZ_SetRankingWek	
+
+CREATE Procedure [dbo].[WZ_SetRankingWek] 
+@Value1 int,
+@Value2 int,
+@Value3 int,
+@Value4 int,
+@Value5 int,
+@Value6 int,
+@Value7 int,
+@Value8 int,
+@Value9 int
+AS
+BEGIN
+
+SET NOCOUNT ON
+SET XACT_ABORT ON
+
+DECLARE @Exist varchar(10)
+DECLARE @AccountID1 varchar(10)
+DECLARE @AccountID2 varchar(10)
+DECLARE @AccountID3 varchar(10)
+
+SELECT TOP 1 @AccountID1=AccountID FROM Character ORDER BY ResetWek DESC
+SELECT TOP 1 @AccountID2=AccountID FROM Character WHERE AccountID <> @AccountID1 ORDER BY ResetWek DESC
+SELECT TOP 1 @AccountID3=AccountID FROM Character WHERE AccountID <> @AccountID1 AND AccountID <> @AccountID2 ORDER BY ResetWek DESC
+
+-- Tipo 1: Update Cash | WCoinC
+IF @Value1 > 0 OR @Value2 > 0 OR @Value3 > 0 
+BEGIN
+	--Altere de acordo com sua versão
+	--Para Season 6/8
+	UPDATE CashShopData SET WCoinC = WCoinC + @Value1 WHERE AccountID = @AccountID1 --1 do rank
+	UPDATE CashShopData SET WCoinC = WCoinC + @Value2 WHERE AccountID = @AccountID2 --2 do rank
+	UPDATE CashShopData SET WCoinC = WCoinC + @Value3 WHERE AccountID = @AccountID3 --3 do rank
+	--Para Season 4
+	--UPDATE PcPointData SET Cash = Cash + @Value1 WHERE AccountID = @AccountID1 --1 do rank
+	--UPDATE PcPointData SET Cash = Cash + @Value2 WHERE AccountID = @AccountID2 --2 do rank
+	--UPDATE PcPointData SET Cash = Cash + @Value3 WHERE AccountID = @AccountID3 --3 do rank
+END
+
+-- Tipo 1: Update Gold | WCoinP
+IF @Value4 > 0 OR @Value5 > 0 OR @Value6 > 0 
+BEGIN
+	--Altere de acordo com sua versão
+	--Para Season 6/8
+	UPDATE CashShopData SET WCoinP = WCoinP + @Value4 WHERE AccountID = @AccountID1 --1 do rank
+	UPDATE CashShopData SET WCoinP = WCoinP + @Value5 WHERE AccountID = @AccountID2 --2 do rank
+	UPDATE CashShopData SET WCoinP = WCoinP + @Value6 WHERE AccountID = @AccountID3 --3 do rank
+	--Para Season 4
+	--UPDATE PcPointData SET Gold = Gold + @Value1 WHERE AccountID = @AccountID1 --1 do rank
+	--UPDATE PcPointData SET Gold = Gold + @Value2 WHERE AccountID = @AccountID2 --2 do rank
+	--UPDATE PcPointData SET Gold = Gold + @Value3 WHERE AccountID = @AccountID3 --3 do rank
+END
+
+-- Tipo 1: Update PcPoint | Goblin Point
+IF @Value7 > 0 OR @Value8 > 0 OR @Value9 > 0 
+BEGIN
+	--Altere de acordo com sua versão
+	--Para Season 6/8
+	UPDATE CashShopData SET GoblinPoint = GoblinPoint + @Value7 WHERE AccountID = @AccountID1 --1 do rank
+	UPDATE CashShopData SET GoblinPoint = GoblinPoint + @Value8 WHERE AccountID = @AccountID2 --2 do rank
+	UPDATE CashShopData SET GoblinPoint = GoblinPoint + @Value9 WHERE AccountID = @AccountID3 --3 do rank
+	--Para Season 4
+	--UPDATE PcPointData SET PcPoint = PcPoint + @Value1 WHERE AccountID = @AccountID1 --1 do rank
+	--UPDATE PcPointData SET PcPoint = PcPoint + @Value2 WHERE AccountID = @AccountID2 --2 do rank
+	--UPDATE PcPointData SET PcPoint = PcPoint + @Value3 WHERE AccountID = @AccountID3 --3 do rank
+END
+
+UPDATE Character SET ResetWek = 0
+
+SET NOCOUNT OFF
+SET XACT_ABORT OFF
+
+END
+
+
+
+
+
+
+
+
+
+
+
+
+-- end result set

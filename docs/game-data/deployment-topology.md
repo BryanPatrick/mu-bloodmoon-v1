@@ -1,5 +1,7 @@
 # Deployment topology and secure SQL connectivity (Phase 2C)
 
+> **Annotation (2026-09-19, Phase 20A) — this document is a 2026-08-20 snapshot and is superseded on deployment state.** Its statements that the Agent is "still undeployed", has no Windows Service and that Cloudflare was "blocked, not attempted" were true on 2026-08-20. Since then: real Worker, D1 and Queue were provisioned (Phase 2D, 2026-08-20; D1 migration 0003 applied 2026-08-24) and the Agent was installed on the VPS as a scheduled task on 2026-08-24 (Phase 3D-A, `references/game-data/sql-discovery/phase-3d-a-production-command-transport-20260824/`). The Windows-Service-readiness table below still describes real, unimplemented hardening (log bounding, least-privilege OS user). Current verified state: `docs/knowledge/GAMEBRIDGE_DISAMBIGUATION.md` Part 5.
+
 New in this update (2026-08-20). Answers where everything runs and how the
 Agent reaches the real SQL Server safely — the questions Phase 2C's Parts
 A–D asked before any new connectivity was set up.

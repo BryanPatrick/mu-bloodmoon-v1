@@ -2,7 +2,7 @@
 status: ACTIVE
 category: knowledge
 audience: internal (product + engineering)
-lastVerified: 2026-09-18
+lastVerified: 2026-09-19
 ---
 
 # Source registry
@@ -51,9 +51,9 @@ queried directly this phase:
 | Metric | Count |
 |---|---|
 | Cataloged sources (`knowledge-index.json`) | **44** (41 before Phase 18D; +KI-042/043/044) |
-| Atomic claims | **138** (99 before Phase 18D; +CLAIM-100..124 in 18D; +CLAIM-125..138 in Phase 20), of which 84 are canonical facts (`CONFIRMED_BY_*`) |
+| Atomic claims | **148** (99 before Phase 18D; +CLAIM-100..124 in 18D; +CLAIM-125..138 in Phase 20; +CLAIM-139..148 in Phase 20A), of which 93 are canonical facts (`CONFIRMED_BY_*`) |
 | project-gamers-oficial videos tracked | 108 (42 with a KI entry and claims; 66 pure RAW) |
-| Verification queue | 70 items: 49 DONE, 5 QUEUED, 16 BLOCKED |
+| Verification queue | 78 items: 58 DONE, 4 QUEUED, 16 BLOCKED |
 | Wiki candidates | 4 (all `systems`/`guides` category, none promoted) |
 | Reference gaps tracked | 6 (5 `RESOLVED`, 1 `PARTIAL`) |
 
@@ -119,3 +119,11 @@ including this one).
   describe the same 48-file copy operation with different framing (46/48
   vs. 48/48) — not a conflict, a two-stage record of the same real event
   (see `VPS_DOCUMENTATION_INDEX.md`).
+
+### Phase 20A evidence folders (2026-09-19)
+
+| Folder | Kind | What | Notes |
+|---|---|---|---|
+| `references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/` | **RAW → DERIVED**, read-only catalog reads | `WZ_SetCoin` body, `CashShopData` DDL, ten vendor procedures, `CustomPlayToEarn`, definition hashes, the guarded query helper | source: lab restore (`bloodmoon_gameserver_raw_analysis`) of `MuOnline_COPY_ONLY.bak` (sha256 `570d225a…b682`, 2026-07-16 production backup); no PII, no row data, nothing executed |
+| `references/game-data/sql-discovery/phase-20a-live-agent-d1-readonly-20260919/` | **RAW**, SELECT-only | remote D1 migrations, `game_command` DDL and aggregates, Agent heartbeat, nonce activity, Worker deployment list | captured 2026-09-19 via the local authenticated `wrangler`; VPS side not inspected (blocked) |
+| branch `gamebridge/preserve-command-extension` | preserved source | Worker extension (3 files) + manifest | not merged, not deployed |

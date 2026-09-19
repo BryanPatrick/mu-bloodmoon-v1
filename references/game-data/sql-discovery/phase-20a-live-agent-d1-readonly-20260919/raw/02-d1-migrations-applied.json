@@ -1,0 +1,25 @@
+﻿{
+    "capturedAtUtc":  "2026-09-19T14:10:33.1602291+00:00",
+    "database":  "bloodmoon-game-data",
+    "target":  "remote",
+    "readOnly":  true,
+    "query":  "SELECT id, name, applied_at FROM d1_migrations ORDER BY id",
+    "success":  true,
+    "results":  [
+                    {
+                        "id":  1,
+                        "name":  "0001_init.sql",
+                        "applied_at":  "2026-08-20 20:14:29"
+                    },
+                    {
+                        "id":  2,
+                        "name":  "0002_account_snapshot_state.sql",
+                        "applied_at":  "2026-08-20 20:14:29"
+                    },
+                    {
+                        "id":  3,
+                        "name":  "0003_production_game_commands.sql",
+                        "applied_at":  "2026-08-24 17:17:10"
+                    }
+                ]
+}

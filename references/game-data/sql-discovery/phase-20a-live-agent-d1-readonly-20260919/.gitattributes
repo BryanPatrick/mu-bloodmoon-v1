@@ -1,0 +1,3 @@
+# Preserve the raw evidence byte-for-byte (the README records sha256 of these exact bytes);
+# the repository default (* text=auto eol=lf) would otherwise rewrite CRLF to LF on commit/checkout.
+raw/* -text

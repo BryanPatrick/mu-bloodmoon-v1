@@ -2,7 +2,7 @@
 status: ACTIVE
 category: knowledge
 audience: internal (product + engineering)
-lastVerified: 2026-09-18
+lastVerified: 2026-09-19
 confidence: MIXED — see per-section confidence notes
 ---
 
@@ -227,7 +227,10 @@ two options considered (`ARCHIVE_READ_ONLY`, `REMOVE_LATER_AFTER_VERIFIED_REDUND
 are not chosen; removal in particular is not verified redundant (its `knowledge/`
 and `references/` trees are only partly mirrored here).
 
-**Prepared warning — NOT yet applied.** The worktree is a separate git
+**Prepared warning — ~~NOT yet applied~~ APPLIED 2026-09-19 (Phase 20A):** banner-only commit
+`e92d85a0` on `feature/legacy-catalog-control-plane` in `mu-bloodmoon-legacy-catalog` (README.md +14 lines, not
+pushed; wording matches the text below with the heading "STALE / HISTORICAL REFERENCE"). The original note follows.
+The worktree is a separate git
 worktree on its own branch (`feature/legacy-catalog-control-plane`) and is
 currently clean; writing to it from this branch would leave it dirty and
 could interfere with any session using it, so the text below is prepared here

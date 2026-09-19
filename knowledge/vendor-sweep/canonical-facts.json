@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-09-18T22:46:51.092Z",
+  "generatedAt": "2026-09-19T14:23:46.381Z",
   "generatedBy": "scripts/knowledge-canonical-facts.mjs -- derived mechanically from atomic-claims.json, do not hand-edit, re-run instead",
   "rule": "A claim qualifies as canonical only when verificationStatus starts with CONFIRMED_BY_ (config/schema/runtime evidence). PROVIDER_TUTORIAL or COMMUNITY_TUTORIAL sourceAuthority alone, however plausible, is explicitly insufficient -- see docs/knowledge/source-authority.md.",
-  "canonicalFactCount": 84,
-  "totalClaims": 138,
+  "canonicalFactCount": 93,
+  "totalClaims": 148,
   "canonicalFacts": [
     {
       "claimId": "CLAIM-001",
@@ -866,6 +866,20 @@
       "confidence": "CONFIRMED_RUNTIME (preserved snapshot, read 2026-09-18; not re-read live); the \"no source separates them\" part is a negative result over the searched scope (RemoteData Phase 6/10/11, the vendor tutorials, repository docs), not a proof"
     },
     {
+      "claimId": "CLAIM-127",
+      "statement": "The dbo.WZ_SetCoin stored procedure labels its first value Cash | WCoinC, its second Gold | WCoinP and its third PcPoints | GoblinPoint (comments \"Tipo 1/2/3: Update ...\"), and writes CashShopData.WCoinC / WCoinP / GoblinPoint respectively -- read first-hand from the lab restore of the 2026-07-16 production backup since Phase 20A, and quoted second-hand from an earlier phase document before that.",
+      "evidenceBasis": "CONFIRMED_BY_SCHEMA",
+      "entities": [
+        "WZ_SetCoin",
+        "CashShopData",
+        "WCoinC",
+        "WCoinP",
+        "GoblinPoint"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (lab restore of the 2026-07-16 production backup; the procedure/table was NOT re-read on production and nothing was executed)"
+    },
+    {
       "claimId": "CLAIM-128",
       "statement": "Currency-slot numbering is not uniform across Blood Moon's subsystems: CustomEventAuction.txt CoinType is 1-3 with 0 = zen; CustomCoinsOnline.txt carries CoinType rows 0, 1 and 2 with no legend in the file (inferred 0-based); X-Shop prices are Coin0/Coin1/Coin2; the vendor Lua API uses Coin1/Coin2/Coin3 -- so a raw slot number must never be carried from one subsystem to another.",
       "evidenceBasis": "CONFIRMED_BY_CONFIG",
@@ -954,6 +968,119 @@
       ],
       "topic": "systems",
       "confidence": "CONFIRMED_STATIC_CODE_READ"
+    },
+    {
+      "claimId": "CLAIM-139",
+      "statement": "In the lab restore of the 2026-07-16 production backup, dbo.WZ_SetCoin(@Account, @Name, @Value1, @Value2, @Value3) ADDS each positive value to CashShopData (WCoinC = WCoinC + @Value1, WCoinP = WCoinP + @Value2, GoblinPoint = GoblinPoint + @Value3), ignores zero and negative values so it cannot subtract, inserts a row holding only that column when the account has none (the other columns take their default 0), uses no BEGIN TRAN (XACT_ABORT is ON but each statement autocommits and the three blocks are not atomic together), takes no lock (IF EXISTS then INSERT is racy: a concurrent first credit fails on the primary key), never uses @Name, and has no idempotency key, ledger, audit or return code, so calling it twice credits twice.",
+      "evidenceBasis": "CONFIRMED_BY_SCHEMA",
+      "entities": [
+        "WZ_SetCoin",
+        "CashShopData",
+        "WCoinC",
+        "WCoinP",
+        "GoblinPoint"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (lab restore of the 2026-07-16 production backup; the procedure/table was NOT re-read on production and nothing was executed)"
+    },
+    {
+      "claimId": "CLAIM-140",
+      "statement": "In the lab restore, dbo.CashShopData is (AccountID varchar(10) NOT NULL with collation Latin1_General_CI_AS, WCoinC int NOT NULL DEFAULT 0, WCoinP int NOT NULL DEFAULT 0, GoblinPoint int NOT NULL DEFAULT 0) with a clustered primary key PK_TempCashShop on AccountID as its only index, and no CHECK constraint, no foreign key in either direction and no trigger, so negative balances are representable and rows can exist for accounts that are absent from MEMB_INFO.",
+      "evidenceBasis": "CONFIRMED_BY_SCHEMA",
+      "entities": [
+        "CashShopData",
+        "PK_TempCashShop",
+        "WCoinC",
+        "WCoinP",
+        "GoblinPoint"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (lab restore of the 2026-07-16 production backup; the procedure/table was NOT re-read on production and nothing was executed)"
+    },
+    {
+      "claimId": "CLAIM-141",
+      "statement": "Every stored procedure in the restored GameServer database that changes CashShopData balances is additive (col = col + value) -- WZ_SetCoin, WZ_SetExchangeReward, WZ_SetKD, WZ_CustomMonsterReward, WZ_SetRewardCastleSiege and WZ_SetRankingDay/Mon/Wek -- while three ranking procedures only run the no-op UPDATE GoblinPoint = GoblinPoint; no procedure sets an absolute balance, none subtracts (no debit procedure exists), and only WZ_SetCoin inserts a missing row: the others silently credit nothing to an account that has no row.",
+      "evidenceBasis": "CONFIRMED_BY_SCHEMA",
+      "entities": [
+        "WZ_SetCoin",
+        "WZ_SetExchangeReward",
+        "WZ_SetKD",
+        "WZ_CustomMonsterReward",
+        "WZ_SetRewardCastleSiege",
+        "WZ_SetRankingDay",
+        "CashShopData"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (lab restore of the 2026-07-16 production backup; the procedure/table was NOT re-read on production and nothing was executed)"
+    },
+    {
+      "claimId": "CLAIM-142",
+      "statement": "The vendor procedures label the same three balances Cash | WCoinC, Gold | WCoinP and PcPoints | GoblinPoint and keep commented Season 4 alternatives that write MEMB_INFO.Cash, MEMB_INFO.Gold and PcPointData.PcPoint instead of CashShopData.WCoinC, WCoinP and GoblinPoint (WZ_SetCoin, WZ_SetExchangeReward, WZ_SetKD for Cash and Gold, WZ_SetRewardCastleSiege, WZ_SetRankingDay/Mon/Wek), confirming first-hand that Cash/Gold/PcPoint are the Season 4 names of the balances that Season 6/8 store as WCoinC/WCoinP/GoblinPoint, slot for slot.",
+      "evidenceBasis": "CONFIRMED_BY_SCHEMA",
+      "entities": [
+        "Cash",
+        "Gold",
+        "PcPoint",
+        "WCoinC",
+        "WCoinP",
+        "GoblinPoint",
+        "PcPointData",
+        "WZ_SetExchangeReward"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (lab restore of the 2026-07-16 production backup; the procedure/table was NOT re-read on production and nothing was executed)"
+    },
+    {
+      "claimId": "CLAIM-143",
+      "statement": "The vendor procedure WZ_SetRewardCastleSiege selects the guild members to reward through MEMB_STAT.ConnectStat = 1 (players who are online) and credits them WCoinC/WCoinP/GoblinPoint by a plain additive SQL UPDATE on CashShopData; nothing in the database shows whether the GameServer keeps its own in-memory copy of a balance.",
+      "evidenceBasis": "CONFIRMED_BY_SCHEMA",
+      "entities": [
+        "WZ_SetRewardCastleSiege",
+        "MEMB_STAT",
+        "CashShopData"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (lab restore of the 2026-07-16 production backup; the procedure/table was NOT re-read on production and nothing was executed)"
+    },
+    {
+      "claimId": "CLAIM-144",
+      "statement": "In the lab restore, dbo.CustomPlayToEarn(Account varchar(10) NOT NULL, WCoinC int, WCoinP int, GoblinPoint int, each NOT NULL DEFAULT 0, clustered primary key PK_CustomPlayToEarn on Account) is a second table holding the same three balances; it has 0 rows and is referenced by no stored procedure, view or trigger, so its role is unknown.",
+      "evidenceBasis": "CONFIRMED_BY_SCHEMA",
+      "entities": [
+        "CustomPlayToEarn",
+        "WCoinC",
+        "WCoinP",
+        "GoblinPoint"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (lab restore of the 2026-07-16 production backup; the procedure/table was NOT re-read on production and nothing was executed)"
+    },
+    {
+      "claimId": "CLAIM-145",
+      "statement": "Read-only queries on 2026-09-19 show that the production D1 bloodmoon-game-data has migrations 0001, 0002 and 0003 applied and not 0004, that its game_command table still has CHECK (command_type = CREATE_GAME_ACCOUNT) with NOT NULL credential columns (so the database itself rejects the four extension command types), that it holds exactly 2 commands ever (both CREATE_GAME_ACCOUNT, SUCCEEDED, last activity 2026-08-25), that the Agent gamebridge-agent-01 heartbeat was 14 seconds old with an empty buffer, that about 52 signed command:claim requests fell in the preceding 10 minutes, and that no Worker code version was uploaded after 2026-08-24T17:52Z (every later version is a Secret Change); the VPS-side task, process and binary were not inspected.",
+      "evidenceBasis": "CONFIRMED_BY_RUNTIME",
+      "entities": [
+        "GAME_COMMAND_TRANSPORT",
+        "game_command",
+        "agent_heartbeats",
+        "bloodmoon-game-data",
+        "gamebridge-agent-01"
+      ],
+      "topic": "operations",
+      "confidence": "CONFIRMED_RUNTIME (Cloudflare side, 2026-09-19); VPS side UNVERIFIED"
+    },
+    {
+      "claimId": "CLAIM-146",
+      "statement": "The only copy of the Worker code for GRANT_VIP, SYNC_VIP_TIER, ANONYMIZE_GAME_ACCOUNT and PURGE_GAME_ACCOUNT (src/commands.ts blob 66f5fe17, db/schema.sql 48ffcf6d, test/commands.spec.ts 53ea1b5a, +313/-43 over main) was uncommitted in the mu-bloodmoon-v1-openbeta worktree; on 2026-09-19 it was preserved byte-identically on the branch gamebridge/preserve-command-extension (commits 3e69937e and 6003c59a, based on main c1b34062, not merged and not deployed), where tsc reports 0 errors and the Worker suite passes 55/55 (commands.spec 25/25); the four SQL procedures of the extension remain untracked in that worktree.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "GAME_COMMAND_TRANSPORT",
+        "commands.ts",
+        "GRANT_VIP",
+        "gamebridge/preserve-command-extension"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_STATIC_CODE_READ + a real test run (Worker only; the Agent .NET suite and SQL integration tests were not re-run)"
     }
   ],
   "explicitlyNotCanonical_contradicted": [

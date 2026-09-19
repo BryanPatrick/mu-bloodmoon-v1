@@ -1,0 +1,18 @@
+-- server=DESKTOP-9368KF9 database=bloodmoon_gameserver_raw_analysis readonly=1
+index_id	index_name	type_desc	is_primary_key	is_unique	is_unique_constraint	is_disabled	fill_factor	key_columns
+1	PK_TempCashShop	CLUSTERED	True	True	False	False	0	AccountID
+-- end result set
+kind	name	definition
+-- end result set
+kind	name	referenced_table
+-- end result set
+kind	name	referencing_table
+-- end result set
+kind	name	is_disabled	is_instead_of_trigger
+-- end result set
+kind	row_count
+ROWCOUNT_APPROX	4
+-- end result set
+kind	name	create_date	modify_date
+TABLE	CashShopData	04/22/2026 13:20:20	04/22/2026 13:20:20
+-- end result set

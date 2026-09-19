@@ -17,7 +17,7 @@ operations-readiness slice.
 | Critical alerts configured | **NO — built but OFF by default** | `apps/api/src/modules/alerting` exists and is tested (46/46), but every channel/poller defaults to disabled; an operator must set `ALERT_SWEEP_ENABLED=true` plus a channel before Beta for this to actually notify anyone |
 | Launcher manifest healthy | Not verified this phase | Out of scope for Phase AA (no production access); check via the existing Launcher smoke process at deploy time |
 | API smoke healthy | Not verified this phase (no production access) | `GET /` now carries a real `version` field (this phase) to make a future smoke check meaningful |
-| GameBridge state known | PARTIAL | Heartbeat computation is real (Cloudflare Worker); nothing currently polls/alerts on it in production until `GAMEBRIDGE_HEARTBEAT_ALERT_ENABLED=true` is set; the Agent itself has never been deployed as a persistent service |
+| GameBridge state known | PARTIAL | Heartbeat computation is real (Cloudflare Worker); nothing currently polls/alerts on it in production until `GAMEBRIDGE_HEARTBEAT_ALERT_ENABLED=true` is set; ~~the Agent itself has never been deployed as a persistent service~~ **(annotation 2026-09-19, Phase 20A: it runs as a scheduled task since 2026-08-24 and its heartbeat was verified live through D1 on 2026-09-19; only the four extension command types are undeployed — `docs/knowledge/GAMEBRIDGE_DISAMBIGUATION.md` Part 5)** |
 | Payments either safely OFF or validated | Not assessed this phase | Out of scope — see Phase Y's own payments findings for the last assessment |
 | VIP state known | Not assessed this phase | Out of scope — see Phase Y |
 | Store state known | Not assessed this phase | Out of scope — see Phase Y |

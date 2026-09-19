@@ -1,0 +1,7 @@
+-- server=DESKTOP-9368KF9 database=bloodmoon_gameserver_raw_analysis readonly=1
+column_id	column_name	type_name	max_length	precision	scale	is_nullable	is_identity	is_computed	collation_name	default_name	default_definition
+1	AccountID	varchar	10	0	0	False	False	False	Latin1_General_CI_AS	NULL	NULL
+2	WCoinC	int	4	10	0	False	False	False	NULL	DF_CashShopData_WCoinC	((0))
+3	WCoinP	int	4	10	0	False	False	False	NULL	DF_CashShopData_WCoinP	((0))
+4	GoblinPoint	int	4	10	0	False	False	False	NULL	DF_CashShopData_GoblinPoint	((0))
+-- end result set

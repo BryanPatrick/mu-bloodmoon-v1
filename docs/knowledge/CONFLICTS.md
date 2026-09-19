@@ -2,7 +2,7 @@
 status: ACTIVE
 category: knowledge
 audience: internal (product + engineering)
-lastVerified: 2026-09-18
+lastVerified: 2026-09-19
 ---
 
 # Conflict register
@@ -83,6 +83,7 @@ edited.
   of 2026-08-24. Claim A is probably about the *extension* commands or about a
   "Windows Service" (the Agent is a scheduled task), but that is inference. The
   live state was **not** re-verified in Phase 20. Tracked: GAP-P20-02.
+- **Update 2026-09-19 (Phase 20A):** the Cloudflare half was re-verified read-only — heartbeat ≈14 s old, ≈52 command-claim polls in 10 minutes, 2 commands ever (`references/game-data/sql-discovery/phase-20a-live-agent-d1-readonly-20260919/`); Claim A is therefore wrong for `CREATE_GAME_ACCOUNT`. The seven documents that repeated it were **annotated** (strikethrough + dated note, nothing deleted). The VPS-side task/binary/version is still **unverified** (SSH inspection blocked, not retried).
 
 ### 4. Was the Worker extended for GRANT_VIP / SYNC_VIP_TIER / ANONYMIZE / PURGE?
 
@@ -100,7 +101,7 @@ edited.
   (`commands.ts` +189, `schema.sql`, `commands.spec.ts`; migration `0004`
   untracked there, committed here). "Implemented and tested locally" is true
   *there*; "not wired" is true of every committed branch. Loss risk, tracked as
-  GAP-P20-02.
+  GAP-P20-02. **Update 2026-09-19:** the extension is now preserved byte-identically on `gamebridge/preserve-command-extension` (not merged, not deployed); remote D1 has migrations 0001–0003 only and `game_command` still has `CHECK (command_type = 'CREATE_GAME_ACCOUNT')`, so the database also rejects the four types.
 
 ### 5. Is "GameBridge" active?
 
@@ -138,3 +139,11 @@ character and linked to neither. **Unresolved, not adjudicated** — GAP-P20-07.
   originals byte for byte; that is preservation, not a second opinion.
 * The Agent's test counts (75/75, 123/123) differ because they were taken at
   different phases; not re-run in Phase 20.
+
+### 9. Was WZ_SetCoin additive? (Phase 20A, 2026-09-19)
+
+Not a contradiction between sources but a **gap closed against an assumption**: Phase 20 wrote that whether
+`WZ_SetCoin` adds or sets "is not preserved". The lab read shows it **adds**, ignores values ≤ 0, inserts a
+missing row and has no idempotency/lock/transaction — and that every other balance-changing vendor procedure
+is additive too (`references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/`). The earlier "unknown" was accurate for the repository at the time; it is now
+superseded, not wrong.

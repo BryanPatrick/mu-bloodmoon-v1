@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T22:43:00.757Z",
+  "generatedAt": "2026-09-19T14:17:34.803Z",
   "schema": {
     "claimId": "references atomic-claims.json",
     "priority": "HIGH | MEDIUM | LOW",
@@ -812,10 +812,12 @@
       "priority": "HIGH",
       "verificationType": "schema_read",
       "target": "dbo.WZ_SetCoin body and CashShopData DDL/defaults in the LAB database (read-only)",
-      "safeMethod": "read-only sys.sql_modules / sys.columns lookup in the lab database -- requires Bryan's authorization; NOT done in Phase 20 (no vendor SQL executed)",
-      "status": "QUEUED",
-      "result": "QUEUED -- second-hand today; would also settle add-vs-set semantics (GAP-P20-05).",
-      "evidenceRefs": []
+      "safeMethod": "read-only catalog reads of the local lab restore / SELECT-only remote D1 in Phase 20A; nothing executed, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_SCHEMA -- body read first-hand from the lab restore and preserved with hashes (raw/01); comments confirm Cash|WCoinC, Gold|WCoinP, PcPoints|GoblinPoint (Phase 20A, authorized by Bryan).",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/01-WZ_SetCoin.definition.sql"
+      ]
     },
     {
       "claimId": "CLAIM-136",
@@ -824,7 +826,7 @@
       "target": "visibility/overwrite of an external CashShopData write while the player is online",
       "safeMethod": "a controlled test on a non-production GameServer; none is known to exist for this purpose",
       "status": "BLOCKED",
-      "result": "BLOCKED -- no non-production GameServer instance is known; production must not be used (GAP-P20-04).",
+      "result": "[20A] BLOCKED -- no runnable lab GameServer, ODBC DSN or client (MU-Server/Lab/drop-validation/MuServer-stage is a staged file copy only, no GameServer process); production must not be used. A test design is recorded in GAME_CURRENCY_DELIVERY_ANALYSIS.md Part 8. BLOCKED -- no non-production GameServer instance is known; production must not be used (GAP-P20-04).",
       "evidenceRefs": []
     },
     {
@@ -836,14 +838,114 @@
       "status": "QUEUED",
       "result": "QUEUED -- only the file names are known.",
       "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-139",
+      "priority": "HIGH",
+      "verificationType": "schema_read",
+      "target": "WZ_SetCoin body semantics",
+      "safeMethod": "read-only catalog reads of the local lab restore / SELECT-only remote D1 in Phase 20A; nothing executed, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_SCHEMA -- additive, positive-only, insert-if-missing, no transaction/lock/idempotency.",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/01-WZ_SetCoin.definition.sql"
+      ]
+    },
+    {
+      "claimId": "CLAIM-140",
+      "priority": "HIGH",
+      "verificationType": "schema_read",
+      "target": "CashShopData DDL",
+      "safeMethod": "read-only catalog reads of the local lab restore / SELECT-only remote D1 in Phase 20A; nothing executed, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_SCHEMA -- PK PK_TempCashShop, defaults 0, no constraints/FK/trigger.",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/03-CashShopData.columns.txt",
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/04-CashShopData.keys-indexes-constraints.txt"
+      ]
+    },
+    {
+      "claimId": "CLAIM-141",
+      "priority": "HIGH",
+      "verificationType": "schema_read",
+      "target": "all modules touching CashShopData",
+      "safeMethod": "read-only catalog reads of the local lab restore / SELECT-only remote D1 in Phase 20A; nothing executed, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_SCHEMA -- eight additive procedures, three no-op placeholders, no set-absolute and no debit procedure.",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/05-modules-referencing-CashShopData.txt",
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/06-related-vendor-procedures.definitions.txt",
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/10-ranking-reward-procedures.definitions.txt"
+      ]
+    },
+    {
+      "claimId": "CLAIM-142",
+      "priority": "HIGH",
+      "verificationType": "schema_read",
+      "target": "Cash/Gold/PcPoint vs WCoinC/WCoinP/GoblinPoint in vendor procedure comments",
+      "safeMethod": "read-only catalog reads of the local lab restore / SELECT-only remote D1 in Phase 20A; nothing executed, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_SCHEMA -- slot-for-slot naming, Season 4 vs Season 6/8.",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/06-related-vendor-procedures.definitions.txt"
+      ]
+    },
+    {
+      "claimId": "CLAIM-143",
+      "priority": "MEDIUM",
+      "verificationType": "schema_read",
+      "target": "WZ_SetRewardCastleSiege online selection",
+      "safeMethod": "read-only catalog reads of the local lab restore / SELECT-only remote D1 in Phase 20A; nothing executed, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_SCHEMA (procedure text); the in-memory-copy interpretation is inference only.",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/06-related-vendor-procedures.definitions.txt"
+      ]
+    },
+    {
+      "claimId": "CLAIM-144",
+      "priority": "LOW",
+      "verificationType": "schema_read",
+      "target": "CustomPlayToEarn catalog",
+      "safeMethod": "read-only catalog reads of the local lab restore / SELECT-only remote D1 in Phase 20A; nothing executed, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_SCHEMA -- 0 rows, unreferenced.",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/07-CustomPlayToEarn.catalog.txt"
+      ]
+    },
+    {
+      "claimId": "CLAIM-145",
+      "priority": "HIGH",
+      "verificationType": "runtime_observation",
+      "target": "remote D1 migrations, game_command DDL/aggregate, heartbeat, nonce activity, Worker versions",
+      "safeMethod": "read-only catalog reads of the local lab restore / SELECT-only remote D1 in Phase 20A; nothing executed, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_RUNTIME (Cloudflare side, 2026-09-19, SELECT-only); VPS side UNVERIFIED.",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-20a-live-agent-d1-readonly-20260919/raw/02-d1-migrations-applied.json",
+        "references/game-data/sql-discovery/phase-20a-live-agent-d1-readonly-20260919/raw/05-agent_heartbeats.json"
+      ]
+    },
+    {
+      "claimId": "CLAIM-146",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "preserved Worker extension: hashes, tsc, vitest",
+      "safeMethod": "read-only catalog reads of the local lab restore / SELECT-only remote D1 in Phase 20A; nothing executed, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- byte-identical preservation; tsc 0 errors; Worker suite 55/55.",
+      "evidenceRefs": [
+        "docs/gamebridge/worker-extension-preservation-manifest.md (on gamebridge/preserve-command-extension)"
+      ]
     }
   ],
   "summary": {
-    "total": 70,
-    "done": 49,
-    "queued": 5,
+    "total": 78,
+    "done": 58,
+    "queued": 4,
     "blocked": 16,
     "inProgress": 0,
-    "note": "CLAIM-014 and CLAIM-015 are intentionally absent from this queue -- CLAIM-014 is an operational/procedural claim (NOT_APPLICABLE verification per atomic-claims.json), and CLAIM-015 is explicitly OTHER_SERVER and must never be verified against Blood Moon (there is nothing to verify -- it is already correctly classified as not describing Blood Moon). Phase 5 (2026-08-27) added 16 new QUEUED/BLOCKED items for the P0-priority claims extracted this phase, deliberately left unexecuted -- per the explicit instruction to do only LIMITED real verification after bulk structuring, not to spend the whole phase re-verifying everything. Phase 6 (2026-08-27) real-VPS verification pass resolved 15 of the 16 items queued at the end of Phase 5 -- the remaining QUEUED/BLOCKED items are lower-priority or genuinely blocked (e.g. CLAIM-057's client-side-only tooltip behavior, which still has no safe read-only server-side check). Phase 18D (2026-09-18) added 21 items for CLAIM-100 and above (9 DONE against Blood Moon's preserved real config, code and SQL evidence; 12 BLOCKED because no non-production GameServer instance exists). Phase 20 (2026-09-18) added 12 items for CLAIM-125 and above (9 DONE from local reads of preserved files and repository code; 2 QUEUED awaiting Bryan's authorization for a read-only lab lookup; 1 BLOCKED because no non-production GameServer is known to exist)."
+    "note": "CLAIM-014 and CLAIM-015 are intentionally absent from this queue -- CLAIM-014 is an operational/procedural claim (NOT_APPLICABLE verification per atomic-claims.json), and CLAIM-015 is explicitly OTHER_SERVER and must never be verified against Blood Moon (there is nothing to verify -- it is already correctly classified as not describing Blood Moon). Phase 5 (2026-08-27) added 16 new QUEUED/BLOCKED items for the P0-priority claims extracted this phase, deliberately left unexecuted -- per the explicit instruction to do only LIMITED real verification after bulk structuring, not to spend the whole phase re-verifying everything. Phase 6 (2026-08-27) real-VPS verification pass resolved 15 of the 16 items queued at the end of Phase 5 -- the remaining QUEUED/BLOCKED items are lower-priority or genuinely blocked (e.g. CLAIM-057's client-side-only tooltip behavior, which still has no safe read-only server-side check). Phase 18D (2026-09-18) added 21 items for CLAIM-100 and above (9 DONE against Blood Moon's preserved real config, code and SQL evidence; 12 BLOCKED because no non-production GameServer instance exists). Phase 20 (2026-09-18) added 12 items for CLAIM-125 and above (9 DONE from local reads of preserved files and repository code; 2 QUEUED awaiting Bryan's authorization for a read-only lab lookup; 1 BLOCKED because no non-production GameServer is known to exist). Phase 20A (2026-09-19) added 8 items for CLAIM-139 and above (all DONE from read-only lab catalog reads, SELECT-only remote D1 and a preserved-code test run) and closed the CLAIM-127 item; the CLAIM-136 item stays BLOCKED because no runnable lab GameServer exists."
   }
 }

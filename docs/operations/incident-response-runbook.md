@@ -139,8 +139,8 @@ ROLLBACK, VERIFY, ESCALATE, DOCUMENT.
   heartbeat, and doing it while the Agent is already offline compounds the
   problem, not fixes it.
 - **ROLLBACK**: N/A — this is a connectivity issue, not a deploy to roll
-  back (the Agent has never been deployed to production as a persistent
-  service in the first place — `docs/game-data/deployment-topology.md`).
+  back (~~the Agent has never been deployed to production as a persistent
+  service in the first place~~ **annotation 2026-09-19, Phase 20A:** the Agent has run on the game VPS as a scheduled task (`BloodMoonGameBridgeAgent`, SYSTEM, at startup) since 2026-08-24 executing only `CREATE_GAME_ACCOUNT`; the four extension command types were never deployed. Verified read-only through Cloudflare D1 on 2026-09-19: heartbeat `gamebridge-agent-01` seen 21 s earlier and 53 signed command-claim polls in the preceding 10 minutes; the VPS-side task and binary were not inspected. See `docs/knowledge/GAMEBRIDGE_DISAMBIGUATION.md` Part 5. `docs/game-data/deployment-topology.md` describes the Phase 2C state of 2026-08-20, not the current one).
 - **VERIFY**: heartbeat returns to HEALTHY in
   `GET /admin/game-data/status` or the (once wired) alert's own
   `GAMEBRIDGE_HEARTBEAT_RECOVERED` event.

@@ -1,0 +1,18 @@
+﻿{
+    "capturedAtUtc":  "2026-09-19T14:10:40.3951716+00:00",
+    "database":  "bloodmoon-game-data",
+    "target":  "remote",
+    "readOnly":  true,
+    "query":  "SELECT command_type, status, COUNT(*) AS n, MIN(created_at) AS first_created, MAX(COALESCE(completed_at, updated_at)) AS last_activity, MAX(attempt_count) AS max_attempts FROM game_command GROUP BY command_type, status ORDER BY command_type, status",
+    "success":  true,
+    "results":  [
+                    {
+                        "command_type":  "CREATE_GAME_ACCOUNT",
+                        "status":  "SUCCEEDED",
+                        "n":  2,
+                        "first_created":  "2026-08-24T17:26:05.783Z",
+                        "last_activity":  "2026-08-25T01:32:18.205Z",
+                        "max_attempts":  3
+                    }
+                ]
+}

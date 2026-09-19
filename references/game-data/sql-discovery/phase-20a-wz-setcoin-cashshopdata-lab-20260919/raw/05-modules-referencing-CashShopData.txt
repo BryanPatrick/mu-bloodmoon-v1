@@ -1,0 +1,35 @@
+-- server=DESKTOP-9368KF9 database=bloodmoon_gameserver_raw_analysis readonly=1
+name	type_desc	def_len	mentions_table	mentions_wcoinc	mentions_wcoinp	mentions_goblin
+WZ_CustomArenaRanking	SQL_STORED_PROCEDURE	414	1	0	0	1
+WZ_CustomEventBattleRoyaleRanking	SQL_STORED_PROCEDURE	428	1	0	0	1
+WZ_CustomEventDropNpcRanking	SQL_STORED_PROCEDURE	423	1	0	0	1
+WZ_CustomMonsterReward	SQL_STORED_PROCEDURE	459	1	1	1	1
+WZ_SetCoin	SQL_STORED_PROCEDURE	1218	1	1	1	1
+WZ_SetExchangeReward	SQL_STORED_PROCEDURE	1179	1	1	1	1
+WZ_SetKD	SQL_STORED_PROCEDURE	822	1	1	1	0
+WZ_SetRankingDay	SQL_STORED_PROCEDURE	2384	1	1	1	1
+WZ_SetRankingMon	SQL_STORED_PROCEDURE	2996	1	1	1	1
+WZ_SetRankingWek	SQL_STORED_PROCEDURE	2996	1	1	1	1
+WZ_SetRewardCastleSiege	SQL_STORED_PROCEDURE	2007	1	1	1	1
+-- end result set
+kind	referencing_object	type_desc
+DEPENDS_ON_CashShopData	WZ_CustomArenaRanking	SQL_STORED_PROCEDURE
+DEPENDS_ON_CashShopData	WZ_CustomEventBattleRoyaleRanking	SQL_STORED_PROCEDURE
+DEPENDS_ON_CashShopData	WZ_CustomEventDropNpcRanking	SQL_STORED_PROCEDURE
+DEPENDS_ON_CashShopData	WZ_CustomMonsterReward	SQL_STORED_PROCEDURE
+DEPENDS_ON_CashShopData	WZ_SetCoin	SQL_STORED_PROCEDURE
+DEPENDS_ON_CashShopData	WZ_SetExchangeReward	SQL_STORED_PROCEDURE
+DEPENDS_ON_CashShopData	WZ_SetKD	SQL_STORED_PROCEDURE
+DEPENDS_ON_CashShopData	WZ_SetRankingDay	SQL_STORED_PROCEDURE
+DEPENDS_ON_CashShopData	WZ_SetRankingMon	SQL_STORED_PROCEDURE
+DEPENDS_ON_CashShopData	WZ_SetRankingWek	SQL_STORED_PROCEDURE
+DEPENDS_ON_CashShopData	WZ_SetRewardCastleSiege	SQL_STORED_PROCEDURE
+-- end result set
+kind	table_name	column_name	type_name
+OTHER_TABLES_WITH_COIN_COLUMNS	CashShopData	GoblinPoint	int
+OTHER_TABLES_WITH_COIN_COLUMNS	CashShopData	WCoinC	int
+OTHER_TABLES_WITH_COIN_COLUMNS	CashShopData	WCoinP	int
+OTHER_TABLES_WITH_COIN_COLUMNS	CustomPlayToEarn	GoblinPoint	int
+OTHER_TABLES_WITH_COIN_COLUMNS	CustomPlayToEarn	WCoinC	int
+OTHER_TABLES_WITH_COIN_COLUMNS	CustomPlayToEarn	WCoinP	int
+-- end result set

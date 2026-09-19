@@ -1,0 +1,378 @@
+-- server=DESKTOP-9368KF9 database=bloodmoon_gameserver_raw_analysis readonly=1
+name	definition
+WZ_CustomArenaRanking	
+CREATE Procedure [dbo].[WZ_CustomArenaRanking] 
+@Account varchar(10),
+@Name varchar(10),
+@ArenaNumber int,
+@UserScore int,
+@UserRank int
+AS
+BEGIN
+
+SET NOCOUNT ON
+SET XACT_ABORT ON
+
+IF(@ArenaNumber = 0)
+BEGIN
+
+IF(@UserRank = 1)
+BEGIN
+
+UPDATE CashShopData SET GoblinPoint=GoblinPoint WHERE AccountID=@Account
+
+END
+
+END
+
+SET NOCOUNT OFF
+SET XACT_ABORT OFF
+
+END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+WZ_CustomEventBattleRoyaleRanking	
+
+CREATE Procedure [dbo].[WZ_CustomEventBattleRoyaleRanking] 
+@Account varchar(10),
+@Name varchar(10),
+@ArenaNumber int,
+@UserScore int,
+@UserRank int
+AS
+BEGIN
+
+SET NOCOUNT ON
+SET XACT_ABORT ON
+
+IF(@ArenaNumber = 0)
+BEGIN
+
+IF(@UserRank = 1)
+BEGIN
+
+UPDATE CashShopData SET GoblinPoint=GoblinPoint WHERE AccountID=@Account
+
+END
+
+END
+
+SET NOCOUNT OFF
+SET XACT_ABORT OFF
+
+END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+WZ_CustomEventDropNpcRanking	
+
+CREATE Procedure [dbo].[WZ_CustomEventDropNpcRanking] 
+@Account varchar(10),
+@Name varchar(10),
+@ArenaNumber int,
+@UserScore int,
+@UserRank int
+AS
+BEGIN
+
+SET NOCOUNT ON
+SET XACT_ABORT ON
+
+IF(@ArenaNumber = 0)
+BEGIN
+
+IF(@UserRank = 1)
+BEGIN
+
+UPDATE CashShopData SET GoblinPoint=GoblinPoint WHERE AccountID=@Account
+
+END
+
+END
+
+SET NOCOUNT OFF
+SET XACT_ABORT OFF
+
+END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+WZ_CustomMonsterReward	
+CREATE Procedure [dbo].[WZ_CustomMonsterReward] 
+@Account varchar(10),
+@Name varchar(10),
+@MonsterClass int,
+@MapNumber int,
+@RewardValue1 int,
+@RewardValue2 int,
+@RewardValue3 int
+AS
+BEGIN
+
+SET NOCOUNT ON
+SET XACT_ABORT ON
+
+UPDATE CashShopData SET WCoinC=WCoinC+@RewardValue1,WCoinP=WCoinP+@RewardValue2,GoblinPoint=GoblinPoint+@RewardValue3 WHERE AccountID=@Account
+
+SET NOCOUNT OFF
+SET XACT_ABORT OFF
+
+END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+WZ_SetExchangeReward	
+Create Procedure [dbo].[WZ_SetExchangeReward] 
+@Account varchar(10),
+@Name varchar(10),
+@Value1 int,
+@Value2 int,
+@Value3 int
+AS
+BEGIN
+
+SET NOCOUNT ON
+SET XACT_ABORT ON
+
+-- Tipo 1: Update Cash | Wcoin
+	IF @Value1 > 0
+	BEGIN
+		--Altere de acordo com sua versão
+		--Para Season 6/8
+		UPDATE CashShopData SET WCoinC = WCoinC + @Value1 WHERE AccountID = @Account
+		--Para Season 4
+		--UPDATE MEMB_INFO SET Cash = Cash + @Value1 WHERE memb___id = @Account 
+	END
+	
+-- Tipo 2: Update Gold | WcoinP
+	IF @Value2 > 0 
+	BEGIN
+		--Altere de acordo com sua versão
+		--Para Season 6/8
+		UPDATE CashShopData SET WCoinP = WCoinP + @Value2 WHERE AccountID = @Account
+		--Para Season 4
+		--UPDATE MEMB_INFO SET Gold = Gold + @Value2 WHERE memb___id = @Account 
+	END
+
+-- Tipo 3: Update PcPoints | GoblinPoints
+	IF @Value3 > 0
+	BEGIN
+		--Altere de acordo com sua versão
+		--Para Season 6/8
+		UPDATE CashShopData SET GoblinPoint = GoblinPoint + @Value3 WHERE AccountID = @Account
+		--Para Season 4
+		--UPDATE PcPointData SET PcPoint = PcPoint + @Value3 WHERE AccountID = @Account 
+	END
+	
+SET NOCOUNT OFF
+SET XACT_ABORT OFF
+
+END
+
+
+
+
+
+
+
+
+
+
+
+
+
+WZ_SetKD	
+Create Procedure [dbo].[WZ_SetKD] 
+@Account varchar(10),
+@Name varchar(10),
+@Kills int,
+@Deads int
+AS
+
+BEGIN
+
+SET NOCOUNT ON
+SET XACT_ABORT ON
+
+-- Tipo 1: Update Cash | Wcoin
+	IF @Kills > 0 
+	BEGIN
+		--Altere de acordo com sua versão
+		--Para Season 6/8
+		UPDATE CashShopData SET WCoinC = WCoinC + @Kills WHERE AccountID = @Account
+		--Para Season 4
+		--UPDATE MEMB_INFO SET Cash = Cash + @Kills WHERE memb___id = @Account 
+	END
+	
+-- Tipo 2: Update Gold | WcoinP
+	IF @Deads > 0  
+	BEGIN
+		--Altere de acordo com sua versão
+		--Para Season 6/8
+		UPDATE CashShopData SET WCoinP = WCoinP + @Deads WHERE AccountID = @Account
+		--Para Season 4
+		--UPDATE MEMB_INFO SET Gold = Gold + @Deads WHERE memb___id = @Account 
+	END
+	
+SET NOCOUNT OFF
+SET XACT_ABORT OFF
+
+END
+
+
+
+
+
+
+
+
+
+
+
+
+
+WZ_SetRewardCastleSiege	
+CREATE Procedure [dbo].[WZ_SetRewardCastleSiege] 
+@Value1 int,
+@Value2 int,
+@Value3 int,
+@Value4 int,
+@Value5 int,
+@Value6 int,
+@Value7 int,
+@Value8 int,
+@Value9 int,
+@Value10 int,
+@Value11 int,
+@Value12 int
+AS
+BEGIN
+
+DECLARE @Guild varchar(10);
+DECLARE @Char varchar(10);
+DECLARE @Conta varchar(10);
+DECLARE @Premio1 int;
+DECLARE @Premio2 int;
+DECLARE @Premio3 int;
+DECLARE @G_Status int;
+
+SET NOCOUNT ON
+SET XACT_ABORT ON
+
+SET @Guild = (Select OWNER_GUILD from MuCastle_DATA)
+IF (@Guild <> '')
+BEGIN
+DECLARE C CURSOR FOR SELECT Name,G_Status FROM GuildMember Where G_Name = @Guild Order By G_Status desc
+OPEN C
+FETCH NEXT FROM C INTO @Char,@G_Status
+WHILE @@FETCH_STATUS = 0
+--
+BEGIN
+IF @G_Status = 128 -- G_status = 128 (Guild Master)
+BEGIN
+SET @Premio1 = @Value1;
+SET @Premio2 = @Value2;
+SET @Premio3 = @Value3;
+END
+--
+IF @G_Status = 64 -- G_status = 64 (Assistente Guild Master)
+BEGIN
+SET @Premio1 = @Value4;
+SET @Premio2 = @Value5;
+SET @Premio3 = @Value6;
+END
+--
+IF @G_Status = 32 -- G_status = 32 (Batle Master)
+BEGIN
+SET @Premio1 = @Value7;
+SET @Premio2 = @Value8;
+SET @Premio3 = @Value9;
+END
+--
+IF @G_Status = 0 -- G_status = 0 (Membro)
+BEGIN
+SET @Premio1 = @Value10;
+SET @Premio2 = @Value11;
+SET @Premio3 = @Value12;
+END
+--
+--SET @Conta = '';
+--SET @Conta = (Select AccountID From Character where Name = @Char)
+--IF (@Conta <> '')
+--
+SET @Conta = (Select AccountID From [Character] inner join MEMB_STAT on AccountID = memb___id where Name = @Char and ConnectStat = 1)
+BEGIN
+ -- Season 0,1,2,6,8
+UPDATE CashShopData set WCoinC = WCoinC + @Premio1,WCoinP = WCoinP + @Premio2,GoblinPoint = GoblinPoint + @Premio3 where AccountID = @Conta
+ -- Season 4
+--UPDATE PcPointData set Cash = Cash + @Premio1,Gold = Gold + @Premio2,PcPoint = PcPoint + @Premio3 where AccountID = @Conta
+END
+--
+FETCH NEXT FROM C INTO @Char,@G_Status
+END
+CLOSE C
+DEALLOCATE C
+END
+
+SET NOCOUNT OFF
+SET XACT_ABORT OFF
+
+END
+
+
+
+
+
+
+
+
+
+
+
+-- end result set

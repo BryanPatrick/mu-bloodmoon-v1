@@ -2,7 +2,7 @@
 status: ACTIVE
 category: knowledge
 audience: internal (product + engineering)
-lastVerified: 2026-09-18
+lastVerified: 2026-09-19
 confidence: MIXED — see per-flow confidence notes
 ---
 
@@ -442,9 +442,19 @@ executes (CLAIM-119).
 
 | Question | Result | Where |
 |---|---|---|
-| Cash/Gold/PcPoint vs WCoinC/WCoinP/GoblinPoint (GAP-P18-11) | Cash↔WCoinC **CONFIRMED**; Gold↔WCoinP and PcPoint↔GoblinPoint **STRONGLY_SUPPORTED**; slot numbering differs by subsystem | `CURRENCY_TERMINOLOGY.md` Part 4 |
+| Cash/Gold/PcPoint vs WCoinC/WCoinP/GoblinPoint (GAP-P18-11) | Cash↔WCoinC **CONFIRMED**; ~~Gold↔WCoinP and PcPoint↔GoblinPoint STRONGLY_SUPPORTED~~ **all three CONFIRMED (Phase 20A — vendor procedures read first-hand)**; slot numbering differs by subsystem | `CURRENCY_TERMINOLOGY.md` Part 4 |
 | What game currency is Portal WC? | **UNRESOLVED** (open by earlier decision) | ibid. Part 6 |
 | Blood Coin | technical `GOBLIN_POINT`, public "Blood Coin"; **not** WC; equality with the engine's GoblinPoint unconfirmed | ibid. Part 5 |
 | What is "GameBridge"? | seven things; canonical names fixed | `GAMEBRIDGE_DISAMBIGUATION.md` |
 | Can the command channel carry a credit? | as a channel yes; **not safe as-is** | `GAME_CURRENCY_DELIVERY_ANALYSIS.md` |
-| Recommendation | conditional Option B; decision-ready for the *mechanism* only | ibid. Parts 11–12 |
+| Recommendation | conditional Option B; decision-ready for the *mechanism* only — **(Phase 20A) Bryan accepted Option B as the DIRECTION on 2026-09-19; implementation NOT approved; initial Beta game-currency delivery OUT_OF_SCOPE; Portal WC target UNRESOLVED** | ibid. Parts 11–12 |
+
+## Part 9 — Phase 20A: game-side facts now known
+
+Read first-hand in the lab (`references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/`): `WZ_SetCoin` and every other balance-changing vendor procedure
+**add** (`col = col + value`); `WZ_SetCoin` ignores values ≤ 0 and inserts a missing row, the others only
+update; nothing is idempotent, locked, transactional or audited; `CashShopData` has a clustered PK on
+`AccountID`, three `int NOT NULL DEFAULT 0` balances and no CHECK/FK/trigger; no debit procedure exists.
+This corrects the "legacy Flow A" wording above only in detail: the legacy PHP's `col = col + :credits`
+matches the vendor's own delta model. **Still unknown:** when an external credit becomes visible in game
+(`GAME_CURRENCY_VISIBILITY = UNKNOWN`; `SQL_ACK` ≠ `GAME_ACK`). Full analysis: `GAME_CURRENCY_DELIVERY_ANALYSIS.md` Part 14.

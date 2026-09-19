@@ -187,10 +187,12 @@ check('lookup regression 8: Portal WCOIN resolves to the UNRESOLVED-mapping deci
 check('Phase 20 claims keep their evidence ceiling (second-hand and unknown stay unverified)', () => {
   const claims = JSON.parse(readFileSync(join(ROOT, 'knowledge', 'vendor-sweep', 'atomic-claims.json'), 'utf8')).claims
   const by = Object.fromEntries(claims.map(c => [c.claimId, c]))
-  // WZ_SetCoin comments are second-hand (lab DB via a preserved doc); Lua usage on Blood Moon and CashShopData visibility are unproven
-  for (const id of ['CLAIM-127', 'CLAIM-136', 'CLAIM-137']) {
+  // Lua usage on Blood Moon and CashShopData visibility stay unproven (Phase 20A could not run a lab GameServer)
+  for (const id of ['CLAIM-136', 'CLAIM-137']) {
     if (by[id].verificationStatus !== 'UNVERIFIED') throw new Error(`${id} claims verification it does not have`)
   }
+  // WZ_SetCoin's comments were second-hand until the Phase 20A lab read; now first-hand SQL evidence, so it must carry that authority
+  if (by['CLAIM-127'].verificationStatus !== 'CONFIRMED_BY_SCHEMA' || by['CLAIM-127'].sourceAuthority !== 'REAL_BLOODMOON_SQL') throw new Error('CLAIM-127 must reflect the first-hand lab read (REAL_BLOODMOON_SQL / CONFIRMED_BY_SCHEMA)')
   if (by['CLAIM-136'].bloodMoonStatus !== 'UNKNOWN') throw new Error('CLAIM-136 must stay UNKNOWN')
   // a CONFIRMED_BY_* claim needs first-hand evidence: never inference or second-hand vendor documentation
   for (const c of claims) {
@@ -201,6 +203,32 @@ check('Phase 20 claims keep their evidence ceiling (second-hand and unknown stay
   }
   // the Portal WC target is a decision record: it must not be promoted into a mapping
   if (by['CLAIM-129'].verificationStatus !== 'NOT_APPLICABLE') throw new Error('CLAIM-129 is a decision record, not a verifiable mapping')
+})
+
+// --- Phase 20A additions (lab evidence, live state, decisions) ---
+
+check('lookup regression 9: CashShopData / WZ_SetCoin resolve to the lab-evidence claims (additive semantics, DDL, all-vendor-procedures)', () => {
+  const out = run('knowledge-query.mjs', ['query', 'CashShopData'])
+  expectAll(out, ['CLAIM-139', 'CLAIM-140', 'CLAIM-141'], 'query CashShopData')
+  expectAll(run('knowledge-query.mjs', ['query', 'WZ_SetCoin']), ['CLAIM-127', 'CLAIM-139'], 'query WZ_SetCoin')
+  expectAll(run('knowledge-query.mjs', ['query', 'PcPointData']), ['CLAIM-142'], 'query PcPointData')
+})
+
+check('lookup regression 10: the live-state and preservation claims are reachable by system name', () => {
+  expectAll(run('knowledge-query.mjs', ['query', 'gamebridge-agent-01']), ['CLAIM-145'], 'query gamebridge-agent-01')
+  expectAll(run('knowledge-query.mjs', ['query', 'gamebridge/preserve-command-extension']), ['CLAIM-146'], 'query preserve branch')
+})
+
+check('Phase 20A decisions stay decision records and never become mappings or approvals', () => {
+  const claims = JSON.parse(readFileSync(join(ROOT, 'knowledge', 'vendor-sweep', 'atomic-claims.json'), 'utf8')).claims
+  const by = Object.fromEntries(claims.map(c => [c.claimId, c]))
+  for (const id of ['CLAIM-147', 'CLAIM-148']) {
+    if (by[id].verificationStatus !== 'NOT_APPLICABLE' || by[id].sourceAuthority !== 'INTERNAL_DECISION') throw new Error(`${id} must stay an INTERNAL_DECISION record`)
+  }
+  if (!/IMPLEMENTATION_APPROVED = NO/.test(by['CLAIM-148'].statement)) throw new Error('CLAIM-148 must state that implementation is NOT approved')
+  if (!/OUT_OF_SCOPE/.test(by['CLAIM-147'].statement) || !/UNRESOLVED/.test(by['CLAIM-147'].statement)) throw new Error('CLAIM-147 must record OUT_OF_SCOPE and the UNRESOLVED WC target')
+  // the live-state claim must keep saying the VPS side was not verified
+  if (!/not inspected/.test(by['CLAIM-145'].statement)) throw new Error('CLAIM-145 must keep the VPS-side caveat')
 })
 
 console.log('')

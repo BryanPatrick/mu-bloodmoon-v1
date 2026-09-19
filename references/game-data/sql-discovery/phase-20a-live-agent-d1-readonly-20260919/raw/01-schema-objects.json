@@ -1,0 +1,50 @@
+﻿{
+    "capturedAtUtc":  "2026-09-19T14:10:29.4654443+00:00",
+    "database":  "bloodmoon-game-data",
+    "target":  "remote",
+    "readOnly":  true,
+    "query":  "SELECT type, name FROM sqlite_master WHERE type IN (\u0027table\u0027,\u0027index\u0027) AND name NOT LIKE \u0027sqlite_%\u0027 AND name NOT LIKE \u0027_cf_%\u0027 ORDER BY type, name",
+    "success":  true,
+    "results":  [
+                    {
+                        "type":  "index",
+                        "name":  "idx_game_command_claim"
+                    },
+                    {
+                        "type":  "index",
+                        "name":  "idx_game_command_retention"
+                    },
+                    {
+                        "type":  "table",
+                        "name":  "account_snapshot_state"
+                    },
+                    {
+                        "type":  "table",
+                        "name":  "agent_heartbeats"
+                    },
+                    {
+                        "type":  "table",
+                        "name":  "character_reset_state"
+                    },
+                    {
+                        "type":  "table",
+                        "name":  "d1_migrations"
+                    },
+                    {
+                        "type":  "table",
+                        "name":  "event_dedupe"
+                    },
+                    {
+                        "type":  "table",
+                        "name":  "game_command"
+                    },
+                    {
+                        "type":  "table",
+                        "name":  "ranking_state"
+                    },
+                    {
+                        "type":  "table",
+                        "name":  "request_nonce"
+                    }
+                ]
+}

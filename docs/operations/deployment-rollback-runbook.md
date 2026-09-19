@@ -101,11 +101,13 @@ Three genuinely different layers, each with its own rollback story:
 
 ## GameBridge Agent
 
-- **Has never been deployed to production** — confirmed this phase and
+- ~~**Has never been deployed to production**~~ **(annotation 2026-09-19, Phase 20A: incorrect for `CREATE_GAME_ACCOUNT` — see the note after this bullet)** — confirmed this phase and
   the prior Phase Y audit: no Windows Service was installed, no autostart,
   no restart-on-failure configured (`docs/game-data/deployment-topology.md`
   explicitly frames this as an honest, un-executed gap list for a future
-  phase). There is currently nothing live to roll back.
+  phase). ~~There is currently nothing live to roll back.~~
+
+  > **Annotation (2026-09-19, Phase 20A):** the Agent has run on the game VPS as a scheduled task (`BloodMoonGameBridgeAgent`, SYSTEM, at startup) since 2026-08-24 executing only `CREATE_GAME_ACCOUNT`; the four extension command types were never deployed. Verified read-only through Cloudflare D1 on 2026-09-19: heartbeat `gamebridge-agent-01` seen 21 s earlier and 53 signed command-claim polls in the preceding 10 minutes; the VPS-side task and binary were not inspected. See `docs/knowledge/GAMEBRIDGE_DISAMBIGUATION.md` Part 5. Historical evidence: `references/game-data/sql-discovery/phase-3d-a-production-command-transport-20260824/`. No rollback path for the Agent binary has been tested; the four extension procedures are not installed on production.
 - **When it eventually IS deployed**: because there is no remote-exec
   channel to the Game VPS (only RDP), any rollback will require a human
   physically (or via RDP) replacing the binary and restarting the service
@@ -122,4 +124,4 @@ Three genuinely different layers, each with its own rollback story:
 | Launcher (patch manifest) | Yes, full history, unbounded | Re-activate an older `history/manifest-<version>.json` | None automated |
 | Launcher (CMS content) | Yes, real DB revisions | `LauncherStudioService.rollback()` | Covered by its own existing tests |
 | Cloudflare Worker | Yes, Cloudflare-native | `wrangler rollback` (never used in practice) | None |
-| GameBridge Agent | N/A — never deployed | N/A | N/A |
+| GameBridge Agent | ~~N/A — never deployed~~ **(annotation 2026-09-19: deployed 2026-08-24; no tested rollback path — see above)** | N/A | N/A |

@@ -1,0 +1,14 @@
+﻿{
+    "capturedAtUtc":  "2026-09-19T14:10:51.4111209+00:00",
+    "database":  "bloodmoon-game-data",
+    "target":  "remote",
+    "readOnly":  true,
+    "query":  "SELECT COUNT(*) AS n, MAX(updated_at) AS last_update FROM account_snapshot_state",
+    "success":  true,
+    "results":  [
+                    {
+                        "n":  1,
+                        "last_update":  "2026-08-20T20:34:10.847Z"
+                    }
+                ]
+}

@@ -307,7 +307,7 @@ Real, tested Phase 1 foundation (Agent → Cloudflare Worker/D1 → `apps/api`
 but `REAL_MU_SQL_CONNECTION`/`REAL_CLOUDFLARE_CONNECTION`/
 `END_TO_END_REAL_INFRA = NOT_TESTED` — no Cloudflare account provisioned
 (placeholder D1 `database_id`), the one real SQL Server connection proof
-was a throwaway probe, not a deployed service. `GAME_WRITES_PERFORMED = 0`
+was a throwaway probe, not a deployed service. **[Annotation 2026-09-19, Phase 20A: stale on infrastructure — the real D1 `database_id` is in `wrangler.toml`, Phase 2D passed end to end on 2026-08-20 and the Agent has run in production since 2026-08-24 (`CREATE_GAME_ACCOUNT` only). The statement that the extension commands are not wired through the Worker remains true of every committed branch; the extension exists only as preserved, undeployed code (`gamebridge/preserve-command-extension`).]** `GAME_WRITES_PERFORMED = 0`
 always. The `GRANT_VIP`/`SYNC_VIP_TIER`/anonymize/purge command
 extension has real Agent-side C# code but is **not wired through the
 Worker or Portal** (Worker's D1 schema still `CHECK (command_type =

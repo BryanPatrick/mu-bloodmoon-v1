@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-18T22:43:00.757Z",
+  "generatedAt": "2026-09-19T14:17:34.803Z",
   "schema": {
     "claimId": "string, CLAIM-NNN",
     "statement": "string, ONE atomic fact -- no 'and', no compound claims",
@@ -3376,15 +3376,15 @@
       "verificationTargets": [
         {
           "type": "schema_read",
-          "path": "sys.sql_modules for dbo.WZ_SetCoin in the LAB database -- read-only; requires Bryan's authorization, not done in Phase 20"
+          "path": "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/01-WZ_SetCoin.definition.sql"
         }
       ],
-      "notes": "The comments are procedure source (so almost certainly vendor-written, not confirmed), this phase did not see them first-hand and the lab is not production. Add-vs-set semantics of the procedure are NOT preserved (GAP-P20-05). The first-hand pairing evidence is CLAIM-125/126; this claim is corroboration.",
+      "notes": "[20A] Amended 2026-09-19: was UNVERIFIED and second-hand (the body was not preserved in the repository); the lab read was authorized by Bryan and the body is now preserved with hashes. The earlier quote paraphrased the comments; the exact text is \"-- Tipo 1: Update Cash | WCoinC\" etc. Semantics of the procedure (additive, positive-only, no idempotency): CLAIM-139. The comments are procedure source (so almost certainly vendor-written, not confirmed), this phase did not see them first-hand and the lab is not production. Add-vs-set semantics of the procedure are NOT preserved (GAP-P20-05). The first-hand pairing evidence is CLAIM-125/126; this claim is corroboration.",
       "claimId": "CLAIM-127",
-      "statement": "The WZ_SetCoin stored procedure's own inline comments, as quoted in an earlier phase's preserved document, label @Value1 \"Cash | WCoinC\", @Value2 \"Gold | WCoinP\" and @Value3 \"PcPoints | GoblinPoint\", and it writes CashShopData.WCoinC / WCoinP / GoblinPoint respectively; the procedure body itself is not preserved in this repository.",
+      "statement": "The dbo.WZ_SetCoin stored procedure labels its first value Cash | WCoinC, its second Gold | WCoinP and its third PcPoints | GoblinPoint (comments \"Tipo 1/2/3: Update ...\"), and writes CashShopData.WCoinC / WCoinP / GoblinPoint respectively -- read first-hand from the lab restore of the 2026-07-16 production backup since Phase 20A, and quoted second-hand from an earlier phase document before that.",
       "sourceId": "internal-doc-cross-reference",
-      "sourceAuthority": "PROVIDER_DOCUMENTATION",
-      "sourceLocation": "context/preservation/openbeta-untracked/docs/economy/xshop-commercial-review.md lines 43-52 (quoting a read of the procedure in the local GameServer database lab); stored-procedures.md:88 and cashshop-commercial-review.md:65-75 for the target columns",
+      "sourceAuthority": "REAL_BLOODMOON_SQL",
+      "sourceLocation": "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/01-WZ_SetCoin.definition.sql; lab restore (bloodmoon_gameserver_raw_analysis, local SQL Server 2022) of the 2026-07-16 production backup MuOnline_COPY_ONLY.bak (sha256 570d225ade6455755965c912039128864bdfd7167f6b0f5a52e12d90631db682); read-only catalog reads on 2026-09-19; nothing executed, no row selected; originally quoted in context/preservation/openbeta-untracked/docs/economy/xshop-commercial-review.md lines 43-52",
       "entityTypes": [
         "SYSTEM",
         "CURRENCY",
@@ -3398,9 +3398,9 @@
         "GoblinPoint"
       ],
       "topic": "systems",
-      "bloodMoonStatus": "BLOODMOON_LIKELY",
-      "verificationStatus": "UNVERIFIED",
-      "confidence": "STRONG_EVIDENCE (SECOND-HAND: a preserved document quoting a lab-database read; the raw procedure text was searched for and not found in this repository)"
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_SCHEMA",
+      "confidence": "CONFIRMED_RUNTIME (lab restore of the 2026-07-16 production backup; the procedure/table was NOT re-read on production and nothing was executed)"
     },
     {
       "season": null,
@@ -3643,7 +3643,7 @@
           "path": "a controlled test on a NON-production GameServer (a lab instance if one exists); production must not be used"
         }
       ],
-      "notes": "Also: a credit must cope with a missing CashShopData row (4 of 8 accounts had one in the 3D-A evidence; the legacy PHP had an INSERT fallback). Do not propagate reload behaviour of config files (CLAIM-110/117) to database-row visibility: different subsystem. GAP-P20-04, GAP-P20-05.",
+      "notes": "[20A] Phase 20A added first-hand DB-side evidence (CLAIM-139/141/143): the vendor procedures are additive deltas and one of them credits online players by plain SQL, which weakens -- but does not remove -- the hypothesis that the GameServer overwrites an external credit from an in-memory copy. Visibility timing (immediate / reopen / relog / map change / reload) remains UNKNOWN: the lab has no runnable GameServer, ODBC DSN or client (only a staged file copy at MU-Server/Lab/drop-validation/MuServer-stage), so no test was performed. Also: a credit must cope with a missing CashShopData row (4 of 8 accounts had one in the 3D-A evidence; the legacy PHP had an INSERT fallback). Do not propagate reload behaviour of config files (CLAIM-110/117) to database-row visibility: different subsystem. GAP-P20-04, GAP-P20-05.",
       "claimId": "CLAIM-136",
       "statement": "No preserved evidence establishes whether an external write to CashShopData is visible to the GameServer on the next CashShop/X-Shop interaction, only after re-login, map change or window reopen, or is overwritten by the GameServer's in-memory value; the only precedent for an external write to a GameServer-owned field (MEMB_INFO.AccountLevel) is that the native WZ_GetAccountLevel procedure reverted it at the next login.",
       "sourceId": "synthesis-across-currency-evidence",
@@ -3705,7 +3705,7 @@
           "path": "apps/game-bridge-agent/GameDatabase/IGameDatabaseWriter.cs"
         }
       ],
-      "notes": "Answers the \"GameServer ACK semantics\" question: there is none beyond SQL commit (GAP-P20-04).",
+      "notes": "[20A] Canonical distinction (2026-09-19): SQL_ACK = the stored procedure committed; GAME_ACK = the GameServer/client observed or applied the effect. GAME_COMMAND_TRANSPORT proves SQL_ACK only; GAME_ACK is not claimed anywhere and no mechanism for it exists. Answers the \"GameServer ACK semantics\" question: there is none beyond SQL commit (GAP-P20-04).",
       "claimId": "CLAIM-138",
       "statement": "The only acknowledgement the command transport can give is that the stored procedure returned and committed: the Agent talks only to SQL Server, has no channel to the GameServer process, writes succeed whether the GameServer is online or offline, and the Worker/D1 result carries a status and result code, not proof that the game sees the change.",
       "sourceId": "code-read-2026-09-18",
@@ -3723,6 +3723,307 @@
       "bloodMoonStatus": "BLOODMOON_CONFIRMED",
       "verificationStatus": "CONFIRMED_BY_CONFIG",
       "confidence": "CONFIRMED_STATIC_CODE_READ"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "schema_read",
+          "path": "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/01-WZ_SetCoin.definition.sql"
+        }
+      ],
+      "notes": "Answers the Phase 20A questions: additive (not set), positive-only, insert-if-missing for this procedure, no transaction, no locking, no idempotency. The name SetCoin is misleading. The procedure was created/modified 2026-04-22 in the database. GAP-P20-05 evidence; a future credit command cannot rely on it for exactly-once (GAME_CURRENCY_DELIVERY_ANALYSIS.md Part 5).",
+      "claimId": "CLAIM-139",
+      "sourceId": "real-config-read",
+      "sourceAuthority": "REAL_BLOODMOON_SQL",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_SCHEMA",
+      "statement": "In the lab restore of the 2026-07-16 production backup, dbo.WZ_SetCoin(@Account, @Name, @Value1, @Value2, @Value3) ADDS each positive value to CashShopData (WCoinC = WCoinC + @Value1, WCoinP = WCoinP + @Value2, GoblinPoint = GoblinPoint + @Value3), ignores zero and negative values so it cannot subtract, inserts a row holding only that column when the account has none (the other columns take their default 0), uses no BEGIN TRAN (XACT_ABORT is ON but each statement autocommits and the three blocks are not atomic together), takes no lock (IF EXISTS then INSERT is racy: a concurrent first credit fails on the primary key), never uses @Name, and has no idempotency key, ledger, audit or return code, so calling it twice credits twice.",
+      "sourceLocation": "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/01-WZ_SetCoin.definition.sql (sha256 d0094f7b29022838863a9eb52bfdcbd09ab622a3bd484c6bf13afc5e95323c5c; SQL-side UTF-16 hash FBE6AD49194B200BC4F495DDC29D73E32CAFADC7D79F4FA5AAE83CDB89B3F8C2); lab restore (bloodmoon_gameserver_raw_analysis, local SQL Server 2022) of the 2026-07-16 production backup MuOnline_COPY_ONLY.bak (sha256 570d225ade6455755965c912039128864bdfd7167f6b0f5a52e12d90631db682); read-only catalog reads on 2026-09-19; nothing executed, no row selected",
+      "entityTypes": [
+        "SYSTEM",
+        "CURRENCY",
+        "DATABASE"
+      ],
+      "entities": [
+        "WZ_SetCoin",
+        "CashShopData",
+        "WCoinC",
+        "WCoinP",
+        "GoblinPoint"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (lab restore of the 2026-07-16 production backup; the procedure/table was NOT re-read on production and nothing was executed)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "schema_read",
+          "path": "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/03-CashShopData.columns.txt"
+        }
+      ],
+      "notes": "Authoritative DDL for GAP-P20-05. Balances are 32-bit signed: a credit must check overflow. The case-insensitive collation means account comparison is case-insensitive. 4 rows in the restored copy (approximate).",
+      "claimId": "CLAIM-140",
+      "sourceId": "real-config-read",
+      "sourceAuthority": "REAL_BLOODMOON_SQL",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_SCHEMA",
+      "statement": "In the lab restore, dbo.CashShopData is (AccountID varchar(10) NOT NULL with collation Latin1_General_CI_AS, WCoinC int NOT NULL DEFAULT 0, WCoinP int NOT NULL DEFAULT 0, GoblinPoint int NOT NULL DEFAULT 0) with a clustered primary key PK_TempCashShop on AccountID as its only index, and no CHECK constraint, no foreign key in either direction and no trigger, so negative balances are representable and rows can exist for accounts that are absent from MEMB_INFO.",
+      "sourceLocation": "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/03-CashShopData.columns.txt, raw/04-CashShopData.keys-indexes-constraints.txt; lab restore (bloodmoon_gameserver_raw_analysis, local SQL Server 2022) of the 2026-07-16 production backup MuOnline_COPY_ONLY.bak (sha256 570d225ade6455755965c912039128864bdfd7167f6b0f5a52e12d90631db682); read-only catalog reads on 2026-09-19; nothing executed, no row selected",
+      "entityTypes": [
+        "DATABASE",
+        "CURRENCY"
+      ],
+      "entities": [
+        "CashShopData",
+        "PK_TempCashShop",
+        "WCoinC",
+        "WCoinP",
+        "GoblinPoint"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (lab restore of the 2026-07-16 production backup; the procedure/table was NOT re-read on production and nothing was executed)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "schema_read",
+          "path": "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/06-related-vendor-procedures.definitions.txt"
+        }
+      ],
+      "notes": "Eleven modules reference the table (sys.sql_expression_dependencies). How the closed-source GameServer itself debits a balance is NOT visible: no procedure does it, so it must use SQL text from the engine or memory. Vendor mechanisms are delta-based, which is the model an external credit should follow.",
+      "claimId": "CLAIM-141",
+      "sourceId": "real-config-read",
+      "sourceAuthority": "REAL_BLOODMOON_SQL",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_SCHEMA",
+      "statement": "Every stored procedure in the restored GameServer database that changes CashShopData balances is additive (col = col + value) -- WZ_SetCoin, WZ_SetExchangeReward, WZ_SetKD, WZ_CustomMonsterReward, WZ_SetRewardCastleSiege and WZ_SetRankingDay/Mon/Wek -- while three ranking procedures only run the no-op UPDATE GoblinPoint = GoblinPoint; no procedure sets an absolute balance, none subtracts (no debit procedure exists), and only WZ_SetCoin inserts a missing row: the others silently credit nothing to an account that has no row.",
+      "sourceLocation": "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/05-modules-referencing-CashShopData.txt, raw/06-related-vendor-procedures.definitions.txt, raw/10-ranking-reward-procedures.definitions.txt; lab restore (bloodmoon_gameserver_raw_analysis, local SQL Server 2022) of the 2026-07-16 production backup MuOnline_COPY_ONLY.bak (sha256 570d225ade6455755965c912039128864bdfd7167f6b0f5a52e12d90631db682); read-only catalog reads on 2026-09-19; nothing executed, no row selected",
+      "entityTypes": [
+        "SYSTEM",
+        "CURRENCY",
+        "DATABASE"
+      ],
+      "entities": [
+        "WZ_SetCoin",
+        "WZ_SetExchangeReward",
+        "WZ_SetKD",
+        "WZ_CustomMonsterReward",
+        "WZ_SetRewardCastleSiege",
+        "WZ_SetRankingDay",
+        "CashShopData"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (lab restore of the 2026-07-16 production backup; the procedure/table was NOT re-read on production and nothing was executed)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "schema_read",
+          "path": "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/06-related-vendor-procedures.definitions.txt"
+        }
+      ],
+      "notes": "Upgrades GAP-P18-11 pairs Gold<->WCoinP and PcPoint<->GoblinPoint from STRONGLY_SUPPORTED to CONFIRMED (several independent first-hand procedures plus CLAIM-125/126). Says nothing about what Portal WC is: PORTAL_WC_TARGET_GAME_CURRENCY stays UNRESOLVED (CLAIM-129).",
+      "claimId": "CLAIM-142",
+      "sourceId": "real-config-read",
+      "sourceAuthority": "REAL_BLOODMOON_SQL",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_SCHEMA",
+      "statement": "The vendor procedures label the same three balances Cash | WCoinC, Gold | WCoinP and PcPoints | GoblinPoint and keep commented Season 4 alternatives that write MEMB_INFO.Cash, MEMB_INFO.Gold and PcPointData.PcPoint instead of CashShopData.WCoinC, WCoinP and GoblinPoint (WZ_SetCoin, WZ_SetExchangeReward, WZ_SetKD for Cash and Gold, WZ_SetRewardCastleSiege, WZ_SetRankingDay/Mon/Wek), confirming first-hand that Cash/Gold/PcPoint are the Season 4 names of the balances that Season 6/8 store as WCoinC/WCoinP/GoblinPoint, slot for slot.",
+      "sourceLocation": "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/01-WZ_SetCoin.definition.sql, raw/06-related-vendor-procedures.definitions.txt, raw/10-ranking-reward-procedures.definitions.txt; lab restore (bloodmoon_gameserver_raw_analysis, local SQL Server 2022) of the 2026-07-16 production backup MuOnline_COPY_ONLY.bak (sha256 570d225ade6455755965c912039128864bdfd7167f6b0f5a52e12d90631db682); read-only catalog reads on 2026-09-19; nothing executed, no row selected",
+      "entityTypes": [
+        "SYSTEM",
+        "CURRENCY"
+      ],
+      "entities": [
+        "Cash",
+        "Gold",
+        "PcPoint",
+        "WCoinC",
+        "WCoinP",
+        "GoblinPoint",
+        "PcPointData",
+        "WZ_SetExchangeReward"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (lab restore of the 2026-07-16 production backup; the procedure/table was NOT re-read on production and nothing was executed)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "schema_read",
+          "path": "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/06-related-vendor-procedures.definitions.txt"
+        }
+      ],
+      "notes": "INFERENCE, kept out of the statement: the vendor itself applies additive SQL credits to online players, which makes an engine that flushes a stale in-memory balance over them at logout less likely -- but this is NOT proof and CLAIM-136 (visibility/overwrite of an external write) stays UNKNOWN.",
+      "claimId": "CLAIM-143",
+      "sourceId": "real-config-read",
+      "sourceAuthority": "REAL_BLOODMOON_SQL",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_SCHEMA",
+      "statement": "The vendor procedure WZ_SetRewardCastleSiege selects the guild members to reward through MEMB_STAT.ConnectStat = 1 (players who are online) and credits them WCoinC/WCoinP/GoblinPoint by a plain additive SQL UPDATE on CashShopData; nothing in the database shows whether the GameServer keeps its own in-memory copy of a balance.",
+      "sourceLocation": "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/06-related-vendor-procedures.definitions.txt (WZ_SetRewardCastleSiege); lab restore (bloodmoon_gameserver_raw_analysis, local SQL Server 2022) of the 2026-07-16 production backup MuOnline_COPY_ONLY.bak (sha256 570d225ade6455755965c912039128864bdfd7167f6b0f5a52e12d90631db682); read-only catalog reads on 2026-09-19; nothing executed, no row selected",
+      "entityTypes": [
+        "SYSTEM",
+        "CURRENCY",
+        "DATABASE"
+      ],
+      "entities": [
+        "WZ_SetRewardCastleSiege",
+        "MEMB_STAT",
+        "CashShopData"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (lab restore of the 2026-07-16 production backup; the procedure/table was NOT re-read on production and nothing was executed)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "schema_read",
+          "path": "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/07-CustomPlayToEarn.catalog.txt"
+        }
+      ],
+      "notes": "Any design that assumes CashShopData is the only balance store must first rule this table out (probably a play-to-earn accrual read by the engine directly -- INFERENCE).",
+      "claimId": "CLAIM-144",
+      "sourceId": "real-config-read",
+      "sourceAuthority": "REAL_BLOODMOON_SQL",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_SCHEMA",
+      "statement": "In the lab restore, dbo.CustomPlayToEarn(Account varchar(10) NOT NULL, WCoinC int, WCoinP int, GoblinPoint int, each NOT NULL DEFAULT 0, clustered primary key PK_CustomPlayToEarn on Account) is a second table holding the same three balances; it has 0 rows and is referenced by no stored procedure, view or trigger, so its role is unknown.",
+      "sourceLocation": "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/07-CustomPlayToEarn.catalog.txt; lab restore (bloodmoon_gameserver_raw_analysis, local SQL Server 2022) of the 2026-07-16 production backup MuOnline_COPY_ONLY.bak (sha256 570d225ade6455755965c912039128864bdfd7167f6b0f5a52e12d90631db682); read-only catalog reads on 2026-09-19; nothing executed, no row selected",
+      "entityTypes": [
+        "DATABASE",
+        "CURRENCY"
+      ],
+      "entities": [
+        "CustomPlayToEarn",
+        "WCoinC",
+        "WCoinP",
+        "GoblinPoint"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_RUNTIME (lab restore of the 2026-07-16 production backup; the procedure/table was NOT re-read on production and nothing was executed)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "runtime_observation",
+          "path": "read-only SSH inspection of the VPS scheduled task BloodMoonGameBridgeAgent, process start time and binary sha256 -- not done (needs permission)"
+        }
+      ],
+      "notes": "Supersedes the \"current state not re-verified\" caveat of CLAIM-134 for the Cloudflare half; the Agent version/hash is still unknown. Point-in-time: heartbeat age changes by the second.",
+      "claimId": "CLAIM-145",
+      "sourceId": "internal-doc-cross-reference",
+      "sourceAuthority": "REAL_BLOODMOON_RUNTIME",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_RUNTIME",
+      "statement": "Read-only queries on 2026-09-19 show that the production D1 bloodmoon-game-data has migrations 0001, 0002 and 0003 applied and not 0004, that its game_command table still has CHECK (command_type = CREATE_GAME_ACCOUNT) with NOT NULL credential columns (so the database itself rejects the four extension command types), that it holds exactly 2 commands ever (both CREATE_GAME_ACCOUNT, SUCCEEDED, last activity 2026-08-25), that the Agent gamebridge-agent-01 heartbeat was 14 seconds old with an empty buffer, that about 52 signed command:claim requests fell in the preceding 10 minutes, and that no Worker code version was uploaded after 2026-08-24T17:52Z (every later version is a Secret Change); the VPS-side task, process and binary were not inspected.",
+      "sourceLocation": "references/game-data/sql-discovery/phase-20a-live-agent-d1-readonly-20260919/raw/01..08 (captured 2026-09-19 ~14:10 UTC via the local authenticated wrangler session, SELECT-only); the VPS-side SSH inspection was blocked by the session permission classifier and not retried",
+      "entityTypes": [
+        "SYSTEM",
+        "DEPLOYMENT"
+      ],
+      "entities": [
+        "GAME_COMMAND_TRANSPORT",
+        "game_command",
+        "agent_heartbeats",
+        "bloodmoon-game-data",
+        "gamebridge-agent-01"
+      ],
+      "topic": "operations",
+      "confidence": "CONFIRMED_RUNTIME (Cloudflare side, 2026-09-19); VPS side UNVERIFIED"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "docs/gamebridge/worker-extension-preservation-manifest.md (on gamebridge/preserve-command-extension)"
+        }
+      ],
+      "notes": "Preservation does not make the code current or canonical. Remaining loss risk: references/game-data/sql-discovery/gamebridge-extension-20260830/ (11 SQL files, one flagged for secret review) is still untracked in openbeta (GAP-P20-02).",
+      "claimId": "CLAIM-146",
+      "sourceId": "code-read-2026-09-18",
+      "sourceAuthority": "CURRENT_CODE",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "statement": "The only copy of the Worker code for GRANT_VIP, SYNC_VIP_TIER, ANONYMIZE_GAME_ACCOUNT and PURGE_GAME_ACCOUNT (src/commands.ts blob 66f5fe17, db/schema.sql 48ffcf6d, test/commands.spec.ts 53ea1b5a, +313/-43 over main) was uncommitted in the mu-bloodmoon-v1-openbeta worktree; on 2026-09-19 it was preserved byte-identically on the branch gamebridge/preserve-command-extension (commits 3e69937e and 6003c59a, based on main c1b34062, not merged and not deployed), where tsc reports 0 errors and the Worker suite passes 55/55 (commands.spec 25/25); the four SQL procedures of the extension remain untracked in that worktree.",
+      "sourceLocation": "branch gamebridge/preserve-command-extension; docs/gamebridge/worker-extension-preservation-manifest.md on that branch; git hash-object comparison source vs preserved; vitest and tsc run 2026-09-19",
+      "entityTypes": [
+        "SYSTEM",
+        "DEPLOYMENT"
+      ],
+      "entities": [
+        "GAME_COMMAND_TRANSPORT",
+        "commands.ts",
+        "GRANT_VIP",
+        "gamebridge/preserve-command-extension"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_STATIC_CODE_READ + a real test run (Worker only; the Agent .NET suite and SQL integration tests were not re-run)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [],
+      "notes": "NOT_APPLICABLE verification: a decision record (same treatment as CLAIM-122/129). Relaxes nothing in CLAIM-129 and closes no gap: GAP-P20-01 stays open as a future-scope decision.",
+      "claimId": "CLAIM-147",
+      "sourceId": "internal-doc-cross-reference",
+      "sourceAuthority": "INTERNAL_DECISION",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "NOT_APPLICABLE",
+      "statement": "Bryan decided on 2026-09-19 that the initial Beta does not require automatic Portal WC to game-currency delivery (BETA_INITIAL_GAME_CURRENCY_DELIVERY = OUT_OF_SCOPE): the Beta product path stays BRL to provider to Portal WC to Portal-side products and VIP, automatic game-currency credit is future scope, existing VIP commercial decisions are unchanged, and the Portal WC target game currency remains UNRESOLVED and must not be silently mapped to WCoinC.",
+      "sourceLocation": "Phase 20A brief (2026-09-19), decisions 2-3; docs/knowledge/GAME_CURRENCY_DELIVERY_ANALYSIS.md Part 14",
+      "entityTypes": [
+        "SYSTEM",
+        "CURRENCY",
+        "DECISION"
+      ],
+      "entities": [
+        "WCOIN",
+        "WCoinC",
+        "BETA_INITIAL_GAME_CURRENCY_DELIVERY"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_OPERATOR (recorded decision)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [],
+      "notes": "NOT_APPLICABLE verification: a decision record. It does not close GAP-P20-01/02/03/04: accepting a direction does not answer the target-currency, deployment, idempotency or visibility questions.",
+      "claimId": "CLAIM-148",
+      "sourceId": "internal-doc-cross-reference",
+      "sourceAuthority": "INTERNAL_DECISION",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "NOT_APPLICABLE",
+      "statement": "Bryan accepted on 2026-09-19 Option B -- the controlled GAME_COMMAND_TRANSPORT boundary rather than apps/api writing the game database directly -- as the preferred architectural DIRECTION for a future game-currency delivery mechanism (GAME_CURRENCY_DELIVERY_DIRECTION = OPTION_B); this is not implementation approval (GAME_CURRENCY_DELIVERY_IMPLEMENTATION_APPROVED = NO), prerequisites P1-P9 remain mandatory, and the chargeback-after-game-delivery policy is unresolved and blocks any public currency-delivery enablement.",
+      "sourceLocation": "Phase 20A brief (2026-09-19), decisions 4 and 9; docs/knowledge/GAME_CURRENCY_DELIVERY_ANALYSIS.md Parts 11-14",
+      "entityTypes": [
+        "SYSTEM",
+        "DECISION"
+      ],
+      "entities": [
+        "GAME_COMMAND_TRANSPORT",
+        "CREDIT_GAME_CURRENCY",
+        "GAME_CURRENCY_DELIVERY_DIRECTION"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_OPERATOR (recorded decision; direction only)"
     }
   ]
 }

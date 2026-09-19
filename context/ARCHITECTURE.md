@@ -16,7 +16,7 @@ separate folders.
 | Portal (`apps/web`, Nuxt) | CURRENT | `docs/architecture/`, `docs/project-structure.md` |
 | API (`apps/api`, NestJS) | CURRENT | `docs/architecture/`, `docs/project-structure.md` |
 | GameServer (SQL Server, `MuOnline`) | CURRENT (read/write-boundary controlled) | `docs/gameserver/database/`, `docs/security/game-write-boundary.md` |
-| GameBridge (existing VIP/account write path) | CURRENT | `docs/gamebridge/` |
+| GameBridge (existing VIP/account write path) **[= `GAME_COMMAND_TRANSPORT`; live for `CREATE_GAME_ACCOUNT` only, the VIP/anonymize/purge commands are implemented-not-deployed — see `docs/knowledge/GAMEBRIDGE_DISAMBIGUATION.md`]** | CURRENT | `docs/gamebridge/` |
 | Game Data Platform (Agent + Cloudflare Worker, read-only telemetry) | PLANNED / mid-implementation per local plan on file | `docs/game-data/` (once populated) |
 | Launcher (.NET/WPF) | CURRENT | `docs/launcher/` |
 | Payments (Mercado Pago) | CURRENT, refund/reconciliation adapters SANDBOX_VALIDATION_REQUIRED | `docs/payments/` |

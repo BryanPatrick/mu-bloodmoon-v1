@@ -55,11 +55,11 @@ running phase log, `docs/decisions/`, and `docs/handoff/`.
   Free/Silver/Gold; Bronze commercially disabled, technical enum/schema
   untouched — see [`domains/vip.md`](domains/vip.md).
 - GameServer integration: real, read/write-boundary-controlled via
-  GameBridge — see [`domains/game-economy.md`](domains/game-economy.md).
+  GameBridge **[= `GAME_COMMAND_TRANSPORT` for writes — `docs/knowledge/GAMEBRIDGE_DISAMBIGUATION.md`]** — see [`domains/game-economy.md`](domains/game-economy.md).
   A separate, newer Game Data Platform pipeline
   (`apps/game-bridge-agent` + Cloudflare Worker) is architecture-approved
   and mid-implementation as of the most recent local plan on file
-  (see `docs/game-data/`) — not yet deployed against real infrastructure.
+  (see `docs/game-data/`) — ~~not yet deployed against real infrastructure~~ **(annotation 2026-09-19, Phase 20A: the Worker, D1 and Agent run against real infrastructure — Phase 2D end-to-end PASS 2026-08-20, Phase 3D-A production command path 2026-08-24, heartbeat verified live through D1 on 2026-09-19; the VPS-side task/binary was not inspected; see `docs/knowledge/GAMEBRIDGE_DISAMBIGUATION.md` Part 5)**.
 - Payments: real Mercado Pago integration remains, but **Asaas is the
   current primary provider direction** (Phase 14, `DEC-PAYMENTS-001`) —
   see [`domains/payments.md`](domains/payments.md).

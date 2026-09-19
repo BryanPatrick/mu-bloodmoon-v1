@@ -14,7 +14,7 @@ completa em volta do jogo — Portal (`apps/web`, Nuxt) e API
 entre jogadores, comunidade/guildas, e um Launcher desktop (.NET/WPF) —
 conectados ao GameServer real (SQL Server, banco `MuOnline`) através de
 um pipeline dedicado, o GameBridge (`apps/game-bridge-agent` + Cloudflare
-Worker), que é o único caminho de escrita para o banco do jogo. Ver a
+Worker), que é o único caminho de escrita para o banco do jogo **[nomes canônicos (Fase 20A): a escrita é `GAME_COMMAND_TRANSPORT`; o mesmo binário também hospeda a telemetria somente-leitura `GAME_DATA_TELEMETRY` — ver `docs/knowledge/GAMEBRIDGE_DISAMBIGUATION.md`]**. Ver a
 seção "Arquitetura e sistemas" abaixo para o diagrama completo, e
 `docs/manuals/technical/manual-operacao-tecnica.md` §1 para a versão
 técnica detalhada.

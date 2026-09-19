@@ -55,4 +55,4 @@ same Windows game VPS.
 
 No real SQL Server connection (none exists in this environment; none was
 installed — a fake `IGameDatabaseReader` proves the pipeline instead). No
-Queue, no R2. No account linking. No writes, ever.
+Queue, no R2. No account linking. No writes, ever. **[Phase 20A note: this sentence describes the read-only telemetry phase (`GAME_DATA_TELEMETRY`). The same project later gained a write path (`GAME_COMMAND_TRANSPORT`, `Commands/` + `SqlServerGameDatabaseWriter`), running under a separate SQL login — see `docs/knowledge/GAMEBRIDGE_DISAMBIGUATION.md`.]**

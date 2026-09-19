@@ -2,7 +2,7 @@
 status: ACTIVE
 category: knowledge
 audience: internal (product + engineering)
-lastVerified: 2026-09-18
+lastVerified: 2026-09-19
 confidence: MIXED — per-row and per-classification confidence below; second-hand evidence is labelled as such
 ---
 
@@ -22,9 +22,14 @@ this file only fixes vocabulary.
    `Gold | WCoinP` and `PcPoint | GoblinPoint` are paired names for the same
    three balances, in that order. Blood Moon's own config and message table
    use both families for the same triple. No source read in this phase treats
-   them as different balances. The `Cash ↔ WCoinC` pair is **CONFIRMED**; the
-   other two are **STRONGLY_SUPPORTED** (Part 4 says why the bar differs).
-2. **The Portal's WC is not mapped to any of them.** No recorded decision
+   them as different balances. **(Phase 20A)** All three pairs are now **CONFIRMED**: the
+   vendor's own stored procedures (read first-hand in the lab restore of the production
+   backup) label the balances "Cash | WCoinC", "Gold | WCoinP", "PcPoints | GoblinPoint" and keep
+   Season 4 variants (`MEMB_INFO.Cash`, `MEMB_INFO.Gold`, `PcPointData.PcPoint`) beside the Season 6/8
+   `CashShopData` columns. ~~The other two are STRONGLY_SUPPORTED.~~
+2. **The Portal's WC is not mapped to any of them** — reconfirmed by Bryan on 2026-09-19, who also
+   put automatic Portal-WC → game-currency delivery **out of scope for the initial Beta**
+   (`BETA_INITIAL_GAME_CURRENCY_DELIVERY = OUT_OF_SCOPE`; CLAIM-147). No recorded decision
    maps Portal `WCOIN` to `WCoinC`, `WCoinP` or anything else, and several
    documents explicitly decline to. Status: **UNRESOLVED (open by earlier
    decision, not by oversight)**.
@@ -42,7 +47,8 @@ this file only fixes vocabulary.
 | `RemoteData/Phase10/Message.utf8.txt` (real message table, snapshot 2026-08-28) | first-hand, read this phase | strong — both label families used for the same triple |
 | `RemoteData/Phase11/GameServerInfo - Command.readable.txt` (`/util` block, snapshot 2026-08-29) | first-hand, read this phase | medium — names the three coin operands Cash/Gold/PcPoint |
 | `Research/Vendor/Tutorials/GameServerInfo - Common.htm`, `Script Lua Interface Functions.rtf` (vendor docs) | first-hand, read this phase | strong for *engine* naming |
-| `WZ_SetCoin` inline comments, quoted in `context/preservation/openbeta-untracked/docs/economy/xshop-commercial-review.md:46-47` | **second-hand** — an earlier phase read the procedure body in the local lab database; the body itself is **not preserved in this repository** (searched, not found) | strong but not independently re-verifiable here |
+| **(Phase 20A)** `dbo.WZ_SetCoin` and seven sibling procedures, read **first-hand** from the lab restore of the 2026-07-16 production backup — `references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/01…10` (sha256s in that README) | first-hand, read-only catalog reads; authorized by Bryan | **strongest** — several independent procedures; supersedes the row below |
+| ~~`WZ_SetCoin` inline comments, quoted in `context/preservation/openbeta-untracked/docs/economy/xshop-commercial-review.md:46-47`~~ | **second-hand** — an earlier phase read the procedure body in the local lab database; the body itself is **not preserved in this repository** (searched, not found) | strong but not independently re-verifiable here |
 | Preserved lab-DB dependency data (`stored-procedures.md:88`, `cashshop-commercial-review.md:65-75`) | second-hand | supports the `CashShopData` target columns |
 
 Nothing here was read from, or written to, a production system in Phase 20.
@@ -107,8 +113,8 @@ force a 1:1 mapping where the evidence is one-sided.
 | Pair | Class | Evidence | What would raise it |
 |---|---|---|---|
 | **Cash ↔ WCoinC** | **CONFIRMED** | (1) explicit pairing in the real `CustomEventAuction.txt` comment; (2) explicit pairing in the real message id 1140 (an *independent* first-hand source); (3) `WZ_SetCoin` `@Value1` = "Cash \| WCoinC" (second-hand); (4) same-position sibling headers; (5) the legacy web panel's "WCoin" edits only `WCoinC`. No contradicting source found. | — |
-| **Gold ↔ WCoinP** | **STRONGLY_SUPPORTED** | (1) explicit pairing in `CustomEventAuction.txt`; (3) `WZ_SetCoin` `@Value2` = "Gold \| WCoinP" (second-hand); (4) sibling headers. Only **one** first-hand explicit pairing and no per-slot runtime proof. | a second first-hand pairing, or reading the procedure body |
-| **PcPoint ↔ GoblinPoint** | **STRONGLY_SUPPORTED** | same as Gold. Extra caveat: the vendor has a separate `WritePcPointLog` switch and describes PcPoint as time-earned, which *fits* GoblinPoint (also time-earned) but does not by itself prove it. | same |
+| **Gold ↔ WCoinP** | ~~STRONGLY_SUPPORTED~~ **CONFIRMED (Phase 20A)** — the "Update Gold \| WCoinP" comment in `WZ_SetCoin`, `WZ_SetExchangeReward`, `WZ_SetKD` and the ranking procedures, and their Season 4 `MEMB_INFO.Gold` variants, are first-hand and independent of the config files (CLAIM-142). Earlier evidence, kept: | (1) explicit pairing in `CustomEventAuction.txt`; (3) `WZ_SetCoin` `@Value2` = "Gold \| WCoinP" (second-hand); (4) sibling headers. ~~Only one first-hand explicit pairing and no per-slot runtime proof.~~ | ~~a second first-hand pairing, or reading the procedure body~~ — **done in Phase 20A** |
+| **PcPoint ↔ GoblinPoint** | ~~STRONGLY_SUPPORTED~~ **CONFIRMED (Phase 20A)** — "Update PcPoints \| GoblinPoint" in `WZ_SetCoin`/`WZ_SetExchangeReward`, and the Season 4 `PcPointData.PcPoint` variant beside the Season 6/8 `CashShopData.GoblinPoint` line (CLAIM-142). Earlier evidence, kept: | same as Gold. Extra caveat: the vendor has a separate `WritePcPointLog` switch and describes PcPoint as time-earned, which *fits* GoblinPoint (also time-earned) but does not by itself prove it (the separate log switch is explained: both are Season 4 `PcPointData` legacy names). | ~~same~~ — **done in Phase 20A** |
 
 `CONTRADICTED` was searched for and **not found**. Two things that *look*
 like contradictions and are not:
@@ -128,7 +134,7 @@ like contradictions and are not:
 | `CustomCoinsOnline.txt` `CoinType` | rows use **0, 1, 2** with no legend in the file; almost certainly 0-based (three rows, one per coin) — **INFERRED** | `RemoteData/Phase11/CustomCoinsOnline.readable.txt` |
 | X-Shop `Coin0 / Coin1 / Coin2` | 0-based, three separate price columns = WCoinC/WCoinP/GoblinPoint | `docs/economy/xshop-cashshop-config-field-matrix.md:34` |
 | Vendor Lua `ObjectGetCoin` etc. | 1-based `Coin1, Coin2, Coin3` | `Script Lua Interface Functions.rtf` |
-| SQL `WZ_SetCoin` | positional `@Value1/2/3` | second-hand |
+| SQL `WZ_SetCoin` | positional `@Value1/2/3` | **first-hand since Phase 20A** (`raw/01`) |
 
 Consequence for any future currency command: carry a **named** currency
 (for example `GAME_CASH_WCOINC`), never a slot number; let exactly one place
@@ -207,3 +213,26 @@ implies):
 
 Machine layer: `CLAIM-125` … `CLAIM-130` in
 `knowledge/vendor-sweep/atomic-claims.json`.
+
+## Part 9 — Phase 20A (2026-09-19): what changed
+
+| Item | Before | After |
+|---|---|---|
+| Cash ↔ WCoinC | CONFIRMED | CONFIRMED (now also first-hand in the vendor procedures) |
+| Gold ↔ WCoinP | STRONGLY_SUPPORTED | **CONFIRMED** |
+| PcPoint ↔ GoblinPoint | STRONGLY_SUPPORTED | **CONFIRMED** |
+| Portal WC target game currency | UNRESOLVED | **UNRESOLVED** (Bryan, 2026-09-19: do not silently map to WCoinC) |
+| Initial Beta game-currency delivery | not stated | **OUT_OF_SCOPE** (Bryan, 2026-09-19) |
+| Blood Coin (`GOBLIN_POINT`) | not WC; equality with the engine's GoblinPoint unconfirmed | unchanged |
+
+What the upgrade means and does not mean:
+
+* It settles **vocabulary**: Cash/Gold/PcPoint are the Season 4 names, WCoinC/WCoinP/GoblinPoint the
+  Season 6/8 names, of three balances in one order. A document may use either family, never both as if
+  they were six currencies.
+* It says **nothing** about the Portal. Portal `WCOIN` is a separate business abstraction; the
+  mapping above gives no automatic equivalence, and the "INFERENCE" in Part 6 is still only an inference.
+* The slot-numbering warning in Part 4 stands: the procedures are positional (`@Value1/2/3`), while
+  other files number the slots 0-based or 1-based.
+
+Evidence: `references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/` (raw catalog reads, hashes, derived findings); machine layer CLAIM-139..142, CLAIM-147.
