@@ -1,6 +1,7 @@
 ﻿import { BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common'
 import type {
   Prisma,
+  PaymentWebhookEvent,
   PurchaseIntentStatus,
   RechargeIntent,
   RechargeIntentStatus,
@@ -1210,16 +1211,23 @@ export class CommerceService {
     const eventId = input.body?.id
     const topic = input.body?.event
     const paymentId = input.body?.payment?.id
-    if (!eventId || !topic || !paymentId || eventId.length > 190 || topic.length > 80 || paymentId.length > 190) {
+    if (typeof eventId !== 'string' || !/^[A-Za-z0-9._:-]{1,190}$/.test(eventId) ||
+      typeof topic !== 'string' || !/^[A-Z0-9_]{1,80}$/.test(topic) ||
+      typeof paymentId !== 'string' || !/^[A-Za-z0-9._:-]{1,190}$/.test(paymentId)) {
       throw new BadRequestException('Evento Asaas invalido.')
     }
-    const claim = await this.webhookEvents.recordAndClaim({
-      provider: 'asaas', topic, eventId, externalOrderId: paymentId,
-      signatureValid: true, rawPayload: { id: eventId, event: topic, payment: { id: paymentId } }
-      // Never pass asaas-access-token as signatureHeader: it is a secret.
-    })
-    this.logger.log('ASAAS_WEBHOOK_ACCEPTED')
-    if (claim.outcome === 'duplicate-processed') return { received: true, duplicate: true }
+    const persisted = await this.webhookEvents.receiveAsaas({ topic, eventId, paymentId })
+    this.logger.log(`ASAAS_WEBHOOK_DURABLE_ACCEPTED eventRecordId=${persisted.id} providerEventId=${eventId} providerPaymentId=${paymentId}`)
+    return { received: true }
+  }
+
+  // Called only by the leased inbox worker, never on the HTTP ACK path.
+  // All monetary evidence still comes from a fresh provider GET.
+  async processStoredAsaasEvent(event: PaymentWebhookEvent, ensureLease?: () => Promise<boolean>): Promise<{
+    status: 'PROCESSED' | 'IGNORED' | 'MANUAL_REVIEW'; rechargeIntentId?: string; code?: string
+  }> {
+    if (event.provider !== 'asaas' || !event.externalOrderId) return { status: 'MANUAL_REVIEW', code: 'ASAAS_EVENT_INVALID' }
+    const { topic, eventId, externalOrderId: paymentId } = event
     const recognized = new Set([
       'PAYMENT_CREATED', 'PAYMENT_UPDATED', 'PAYMENT_CONFIRMED', 'PAYMENT_RECEIVED',
       'PAYMENT_OVERDUE', 'PAYMENT_DELETED', 'PAYMENT_REFUND_IN_PROGRESS',
@@ -1228,42 +1236,35 @@ export class CommerceService {
       'PAYMENT_AWAITING_CHARGEBACK_REVERSAL'
     ])
     if (!recognized.has(topic)) {
-      await this.webhookEvents.markIgnored(claim.eventId, 'unknown_asaas_event')
-      return { received: true, ignored: true }
+      return { status: 'IGNORED', code: 'unknown_asaas_event' }
     }
-    try {
-      const order = await this.asaas.getOrder(paymentId)
-      if (order.externalOrderId !== paymentId) {
-        await this.webhookEvents.markIgnored(claim.eventId, 'provider_payment_id_mismatch')
-        await this.observability.recordOperationalEvent({
-          module: 'store', severity: 'CRITICAL', eventType: 'ASAAS_PAYMENT_ID_MISMATCH',
-          entityType: 'PaymentWebhookEvent', entityId: claim.eventId,
-          description: 'Webhook Asaas divergiu do ID retornado na consulta ao provedor.',
-          data: { eventId, paymentId }
-        })
-        return { received: true, ignored: true }
-      }
-      const recharge = order.externalReference
-        ? await this.prisma.rechargeIntent.findUnique({ where: { externalReference: order.externalReference } })
-        : null
-      if (!recharge || recharge.provider !== 'asaas' || recharge.providerEnvironment !== loadAsaasConfig().environment) {
-        await this.webhookEvents.markIgnored(claim.eventId, 'unmatched_asaas_payment')
-        await this.observability.recordOperationalEvent({
-          module: 'store', severity: 'CRITICAL', eventType: 'ASAAS_UNMATCHED_PAYMENT',
-          entityType: 'PaymentWebhookEvent', entityId: claim.eventId,
-          description: 'Pagamento Asaas sem recarga sandbox correspondente.',
-          data: { eventId, paymentId }
-        })
-        return { received: true, ignored: true }
-      }
-      await this.reconcileAsaasOrder(order, recharge, 'webhook', topic === 'PAYMENT_RECEIVED', topic)
-      await this.webhookEvents.markProcessed(claim.eventId, recharge.id)
-      return { received: true }
-    } catch (error) {
-      await this.webhookEvents.markFailed(claim.eventId, 'asaas_reconcile_failed')
-      this.logger.error('ASAAS_WEBHOOK_PROCESSING_FAILED')
-      throw error
+    const order = await this.asaas.getOrder(paymentId)
+    // A slow provider call must not let a former lease owner begin a
+    // financial transition after another process has reclaimed the row.
+    if (ensureLease && !await ensureLease()) throw new Error('ASAAS_INBOX_LEASE_LOST')
+    if (order.externalOrderId !== paymentId) {
+      await this.observability.recordOperationalEvent({
+        module: 'store', severity: 'CRITICAL', eventType: 'ASAAS_PAYMENT_ID_MISMATCH',
+        entityType: 'PaymentWebhookEvent', entityId: event.id,
+        description: 'Webhook Asaas divergiu do ID retornado na consulta ao provedor.',
+        data: { eventId, paymentId }
+      })
+      return { status: 'MANUAL_REVIEW', code: 'provider_payment_id_mismatch' }
     }
+    const recharge = order.externalReference
+      ? await this.prisma.rechargeIntent.findUnique({ where: { externalReference: order.externalReference } })
+      : null
+    if (!recharge || recharge.provider !== 'asaas' || recharge.providerEnvironment !== loadAsaasConfig().environment) {
+      await this.observability.recordOperationalEvent({
+        module: 'store', severity: 'CRITICAL', eventType: 'ASAAS_UNMATCHED_PAYMENT',
+        entityType: 'PaymentWebhookEvent', entityId: event.id,
+        description: 'Pagamento Asaas sem recarga sandbox correspondente.',
+        data: { eventId, paymentId }
+      })
+      return { status: 'MANUAL_REVIEW', code: 'unmatched_asaas_payment' }
+    }
+    const result = await this.reconcileAsaasOrder(order, recharge, 'webhook', topic === 'PAYMENT_RECEIVED', topic)
+    return { status: result.status === 'MANUAL_REVIEW' ? 'MANUAL_REVIEW' : 'PROCESSED', rechargeIntentId: recharge.id }
   }
 
   private async reconcileAsaasOrder(

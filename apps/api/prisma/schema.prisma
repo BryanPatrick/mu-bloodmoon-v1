@@ -2301,6 +2301,13 @@ model PaymentWebhookEvent {
   status           String          @default("RECEIVED") @db.VarChar(40)
   rawPayload       Json
   processingError  String?         @db.Text
+  processingOwner  String?         @db.VarChar(191)
+  processingStartedAt DateTime?
+  leaseExpiresAt   DateTime?
+  attemptCount     Int             @default(0)
+  nextAttemptAt    DateTime?
+  lastErrorCode    String?         @db.VarChar(80)
+  lastErrorAt      DateTime?
   receivedAt       DateTime        @default(now())
   processedAt      DateTime?
   rechargeIntent   RechargeIntent? @relation(fields: [rechargeIntentId], references: [id], onDelete: SetNull)
@@ -2309,6 +2316,7 @@ model PaymentWebhookEvent {
   @@index([externalOrderId])
   @@index([rechargeIntentId])
   @@index([status, receivedAt])
+  @@index([provider, status, nextAttemptAt, leaseExpiresAt], map: "PaymentWebhookEvent_inbox_claim_idx")
 }
 
 model PlayerMarketListing {

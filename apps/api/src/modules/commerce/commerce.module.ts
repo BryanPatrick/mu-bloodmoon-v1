@@ -5,6 +5,7 @@ import { ObservabilityModule } from '../observability/observability.module'
 import { PaymentsModule } from '../payments/payments.module'
 import { WalletModule } from '../wallet/wallet.module'
 import { ChargebackCaseService } from './chargeback-case.service'
+import { AsaasWebhookInboxWorker } from './asaas-webhook-inbox.worker'
 import { CommerceController } from './commerce.controller'
 import { CommerceService } from './commerce.service'
 import { LegacyCatalogConfigService } from './legacy-catalog-config.service'
@@ -20,6 +21,7 @@ import { StoreAdminService } from './store-admin.service'
   controllers: [CommerceController, RechargeWebhookController, PaymentRiskController],
   providers: [
     CommerceService,
+    AsaasWebhookInboxWorker,
     StoreAdminService,
     LegacyCatalogConfigService,
     LegacyCatalogEffectiveStateService,

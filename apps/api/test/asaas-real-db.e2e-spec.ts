@@ -22,6 +22,7 @@ let paymentPosts = 0
 let paymentGate: Promise<void> | null = null
 let loseNextPaymentResponse = false
 let customerPayloadValid = false
+let failNextProviderLookup = false
 
 beforeAll(async () => {
   const db = await startDisposableDatabase(CONTAINER)
@@ -31,6 +32,7 @@ beforeAll(async () => {
   process.env.ASAAS_FRONTEND_ENABLED = 'true'
   process.env.ASAAS_PAYMENT_CREATION_ENABLED = 'true'
   process.env.ASAAS_WEBHOOK_PROCESSING_ENABLED = 'true'
+  process.env.ASAAS_WEBHOOK_POLL_MS = '300000'
   process.env.ASAAS_RECONCILIATION_ENABLED = 'true'
   process.env.ASAAS_ENVIRONMENT = 'sandbox'
   process.env.ASAAS_BASE_URL = 'https://api-sandbox.asaas.com/v3'
@@ -95,7 +97,13 @@ beforeAll(async () => {
     const pix = /^\/payments\/([^/]+)\/pixQrCode$/.exec(path)
     if (pix) return json({ payload: 'fake-pix', encodedImage: 'fake-image' })
     const single = /^\/payments\/([^/]+)$/.exec(path)
-    if (single) return json(payments.get(single[1]) || {})
+    if (single) {
+      if (failNextProviderLookup) {
+        failNextProviderLookup = false
+        throw new Error('synthetic provider timeout')
+      }
+      return json(payments.get(single[1]) || {})
+    }
     throw new Error('unexpected fake provider route')
   }) as typeof fetch
   execSync('npx prisma migrate deploy', { cwd: __dirname + '/..', env: process.env, stdio: 'pipe' })
@@ -114,6 +122,8 @@ describe('Asaas Phase 3 against a real disposable database', () => {
   let commerce: import('../src/modules/commerce/commerce.service').CommerceService
   let billing: import('../src/modules/payments/billing-profile.service').BillingProfileService
   let ledger: import('../src/modules/wallet/wallet-ledger.service').WalletLedgerService
+  let inbox: import('../src/modules/commerce/asaas-webhook-inbox.worker').AsaasWebhookInboxWorker
+  let webhookEvents: import('../src/modules/payments/payment-webhook-event.service').PaymentWebhookEventService
   let accountId = ''
   let package10 = ''
   let package50 = ''
@@ -136,6 +146,8 @@ describe('Asaas Phase 3 against a real disposable database', () => {
     const { BillingProfileService } =
       await import('../src/modules/payments/billing-profile.service')
     const { WalletLedgerService } = await import('../src/modules/wallet/wallet-ledger.service')
+    const { AsaasWebhookInboxWorker } = await import('../src/modules/commerce/asaas-webhook-inbox.worker')
+    const { PaymentWebhookEventService } = await import('../src/modules/payments/payment-webhook-event.service')
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile()
     app = moduleRef.createNestApplication()
     app.setGlobalPrefix('api')
@@ -144,6 +156,8 @@ describe('Asaas Phase 3 against a real disposable database', () => {
     commerce = app.get(CommerceService)
     billing = app.get(BillingProfileService)
     ledger = app.get(WalletLedgerService)
+    inbox = app.get(AsaasWebhookInboxWorker)
+    webhookEvents = app.get(PaymentWebhookEventService)
   }
 
   async function createIntent(packageId = package10) {
@@ -159,10 +173,12 @@ describe('Asaas Phase 3 against a real disposable database', () => {
   }
 
   async function webhook(payment: FakePayment, event: string, eventId = randomUUID()) {
-    return commerce.handleAsaasWebhook({
+    const ack = await commerce.handleAsaasWebhook({
       token,
       body: { id: eventId, event, payment: { id: payment.id } }
     })
+    await inbox.runOnce()
+    return ack
   }
 
   async function creditCount(intentId: string) {
@@ -486,11 +502,12 @@ describe('Asaas Phase 3 against a real disposable database', () => {
       throw new Error('controlled rollback')
     })
     const eventId = randomUUID()
-    await expect(webhook(payment, 'PAYMENT_RECEIVED', eventId)).rejects.toThrow()
+    await webhook(payment, 'PAYMENT_RECEIVED', eventId)
     expect(await creditCount(intent.id)).toBe(0)
     expect(
       (await prisma.rechargeIntent.findUniqueOrThrow({ where: { id: intent.id } })).status
     ).not.toBe('PAID')
+    await prisma.paymentWebhookEvent.updateMany({ where: { provider: 'asaas', eventId }, data: { nextAttemptAt: new Date(0) } })
     await webhook(payment, 'PAYMENT_RECEIVED', eventId)
     expect(await creditCount(intent.id)).toBe(1)
   })
@@ -528,6 +545,161 @@ describe('Asaas Phase 3 against a real disposable database', () => {
     expect(await creditCount(pending.intent.id)).toBe(1)
     await webhook(payment, 'PAYMENT_RECEIVED', randomUUID())
     expect(await creditCount(intent.id)).toBe(1)
+  })
+
+  it('ACKs only after durable insert and before provider lookup or wallet credit (HTTP, duplicate, invalid auth)', async () => {
+    const request = (await import('supertest')).default
+    const { intent, payment } = await checkout()
+    payment.status = 'RECEIVED'
+    const id = randomUUID()
+    const path = '/api/payments/webhooks/asaas'
+    const body = { id, event: 'PAYMENT_RECEIVED', payment: { id: payment.id } }
+    const beforeFetch = (global.fetch as jest.Mock).mock.calls.length
+    expect((await request(app.getHttpServer()).post(path).send(body)).status).toBe(401)
+    expect((await request(app.getHttpServer()).post(path).set('asaas-access-token', 'wrong').send(body)).status).toBe(401)
+    expect(await prisma.paymentWebhookEvent.count({ where: { provider: 'asaas', eventId: id } })).toBe(0)
+    const persist = jest.spyOn(webhookEvents, 'receiveAsaas').mockRejectedValueOnce(new Error('synthetic durable insert failure'))
+    try {
+      expect((await request(app.getHttpServer()).post(path).set('asaas-access-token', token).send(body)).status).not.toBe(200)
+    } finally { persist.mockRestore() }
+    expect(await prisma.paymentWebhookEvent.count({ where: { provider: 'asaas', eventId: id } })).toBe(0)
+    const accepted = await request(app.getHttpServer()).post(path).set('asaas-access-token', token).send(body)
+    expect(accepted.status).toBe(200)
+    expect(accepted.body).toEqual({ received: true })
+    expect(await prisma.paymentWebhookEvent.count({ where: { provider: 'asaas', eventId: id, status: 'RECEIVED' } })).toBe(1)
+    expect((global.fetch as jest.Mock).mock.calls.length).toBe(beforeFetch)
+    expect(await creditCount(intent.id)).toBe(0)
+    const duplicate = await request(app.getHttpServer()).post(path).set('asaas-access-token', token).send(body)
+    expect(duplicate.status).toBe(200)
+    expect(await prisma.paymentWebhookEvent.count({ where: { provider: 'asaas', eventId: id } })).toBe(1)
+    await inbox.runOnce()
+    expect(await creditCount(intent.id)).toBe(1)
+  })
+
+  it('retries after a provider timeout without making the prior ACK wait for lookup', async () => {
+    const { intent, payment } = await checkout()
+    payment.status = 'RECEIVED'
+    const eventId = randomUUID()
+    await commerce.handleAsaasWebhook({ token, body: { id: eventId, event: 'PAYMENT_RECEIVED', payment: { id: payment.id } } })
+    failNextProviderLookup = true
+    await inbox.runOnce()
+    expect(await prisma.paymentWebhookEvent.findFirst({ where: { eventId } })).toMatchObject({ status: 'RETRY', attemptCount: 1 })
+    expect(await creditCount(intent.id)).toBe(0)
+    await prisma.paymentWebhookEvent.updateMany({ where: { eventId }, data: { nextAttemptAt: new Date(0) } })
+    await inbox.runOnce()
+    expect(await creditCount(intent.id)).toBe(1)
+    expect(await prisma.paymentWebhookEvent.findFirst({ where: { eventId } })).toMatchObject({ status: 'PROCESSED', attemptCount: 2 })
+  })
+
+  it('bounds repeated processing failures and escalates an auditable event to manual review', async () => {
+    const { intent, payment } = await checkout()
+    const eventId = randomUUID()
+    await commerce.handleAsaasWebhook({ token, body: { id: eventId, event: 'PAYMENT_RECEIVED', payment: { id: payment.id } } })
+    const processing = jest.spyOn(commerce, 'processStoredAsaasEvent').mockRejectedValue(new Error('synthetic provider unavailable'))
+    try {
+      for (let attempt = 1; attempt <= 8; attempt++) {
+        await inbox.runOnce()
+        const row = await prisma.paymentWebhookEvent.findFirstOrThrow({ where: { eventId } })
+        expect(row.attemptCount).toBe(attempt)
+        expect(row.status).toBe(attempt === 8 ? 'MANUAL_REVIEW' : 'RETRY')
+        expect(row.lastErrorCode).toBe('ASAAS_INBOX_PROCESSING_FAILED')
+        if (attempt < 8) await prisma.paymentWebhookEvent.update({ where: { id: row.id }, data: { nextAttemptAt: new Date(0) } })
+      }
+      expect(await inbox.runOnce()).toBe(0)
+      expect(await creditCount(intent.id)).toBe(0)
+    } finally { processing.mockRestore() }
+  })
+
+  it('atomically elects one of two workers and reclaims an expired PROCESSING lease', async () => {
+    const { intent, payment } = await checkout()
+    payment.status = 'RECEIVED'
+    const eventId = randomUUID()
+    await commerce.handleAsaasWebhook({ token, body: { id: eventId, event: 'PAYMENT_RECEIVED', payment: { id: payment.id } } })
+    const claims = await Promise.all([
+      webhookEvents.claimNextAsaas('worker-a', 30000),
+      webhookEvents.claimNextAsaas('worker-b', 30000)
+    ])
+    expect(claims.filter(Boolean)).toHaveLength(1)
+    expect(claims.find(Boolean)?.eventId).toBe(eventId)
+    expect(await creditCount(intent.id)).toBe(0)
+    await prisma.paymentWebhookEvent.updateMany({ where: { eventId }, data: { leaseExpiresAt: new Date(0) } })
+    await inbox.runOnce()
+    expect(await prisma.paymentWebhookEvent.findFirst({ where: { eventId } })).toMatchObject({ status: 'PROCESSED', attemptCount: 2 })
+    expect(await creditCount(intent.id)).toBe(1)
+  })
+
+  it('runs two independent worker instances simultaneously with one financial outcome', async () => {
+    const { AsaasWebhookInboxWorker } = await import('../src/modules/commerce/asaas-webhook-inbox.worker')
+    const { ObservabilityService } = await import('../src/modules/observability/observability.service')
+    const { intent, payment } = await checkout()
+    payment.status = 'RECEIVED'
+    const eventId = randomUUID()
+    await commerce.handleAsaasWebhook({ token, body: { id: eventId, event: 'PAYMENT_RECEIVED', payment: { id: payment.id } } })
+    const second = new AsaasWebhookInboxWorker(webhookEvents, commerce, app.get(ObservabilityService))
+    await Promise.all([inbox.runOnce(), second.runOnce()])
+    expect(await prisma.paymentWebhookEvent.findFirst({ where: { eventId } })).toMatchObject({ status: 'PROCESSED', attemptCount: 1 })
+    expect(await creditCount(intent.id)).toBe(1)
+    await second.onModuleDestroy()
+  })
+
+  it('recovers after credit committed but before event completion, without a second credit', async () => {
+    const { intent, payment } = await checkout()
+    payment.status = 'RECEIVED'
+    const eventId = randomUUID()
+    await commerce.handleAsaasWebhook({ token, body: { id: eventId, event: 'PAYMENT_RECEIVED', payment: { id: payment.id } } })
+    const claim = await webhookEvents.claimNextAsaas('crashed-worker', 30000)
+    expect(claim?.eventId).toBe(eventId)
+    await commerce.processStoredAsaasEvent(claim!)
+    expect(await creditCount(intent.id)).toBe(1)
+    await prisma.paymentWebhookEvent.updateMany({ where: { eventId }, data: { leaseExpiresAt: new Date(0) } })
+    await inbox.runOnce()
+    expect(await creditCount(intent.id)).toBe(1)
+    expect(await prisma.paymentWebhookEvent.findFirst({ where: { eventId } })).toMatchObject({ status: 'PROCESSED', attemptCount: 2 })
+  })
+
+  it('resumes an ACKed event after application restart and preserves one credit for distinct event IDs', async () => {
+    const { intent, payment } = await checkout()
+    payment.status = 'RECEIVED'
+    const eventId = randomUUID()
+    await commerce.handleAsaasWebhook({ token, body: { id: eventId, event: 'PAYMENT_RECEIVED', payment: { id: payment.id } } })
+    expect(await creditCount(intent.id)).toBe(0)
+    await app.close()
+    await startApp()
+    await inbox.runOnce()
+    expect(await creditCount(intent.id)).toBe(1)
+    await webhook(payment, 'PAYMENT_RECEIVED', randomUUID())
+    expect(await creditCount(intent.id)).toBe(1)
+  })
+
+  it('keeps the receive route and worker inert when processing flag is absent', async () => {
+    const { payment } = await checkout()
+    const eventId = randomUUID()
+    process.env.ASAAS_WEBHOOK_PROCESSING_ENABLED = 'false'
+    try {
+      await expect(commerce.handleAsaasWebhook({ token, body: { id: eventId, event: 'PAYMENT_RECEIVED', payment: { id: payment.id } } })).rejects.toThrow('ASAAS_WEBHOOK_PROCESSING_DISABLED')
+      expect(await inbox.runOnce()).toBe(0)
+      expect(await prisma.paymentWebhookEvent.count({ where: { provider: 'asaas', eventId } })).toBe(0)
+    } finally {
+      process.env.ASAAS_WEBHOOK_PROCESSING_ENABLED = 'true'
+    }
+  })
+
+  it('measures durable HTTP ACK latency with synthetic unknown events only', async () => {
+    const request = (await import('supertest')).default
+    const samples: number[] = []
+    for (let i = 0; i < 12; i++) {
+      const body = { id: randomUUID(), event: 'PAYMENT_SYNTHETIC_UNKNOWN', payment: { id: `pay_latency_${i}` } }
+      const start = performance.now()
+      expect((await request(app.getHttpServer()).post('/api/payments/webhooks/asaas').set('asaas-access-token', token).send(body)).status).toBe(200)
+      samples.push(performance.now() - start)
+    }
+    const duplicateBody = { id: randomUUID(), event: 'PAYMENT_SYNTHETIC_UNKNOWN', payment: { id: 'pay_latency_duplicate' } }
+    await request(app.getHttpServer()).post('/api/payments/webhooks/asaas').set('asaas-access-token', token).send(duplicateBody)
+    const duplicateStart = performance.now()
+    expect((await request(app.getHttpServer()).post('/api/payments/webhooks/asaas').set('asaas-access-token', token).send(duplicateBody)).status).toBe(200)
+    samples.sort((a, b) => a - b)
+    console.log(`ASAAS_ACK_LOCAL samples=${samples.length} p50_ms=${samples[5].toFixed(1)} p95_ms=${samples[11].toFixed(1)} max_ms=${samples[11].toFixed(1)} duplicate_ms=${(performance.now() - duplicateStart).toFixed(1)}`)
+    await inbox.runOnce()
   })
 
   it('fails closed on production Asaas URL without sending a request', async () => {

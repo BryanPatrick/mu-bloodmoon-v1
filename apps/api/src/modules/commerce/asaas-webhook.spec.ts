@@ -30,7 +30,8 @@ function fixture() {
     paymentMethod: 'PIX',
     status: 'RECEIVED'
   }
-  const events = new Map<string, 'RECEIVED' | 'PROCESSED' | 'FAILED' | 'IGNORED'>()
+  const events = new Map<string, 'RECEIVED' | 'PROCESSED' | 'RETRY' | 'IGNORED' | 'MANUAL_REVIEW' | 'FAILED'>()
+  const records = new Map<string, Record<string, unknown>>()
   const ledger = new Set<string>()
   let balance = 0
   let tail = Promise.resolve()
@@ -81,6 +82,13 @@ function fixture() {
     })
   }
   const webhook = {
+    receiveAsaas: jest.fn(async ({ eventId, topic, paymentId }: { eventId: string; topic: string; paymentId: string }) => {
+      if (!records.has(eventId)) {
+        records.set(eventId, { id: eventId, eventId, topic, externalOrderId: paymentId, provider: 'asaas', receivedAt: new Date() })
+        events.set(eventId, 'RECEIVED')
+      }
+      return records.get(eventId)
+    }),
     recordAndClaim: jest.fn(async ({ eventId }: { eventId: string }) => {
       if (events.get(eventId) === 'PROCESSED') return { outcome: 'duplicate-processed', eventId }
       const outcome = events.has(eventId) ? 'retryable' : 'claimed'
@@ -144,12 +152,23 @@ function fixture() {
       {} as never
     )
   const service = restart()
-  const notify = (
+  const notify = async (
     id: string,
     event = 'PAYMENT_RECEIVED',
     paymentId = 'pay_1',
     token = 'fake-token'
-  ) => service.handleAsaasWebhook({ token, body: { id, event, payment: { id: paymentId } } })
+  ) => {
+    const ack = await service.handleAsaasWebhook({ token, body: { id, event, payment: { id: paymentId } } })
+    if (events.get(id) === 'PROCESSED' || events.get(id) === 'IGNORED' || events.get(id) === 'MANUAL_REVIEW') return ack
+    try {
+      const result = await service.processStoredAsaasEvent(records.get(id) as never)
+      events.set(id, result.status)
+    } catch (error) {
+      events.set(id, 'RETRY')
+      throw error
+    }
+    return ack
+  }
   return {
     recharge,
     payment,
@@ -208,13 +227,7 @@ describe('Asaas webhook and WC credit (mock transactional DB, no network)', () =
     expect(f.balance()).toBe(10)
     expect(f.wallet.credit).toHaveBeenCalledTimes(1)
     expect(f.recharge.status).toBe('PAID')
-    const stored = f.webhook.recordAndClaim.mock.calls[0][0] as Record<string, unknown>
-    expect(stored.signatureHeader).toBeUndefined()
-    expect(stored.rawPayload).toEqual({
-      id: 'evt_1',
-      event: 'PAYMENT_RECEIVED',
-      payment: { id: 'pay_1' }
-    })
+    expect(f.webhook.receiveAsaas).toHaveBeenCalledWith({ eventId: 'evt_1', topic: 'PAYMENT_RECEIVED', paymentId: 'pay_1' })
   })
 
   it('attributes an admin Asaas resync status transition to the operator', async () => {
@@ -295,7 +308,7 @@ describe('Asaas webhook and WC credit (mock transactional DB, no network)', () =
       expect((await request(app.getHttpServer()).post(path).set('asaas-access-token', 'wrong').send(payload)).status).toBe(401)
       const accepted = await request(app.getHttpServer()).post(path).set('asaas-access-token', 'fake-token').send(payload)
       expect(accepted.status).toBe(200)
-      expect(accepted.body).toEqual({ received: true, ignored: true })
+      expect(accepted.body).toEqual({ received: true })
       expect(f.asaas.getOrder).not.toHaveBeenCalled()
       expect(f.balance()).toBe(0)
     } finally {
@@ -305,7 +318,7 @@ describe('Asaas webhook and WC credit (mock transactional DB, no network)', () =
       if (previousCreation === undefined) delete process.env.ASAAS_PAYMENT_CREATION_ENABLED
       else process.env.ASAAS_PAYMENT_CREATION_ENABLED = previousCreation
     }
-  })
+  }, 30000)
 
   it.each([
     ['payment ID', { externalOrderId: 'pay_other' }],
@@ -328,7 +341,7 @@ describe('Asaas webhook and WC credit (mock transactional DB, no network)', () =
     const f = fixture()
     f.asaas.getOrder.mockRejectedValueOnce(new Error('unavailable'))
     await expect(f.notify('evt_retry')).rejects.toThrow()
-    expect(f.events.get('evt_retry')).toBe('FAILED')
+    expect(f.events.get('evt_retry')).toBe('RETRY')
     await f.notify('evt_retry')
     expect(f.balance()).toBe(10)
   })
