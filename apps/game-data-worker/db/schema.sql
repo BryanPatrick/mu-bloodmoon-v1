@@ -72,20 +72,26 @@ CREATE TABLE IF NOT EXISTS account_snapshot_state (
   updated_at TEXT NOT NULL
 );
 
--- Phase 3D-A. Durable transport state only. Portal remains the business
--- authority and the Agent ledger remains the execution/idempotency authority.
+-- Phase 3D-A, extended by the GameBridge extension plan (Part 1/7/13,
+-- db/migrations/0004_gamebridge_extension_commands.sql) for GRANT_VIP/
+-- SYNC_VIP_TIER/ANONYMIZE_GAME_ACCOUNT/PURGE_GAME_ACCOUNT. Durable transport
+-- state only. Portal remains the business authority and the Agent ledger
+-- remains the execution/idempotency authority.
 CREATE TABLE IF NOT EXISTS game_command (
   command_id TEXT PRIMARY KEY,
   provisioning_request_id TEXT NOT NULL UNIQUE,
-  command_type TEXT NOT NULL CHECK (command_type = 'CREATE_GAME_ACCOUNT'),
+  command_type TEXT NOT NULL CHECK (command_type IN (
+    'CREATE_GAME_ACCOUNT', 'GRANT_VIP', 'SYNC_VIP_TIER', 'ANONYMIZE_GAME_ACCOUNT', 'PURGE_GAME_ACCOUNT'
+  )),
   environment TEXT NOT NULL,
   server_id TEXT NOT NULL,
-  legacy_login TEXT NOT NULL,
-  credential_ciphertext TEXT NOT NULL,
-  credential_nonce TEXT NOT NULL,
-  credential_tag TEXT NOT NULL,
-  credential_key_version TEXT NOT NULL,
-  credential_algorithm TEXT NOT NULL CHECK (credential_algorithm = 'AES-256-GCM'),
+  legacy_login TEXT NULL,
+  credential_ciphertext TEXT NULL,
+  credential_nonce TEXT NULL,
+  credential_tag TEXT NULL,
+  credential_key_version TEXT NULL,
+  credential_algorithm TEXT NULL CHECK (credential_algorithm IS NULL OR credential_algorithm = 'AES-256-GCM'),
+  payload_json TEXT NULL,
   request_hash TEXT NOT NULL,
   status TEXT NOT NULL CHECK (status IN ('CREATED','QUEUED','AVAILABLE','CLAIMED','SUCCEEDED','FAILED_RETRYABLE','FAILED_FINAL','EXPIRED')),
   available_at TEXT NULL,
@@ -97,6 +103,7 @@ CREATE TABLE IF NOT EXISTS game_command (
   completed_at TEXT NULL,
   result_code TEXT NULL,
   result_memb_guid INTEGER NULL,
+  result_detail_json TEXT NULL,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL
 );
