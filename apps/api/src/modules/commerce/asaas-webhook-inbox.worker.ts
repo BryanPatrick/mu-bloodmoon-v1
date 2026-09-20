@@ -1,8 +1,8 @@
 import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common'
-import { randomUUID } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
 import { ObservabilityService } from '../observability/observability.service'
 import { loadAsaasConfig } from '../payments/asaas.config'
-import { PaymentWebhookEventService } from '../payments/payment-webhook-event.service'
+import { asaasEventCorrelationId, PaymentWebhookEventService } from '../payments/payment-webhook-event.service'
 import { CommerceService } from './commerce.service'
 
 const bounded = (value: string | undefined, fallback: number, min: number, max: number) => {
@@ -37,6 +37,7 @@ export class AsaasWebhookInboxWorker implements OnModuleInit, OnModuleDestroy {
     this.stopping = true
     if (this.timer) clearInterval(this.timer)
     if (this.active) await this.active
+    this.logger.log('ASAAS_INBOX_STOPPED')
   }
 
   private isEnabled() {
@@ -60,7 +61,7 @@ export class AsaasWebhookInboxWorker implements OnModuleInit, OnModuleDestroy {
         processed++
         if (event.attemptCount > 1) {
           reclaimed++
-          this.logger.warn(`ASAAS_INBOX_RECLAIMED eventRecordId=${event.id} attempt=${event.attemptCount}`)
+          this.logger.warn(`ASAAS_INBOX_RECLAIMED correlationId=${asaasEventCorrelationId(event)} eventRecordId=${event.id} attempt=${event.attemptCount}`)
         }
         const heartbeat = setInterval(() => {
           void this.events.renewAsaasLease(event.id, this.owner, this.leaseMs)
@@ -72,21 +73,25 @@ export class AsaasWebhookInboxWorker implements OnModuleInit, OnModuleDestroy {
           const result = await this.commerce.processStoredAsaasEvent(event, () => this.events.renewAsaasLease(event.id, this.owner, this.leaseMs))
           const saved = await this.events.completeAsaas(event.id, this.owner, result)
           if (!saved) throw new Error('ASAAS_INBOX_LEASE_LOST')
-          this.logger.log(`ASAAS_INBOX_${result.status} eventRecordId=${event.id} providerEventId=${event.eventId} providerPaymentId=${event.externalOrderId || 'none'} rechargeIntentId=${result.rechargeIntentId || 'none'}`)
+          const providerEventHash = createHash('sha256').update(event.eventId).digest('hex').slice(0, 16)
+          const providerPaymentHash = createHash('sha256').update(event.externalOrderId || '').digest('hex').slice(0, 16)
+          this.logger.log(`ASAAS_INBOX_${result.status} correlationId=${asaasEventCorrelationId(event)} eventRecordId=${event.id} providerEventHash=${providerEventHash} providerPaymentHash=${providerPaymentHash} rechargeIntentId=${result.rechargeIntentId || 'none'}`)
           if (result.status === 'MANUAL_REVIEW') {
             manualReview++
-            await this.recordReview(event.id, result.code || 'ASAAS_INBOX_REVIEW')
+            await this.recordReview(event.id, asaasEventCorrelationId(event), result.code || 'ASAAS_INBOX_REVIEW')
           }
         } catch (error) {
           processingError++
           const code = error instanceof Error && error.message === 'ASAAS_INBOX_LEASE_LOST'
-            ? 'ASAAS_INBOX_LEASE_LOST' : 'ASAAS_INBOX_PROCESSING_FAILED'
+            ? 'ASAAS_INBOX_LEASE_LOST'
+            : error instanceof Error && error.message === 'ASAAS_WALLET_CREDIT_FAILED'
+              ? 'ASAAS_WALLET_CREDIT_FAILED' : 'ASAAS_INBOX_PROCESSING_FAILED'
           const state = await this.events.failAsaas(event.id, this.owner, event.attemptCount, code, this.maxAttempts)
           this.logger.warn(`ASAAS_INBOX_${state} eventRecordId=${event.id} attempt=${event.attemptCount}`)
           if (state === 'RETRY') retry++
           if (state === 'MANUAL_REVIEW') {
             manualReview++
-            await this.recordReview(event.id, code)
+            await this.recordReview(event.id, asaasEventCorrelationId(event), code)
           }
         } finally {
           clearInterval(heartbeat)
@@ -99,11 +104,18 @@ export class AsaasWebhookInboxWorker implements OnModuleInit, OnModuleDestroy {
     return processed
   }
 
-  private async recordReview(id: string, code: string) {
+  private async recordReview(id: string, correlationId: string, code: string) {
     try {
+      if (code === 'ASAAS_WALLET_CREDIT_FAILED') {
+        await this.observability.recordOperationalEvent({
+          module: 'store', severity: 'CRITICAL', eventType: 'ASAAS_CONFIRMED_CREDIT_FAILURE',
+          entityType: 'PaymentWebhookEvent', entityId: id, correlationId,
+          description: 'Pagamento Asaas confirmado, mas o credito falhou apos as retentativas.', data: { code }
+        })
+      }
       await this.observability.recordOperationalEvent({
         module: 'store', severity: 'CRITICAL', eventType: 'ASAAS_INBOX_MANUAL_REVIEW',
-        entityType: 'PaymentWebhookEvent', entityId: id,
+        entityType: 'PaymentWebhookEvent', entityId: id, correlationId,
         description: 'Evento Asaas requer revisao operacional.', data: { code }
       })
     } catch {

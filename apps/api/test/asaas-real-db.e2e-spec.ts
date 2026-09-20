@@ -558,6 +558,7 @@ describe('Asaas Phase 3 against a real disposable database', () => {
     expect((await request(app.getHttpServer()).post(path).send(body)).status).toBe(401)
     expect((await request(app.getHttpServer()).post(path).set('asaas-access-token', 'wrong').send(body)).status).toBe(401)
     expect(await prisma.paymentWebhookEvent.count({ where: { provider: 'asaas', eventId: id } })).toBe(0)
+    expect(await prisma.systemAlert.count({ where: { module: 'store', title: { contains: 'ASAAS_WEBHOOK_AUTH_REJECTED' } } })).toBeGreaterThanOrEqual(2)
     const persist = jest.spyOn(webhookEvents, 'receiveAsaas').mockRejectedValueOnce(new Error('synthetic durable insert failure'))
     try {
       expect((await request(app.getHttpServer()).post(path).set('asaas-access-token', token).send(body)).status).not.toBe(200)
@@ -566,7 +567,8 @@ describe('Asaas Phase 3 against a real disposable database', () => {
     const accepted = await request(app.getHttpServer()).post(path).set('asaas-access-token', token).send(body)
     expect(accepted.status).toBe(200)
     expect(accepted.body).toEqual({ received: true })
-    expect(await prisma.paymentWebhookEvent.count({ where: { provider: 'asaas', eventId: id, status: 'RECEIVED' } })).toBe(1)
+    const stored = await prisma.paymentWebhookEvent.findFirstOrThrow({ where: { provider: 'asaas', eventId: id, status: 'RECEIVED' } })
+    expect((stored.rawPayload as { correlationId?: string }).correlationId).toMatch(/^[0-9a-f-]{36}$/)
     expect((global.fetch as jest.Mock).mock.calls.length).toBe(beforeFetch)
     expect(await creditCount(intent.id)).toBe(0)
     const duplicate = await request(app.getHttpServer()).post(path).set('asaas-access-token', token).send(body)
@@ -574,6 +576,26 @@ describe('Asaas Phase 3 against a real disposable database', () => {
     expect(await prisma.paymentWebhookEvent.count({ where: { provider: 'asaas', eventId: id } })).toBe(1)
     await inbox.runOnce()
     expect(await creditCount(intent.id)).toBe(1)
+  })
+
+  it('logs only opaque correlation and hashed provider identifiers, never token or document-shaped IDs', async () => {
+    const { Logger } = await import('@nestjs/common')
+    const request = (await import('supertest')).default
+    const eventId = '11122233344'
+    const paymentId = '12345678901'
+    const observed: string[] = []
+    const logging = jest.spyOn(Logger.prototype, 'log').mockImplementation((message) => { observed.push(String(message)) })
+    try {
+      expect((await request(app.getHttpServer()).post('/api/payments/webhooks/asaas')
+        .set('asaas-access-token', token)
+        .send({ id: eventId, event: 'PAYMENT_SYNTHETIC_UNKNOWN', payment: { id: paymentId } })).status).toBe(200)
+    } finally { logging.mockRestore() }
+    const output = observed.join('\n')
+    expect(output).toContain('correlationId=')
+    expect(output).toContain('providerEventHash=')
+    expect(output).not.toContain(eventId)
+    expect(output).not.toContain(paymentId)
+    expect(output).not.toContain(token)
   })
 
   it('retries after a provider timeout without making the prior ACK wait for lookup', async () => {
@@ -610,6 +632,28 @@ describe('Asaas Phase 3 against a real disposable database', () => {
     } finally { processing.mockRestore() }
   })
 
+  it('generates separate critical alerts when confirmed WC credit ultimately fails', async () => {
+    const { intent, payment } = await checkout()
+    payment.status = 'RECEIVED'
+    const eventId = randomUUID()
+    await commerce.handleAsaasWebhook({ token, body: { id: eventId, event: 'PAYMENT_RECEIVED', payment: { id: payment.id } } })
+    const failure = jest.spyOn(ledger, 'credit').mockRejectedValue(new Error('synthetic ledger failure'))
+    try {
+      for (let attempt = 1; attempt <= 8; attempt++) {
+        await inbox.runOnce()
+        const row = await prisma.paymentWebhookEvent.findFirstOrThrow({ where: { eventId } })
+        expect(row.lastErrorCode).toBe('ASAAS_WALLET_CREDIT_FAILED')
+        if (attempt < 8) await prisma.paymentWebhookEvent.update({ where: { id: row.id }, data: { nextAttemptAt: new Date(0) } })
+      }
+    } finally { failure.mockRestore() }
+    const row = await prisma.paymentWebhookEvent.findFirstOrThrow({ where: { eventId } })
+    expect(row.status).toBe('MANUAL_REVIEW')
+    expect(await creditCount(intent.id)).toBe(0)
+    const alerts = await prisma.systemAlert.findMany({ where: { module: 'store', sourceType: 'OperationalEvent' }, select: { title: true } })
+    expect(alerts.some((alert) => alert.title.includes('ASAAS_CONFIRMED_CREDIT_FAILURE'))).toBe(true)
+    expect(alerts.some((alert) => alert.title.includes('ASAAS_INBOX_MANUAL_REVIEW'))).toBe(true)
+  })
+
   it('atomically elects one of two workers and reclaims an expired PROCESSING lease', async () => {
     const { intent, payment } = await checkout()
     payment.status = 'RECEIVED'
@@ -640,6 +684,30 @@ describe('Asaas Phase 3 against a real disposable database', () => {
     expect(await prisma.paymentWebhookEvent.findFirst({ where: { eventId } })).toMatchObject({ status: 'PROCESSED', attemptCount: 1 })
     expect(await creditCount(intent.id)).toBe(1)
     await second.onModuleDestroy()
+  })
+
+  it('rolls back a post-status-update crash before transaction commit, then recovers with one credit', async () => {
+    // PAID and the wallet credit commit in one serializable transaction.
+    // A durable PAID-without-credit intermediate state cannot be injected
+    // without corrupting the database, so fail after both writes but before
+    // commit and prove they roll back together.
+    const { AuditService } = await import('../src/modules/audit/audit.service')
+    const { intent, payment } = await checkout()
+    payment.status = 'RECEIVED'
+    const eventId = randomUUID()
+    await commerce.handleAsaasWebhook({ token, body: { id: eventId, event: 'PAYMENT_RECEIVED', payment: { id: payment.id } } })
+    const audit = app.get(AuditService)
+    const failure = jest.spyOn(audit, 'record').mockRejectedValueOnce(new Error('synthetic crash before commit'))
+    try { await inbox.runOnce() } finally { failure.mockRestore() }
+    expect((await prisma.rechargeIntent.findUniqueOrThrow({ where: { id: intent.id } })).status).not.toBe('PAID')
+    expect(await creditCount(intent.id)).toBe(0)
+    const row = await prisma.paymentWebhookEvent.findFirstOrThrow({ where: { eventId } })
+    expect(row.status).toBe('RETRY')
+    await prisma.paymentWebhookEvent.update({ where: { id: row.id }, data: { nextAttemptAt: new Date(0) } })
+    await inbox.runOnce()
+    expect((await prisma.rechargeIntent.findUniqueOrThrow({ where: { id: intent.id } })).status).toBe('PAID')
+    expect(await creditCount(intent.id)).toBe(1)
+    expect(await prisma.paymentWebhookEvent.findFirst({ where: { eventId } })).toMatchObject({ status: 'PROCESSED', attemptCount: 2 })
   })
 
   it('recovers after credit committed but before event completion, without a second credit', async () => {
@@ -710,6 +778,66 @@ describe('Asaas Phase 3 against a real disposable database', () => {
       expect((global.fetch as jest.Mock).mock.calls.length).toBe(before)
     } finally {
       process.env.ASAAS_BASE_URL = 'https://api-sandbox.asaas.com/v3'
+    }
+  })
+
+  it('injects an exactly-once anomaly into the detector and sends critical alerts to a loopback receiver', async () => {
+    const { createServer } = await import('node:http')
+    const { PaymentReconciliationService } = await import('../src/modules/commerce/payment-reconciliation.service')
+    const { AlertDispatchService } = await import('../src/modules/alerting/alert-dispatch.service')
+    const { buildSafeAlertPayload } = await import('../src/modules/alerting/alert-payload')
+    const received: string[] = []
+    const server = createServer((request, response) => {
+      const chunks: Buffer[] = []
+      request.on('data', (chunk: Buffer) => chunks.push(chunk))
+      request.on('end', () => { received.push(Buffer.concat(chunks).toString()); response.writeHead(204); response.end() })
+    })
+    await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve))
+    const address = server.address()
+    if (!address || typeof address === 'string') throw new Error('loopback receiver unavailable')
+    const reconcile = app.get(PaymentReconciliationService)
+    const dispatch = app.get(AlertDispatchService)
+    const source = await prisma.rechargeIntent.findFirstOrThrow({ where: { accountId, provider: 'asaas', status: 'PAID' } })
+    const injected = jest.spyOn(reconcile, 'findAnomalies').mockResolvedValueOnce([{
+      rechargeIntentId: source.id, accountId, issue: 'PAID_WITHOUT_LEDGER_CREDIT',
+      status: 'PAID', detail: `Synthetic invariant alarm for ${source.id}`, createdAt: source.createdAt.toISOString()
+    }])
+    const previousFetch = global.fetch
+    const previousWebhook = process.env.ALERT_WEBHOOK_ENABLED
+    const previousUrl = process.env.ALERT_WEBHOOK_URL
+    const previousEmail = process.env.ALERT_EMAIL_ENABLED
+    try {
+      const result = await reconcile.runOnce()
+      expect(result.anomalies).toBe(1)
+      process.env.ALERT_WEBHOOK_ENABLED = 'true'
+      process.env.ALERT_WEBHOOK_URL = `http://127.0.0.1:${address.port}/alerts`
+      process.env.ALERT_EMAIL_ENABLED = 'false'
+      global.fetch = originalFetch
+      for (const code of ['ASAAS_WEBHOOK_AUTH_REJECTED', 'ASAAS_CONFIRMED_CREDIT_FAILURE', 'ASAAS_INBOX_MANUAL_REVIEW', 'PAYMENT_RECONCILIATION_MISSING_CREDIT']) {
+        const alert = await prisma.systemAlert.findFirstOrThrow({
+          where: { module: 'store', title: { contains: code } }, orderBy: { createdAt: 'desc' }
+        })
+        const delivered = await dispatch.dispatch(buildSafeAlertPayload(alert, { firstSeenAt: new Date(), notificationCount: 0 }))
+        expect(delivered).toEqual([{ channel: 'webhook', ok: true }])
+      }
+      const payload = received.join('\n')
+      for (const code of ['ASAAS_WEBHOOK_AUTH_REJECTED', 'ASAAS_CONFIRMED_CREDIT_FAILURE', 'ASAAS_INBOX_MANUAL_REVIEW', 'PAYMENT_RECONCILIATION_MISSING_CREDIT']) {
+        expect(payload).toContain(code)
+      }
+      expect(payload).not.toContain(token)
+      expect(payload).not.toContain('11122233344')
+      expect(payload).not.toContain('QA Billing Fixture')
+    } finally {
+      injected.mockRestore()
+      global.fetch = previousFetch
+      for (const [key, value] of [
+        ['ALERT_WEBHOOK_ENABLED', previousWebhook], ['ALERT_WEBHOOK_URL', previousUrl],
+        ['ALERT_EMAIL_ENABLED', previousEmail]
+      ] as const) {
+        if (value === undefined) delete process.env[key]
+        else process.env[key] = value
+      }
+      await new Promise<void>((resolve) => server.close(() => resolve()))
     }
   })
 })

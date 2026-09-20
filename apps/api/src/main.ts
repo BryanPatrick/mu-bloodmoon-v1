@@ -54,6 +54,10 @@ async function bootstrap() {
     })
   )
   app.useGlobalFilters(app.get(SafeExceptionFilter))
+  // Allows Nest to drain leased inbox work on SIGTERM/SIGINT during a
+  // controlled runtime shutdown. Abrupt process loss still relies on lease
+  // expiry and restart recovery, which are tested separately.
+  app.enableShutdownHooks()
   if (globalPrefix) {
     app.setGlobalPrefix(globalPrefix)
   }

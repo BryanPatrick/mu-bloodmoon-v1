@@ -115,6 +115,7 @@ Fechamento local Fase 7B: [prévia compilada corrigida, rotas, observabilidade e
 Revisão local Fase 7C: [concorrência financeira corrigida nos dois bancos e inventário de host somente leitura](payments/asaas-phase7c-concurrency-host-review.md). O webhook e os alertas de produção ainda não estão liberados.
 Decisão Fase 7D-R: [ACK durável por inbox, matriz de falhas e pendências de inspeção do host](payments/asaas-phase7d-r-durability-host-review.md). Design documentado, não implementado nem implantado.
 Implementação local Fase 7E: [inbox durável Asaas, lease, worker, retentativas e testes de reinício](payments/asaas-phase7e-durable-inbox.md). Não implantada; host e credenciais de produção continuam fora de escopo.
+Fechamento local Fase 7F: [artefato compilado, correlação segura, alertas locais e limites de crash](payments/asaas-phase7f-local-closure.md). Sem inspeção do host, push ou deploy.
 Operação administrativa futura: [reconciliação Asaas sem nova cobrança](manuals/super-admin/asaas-reconciliation.md).
 Manual operacional do Super ADM para esta proteção: [purge de contas com cobrança Asaas](manuals/super-admin/asaas-purge-safeguard.md).
 

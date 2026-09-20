@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PaymentWebhookEvent, Prisma } from '@prisma/client'
+import { randomUUID } from 'node:crypto'
 import { PrismaService } from '../../database/prisma.service'
 import { toSafeJson } from '../../common/sensitive-data'
 
@@ -18,6 +19,13 @@ export type ClaimResult =
   | { outcome: 'duplicate-processed'; eventId: string }
   | { outcome: 'retryable'; eventId: string }
 
+export function asaasEventCorrelationId(event: PaymentWebhookEvent): string {
+  const payload = event.rawPayload
+  const id = payload && typeof payload === 'object' && !Array.isArray(payload)
+    ? (payload as Record<string, unknown>).correlationId : undefined
+  return typeof id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id) ? id : event.id
+}
+
 @Injectable()
 export class PaymentWebhookEventService {
   constructor(private readonly prisma: PrismaService) {}
@@ -25,12 +33,15 @@ export class PaymentWebhookEventService {
   // The HTTP ACK is permitted only after this insert (or a confirmed
   // existing unique row) has committed. No in-memory queue is authoritative.
   async receiveAsaas(input: { topic: string; eventId: string; paymentId: string }): Promise<PaymentWebhookEvent> {
+    // Generate an internal opaque trace rather than trusting a caller-supplied
+    // header that could itself contain a document number or another PII value.
+    const correlationId = randomUUID()
     try {
       return await this.prisma.paymentWebhookEvent.create({
         data: {
           provider: 'asaas', topic: input.topic, eventId: input.eventId,
           externalOrderId: input.paymentId, signatureValid: true,
-          rawPayload: { id: input.eventId, event: input.topic, payment: { id: input.paymentId } }
+          rawPayload: { id: input.eventId, event: input.topic, payment: { id: input.paymentId }, correlationId }
         }
       })
     } catch (error) {

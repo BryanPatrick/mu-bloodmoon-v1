@@ -9,14 +9,14 @@ import type {
   ShopProduct,
   ShopProductStatus
 } from '@prisma/client'
-import { randomUUID } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
 import { Logger } from '@nestjs/common'
 import { PrismaService } from '../../database/prisma.service'
 import { AuditService } from '../audit/audit.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
 import { ObservabilityService } from '../observability/observability.service'
 import { PAYMENT_PROVIDER, type PaymentProvider } from '../payments/payment-provider.interface'
-import { PaymentWebhookEventService } from '../payments/payment-webhook-event.service'
+import { asaasEventCorrelationId, PaymentWebhookEventService } from '../payments/payment-webhook-event.service'
 import { AsaasPaymentProvider } from '../payments/asaas.provider'
 import { BillingProfileService } from '../payments/billing-profile.service'
 import { assertAsaasCreationEnabled, loadAsaasConfig } from '../payments/asaas.config'
@@ -1206,6 +1206,13 @@ export class CommerceService {
       throw new ServiceUnavailableException('ASAAS_WEBHOOK_PROCESSING_DISABLED')
     if (!this.asaas.validateWebhookSignature({ signatureHeader: input.token, requestId: undefined, dataId: undefined })) {
       this.logger.warn('ASAAS_WEBHOOK_AUTH_REJECTED')
+      try {
+        await this.observability.recordOperationalEvent({
+          module: 'store', severity: 'CRITICAL', eventType: 'ASAAS_WEBHOOK_AUTH_REJECTED',
+          entityType: 'PaymentWebhookEvent', correlationId: randomUUID(),
+          description: 'Autenticacao do webhook Asaas rejeitada.', data: { provider: 'asaas' }
+        })
+      } catch { this.logger.error('ASAAS_WEBHOOK_AUTH_ALERT_RECORD_FAILED') }
       throw new UnauthorizedException('Webhook nao autorizado.')
     }
     const eventId = input.body?.id
@@ -1217,7 +1224,9 @@ export class CommerceService {
       throw new BadRequestException('Evento Asaas invalido.')
     }
     const persisted = await this.webhookEvents.receiveAsaas({ topic, eventId, paymentId })
-    this.logger.log(`ASAAS_WEBHOOK_DURABLE_ACCEPTED eventRecordId=${persisted.id} providerEventId=${eventId} providerPaymentId=${paymentId}`)
+    const providerEventHash = createHash('sha256').update(eventId).digest('hex').slice(0, 16)
+    const providerPaymentHash = createHash('sha256').update(paymentId).digest('hex').slice(0, 16)
+    this.logger.log(`ASAAS_WEBHOOK_DURABLE_ACCEPTED correlationId=${asaasEventCorrelationId(persisted)} eventRecordId=${persisted.id} providerEventHash=${providerEventHash} providerPaymentHash=${providerPaymentHash}`)
     return { received: true }
   }
 
@@ -1227,7 +1236,8 @@ export class CommerceService {
     status: 'PROCESSED' | 'IGNORED' | 'MANUAL_REVIEW'; rechargeIntentId?: string; code?: string
   }> {
     if (event.provider !== 'asaas' || !event.externalOrderId) return { status: 'MANUAL_REVIEW', code: 'ASAAS_EVENT_INVALID' }
-    const { topic, eventId, externalOrderId: paymentId } = event
+    const { topic, externalOrderId: paymentId } = event
+    const correlationId = asaasEventCorrelationId(event)
     const recognized = new Set([
       'PAYMENT_CREATED', 'PAYMENT_UPDATED', 'PAYMENT_CONFIRMED', 'PAYMENT_RECEIVED',
       'PAYMENT_OVERDUE', 'PAYMENT_DELETED', 'PAYMENT_REFUND_IN_PROGRESS',
@@ -1245,9 +1255,9 @@ export class CommerceService {
     if (order.externalOrderId !== paymentId) {
       await this.observability.recordOperationalEvent({
         module: 'store', severity: 'CRITICAL', eventType: 'ASAAS_PAYMENT_ID_MISMATCH',
-        entityType: 'PaymentWebhookEvent', entityId: event.id,
+        entityType: 'PaymentWebhookEvent', entityId: event.id, correlationId,
         description: 'Webhook Asaas divergiu do ID retornado na consulta ao provedor.',
-        data: { eventId, paymentId }
+        data: { eventRecordId: event.id }
       })
       return { status: 'MANUAL_REVIEW', code: 'provider_payment_id_mismatch' }
     }
@@ -1257,9 +1267,9 @@ export class CommerceService {
     if (!recharge || recharge.provider !== 'asaas' || recharge.providerEnvironment !== loadAsaasConfig().environment) {
       await this.observability.recordOperationalEvent({
         module: 'store', severity: 'CRITICAL', eventType: 'ASAAS_UNMATCHED_PAYMENT',
-        entityType: 'PaymentWebhookEvent', entityId: event.id,
+        entityType: 'PaymentWebhookEvent', entityId: event.id, correlationId,
         description: 'Pagamento Asaas sem recarga sandbox correspondente.',
-        data: { eventId, paymentId }
+        data: { eventRecordId: event.id }
       })
       return { status: 'MANUAL_REVIEW', code: 'unmatched_asaas_payment' }
     }
@@ -1560,7 +1570,10 @@ export class CommerceService {
               metadata: { baseAmount: recharge.amount, bonusAmount: recharge.bonus, grossPaidBRL: recharge.price, provider: recharge.provider }
             })
           } catch (error) {
-            if (recharge.provider === 'asaas') this.logger.error('ASAAS_WALLET_CREDIT_FAILED')
+            if (recharge.provider === 'asaas') {
+              this.logger.error('ASAAS_WALLET_CREDIT_FAILED')
+              throw new Error('ASAAS_WALLET_CREDIT_FAILED', { cause: error })
+            }
             throw error
           }
         }
