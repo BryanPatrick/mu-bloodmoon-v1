@@ -161,7 +161,7 @@ After: AccountLevel=3, AccountExpireDate=2026-09-30   <- SURVIVES the login chec
 `UnconfiguredVipGameBridgeGateway` — an intentional stub, explicitly
 documented as "never pointed at a real GRANT_VIP-capable implementation."
 **GRANT_VIP has no real, wired production caller anywhere in the Portal
-today** — only `SYNC_VIP_TIER` (via `VipSyncService`'s reconciler) is a
+today** *(Phase 20B annotation, 2026-09-21: true when written; since Phase O the Portal has a real caller, `GameBridgeVipGateway` in `game-bridge-vip.gateway.ts`, gated by `VIP_DELIVERY_WORKER_ENABLED`, documented as always off in production — and the command still cannot flow end to end because the Worker, D1 schema and deployed Agent build do not support it)* — only `SYNC_VIP_TIER` (via `VipSyncService`'s reconciler) is a
 real, live path. This means the critical bug above would, in practice,
 have surfaced through the reconciler first (which runs continuously),
 not through a one-shot grant call.

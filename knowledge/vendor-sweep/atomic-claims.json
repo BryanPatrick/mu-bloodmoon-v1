@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-19T14:17:34.803Z",
+  "generatedAt": "2026-09-21T12:47:57.695Z",
   "schema": {
     "claimId": "string, CLAIM-NNN",
     "statement": "string, ONE atomic fact -- no 'and', no compound claims",
@@ -3583,7 +3583,7 @@
           "path": "read-only Agent heartbeat (GET /admin/game-data/status) or bm-sql -- to confirm the CURRENT state; not done in Phase 20"
         }
       ],
-      "notes": "Point-in-time. The raw evidence outranks later summaries (source-authority.md), but it is a snapshot.",
+      "notes": "[20B] Current state now verified on both halves (CLAIM-149, CLAIM-151); the deployed Agent build predates the extension (CLAIM-150). Point-in-time. The raw evidence outranks later summaries (source-authority.md), but it is a snapshot.",
       "claimId": "CLAIM-134",
       "statement": "As of the preserved Phase 3D-A evidence (2026-08-24), the production command transport was deployed and active for CREATE_GAME_ACCOUNT only: the Worker, Queue and D1 (migration 0003) existed, the VPS task BloodMoonGameBridgeAgent was running, one real QA account was created with exactly the two authorised MU rows, and a response-loss / Agent-restart / lease-expiry replay wrote nothing twice; the production writer login's only permission is EXECUTE on dbo.DmN_CreateGameAccount; the four extension commands were not deployed and several later runbooks nevertheless say the Agent was never deployed.",
       "sourceId": "internal-doc-cross-reference",
@@ -3924,7 +3924,7 @@
           "path": "read-only SSH inspection of the VPS scheduled task BloodMoonGameBridgeAgent, process start time and binary sha256 -- not done (needs permission)"
         }
       ],
-      "notes": "Supersedes the \"current state not re-verified\" caveat of CLAIM-134 for the Cloudflare half; the Agent version/hash is still unknown. Point-in-time: heartbeat age changes by the second.",
+      "notes": "[20B] The VPS half that this claim leaves unverified was inspected read-only on 2026-09-21 (CLAIM-149) and the Cloudflare half re-verified unchanged (CLAIM-151); this claim stays as the 2026-09-19 point-in-time record. Supersedes the \"current state not re-verified\" caveat of CLAIM-134 for the Cloudflare half; the Agent version/hash is still unknown. Point-in-time: heartbeat age changes by the second.",
       "claimId": "CLAIM-145",
       "sourceId": "internal-doc-cross-reference",
       "sourceAuthority": "REAL_BLOODMOON_RUNTIME",
@@ -4024,6 +4024,214 @@
       ],
       "topic": "systems",
       "confidence": "CONFIRMED_OPERATOR (recorded decision; direction only)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "runtime_observation",
+          "path": "references/game-data/sql-discovery/phase-20b-live-agent-verification-20260921/README.md"
+        }
+      ],
+      "notes": "Task state Ready with a live process is unexplained by what was read (the start script and triggers were deliberately not opened). Historical deployment (2026-08-24) and this current observation are kept as separate events.",
+      "claimId": "CLAIM-149",
+      "sourceId": "internal-doc-cross-reference",
+      "sourceAuthority": "REAL_BLOODMOON_RUNTIME",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_RUNTIME",
+      "statement": "On 2026-09-21 a read-only inspection of the production VPS showed the scheduled task BloodMoonGameBridgeAgent in state Ready (last run 2026-08-25T01:33:33Z, last task result 259, no missed runs) and exactly one BloodMoonGameBridgeAgent.exe process (PID 10388) running since 2026-08-25T01:33:22Z, from a single-file binary with sha256 5BED7747A6A9636C250B98C8DA575E2F27981C16576C588771E8349AB02AB33C (81,101,804 bytes, modified 2026-08-24T17:49:41Z, FileVersion 0.1.0.0, ProductVersion 0.1.0+20a0d71cda82b94c5bb492e3aa863c554831c65b); the secrets folder, logs, start script, task triggers and process command line were not read.",
+      "sourceLocation": "references/game-data/sql-discovery/phase-20b-live-agent-verification-20260921/raw/vps-01-agent-state.json (captured 2026-09-21T12:28:02Z via the audited RemoteOps wrapper, script references/game-data/sql-discovery/phase-20b-live-agent-verification-20260921/tools/vps-readonly-inspection.ps1; one call)",
+      "entityTypes": [
+        "SYSTEM",
+        "DEPLOYMENT"
+      ],
+      "entities": [
+        "BloodMoonGameBridgeAgent",
+        "GAME_COMMAND_TRANSPORT",
+        "WIN-K82J9TU944D"
+      ],
+      "topic": "operations",
+      "confidence": "CONFIRMED_RUNTIME (read-only, 2026-09-21); task-vs-process relationship and reboot persistence NOT verified"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "a read-only copy of the deployed executable, scanned for the extension command-type strings (not done: outside the authorised inspection list)"
+        }
+      ],
+      "notes": "Also explains why the four extension commands are not deployed even at the Agent: the Agent that is running predates them, in addition to the Worker code and the remote D1 CHECK rejecting them.",
+      "claimId": "CLAIM-150",
+      "sourceId": "synthesis-across-live-agent-and-git-history",
+      "sourceAuthority": "INTERNAL_INFERENCE",
+      "bloodMoonStatus": "BLOODMOON_LIKELY",
+      "verificationStatus": "UNVERIFIED",
+      "statement": "The deployed Agent binary was built on 2026-08-24 at 14:49:41 -0300 from the working tree one commit behind the transport commit 7b4fed13 (committed 14:55:10) plus its uncommitted changes -- its embedded commit 20a0d71c has no GameCommandWorker.cs although the running Agent polls for commands -- and because the extension handlers were first written on 2026-08-30 (e90c29df) the deployed Agent cannot contain GRANT_VIP, SYNC_VIP_TIER, ANONYMIZE_GAME_ACCOUNT or PURGE_GAME_ACCOUNT handlers (inference by chronology; the binary itself was not inspected).",
+      "sourceLocation": "references/game-data/sql-discovery/phase-20b-live-agent-verification-20260921/README.md; git log/show of 20a0d71c, 7b4fed13, e90c29df; CLAIM-149",
+      "entityTypes": [
+        "SYSTEM",
+        "DEPLOYMENT"
+      ],
+      "entities": [
+        "BloodMoonGameBridgeAgent",
+        "GameCommandWorker",
+        "GRANT_VIP",
+        "20a0d71c"
+      ],
+      "topic": "operations",
+      "confidence": "STRONG INFERENCE (chronology + git history); the binary was not disassembled or string-scanned"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "runtime_observation",
+          "path": "references/game-data/sql-discovery/phase-20b-live-agent-verification-20260921/raw/"
+        }
+      ],
+      "notes": "Re-confirms CLAIM-145 (2026-09-19) unchanged and adds the VPS half. Classification: CLOUDFLARE_SIDE ACTIVE, VPS_SIDE ACTIVE, END_TO_END_TRANSPORT ACTIVE (idle traffic); extensions NOT_DEPLOYED.",
+      "claimId": "CLAIM-151",
+      "sourceId": "internal-doc-cross-reference",
+      "sourceAuthority": "REAL_BLOODMOON_RUNTIME",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_RUNTIME",
+      "statement": "On 2026-09-21 the production D1 bloodmoon-game-data still had migrations 0001, 0002 and 0003 only and the CREATE-only game_command CHECK, still held exactly 2 commands (last activity 2026-08-25), showed the Agent heartbeat 23 seconds old with an empty buffer and 52 signed command:claim requests in the preceding ten minutes, and had received no Worker code upload since 2026-08-24T17:52Z; together with the VPS process running since 2026-08-25 the transport is live end to end for CREATE_GAME_ACCOUNT, with command traffic idle since 2026-08-25.",
+      "sourceLocation": "references/game-data/sql-discovery/phase-20b-live-agent-verification-20260921/raw/d1-01..06 (SELECT-only, captured 2026-09-21 about 12:29-12:31 UTC); references/game-data/sql-discovery/phase-20b-live-agent-verification-20260921/raw/vps-01-agent-state.json",
+      "entityTypes": [
+        "SYSTEM",
+        "DEPLOYMENT"
+      ],
+      "entities": [
+        "GAME_COMMAND_TRANSPORT",
+        "game_command",
+        "agent_heartbeats",
+        "bloodmoon-game-data"
+      ],
+      "topic": "operations",
+      "confidence": "CONFIRMED_RUNTIME (2026-09-21); no command was sent, so a fresh command round trip was NOT demonstrated"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "PRESERVATION-MANIFEST.md on gamebridge/preserve-command-extension"
+        }
+      ],
+      "notes": "The password value of the excluded file was never printed (only its shape was checked; the folder README says it is a placeholder -- unverified). The phase-K review package procedure hashes are stale (files edited in Phase L). GAP-P20-10 resolved for the 11 preserved files; GAP-P20-11 tracks the excluded file.",
+      "claimId": "CLAIM-152",
+      "sourceId": "code-read-2026-09-18",
+      "sourceAuthority": "CURRENT_CODE",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "statement": "The 12-file SQL extension folder (references/game-data/sql-discovery/gamebridge-extension-20260830/), never committed on any branch, was preserved on 2026-09-21 on the branch gamebridge/preserve-command-extension: 11 files byte-identical (commit 2d0f6106 artifacts, ddf50640 manifest) after a redacting secret review, while derived/local-writer-login.sql (a CREATE LOGIN with a PASSWORD literal; 2964 bytes, sha256 ce81991a92f0b8089cb423d353c562156d79d981bab76c0e63e1c05cdb15169f) was classified SECRET_BEARING and excluded; it stays untracked in the openbeta worktree; none of the SQL is installed on production.",
+      "sourceLocation": "branch gamebridge/preserve-command-extension: references/game-data/sql-discovery/gamebridge-extension-20260830/PRESERVATION-MANIFEST.md; source mu-bloodmoon-v1-openbeta (untracked)",
+      "entityTypes": [
+        "SYSTEM",
+        "DATABASE",
+        "DEPLOYMENT"
+      ],
+      "entities": [
+        "bm_GrantVip",
+        "bm_SyncVipTier",
+        "bm_AnonymizeGameAccount",
+        "bm_PurgeGameAccount",
+        "bm_GameBridgeAudit",
+        "local-writer-login.sql"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_STATIC_CODE_READ + sha256 comparison; \"not installed on production\" is documented, not re-verified against production SQL"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "apps/api/src/modules/game-account-identity/game-command-transport.client.ts"
+        }
+      ],
+      "notes": "The Prisma GameBridgeOperation.CREDIT_CURRENCY value is the marketplace seller credit (no producer/consumer) and is unrelated. No placeholder implementation was created (decision recorded in CLAIM-154).",
+      "claimId": "CLAIM-153",
+      "sourceId": "code-read-2026-09-18",
+      "sourceAuthority": "CURRENT_CODE",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "statement": "CREDIT_GAME_CURRENCY does not exist: there is no Portal command type, Worker route, D1 support, Agent handler or SQL procedure for it anywhere in the repository or the preserved material; of the four extension commands only their Portal types and, in committed source, their Agent handlers exist on main -- the Worker routing exists only on the preservation branch, the remote D1 rejects them and no procedure is installed -- so CREATE_GAME_ACCOUNT is the only deployed command type.",
+      "sourceLocation": "docs/gamebridge/worker-extension-preservation-manifest.md and references/.../gamebridge-extension-20260830/PRESERVATION-MANIFEST.md (on gamebridge/preserve-command-extension); references/game-data/sql-discovery/phase-20b-live-agent-verification-20260921/raw/d1-02-game_command-ddl.json; apps/api/src/modules/game-account-identity/game-command-transport.client.ts",
+      "entityTypes": [
+        "SYSTEM",
+        "DEPLOYMENT"
+      ],
+      "entities": [
+        "CREDIT_GAME_CURRENCY",
+        "GRANT_VIP",
+        "SYNC_VIP_TIER",
+        "ANONYMIZE_GAME_ACCOUNT",
+        "PURGE_GAME_ACCOUNT",
+        "CREATE_GAME_ACCOUNT"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_STATIC_CODE_READ (repository-wide search, this phase) + remote D1 DDL"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [],
+      "notes": "NOT_APPLICABLE verification: a decision record. It leaves CLAIM-129/147/148 unchanged (Portal WC target UNRESOLVED, Beta out of scope, Option B a direction only).",
+      "claimId": "CLAIM-154",
+      "sourceId": "internal-doc-cross-reference",
+      "sourceAuthority": "INTERNAL_DECISION",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "NOT_APPLICABLE",
+      "statement": "Bryan decided on 2026-09-21: Phase 20A is merged fast-forward into local main; the remaining untracked SQL is preserved except local-writer-login.sql, which stays excluded until a dedicated secret review; no lab GameServer is to be built now and GAME_CURRENCY_VISIBILITY stays UNKNOWN (currency delivery is out of scope for the initial Beta, no runnable lab exists, and introducing a closed-source runtime only for this evidence is not worth it now); CREDIT_GAME_CURRENCY must not be implemented; the remaining GameBridge terminology cleanup is documentation-only and non-blocking.",
+      "sourceLocation": "Phase 20B brief (2026-09-21), decisions 1-8; docs/knowledge/GAME_CURRENCY_DELIVERY_ANALYSIS.md Part 15",
+      "entityTypes": [
+        "SYSTEM",
+        "DECISION"
+      ],
+      "entities": [
+        "GAME_CURRENCY_VISIBILITY",
+        "CREDIT_GAME_CURRENCY",
+        "local-writer-login.sql"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_OPERATOR (recorded decision)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [
+        {
+          "type": "file_read",
+          "path": "apps/game-bridge-agent/Program.cs"
+        }
+      ],
+      "notes": "Resolves the \"env binding name not traced\" note of GAMEBRIDGE_DISAMBIGUATION Part 3. Whether the production copy of Start-GameBridgeAgent.ps1 sets any switch was not read (only the tracked template was); the deployed build predates the switches anyway (CLAIM-150).",
+      "claimId": "CLAIM-155",
+      "sourceId": "code-read-2026-09-18",
+      "sourceAuthority": "CURRENT_CODE",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "CONFIRMED_BY_CONFIG",
+      "statement": "The Agent kill switches are AgentOptions.GrantVipEnabled, SyncVipTierEnabled, AnonymizeEnabled and PurgeEnabled (all default false), bound from the Agent configuration section, which Program.cs also reads from environment variables carrying the prefix BLOODMOON_AGENT_ (for example BLOODMOON_AGENT_Agent__GrantVipEnabled); the names GAME_BRIDGE_GRANT_VIP_ENABLED and its siblings that the documents use appear only in comments and documents; no code or script reads an environment variable of that name (the tracked template deploy/game-bridge/Start-GameBridgeAgent.ps1 sets BLOODMOON_AGENT_Agent__* variables but none of the four switches).",
+      "sourceLocation": "apps/game-bridge-agent/Program.cs:14-16; apps/game-bridge-agent/Configuration/AgentOptions.cs (SectionName = \"Agent\", the four switches); docs/gamebridge/gamebridge-agent-extension-plan.md:577-580; deploy/game-bridge/Start-GameBridgeAgent.ps1 (tracked template); comments at apps/api/prisma/schema.prisma:416 and apps/api/src/modules/vip-sync/vip-sync.service.ts:68",
+      "entityTypes": [
+        "SYSTEM",
+        "CONFIG"
+      ],
+      "entities": [
+        "AgentOptions",
+        "GrantVipEnabled",
+        "BLOODMOON_AGENT_",
+        "GAME_BRIDGE_GRANT_VIP_ENABLED"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_STATIC_CODE_READ (the standard .NET double-underscore section separator; not exercised)"
     }
   ]
 }

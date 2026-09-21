@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-19T14:17:34.803Z",
+  "generatedAt": "2026-09-21T12:47:57.695Z",
   "format": "JSON graph -- flat nodes[]/edges[] arrays, each node/edge has a stable id. Chosen over SQLite/JSONL to match this sweep's existing convention (plain JSON files, no new runtime dependency) and because the graph is currently small (30 nodes, 33 edges) -- revisit as a JSONL or SQLite store if it grows past a few hundred nodes and querying flat JSON becomes unwieldy.",
   "nodes": [
     {
@@ -662,6 +662,25 @@
       "type": "SOURCE",
       "name": "read-only remote D1 / Worker deployment state, 2026-09-19",
       "sourceAuthority": "REAL_BLOODMOON_RUNTIME"
+    },
+    {
+      "id": "SYS-bloodmoon-gamebridge-agent-vps",
+      "type": "SYSTEM",
+      "name": "BloodMoonGameBridgeAgent on the game VPS (scheduled task + process)",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "note": "running since 2026-08-25; build predates the extension (CLAIM-149/150)"
+    },
+    {
+      "id": "SRC-vps-d1-readonly-20260921",
+      "type": "SOURCE",
+      "name": "read-only VPS inspection + SELECT-only remote D1, 2026-09-21",
+      "sourceAuthority": "REAL_BLOODMOON_RUNTIME"
+    },
+    {
+      "id": "SRC-sql-extension-preservation",
+      "type": "SOURCE",
+      "name": "gamebridge/preserve-command-extension: SQL artifacts + manifest (Phase 20B)",
+      "sourceAuthority": "CURRENT_CODE"
     }
   ],
   "edges": [
@@ -1567,6 +1586,61 @@
     },
     {
       "from": "CLAIM-148",
+      "type": "RELATED_TO",
+      "to": "CLAIM-135"
+    },
+    {
+      "from": "SYS-bloodmoon-gamebridge-agent-vps",
+      "type": "RELATED_TO",
+      "to": "SYS-game-command-transport"
+    },
+    {
+      "from": "SRC-vps-d1-readonly-20260921",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-149"
+    },
+    {
+      "from": "SRC-vps-d1-readonly-20260921",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-151"
+    },
+    {
+      "from": "SRC-sql-extension-preservation",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-152"
+    },
+    {
+      "from": "SRC-sql-extension-preservation",
+      "type": "SUPPORTS_CLAIM",
+      "to": "CLAIM-153"
+    },
+    {
+      "from": "CLAIM-150",
+      "type": "RELATED_TO",
+      "to": "CLAIM-149"
+    },
+    {
+      "from": "CLAIM-151",
+      "type": "RELATED_TO",
+      "to": "CLAIM-145"
+    },
+    {
+      "from": "CLAIM-152",
+      "type": "RELATED_TO",
+      "to": "CLAIM-146"
+    },
+    {
+      "from": "CLAIM-153",
+      "type": "RELATED_TO",
+      "to": "CLAIM-133"
+    },
+    {
+      "from": "CLAIM-154",
+      "type": "RELATED_TO",
+      "to": "CLAIM-148"
+    },
+    {
+      "from": "CLAIM-155",
       "type": "RELATED_TO",
       "to": "CLAIM-135"
     }

@@ -1,0 +1,17 @@
+﻿{
+    "capturedAtUtc":  "2026-09-21T12:30:00.0763332+00:00",
+    "database":  "bloodmoon-game-data",
+    "target":  "remote",
+    "readOnly":  true,
+    "query":  "SELECT agent_id, server_id, buffer_state, buffer_depth, last_seen_at FROM agent_heartbeats",
+    "success":  true,
+    "results":  [
+                    {
+                        "agent_id":  "gamebridge-agent-01",
+                        "server_id":  "bloodmoon-s6",
+                        "buffer_state":  "NORMAL",
+                        "buffer_depth":  0,
+                        "last_seen_at":  "2026-09-21T12:29:37.051Z"
+                    }
+                ]
+}

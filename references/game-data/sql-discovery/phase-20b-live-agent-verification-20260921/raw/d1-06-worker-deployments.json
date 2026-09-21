@@ -1,0 +1,56 @@
+﻿{
+    "capturedAtUtc":  "2026-09-21T12:30:09.7857593+00:00",
+    "command":  "wrangler deployments list --name bloodmoon-game-data-worker (read-only)",
+    "deployments":  [
+                        {
+                            "created":  "2026-08-24T17:52:12.846Z",
+                            "source":  "Unknown (deployment)",
+                            "versionId":  "2318a9e1-1fec-42bd-9a6e-c6600ae573de"
+                        },
+                        {
+                            "created":  "2026-08-25T01:31:53.081Z",
+                            "source":  "Secret Change",
+                            "versionId":  "048df3a1-9295-40e7-b711-bd9cf8a25c41"
+                        },
+                        {
+                            "created":  "2026-08-25T01:33:22.997Z",
+                            "source":  "Secret Change",
+                            "versionId":  "bffb20c9-dca0-4523-95b7-a1216010723d"
+                        },
+                        {
+                            "created":  "2026-08-27T23:39:49.587Z",
+                            "source":  "Secret Change",
+                            "versionId":  "7ed18483-6589-424f-b292-58e9f8df627d"
+                        },
+                        {
+                            "created":  "2026-08-27T23:40:12.342Z",
+                            "source":  "Secret Change",
+                            "versionId":  "6df21e68-9680-4f96-b95a-006cf305995f"
+                        },
+                        {
+                            "created":  "2026-08-27T23:40:18.549Z",
+                            "source":  "Secret Change",
+                            "versionId":  "6b344de3-96aa-42ec-837a-b72ac564c3c3"
+                        },
+                        {
+                            "created":  "2026-08-27T23:40:49.499Z",
+                            "source":  "Secret Change",
+                            "versionId":  "c3b2029b-9751-498f-a9c6-1f0ad1b686e9"
+                        },
+                        {
+                            "created":  "2026-08-27T23:40:54.949Z",
+                            "source":  "Secret Change",
+                            "versionId":  "e5184c23-47c9-4c5b-a6b4-db790f092b8c"
+                        },
+                        {
+                            "created":  "2026-09-01T07:54:01.471Z",
+                            "source":  "Secret Change",
+                            "versionId":  "dca0431b-fa96-4cb5-a6eb-debf43b6eafa"
+                        },
+                        {
+                            "created":  "2026-09-01T07:58:41.845Z",
+                            "source":  "Secret Change",
+                            "versionId":  "5e84e6cb-cdf9-4ea9-89a8-796d6b89aa29"
+                        }
+                    ]
+}

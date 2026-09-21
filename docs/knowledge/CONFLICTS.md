@@ -2,7 +2,7 @@
 status: ACTIVE
 category: knowledge
 audience: internal (product + engineering)
-lastVerified: 2026-09-19
+lastVerified: 2026-09-21
 ---
 
 # Conflict register
@@ -84,6 +84,7 @@ edited.
   "Windows Service" (the Agent is a scheduled task), but that is inference. The
   live state was **not** re-verified in Phase 20. Tracked: GAP-P20-02.
 - **Update 2026-09-19 (Phase 20A):** the Cloudflare half was re-verified read-only — heartbeat ≈14 s old, ≈52 command-claim polls in 10 minutes, 2 commands ever (`references/game-data/sql-discovery/phase-20a-live-agent-d1-readonly-20260919/`); Claim A is therefore wrong for `CREATE_GAME_ACCOUNT`. The seven documents that repeated it were **annotated** (strikethrough + dated note, nothing deleted). The VPS-side task/binary/version is still **unverified** (SSH inspection blocked, not retried).
+- **Update 2026-09-21 (Phase 20B):** the VPS half was then inspected read-only — one Agent process running since 2026-08-25, task state Ready, binary 0.1.0+20a0d71c built 2026-08-24 (before the extension existed). Claim A is wrong for `CREATE_GAME_ACCOUNT`; the runbook annotations were extended with these facts (`references/game-data/sql-discovery/phase-20b-live-agent-verification-20260921/`). Still unexplained: task `Ready` while the process runs (GAP-P20-02).
 
 ### 4. Was the Worker extended for GRANT_VIP / SYNC_VIP_TIER / ANONYMIZE / PURGE?
 
@@ -101,7 +102,7 @@ edited.
   (`commands.ts` +189, `schema.sql`, `commands.spec.ts`; migration `0004`
   untracked there, committed here). "Implemented and tested locally" is true
   *there*; "not wired" is true of every committed branch. Loss risk, tracked as
-  GAP-P20-02. **Update 2026-09-19:** the extension is now preserved byte-identically on `gamebridge/preserve-command-extension` (not merged, not deployed); remote D1 has migrations 0001–0003 only and `game_command` still has `CHECK (command_type = 'CREATE_GAME_ACCOUNT')`, so the database also rejects the four types.
+  GAP-P20-02. **Update 2026-09-19:** the extension is now preserved byte-identically on `gamebridge/preserve-command-extension` (not merged, not deployed); remote D1 has migrations 0001–0003 only and `game_command` still has `CHECK (command_type = 'CREATE_GAME_ACCOUNT')`, so the database also rejects the four types. **Update 2026-09-21:** the SQL half is now preserved too (11 of 12 files; `local-writer-login.sql` excluded as SECRET_BEARING) and the deployed Agent build (2026-08-24) predates the extension — the extension is undeployed at the Agent-build, Worker-code, D1-schema and SQL layers.
 
 ### 5. Is "GameBridge" active?
 

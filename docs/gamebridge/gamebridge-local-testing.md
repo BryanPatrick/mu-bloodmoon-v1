@@ -170,7 +170,7 @@ column names used.
 New environment variables, all default-safe (off/absent):
 `GAME_BRIDGE_GRANT_VIP_ENABLED`, `GAME_BRIDGE_SYNC_VIP_TIER_ENABLED`,
 `GAME_BRIDGE_ANONYMIZE_ENABLED`, `GAME_BRIDGE_PURGE_ENABLED` (Agent-side
-kill switches, `AgentOptions`, all default `false`); `VIP_SYNC_RECONCILIATION_ENABLED`,
+kill switches, `AgentOptions`, all default `false` — **Phase 20B note:** these `GAME_BRIDGE_*_ENABLED` names are documentation names; no code reads them. The real options are `AgentOptions.GrantVipEnabled`/`SyncVipTierEnabled`/`AnonymizeEnabled`/`PurgeEnabled`, set through `BLOODMOON_AGENT_Agent__<Option>`); `VIP_SYNC_RECONCILIATION_ENABLED`,
 `VIP_SYNC_RECONCILIATION_INTERVAL_MS` (Portal-side reconciler gate,
 default off, default interval 60000ms if unset). Existing
 `GAME_COMMAND_ENVIRONMENT`/`GAME_COMMAND_SERVER_ID`/`GAME_DATA_WORKER_URL`/

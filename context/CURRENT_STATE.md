@@ -59,7 +59,7 @@ running phase log, `docs/decisions/`, and `docs/handoff/`.
   A separate, newer Game Data Platform pipeline
   (`apps/game-bridge-agent` + Cloudflare Worker) is architecture-approved
   and mid-implementation as of the most recent local plan on file
-  (see `docs/game-data/`) — ~~not yet deployed against real infrastructure~~ **(annotation 2026-09-19, Phase 20A: the Worker, D1 and Agent run against real infrastructure — Phase 2D end-to-end PASS 2026-08-20, Phase 3D-A production command path 2026-08-24, heartbeat verified live through D1 on 2026-09-19; the VPS-side task/binary was not inspected; see `docs/knowledge/GAMEBRIDGE_DISAMBIGUATION.md` Part 5)**.
+  (see `docs/game-data/`) — ~~not yet deployed against real infrastructure~~ **(annotation 2026-09-19, Phase 20A: the Worker, D1 and Agent run against real infrastructure — Phase 2D end-to-end PASS 2026-08-20, Phase 3D-A production command path 2026-08-24, heartbeat verified live through D1 on 2026-09-19; ~~the VPS-side task/binary was not inspected~~ **[Phase 20B, 2026-09-21: inspected read-only — Agent process running since 2026-08-25, binary `0.1.0+20a0d71c` built 2026-08-24, extension handlers not deployed; references/game-data/sql-discovery/phase-20b-live-agent-verification-20260921/]**; see `docs/knowledge/GAMEBRIDGE_DISAMBIGUATION.md` Part 5)**.
 - Payments: real Mercado Pago integration remains, but **Asaas is the
   current primary provider direction** (Phase 14, `DEC-PAYMENTS-001`) —
   see [`domains/payments.md`](domains/payments.md).

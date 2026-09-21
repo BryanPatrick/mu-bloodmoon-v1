@@ -2,7 +2,7 @@
 status: ACTIVE
 category: knowledge
 audience: internal (product + engineering)
-lastVerified: 2026-09-19
+lastVerified: 2026-09-21
 ---
 
 # Knowledge master index
@@ -71,12 +71,13 @@ TASK ("how do I do X?")
 | "Where is the reset configuration?" | `context/ADR_INDEX.md` ADR-0025/ADR-0029 (`main`-tracked, `CANONICAL_DECISION`) — progression/reset control plane and current reset policy |
 | "Where is Blood Coin represented?" | `context/domains/game-economy.md` + `context/BUSINESS_RULES.md`; dedicated phase doc `docs/phases/blood-coin-public-name-completion/phase-manifest.md` |
 | "How does Marketplace escrow work?" | `docs/payment-and-escrow-flow.md`, `docs/marketplace-game-bridge.md` — real ledger/reservation code exists; the worker (`MARKETPLACE_DELIVERY_WORKER`) is a deliberate always-fail scaffold |
-| "Is GameBridge active?" | ~~NO — `MU_BRIDGE_ENABLED=false` by default everywhere~~ **(Phase 20)** the question is ambiguous — "GameBridge" names seven things (`GAMEBRIDGE_DISAMBIGUATION.md`). `MARKETPLACE_DELIVERY_WORKER`: no (`MU_BRIDGE_ENABLED=false`). `GAME_COMMAND_TRANSPORT`: **yes for `CREATE_GAME_ACCOUNT` only** (deployed 2026-08-24; state not re-verified); GRANT_VIP/SYNC_VIP_TIER/ANONYMIZE/PURGE not deployed and not runnable end to end from committed code |
+| "Is GameBridge active?" | ~~NO — `MU_BRIDGE_ENABLED=false` by default everywhere~~ **(Phase 20)** the question is ambiguous — "GameBridge" names seven things (`GAMEBRIDGE_DISAMBIGUATION.md`). `MARKETPLACE_DELIVERY_WORKER`: no (`MU_BRIDGE_ENABLED=false`). `GAME_COMMAND_TRANSPORT`: **yes for `CREATE_GAME_ACCOUNT` only** (deployed 2026-08-24; **verified running 2026-09-21**, traffic idle); GRANT_VIP/SYNC_VIP_TIER/ANONYMIZE/PURGE not deployed and not runnable end to end from committed code |
 | "What is Portal WC in game terms?" / "Cash vs WCoinC?" / "Is Blood Coin WC?" | `CURRENCY_TERMINOLOGY.md` — Cash↔WCoinC, Gold↔WCoinP, PcPoint↔GoblinPoint all **CONFIRMED** (Phase 20A, vendor procedures read first-hand; ~~two were STRONGLY_SUPPORTED~~); Portal WC target **UNRESOLVED**; initial Beta game-currency delivery **OUT_OF_SCOPE**; Blood Coin = `GOBLIN_POINT`, not WC |
 | "Can the command channel credit game currency? Which option?" | `GAME_CURRENCY_DELIVERY_ANALYSIS.md` — not safe as-is; **Option B accepted as the DIRECTION on 2026-09-19, implementation NOT approved**, nine prerequisites (P2 done); Part 14 = decisions + lab evidence |
 | "Does WZ_SetCoin add or set? What is CashShopData's DDL?" | `references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/` (raw + `derived/findings.md`); CLAIM-139..144 — **additive**, positive-only, insert-if-missing, no idempotency; PK on `AccountID`, no CHECK/FK/trigger |
-| "Is the GameBridge Agent running now? Which migrations does the remote D1 have?" | `references/game-data/sql-discovery/phase-20a-live-agent-d1-readonly-20260919/` — Cloudflare side verified 2026-09-19 (heartbeat live; migrations 0001–0003; 0004 **not** applied); VPS side **unverified**; CLAIM-145 |
+| "Is the GameBridge Agent running now? Which migrations does the remote D1 have?" | `references/game-data/sql-discovery/phase-20a-live-agent-d1-readonly-20260919/` — **verified on both halves 2026-09-21** — Cloudflare (heartbeat live, migrations 0001–0003, 0004 **not** applied) and VPS (process running since 2026-08-25, task `Ready`, binary 0.1.0+20a0d71c built 2026-08-24, predating the extension); evidence `references/game-data/sql-discovery/phase-20b-live-agent-verification-20260921/`; CLAIM-149..151 |
 | "Where is the Worker code for GRANT_VIP/SYNC_VIP_TIER/ANONYMIZE/PURGE?" | branch `gamebridge/preserve-command-extension` (not merged, not deployed, not canonical); manifest `docs/gamebridge/worker-extension-preservation-manifest.md` on that branch; CLAIM-146 |
+| "Where is the SQL for the four extension procedures? Which command types are deployed?" | branch `gamebridge/preserve-command-extension`: `references/game-data/sql-discovery/gamebridge-extension-20260830/` + `PRESERVATION-MANIFEST.md` (11 of 12 files; `local-writer-login.sql` excluded as SECRET_BEARING); deployment matrix: `GAMEBRIDGE_DISAMBIGUATION.md` Part 8 — only `CREATE_GAME_ACCOUNT` is deployed; `CREDIT_GAME_CURRENCY` does not exist; CLAIM-152/153 |
 | "Where are vendor tutorials?" | `VPS_DOCUMENTATION_INDEX.md` → `D:\MU\Research\Vendor\Tutorials\` (48 files, hash-verified) |
 | "Which videos are not processed?" | `VIDEO_SOURCES.md` + `KNOWLEDGE_GAPS.md` GAP-P18-01c |
 | "How did the legacy Cash purchase work?" | `LEGACY_SUPPLIER_INDEX.md` — this audit's central finding |

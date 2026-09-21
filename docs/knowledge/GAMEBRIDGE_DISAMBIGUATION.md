@@ -2,7 +2,7 @@
 status: ACTIVE
 category: knowledge
 audience: internal (product + engineering)
-lastVerified: 2026-09-19
+lastVerified: 2026-09-21
 confidence: HIGH for what the code does (read this phase); MIXED for deployment status (documents contradict each other — see Part 5)
 ---
 
@@ -78,10 +78,14 @@ reconciler talk to the transport directly.
    (`MARKETPLACE_DELIVERY_WORKER`) and the VIP delivery queue (transport feeder) — one permission, two
    systems.
 4. **Flag names differ between docs and code.** Docs call the Agent switches
-   `GAME_BRIDGE_GRANT_VIP_ENABLED` etc.; that string exists in **no** code,
-   script or config. The code has `AgentOptions.GrantVipEnabled` (bool,
-   default `false`). How the option is fed (env binding name) was not traced
-   here.
+   `GAME_BRIDGE_GRANT_VIP_ENABLED` etc.; those strings appear **only in comments and
+   documents** — no code or script reads an environment variable of that name. The real switch is
+   `AgentOptions.GrantVipEnabled` (bool, default `false`), bound from the `Agent` configuration section; `Program.cs`
+   also reads environment variables with the prefix `BLOODMOON_AGENT_`, so the variable is
+   `BLOODMOON_AGENT_Agent__GrantVipEnabled` (and `…SyncVipTierEnabled`, `…AnonymizeEnabled`, `…PurgeEnabled`).
+   The tracked template `deploy/game-bridge/Start-GameBridgeAgent.ps1` sets `BLOODMOON_AGENT_Agent__*` for the
+   ids, URLs, secrets and paths but **none** of the four switches (the production copy was not read).
+   *(Traced in Phase 20B, CLAIM-155; the earlier "exists in no code" wording is corrected.)*
 
 ## Part 4 — Ambiguous or stale statements found (not edited outside this phase's own files)
 
@@ -103,7 +107,7 @@ The inventory flagged ~30. The ones that matter for the currency decision:
 
 | System | Status | Evidence |
 |---|---|---|
-| `GAME_COMMAND_TRANSPORT` — infrastructure and **`CREATE_GAME_ACCOUNT`** | **DEPLOYED_ACTIVE as of 2026-08-24** ~~(current state **not re-verified** in Phase 20)~~ **(Phase 20A, 2026-09-19: Cloudflare side re-verified read-only — heartbeat ≈14 s old, ≈52 command-claim polls per 10 minutes, 2 commands ever; VPS-side task/binary/version still unverified)** | `references/game-data/sql-discovery/phase-3d-a-production-command-transport-20260824/raw/02-…:6` ("VPS task BloodMoonGameBridgeAgent Running, one process"), `raw/03-…` (one real QA account, `memb_guid=8`, exactly the two authorised rows), `raw/04-…` (response-loss/restart replay: zero extra writes), `docs/security/secret-incident-history.md:53-58` ("the GameBridge Agent's heartbeat was live"), `docs/operations/provisioning-health.md:70-72` ("2 total commands ever … live production Agent service") |
+| `GAME_COMMAND_TRANSPORT` — infrastructure and **`CREATE_GAME_ACCOUNT`** | **DEPLOYED_ACTIVE as of 2026-08-24** ~~(current state **not re-verified** in Phase 20)~~ **(Phase 20A, 2026-09-19: Cloudflare side re-verified read-only — heartbeat ≈14 s old, ≈52 command-claim polls per 10 minutes, 2 commands ever; ~~VPS-side task/binary/version still unverified~~ — Phase 20B, 2026-09-21: VPS side verified read-only: one Agent process running since 2026-08-25, task state Ready, binary 0.1.0+20a0d71c built 2026-08-24 (before the extension existed))** | `references/game-data/sql-discovery/phase-3d-a-production-command-transport-20260824/raw/02-…:6` ("VPS task BloodMoonGameBridgeAgent Running, one process"), `raw/03-…` (one real QA account, `memb_guid=8`, exactly the two authorised rows), `raw/04-…` (response-loss/restart replay: zero extra writes), `docs/security/secret-incident-history.md:53-58` ("the GameBridge Agent's heartbeat was live"), `docs/operations/provisioning-health.md:70-72` ("2 total commands ever … live production Agent service") |
 | `GAME_COMMAND_TRANSPORT` — **`GRANT_VIP`, `SYNC_VIP_TIER`, `ANONYMIZE_GAME_ACCOUNT`, `PURGE_GAME_ACCOUNT`** | **IMPLEMENTED_NOT_DEPLOYED**, and **not end-to-end runnable from committed code** | Portal client types + gateways: committed. Agent handlers + kill switches: committed (`e90c29df`, `a6660109`), all four default `false`. D1 migration `0004`: committed here, **remote application unproven** (`cloudflare-resources.md` lists 0001–0002; 3D-A lists 0003). **Worker routing (`commands.ts`) accepts only `CREATE_GAME_ACCOUNT` on every one of the 43 branch refs (39 local + 4 remote-tracking)** (identical blob `99a7b09b`); the extension exists **only as uncommitted changes** in the `mu-bloodmoon-v1-openbeta` worktree (`commands.ts` +189/-, `schema.sql`, `commands.spec.ts`; `0004` untracked there). The four SQL procedures: "nothing installed on production" (ADR-0002, `gamebridge-second-review-package.md:13,129`). `docs/integration/open-beta-integration-manifest.md:500-501`: "0 real commands sent, all Agent kill switches confirmed default `false`". |
 | `MARKETPLACE_DELIVERY_WORKER` | **LOCAL_ONLY scaffold**, `MU_BRIDGE_ENABLED=false` in every example env; never processed a real job | `apps/api/README.md:182`, `docs/handoff/site-beta-checklist.md:69` |
 | `GAME_DATA_TELEMETRY` | Worker + D1 real end to end on 2026-08-20; **whether it runs now is not stated anywhere** (inferred to share the running Agent process) | Phase 2D report; `Program.cs:60-61` |
@@ -114,7 +118,7 @@ adjudicated by later prose**: the raw 3D-A evidence is the primary source and
 wins over a summary written later, but it is a 2026-08-24 snapshot. The live
 state should be confirmed read-only (Agent heartbeat via the existing
 `GET /admin/game-data/status`, or the read-only `bm-sql` bridge) before any
-design that depends on it — ~~**not done here** (no production contact in Phase 20)~~ **done in Phase 20A for the Cloudflare half** (`references/game-data/sql-discovery/phase-20a-live-agent-d1-readonly-20260919/`); the VPS half — scheduled-task state, process start, binary SHA-256, version — is **still unverified** because the read-only SSH inspection was blocked by the session's permission classifier and was not retried (the inspection to run is described in `GAME_CURRENCY_DELIVERY_ANALYSIS.md` Part 14.4).
+design that depends on it — ~~**not done here** (no production contact in Phase 20)~~ **done in Phase 20A for the Cloudflare half** (`references/game-data/sql-discovery/phase-20a-live-agent-d1-readonly-20260919/`); the VPS half — scheduled-task state, process start, binary SHA-256, version — is **still unverified** because the read-only SSH inspection was blocked by the session's permission classifier and was not retried (the inspection to run is described in `GAME_CURRENCY_DELIVERY_ANALYSIS.md` Part 14.4). **Update 2026-09-21 (Phase 20B): the VPS half was then inspected read-only and verified — `references/game-data/sql-discovery/phase-20b-live-agent-verification-20260921/`; ~~still unverified~~. See Part 8 below.**
 
 Test-suite counts in the older docs (75/75, 123/123 …) are historical and were
 **not re-run** in this phase.
@@ -153,3 +157,43 @@ and the "never deployed" statements in `docs/operations/{deployment-rollback-run
 
 `admin.game-bridge.manage` guarding two systems and the marketplace script's missing operation filter are
 code issues (GAP-P20-09), not wording.
+
+## Part 8 — Command deployment matrix (Phase 20B, 2026-09-21)
+
+Each column is a **different layer**; a command is deployed only if every layer is. "Installed on production SQL"
+comes from documents (ADR-0002, `docs/security/game-write-boundary.md`, the review package) — production SQL
+Server was **not** contacted in Phase 20B.
+
+| Command | Portal type | Worker | D1 schema (remote) | Agent | SQL procedure (source) | Installed on prod SQL | Prod tested | Status |
+|---|---|---|---|---|---|---|---|---|
+| `CREATE_GAME_ACCOUNT` | yes | **committed + deployed** | **yes** (0003; CHECK = this type only) | **deployed** (0.1.0+20a0d71c, built 2026-08-24) | `dbo.DmN_CreateGameAccount` (`references/…/phase-3c-write-schema-verification-20260824/derived/`) | **yes** | **yes** — 2 QA commands + replay/restart tests | **DEPLOYED, ACTIVE polling; traffic idle since 2026-08-25** |
+| `GRANT_VIP` | yes | routing **only on the preservation branch** | **no** (0004 not applied) | handler in committed source; **not** in the deployed build; switch default off | `bm_GrantVip` (preserved) | no | no | **IMPLEMENTED_NOT_DEPLOYED** |
+| `SYNC_VIP_TIER` | yes | same | no | same | `bm_SyncVipTier` | no | no | **IMPLEMENTED_NOT_DEPLOYED** |
+| `ANONYMIZE_GAME_ACCOUNT` | yes | same | no | same | `bm_AnonymizeGameAccount` | no | no | **IMPLEMENTED_NOT_DEPLOYED** |
+| `PURGE_GAME_ACCOUNT` | yes | same | no | same | `bm_PurgeGameAccount` | no | no | **IMPLEMENTED_NOT_DEPLOYED** |
+| `CREDIT_GAME_CURRENCY` | **no** | **no** | **no** | **no** | **none** | — | — | **DOES_NOT_EXIST** (CLAIM-153) |
+
+The SQL artifacts, their classification and the excluded credential-bearing file are documented in
+`PRESERVATION-MANIFEST.md` on the branch `gamebridge/preserve-command-extension` (CLAIM-152).
+
+### Live state, kept apart (2026-09-21)
+
+| Side | State | Evidence |
+|---|---|---|
+| **Cloudflare** | **ACTIVE** — heartbeat 23 s old, ≈52 signed claim polls / 10 min, migrations 0001–0003, no command since 2026-08-25 | `references/game-data/sql-discovery/phase-20b-live-agent-verification-20260921/raw/d1-*` (CLAIM-151) |
+| **VPS** | **ACTIVE** — one process since 2026-08-25T01:33Z, task `Ready`, binary sha256 `5BED7747…B33C`, 0.1.0+20a0d71c | `references/game-data/sql-discovery/phase-20b-live-agent-verification-20260921/raw/vps-01-agent-state.json` (CLAIM-149) |
+| **End to end** | **ACTIVE for `CREATE_GAME_ACCOUNT`** (polling live on both ends), **traffic idle**; no command was sent, so a fresh round trip was not demonstrated | — |
+| Extensions | **NOT_DEPLOYED** at the Agent build, Worker code, D1 schema and SQL layers | CLAIM-150, CLAIM-153 |
+
+Timeline, never collapsed: **2026-08-24** deployed (historical, Phase 3D-A) → **2026-08-25** Agent restarted, last command →
+**2026-09-19** Cloudflare half verified, VPS blocked → **2026-09-21** both halves verified. Unexplained and recorded as
+open in GAP-P20-02: the task is `Ready` while the process runs (task triggers and start script were deliberately not read).
+
+## Part 9 — Terminology cleanup: Phase 20B additions (2026-09-21, documentation only, meaning certain)
+
+Fixed: `docs/environment/development-environment.md:25` (path to `docs/gamebridge/gamebridge-local-testing.md`);
+`docs/marketplace.md:52` ("game bridge worker" = `MARKETPLACE_DELIVERY_WORKER`);
+`docs/vip/wz-setaccountlevel-coexistence.md:163` (dated note: the Portal caller exists since Phase O);
+`docs/gamebridge/gamebridge-local-testing.md` and `gamebridge-agent-extension-plan.md:577` (kill-switch names).
+The remaining items above stay a **documentation-only, non-blocking** list (Bryan, 2026-09-21); code comments
+(`schema.prisma`, `launcher.service.ts`, `index.vue`) were deliberately not touched.

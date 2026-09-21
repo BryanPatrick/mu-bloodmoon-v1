@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-09-19T14:23:46.381Z",
+  "generatedAt": "2026-09-21T12:48:34.835Z",
   "generatedBy": "scripts/knowledge-canonical-facts.mjs -- derived mechanically from atomic-claims.json, do not hand-edit, re-run instead",
   "rule": "A claim qualifies as canonical only when verificationStatus starts with CONFIRMED_BY_ (config/schema/runtime evidence). PROVIDER_TUTORIAL or COMMUNITY_TUTORIAL sourceAuthority alone, however plausible, is explicitly insufficient -- see docs/knowledge/source-authority.md.",
-  "canonicalFactCount": 93,
-  "totalClaims": 148,
+  "canonicalFactCount": 98,
+  "totalClaims": 155,
   "canonicalFacts": [
     {
       "claimId": "CLAIM-001",
@@ -1081,6 +1081,74 @@
       ],
       "topic": "systems",
       "confidence": "CONFIRMED_STATIC_CODE_READ + a real test run (Worker only; the Agent .NET suite and SQL integration tests were not re-run)"
+    },
+    {
+      "claimId": "CLAIM-149",
+      "statement": "On 2026-09-21 a read-only inspection of the production VPS showed the scheduled task BloodMoonGameBridgeAgent in state Ready (last run 2026-08-25T01:33:33Z, last task result 259, no missed runs) and exactly one BloodMoonGameBridgeAgent.exe process (PID 10388) running since 2026-08-25T01:33:22Z, from a single-file binary with sha256 5BED7747A6A9636C250B98C8DA575E2F27981C16576C588771E8349AB02AB33C (81,101,804 bytes, modified 2026-08-24T17:49:41Z, FileVersion 0.1.0.0, ProductVersion 0.1.0+20a0d71cda82b94c5bb492e3aa863c554831c65b); the secrets folder, logs, start script, task triggers and process command line were not read.",
+      "evidenceBasis": "CONFIRMED_BY_RUNTIME",
+      "entities": [
+        "BloodMoonGameBridgeAgent",
+        "GAME_COMMAND_TRANSPORT",
+        "WIN-K82J9TU944D"
+      ],
+      "topic": "operations",
+      "confidence": "CONFIRMED_RUNTIME (read-only, 2026-09-21); task-vs-process relationship and reboot persistence NOT verified"
+    },
+    {
+      "claimId": "CLAIM-151",
+      "statement": "On 2026-09-21 the production D1 bloodmoon-game-data still had migrations 0001, 0002 and 0003 only and the CREATE-only game_command CHECK, still held exactly 2 commands (last activity 2026-08-25), showed the Agent heartbeat 23 seconds old with an empty buffer and 52 signed command:claim requests in the preceding ten minutes, and had received no Worker code upload since 2026-08-24T17:52Z; together with the VPS process running since 2026-08-25 the transport is live end to end for CREATE_GAME_ACCOUNT, with command traffic idle since 2026-08-25.",
+      "evidenceBasis": "CONFIRMED_BY_RUNTIME",
+      "entities": [
+        "GAME_COMMAND_TRANSPORT",
+        "game_command",
+        "agent_heartbeats",
+        "bloodmoon-game-data"
+      ],
+      "topic": "operations",
+      "confidence": "CONFIRMED_RUNTIME (2026-09-21); no command was sent, so a fresh command round trip was NOT demonstrated"
+    },
+    {
+      "claimId": "CLAIM-152",
+      "statement": "The 12-file SQL extension folder (references/game-data/sql-discovery/gamebridge-extension-20260830/), never committed on any branch, was preserved on 2026-09-21 on the branch gamebridge/preserve-command-extension: 11 files byte-identical (commit 2d0f6106 artifacts, ddf50640 manifest) after a redacting secret review, while derived/local-writer-login.sql (a CREATE LOGIN with a PASSWORD literal; 2964 bytes, sha256 ce81991a92f0b8089cb423d353c562156d79d981bab76c0e63e1c05cdb15169f) was classified SECRET_BEARING and excluded; it stays untracked in the openbeta worktree; none of the SQL is installed on production.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "bm_GrantVip",
+        "bm_SyncVipTier",
+        "bm_AnonymizeGameAccount",
+        "bm_PurgeGameAccount",
+        "bm_GameBridgeAudit",
+        "local-writer-login.sql"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_STATIC_CODE_READ + sha256 comparison; \"not installed on production\" is documented, not re-verified against production SQL"
+    },
+    {
+      "claimId": "CLAIM-153",
+      "statement": "CREDIT_GAME_CURRENCY does not exist: there is no Portal command type, Worker route, D1 support, Agent handler or SQL procedure for it anywhere in the repository or the preserved material; of the four extension commands only their Portal types and, in committed source, their Agent handlers exist on main -- the Worker routing exists only on the preservation branch, the remote D1 rejects them and no procedure is installed -- so CREATE_GAME_ACCOUNT is the only deployed command type.",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "CREDIT_GAME_CURRENCY",
+        "GRANT_VIP",
+        "SYNC_VIP_TIER",
+        "ANONYMIZE_GAME_ACCOUNT",
+        "PURGE_GAME_ACCOUNT",
+        "CREATE_GAME_ACCOUNT"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_STATIC_CODE_READ (repository-wide search, this phase) + remote D1 DDL"
+    },
+    {
+      "claimId": "CLAIM-155",
+      "statement": "The Agent kill switches are AgentOptions.GrantVipEnabled, SyncVipTierEnabled, AnonymizeEnabled and PurgeEnabled (all default false), bound from the Agent configuration section, which Program.cs also reads from environment variables carrying the prefix BLOODMOON_AGENT_ (for example BLOODMOON_AGENT_Agent__GrantVipEnabled); the names GAME_BRIDGE_GRANT_VIP_ENABLED and its siblings that the documents use appear only in comments and documents; no code or script reads an environment variable of that name (the tracked template deploy/game-bridge/Start-GameBridgeAgent.ps1 sets BLOODMOON_AGENT_Agent__* variables but none of the four switches).",
+      "evidenceBasis": "CONFIRMED_BY_CONFIG",
+      "entities": [
+        "AgentOptions",
+        "GrantVipEnabled",
+        "BLOODMOON_AGENT_",
+        "GAME_BRIDGE_GRANT_VIP_ENABLED"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_STATIC_CODE_READ (the standard .NET double-underscore section separator; not exercised)"
     }
   ],
   "explicitlyNotCanonical_contradicted": [

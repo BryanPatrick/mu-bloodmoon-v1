@@ -49,5 +49,5 @@ manual review or failure and produces operational evidence.
 - Critical return failures raise an immediate system alert.
 
 The production scheduler must run `npm --workspace apps/api run
-worker:marketplace-expirations`. The game bridge worker processes the resulting
+worker:marketplace-expirations`. The game bridge worker **[= `MARKETPLACE_DELIVERY_WORKER`, Phase 20B]** processes the resulting
 idempotent return and transfer jobs.

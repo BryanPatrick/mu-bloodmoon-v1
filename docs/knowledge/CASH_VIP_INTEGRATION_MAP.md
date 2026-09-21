@@ -2,7 +2,7 @@
 status: ACTIVE
 category: knowledge
 audience: internal (product + engineering)
-lastVerified: 2026-09-19
+lastVerified: 2026-09-21
 confidence: MIXED — see per-flow confidence notes
 ---
 
@@ -357,7 +357,7 @@ GAME_COMMAND_TRANSPORT (apps/api/src/modules/game-account-identity/, vip/)
   - VIP grants are designed to reach MEMB_INFO.AccountLevel/AccountExpireDate
     through it; NO currency-credit command type exists
   - (Phase 20) ~~deployment status not verified~~ deployed + active for
-    CREATE_GAME_ACCOUNT only (2026-08-24 evidence, current state not re-checked);
+    CREATE_GAME_ACCOUNT only (2026-08-24 evidence; ~~current state not re-checked~~ verified running 2026-09-21);
     the other four are implemented-not-deployed and not end-to-end runnable from
     committed code (GAMEBRIDGE_DISAMBIGUATION.md Part 5)
 

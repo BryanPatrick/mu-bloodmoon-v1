@@ -231,6 +231,29 @@ check('Phase 20A decisions stay decision records and never become mappings or ap
   if (!/not inspected/.test(by['CLAIM-145'].statement)) throw new Error('CLAIM-145 must keep the VPS-side caveat')
 })
 
+// --- Phase 20B additions (live verification, SQL preservation, decisions) ---
+
+check('lookup regression 11: the running Agent and its build resolve to the live-verification claims', () => {
+  expectAll(run('knowledge-query.mjs', ['query', 'BloodMoonGameBridgeAgent']), ['CLAIM-149', 'CLAIM-150'], 'query BloodMoonGameBridgeAgent')
+  expectAll(run('knowledge-query.mjs', ['query', 'CREDIT_GAME_CURRENCY']), ['CLAIM-153'], 'query CREDIT_GAME_CURRENCY')
+  expectAll(run('knowledge-query.mjs', ['query', 'local-writer-login.sql']), ['CLAIM-152'], 'query local-writer-login.sql')
+})
+
+check('Phase 20B claims keep their evidence ceiling and decisions stay decision records', () => {
+  const claims = JSON.parse(readFileSync(join(ROOT, 'knowledge', 'vendor-sweep', 'atomic-claims.json'), 'utf8')).claims
+  const by = Object.fromEntries(claims.map(c => [c.claimId, c]))
+  // the "deployed build predates the extension" conclusion is an inference by chronology, never a verified fact
+  if (by['CLAIM-150'].verificationStatus !== 'UNVERIFIED' || by['CLAIM-150'].sourceAuthority !== 'INTERNAL_INFERENCE') throw new Error('CLAIM-150 must stay an unverified inference')
+  // the VPS observation must keep saying what was NOT read
+  if (!/not read/.test(by['CLAIM-149'].statement)) throw new Error('CLAIM-149 must keep its "not read" caveat')
+  if (by['CLAIM-154'].verificationStatus !== 'NOT_APPLICABLE' || by['CLAIM-154'].sourceAuthority !== 'INTERNAL_DECISION') throw new Error('CLAIM-154 must stay an INTERNAL_DECISION record')
+  // the excluded credential-bearing file must never have its contents or password in the machine layer
+  const blob = JSON.stringify(claims)
+  if (/PASSWORDs*=s*N?'[^']+'/i.test(blob)) throw new Error('a password literal leaked into the machine layer')
+  // CREDIT_GAME_CURRENCY stays non-existent
+  if (!/does not exist/.test(by['CLAIM-153'].statement)) throw new Error('CLAIM-153 must state that CREDIT_GAME_CURRENCY does not exist')
+})
+
 console.log('')
 if (failures === 0) {
   console.log('All knowledge tooling integration checks passed.')

@@ -1,0 +1,13 @@
+﻿{
+    "capturedAtUtc":  "2026-09-21T12:29:53.4957244+00:00",
+    "database":  "bloodmoon-game-data",
+    "target":  "remote",
+    "readOnly":  true,
+    "query":  "SELECT sql FROM sqlite_master WHERE name=\u0027game_command\u0027",
+    "success":  true,
+    "results":  [
+                    {
+                        "sql":  "CREATE TABLE game_command (\n  command_id TEXT PRIMARY KEY,\n  provisioning_request_id TEXT NOT NULL UNIQUE,\n  command_type TEXT NOT NULL CHECK (command_type = \u0027CREATE_GAME_ACCOUNT\u0027),\n  environment TEXT NOT NULL,\n  server_id TEXT NOT NULL,\n  legacy_login TEXT NOT NULL,\n  credential_ciphertext TEXT NOT NULL,\n  credential_nonce TEXT NOT NULL,\n  credential_tag TEXT NOT NULL,\n  credential_key_version TEXT NOT NULL,\n  credential_algorithm TEXT NOT NULL CHECK (credential_algorithm = \u0027AES-256-GCM\u0027),\n  request_hash TEXT NOT NULL,\n  status TEXT NOT NULL CHECK (status IN (\u0027CREATED\u0027,\u0027QUEUED\u0027,\u0027AVAILABLE\u0027,\u0027CLAIMED\u0027,\u0027SUCCEEDED\u0027,\u0027FAILED_RETRYABLE\u0027,\u0027FAILED_FINAL\u0027,\u0027EXPIRED\u0027)),\n  available_at TEXT NULL,\n  expires_at TEXT NOT NULL,\n  claimed_at TEXT NULL,\n  claim_expires_at TEXT NULL,\n  claimed_by TEXT NULL,\n  attempt_count INTEGER NOT NULL DEFAULT 0,\n  completed_at TEXT NULL,\n  result_code TEXT NULL,\n  result_memb_guid INTEGER NULL,\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL\n)"
+                    }
+                ]
+}

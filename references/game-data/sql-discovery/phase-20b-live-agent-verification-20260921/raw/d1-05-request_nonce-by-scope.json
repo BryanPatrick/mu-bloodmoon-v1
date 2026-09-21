@@ -1,0 +1,22 @@
+﻿{
+    "capturedAtUtc":  "2026-09-21T12:30:03.3872532+00:00",
+    "database":  "bloodmoon-game-data",
+    "target":  "remote",
+    "readOnly":  true,
+    "query":  "SELECT scope, COUNT(*) AS n, MIN(expires_at) AS oldest_expiry, MAX(expires_at) AS newest_expiry FROM request_nonce GROUP BY scope ORDER BY scope",
+    "success":  true,
+    "results":  [
+                    {
+                        "scope":  "command:claim",
+                        "n":  52,
+                        "oldest_expiry":  "2026-09-21T12:30:01.294Z",
+                        "newest_expiry":  "2026-09-21T12:39:58.984Z"
+                    },
+                    {
+                        "scope":  "ingest:heartbeat",
+                        "n":  19,
+                        "oldest_expiry":  "2026-09-21T12:30:28.813Z",
+                        "newest_expiry":  "2026-09-21T12:39:36.784Z"
+                    }
+                ]
+}

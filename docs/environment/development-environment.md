@@ -22,7 +22,7 @@ Este documento registra, de forma permanente, o que existe (ou não existe) na m
 | Node.js | Sim | (via `node --version`, usado extensivamente em todo o projeto) | Usado por apps/api, apps/web, apps/game-data-worker |
 | npm | Sim | — | Gerenciador de pacotes do workspace raiz |
 | Git (Git Bash) | Sim | — | Shell POSIX usado pela ferramenta Bash |
-| MySQL local | Sim | — | `bloodmoon_local_claude`, credencial via DPAPI¹, ver `docs/environment/gamebridge-local-testing.md` para o papel dela nos testes do Portal |
+| MySQL local | Sim | — | `bloodmoon_local_claude`, credencial via DPAPI¹, ver ~~`docs/environment/gamebridge-local-testing.md`~~ `docs/gamebridge/gamebridge-local-testing.md` *(caminho corrigido em 2026-09-21, Fase 20B)* para o papel dela nos testes do Portal |
 | Docker | **Não** | — | Confirmado ausente (`docker: command not found`) em múltiplas sessões deste projeto, incluindo esta |
 | SQL Server (qualquer edição) | **Não, antes desta fase** | — | Nenhuma instância local, nenhum `sqlcmd`, nenhum `SqlLocalDB` |
 | .NET SDK | **Não, antes desta fase** | — | Apenas o *runtime* .NET estava presente (`C:\Program Files\dotnet` e `C:\Program Files (x86)\dotnet`, só a pasta `shared`, sem `sdk`) — suficiente para *rodar* um app .NET já compilado, insuficiente para compilar ou rodar testes do GameBridge Agent (`apps/game-bridge-agent`, projeto .NET 8) |

@@ -2,7 +2,7 @@
 status: FINDING_FOR_BRYAN_REVIEW
 category: knowledge
 audience: internal (product + engineering + security)
-lastVerified: 2026-09-19
+lastVerified: 2026-09-21
 confidence: HIGH for what the committed code does; MIXED for deployment (see GAMEBRIDGE_DISAMBIGUATION.md Part 5); the game-side behaviour of external CashShopData writes is UNKNOWN and is flagged everywhere it matters
 ---
 
@@ -518,13 +518,13 @@ Evidence: `references/game-data/sql-discovery/phase-20a-live-agent-d1-readonly-2
 | Agent alive? | **yes** — `gamebridge-agent-01` / `bloodmoon-s6`, heartbeat ≈14 s old at capture, buffer `NORMAL`/0 |
 | Command path active? | **yes** — ≈52 signed `command:claim` requests in the 10-minute nonce window (one per ~11 s), 20 heartbeats |
 | Worker code | no code version uploaded after 2026-08-24T17:52Z; later versions are all "Secret Change" |
-| **VPS side** (scheduled task state, process start, binary SHA-256, version, log/ledger timestamps) | **UNVERIFIED** — the read-only SSH inspection was blocked by the session's permission classifier ("Production Reads") and was **not** retried or worked around |
+| **VPS side** (scheduled task state, process start, binary SHA-256, version, log/ledger timestamps) | ~~**UNVERIFIED** — the read-only SSH inspection was blocked by the session's permission classifier ("Production Reads") and was **not** retried or worked around~~ **VERIFIED 2026-09-21 (Phase 20B):** one Agent process running since 2026-08-25, task state Ready, binary 0.1.0+20a0d71c built 2026-08-24 (before the extension existed) (Part 15.2) |
 
 The inspection that would settle the VPS side is: over the audited RemoteOps channel, run only
 `Get-ScheduledTask` + `Get-ScheduledTaskInfo` for `BloodMoonGameBridgeAgent`; `Get-CimInstance Win32_Process`
 filtered to the install directory (name, PID, start time — **no command line**); a top-level `Get-ChildItem` of
 `C:\BloodMoonGameBridgeAgent` (name, size, timestamp — **never** the `secrets` folder or any file
-content); and `Get-FileHash` of the executable/scripts. It needs Bryan to allow that action, or to run it.
+content); and `Get-FileHash` of the executable/scripts. ~~It needs Bryan to allow that action, or to run it.~~ **Done 2026-09-21 (Part 15.2).**
 
 ### 14.5 Prerequisite status (P1–P9)
 
@@ -534,11 +534,11 @@ content); and `Get-FileHash` of the executable/scripts. It needs Bryan to allow 
 | P2 | Read `WZ_SetCoin` / `CashShopData` | **DONE** (14.2) |
 | P3 | Visibility / overwrite hazard | **OPEN** — no runnable lab GameServer; test design ready (14.3) |
 | P4 | SQL-side exactly-once, SQL Server 2014 | **OPEN** — requirements sharpened by 14.2; nothing built |
-| P5 | Worker extension, D1 0004, Agent deploy path | **PARTIAL** — extension preserved and tests re-run (14.9); 0004 not applied; Agent deploy path untested; SQL procedures still untracked |
+| P5 | Worker extension, D1 0004, Agent deploy path | **PARTIAL** — Worker extension **and** SQL artifacts preserved (Phase 20B; 11 of 12 SQL files), tests re-run; 0004 not applied; Agent deploy path untested (the running Agent build predates the extension) |
 | P6 | ADR-0002 amendment (one more `EXECUTE`, kill switch, caps) | **OPEN** |
 | P7 | Chargeback-after-delivery policy | **OPEN** — unresolved, blocks public enablement |
 | P8 | Exclude the new outbox operation from the marketplace script | **OPEN** |
-| P9 | Read-only confirmation of live Agent/D1 | **PARTIAL** — Cloudflare half done, VPS half blocked (14.4) |
+| P9 | Read-only confirmation of live Agent/D1 | ~~PARTIAL — Cloudflare half done, VPS half blocked~~ **DONE 2026-09-21** — both halves verified read-only (Part 15.2) |
 
 ### 14.6 Mandatory properties of a future `CREDIT_GAME_CURRENCY`
 
@@ -577,5 +577,55 @@ The only copy of the Worker code for the four extension command types was uncomm
 `3e69937e` exact files, `6003c59a` manifest; based on `main` `c1b34062`): 3 files, +313/−43, hashes and
 provenance in `docs/gamebridge/worker-extension-preservation-manifest.md` **on that branch**; `tsc` 0 errors,
 Worker suite 55/55 (`commands.spec` 25/25). **Not merged to `main`, not deployed, not canonical.**
-Remaining loss risk: the four SQL procedures (`references/game-data/sql-discovery/gamebridge-extension-20260830/`,
-11 files, one flagged for secret review) are still untracked in the same worktree (GAP-P20-02, GAP-P20-10).
+~~Remaining loss risk: the four SQL procedures (`references/game-data/sql-discovery/gamebridge-extension-20260830/`,
+11 files, one flagged for secret review) are still untracked in the same worktree (GAP-P20-02, GAP-P20-10).~~
+**(Phase 20B, 2026-09-21)** the SQL artifacts are now preserved as well (11 of 12 files, commit `2d0f6106`, manifest
+`ddf50640`); only `local-writer-login.sql` remains untracked and excluded as SECRET_BEARING (GAP-P20-11).
+
+## Part 15 — Phase 20B (2026-09-21): decisions, live verification and preservation
+
+Nothing here implements, enables, deploys, installs or sends anything. No SQL was executed.
+
+### 15.1 Decisions recorded (Bryan, 2026-09-21)
+
+| Decision | Recorded value |
+|---|---|
+| Phase 20A into `main` | done — fast-forward `c1b34062` → `90450060`, no merge commit, no push |
+| Extension SQL | preserved on `gamebridge/preserve-command-extension` **except** `local-writer-login.sql`, excluded until a dedicated secret review (CLAIM-152) |
+| VPS read-only verification | authorised and **done** (15.2) |
+| Lab GameServer | **not to be built now** → `GAME_CURRENCY_VISIBILITY = UNKNOWN` — currency delivery is out of scope for the initial Beta, no runnable lab exists, and a closed-source runtime is not worth introducing only for this evidence now |
+| `CREDIT_GAME_CURRENCY` | **not to be implemented**; recorded as `DOES_NOT_EXIST` — no placeholder created (CLAIM-153) |
+| Terminology cleanup | documentation-only, non-blocking (Part 7 of `GAMEBRIDGE_DISAMBIGUATION.md`) |
+| Unchanged | `BETA_INITIAL_GAME_CURRENCY_DELIVERY = OUT_OF_SCOPE` · `PORTAL_WC_TARGET_GAME_CURRENCY = UNRESOLVED` · `GAME_CURRENCY_DELIVERY_DIRECTION = OPTION_B` · `GAME_CURRENCY_DELIVERY_IMPLEMENTATION_APPROVED = NO` (CLAIM-154) |
+
+The Part 14.3 visibility test design stays on file, **parked**: nobody is to build the lab for it now.
+
+### 15.2 Live state — verified on both halves (`references/game-data/sql-discovery/phase-20b-live-agent-verification-20260921/`)
+
+| Side | State | Key facts |
+|---|---|---|
+| Cloudflare | **ACTIVE** | migrations 0001–0003 (**0004 not applied**); `game_command` still CREATE-only; 2 commands ever, none since 2026-08-25; heartbeat 23 s old; ≈52 claim polls / 10 min |
+| VPS | **ACTIVE** | scheduled task `BloodMoonGameBridgeAgent` **Ready**; one `BloodMoonGameBridgeAgent.exe` (PID 10388) running since **2026-08-25T01:33Z**; single binary sha256 `5BED7747A6A9636C250B98C8DA575E2F27981C16576C588771E8349AB02AB33C`, version `0.1.0+20a0d71c…` |
+| End to end | **ACTIVE for `CREATE_GAME_ACCOUNT`, traffic idle** | no command was sent; a fresh round trip is not demonstrated |
+
+What the version tells us: the binary embeds commit `20a0d71c` (2026-08-24 12:49 −0300) — which has **no** `GameCommandWorker.cs` —
+and was built at 14:49 −0300, five minutes **before** the transport commit `7b4fed13` (14:55). So it was built from
+the parent commit plus uncommitted changes (the same pre-commit pattern as the Worker upload), and, because the
+extension handlers date from 2026-08-30, the running Agent **cannot** contain them (inference by chronology, CLAIM-150;
+the binary was not string-scanned). **Implication for any future extension deploy:** it needs a **new Agent build**;
+the deploy path for a new build has never been exercised (P5).
+
+Not established: why the task is `Ready` while the process runs (triggers and the start script were not read), so
+**reboot persistence of the Agent is unverified**; whether the Agent's logs show errors (not read).
+
+### 15.3 Prerequisites after Phase 20B
+
+P2 **done** · P9 **done** · P5 **partial** (Worker and SQL preserved; 0004 not applied; new-build deploy untested) ·
+P1, P3, P4, P6, P7, P8 **open**. Accepting Option B as a direction, and this phase's evidence, closed no gap
+that the direction decision left open (Part 14.1).
+
+### 15.4 Extension preservation state
+
+Worker: `gamebridge/preserve-command-extension` (`3e69937e` + manifest `6003c59a`). SQL: `2d0f6106` (11 files, byte-identical) +
+manifest `ddf50640`. **Not merged, not deployed, not canonical.** Excluded: `local-writer-login.sql` (SECRET_BEARING; original still
+untracked in openbeta; GAP-P20-11). The command deployment matrix is Part 8 of `GAMEBRIDGE_DISAMBIGUATION.md`.
