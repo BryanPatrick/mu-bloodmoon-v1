@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-21T12:47:57.695Z",
+  "generatedAt": "2026-09-21T16:48:31.534Z",
   "schema": {
     "claimId": "references atomic-claims.json",
     "priority": "HIGH | MEDIUM | LOW",
@@ -1006,7 +1006,7 @@
       "target": "extension command-type strings inside a read-only copy of the deployed executable",
       "safeMethod": "download a read-only copy of BloodMoonGameBridgeAgent.exe (RemoteOps `bm-remote download`) and string-scan it locally -- not done: outside the Phase 20B authorised inspection list",
       "status": "QUEUED",
-      "result": "QUEUED -- chronology already makes the conclusion strong; a string scan would make it proven.",
+      "result": "QUEUED -- chronology already makes the conclusion strong; a string scan would make it proven. [20C] Bryan (2026-09-21): not to be done now (CLAIM-157); the item stays QUEUED, non-blocking.",
       "evidenceRefs": []
     }
   ],

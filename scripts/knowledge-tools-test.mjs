@@ -249,9 +249,26 @@ check('Phase 20B claims keep their evidence ceiling and decisions stay decision 
   if (by['CLAIM-154'].verificationStatus !== 'NOT_APPLICABLE' || by['CLAIM-154'].sourceAuthority !== 'INTERNAL_DECISION') throw new Error('CLAIM-154 must stay an INTERNAL_DECISION record')
   // the excluded credential-bearing file must never have its contents or password in the machine layer
   const blob = JSON.stringify(claims)
-  if (/PASSWORDs*=s*N?'[^']+'/i.test(blob)) throw new Error('a password literal leaked into the machine layer')
+  if (/PASSWORD\s*=\s*N?'[^']+'/i.test(blob)) throw new Error('a password literal leaked into the machine layer')
   // CREDIT_GAME_CURRENCY stays non-existent
   if (!/does not exist/.test(by['CLAIM-153'].statement)) throw new Error('CLAIM-153 must state that CREDIT_GAME_CURRENCY does not exist')
+})
+
+check('Phase 20C policy claims stay decision records and carry no credential material', () => {
+  const claims = JSON.parse(readFileSync(join(ROOT, 'knowledge', 'vendor-sweep', 'atomic-claims.json'), 'utf8')).claims
+  const by = Object.fromEntries(claims.map(c => [c.claimId, c]))
+  for (const id of ['CLAIM-156', 'CLAIM-157']) {
+    const c = by[id]
+    if (!c) throw new Error(`${id} is missing`)
+    if (c.verificationStatus !== 'NOT_APPLICABLE' || c.sourceAuthority !== 'INTERNAL_DECISION') throw new Error(`${id} must stay an INTERNAL_DECISION record`)
+    if (/PASSWORD\s*[=:]|CREATE\s+LOGIN/i.test(JSON.stringify(c))) throw new Error(`${id} must not carry credential syntax`)
+  }
+  // the exclusion policy names the file but never turns into a preservation claim
+  if (!/local-writer-login\.sql/.test(by['CLAIM-156'].statement) || !/EXCLUDED_SECRET_BEARING_SOURCE/.test(by['CLAIM-156'].statement)) throw new Error('CLAIM-156 must state the exclusion policy for local-writer-login.sql')
+  // the deferred follow-ups must not upgrade the binary-build inference
+  if (by['CLAIM-150'].verificationStatus !== 'UNVERIFIED') throw new Error('CLAIM-150 must stay UNVERIFIED while the binary scan is deferred')
+  // the whole machine layer, including the amended notes, stays free of a password literal
+  if (/PASSWORD\s*=\s*N?'[^']+'/i.test(JSON.stringify(claims))) throw new Error('a password literal leaked into the machine layer')
 })
 
 console.log('')

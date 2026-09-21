@@ -1,6 +1,6 @@
 {
   "sweepId": "knowledge-sweep-2026-08-25",
-  "lastUpdatedUtc": "2026-09-21T12:47:57.695Z",
+  "lastUpdatedUtc": "2026-09-21T16:48:31.534Z",
   "status": "PARTIAL",
   "phase6Completed": [
     "Real VPS access via existing RemoteOps tooling (D:\\MU\\Tools\\RemoteOps\\bm-remote.cmd, SSH-key-based, read-only). Inventoried Data\\Custom (90 files), Data\\Event (16 files), Data\\Command (does not exist as a folder -- commands live in GameServer\\DATA\\GameServerInfo-Command.dat/CommandGM.dat instead), Data\\Util (5 files), Data root (18 top-level subfolders total), and GameServer\\DATA (9 files) via inventory-json. Downloaded and read ~20 real config files.",
@@ -103,6 +103,10 @@
   ],
   "phase20bCompleted": [
     "Phase 20B (2026-09-21): Phase 20A merged fast-forward into local main; live Agent verified read-only on both halves (CLAIM-149..151); the extension SQL preserved except local-writer-login.sql (CLAIM-152); command deployment matrix and CREDIT_GAME_CURRENCY = DOES_NOT_EXIST (CLAIM-153); decisions (CLAIM-154); kill-switch binding traced (CLAIM-155). Claim total 148 -> 155.",
+    "Re-run the three generators after any claim edit: knowledge-transcript-inventory.mjs, knowledge-canonical-facts.mjs --write, knowledge-provenance-report.mjs --write."
+  ],
+  "phase20cCompleted": [
+    "Phase 20C (2026-09-21): local main fast-forwarded to the full Phase 20B knowledge commit 75d11eac; local-writer-login.sql recorded as a standing exclusion policy (CLAIM-156, GAP-P20-11 RESOLVED_AS_POLICY); the optional binary string scan and scheduled-task trigger read deferred by Bryan (CLAIM-157, GAP-P20-02 residue open and non-blocking); no production contact, no live test.",
     "Re-run the three generators after any claim edit: knowledge-transcript-inventory.mjs, knowledge-canonical-facts.mjs --write, knowledge-provenance-report.mjs --write."
   ]
 }

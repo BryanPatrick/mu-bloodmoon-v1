@@ -580,7 +580,7 @@ Worker suite 55/55 (`commands.spec` 25/25). **Not merged to `main`, not deployed
 ~~Remaining loss risk: the four SQL procedures (`references/game-data/sql-discovery/gamebridge-extension-20260830/`,
 11 files, one flagged for secret review) are still untracked in the same worktree (GAP-P20-02, GAP-P20-10).~~
 **(Phase 20B, 2026-09-21)** the SQL artifacts are now preserved as well (11 of 12 files, commit `2d0f6106`, manifest
-`ddf50640`); only `local-writer-login.sql` remains untracked and excluded as SECRET_BEARING (GAP-P20-11).
+`ddf50640`); only `local-writer-login.sql` remains untracked and excluded as SECRET_BEARING (GAP-P20-11 — **resolved as policy in Phase 20C**, see 15.5).
 
 ## Part 15 — Phase 20B (2026-09-21): decisions, live verification and preservation
 
@@ -591,7 +591,7 @@ Nothing here implements, enables, deploys, installs or sends anything. No SQL wa
 | Decision | Recorded value |
 |---|---|
 | Phase 20A into `main` | done — fast-forward `c1b34062` → `90450060`, no merge commit, no push |
-| Extension SQL | preserved on `gamebridge/preserve-command-extension` **except** `local-writer-login.sql`, excluded until a dedicated secret review (CLAIM-152) |
+| Extension SQL | preserved on `gamebridge/preserve-command-extension` **except** `local-writer-login.sql`, ~~excluded until a dedicated secret review~~ **(Phase 20C: excluded as a standing policy — CLAIM-156)** (CLAIM-152) |
 | VPS read-only verification | authorised and **done** (15.2) |
 | Lab GameServer | **not to be built now** → `GAME_CURRENCY_VISIBILITY = UNKNOWN` — currency delivery is out of scope for the initial Beta, no runnable lab exists, and a closed-source runtime is not worth introducing only for this evidence now |
 | `CREDIT_GAME_CURRENCY` | **not to be implemented**; recorded as `DOES_NOT_EXIST` — no placeholder created (CLAIM-153) |
@@ -628,4 +628,16 @@ that the direction decision left open (Part 14.1).
 
 Worker: `gamebridge/preserve-command-extension` (`3e69937e` + manifest `6003c59a`). SQL: `2d0f6106` (11 files, byte-identical) +
 manifest `ddf50640`. **Not merged, not deployed, not canonical.** Excluded: `local-writer-login.sql` (SECRET_BEARING; original still
-untracked in openbeta; GAP-P20-11). The command deployment matrix is Part 8 of `GAMEBRIDGE_DISAMBIGUATION.md`.
+untracked in openbeta; GAP-P20-11, resolved as policy in Phase 20C — 15.5). The command deployment matrix is Part 8 of `GAMEBRIDGE_DISAMBIGUATION.md`.
+
+### 15.5 Phase 20C closure (2026-09-21)
+
+Documentation and git bookkeeping only. **No production contact, no live test, no SQL executed, no command sent.**
+
+| Item | Recorded value |
+|---|---|
+| `main` | fast-forwarded `90450060` → `75d11eac` (the full Phase 20B knowledge commit), no merge commit, not pushed |
+| `local-writer-login.sql` | `LOCAL_WRITER_LOGIN_POLICY = EXCLUDED_SECRET_BEARING_SOURCE` (Bryan; CLAIM-156) — never copied into tracked source; GAP-P20-11 = **RESOLVED_AS_POLICY**. No redacted template created (judgement recorded in GAP-P20-11) |
+| Optional Agent follow-ups | binary string scan and scheduled-task trigger/action read **deferred** by Bryan (CLAIM-157) — GAP-P20-02 residue **OPEN, NON_BLOCKING**; CLAIM-150 stays UNVERIFIED |
+| Reconfirmed, not re-tested | `CREATE_GAME_ACCOUNT` DEPLOYED_ACTIVE · `GRANT_VIP`, `SYNC_VIP_TIER`, `ANONYMIZE_GAME_ACCOUNT`, `PURGE_GAME_ACCOUNT` IMPLEMENTED_NOT_DEPLOYED · `CREDIT_GAME_CURRENCY` DOES_NOT_EXIST · Cloudflare side ACTIVE · VPS side ACTIVE · end to end ACTIVE for `CREATE_GAME_ACCOUNT` only (as observed 2026-09-21) |
+| Currency delivery (parked, unchanged) | `BETA_INITIAL_GAME_CURRENCY_DELIVERY = OUT_OF_SCOPE` · `PORTAL_WC_TARGET_GAME_CURRENCY = UNRESOLVED` · `GAME_CURRENCY_DELIVERY_DIRECTION = OPTION_B` · `GAME_CURRENCY_DELIVERY_IMPLEMENTATION_APPROVED = NO` · `GAME_CURRENCY_VISIBILITY = UNKNOWN` |

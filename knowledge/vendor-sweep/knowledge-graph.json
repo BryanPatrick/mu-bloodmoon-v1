@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-21T12:47:57.695Z",
+  "generatedAt": "2026-09-21T16:48:31.534Z",
   "format": "JSON graph -- flat nodes[]/edges[] arrays, each node/edge has a stable id. Chosen over SQLite/JSONL to match this sweep's existing convention (plain JSON files, no new runtime dependency) and because the graph is currently small (30 nodes, 33 edges) -- revisit as a JSONL or SQLite store if it grows past a few hundred nodes and querying flat JSON becomes unwieldy.",
   "nodes": [
     {
@@ -1643,6 +1643,16 @@
       "from": "CLAIM-155",
       "type": "RELATED_TO",
       "to": "CLAIM-135"
+    },
+    {
+      "from": "CLAIM-156",
+      "type": "RELATED_TO",
+      "to": "CLAIM-152"
+    },
+    {
+      "from": "CLAIM-157",
+      "type": "RELATED_TO",
+      "to": "CLAIM-150"
     }
   ],
   "note": "CLAIM-* ids referenced as edge endpoints are NOT duplicated as separate nodes here to avoid redundancy with atomic-claims.json -- treat them as a second node namespace (claims) that this graph references but atomic-claims.json owns. Phase 3 adds the first real MONSTER/ITEM/EVENT/NPC/MAP entities (from Data/EventItemBagManager.txt, Data/EventItemBag/, and 3 real CustomEvent*.txt files) -- see knowledge/vendor-sweep/entities/gameplay-entities.json for the full roster (17 monster identities including a 19-boss 'Golden series' bundle, 17 item identities, 11 event groupings), only the headline entities are represented as individual graph nodes here to keep the graph a navigable summary rather than a full duplicate of the entities file. The MAP-1->MONSTER->ITEM edges are explicitly marked _INFERRED in their edge type name, per the required FACT/INFERENCE separation -- no edge here claims a config-explicit monster-kill-drops-item relationship, since none was found. Maps are numeric-ID-only (0, 1, 40) -- no name has been confirmed for any of them from real evidence, only from generic MU memory, which this sweep deliberately does not use."

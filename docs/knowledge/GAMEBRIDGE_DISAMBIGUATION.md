@@ -174,7 +174,7 @@ Server was **not** contacted in Phase 20B.
 | `CREDIT_GAME_CURRENCY` | **no** | **no** | **no** | **no** | **none** | — | — | **DOES_NOT_EXIST** (CLAIM-153) |
 
 The SQL artifacts, their classification and the excluded credential-bearing file are documented in
-`PRESERVATION-MANIFEST.md` on the branch `gamebridge/preserve-command-extension` (CLAIM-152).
+`PRESERVATION-MANIFEST.md` on the branch `gamebridge/preserve-command-extension` (CLAIM-152). **(Phase 20C, 2026-09-21)** The exclusion is now a standing policy — `LOCAL_WRITER_LOGIN_POLICY = EXCLUDED_SECRET_BEARING_SOURCE` (CLAIM-156, GAP-P20-11 resolved as policy): the original is never copied into tracked source.
 
 ### Live state, kept apart (2026-09-21)
 

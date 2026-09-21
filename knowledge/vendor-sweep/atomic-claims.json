@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-21T12:47:57.695Z",
+  "generatedAt": "2026-09-21T16:48:31.534Z",
   "schema": {
     "claimId": "string, CLAIM-NNN",
     "statement": "string, ONE atomic fact -- no 'and', no compound claims",
@@ -4123,7 +4123,7 @@
           "path": "PRESERVATION-MANIFEST.md on gamebridge/preserve-command-extension"
         }
       ],
-      "notes": "The password value of the excluded file was never printed (only its shape was checked; the folder README says it is a placeholder -- unverified). The phase-K review package procedure hashes are stale (files edited in Phase L). GAP-P20-10 resolved for the 11 preserved files; GAP-P20-11 tracks the excluded file.",
+      "notes": "[20C] The exclusion of local-writer-login.sql is now a standing policy, not a pending review: see CLAIM-156. The password value of the excluded file was never printed (only its shape was checked; the folder README says it is a placeholder -- unverified). The phase-K review package procedure hashes are stale (files edited in Phase L). GAP-P20-10 resolved for the 11 preserved files; GAP-P20-11 tracks the excluded file.",
       "claimId": "CLAIM-152",
       "sourceId": "code-read-2026-09-18",
       "sourceAuthority": "CURRENT_CODE",
@@ -4183,7 +4183,7 @@
       "season": null,
       "providerVersion": null,
       "verificationTargets": [],
-      "notes": "NOT_APPLICABLE verification: a decision record. It leaves CLAIM-129/147/148 unchanged (Portal WC target UNRESOLVED, Beta out of scope, Option B a direction only).",
+      "notes": "[20C] The \"excluded until a dedicated secret review\" wording is superseded by the standing exclusion policy (CLAIM-156); the two optional Agent follow-ups are deferred (CLAIM-157). NOT_APPLICABLE verification: a decision record. It leaves CLAIM-129/147/148 unchanged (Portal WC target UNRESOLVED, Beta out of scope, Option B a direction only).",
       "claimId": "CLAIM-154",
       "sourceId": "internal-doc-cross-reference",
       "sourceAuthority": "INTERNAL_DECISION",
@@ -4232,6 +4232,54 @@
       ],
       "topic": "systems",
       "confidence": "CONFIRMED_STATIC_CODE_READ (the standard .NET double-underscore section separator; not exercised)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [],
+      "notes": "NOT_APPLICABLE verification: a decision record; no credential value appears here or in the documents. Phase 20C judgement, not a Bryan decision: no redacted template was created, because the login-creation and grant pattern is already tracked with a non-literal password (phase-3c proposed-writer-login-grants.sql) and the extension grants are preserved (proposed-writer-login-grants-extension.sql), so a template would add no information. The original file stays untouched and untracked in the openbeta worktree.",
+      "claimId": "CLAIM-156",
+      "sourceId": "internal-doc-cross-reference",
+      "sourceAuthority": "INTERNAL_DECISION",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "NOT_APPLICABLE",
+      "statement": "Bryan decided on 2026-09-21 (Phase 20C) that the credential-bearing file local-writer-login.sql stays excluded from tracked source as a standing policy (LOCAL_WRITER_LOGIN_POLICY = EXCLUDED_SECRET_BEARING_SOURCE): the original is never copied into a tracked file, and only its path, size, SHA-256 and structural counts remain recorded.",
+      "sourceLocation": "Phase 20C brief (2026-09-21), decision 2; PRESERVATION-MANIFEST.md on gamebridge/preserve-command-extension; docs/knowledge/KNOWLEDGE_GAPS.md GAP-P20-11",
+      "entityTypes": [
+        "SYSTEM",
+        "DECISION"
+      ],
+      "entities": [
+        "local-writer-login.sql",
+        "LOCAL_WRITER_LOGIN_POLICY",
+        "GAP-P20-11"
+      ],
+      "topic": "systems",
+      "confidence": "CONFIRMED_OPERATOR (recorded decision)"
+    },
+    {
+      "season": null,
+      "providerVersion": null,
+      "verificationTargets": [],
+      "notes": "NOT_APPLICABLE verification: a decision record. It changes no evidence: CLAIM-149/151 stay CONFIRMED_BY_RUNTIME, CLAIM-150 stays a chronology inference. Currency delivery stays parked; CLAIM-129/147/148/154 are unchanged.",
+      "claimId": "CLAIM-157",
+      "sourceId": "internal-doc-cross-reference",
+      "sourceAuthority": "INTERNAL_DECISION",
+      "bloodMoonStatus": "BLOODMOON_CONFIRMED",
+      "verificationStatus": "NOT_APPLICABLE",
+      "statement": "Bryan decided on 2026-09-21 (Phase 20C) not to perform, for now, the two optional read-only follow-ups for the deployed GameBridge Agent -- a string scan of a copy of its binary and a read of the scheduled task triggers and action -- so the residue of GAP-P20-02 stays open and non-blocking and CLAIM-150 stays UNVERIFIED.",
+      "sourceLocation": "Phase 20C brief (2026-09-21), decision 3; docs/knowledge/KNOWLEDGE_GAPS.md GAP-P20-02",
+      "entityTypes": [
+        "SYSTEM",
+        "DECISION"
+      ],
+      "entities": [
+        "BloodMoonGameBridgeAgent",
+        "GAP-P20-02",
+        "CLAIM-150"
+      ],
+      "topic": "operations",
+      "confidence": "CONFIRMED_OPERATOR (recorded decision)"
     }
   ]
 }

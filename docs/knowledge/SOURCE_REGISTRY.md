@@ -51,7 +51,7 @@ queried directly this phase:
 | Metric | Count |
 |---|---|
 | Cataloged sources (`knowledge-index.json`) | **44** (41 before Phase 18D; +KI-042/043/044) |
-| Atomic claims | **155** (99 before Phase 18D; +CLAIM-100..124 in 18D; +CLAIM-125..138 in Phase 20; +CLAIM-139..148 in Phase 20A; +CLAIM-149..155 in Phase 20B), of which 98 are canonical facts (`CONFIRMED_BY_*`) |
+| Atomic claims | **157** (99 before Phase 18D; +CLAIM-100..124 in 18D; +CLAIM-125..138 in Phase 20; +CLAIM-139..148 in Phase 20A; +CLAIM-149..155 in Phase 20B; +CLAIM-156..157 in Phase 20C), of which 98 are canonical facts (`CONFIRMED_BY_*`) |
 | project-gamers-oficial videos tracked | 108 (42 with a KI entry and claims; 66 pure RAW) |
 | Verification queue | 84 items: 63 DONE, 5 QUEUED, 16 BLOCKED |
 | Wiki candidates | 4 (all `systems`/`guides` category, none promoted) |
@@ -133,4 +133,4 @@ including this one).
 | Folder / branch | Kind | What | Notes |
 |---|---|---|---|
 | `references/game-data/sql-discovery/phase-20b-live-agent-verification-20260921` | **RAW**, read-only | one audited read-only VPS inspection (scheduled task, process, binary sha256/version) + SELECT-only remote D1 and Worker deployment list | the exact script is in `tools/`; no secrets folder, no command line, no file contents read; no command sent |
-| branch `gamebridge/preserve-command-extension` (`2d0f6106`, `ddf50640`) | preserved source | 11 SQL artifacts (byte-identical) + `PRESERVATION-MANIFEST.md` | `local-writer-login.sql` excluded (SECRET_BEARING); not merged, not deployed |
+| branch `gamebridge/preserve-command-extension` (`2d0f6106`, `ddf50640`) | preserved source | 11 SQL artifacts (byte-identical) + `PRESERVATION-MANIFEST.md` | `local-writer-login.sql` excluded (SECRET_BEARING; standing policy since Phase 20C, CLAIM-156); not merged, not deployed |
