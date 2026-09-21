@@ -63,8 +63,17 @@ literal**, so it is **SECRET_BEARING** and is excluded from tracked source until
   published in the tracked `docs/gamebridge/gamebridge-second-review-package.md`, so it reveals nothing new.
 * The original remains **untracked in openbeta** (residual loss risk; low impact — the login is for the
   disposable local test database and is regenerable from the grants pattern).
-* To lift the exclusion: someone reviews it, then either commits it unchanged (if it is verifiably a
-  placeholder) or a redacted copy plus a note. Tracked as **GAP-P20-11**.
+* ~~To lift the exclusion: someone reviews it, then either commits it unchanged (if it is verifiably a
+  placeholder) or a redacted copy plus a note. Tracked as **GAP-P20-11**.~~
+
+> **Annotation (2026-09-21, Phase 20C) — superseded:** Bryan decided that the exclusion is a **standing
+> policy**, not a pending review: `LOCAL_WRITER_LOGIN_POLICY = EXCLUDED_SECRET_BEARING_SOURCE`. The
+> original is never copied into tracked source; only the metadata above (path, size, line count, sha256,
+> structural counts) stays recorded. No redacted template was created: the login-creation and grant
+> pattern is already tracked with a non-literal password
+> (`references/game-data/sql-discovery/phase-3c-write-schema-verification-20260824/derived/proposed-writer-login-grants.sql`)
+> and the extension grants are preserved here (`derived/proposed-writer-login-grants-extension.sql`).
+> GAP-P20-11 is **RESOLVED_AS_POLICY** (`docs/knowledge/KNOWLEDGE_GAPS.md`, CLAIM-156, on the knowledge branch).
 
 ## Hash drift versus the Phase K review package
 
