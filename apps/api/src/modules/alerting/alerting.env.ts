@@ -58,6 +58,46 @@ export function emailAlertRecipients(): string {
   return process.env.ALERT_EMAIL_TO || ''
 }
 
+// Phase 7G -- provider-specific alert evaluation is independently gated
+// from outbound delivery. Missing configuration remains false, so an inert
+// deploy cannot unexpectedly start a polling workload or send a message.
+export function isAsaasOperationalAlertingEnabled(): boolean {
+  return process.env.ASAAS_OPERATIONAL_ALERTS_ENABLED === 'true'
+}
+
+function positiveNumber(name: string, fallback: number): number {
+  const value = Number(process.env[name])
+  return Number.isFinite(value) && value > 0 ? value : fallback
+}
+
+export function asaasOperationalAlertIntervalMs(): number {
+  return positiveNumber('ASAAS_OPERATIONAL_ALERT_INTERVAL_MS', 60_000)
+}
+
+export function asaasProvider5xxThreshold(): number {
+  return positiveNumber('ASAAS_PROVIDER_5XX_ALERT_THRESHOLD', 5)
+}
+
+export function asaasProvider5xxWindowMs(): number {
+  return positiveNumber('ASAAS_PROVIDER_5XX_ALERT_WINDOW_MS', 5 * 60_000)
+}
+
+export function asaasInvalidWebhookAuthThreshold(): number {
+  return positiveNumber('ASAAS_INVALID_WEBHOOK_AUTH_ALERT_THRESHOLD', 5)
+}
+
+export function asaasInvalidWebhookAuthWindowMs(): number {
+  return positiveNumber('ASAAS_INVALID_WEBHOOK_AUTH_ALERT_WINDOW_MS', 5 * 60_000)
+}
+
+export function asaasReconcileRequiredAgeMs(): number {
+  return positiveNumber('ASAAS_RECONCILE_REQUIRED_ALERT_AGE_MS', 15 * 60_000)
+}
+
+export function asaasManualReviewAgeMs(): number {
+  return positiveNumber('ASAAS_MANUAL_REVIEW_ALERT_AGE_MS', 30 * 60_000)
+}
+
 export function isWebhookChannelEnabled(): boolean {
   return process.env.ALERT_WEBHOOK_ENABLED === 'true' && Boolean(process.env.ALERT_WEBHOOK_URL)
 }

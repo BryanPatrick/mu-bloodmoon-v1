@@ -212,6 +212,26 @@ describe('Asaas sandbox adapter (mock HTTP only)', () => {
     await expect(new AsaasPaymentProvider().getOrder('pay_x')).rejects.toThrow()
     await expect(new AsaasPaymentProvider().refundOrder()).rejects.toThrow()
   })
+
+  it('records a safe durable event for provider 5xx responses', async () => {
+    global.fetch = jest.fn(async () => reply({ error: 'synthetic' }, 503)) as typeof fetch
+    const observability = { recordOperationalEvent: jest.fn(async () => undefined) }
+    await expect(new AsaasPaymentProvider(observability as never).getOrder('pay_x')).rejects.toThrow()
+    expect(observability.recordOperationalEvent).toHaveBeenCalledWith(expect.objectContaining({
+      module: 'payments', eventType: 'ASAAS_PROVIDER_5XX', severity: 'WARNING',
+      data: { category: 'ASAAS_PROVIDER_5XX', httpStatus: 503 }
+    }))
+  })
+
+  it('keeps provider authentication failures immediate and critical', async () => {
+    global.fetch = jest.fn(async () => reply({ error: 'synthetic' }, 401)) as typeof fetch
+    const observability = { recordOperationalEvent: jest.fn(async () => undefined) }
+    await expect(new AsaasPaymentProvider(observability as never).getOrder('pay_x')).rejects.toThrow()
+    expect(observability.recordOperationalEvent).toHaveBeenCalledWith(expect.objectContaining({
+      module: 'payments', eventType: 'ASAAS_PROVIDER_AUTH_FAILURE', severity: 'CRITICAL',
+      data: { category: 'ASAAS_PROVIDER_AUTH_FAILURE', httpStatus: 401 }
+    }))
+  })
 })
 
 describe('Asaas status mapping', () => {

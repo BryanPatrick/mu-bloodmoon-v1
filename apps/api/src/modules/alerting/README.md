@@ -68,6 +68,28 @@ in Part 13 had no detector at all before this phase:
   code path here that could, since `GameDataClient` exposes nothing but a
   status read.
 
+## Asaas operational gates (Phase 7G)
+
+`AsaasOperationalAlertService` evaluates four provider-specific conditions
+from durable database rows: five provider 5xx events in a rolling five-minute
+window, five rejected webhook authentications in a rolling five-minute window,
+`RECONCILE_REQUIRED` older than 15 minutes, and Asaas `MANUAL_REVIEW` records
+older than 30 minutes. Every number is configurable. The poller is separately
+opt-in through `ASAAS_OPERATIONAL_ALERTS_ENABLED`; missing means false.
+
+Each condition uses a stable `SystemAlert` source key. Repeated active polls
+update one row; `AlertDispatchState` applies the existing outbound cooldown.
+Clearing resolves the alert and stores a safe recovery event. Recurrence
+reopens the same alert and clears only its dispatch cooldown. Rolling input,
+condition state and dispatch state therefore survive an application restart.
+Provider 401/403 remains an immediate CRITICAL event; webhook-auth rejection is
+a WARNING input to the aggregate threshold. Confirmed final credit failure
+remains immediate through the durable inbox worker.
+
+Gate metadata is restricted to category, count, duration/age and HTTP status.
+It never includes CPF/CNPJ, legal name, API key, webhook token, billing payload
+or database credentials.
+
 ## `/internal/ops-events` (Part 17 — backup failure alerting)
 
 A machine-to-machine ingest endpoint for tooling that has no user session
@@ -103,6 +125,12 @@ third-party webhook receiver.
 | `ALERT_MIN_SEVERITY` | `WARNING` | Part 15: only WARNING/ERROR/CRITICAL notify by default. |
 | `ALERT_COOLDOWN_MS` | `900000` (15 min) | Part 14: minimum gap between re-notifications of the same open alert. |
 | `ALERT_EMAIL_ENABLED` / `ALERT_EMAIL_TO` | off | Comma-separated recipient list. |
+| `ASAAS_OPERATIONAL_ALERTS_ENABLED` | `false` | Enables durable Asaas gate evaluation; does not enable delivery. |
+| `ASAAS_OPERATIONAL_ALERT_INTERVAL_MS` | `60000` | Gate evaluation interval. |
+| `ASAAS_PROVIDER_5XX_ALERT_THRESHOLD` / `ASAAS_PROVIDER_5XX_ALERT_WINDOW_MS` | `5` / `300000` | Provider 5xx rolling threshold. |
+| `ASAAS_INVALID_WEBHOOK_AUTH_ALERT_THRESHOLD` / `ASAAS_INVALID_WEBHOOK_AUTH_ALERT_WINDOW_MS` | `5` / `300000` | Rejected webhook-auth rolling threshold. |
+| `ASAAS_RECONCILE_REQUIRED_ALERT_AGE_MS` | `900000` | Maximum age before reconciliation alert. |
+| `ASAAS_MANUAL_REVIEW_ALERT_AGE_MS` | `1800000` | Maximum age before manual-review alert. |
 | `ALERT_WEBHOOK_ENABLED` / `ALERT_WEBHOOK_URL` | off | Generic JSON webhook target. |
 | `OPS_EVENT_INGEST_TOKEN` | unset (endpoint rejects everything) | Shared secret for `/internal/ops-events`. |
 | `GAMEBRIDGE_HEARTBEAT_ALERT_ENABLED` | `false` | Master switch for the heartbeat poller. |
@@ -118,6 +146,10 @@ a pure no-op: `AlertDispatchState` rows simply never get written, no email
 is sent, no webhook fires. This phase does not require any production
 wiring — see `docs/operations/phase-aa-ops-hardening-report.md` for what an
 operator needs to configure to actually turn it on.
+
+`ALERT_EMAIL_ENABLED=true` without `ALERT_EMAIL_TO` is still disabled. The
+event and alert remain in the database, no SMTP call is attempted, and the API
+does not crash. No production recipient is stored in this repository.
 
 ## Tests
 

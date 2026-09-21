@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException, ServiceUnavailableException } from '@nestjs/common'
+import { Injectable, Logger, NotFoundException, Optional, ServiceUnavailableException } from '@nestjs/common'
 import { createHash, timingSafeEqual } from 'node:crypto'
 import type { PaymentProvider } from './payment-provider.interface'
 import type {
@@ -8,6 +8,7 @@ import type {
   WebhookVerificationInput
 } from './payment-provider.types'
 import { assertAsaasCreationEnabled, loadAsaasConfig } from './asaas.config'
+import { ObservabilityService } from '../observability/observability.service'
 
 type AsaasCustomer = { id: string; externalReference?: string }
 type AsaasPayment = {
@@ -26,6 +27,7 @@ type AsaasPix = { payload?: string; encodedImage?: string }
 @Injectable()
 export class AsaasPaymentProvider implements PaymentProvider {
   private readonly logger = new Logger(AsaasPaymentProvider.name)
+  constructor(@Optional() private readonly observability?: ObservabilityService) {}
   private config() {
     return loadAsaasConfig()
   }
@@ -192,6 +194,9 @@ export class AsaasPaymentProvider implements PaymentProvider {
         }
       })
       if (!response.ok) this.logger.warn(`ASAAS_PROVIDER_HTTP_ERROR status=${response.status}`)
+      if (response.status >= 500) await this.recordProviderFailure('ASAAS_PROVIDER_5XX', 'WARNING', response.status)
+      if (response.status === 401 || response.status === 403)
+        await this.recordProviderFailure('ASAAS_PROVIDER_AUTH_FAILURE', 'CRITICAL', response.status)
       if (response.status === 404) throw new NotFoundException('ASAAS_RESOURCE_NOT_FOUND')
       if (!response.ok) throw new ServiceUnavailableException(`ASAAS_HTTP_${response.status}`)
       return response.json() as Promise<T>
@@ -202,6 +207,21 @@ export class AsaasPaymentProvider implements PaymentProvider {
       throw new ServiceUnavailableException('ASAAS_PROVIDER_UNAVAILABLE')
     } finally {
       clearTimeout(timeout)
+    }
+  }
+
+  private async recordProviderFailure(eventType: string, severity: 'WARNING' | 'CRITICAL', status: number) {
+    if (!this.observability) return
+    try {
+      await this.observability.recordOperationalEvent({
+        module: 'payments', eventType, severity, entityType: 'AsaasProvider',
+        description: eventType === 'ASAAS_PROVIDER_AUTH_FAILURE'
+          ? 'O provedor Asaas rejeitou a autenticacao da API.'
+          : 'O provedor Asaas respondeu com erro de servidor.',
+        data: { category: eventType, httpStatus: status }
+      })
+    } catch {
+      this.logger.error('ASAAS_PROVIDER_ALERT_RECORD_FAILED')
     }
   }
 }

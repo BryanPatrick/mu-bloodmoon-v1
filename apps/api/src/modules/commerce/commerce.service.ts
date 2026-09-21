@@ -1208,7 +1208,7 @@ export class CommerceService {
       this.logger.warn('ASAAS_WEBHOOK_AUTH_REJECTED')
       try {
         await this.observability.recordOperationalEvent({
-          module: 'store', severity: 'CRITICAL', eventType: 'ASAAS_WEBHOOK_AUTH_REJECTED',
+          module: 'store', severity: 'WARNING', eventType: 'ASAAS_WEBHOOK_AUTH_REJECTED',
           entityType: 'PaymentWebhookEvent', correlationId: randomUUID(),
           description: 'Autenticacao do webhook Asaas rejeitada.', data: { provider: 'asaas' }
         })

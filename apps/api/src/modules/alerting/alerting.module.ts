@@ -9,6 +9,7 @@ import { GameBridgeHeartbeatAlertService } from './gamebridge-heartbeat-alert.se
 import { Http5xxBurstDetector } from './http-5xx-burst-detector'
 import { InternalOpsEventsController } from './internal-ops-events.controller'
 import { InternalOpsEventsGuard } from './internal-ops-events.guard'
+import { AsaasOperationalAlertService } from './asaas-operational-alert.service'
 
 // Phase AA -- proactive alerting foundation. ObservabilityService/
 // SystemAlert/SystemError/OperationalEvent already do the hard part
@@ -32,8 +33,9 @@ import { InternalOpsEventsGuard } from './internal-ops-events.guard'
     AlertSweepService,
     Http5xxBurstDetector,
     GameBridgeHeartbeatAlertService,
+    AsaasOperationalAlertService,
     InternalOpsEventsGuard
   ],
-  exports: [Http5xxBurstDetector, AlertDispatchService, AlertSweepService]
+  exports: [Http5xxBurstDetector, AlertDispatchService, AlertSweepService, AsaasOperationalAlertService]
 })
 export class AlertingModule {}

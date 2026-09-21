@@ -32,6 +32,13 @@ reason to inspect them directly, they'd need to go through File Manager
 or whatever log-viewing surface cPanel exposes for this Node.js app
 (unexplored as of this writing).
 
+Phase 7G host evidence confirms that stderr output is present and hosting logs
+are grouped as monthly gzip files. That proves a logging surface exists, but it
+does **not** prove its retention duration, rotation deletion rule or POSIX
+ownership. Those values remain host metadata gaps. Financial/payment-row
+retention is a separate legal/product decision documented in
+`docs/payments/financial-retention-policy.md`.
+
 ## Retention
 
 Application-level log rotation/retention on the cPanel host was not

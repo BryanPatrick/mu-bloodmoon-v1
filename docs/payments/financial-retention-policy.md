@@ -7,6 +7,11 @@ lastVerified: 2026-09-17
 
 # Financial Retention Policy — Phase 15
 
+`FINANCIAL_RETENTION_POLICY = UNRESOLVED`. This does not block a disabled,
+inert deployment review. It does block public payment enablement. It does not
+by itself block webhook registration because the minimized inbox and financial
+audit are preserved and this phase introduces no deletion behavior.
+
 Bryan's instruction: financial records (`RechargeIntent`, `PurchaseIntent`) may carry an independent retention obligation and must never be deleted alongside the account; unnecessary personal data on them can be anonymized/unlinked; the architecture must not depend on a legal decision that hasn't been made yet.
 
 ## Historical Phase 15 assessment (superseded for Asaas by Phase 5 below)

@@ -74,3 +74,15 @@ The Phase 5 disposable MySQL/MariaDB integration suites and Phase 6 live Sandbox
 **2026-09-19 Phase 7E addendum (local only):** the synchronous webhook description and the unimplemented retry/ACK caveats earlier in this historical runbook describe the **older** candidate. The current branch now persists the minimal Asaas event before HTTP 200 and processes it later through a leased, retryable, restart-recoverable DB inbox. When `ASAAS_WEBHOOK_PROCESSING_ENABLED=false`, both reception and worker processing reject/stop (503, no row), which is the intended first inert deployment state with no provider webhook registered. Once explicitly enabled after separate approval, monitor `RECEIVED`/`PROCESSING`/`RETRY`/`MANUAL_REVIEW`, expired leases, age/backlog and the unique wallet ledger. Do not manually delete event history to recover a stuck payment. The worker's 10-second polling, 120-second lease, bounded retry and manual-review escalation are detailed in [`asaas-phase7e-durable-inbox.md`](asaas-phase7e-durable-inbox.md). Host behavior, real alert delivery and retention remain unverified/undecided; this addendum does not authorize deployment or credentials.
 
 **2026-09-20 Phase 7F addendum (local only):** the compiled API was exercised with synthetic provider transport, a local DB, enabled/disabled worker states and process restart; no production endpoint was contacted. Asaas inbox rows now carry an internally generated correlation ID and safe logs hash provider identifiers. Invalid webhook auth, exhausted confirmed-credit failure and manual-review escalation produce local critical alerts; loopback transport was tested. The earlier “dedicated correlation ID and local alert generation unproven” gap is thus superseded by the evidence in [`asaas-phase7f-local-closure.md`](asaas-phase7f-local-closure.md). Asaas-specific 5-minute burst and aging thresholds, production alert delivery, host checks and DB-credential dependency remain pending. `PAID` and wallet credit are atomic, so a committed `PAID` before credit is not a valid crash window; the new pre-commit rollback test covers that boundary instead.
+
+**2026-09-21 Phase 7G addendum (local only):** provider-specific thresholds
+and durable active/emitted/recovered state are now implemented and locally
+tested. Defaults remain inert: gate evaluation, alert sweep, email delivery and
+all four Asaas/payment flags are false when missing. No production destination
+is configured. Migration 57 is additive and structurally backward-compatible
+with the older API because every new field is nullable except
+`attemptCount NOT NULL DEFAULT 0`; old reads ignore the new fields and old
+inserts receive the default. Applying it still requires a fresh DB backup,
+table-size/lock review and a low-traffic window. See
+[`asaas-phase7g-operational-gates.md`](asaas-phase7g-operational-gates.md) for
+the inert-deploy review, rollback sequence and unresolved host metadata.
