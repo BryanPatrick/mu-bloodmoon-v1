@@ -1,0 +1,4 @@
+# Preserve these artifacts byte-for-byte (CRLF included): the manifest records sha256 of the exact bytes,
+# and the repository default (* text=auto eol=lf) would otherwise rewrite line endings on commit/checkout.
+README.md -text
+derived/* -text
