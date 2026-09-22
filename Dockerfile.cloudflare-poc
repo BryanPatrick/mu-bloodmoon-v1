@@ -9,7 +9,7 @@ COPY apps/web/package.json apps/web/package.json
 COPY packages/shared/package.json packages/shared/package.json
 
 RUN npm install --global npm@10.9.2 \
-  && npm ci --ignore-scripts
+  && npm install --ignore-scripts --no-audit --no-fund
 
 COPY . .
 RUN npx prisma generate --schema apps/api/prisma/schema.prisma \
