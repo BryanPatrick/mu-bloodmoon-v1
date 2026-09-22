@@ -18,7 +18,9 @@ installed dependencies, generated the Prisma Linux client, compiled NestJS,
 published the image, updated the single Container application, and deployed the
 Workers.dev shadow endpoint. The application uses the `lite` resource class,
 `max_instances = 1`, no assigned IPv4, no custom domain, no production route,
-and a ten-minute sleep policy.
+and a ten-minute sleep policy. OpenSSL is installed explicitly in both build
+and runtime stages so Prisma does not rely on Debian image autodetection
+fallbacks.
 
 Only disposable synthetic JWT, refresh, 2FA and database values were supplied.
 Internet access inside the Container is disabled and every known operational,

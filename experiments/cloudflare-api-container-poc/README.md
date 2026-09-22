@@ -8,7 +8,8 @@ not required.
 The remote proof uses Node 22, builds NestJS, generates the Prisma Linux client,
 publishes one `lite` image and runs at most one sleeping shadow instance. It has
 no custom domain or production route. Container Internet access and every known
-operational/financial mutation flag are disabled.
+operational/financial mutation flag are disabled. The image installs OpenSSL
+explicitly for Prisma in both build and runtime stages.
 
 The current runtime cannot boot without a database because
 `PrismaService.onModuleInit()` eagerly connects before Nest opens port 8080.
