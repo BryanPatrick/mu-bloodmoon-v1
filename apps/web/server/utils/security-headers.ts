@@ -16,7 +16,13 @@ export function buildCsp(apiOrigin: string, extraScriptSources: string[] = []): 
 		'script-src': ["'self'", 'https://challenges.cloudflare.com', ...extraScriptSources],
 		'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
 		'font-src': ["'self'", 'https://fonts.gstatic.com'],
-		'img-src': ["'self'", 'data:', apiOrigin],
+		// R2 shadow origin added Phase CF-R2-02 -- tested first without CSP
+		// changes (confirmed blocked), then with exactly this one origin
+		// (confirmed loads, zero other console errors) in CF-R2-01's local
+		// wrangler-dev test before being applied here. Single origin, no
+		// wildcard. Shadow-only: this Worker has no production hostname/
+		// custom domain, so this never reaches production traffic.
+		'img-src': ["'self'", 'data:', apiOrigin, 'https://pub-a4bacc79c5864ae9bec74ece3b3b2a30.r2.dev'],
 		'connect-src': ["'self'", apiOrigin],
 		'frame-src': ['https://challenges.cloudflare.com'],
 		'frame-ancestors': ["'none'"],
