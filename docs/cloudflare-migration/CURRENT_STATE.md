@@ -62,12 +62,39 @@ this phase.**
 |---|---|
 | Framework | Nuxt `^4.4.8` (package.json), Nitro bundled with it |
 | Current deploy target | `node-server` preset, via `npm run web:build` → `nuxt build apps/web && node scripts/patch-nitro-output.mjs` |
-| Why the patch script exists | a known Nitro/Node ESM resolution quirk (`tailwindcss/colors` → `.js`) — see `project_web_build_needs_nitro_patch` in project memory; unrelated to Cloudflare, but the patch step's necessity under the Cloudflare preset is unverified — see `RISKS.md` |
+| Why the patch script exists | a known Nitro/Node ESM resolution quirk (`tailwindcss/colors` → `.js`) — see `project_web_build_needs_nitro_patch` in project memory; unrelated to Cloudflare. **Confirmed this phase: not needed under the `cloudflare-module` preset** — that preset bundles everything into one Rollup `index.mjs`, so the Node-specific unresolved-specifier issue doesn't reproduce; a clean Cloudflare build with zero `tailwindcss/colors` errors confirmed it |
 | Runtime config | `apiBase`, `turnstileSiteKey`, `realMoneyPaymentsEnabled`, `marketplaceEnabled` — all `NUXT_PUBLIC_*` env-driven, no server-only secrets in `apps/web` |
 | Server-side code (`apps/web/server/`) | three files, added Phase 17R: `middleware/00.security-headers.ts`, `plugins/csp-inline-script-hashes.ts`, `utils/security-headers.ts` — checked this phase, none use `node:fs`, `node:net`, `node:tls`, or `node:child_process`; one uses `node:crypto`'s `createHash` |
 | Dependencies (root workspace, what `apps/web` actually uses at runtime) | `@nuxt/ui`, `@pinia/nuxt`, `lucide-vue-next`, `nuxt`, `pinia`, `vue`, `vue-router` — no `@nuxt/image`, no native/binary deps found |
 | Auth model | Bearer access/refresh tokens in `localStorage` (`apps/web/composables/useAuth.ts`), one non-authoritative cookie for SSR display state — unchanged by this phase, see `docs/cloudflare-migration/SECURITY_MODEL.md` |
-| Security headers | CSP + 5 other headers, added Phase 17R, verified against the current Node build — not yet re-verified under a Cloudflare Workers runtime, see `WEB_MIGRATION.md` |
+| Security headers | CSP + 5 other headers, added Phase 17R. **Re-verified this phase under the Cloudflare Workers runtime** — identical header set and CSP hashes on both local Miniflare and the live Cloudflare edge, see `WEB_MIGRATION.md` |
+
+## apps/api — current implementation facts (Cloudflare-migration relevant, from the concurrent feasibility investigation)
+
+The findings below come from `docs/cloudflare-api-feasibility.md`
+(branch `infra/cloudflare-api-feasibility`, commit `f47f0b6d`,
+2026-09-22) — a concurrent, independent investigation, not this
+program's own web-shadow work. Its code was never merged; its
+documented findings were spot-checked against the real `apps/api`
+source this phase (package versions, `setInterval`/`GET_LOCK`/`sharp`/
+`node:fs` usage counts) before being folded in here as current-state
+fact.
+
+| Fact | Detail |
+|---|---|
+| Size | 298 source files (273 TypeScript), 51 controllers |
+| Prisma | `@prisma/client ^5.0.0` (confirmed in `apps/api/package.json`), Rust native binary query engine — not Workers-compatible as-is |
+| Financial-semantics surface | 24 files use `$transaction` (1 explicit Serializable path); 5 services use connection-scoped `GET_LOCK`/`RELEASE_LOCK` (both counts confirmed this phase by direct grep) |
+| Background jobs | 10 files use `setInterval` (confirmed this phase by grep) — not a durable scheduler under an evictable Workers isolate |
+| Filesystem | community/guild media, launcher assets, config/export reads use `node:fs`/`node:path` (~11 `node:fs` files confirmed this phase; the feasibility report counts 14 including `node:path`-only files) |
+| Images | native `sharp 0.34.5` (2 files use it directly, confirmed this phase) — no Workers equivalent as-is |
+| SMTP | Nodemailer 9.0.5, real TLS SMTP transport (Phase 17R) — Workers blocks port 25 by default; the exact host/port/TLS combination has not been proven under Workers |
+| Crypto/JWT/2FA | `node:crypto` (AES-256-GCM, HMAC), `bcryptjs`, Nest JWT, `otplib` — all `SUPPORTED_WITH_NODE_COMPAT` per that report, still needing empirical round-trip vectors before trusting in production |
+| Cloudflare account scope gap | this account's OAuth token lacks `containers:write` (confirmed via `wrangler whoami`, `CURRENT_STATE.md` above) — Containers usage needs a fresh `wrangler login` with updated scopes |
+| Container proof | prepared (Dockerfile + minimal Worker router) on the feasibility branch, **not run** — Docker/Podman/nerdctl were unavailable in that investigating environment |
+
+See `API_MIGRATION.md` for the full analysis and the resulting decision
+(`API_INITIAL_MIGRATION_TARGET = CLOUDFLARE_CONTAINERS`).
 
 ## Existing D1 remote state (Game Data Platform, informational only)
 
@@ -76,10 +103,20 @@ read-only 2026-09-21, Phase 20B/20C — `docs/knowledge/GAMEBRIDGE_DISAMBIGUATIO
 Part 8). Unrelated to this program's own database work, listed here
 only because it is the same Cloudflare account.
 
-## What this phase (CF-01) changed
+## What Phase CF-01 changed
 
-Nothing in production. This phase created documentation, a Nuxt/Nitro
-Cloudflare Workers build configuration in a dedicated branch/worktree,
-and (if `PHASE_STATUS.md` says so) one non-production shadow Worker
-deployment at a `workers.dev` subdomain with no custom domain and no
-DNS record anywhere.
+Nothing in production. Created documentation, a Nuxt/Nitro Cloudflare
+Workers build configuration in a dedicated branch/worktree, and one
+non-production shadow Worker deployment (`bloodmoon-web-shadow`, no
+custom domain, no DNS record) — see `WEB_MIGRATION.md` and
+`PHASE_STATUS.md`.
+
+## What Phase CF-01B changed
+
+Nothing in production. Reconciled this program's own web-shadow
+findings with the concurrent `infra/cloudflare-api-feasibility`
+investigation into one canonical set of documents; recorded Bryan's
+resulting architecture decision (`DECISIONS.md`). No code from the
+feasibility branch was merged. The shadow Worker from CF-01 stays live,
+unchanged, per Bryan's explicit instruction to keep it for continued
+testing.

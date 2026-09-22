@@ -31,6 +31,36 @@ lastVerified: 2026-09-22
 - Production: **untouched** — no DNS, no deploy, no CORS change, no
   database change.
 
+## Phase CF-01B — reconcile web + API Cloudflare findings: **COMPLETE**
+
+- Read and spot-checked `docs/cloudflare-api-feasibility.md` (branch
+  `infra/cloudflare-api-feasibility`, commit `f47f0b6d`) — a concurrent,
+  independent investigation. Its code was **not** merged or adopted;
+  only its documented, spot-checked findings were folded into the
+  canonical docs.
+- Canonical architecture decided and recorded (`DECISIONS.md`):
+  Nuxt web → Workers, NestJS API → **Cloudflare Containers** (initial
+  target; not yet proven — the container proof itself hasn't run),
+  native Workers → `FUTURE_OPTIMIZATION` (not rejected), storage → R2
+  (direction only), financial/core DB → external MySQL-compatible
+  (vendor undecided, D1 excluded).
+- Updated: `TARGET_ARCHITECTURE.md`, `API_MIGRATION.md`,
+  `DATABASE_MIGRATION.md`, `R2_ASSETS.md`, `MIGRATION_ROADMAP.md`,
+  `CURRENT_STATE.md`, `DECISIONS.md`, `RISKS.md`,
+  `SERVICE_INVENTORY.md` (also fixed a pre-existing malformed table row
+  in the MySQL service line, missing its "Production criticality"
+  cell).
+- `bloodmoon-web-shadow` **kept alive**, unchanged, per Bryan's
+  instruction. Production CORS **not** changed
+  (`SHADOW_PRODUCTION_API_CORS = BLOCKED_PENDING_BRYAN_AUTHORIZATION`).
+- Canonical near-term sequence recorded: `CF-API-02` (Container POC) →
+  `CF-R2-01` (R2 inventory + shadow migration) → `CF-DB-01` (external
+  MySQL options + disposable restore proof) → Container shadow
+  deployment → database migration rehearsal → API shadow integration →
+  DNS/cutover planning.
+- Production: **untouched** — no DNS, no deploy, no CORS change, no
+  database change, no container deployed.
+
 ## Phase 1 (Nuxt web → Workers, production cutover) — NOT STARTED
 
 Shadow deployment exists (see above); a real production cutover
@@ -44,16 +74,23 @@ Inventory only (`R2_ASSETS.md`). No upload has happened.
 
 No concrete need identified yet, per the phase's own entry criteria.
 
-## Phase 4 (API runtime decision) — NOT STARTED
+## Phase 4 (API runtime) — **DECISION MADE (CF-01B)**, proof NOT STARTED
 
-Both options inventoried (`API_MIGRATION.md`); the real
-Prisma-on-Workers question (`RISKS.md` CF-R3) is unresolved.
+`API_INITIAL_MIGRATION_TARGET = CLOUDFLARE_CONTAINERS`,
+`API_WORKERS_NATIVE = FUTURE_OPTIMIZATION` (`DECISIONS.md`,
+`API_MIGRATION.md`). The decision itself is recorded; the actual
+container proof (`CF-API-02`) has not been run — Containers is
+**not yet production-proven**. The Prisma-on-Workers question
+(`RISKS.md` CF-R3) is deprioritized, not blocking, since it only
+matters for the future-optimization path.
 
 ## Phase 5 (MySQL exit) — NOT STARTED
 
-Requirements only (`DATABASE_MIGRATION.md`). Phase 17R's backup-restore
-P1 (`RISKS.md` CF-R5) is an explicit entry-criteria blocker, carried
-forward, not closed.
+Requirements only (`DATABASE_MIGRATION.md`), now including explicit
+financial-idempotency semantics (unique-key conflicts,
+`GET_LOCK`/`RELEASE_LOCK`, Serializable transactions). Phase 17R's
+backup-restore P1 (`RISKS.md` CF-R5) is an explicit entry-criteria
+blocker, carried forward, not closed; tracked as `CF-DB-01`.
 
 ## Phase 6 (API cutover) — NOT STARTED
 
@@ -71,12 +108,11 @@ Depends on all preceding phases.
 
 ## Next recommended step
 
-See this phase's final report for the specific
-`DECISIONS_REQUIRED_FROM_BRYAN` list. In order of leverage: (1) decide
-whether to allow the CORS addition so the shadow deploy can actually
-exercise a real login against production data read-only-safe
-endpoints; (2) decide the Phase 17R backup-restore P1's credential
-question, since it blocks Phase 5 entry criteria regardless of which
-database vendor is eventually chosen; (3) if there's appetite, a small
-isolated spike on the Prisma/Workers driver-adapter question
-(`RISKS.md` CF-R3) would make Phase 4's eventual decision much cheaper.
+`CF-API-02` (the Container POC) is now the single highest-leverage next
+step — it's the critical path for the chosen Containers target and
+currently has zero empirical proof behind it. In parallel: `CF-DB-01`
+can start closing the backup-restore P1 (`RISKS.md` CF-R5) independently
+of any vendor choice, using a disposable MySQL this project controls.
+The CORS addition (`RISKS.md` CF-R9) stays explicitly blocked pending
+Bryan's authorization — see `DECISIONS_REQUIRED_FROM_BRYAN` in the
+Phase CF-01B final report.

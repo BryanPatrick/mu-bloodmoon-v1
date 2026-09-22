@@ -38,13 +38,16 @@ Player browser
 
                               [in parallel, non-production]
 Cloudflare account (workers.dev subdomains only, no DNS record):
-  -> Nuxt web Worker (shadow, then eventually promoted)
+  -> Nuxt web Worker (shadow "bloodmoon-web-shadow", kept alive for
+     continued testing; then eventually promoted to a production domain
+     -- not yet)
+  -> NestJS API Container shadow (Phase CF-API-02 onward -- not built yet)
   -> R2 (static assets, then user uploads)
   -> existing Game Data Worker/D1/Queue (unchanged, unrelated)
   -> existing Knowledge Hub Worker/D1/R2 (unchanged, unrelated)
 
 Current provider (temporarily retained during transition):
-  -> NestJS API (until Phase 4/6 decide and execute its own move)
+  -> NestJS API (until the Container migration is proven and cut over)
   -> MySQL (until Phase 5 provides a real external, Bryan-controlled target)
 
 Windows VPS: unchanged throughout the entire program
@@ -54,9 +57,10 @@ Windows VPS: unchanged throughout the entire program
 The defining property of the transition state: **production traffic
 never touches Cloudflare until Phase 7's DNS cutover**, no matter how
 much shadow work exists on `workers.dev` in the meantime. The API and
-MySQL can stay on the current provider for as long as Phases 4/5 take —
-there is no forced coupling between "the web app runs on Cloudflare"
-and "the API/DB must move at the same time."
+MySQL can stay on the current provider for as long as the Container
+migration and Phase 5 take — there is no forced coupling between "the
+web app runs on Cloudflare" and "the API/DB must move at the same
+time."
 
 ## C. Final (the actual goal, `CURRENT_PROVIDER = ZERO`)
 
@@ -66,11 +70,16 @@ Player browser
   -> Cloudflare edge (CDN, WAF, TLS)
        -> Nuxt web Worker
        -> R2 (all static/user-upload assets)
-       -> NestJS API — Cloudflare Workers or Cloudflare Containers (Phase 4 decision)
+       -> NestJS API -- Cloudflare Containers (chosen initial target,
+          2026-09-22; native Workers stays a possible FUTURE_OPTIMIZATION
+          after Containers is proven -- see API_MIGRATION.md/DECISIONS.md)
             -> external MySQL-compatible database, Bryan-controlled or managed,
-               reached via Hyperdrive from Workers (never a public MySQL bind)
+               reached directly (Containers) or via Hyperdrive (if a future
+               Workers-native move happens) -- never a public MySQL bind
             -> SMTP, Asaas, Mercado Pago, Turnstile (unchanged, external)
-            -> D1/Queue Game Data + Command Transport (unchanged, already Cloudflare)
+            -> D1/Queue Game Data + Command Transport (unchanged, already
+               Cloudflare) -- D1 stays scoped to Cloudflare-native services
+               like this one, never the financial core
 
 Windows VPS (unchanged, out of scope for this program):
   GameServer + SQL Server + GameBridge Agent <-> Game Command Transport

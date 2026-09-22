@@ -18,12 +18,13 @@ vendor unless a future `DECISIONS.md` entry does.
 | MySQL-compatible (wire protocol or true MySQL) | The financial portal's transactions, escrow, wallet ledger, and marketplace flows are validated against real MySQL/MariaDB semantics — see `README.md`'s constraint. A SQLite-family engine (D1) does not have the same transaction/locking model. | `apps/api/prisma/schema.prisma` targets `mysql`; Phase 17R's own work this month (marketplace gate, recovery token races) depended on real row-level locking and `$transaction` semantics |
 | Real transactions | Multi-statement atomicity across wallet/ledger/escrow writes | `marketplace-admin.service.ts`, `wallet` module, the Phase 17R `resetPassword` atomic-claim fix |
 | Real locking semantics | Concurrent-request correctness (the exact class of bug Phase 17R found and fixed in password reset) | same |
+| Financial idempotency semantics | Wallet/ledger/escrow writes rely on unique-key conflict handling and connection-scoped locking, not just generic transactions | 24 files use `$transaction` (1 Serializable path), 5 services use `GET_LOCK`/`RELEASE_LOCK` — counts confirmed this phase against `apps/api/src` (see `CURRENT_STATE.md`, sourced from the concurrent `docs/cloudflare-api-feasibility.md` investigation and spot-checked) |
 | Prisma compatibility | The API's entire data layer is Prisma; a target requiring a full ORM rewrite is a different, much larger program | `apps/api/prisma/` |
 | Backup/restore | Must support a real, provable backup → restore → integrity-check cycle | Phase 17R's own P1 (see below) exists specifically because this was unproven even on the *current* database |
 | TLS | Any externally-reachable database must require encrypted connections | `README.md`'s "MySQL stays private" constraint — the current instance doesn't need this because it's never external; a future one always will be |
 | Private credential management | Database credentials for a Cloudflare-reachable database are Worker/Container secrets (`wrangler secret put`), never committed, never in `vars` | matches the existing Game Data Worker secret convention |
 | Reasonable Brazil latency | The player base and current host are Brazil-based; a database in a distant region would regress response times | not benchmarked this phase — a real requirement once candidates exist |
-| Hyperdrive compatibility desirable | If Option A (native Workers) is chosen for the API, Hyperdrive is how a Worker reaches an external MySQL-compatible database without exposing it publicly | see `API_MIGRATION.md`; not required if Option B (Containers) is chosen, since a Container can hold a normal TCP connection itself |
+| Hyperdrive compatibility desirable | Only relevant if the `FUTURE_OPTIMIZATION` native-Workers path (`API_MIGRATION.md`, `DECISIONS.md`) is ever pursued — that's how a Worker would reach an external MySQL-compatible database without exposing it publicly | not required for the chosen initial path: a Container holds a normal TCP connection itself, the same way the current API does today |
 
 ## What this document deliberately does not do
 
@@ -52,4 +53,6 @@ what a normal local/CI MySQL instance already grants its own creator.
 This can be closed independently of any vendor decision, whenever a
 disposable MySQL instance with `CREATE DATABASE` is available (a local
 Docker/native MySQL with an admin user, a throwaway cloud instance, or
-a grant on the existing local credential).
+a grant on the existing local credential). Tracked as `CF-DB-01` in
+`MIGRATION_ROADMAP.md`, alongside evaluating real external MySQL-
+compatible candidates against the requirements above.

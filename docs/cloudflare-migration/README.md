@@ -47,7 +47,7 @@ full contract lives in this folder, not duplicated into `AGENTS.md`.
 | `SERVICE_INVENTORY.md` | every current service/dependency, mapped current → target | migration decisions not yet made |
 | `DNS_AND_DOMAIN.md` | verified DNS/domain control facts, `UNKNOWN` where unverified | assumed nameserver authority |
 | `WEB_MIGRATION.md` | apps/web → Cloudflare Workers specifics | API or DB migration content |
-| `API_MIGRATION.md` | NestJS API → Cloudflare options (native Workers vs. Containers) | a chosen option, unless `DECISIONS.md` says so |
+| `API_MIGRATION.md` | NestJS API → Cloudflare Containers (chosen initial target, `DECISIONS.md`) plus the native-Workers `FUTURE_OPTIMIZATION` path | claiming Containers is already production-proven — it isn't, the proof hasn't run yet |
 | `DATABASE_MIGRATION.md` | MySQL exit requirements | a chosen vendor, unless `DECISIONS.md` says so |
 | `R2_ASSETS.md` | asset inventory and classification | a completed or scheduled bulk upload |
 | `SECURITY_MODEL.md` | CSP/CORS/secrets/edge security implications of the migration | changes to production security posture |

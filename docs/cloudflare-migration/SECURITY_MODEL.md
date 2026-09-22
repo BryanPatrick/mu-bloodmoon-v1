@@ -17,10 +17,13 @@ baseline).
 ## What must not regress, at any phase
 
 - **CORS on the production API stays exactly as strict as it is today.**
-  No phase weakens it globally. A temporary shadow-origin allowance
-  (e.g. a `*.workers.dev` origin for the Phase 1 shadow deploy) is
-  prepared as a reviewable diff and only deployed with explicit,
-  in-the-moment authorization — never assumed from an earlier approval.
+  No phase weakens it globally. `SHADOW_PRODUCTION_API_CORS =
+  BLOCKED_PENDING_BRYAN_AUTHORIZATION` (decided Phase CF-01B,
+  `DECISIONS.md`) — a temporary shadow-origin allowance for
+  `bloodmoon-web-shadow` is prepared as a reviewable diff (one
+  `WEB_PUBLIC_URLS` value + a controlled restart, no code change) and
+  only deployed with explicit, in-the-moment authorization — never
+  assumed from an earlier approval.
 - **CSP stays free of `unsafe-inline`/`unsafe-eval` in `script-src`.**
   Phase 17R implemented this on the Node runtime via two mechanisms:
   a per-response baseline (`server/middleware/00.security-headers.ts`)

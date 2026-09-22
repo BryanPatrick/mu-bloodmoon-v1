@@ -22,14 +22,31 @@ worktree.
 | Test/scratch images referenced in wiki content (`dev-references/generated/...`) | `PUBLIC_MUTABLE` | Draft/iteration art (filenames like `*-draft-v2.png`) mixed into the same public folder as finished assets | included in the 42 MB above | Worth a future cleanup pass before any bulk R2 upload, so drafts aren't preserved indefinitely in a CDN-cached public bucket — not done this phase, not urgent |
 | Favicons/app icons | `PUBLIC_IMMUTABLE` | `favicon.ico`, `favicon.png`, `favicon.svg` | small (KB range) | Already correctly served by both the current Node deploy and the Cloudflare Workers Assets path this phase's build produced |
 
-## What Phase 2 (when it happens) will need to decide, not answered here
+## Direction (decided 2026-09-22, Phase CF-01B)
+
+R2 should become durable storage for public images, wiki assets,
+user/community media, and launcher/download assets where appropriate
+(`DECISIONS.md`). This is a direction, not a schedule — **no
+upload/migration has happened**, and the granular next step is
+`CF-R2-01` (`MIGRATION_ROADMAP.md`): inventory (this document) plus a
+first real shadow migration of one asset set, not a bulk/production
+cutover.
+
+This direction also now has an **API-runtime dependency**, not just a
+web-asset one: Cloudflare Containers' disk is ephemeral
+(`API_MIGRATION.md`), so community/guild media and launcher assets
+must move off local disk before the API container can safely scale,
+sleep, or run more than one instance — see `RISKS.md` CF-R12.
+
+## What `CF-R2-01` will need to decide, not answered here
 
 - Whether to content-hash filenames on upload (true immutability +
   long cache lifetimes) versus keeping current human-readable names.
-- Whether community/guild uploads move to R2 as part of Phase 1/2 or
-  wait until the API itself moves (Phase 4/6) — they're independent in
-  principle (R2 is reachable from the current Node API too, since the
-  code path already exists), so there's no hard dependency either way.
+- Whether community/guild uploads move to R2 ahead of or alongside the
+  API's own Container migration — they're independent in principle (R2
+  is reachable from the current Node API too, since the code path
+  already exists), but the Container ephemeral-disk constraint above
+  makes moving them first the lower-risk order.
 - Cache/purge strategy for images that do change (equipment art
   revisions have happened before, per the `*-draft-v2` naming already
   observed).
