@@ -1,12 +1,40 @@
 import { Container, getContainer } from '@cloudflare/containers'
 
-export class BloodMoonApiContainer extends Container {
+export class BloodMoonApiContainer extends Container<Env> {
   defaultPort = 8080
   sleepAfter = '10m'
+
+  constructor(ctx: DurableObjectState, env: Env) {
+    super(ctx, env)
+    this.enableInternet = false
+    this.envVars = {
+      NODE_ENV: 'production',
+      PORT: '8080',
+      DATABASE_URL: env.DATABASE_URL,
+      JWT_ACCESS_SECRET: env.JWT_ACCESS_SECRET,
+      JWT_REFRESH_SECRET: env.JWT_REFRESH_SECRET,
+      TWO_FACTOR_ENCRYPTION_KEY: env.TWO_FACTOR_ENCRYPTION_KEY,
+      ACCOUNT_LIFECYCLE_BRIDGE_ENABLED: 'false',
+      PAYMENT_RECONCILIATION_ENABLED: 'false',
+      MERCADO_PAGO_PROVIDER_POLL_ENABLED: 'false',
+      GAME_PROVISIONING_RECONCILIATION_ENABLED: 'false',
+      VIP_SYNC_RECONCILIATION_ENABLED: 'false',
+      VIP_DELIVERY_WORKER_ENABLED: 'false',
+      ALERT_SWEEP_ENABLED: 'false',
+      GAMEBRIDGE_HEARTBEAT_ALERT_ENABLED: 'false',
+      REAL_MONEY_PAYMENTS_ENABLED: 'false',
+      MARKETPLACE_ENABLED: 'false',
+      GAME_ACCOUNT_PROVISIONING_ON_REGISTER: 'false'
+    }
+  }
 }
 
 interface Env {
   BLOOD_MOON_API: DurableObjectNamespace<BloodMoonApiContainer>
+  DATABASE_URL: string
+  JWT_ACCESS_SECRET: string
+  JWT_REFRESH_SECRET: string
+  TWO_FACTOR_ENCRYPTION_KEY: string
 }
 
 export default {
