@@ -11,6 +11,8 @@ COPY packages/shared/package.json packages/shared/package.json
 RUN npm install --global npm@10.9.2 \
   && npm install --ignore-scripts --no-audit --no-fund
 
+RUN node -e "const c=require('node:crypto');const b=require('bcryptjs');const jwt=require('jsonwebtoken');const {authenticator}=require('otplib');const QR=require('qrcode');const key=c.randomBytes(32),iv=c.randomBytes(12);const e=c.createCipheriv('aes-256-gcm',key,iv),ct=Buffer.concat([e.update('bloodmoon'),e.final()]),tag=e.getAuthTag(),d=c.createDecipheriv('aes-256-gcm',key,iv);d.setAuthTag(tag);if(Buffer.concat([d.update(ct),d.final()]).toString()!=='bloodmoon')throw Error('aes');if(c.createHmac('sha256','test').update('bloodmoon').digest('hex').length!==64)throw Error('hmac');const hash=b.hashSync('test',4);if(!b.compareSync('test',hash))throw Error('bcrypt');const token=jwt.sign({sub:'shadow'},'synthetic-test-secret');jwt.verify(token,'synthetic-test-secret');const secret=authenticator.generateSecret();if(!authenticator.verify({token:authenticator.generate(secret),secret}))throw Error('totp');QR.toString('otpauth://totp/BloodMoon:shadow?secret='+secret,{type:'utf8'}).then(result=>{if(!result)throw Error('qrcode');console.log('CONTAINER_CRYPTO_COMPATIBILITY_OK')})"
+
 COPY . .
 RUN npx prisma generate --schema apps/api/prisma/schema.prisma \
   && npm run api:build

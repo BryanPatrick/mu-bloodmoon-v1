@@ -105,6 +105,14 @@ on the Asaas continuation branch.
 
 ## What is NOT true yet (explicit, so it isn't assumed)
 
+- Cloudflare CF-API-02R now has one isolated Workers.dev Container shadow on
+  `infra/cloudflare-api-container-poc`. The remote Node 22/Nest/Prisma image
+  build and deploy pass, but the API cannot open its port without a database
+  because Prisma connects during module initialization. No disposable database
+  is approved, so health/readiness, auth and lifecycle runtime validation remain
+  blocked. This is not a production route or a production-readiness claim; no
+  production database, secret, DNS, payment or marketplace setting was used.
+
 - No n8n installation exists anywhere in this project (a real design
   proposal exists, unmerged, undecided — see [`domains/n8n.md`](domains/n8n.md)).
 - No real Codex staging pilot has run (design only — see
