@@ -143,6 +143,14 @@ note in `docs/README.md` itself.
 - **Why something is the way it is**: [`docs/decisions/`](docs/decisions/) (ADRs).
 - **Known gaps needing a decision**: [`docs/open-questions.md`](docs/open-questions.md).
 - **Known technical/operational risks**: [`docs/open-risks.md`](docs/open-risks.md).
+- **Cloudflare migration program**: before any Cloudflare-migration
+  work, read
+  [`docs/cloudflare-migration/README.md`](docs/cloudflare-migration/README.md),
+  `CURRENT_STATE.md`, `DECISIONS.md`, `PHASE_STATUS.md`, `RISKS.md`,
+  and the relevant component document (`WEB_MIGRATION.md`,
+  `API_MIGRATION.md`, `DATABASE_MIGRATION.md`, `R2_ASSETS.md`,
+  `DNS_AND_DOMAIN.md`, or `SECURITY_MODEL.md`) — that folder is the
+  full contract, not duplicated here.
 
 ## Production safety
 

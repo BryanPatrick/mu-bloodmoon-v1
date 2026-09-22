@@ -16,6 +16,7 @@
     "web:build": "nuxt build apps/web && node scripts/patch-nitro-output.mjs",
     "web:generate": "nuxt generate apps/web",
     "web:preview": "nuxt preview apps/web/.output",
+    "web:build:cloudflare": "node scripts/build-cloudflare-web.mjs",
     "web:test:error": "node --test apps/web/test/error-presentation.test.mjs",
     "web:test:smoke": "node --test apps/web/test/commercial-experience.test.mjs apps/web/test/error-presentation.test.mjs apps/web/test/public-pages-smoke.test.mjs apps/web/test/community-left-rail-view.test.mjs apps/web/test/community-auth-ssr.test.mjs apps/web/test/rbac-gm-role.test.mjs",
     "dev:full": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-dev.ps1",

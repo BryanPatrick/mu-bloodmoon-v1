@@ -1,0 +1,27 @@
+{
+	// Cloudflare migration Phase CF-01 -- SHADOW configuration for apps/web only. This file exists
+	// specifically so Nitro's cloudflare-module preset (server/utils/security-headers.ts and
+	// package.json's web:build:cloudflare script) detects it, enables nodejs_compat (needed for
+	// node:crypto's createHash in server/plugins/csp-inline-script-hashes.ts) and merges it with its
+	// own generated `main`/`assets` fields into apps/web/.output/server/wrangler.json at build time.
+	// See docs/cloudflare-migration/WEB_MIGRATION.md for the compatibility audit this came out of.
+	//
+	// Deliberately named for a NON-PRODUCTION shadow deployment. No `routes`, no custom domain --
+	// this Worker is reachable only at its own *.workers.dev subdomain until a real cutover decision
+	// (docs/cloudflare-migration/DECISIONS.md) adds one.
+	"name": "bloodmoon-web-shadow",
+	"compatibility_date": "2025-07-15",
+	"compatibility_flags": ["nodejs_compat"],
+	"observability": {
+		"enabled": true
+	}
+	// No `routes`/`custom domains here on purpose -- production hostnames stay on the current host
+	// until Phase 7 (docs/cloudflare-migration/MIGRATION_ROADMAP.md). `main`/`assets` are filled in
+	// by the Nitro preset itself at build time from the actual build output, not hand-maintained here.
+	//
+	// `vars` (non-secret runtime config) intentionally left empty in the tracked file -- see
+	// docs/cloudflare-migration/WEB_MIGRATION.md's ENVIRONMENT_CLASSIFICATION for the variable-name
+	// map. The shadow deploy sets NUXT_PUBLIC_* values via `wrangler deploy --var` at deploy time
+	// (never committed), pointed at the existing production API origin per the brief's CORS
+	// constraint -- never a new/weakened CORS allowance without separate authorization.
+}

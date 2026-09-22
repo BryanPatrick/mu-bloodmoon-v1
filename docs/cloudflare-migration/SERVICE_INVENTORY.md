@@ -1,0 +1,35 @@
+---
+status: ACTIVE
+category: infrastructure
+audience: internal (Bryan + engineering agents)
+lastVerified: 2026-09-22
+---
+
+# Service inventory
+
+Every service/dependency this program's phases touch or must account
+for, mapped current → target. "Migration difficulty" and "target
+location" are this document's own assessment, not a `DECISIONS.md`
+entry, unless noted otherwise.
+
+| Service | Current location | Runtime | Data owned | External dependencies | Migration difficulty | Production criticality | Target location | Cutover dependency |
+|---|---|---|---|---|---|---|---|---|
+| Nuxt web | cPanel Node.js Selector (`/home/mubloodxz/bmweb`) | Node (LSAPI) | none (stateless SSR + `localStorage` on the client) | API origin, Turnstile, Google Fonts | LOW — small dep surface, no native/image modules, no fs usage found this phase (see `WEB_MIGRATION.md`) | HIGH (public entry point) | Cloudflare Workers | DNS cutover (Phase 7) for the production hostname; can shadow-deploy on `workers.dev` today |
+| NestJS API | cPanel Node.js Selector (`/home/mubloodxz/bmapi`) | Node (LSAPI) | none directly (talks to MySQL) | MySQL, SMTP, Turnstile siteverify, Asaas, Mercado Pago, Cloudflare D1/Queue (Game Data client) | HIGH — full NestJS app, Prisma, long-lived DB connections, cron-adjacent workers | CRITICAL (auth, payments, marketplace, game accounts) | Cloudflare Workers (native) OR Cloudflare Containers — **not decided**, see `API_MIGRATION.md` | Database exit (Phase 5) in practice, since the API's own runtime move is far easier than its DB access pattern |
+| MySQL | cPanel host, bound to `127.0.0.1` | MySQL 8.x (cPanel-managed) | all portal/financial/community/marketplace data | none outbound | HIGH — the actual constrained resource of this whole program | Bryan-controlled or managed MySQL-compatible (vendor **not chosen**, see `DATABASE_MIGRATION.md`) | Phase 5; blocks Phase 6 (API cutover) |
+| SMTP (password recovery, etc.) | cPanel SMTP, `SMTP_*` env vars, `apps/api/src/modules/auth/mail-transport.service.ts` | external TLS SMTP, called from the API | none | mail provider only | LOW — already a pluggable, env-driven TLS client with no cPanel-specific dependency | HIGH (account recovery) | unchanged for now; revisit once the API itself moves | API runtime migration |
+| Turnstile (CAPTCHA) | Cloudflare service already, called from both web (widget) and API (`siteverify`) | third-party | none | Cloudflare | NONE — already Cloudflare | stays Cloudflare | none |
+| Asaas (recharge/payments) | external provider, called from the API | third-party | none locally beyond recorded transactions | Asaas | not in this program's scope — payments branch explicitly untouched (Phase 17R boundary carried forward) | CRITICAL | unchanged | out of scope |
+| Mercado Pago | external provider, called from the API | third-party | same as Asaas | Mercado Pago | same | CRITICAL | unchanged | out of scope |
+| Knowledge Hub | Cloudflare (own account, own Worker/D1/R2) | Cloudflare Workers | internal knowledge/decision records | none relevant | NONE — already Cloudflare, unrelated project | stays as-is | none |
+| D1 (`bloodmoon-game-data`) | Cloudflare, Game Data Platform | Cloudflare D1 | `request_nonce`, `event_dedupe`, `character_reset_state`, `ranking_state`, `agent_heartbeats`, `account_snapshot_state`, `game_command` | none | NONE — already Cloudflare, unrelated to the financial portal, explicitly never a target for portal data (see README's D1 constraint) | stays as-is | none |
+| R2 (`ai-knowledge-hub-storage`) | Cloudflare, Knowledge Hub | Cloudflare R2 | Hub's own internal storage | none | NONE — already Cloudflare, unrelated | stays as-is | none |
+| Game Command Transport | Cloudflare Worker + D1 + Queue → outbound-only Agent on the game VPS | Cloudflare Workers/D1/Queue + Windows service | `GameBridgeJob`-derived commands, `CREATE_GAME_ACCOUNT` only deployed | game VPS SQL Server | NONE — already Cloudflare on the transport side | stays as-is | none |
+| Windows VPS / GameServer | Bryan-controlled Windows VPS | MU Online GameServer + SQL Server | game world/account data | none outbound (Agent is outbound-only) | out of scope for this program — never proposed to move | unchanged | Windows VPS, unchanged | none |
+| GameBridge Agent | same Windows VPS, scheduled task | .NET service | none (relay only) | Game Command Transport (Cloudflare) | out of scope | HIGH (only for `CREATE_GAME_ACCOUNT`) | unchanged | none |
+| Launcher / downloads | not yet inventoried in this phase — see `R2_ASSETS.md` `launcher_downloads` row | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | UNKNOWN | Cloudflare R2 candidate (Phase 2) | asset audit |
+| Community/guild media uploads | local disk on the cPanel host by default, R2-capable via `MEDIA_STORAGE_PROVIDER=r2` (code already supports it, **production mode not confirmed**) | Node (API process) | user-uploaded images | none, or R2 if already switched | LOW if already on R2-capable code; the code-level work is done, only the deployment flag/data-copy is open | MEDIUM | Cloudflare R2 | see `R2_ASSETS.md` |
+| DNS / domain | current hosting provider's nameservers | — | — | registrar | see `DNS_AND_DOMAIN.md` — control status not fully verified | CRITICAL (any mistake is a real outage) | Cloudflare (Phase 7) | registrar/nameserver control confirmed by Bryan first |
+| Cron / background jobs | cPanel cron: daily backup (`03:17`); `worker:game-bridge`/`worker:marketplace-expirations` exist as npm scripts, no confirmed cron entry (marketplace is disabled) | cPanel cron | — | — | LOW for backup (a scheduled trigger is trivial to reproduce with Cloudflare Cron Triggers later); the marketplace workers move with the API | LOW today (marketplace off) | unchanged until Phase 6 | API runtime migration |
+| Backup paths | `bloodmoon-backup.sh` on the cPanel host, output retained on that host | cPanel filesystem | MySQL dumps + mutable assets | none | see `DATABASE_MIGRATION.md`/Phase17R P1 (isolated restore proof) | HIGH | unchanged until Phase 5, then re-architected around the new database's own backup story | database exit |
+| Monitoring / alerts | in-app only: `SystemError`/`SystemAlert` rows, email/webhook alert channels, no external uptime/APM monitor | API process | operational events | email/webhook targets (config-driven) | LOW to keep as-is once the API moves; MEDIUM to add real edge-level monitoring (Cloudflare Analytics/Logpush) as a genuine upgrade | MEDIUM | keep the in-app model; Cloudflare's own observability is additive, not a replacement | none blocking |

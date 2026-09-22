@@ -25,6 +25,8 @@ apps/game-data-worker/node_modules/
 apps/game-data-worker/.wrangler/
 apps/game-data-worker/dist/
 apps/game-data-worker/.dev.vars
+apps/web/.wrangler/
+apps/web/.dev.vars
 apps/api/storage/uploads/*
 !apps/api/storage/uploads/.gitkeep
 apps/api/storage/guild-media/*
