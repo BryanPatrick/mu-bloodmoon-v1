@@ -91,7 +91,7 @@ fact.
 | SMTP | Nodemailer 9.0.5, real TLS SMTP transport (Phase 17R) — Workers blocks port 25 by default; the exact host/port/TLS combination has not been proven under Workers |
 | Crypto/JWT/2FA | `node:crypto` (AES-256-GCM, HMAC), `bcryptjs`, Nest JWT, `otplib` — all `SUPPORTED_WITH_NODE_COMPAT` per that report, still needing empirical round-trip vectors before trusting in production |
 | Cloudflare account scope gap | this account's OAuth token lacks `containers:write` (confirmed via `wrangler whoami`, `CURRENT_STATE.md` above) — Containers usage needs a fresh `wrangler login` with updated scopes |
-| Container proof | prepared (Dockerfile + minimal Worker router) on the feasibility branch, **not run** — Docker/Podman/nerdctl were unavailable in that investigating environment |
+| Container proof | prepared (Dockerfile + minimal Worker router) on the feasibility branch, **not run**. ~~Docker/Podman/nerdctl were unavailable in that investigating environment~~ — **correction, Phase CF-R2-01 (2026-09-22):** local container tooling is no longer the planned path at all. The approved direction is **CF-API-02R**: run the container proof via Cloudflare's own remote build (Workers Builds), which needs no local Docker/Podman/nerdctl. Still not run under either path as of this phase — this phase did not touch the API/Container work, only corrected the stale blocker description |
 
 See `API_MIGRATION.md` for the full analysis and the resulting decision
 (`API_INITIAL_MIGRATION_TARGET = CLOUDFLARE_CONTAINERS`).

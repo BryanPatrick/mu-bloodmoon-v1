@@ -41,7 +41,7 @@ Cloudflare account (workers.dev subdomains only, no DNS record):
   -> Nuxt web Worker (shadow "bloodmoon-web-shadow", kept alive for
      continued testing; then eventually promoted to a production domain
      -- not yet)
-  -> NestJS API Container shadow (Phase CF-API-02 onward -- not built yet)
+  -> NestJS API Container shadow (Phase CF-API-02R onward -- not built yet)
   -> R2 (static assets, then user uploads)
   -> existing Game Data Worker/D1/Queue (unchanged, unrelated)
   -> existing Knowledge Hub Worker/D1/R2 (unchanged, unrelated)

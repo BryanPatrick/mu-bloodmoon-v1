@@ -53,7 +53,7 @@ lastVerified: 2026-09-22
 - `bloodmoon-web-shadow` **kept alive**, unchanged, per Bryan's
   instruction. Production CORS **not** changed
   (`SHADOW_PRODUCTION_API_CORS = BLOCKED_PENDING_BRYAN_AUTHORIZATION`).
-- Canonical near-term sequence recorded: `CF-API-02` (Container POC) →
+- Canonical near-term sequence recorded: `CF-API-02R` (Container POC) →
   `CF-R2-01` (R2 inventory + shadow migration) → `CF-DB-01` (external
   MySQL options + disposable restore proof) → Container shadow
   deployment → database migration rehearsal → API shadow integration →
@@ -98,14 +98,80 @@ lastVerified: 2026-09-22
 - Production: **untouched** — no production DB access, no DNS, no
   payments, no CORS change.
 
+## Phase CF-R2-01 — R2 inventory + shadow asset migration: **COMPLETE**
+
+- Full storage inventory (16 rows) covering `apps/web/public/images`,
+  `dev-references/{visual,game-assets,generated}`, all six
+  `apps/api/storage/*` directories, marketplace exports, and
+  bug-hunters attachments — classified against the canonical
+  `PUBLIC_IMMUTABLE`/`PUBLIC_MUTABLE`/`USER_UPLOAD_PUBLIC`/
+  `USER_UPLOAD_PRIVATE`/`LAUNCHER_DOWNLOAD`/`INTERNAL_PRIVATE`/
+  `BACKUP_NEVER_PUBLIC`/`TEMPORARY_EPHEMERAL` classes. Two storage
+  categories not previously catalogued (`launcher-assets`, admin-content
+  `uploads`) were found and added; guild media was **corrected** — it
+  has no `StorageProvider`/R2 code path at all, unlike the prior
+  wording here implied. Full detail: `R2_ASSETS.md`.
+- Existing R2 confirmed read-only first: exactly one bucket exists
+  (`ai-knowledge-hub-storage`, Knowledge Hub's own, untouched).
+- New non-production shadow bucket created:
+  `bloodmoon-shadow-public-assets`, `r2.dev` public access enabled
+  (test-only, no custom domain, no production DNS).
+- **Shadow upload: 3162/3162 files, 113,050,475 bytes (~107.8 MB), 0
+  permanently failed**, from `public/images/` +
+  `dev-references/{visual,game-assets}` — deliberately excluding
+  `dev-references/generated/`'s 7 literal draft files. Two real bugs
+  found and fixed mid-phase (an invalid `--remote` flag for this
+  workspace's pinned wrangler 3.114.17; a local memory-contention crash
+  from running the upload concurrently with a Nuxt build) — full
+  post-mortem in `R2_ASSETS.md`.
+- Integrity verified: hash-sample matches (7 files total across the
+  phase, all categories), correct content-types, real HTTP 404
+  behavior, and a genuine **cache-staleness finding**: `r2.dev`'s edge
+  cache can keep serving a stale response (including a missing
+  `Cache-Control` header) for an overwritten key until purged or
+  expired — a real operational consideration for any future production
+  design, not a data-integrity problem (the underlying R2 object itself
+  is correct, confirmed via direct API + hash).
+- **Nuxt shadow integration test actually run** (not just analyzed):
+  built the real Cloudflare Workers preset, ran it under local
+  `wrangler dev`/Miniflare twice — once with today's real CSP
+  (confirmed R2 images **blocked**, exact console errors captured),
+  once with one origin added to `img-src` (confirmed R2 images **load**,
+  zero console errors in a fresh tab, hydration unaffected, 404 handled
+  gracefully). The CSP edit was reverted immediately after — **not
+  applied to any deployed Worker**, matching the
+  `SHADOW_PRODUCTION_API_CORS` prepared-diff pattern (`DECISIONS.md`).
+- User media architecture classified: community media
+  `ALREADY_R2_CAPABLE` (code exists, deploy mode still unconfirmed —
+  `RISKS.md` CF-R1, unchanged); guild media, launcher-studio assets, and
+  admin-content uploads all `REQUIRES_CHANGE` (no `StorageProvider`
+  abstraction today).
+- Private media model and launcher model: **design only**, no bucket
+  created, no code written, no artifact uploaded.
+- **Corrected stale documentation**: every canonical doc still claiming
+  the Container POC needs local Docker/Podman/nerdctl as its only path
+  has been corrected (`CURRENT_STATE.md`, `RISKS.md` CF-R4,
+  `API_MIGRATION.md`) — the approved direction is **`CF-API-02R`**
+  (Cloudflare remote build/Workers Builds), a naming change applied
+  consistently across all canonical docs. No API implementation code
+  was touched.
+- Production: **untouched** — no DNS, no production asset URL change,
+  no production DB access, no payments, no deployed Worker changed.
+
 ## Phase 1 (Nuxt web → Workers, production cutover) — NOT STARTED
 
 Shadow deployment exists (see above); a real production cutover
 (custom domain, then Phase 7's DNS work) is separate, unscheduled work.
 
-## Phase 2 (static assets → R2) — NOT STARTED
+## Phase 2 (static assets → R2) — SHADOW PROVEN (`CF-R2-01`), production cutover NOT STARTED
 
-Inventory only (`R2_ASSETS.md`). No upload has happened.
+Full inventory plus a real, verified shadow copy of the
+`PUBLIC_IMMUTABLE` subset (3162 files, ~107.8 MB, non-production
+bucket) — see the `CF-R2-01` entry above and `R2_ASSETS.md`. No
+production asset URL has been changed; Nuxt/the API still serve every
+asset from their current source, unchanged. A real production cutover
+(switching served URLs to R2, migrating real user uploads, closing the
+CSP/cache-purge open items) is separate, unscheduled work.
 
 ## Phase 3 (Cloudflare edge in front of the legacy API) — NOT STARTED
 
@@ -116,7 +182,7 @@ No concrete need identified yet, per the phase's own entry criteria.
 `API_INITIAL_MIGRATION_TARGET = CLOUDFLARE_CONTAINERS`,
 `API_WORKERS_NATIVE = FUTURE_OPTIMIZATION` (`DECISIONS.md`,
 `API_MIGRATION.md`). The decision itself is recorded; the actual
-container proof (`CF-API-02`) has not been run — Containers is
+container proof (`CF-API-02R`) has not been run — Containers is
 **not yet production-proven**. The Prisma-on-Workers question
 (`RISKS.md` CF-R3) is deprioritized, not blocking, since it only
 matters for the future-optimization path.
@@ -148,7 +214,7 @@ Depends on all preceding phases.
 
 ## Next recommended step
 
-`CF-API-02` (the Container POC) is now the single highest-leverage next
+`CF-API-02R` (the Container POC) is now the single highest-leverage next
 step — it's the critical path for the chosen Containers target and
 currently has zero empirical proof behind it. `CF-DB-01` is complete;
 the remaining database work is a real vendor decision among the 5

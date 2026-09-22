@@ -93,7 +93,7 @@ Also decided this phase:
 - **Backup-restore P1 stays open**, to be closed using a disposable
   MySQL environment this project controls — no privileged production
   DB credential is to be requested.
-- **Canonical next-phase sequence**: `CF-API-02` (Container POC) →
+- **Canonical next-phase sequence**: `CF-API-02R` (Container POC) →
   `CF-R2-01` (R2 inventory + shadow migration) → `CF-DB-01` (external
   MySQL options + disposable restore proof) → Container shadow
   deployment → database migration rehearsal → API shadow integration →

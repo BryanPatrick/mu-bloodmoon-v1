@@ -18,9 +18,9 @@ explicit cutover decision is recorded in `DECISIONS.md`. See
 | 1 | Nuxt web → Workers | apps/web runtime | Cloudflare-target build passes locally; compatibility audit shows no `REQUIRES_ARCHITECTURE_CHANGE` items | A shadow Worker serves the real app correctly on a `workers.dev` URL; later, a production custom domain is attached only after Phase 7 | deleting/disabling the Worker; production stays on the cPanel Node deploy throughout |
 | 2 | Static assets → R2 | public/static files, later user uploads | `R2_ASSETS.md` inventory complete and classified | Assets served from R2 with correct cache headers, verified against the current CDN-less baseline | assets stay dual-hosted until the old path is deliberately retired |
 | 3 | Cloudflare edge/gateway in front of the legacy API | request routing only, where useful (WAF, rate limiting, caching of safe GETs) | Phase 1 stable; a concrete need identified (not done speculatively) | edge layer proven to pass through correctly with no behavior change to the legacy API | remove the edge rule/route; legacy API keeps its own direct path available |
-| 4 | API runtime: Containers (chosen initial target) | apps/api runtime | `API_MIGRATION.md` compatibility findings for both options | **DECIDED 2026-09-22**: `API_INITIAL_MIGRATION_TARGET = CLOUDFLARE_CONTAINERS`, `API_WORKERS_NATIVE = FUTURE_OPTIMIZATION` (`DECISIONS.md`). Phase itself isn't "done" until the container proof (`CF-API-02` below) actually runs and passes | this was a decision phase for *which runtime*; the build/proof work below is what's still reversible/incomplete |
+| 4 | API runtime: Containers (chosen initial target) | apps/api runtime | `API_MIGRATION.md` compatibility findings for both options | **DECIDED 2026-09-22**: `API_INITIAL_MIGRATION_TARGET = CLOUDFLARE_CONTAINERS`, `API_WORKERS_NATIVE = FUTURE_OPTIMIZATION` (`DECISIONS.md`). Phase itself isn't "done" until the container proof (`CF-API-02R` below) actually runs and passes | this was a decision phase for *which runtime*; the build/proof work below is what's still reversible/incomplete |
 | 5 | MySQL exit | database | `DATABASE_MIGRATION.md` requirements met by a chosen vendor (not selected yet); Phase17R's backup-restore P1 closed with a real disposable-DB proof | data replicated/migrated to the new database, integrity-verified, **while the old MySQL keeps serving production** | old MySQL stays live and authoritative until Phase 6 cuts over reads/writes |
-| 6 | API cutover to Cloudflare Containers + external MySQL | apps/api production traffic | `CF-API-02` container proof passed; Phase 5 database live and proven | production API traffic served from Cloudflare Containers, old cPanel API process stopped only after verification | redeploy the cPanel API build (kept warm/available) and point traffic back |
+| 6 | API cutover to Cloudflare Containers + external MySQL | apps/api production traffic | `CF-API-02R` container proof passed; Phase 5 database live and proven | production API traffic served from Cloudflare Containers, old cPanel API process stopped only after verification | redeploy the cPanel API build (kept warm/available) and point traffic back |
 | 7 | DNS/domain cutover | authoritative DNS | Bryan has confirmed sufficient registrar/DNS control (`DNS_AND_DOMAIN.md` — currently `PENDING_TRANSFER`) | production hostnames resolve through Cloudflare, TLS re-verified end to end | revert nameservers at the registrar; this is the highest-blast-radius single step in the program and gets its own dedicated runbook before it is attempted |
 | 8 | Remove current provider completely | everything remaining | Phases 1–7 all complete and stable for an agreed observation period | `CURRENT_PROVIDER = ZERO`: no service, DNS record, or credential still depends on the old host | not reversible in the same sense — this is the program's actual finish line, approached last and only with explicit sign-off |
 
@@ -29,7 +29,7 @@ explicit cutover decision is recorded in `DECISIONS.md`. See
 The 8-phase table above is the strategic view. Bryan's decided
 near-term execution order, more granular:
 
-1. **`CF-API-02` — Container POC.** Run the prepared container proof
+1. **`CF-API-02R` — Container POC.** Run the prepared container proof
    (`API_MIGRATION.md`) on a machine with working container tooling:
    boot, health/ready, graceful shutdown, cold start, one auth flow,
    one Serializable wallet transaction, SMTP to a local test sink, one
@@ -46,7 +46,7 @@ near-term execution order, more granular:
    credentials).
 
 Then, in order: Container shadow deployment (the proof from
-`CF-API-02` running continuously, still non-production) → database
+`CF-API-02R` running continuously, still non-production) → database
 migration rehearsal (real data, disposable target, not production) →
 API shadow integration (the web shadow talking to the Container shadow,
 closing the loop this phase's CORS gap currently blocks) → DNS/cutover

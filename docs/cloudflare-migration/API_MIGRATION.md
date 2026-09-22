@@ -11,9 +11,14 @@ lastVerified: 2026-09-22
 CLOUDFLARE_CONTAINERS`. `API_WORKERS_NATIVE = FUTURE_OPTIMIZATION` — not
 rejected, not scheduled. See `DECISIONS.md` for Bryan's exact words.
 **Containers is not yet production-proven** — the container proof
-itself has not been run (Docker/Podman/nerdctl were unavailable in the
-investigating environment); this is a direction, not a completed
-migration.
+itself has not been run. ~~Docker/Podman/nerdctl were unavailable in
+the investigating environment~~ — **correction, Phase CF-R2-01
+(2026-09-22):** local container tooling is no longer the planned path
+for this proof at all. The approved direction is **CF-API-02R**: run
+the proof via Cloudflare's own remote build (Workers Builds), which
+needs no local Docker/Podman/nerdctl. This is a direction, not a
+completed migration — CF-R2-01 did not run the proof, only corrected
+this stale blocker description.
 
 This document folds in the findings of a concurrent, independent
 investigation (`docs/cloudflare-api-feasibility.md`, branch
@@ -128,12 +133,18 @@ Cloudflare's own secret bindings (never baked into the image).
 
 **A container proof was prepared** (Dockerfile + minimal Worker router,
 `experiments/cloudflare-api-container-poc/` on the feasibility branch —
-not merged here) **but not run**: Docker/Podman/nerdctl were
-unavailable in that investigating environment. Running it — with a
-disposable MySQL/MariaDB, proving boot, health/ready, graceful
-shutdown, one auth flow, one Serializable wallet transaction, SMTP to a
-local test sink, and one upload through temporary object storage — is
-the next concrete step (`CF-API-02`, see `MIGRATION_ROADMAP.md`).
+not merged here) **but not run**: ~~Docker/Podman/nerdctl were
+unavailable in that investigating environment~~ — **correction, Phase
+CF-R2-01 (2026-09-22):** local container tooling is no longer assumed
+necessary. The approved direction is to run this proof via Cloudflare's
+own remote build (Workers Builds) instead of local Docker/Podman/
+nerdctl — that's what the `CF-API-02R` naming (the `R` suffix, added
+this phase) now specifically denotes. Running it — with a disposable
+MySQL/MariaDB, proving boot, health/ready, graceful shutdown, one auth
+flow, one Serializable wallet transaction, SMTP to a local test sink,
+and one upload through temporary object storage — is the next concrete
+step (`CF-API-02R`, see `MIGRATION_ROADMAP.md`). Not run this phase —
+CF-R2-01 is the R2/storage phase, not the Container phase.
 
 ## What this program does NOT do regardless of runtime
 
@@ -165,7 +176,7 @@ the shape of the next real validation phase, not a completed checklist.
 
 ## Recommended next step
 
-Run the prepared container proof (`CF-API-02`) on a machine with
+Run the prepared container proof (`CF-API-02R`) on a machine with
 working container tooling. This yields the most decision value without
 touching production or committing to a database provider — see
 `RISKS.md` and `PHASE_STATUS.md`.
