@@ -1,0 +1,7 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "blood-moon-api-workers-baseline-poc",
+  "main": "src/baseline.ts",
+  "compatibility_date": "2025-01-29",
+  "compatibility_flags": ["nodejs_compat"]
+}

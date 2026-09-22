@@ -1,0 +1,7 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "blood-moon-api-workers-current-graph-poc",
+  "main": "src/current-api-entry.ts",
+  "compatibility_date": "2025-01-29",
+  "compatibility_flags": ["nodejs_compat"]
+}
