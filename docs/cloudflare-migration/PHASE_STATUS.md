@@ -61,6 +61,43 @@ lastVerified: 2026-09-22
 - Production: **untouched** — no DNS, no deploy, no CORS change, no
   database change, no container deployed.
 
+## Phase CF-DB-01 — disposable MySQL restore proof + future database options: **COMPLETE**
+
+- **`BACKUP_RESTORE_P1 = CLOSED`.** Full chain proven for real: the
+  exact Phase 17R dump (checksum re-verified) restored into a wholly
+  separate, disposable MySQL 8.0.46 instance (own data directory, own
+  port, own throwaway credentials — the shared `MySQL80` service and
+  `bloodmoon_local*` databases were never touched). 142 tables, 147
+  foreign keys, 55 migrations, all matching the source exactly; one
+  explained (not defective) row-count difference on `Account` from
+  ongoing local dev activity since the dump was taken.
+- `npx prisma migrate status`: **"Database schema is up to date!"**
+  against the restored copy — zero migration drift.
+- New script `apps/api/scripts/verify-disposable-restore-prisma.mjs`
+  (refuses to run against anything non-loopback/production-looking):
+  real Prisma client connect/read/write/unique-constraint/cleanup, 6/6
+  checks passed.
+- Financial semantics proven with real concurrency, not simulated:
+  unique-key idempotency, Serializable transaction + rollback, a real
+  6-way concurrent race for one unique key (exactly 1 winner), and real
+  two-session `GET_LOCK`/`RELEASE_LOCK` mutual exclusion.
+- Disposable instance fully torn down afterward — process stopped, data
+  directory deleted, credentials deleted, zero residue anywhere.
+- Vendor shortlist researched (5 candidates, current 2026 evidence, no
+  selection made): Google Cloud SQL (`southamerica-east1`), Azure
+  Database for MySQL Flexible Server (Brazil South), AWS RDS
+  (`sa-east-1`), PlanetScale (São Paulo — **`GET_LOCK` not supported
+  through Vitess, a real disqualifying gap unless locks are redesigned
+  first**), and a self-hosted MySQL on a Bryan-controlled Vultr São
+  Paulo VPS.
+- `HYPERDRIVE_REQUIRED_NOW = NO` (unchanged — Containers doesn't need
+  it).
+- Full detail: `CF-DB-01-REPORT.md`. Updated:
+  `DATABASE_MIGRATION.md`, `RISKS.md`, `SERVICE_INVENTORY.md`, this
+  file.
+- Production: **untouched** — no production DB access, no DNS, no
+  payments, no CORS change.
+
 ## Phase 1 (Nuxt web → Workers, production cutover) — NOT STARTED
 
 Shadow deployment exists (see above); a real production cutover
@@ -84,13 +121,16 @@ container proof (`CF-API-02`) has not been run — Containers is
 (`RISKS.md` CF-R3) is deprioritized, not blocking, since it only
 matters for the future-optimization path.
 
-## Phase 5 (MySQL exit) — NOT STARTED
+## Phase 5 (MySQL exit) — NOT STARTED, one entry-criteria item now closed
 
-Requirements only (`DATABASE_MIGRATION.md`), now including explicit
-financial-idempotency semantics (unique-key conflicts,
-`GET_LOCK`/`RELEASE_LOCK`, Serializable transactions). Phase 17R's
-backup-restore P1 (`RISKS.md` CF-R5) is an explicit entry-criteria
-blocker, carried forward, not closed; tracked as `CF-DB-01`.
+Requirements documented (`DATABASE_MIGRATION.md`) and now
+**empirically proven**, not just asserted: Serializable isolation,
+unique-key idempotency under real concurrency, and
+`GET_LOCK`/`RELEASE_LOCK` mutual exclusion all confirmed working
+against a real MySQL 8.0.46 instance restored from the project's own
+dump (`CF-DB-01-REPORT.md`). The backup-restore P1
+(`RISKS.md` CF-R5) is **CLOSED**. Vendor selection is still open — a
+5-candidate shortlist exists (`CF-DB-01-REPORT.md`), none chosen.
 
 ## Phase 6 (API cutover) — NOT STARTED
 
@@ -110,9 +150,10 @@ Depends on all preceding phases.
 
 `CF-API-02` (the Container POC) is now the single highest-leverage next
 step — it's the critical path for the chosen Containers target and
-currently has zero empirical proof behind it. In parallel: `CF-DB-01`
-can start closing the backup-restore P1 (`RISKS.md` CF-R5) independently
-of any vendor choice, using a disposable MySQL this project controls.
-The CORS addition (`RISKS.md` CF-R9) stays explicitly blocked pending
-Bryan's authorization — see `DECISIONS_REQUIRED_FROM_BRYAN` in the
-Phase CF-01B final report.
+currently has zero empirical proof behind it. `CF-DB-01` is complete;
+the remaining database work is a real vendor decision among the 5
+shortlisted candidates (`CF-DB-01-REPORT.md`), then a restore proof
+against that specific vendor (not done here — this phase proved the
+*method*, not a specific external target). The CORS addition
+(`RISKS.md` CF-R9) stays explicitly blocked pending Bryan's
+authorization.

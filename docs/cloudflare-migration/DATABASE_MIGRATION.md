@@ -33,26 +33,54 @@ vendor unless a future `DECISIONS.md` entry does.
 - Estimate cost.
 - Propose a migration timeline.
 
-## Carried forward from Phase 17R: the backup-restore P1
+## Backup-restore P1 — CLOSED (2026-09-22, Phase CF-DB-01)
 
 Phase 17R proved the backup **creation** and **integrity-verification**
-pipeline end to end for real (a genuine ~31 MB, 142-table mysqldump,
-`verify-backup-integrity.sh` — which had a real pipefail bug, found and
-fixed that phase). The **restore** step itself is still unproven in
-this environment: the only local MySQL credential available has no
-`CREATE DATABASE` privilege, so `restore-test.sh`'s isolated target
-database cannot be created here.
+pipeline end to end (a genuine ~31 MB, 142-table mysqldump,
+`verify-backup-integrity.sh`). The **restore** step was blocked because
+the only local MySQL credential available had no `CREATE DATABASE`
+privilege.
 
-**This program does not request elevated production credentials to
-close that gap.** The requirement stands as recorded: **before any
-database migration or cutover (Phase 5/6), a real
-mysqldump → restore-into-a-disposable-MySQL → integrity-validation
-cycle must be proven**, using a disposable database this project
-controls — not production, not requiring new elevated access beyond
-what a normal local/CI MySQL instance already grants its own creator.
-This can be closed independently of any vendor decision, whenever a
-disposable MySQL instance with `CREATE DATABASE` is available (a local
-Docker/native MySQL with an admin user, a throwaway cloud instance, or
-a grant on the existing local credential). Tracked as `CF-DB-01` in
-`MIGRATION_ROADMAP.md`, alongside evaluating real external MySQL-
-compatible candidates against the requirements above.
+**Closed without requesting elevated credentials**: Phase CF-DB-01
+created a wholly separate, disposable MySQL 8.0.46 instance (own fresh
+data directory, own loopback-only port, own throwaway root/restore
+credentials, generated locally and never committed) — entirely
+independent of the shared MySQL install and its existing databases,
+which were never touched. The full chain ran for real: checksum
+re-verification → `restore-test.sh` (unmodified) → 142 tables / 147
+foreign keys / 55 migrations, all matching the source exactly →
+`prisma migrate status` reporting zero drift → the real generated
+Prisma client connecting, reading, writing, and correctly enforcing the
+real unique-constraint error path → financial-semantics proof
+(Serializable + rollback, real concurrent unique-key race with exactly
+one winner, real two-session `GET_LOCK`/`RELEASE_LOCK` mutual
+exclusion). The disposable instance was fully deleted afterward. Full
+detail, including the one explained (non-defective) row-count
+difference found: `CF-DB-01-REPORT.md`.
+
+**What this closure does and doesn't cover**: it proves the *method* —
+mysqldump → disposable restore → integrity → Prisma → financial
+semantics — works, against a same-major-version MySQL 8.0 instance.
+It does **not** prove a restore against any specific *external* vendor
+(network path, that vendor's exact version, that vendor's own
+backup/restore tooling) — that repeats once a vendor is chosen from the
+shortlist below, using the same proven method
+(`apps/api/scripts/verify-disposable-restore-prisma.mjs` is reusable
+as-is for the Prisma-layer half of that future proof).
+
+## Vendor shortlist (research only, Phase CF-DB-01 — no selection made)
+
+Five real, currently-verified (2026) candidates researched; full detail
+including each one's exact TLS/backup/network/cost/limitation profile
+is in `CF-DB-01-REPORT.md`. Summary:
+
+| Candidate | Real MySQL or compatibility layer | Brazil/South America presence | Named-lock (`GET_LOCK`) compatibility |
+|---|---|---|---|
+| Google Cloud SQL for MySQL | Real MySQL | `southamerica-east1` (São Paulo/Osasco) | Expected to work unchanged (real MySQL engine) |
+| Azure Database for MySQL Flexible Server | Real MySQL | Brazil South | Expected to work unchanged (real MySQL engine) |
+| AWS RDS for MySQL | Real MySQL | `sa-east-1` (São Paulo), confirmed price premium vs. US regions | Expected to work unchanged (real MySQL engine) |
+| PlanetScale | Vitess (MySQL-**compatible** proxy/sharding layer) | São Paulo (`sa-east-1`), added 2026 | **NOT supported through VTGate — confirmed via PlanetScale's own GitHub discussion and Vitess's own tracked issue.** A real, disqualifying gap for this project's current 5-service `GET_LOCK` usage unless those locks are redesigned first |
+| Self-hosted MySQL on a Bryan-controlled VPS (Vultr São Paulo) | Real MySQL, full version control | São Paulo (Vultr region since 2021, recently expanded) | Full control — works unchanged |
+
+None selected. This table exists so a future `DECISIONS.md` entry has
+real, evidenced options — not to make the choice here.
