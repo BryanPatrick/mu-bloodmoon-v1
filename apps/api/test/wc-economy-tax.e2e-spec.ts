@@ -18,6 +18,11 @@ beforeAll(async () => {
   process.env.JWT_ACCESS_SECRET ||= 'e2e-test-access-secret-not-for-production-use'
   process.env.JWT_REFRESH_SECRET ||= 'e2e-test-refresh-secret-not-for-production-use'
   process.env.TWO_FACTOR_ENCRYPTION_KEY ||= 'e2e-test-two-factor-key-at-least-32-characters'
+  // Open Beta Plan B (2026-09-18): this suite tests tax/fee math through
+  // a real marketplace sale, not the beta gate itself -- opt in
+  // explicitly. See marketplace-beta-gate.e2e-spec.ts for the gate's own
+  // dedicated tests.
+  process.env.MARKETPLACE_ENABLED = 'true'
   execSync('npx prisma migrate deploy', { cwd: __dirname + '/..', env: process.env, stdio: 'pipe' })
 }, 120000)
 

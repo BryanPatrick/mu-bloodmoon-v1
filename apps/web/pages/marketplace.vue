@@ -19,6 +19,7 @@
         /></label>
         <div class="market-hero-tabs" role="group" aria-label="Escolha o mercado">
           <button
+            v-if="marketplaceEnabled"
             :class="{ 'is-active': marketMode === 'players' }"
             type="button"
             @click="marketMode = 'players'"
@@ -85,7 +86,7 @@
 
       <div class="market-layout">
         <aside class="hidden lg:grid lg:gap-3">
-          <CommercialMarketSwitch v-model="marketMode" />
+          <CommercialMarketSwitch v-if="marketplaceEnabled" v-model="marketMode" />
           <MarketplaceFilters
             v-if="marketMode === 'players'"
             v-model:search="query"
@@ -205,7 +206,7 @@
           </button>
         </div>
         <div class="grid gap-3">
-          <CommercialMarketSwitch v-model="marketMode" /><MarketplaceFilters
+          <CommercialMarketSwitch v-if="marketplaceEnabled" v-model="marketMode" /><MarketplaceFilters
             v-if="marketMode === 'players'"
             v-model:search="query"
             v-model:category="playerCategory"
@@ -264,8 +265,14 @@ const router = useRouter()
 const marketplaceApi = useMarketplaceApi()
 const storeApi = useStoreApi()
 const { isLoggedIn, loadSession } = useAuth()
+// Open Beta Plan B (2026-09-18, resumed in Phase 17R): frontend mirror of the server-side
+// gate in marketplace.service.ts's assertMarketplaceEnabled(). While the player market is
+// disabled this page only ever shows the official WCoin store: the "Jogadores" tab and the
+// market switch are hidden, no player-listing request is made, and buying stays blocked here
+// too. The API enforces the gate independently either way.
+const { marketplaceEnabled } = useMarketplaceGate()
 const marketMode = ref<CommercialMarketMode>(
-  route.query.mercado === 'oficial' ? 'official' : 'players'
+  marketplaceEnabled.value && route.query.mercado !== 'oficial' ? 'players' : 'official'
 )
 const query = ref('')
 const playerCategory = ref('')
@@ -469,6 +476,11 @@ const inspect = (listing: MarketplaceListing) => {
   detailsOpen.value = true
 }
 const buy = async (listing: MarketplaceListing) => {
+  if (!marketplaceEnabled.value) {
+    isSuccess.value = false
+    message.value = 'O marketplace esta temporariamente indisponivel nesta versao de avaliacao.'
+    return
+  }
   loadSession()
   if (!isLoggedIn.value) return navigateTo(`/login?redirect=${encodeURIComponent('/marketplace')}`)
   isBuying.value = true
@@ -508,7 +520,8 @@ const reportListing = async (listing: MarketplaceListing) => {
 watch(
   () => route.query.mercado,
   (value) => {
-    const routeMode: CommercialMarketMode = value === 'oficial' ? 'official' : 'players'
+    const routeMode: CommercialMarketMode =
+      value === 'oficial' || !marketplaceEnabled.value ? 'official' : 'players'
     if (routeMode === marketMode.value) return
     skipNextRouteWrite = true
     marketMode.value = routeMode
@@ -545,6 +558,11 @@ watch(view, (value) => import.meta.client && localStorage.setItem('blood-moon-ma
 onMounted(async () => {
   const savedView = localStorage.getItem('blood-moon-market-view')
   if (savedView === 'grid' || savedView === 'list') view.value = savedView
+  if (!marketplaceEnabled.value && route.query.mercado !== 'oficial') {
+    isSuccess.value = false
+    message.value =
+      'O mercado entre jogadores está temporariamente indisponível nesta versão de avaliação. A Loja WCoin continua disponível.'
+  }
   if (marketMode.value === 'official') await loadOfficialProducts()
   else await loadPlayerListings()
 })

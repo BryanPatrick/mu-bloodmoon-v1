@@ -50,7 +50,14 @@ fi
 # a guarantee the dump restores cleanly -- that is what restore-test.sh
 # verifies, against an isolated database, separately from this script.
 if [[ -f "$run_dir/database.sql.gz" ]]; then
-  header="$(gzip -dc "$run_dir/database.sql.gz" 2>/dev/null | head -c 4096)"
+  # Phase 17R (2026-09-21): `gzip -dc ... | head -c 4096` inside `$(...)` aborted this whole
+  # script under `set -o pipefail` on every real backup -- `head` closes the pipe once it has
+  # its 4096 bytes, `gzip` gets SIGPIPE on the next write and exits nonzero, and pipefail turns
+  # that into a script-ending failure before this check (or the manifest.txt check after it)
+  # ever prints a result. Only ever "worked" against a dump small enough to fit under 4096
+  # bytes whole, which no real database.sql.gz is. Process substitution keeps `head`'s exit
+  # status as the only one that matters, so gzip's SIGPIPE no longer aborts the script.
+  header="$(head -c 4096 < <(gzip -dc "$run_dir/database.sql.gz" 2>/dev/null))"
   if grep -q -- '-- MySQL dump' <<< "$header" || grep -q -- '-- Dump completed' <<< "$header" || grep -qi 'CREATE TABLE' <<< "$header"; then
     pass 'database.sql.gz decompresses to what looks like a real SQL dump'
   else

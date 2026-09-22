@@ -97,6 +97,7 @@ const { user } = useAuth()
 const charactersApi = useCharactersApi()
 const commerceApi = useCommerceApi()
 const marketApi = useMarketplaceApi()
+const { marketplaceEnabled } = useMarketplaceGate()
 const guildsApi = useGuildsApi()
 const characters = ref<ManagedCharacter[]>([])
 const purchases = ref<CommercePurchase[]>([])
@@ -105,7 +106,10 @@ const invites = ref<any[]>([])
 
 onMounted(async () => {
   const [characterResult, purchaseResult, listings, inviteResult] = await Promise.allSettled([
-    charactersApi.list(), commerceApi.listAccountPurchases(), marketApi.listMyListings(), guildsApi.myInvites()
+    charactersApi.list(), commerceApi.listAccountPurchases(),
+    // Open Beta Plan B: no marketplace call at all while the player market is disabled.
+    marketplaceEnabled.value ? marketApi.listMyListings() : Promise.resolve([]),
+    guildsApi.myInvites()
   ])
   if (characterResult.status === 'fulfilled') characters.value = characterResult.value.data
   if (purchaseResult.status === 'fulfilled') purchases.value = purchaseResult.value
@@ -136,7 +140,7 @@ const respondInvite = async (invite: any, action: 'accept' | 'decline') => {
 const metrics = computed(() => [
   { label: 'Personagens', value: characters.value.length, icon: Gamepad2 },
   { label: 'Compras', value: purchases.value.length, icon: ShoppingBag },
-  { label: 'Meus anúncios', value: listingCount.value, icon: Store },
+  ...(marketplaceEnabled.value ? [{ label: 'Meus anúncios', value: listingCount.value, icon: Store }] : []),
   { label: 'Moedas', value: user.value?.currencies.reduce((sum, row) => sum + row.value, 0) || 0, icon: Coins }
 ])
 const formatDate = (value: string) => new Intl.DateTimeFormat('pt-BR').format(new Date(value))

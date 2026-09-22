@@ -1,6 +1,9 @@
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
+// Open Beta Plan B (Phase 17R): same fail-closed switch as the API and the delivery scaffold --
+// while the marketplace is disabled, no listing is expired and no return job is queued.
+const marketplaceEnabled = process.env.MARKETPLACE_ENABLED === 'true'
 const limit = Math.min(500, Math.max(1, Number.parseInt(process.env.MARKETPLACE_EXPIRATION_BATCH || '100', 10)))
 
 async function expireListing(listing) {
@@ -55,6 +58,10 @@ async function expireListing(listing) {
 }
 
 async function main() {
+  if (!marketplaceEnabled) {
+    console.log('Marketplace disabled (MARKETPLACE_ENABLED is not true): no listing was expired.')
+    return
+  }
   const listings = await prisma.playerMarketListing.findMany({
     where: {
       status: 'ACTIVE',

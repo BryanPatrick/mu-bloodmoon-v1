@@ -1,4 +1,4 @@
-﻿import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+﻿import { BadRequestException, Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common'
 import { createHash, randomUUID } from 'node:crypto'
 import type { Account, CurrencyCode, GameBridgeJob, GameBridgeStatus, MarketplaceListingStatus, MarketplaceOrderStatus, PlayerMarketListing, PlayerMarketOrder, Prisma } from '@prisma/client'
 import { PrismaService } from '../../database/prisma.service'
@@ -161,7 +161,29 @@ export class MarketplaceService {
     return rows.map((row) => this.mapOrder(row))
   }
 
+  // Open Beta Plan B (2026-09-18) -- server-side gate on the two entry
+  // points that create NEW escrow/GameBridge state a player cannot get
+  // out of on their own: createListing (optionally debits a publication
+  // fee, always creates a listing GameBridge will eventually try to
+  // LOCK_ITEM against) and createOrder (immediately debits the buyer's
+  // WC, per the Phase Q audit comment on createOrder below). Mirrors
+  // commerce.service.ts's assertRealMoneyPaymentsEnabled() pattern
+  // exactly -- same fail-closed default, same PUBLIC_ERROR_CODES
+  // allowlist entry. cancelListing is deliberately NOT gated: it moves
+  // existing state toward resolution (RELEASE_ITEM, RETURN_PENDING),
+  // never creates new unrecoverable state, and staying enabled lets a
+  // player or admin unwind whatever already exists.
+  private assertMarketplaceEnabled(): void {
+    if (process.env.MARKETPLACE_ENABLED !== 'true') {
+      throw new ServiceUnavailableException({
+        code: 'MARKETPLACE_DISABLED',
+        message: 'O marketplace esta temporariamente indisponivel nesta versao de avaliacao.'
+      })
+    }
+  }
+
   async createListing(payload: CreateMarketplaceListingPayload, user: AuthenticatedUser) {
+    this.assertMarketplaceEnabled()
     const gameItemRef = payload.gameItemRef?.trim()
     const itemName = payload.itemName?.trim()
     const itemCategory = payload.itemCategory?.trim()
@@ -417,6 +439,7 @@ export class MarketplaceService {
   // assertNoActiveTransferRestriction(). See ADR-0022 for the full
   // table and the closed OQ-024.
   async createOrder(payload: CreateMarketplaceOrderPayload, user: AuthenticatedUser) {
+    this.assertMarketplaceEnabled()
     if (!payload.listingId?.trim()) {
       throw new BadRequestException('listingId e obrigatorio.')
     }

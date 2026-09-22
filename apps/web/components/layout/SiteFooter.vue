@@ -37,7 +37,10 @@
 </template>
 
 <script setup lang="ts">
-const groups = [
+// Open Beta Plan B: the player-to-player market entry is hidden while the marketplace is disabled;
+// "Loja oficial" (the WCoin store) is a different surface and stays.
+const { marketplaceEnabled } = useMarketplaceGate()
+const allGroups = [
   {
     title: 'Navegação',
     items: [
@@ -55,7 +58,7 @@ const groups = [
     items: [
       { label: 'Discord', to: '/comunidade' },
       { label: 'Comunidade', to: '/comunidade' },
-      { label: 'Mercado de jogadores', to: '/marketplace' },
+      { label: 'Mercado de jogadores', to: '/marketplace', marketplaceOnly: true },
       { label: 'Loja oficial', to: '/marketplace?mercado=oficial' }
     ]
   },
@@ -80,6 +83,12 @@ const groups = [
     ]
   }
 ]
+const groups = computed(() =>
+  allGroups.map((group) => ({
+    ...group,
+    items: group.items.filter((item) => !('marketplaceOnly' in item && item.marketplaceOnly) || marketplaceEnabled.value)
+  }))
+)
 </script>
 
 <style scoped>

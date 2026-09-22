@@ -10,6 +10,7 @@ const adminService = read('src/modules/marketplace/marketplace-admin.service.ts'
 const controller = read('src/modules/marketplace/marketplace-admin.controller.ts')
 const permissions = read('src/modules/auth/permissions.ts')
 const expirationWorker = read('scripts/process-marketplace-expirations.mjs')
+const deliveryWorker = read('scripts/process-game-bridge-jobs.mjs')
 const failures = []
 
 for (const model of [
@@ -91,6 +92,23 @@ if (!adminService.includes('Use a acao protegida de suspensao de usuario.')) {
 }
 for (const invariant of ["status: 'EXPIRED'", 'market-expiration-return:', "status: 'RETURN_PENDING'"]) {
   if (!expirationWorker.includes(invariant)) failures.push(`Expiration worker is missing ${invariant}`)
+}
+
+// Open Beta Plan B (Phase 17R): the marketplace is fail-closed for the initial Beta. The API gate, the
+// two workers and the .env examples must all keep the same switch, otherwise a future edit could quietly
+// re-open a path that creates escrow / GameBridge state.
+if (!service.includes("process.env.MARKETPLACE_ENABLED !== 'true'")) failures.push('Marketplace service lost the fail-closed MARKETPLACE_ENABLED gate')
+const gateCalls = service.match(/this.assertMarketplaceEnabled()/g) || []
+if (gateCalls.length < 2) failures.push('assertMarketplaceEnabled() must guard both createListing and createOrder')
+for (const [name, source] of [['delivery worker', deliveryWorker], ['expiration worker', expirationWorker]]) {
+  if (!source.includes("process.env.MARKETPLACE_ENABLED === 'true'")) failures.push(`Marketplace ${name} lost the fail-closed MARKETPLACE_ENABLED switch`)
+  if (!source.includes('if (!marketplaceEnabled)')) failures.push(`Marketplace ${name} must exit before reading rows when disabled`)
+}
+if (!deliveryWorker.includes('operation: { in: MARKETPLACE_JOB_OPERATIONS }')) {
+  failures.push('Delivery worker must only select marketplace operations (never VIP or account-lifecycle jobs)')
+}
+for (const file of ['.env.example', '../../deploy/.env.production.example']) {
+  if (!/^MARKETPLACE_ENABLED=false$/m.test(read(file))) failures.push(`${file} must document MARKETPLACE_ENABLED=false`)
 }
 
 if (failures.length) {

@@ -5,7 +5,8 @@ export default defineNuxtConfig({
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3333/api',
       turnstileSiteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || '',
-      realMoneyPaymentsEnabled: process.env.NUXT_PUBLIC_REAL_MONEY_PAYMENTS_ENABLED === 'true'
+      realMoneyPaymentsEnabled: process.env.NUXT_PUBLIC_REAL_MONEY_PAYMENTS_ENABLED === 'true',
+      marketplaceEnabled: process.env.NUXT_PUBLIC_MARKETPLACE_ENABLED === 'true'
     }
   },
   components: [

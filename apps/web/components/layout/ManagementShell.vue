@@ -104,6 +104,7 @@ import { permissions, type Permission, type UserRole } from '~/data/security'
 
 const route = useRoute()
 const { hasPermission, loadSession, user } = useAuth()
+const { marketplaceEnabled } = useMarketplaceGate()
 const isShellReady = ref(false)
 const isMenuCollapsed = ref(false)
 const openSections = ref(new Set<string>())
@@ -136,6 +137,8 @@ type MenuItem = {
   icon: unknown
   permission?: Permission
   roles?: UserRole[]
+  // Open Beta Plan B: hidden while the player marketplace is disabled (useMarketplaceGate).
+  marketplaceOnly?: boolean
   children?: MenuChild[]
 }
 
@@ -300,14 +303,14 @@ const playerItems: MenuItem[] = [
   { label: 'Minha conta', to: '/painel/conta', icon: UserCog },
   { label: 'Meus personagens', to: '/painel/personagens', icon: Users },
   { label: 'Loja', to: '/painel/loja', icon: Store },
-  { label: 'Marketplace', to: '/painel/marketplace', icon: ShoppingBag },
+  { label: 'Marketplace', to: '/painel/marketplace', icon: ShoppingBag, marketplaceOnly: true },
   { label: 'Comunidade', to: '/comunidade', icon: MessageCircle },
   { label: 'Meu perfil social', to: '/comunidade?painel=perfil', icon: UserCog },
   { label: 'Guildas', to: '/guilds', icon: Shield },
   { label: 'Minhas compras', to: '/painel/compras', icon: PackageCheck },
   { label: 'Transferir WC', to: '/painel/transferencias', icon: ArrowLeftRight },
   { label: 'VIP', to: '/painel/vip', icon: Crown },
-  { label: 'Meus anúncios', to: '/painel/marketplace?visao=meus-anuncios', icon: ShoppingBag },
+  { label: 'Meus anúncios', to: '/painel/marketplace?visao=meus-anuncios', icon: ShoppingBag, marketplaceOnly: true },
   { label: 'Notificações', to: '/painel/notificacoes', icon: Bell },
   { label: 'Suporte', to: '/painel/suporte', icon: TicketCheck },
   { label: 'Privacidade e meus dados', to: '/painel/privacidade', icon: Lock },
@@ -335,7 +338,7 @@ const visibleMenuItems = computed(() => {
   if (!role) return []
   const items = role === 'player' ? playerItems : role === 'gm' ? gmItems : administrativeItems
   return items
-    .filter((item) => (!item.roles || item.roles.includes(role)) && (!item.permission || hasPermission(item.permission)))
+    .filter((item) => (!item.marketplaceOnly || marketplaceEnabled.value) && (!item.roles || item.roles.includes(role)) && (!item.permission || hasPermission(item.permission)))
     .map((item) => ({
       ...item,
       children: item.children?.filter(

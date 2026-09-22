@@ -5,6 +5,17 @@ const prisma = new PrismaClient()
 const enabled = process.env.MU_BRIDGE_ENABLED === 'true'
 const limit = Number.parseInt(process.env.MU_BRIDGE_WORKER_CONCURRENCY || '1', 10)
 
+// Open Beta Plan B (Phase 17R, 2026-09-21): this script is the marketplace delivery scaffold
+// (MARKETPLACE_DELIVERY_WORKER) -- it must not run, and must not touch any row, while the
+// marketplace is disabled. MARKETPLACE_ENABLED is fail-closed: missing or any value other than
+// the literal 'true' means disabled, exactly like marketplace.service.ts assertMarketplaceEnabled().
+const marketplaceEnabled = process.env.MARKETPLACE_ENABLED === 'true'
+
+// Only the escrow operations the marketplace creates. Before this allowlist the query took
+// EVERY pending job, so with MU_BRIDGE_ENABLED=true it would also have marked VIP grants and
+// account-lifecycle jobs FAILED; those belong to their own consumers, never to this scaffold.
+const MARKETPLACE_JOB_OPERATIONS = ['LOCK_ITEM', 'RELEASE_ITEM', 'TRANSFER_ITEM', 'DELIVER_ITEM', 'CREDIT_CURRENCY']
+
 const terminalStatuses = new Set(['COMPLETED', 'FAILED', 'CANCELLED'])
 
 const errorCodeByOperation = {
@@ -148,9 +159,15 @@ async function processJob(job) {
 }
 
 async function main() {
+  if (!marketplaceEnabled) {
+    console.log('Marketplace disabled (MARKETPLACE_ENABLED is not true): no GameBridgeJob rows were read or changed.')
+    return
+  }
+
   const jobs = await prisma.gameBridgeJob.findMany({
     where: {
       status: 'PENDING',
+      operation: { in: MARKETPLACE_JOB_OPERATIONS },
       availableAt: { lte: new Date() }
     },
     include: {

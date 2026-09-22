@@ -6,7 +6,9 @@
           <p class="bm-kicker">Marketplace</p>
           <h1 class="mt-2 font-display text-4xl font-black uppercase">Meus anuncios</h1>
           <p class="mt-3 max-w-3xl text-sm font-semibold leading-7 text-white/68">
-            Cadastre itens para venda entre jogadores. Nesta fase, o item fica pendente ate a ponte do jogo confirmar o bloqueio real.
+            {{ marketplaceEnabled
+              ? 'Cadastre itens para venda entre jogadores. Nesta fase, o item fica pendente ate a ponte do jogo confirmar o bloqueio real.'
+              : 'Novos anuncios e compras estao temporariamente indisponiveis nesta versao de avaliacao. Anuncios existentes ainda podem ser cancelados abaixo.' }}
           </p>
         </div>
         <NuxtLink class="bm-button-glass rounded-md px-5 py-3 text-sm font-black" to="/marketplace">
@@ -46,8 +48,12 @@
             </label>
           </div>
 
-          <button class="rounded-md bg-blood-700 px-5 py-3 text-sm font-black text-white transition hover:bg-blood-500" type="submit">
-            Criar anuncio pendente
+          <button
+            class="rounded-md bg-blood-700 px-5 py-3 text-sm font-black text-white transition hover:bg-blood-500 disabled:cursor-not-allowed disabled:opacity-50"
+            type="submit"
+            :disabled="!marketplaceEnabled"
+          >
+            {{ marketplaceEnabled ? 'Criar anuncio pendente' : 'Marketplace indisponivel' }}
           </button>
         </form>
 
@@ -128,6 +134,10 @@ import type { CreateMarketplaceListingPayload, MarketplaceListing, MarketplaceOr
 
 useSeoMeta({ title: 'Meus anuncios' })
 
+// Open Beta Plan B (2026-09-18): mirrors marketplace.vue's own gate --
+// the API enforces this independently either way.
+const { marketplaceEnabled } = useMarketplaceGate()
+
 const marketplaceApi = useMarketplaceApi()
 const message = ref('')
 const isSuccess = ref(true)
@@ -158,6 +168,11 @@ const loadRows = async () => {
 }
 
 const createListing = async () => {
+  if (!marketplaceEnabled.value) {
+    isSuccess.value = false
+    message.value = 'Novos anuncios estao temporariamente indisponiveis nesta versao de avaliacao.'
+    return
+  }
   try {
     const gameItemRef = `pending-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
     await marketplaceApi.createListing({ ...form, gameItemRef, itemData: { pendingGameSync: true } })

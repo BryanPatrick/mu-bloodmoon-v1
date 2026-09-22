@@ -563,23 +563,33 @@ export class AuthService {
       throw new BadRequestException({ code: 'TOKEN_INVALID', message: 'Link invalido' })
     }
 
-    await this.prisma.$transaction([
-      this.prisma.account.update({
-        where: { id: account.id },
-        data: {
-          passwordHash: await bcrypt.hash(newPassword, 12),
-          sessionVersion: { increment: 1 }
-        }
-      }),
-      this.prisma.accountSession.updateMany({
-        where: { accountId: account.id, revokedAt: null },
-        data: { revokedAt: new Date(), revokeReason: 'Senha redefinida via recuperacao de conta' }
-      }),
-      this.prisma.passwordResetToken.updateMany({
-        where: { accountId: account.id, consumedAt: null },
-        data: { consumedAt: new Date() }
+    const passwordHash = await bcrypt.hash(newPassword, 12)
+    await this.prisma.$transaction(async (tx) => {
+      // Phase 17R (2026-09-21): claim the token atomically. The read-then-check above is only a fast
+      // path for clear error codes; two simultaneous resets with the same link both passed it (6 of 6
+      // succeeded in the local SMTP-sink proof). The conditional update takes the row lock, so exactly
+      // one caller sees count === 1 and every other one is refused as TOKEN_USED / TOKEN_EXPIRED.
+      const claimedAt = new Date()
+      const claimed = await tx.passwordResetToken.updateMany({
+        where: { id: record.id, consumedAt: null, expiresAt: { gt: claimedAt } },
+        data: { consumedAt: claimedAt }
       })
-    ])
+      if (claimed.count !== 1) {
+        throw new BadRequestException({ code: 'TOKEN_USED', message: 'Link ja utilizado' })
+      }
+      await tx.account.update({
+        where: { id: account.id },
+        data: { passwordHash, sessionVersion: { increment: 1 } }
+      })
+      await tx.accountSession.updateMany({
+        where: { accountId: account.id, revokedAt: null },
+        data: { revokedAt: claimedAt, revokeReason: 'Senha redefinida via recuperacao de conta' }
+      })
+      await tx.passwordResetToken.updateMany({
+        where: { accountId: account.id, consumedAt: null },
+        data: { consumedAt: claimedAt }
+      })
+    })
 
     await this.audit.record({
       actorId: account.id,
