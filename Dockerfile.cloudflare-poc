@@ -8,7 +8,8 @@ COPY apps/game-data-worker/package.json apps/game-data-worker/package.json
 COPY apps/web/package.json apps/web/package.json
 COPY packages/shared/package.json packages/shared/package.json
 
-RUN npm ci --ignore-scripts
+RUN npm install --global npm@10.9.2 \
+  && npm ci --ignore-scripts
 
 COPY . .
 RUN npx prisma generate --schema apps/api/prisma/schema.prisma \
