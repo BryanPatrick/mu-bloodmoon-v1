@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 import { AuditModule } from '../audit/audit.module'
 import { AuthModule } from '../auth/auth.module'
+import { GuildMediaStorageService } from './guild-media-storage.service'
 import { GuildsAdminController } from './guilds-admin.controller'
 import { GuildsAdminService } from './guilds-admin.service'
 import { GuildsController } from './guilds.controller'
@@ -10,7 +11,7 @@ import { GuildsService } from './guilds.service'
 @Module({
   imports: [AuthModule, AuditModule],
   controllers: [GuildsController, GuildsAdminController],
-  providers: [GuildsService, GuildsAdminService, GuildsMediaService],
+  providers: [GuildsService, GuildsAdminService, GuildsMediaService, GuildMediaStorageService],
   exports: [GuildsService]
 })
 export class GuildsModule {}

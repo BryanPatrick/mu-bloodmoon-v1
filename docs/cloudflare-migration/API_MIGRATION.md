@@ -83,7 +83,16 @@ tackle them:
   request-local, non-persistent VFS. Native `sharp` (image processing)
   has no Workers equivalent as-is — needs Cloudflare Images/Media
   Transformations, a separate image service, or staying on a
-  Containers/VM path for that specific job.
+  Containers/VM path for that specific job. **Update, Phase CF-R2-02**:
+  this bullet is about the *native-Workers* path specifically (`sharp`
+  has no Workers equivalent regardless of storage backend) — the
+  separate, Containers-relevant question (local disk being ephemeral
+  under Containers) is tracked in `RISKS.md` CF-R12, now
+  `PARTIALLY ADDRESSED`: guild media and launcher-studio assets gained
+  a real `StorageProvider`/R2 implementation this phase (previously
+  neither had one), leaving only admin-content uploads
+  (`storage/uploads/`, explicitly deferred — see `R2_ASSETS.md`) as a
+  real persistent-filesystem blocker for `CF-API-02R`.
 - **SMTP** — Workers supports outbound TCP but blocks port 25 by
   default, and Nodemailer's exact host/port/TLS combination has not
   been proven under Workers. An HTTPS transactional-email provider, or

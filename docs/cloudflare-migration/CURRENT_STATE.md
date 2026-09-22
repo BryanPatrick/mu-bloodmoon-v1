@@ -25,7 +25,8 @@ an inference — see `TARGET_ARCHITECTURE.md` for the future state and
 | Authoritative DNS | `ns1.srv41.hinetworks.com.br` / `ns2.srv41.hinetworks.com.br` — **the hosting provider's own nameservers, not Cloudflare** | same doc, "Observed production path" |
 | Cloudflare in the current path | **None** — same doc states explicitly: "No Cloudflare proxy was found in the current path" | same |
 | Backups | Cron `17 3 * * *` running `bloodmoon-backup.sh` on the cPanel host | `deploy/CPANEL_BACKUP_AUTOMATION.md` |
-| User media (community/guild uploads) | Local disk by default (`COMMUNITY_MEDIA_DIR`, `GUILD_MEDIA_DIR`), optionally Cloudflare R2 via `MEDIA_STORAGE_PROVIDER=r2` — **not confirmed which mode production currently runs** | `apps/api/.env.example`, `apps/api/src/modules/media/storage/media-storage.service.ts` |
+| User media (community/guild uploads) | Local disk by default (`COMMUNITY_MEDIA_DIR`, `GUILD_MEDIA_DIR`), optionally Cloudflare R2 via `MEDIA_STORAGE_PROVIDER=r2` (community) / `GUILD_MEDIA_STORAGE_PROVIDER=r2` (guild, own independent switch, Phase CF-R2-02) — **`PRODUCTION_MEDIA_MODE = UNKNOWN`, not confirmed which mode production currently runs for either** | `apps/api/.env.example`, `apps/api/src/modules/media/storage/media-storage.service.ts`, `apps/api/src/modules/guilds/guild-media-storage.service.ts` |
+| Launcher-studio assets | Local disk by default (`storage/launcher-assets/`), optionally Cloudflare R2 via `LAUNCHER_MEDIA_STORAGE_PROVIDER=r2` (Phase CF-R2-02 — previously R2 was an unconditional-throw stub) | `apps/api/src/modules/launcher-studio/launcher-asset-storage.ts` |
 | Marketplace delivery worker (`worker:game-bridge`) | An npm script exists (`worker:game-bridge`); no cron entry for it found in any tracked doc — consistent with the marketplace being disabled (Phase 17R) | `docs/management-flows.md`, `apps/api/package.json` |
 
 ## Cloudflare account — already in use, for unrelated workloads

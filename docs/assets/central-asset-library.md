@@ -40,13 +40,19 @@ extension) -> { storageKey, publicUrl, sha256, sizeBytes }`.
   `launcher-asset-media.controller.ts` at `GET /media/launcher-assets/
   :fileName`, with the same `basename()` + strict extension allowlist
   (`^[a-f0-9-]+\.(?:png|jpg|webp)$`) that prevents path traversal.
-- `R2LauncherAssetStorageProvider` -- a contract stub only. Its `save()`
-  throws `NotImplementedException`; no Cloudflare R2 credential is read,
-  touched, or referenced anywhere in this phase, per the task's absolute
-  local/repo-only boundary. The contract (`SavedAsset`'s shape) is written
-  to be R2-compatible later -- activating R2 is meant to be a provider
-  swap in `launcher-studio.module.ts`'s DI binding, not a rewrite of
-  `LauncherStudioService` or the controllers that call it.
+- `R2LauncherAssetStorageProvider` -- **real as of Phase CF-R2-02**
+  (`docs/cloudflare-migration/R2_ASSETS.md`). Reuses
+  `R2StorageProvider` (the same class community media uses) under a
+  `launcher-assets/` key namespace, sharing the `R2_*` account
+  credentials/bucket (or `LAUNCHER_R2_BUCKET` if a dedicated bucket is
+  set). Activated via `LAUNCHER_MEDIA_STORAGE_PROVIDER=r2` in
+  `launcher-studio.module.ts`'s DI factory -- **local remains the
+  default, not activated in production this phase**. One caveat:
+  `launcher-asset-media.controller.ts`'s read route
+  (`/media/launcher-assets/:fileName`) is still local-disk-only
+  regardless of this switch; an R2-stored asset's real, working URL is
+  the one `save()` returns in `SavedAsset.publicUrl` (an R2 URL), not
+  that local route.
 
 ## Upload path
 
@@ -60,4 +66,6 @@ dataUrl}`), PNG/JPEG/WebP only, 5 MB cap. Requires
 Image dimension probing (`width`/`height` are left `null` on upload --
 no image-decoding library was added this phase to keep the dependency
 footprint minimal), bulk asset management UI beyond the picker grid in
-the slot inspector, and any real R2 wiring.
+the slot inspector. Real R2 wiring was added in Phase CF-R2-02 (see
+above) -- not activated in production, no production launcher artifact
+uploaded to R2.

@@ -158,6 +158,78 @@ lastVerified: 2026-09-22
 - Production: **untouched** — no DNS, no production asset URL change,
   no production DB access, no payments, no deployed Worker changed.
 
+## Phase CF-R2-02 — R2 storage provider hardening + filesystem exit preparation: **COMPLETE**
+
+- `R2StorageProvider` went from **zero test coverage** to 38 unit
+  tests (mocked `S3Client`) — found and fixed a real, previously-latent
+  bug: `publicUrl()` omitted the `available/` prefix `writeAvailable()`
+  actually stores objects under, so the URL it returned never matched
+  where the object really was. Added an optional `namespace` option so
+  more than one media domain can safely share one bucket/credential set.
+- Community media's provider-selection logic
+  (`MediaStorageService.buildProvider()`) got its own first unit
+  coverage (9 tests). Real end-to-end R2-mode validation (real upload/
+  retrieve/replace/delete against a disposable DB) could not be run —
+  no Docker in this environment and no R2 S3-compatible API
+  credentials exist anywhere in it (a different credential type than
+  the `wrangler` OAuth session used elsewhere in this program).
+- **Guild media refactored onto the `StorageProvider` abstraction** —
+  previously direct `node:fs` calls with zero abstraction (`R2_ASSETS.md`,
+  `CF-R2-01`'s correction). New `GuildMediaStorageService`, its own
+  independent `GUILD_MEDIA_STORAGE_PROVIDER` switch (default `local`,
+  zero behavior change), R2 capable via the new namespace feature. 7
+  new unit tests. Real e2e re-validation (`guilds.e2e-spec.ts`, 78
+  tests) blocked by the same Docker-unavailable environment — confirmed
+  this is pre-existing/environmental, not caused by this phase, by
+  observing the *same, untouched* `community-media.e2e-spec.ts` fail
+  identically. Type-check clean; all 111 unit tests across 12 suites
+  pass.
+- **Launcher-studio assets got a real R2 implementation** —
+  `R2LauncherAssetStorageProvider` was a documented stub
+  (`docs/assets/central-asset-library.md`) that unconditionally threw;
+  now real, reusing `R2StorageProvider` under a `launcher-assets/`
+  namespace. Activated via `LAUNCHER_MEDIA_STORAGE_PROVIDER` (default
+  `local`, unchanged). 6 new unit tests.
+- **Admin-content uploads audited, migration explicitly deferred** —
+  `ReferenceAsset` is a much broader model than the one narrow
+  `uploadImage()` write path (unique `localPath`, provenance fields for
+  bulk imports/scrapers, dedup tracking); forcing just that one path
+  onto `StorageProvider` would leave mixed, undiscriminated semantics
+  across the model. Documented, not migrated — matches the brief's own
+  "materially larger/coupled → defer" guidance.
+- **Object key policy and cache policy recorded** (`R2_ASSETS.md`):
+  immutable/versioned keys as the default going forward (direct
+  response to `CF-R2-01`'s cache-staleness finding), mutable pointers
+  as a documented, narrow exception with short/no-cache headers,
+  private objects never publicly cacheable at all.
+- **CSP applied and redeployed for real** — the `CF-R2-01`-tested
+  single-origin `img-src` addition
+  (`https://pub-a4bacc79c5864ae9bec74ece3b3b2a30.r2.dev`) was applied
+  on the dedicated `infra/cloudflare-web-shadow` branch and the
+  existing `bloodmoon-web-shadow` Worker **redeployed live** — verified
+  against the real edge: correct CSP header, zero console errors,
+  homepage renders fully, all Phase 17R security headers intact.
+  Production untouched (separate branch, never merged).
+- Private storage design: unchanged from `CF-R2-01`, still design-only
+  — confirmed `R2StorageProvider` has no presigned-URL capability yet
+  (new dependency needed when actually built).
+- `PERSISTENT_FILESYSTEM_BLOCKERS = ["admin-content uploads"]` —
+  everything else now has a real `StorageProvider`/R2 path, even though
+  none is activated. `CONTAINER_STORAGE_READY = NO` until admin-content
+  is resolved and at least community/guild/launcher are actually
+  switched to `r2` somewhere real.
+- `PRODUCTION_MEDIA_MODE = UNKNOWN` — read-only check only, no
+  committed doc/config states the real value; matches every prior
+  phase's finding (`RISKS.md` CF-R1, still open). A live check was
+  judged disproportionate to set up this phase for one non-secret flag.
+- Migration model documented (9 steps, copy-first, never delete
+  originals without separate later authorization) — **not executed**.
+- Production: **untouched** — no production media provider changed, no
+  production file moved/deleted, no production DNS/DB/payments change.
+  The one real deployment this phase touched
+  (`bloodmoon-web-shadow`) remains non-production: no custom domain, no
+  production hostname, no production traffic.
+
 ## Phase 1 (Nuxt web → Workers, production cutover) — NOT STARTED
 
 Shadow deployment exists (see above); a real production cutover

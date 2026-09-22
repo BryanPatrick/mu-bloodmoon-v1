@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common'
 import type { GuildMediaKind } from '@prisma/client'
 import { createHash, randomUUID } from 'node:crypto'
-import { mkdir, writeFile } from 'node:fs/promises'
-import { extname, join, resolve } from 'node:path'
+import { extname } from 'node:path'
 import sharp from 'sharp'
 import { PrismaService } from '../../database/prisma.service'
 import type { AuthenticatedUser } from '../auth/auth.types'
 import { ObservabilityService } from '../observability/observability.service'
+import { GuildMediaStorageService } from './guild-media-storage.service'
 
 const MAX_DIMENSION = 4000
 const MAX_PIXELS = 20_000_000
@@ -22,16 +22,11 @@ const TARGETS: Record<GuildMediaKind, { width: number, height: number }> = {
 
 @Injectable()
 export class GuildsMediaService {
-  constructor(private readonly prisma: PrismaService, private readonly observability: ObservabilityService) {}
-
-  private directory() {
-    return resolve(process.env.GUILD_MEDIA_DIR || join(process.cwd(), 'storage', 'guild-media'))
-  }
-
-  private publicUrl(filename: string) {
-    const prefix = (process.env.API_GLOBAL_PREFIX ?? 'api').replace(/^\/+|\/+$/g, '')
-    return `${prefix ? `/${prefix}` : ''}/media/guild/${filename}`
-  }
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly observability: ObservabilityService,
+    private readonly storage: GuildMediaStorageService
+  ) {}
 
   private async process(guildId: string, kind: GuildMediaKind, file: Express.Multer.File, user: AuthenticatedUser) {
     try {
@@ -65,9 +60,7 @@ export class GuildsMediaService {
         })
       const outputMetadata = await sharp(processed).metadata()
       const filename = `${randomUUID()}.webp`
-      const storagePath = join(this.directory(), filename)
-      await mkdir(this.directory(), { recursive: true })
-      await writeFile(storagePath, processed)
+      const { storagePath, url } = await this.storage.writeAvailable(filename, processed, 'image/webp')
       const sha256 = createHash('sha256').update(processed).digest('hex')
       const media = await this.prisma.$transaction(async (tx) => {
         const created = await tx.guildMedia.create({
@@ -76,7 +69,7 @@ export class GuildsMediaService {
             uploadedByAccountId: user.id,
             kind,
             status: 'READY',
-            url: this.publicUrl(filename),
+            url,
             storagePath,
             originalName: file.originalname.slice(0, 255),
             mimeType: 'image/webp',

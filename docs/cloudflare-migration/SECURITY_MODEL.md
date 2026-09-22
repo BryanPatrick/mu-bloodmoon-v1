@@ -53,6 +53,36 @@ baseline).
   itself designed for external connections — never by opening the
   current `127.0.0.1`-bound instance.
 
+## R2 storage credential blast radius (Phase CF-R2-02)
+
+Guild media and launcher-studio assets now reuse the **same** `R2_*`
+account credentials as community media (a deliberate choice —
+`R2_ASSETS.md`'s object-key namespacing, `guild/`/`launcher-assets/`,
+keeps their objects from colliding, but the credential itself is
+shared). This means a leaked `R2_ACCESS_KEY_ID`/`R2_SECRET_ACCESS_KEY`
+now has write access to three media domains' public objects instead of
+one — a real, if modest, blast-radius increase over community media
+alone. `GUILD_R2_BUCKET`/`LAUNCHER_R2_BUCKET` exist specifically so a
+future phase can split any of these onto a dedicated bucket/credential
+if that blast radius is ever judged too broad; not done this phase
+(no credential exists to split yet — `MEDIA_STORAGE_PROVIDER` has
+never been set to `r2` anywhere real, `RISKS.md` CF-R1).
+
+## CSP: R2 shadow origin (Phase CF-R2-02)
+
+The `bloodmoon-web-shadow` Worker's CSP `img-src` now additionally
+allows exactly one origin,
+`https://pub-a4bacc79c5864ae9bec74ece3b3b2a30.r2.dev` (the `CF-R2-01`
+shadow bucket's public URL) — a single explicit origin, never a
+wildcard, never `unsafe-inline`/`unsafe-eval`. Applied **only** on the `infra/cloudflare-web-shadow` branch (the same
+file, `server/utils/security-headers.ts`, is shared by both presets —
+isolation here comes from this edit living on its own dedicated
+branch, never merged to `main`, not from any preset-specific code
+path). Production deploys from a different branch entirely and is
+unaffected. See `R2_ASSETS.md` for the empirical before/after test
+that established this was both necessary (blocked without it) and
+sufficient (loads cleanly with it, zero other console errors).
+
 ## Edge-added surface (Phase 3+, only if a real need is identified)
 
 Putting Cloudflare in front of the legacy API (WAF, rate limiting,

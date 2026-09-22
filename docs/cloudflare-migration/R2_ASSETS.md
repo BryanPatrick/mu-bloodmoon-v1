@@ -363,6 +363,322 @@ of that direction — inventory plus a verified shadow copy of the
 lowest-risk asset category — without touching production or any real
 user data.
 
+## Phase CF-R2-02 — R2 storage provider hardening + filesystem exit preparation
+
+Builds on `CF-R2-01`'s inventory/shadow-copy proof. This phase's own
+focus: harden the `StorageProvider` abstraction itself, extend it to
+the media domains that still had none, and prepare (never execute) the
+production storage cutover. **No production media provider was
+changed. No production file was moved or deleted.**
+
+### R2StorageProvider hardening
+
+`R2StorageProvider` had **zero test coverage** before this phase
+(confirmed via `media-storage-provider.e2e-spec.ts`'s own comment).
+Added `apps/api/src/modules/media/storage/r2-storage.provider.spec.ts`
+(38 tests, mocked `S3Client` -- no live Cloudflare credentials, no
+production or shadow bucket touched): every method (`writeQuarantine`,
+`writeAvailable`, `moveAvailableToRemoved`, `moveRemovedToAvailable`,
+`deleteQuarantine`, `publicUrl`), correct S3 commands/keys/prefixes,
+correct return values, path-traversal-key rejection (matching
+`LocalStorageProvider`'s existing test pattern), and real error
+propagation on a rejected S3 call (previously unverified — a silent
+swallow would have been a real bug).
+
+**A real bug was found and fixed by writing these tests**:
+`publicUrl(key)` previously returned `${publicBaseUrl}/${key}` —
+omitting the `available/` prefix that `writeAvailable()` actually
+stores the object under. The URL `R2StorageProvider` would have handed
+back to a caller never matched where the object was actually written.
+Fixed to always include the `available/` prefix (quarantine/removed
+objects can never get a public URL constructed for them by
+construction, which is also a safety property, not just a bug fix).
+Community media has never run against a real R2 bucket in production
+(`RISKS.md` CF-R1), so no live data was ever affected by this bug —
+it would only have surfaced the first time R2 mode was actually turned
+on for real traffic.
+
+**Also added**: an optional `namespace` option to
+`R2StorageProviderOptions` (default `''`, i.e. today's community
+behavior, byte-for-byte unchanged). A non-empty namespace (e.g.
+`'guild/'`) prefixes all three key prefixes
+(`guild/quarantine/`, `guild/available/`, `guild/removed/`), so more
+than one media domain can share one bucket and one credential set
+without their objects colliding. This is what makes the guild-media
+and launcher-asset R2 wiring below possible without provisioning a
+second Cloudflare R2 credential.
+
+### Community media R2 path
+
+`MediaStorageService.buildProvider()`'s provider-selection logic
+(`local`/`r2` switch, required-env-var errors) had no unit coverage
+either — added
+`apps/api/src/modules/media/storage/media-storage.service.spec.ts` (9
+tests): default-local behavior, correct R2 construction, a
+missing-env-var case per required variable, unknown-provider-value
+rejection, and the "always reflects current env, not cached at
+construction" behavior the existing e2e suite already silently relies
+on.
+
+**Full real-pipeline (upload → retrieve → replace → delete →
+metadata, against a real disposable database and real HTTP) validation
+already exists** for the `local` provider path
+(`test/community-media.e2e-spec.ts`) but **could not be re-run this
+phase**: this worktree has no Docker available (`'docker' não é
+reconhecido...`) and no `E2E_LOCAL_MYSQL_URL` fallback configured —
+confirmed this is a pre-existing environmental constraint, not
+introduced by this phase, by observing the *same, untouched* spec fail
+identically. A real R2-mode run of this same suite (setting
+`MEDIA_STORAGE_PROVIDER=r2` against a disposable/shadow R2 bucket)
+also could not be attempted: no S3-compatible R2 API credentials
+(`R2_ACCESS_KEY_ID`/`R2_SECRET_ACCESS_KEY`) exist anywhere in this
+environment — these are a different credential type than the
+`wrangler` OAuth session used throughout the Cloudflare program so
+far, and provisioning one requires the Cloudflare dashboard (not
+attempted this phase). **`MEDIA_STORAGE_PROVIDER` was never switched
+to `r2` for any real environment.**
+
+### Guild media — refactored onto the StorageProvider abstraction
+
+`guilds-media.service.ts` previously wrote directly via
+`node:fs/promises` to a hardcoded `GUILD_MEDIA_DIR`, with no
+`StorageProvider` usage at all (corrected finding from `CF-R2-01`).
+Refactored this phase:
+
+- New `apps/api/src/modules/guilds/guild-media-storage.service.ts`,
+  mirroring `MediaStorageService`'s exact pattern, with its **own**
+  `GUILD_MEDIA_STORAGE_PROVIDER` switch (default `local`) —
+  deliberately independent of community's `MEDIA_STORAGE_PROVIDER`, so
+  activating R2 for one domain never implicitly activates it for the
+  other. When `r2`, reuses the community `R2_*` credentials under the
+  new `guild/` namespace (`GUILD_R2_BUCKET` can point at a dedicated
+  bucket instead, falling back to `R2_BUCKET`).
+- `guilds-media.service.ts` now calls
+  `this.storage.writeAvailable(filename, processed, 'image/webp')`
+  instead of raw `mkdir`/`writeFile` — the exact same generated
+  filename (`${randomUUID()}.webp`), the exact same sharp
+  validation/processing pipeline, and (for the default `local`
+  provider) the exact same resulting public URL
+  (`/api/media/guild/<filename>`) and absolute-path `storagePath`
+  semantics as before. **Zero behavior change when
+  `GUILD_MEDIA_STORAGE_PROVIDER` is left unset.**
+- 7 new unit tests
+  (`guild-media-storage.service.spec.ts`): default-local, independence
+  from community's own switch, correct local public-URL prefix,
+  correct R2 construction with the `guild/` namespace, `GUILD_R2_BUCKET`
+  preferred over `R2_BUCKET`, missing-credential error, unknown-value
+  error.
+- Guild media's pre-existing behavior (no quarantine step, no explicit
+  delete/moderation flow, old files never actually removed when a new
+  emblem/banner is uploaded, `GuildMediaStatus.REMOVED` never actually
+  set by any code path) was **preserved exactly, not changed or
+  "fixed"** — out of scope for a storage-layer refactor.
+- **Full real e2e re-validation blocked by the same Docker-unavailable
+  constraint** as community media above — `test/guilds.e2e-spec.ts`
+  (78 tests covering real emblem/banner upload end-to-end) could not be
+  re-run in this environment. Type-check (`tsc --noEmit`) passes
+  cleanly, all new/existing unit tests pass (111 total across 12
+  suites), and the refactor is mechanically narrow (3 lines replaced by
+  1 call into a class whose `local` codepath is the *same*
+  `LocalStorageProvider` class community media's own e2e suite already
+  validates end-to-end) — but this is real-DB/real-HTTP confirmation
+  still owed, not obtained this phase. **Recommend running both e2e
+  suites in an environment with Docker (or a configured
+  `E2E_LOCAL_MYSQL_URL`) before treating this refactor as fully proven.**
+
+### Admin-content uploads — audited, migration DEFERRED (not forced)
+
+`admin-content.service.ts`'s `uploadImage()` writes directly to
+`storage/uploads/` and creates a `ReferenceAsset` row
+(`localPath`/`publicPath` both set to `/api/media/${fileName}`).
+Auditing `ReferenceAsset`'s schema and usage found this endpoint is
+**one narrow path into a much broader model**: `localPath` carries a
+database-level `@@unique` constraint, `sourceId`/`sourceUrl` fields
+exist for asset provenance from bulk imports/scrapers (not just admin
+uploads), and a `duplicateOfId` self-relation exists for dedup
+tracking across however many other code paths create `ReferenceAsset`
+rows (not audited in full this phase). Migrating just the one
+`uploadImage()` write path to `StorageProvider`/R2 without touching
+every other `ReferenceAsset`-creating path would leave the model with
+mixed, undiscriminated semantics — some rows backed by a local file,
+others by an R2 key, with no field to tell which is which. This is
+exactly the "materially larger or coupled" case the brief's own step 6
+says to document and defer rather than force. **Deferred, not
+migrated.** A real migration here needs its own scoped audit of every
+`ReferenceAsset`-writing code path first, not just the one HTTP upload
+endpoint.
+
+### Launcher assets — real R2 wiring added (was a documented stub)
+
+`launcher-asset-storage.ts` already had a
+`LauncherAssetStorageProvider` abstraction (`save(buffer, extension) ->
+SavedAsset`) with `LocalLauncherAssetStorageProvider` (real, used
+today) and `R2LauncherAssetStorageProvider` (previously a stub that
+unconditionally threw `NotImplementedException` — this was a **known,
+documented** stub per `docs/assets/central-asset-library.md`, not a
+gap this phase discovered). This phase gave it a real implementation:
+reuses `R2StorageProvider` under a `launcher-assets/` namespace, deriving
+`Content-Type` from the extension. `launcher-studio.module.ts`'s DI
+binding now reads `LAUNCHER_MEDIA_STORAGE_PROVIDER` (default `local`,
+unchanged) instead of hardcoding `LocalLauncherAssetStorageProvider`. 6
+new unit tests (mocked `S3Client`, plus one covering the existing local
+provider): correct namespaced upload, `LAUNCHER_R2_BUCKET` fallback
+behavior, content-type derivation, missing-credential error, S3 API
+error propagation.
+
+**One caveat preserved, not fixed**: `launcher-asset-media.controller.ts`'s
+read route (`GET /media/launcher-assets/:fileName`) is still
+local-disk-only regardless of which provider wrote the asset — an
+R2-stored asset's real, working URL is the one `save()` returns
+(`SavedAsset.publicUrl`, a real R2 URL), never that local route. This
+is documented behavior (not a bug): the DB row records
+`storageProvider: this.storage.kind` and `publicUrl: saved.publicUrl`
+per asset, so callers always get the correct URL regardless of which
+provider wrote it — the local route is just not a valid alternate path
+to an R2-backed asset, and nothing in this codebase assumes it is.
+
+**No production launcher artifact was uploaded to R2 or anywhere else**
+this phase — none exists in any checkout (confirmed `CF-R2-01`,
+unchanged).
+
+### Object key policy (canonical, going forward)
+
+Because `CF-R2-01` proved `r2.dev`'s edge cache can serve a stale
+response for an overwritten key, **immutable/versioned keys are the
+default going forward for anything the R2 mechanism itself doesn't
+already make append-only**:
+
+- **Content-addressed/versioned keys, never overwritten in place**:
+  `images/<content-sha256>.<ext>`, `launcher/<version>/BloodMoonLauncher.zip`
+  (+ a sibling `launcher/<version>/BloodMoonLauncher.zip.sha256`
+  checksum object). A new upload is always a new key — the
+  stale-edge-cache problem cannot occur for a key that was never
+  written to before.
+- **The existing `StorageProvider` interface's own objects
+  (`available/`, `quarantine/`, `removed/` keys for community/guild
+  media) are a partial exception, by design, not an oversight**: a
+  moderation action (`moveAvailableToRemoved`/`moveRemovedToAvailable`)
+  legitimately needs to move the *same logical object* between states.
+  This is a `CopyObjectCommand` + `DeleteObjectCommand` pair, not an
+  in-place overwrite of a key already serving cached public traffic —
+  the object's *public* key (`available/<key>`) is written exactly
+  once per upload and never overwritten afterward under normal
+  operation (a "replace" is always a brand-new `<uuid>.<ext>` key, per
+  the existing `writeAvailable` contract) — so the stale-edge-cache
+  risk mainly applies to the moderation-remove case (a public key
+  briefly stops being the "current" object), not to routine uploads.
+- **Mutable pointers are the deliberate, documented exception**: a
+  `latest.json`/`latest.txt`-style pointer object (e.g. for the
+  launcher's "current version" indirection) is allowed to be
+  overwritten in place — see Cache policy below for why this is safe
+  specifically because of its cache headers, not despite them.
+- **Never let a caller-supplied value become part of a key.** Every
+  key in this codebase is machine-generated (`randomUUID()`,
+  content-hash) — this was already true before this phase and is
+  unchanged; explicitly recorded here as the policy, not just an
+  implementation detail.
+
+### Cache policy (canonical, going forward)
+
+Three classes, never one policy for all of them:
+
+| Class | Cache-Control | Why |
+|---|---|---|
+| Immutable/versioned objects (content-hashed images, versioned launcher artifacts, community/guild `available/` keys) | `public,max-age=31536000,immutable` (already used in `CF-R2-01`'s shadow upload) | The key never changes meaning once written — safe to cache forever at any layer, including the browser and any CDN edge |
+| Mutable pointers (`latest.json`/`latest.txt`-style, if/when introduced) | short `max-age` or `no-cache` | The whole point of a pointer is that it changes; a long cache here would delay every consumer from seeing a new "latest" for as long as the cache TTL, silently |
+| Private objects (`quarantine/`, `removed/`, and any future private-bucket content) | never publicly cacheable at all — these must never be served by a public route/CDN in the first place, so "cache policy" for them is really "never reachable by anything that would cache it" | A moderation-removed or not-yet-validated object being cached anywhere public would itself be the privacy failure, independent of any HTTP header |
+
+Not yet tested empirically this phase (design/policy only, no mutable
+pointer object exists anywhere in this codebase yet to test against).
+
+### Private storage design — unchanged from CF-R2-01, still design-only
+
+No new implementation this phase; see `CF-R2-01`'s design above
+(separate bucket, public access disabled, Worker/API-mediated
+authorization, short-lived signed URLs when direct download is
+needed). Confirmed still true this phase: `R2StorageProvider` has no
+presigned-URL capability — `@aws-sdk/client-s3` supports it
+(`getSignedUrl` from `@aws-sdk/s3-request-presigner`, not currently a
+dependency), so adding real signed-URL support is real, not-yet-done
+work for whichever future phase actually builds the private bucket.
+**No private bucket was created, no quarantine/removed content was
+made publicly accessible.**
+
+### Container readiness
+
+```
+PERSISTENT_FILESYSTEM_BLOCKERS = [
+  "admin-content uploads (storage/uploads/, admin-content.service.ts) -- still local-disk-only, migration deferred this phase (see above)"
+]
+```
+
+Everything else `RISKS.md` CF-R12 originally listed now has a
+`StorageProvider` (or `LauncherAssetStorageProvider`) abstraction with
+a real R2 implementation available, even though none is *activated* in
+production this phase: community media (already had it),
+guild media (this phase), launcher-studio assets (this phase). Having
+the abstraction is necessary but not sufficient for
+`CF-API-02R`/Container production-safety — each still needs
+`MEDIA_STORAGE_PROVIDER`/`GUILD_MEDIA_STORAGE_PROVIDER`/
+`LAUNCHER_MEDIA_STORAGE_PROVIDER` actually set to `r2` (with real
+credentials) before a Container instance's local disk can be treated
+as truly ephemeral/scale-to-zero-safe for those domains — that
+activation is a future, separately-authorized step, not implied by
+this phase's code existing. `media-quarantine`/`media-removed` move
+together with whichever of community/guild is activated (they already
+share the same `StorageProvider` instance/credentials as their
+domain's `available/` objects). **`CONTAINER_STORAGE_READY = NO`**
+until admin-content is resolved (or explicitly accepted as an
+out-of-scope exception) and at least community/guild/launcher are
+actually switched to `r2` in whatever environment runs the Container.
+
+### Production mode discovery
+
+`PRODUCTION_MEDIA_MODE = UNKNOWN` — read-only check only, no value
+guessed. No committed doc, script, or config in this repository states
+production's actual `MEDIA_STORAGE_PROVIDER` value (`.env` is never
+committed, by design). This matches every prior phase's own finding
+(`RISKS.md` CF-R1, open since Phase CF-01B, still open). Determining
+the real value would require a live, read-only check against the
+production cPanel host — out of this phase's safe scope (the brief's
+own safety section prohibits changing the production media provider,
+and a live check was judged disproportionate to set up this phase
+purely to read one non-secret flag's value; see `BLOCKERS` in the
+final report for the concrete follow-up this implies).
+
+### Migration model (design only — not executed)
+
+1. Inventory source (done, `CF-R2-01`).
+2. Copy to R2 (proven mechanism, `CF-R2-01`'s shadow upload; per-domain
+   `StorageProvider`/R2 classes now exist for community/guild/launcher,
+   `CF-R2-02`).
+3. Verify counts/hashes (same method as `CF-R2-01`'s integrity
+   verification — file count, byte total, hash sample, HTTP
+   accessibility, cache headers).
+4. Dual-read/fallback only if truly necessary — not designed in detail
+   this phase; today's per-domain `StorageProvider` switch is
+   all-or-nothing per domain (`local` or `r2`, never both
+   simultaneously for the same domain), which is simpler and was judged
+   sufficient unless a real need for gradual rollout emerges.
+5. Change the relevant `*_STORAGE_PROVIDER` env var for that domain
+   (`MEDIA_STORAGE_PROVIDER` / `GUILD_MEDIA_STORAGE_PROVIDER` /
+   `LAUNCHER_MEDIA_STORAGE_PROVIDER`) — a config change, not a code
+   deploy, once the code from this phase is itself deployed.
+6. Smoke test the real upload/retrieve/replace/delete flow against
+   production traffic patterns before declaring the cutover complete.
+7. Observe (error rates, latency, R2 dashboard metrics) for a
+   deliberate window before removing any fallback.
+8. Keep original local files during the rollback window — never delete
+   source files as part of activating R2; rollback is reverting the env
+   var, exactly like `CF-R2-01`'s own rollback model.
+9. Delete old local copies only after explicit, separate, later
+   authorization — never implied by this document or any prior phase's
+   completion.
+
+**Not executed this phase.** No production `*_STORAGE_PROVIDER` env
+var was changed, no real user media was copied to R2, no local file
+was deleted.
+
 ## What a future phase will need to decide, not answered here
 
 - Whether to content-hash filenames on upload (true immutability + long
