@@ -51,6 +51,13 @@ export class BloodMoonApiContainer extends Container<Env> {
       await this.stop('SIGTERM')
       return Response.json({ stopped: true })
     }
+    if (url.pathname === '/__cf_poc/container-destroy') {
+      if (request.method !== 'POST' || request.headers.get('x-cf-poc-key') !== this.env.CF_POC_CONTROL_TOKEN) {
+        return new Response('Not found', { status: 404 })
+      }
+      await this.destroy()
+      return Response.json({ destroyed: true })
+    }
     await this.startAndWaitForPorts({
       ports: this.defaultPort,
       cancellationOptions: {
