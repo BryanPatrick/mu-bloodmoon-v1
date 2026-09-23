@@ -5,10 +5,14 @@
 -- which is their correct, honest state: they predate this StorageProvider
 -- integration and were never written through it. Hand-authored (no live
 -- database was available in this environment to run `prisma migrate dev`'s
--- auto-diff) -- validated via `prisma validate`/`prisma format` only, NOT
--- applied or tested against any real database this phase. Apply via
--- `prisma migrate deploy` and verify against a real target before treating
--- this as production-ready.
+-- auto-diff) -- validated via `prisma validate`/`prisma format` at authoring
+-- time. Update, Phase CF-R2-04 (2026-09-23): applied for real via
+-- `prisma migrate deploy` against a disposable MySQL 8.0.46 instance
+-- (same no-Docker methodology as CF-DB-01) -- `prisma migrate status`
+-- reported zero drift, both columns confirmed present with the exact types
+-- above, and a simulated pre-existing row (no storageProvider/storageKey
+-- supplied) inserted cleanly. Still not applied to any production database
+-- -- that remains a separate, later, explicitly-authorized step.
 ALTER TABLE `ReferenceAsset`
     ADD COLUMN `storageProvider` VARCHAR(20) NULL,
     ADD COLUMN `storageKey` VARCHAR(512) NULL;
