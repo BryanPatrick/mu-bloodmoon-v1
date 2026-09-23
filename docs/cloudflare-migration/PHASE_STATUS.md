@@ -394,6 +394,50 @@ lastVerified: 2026-09-22
 - Production: **untouched** — no production database, media, DNS, or
   credential used anywhere this phase.
 
+## Phase CF-DNS-01 — DNS/domain inventory + cutover plan: **COMPLETE**
+
+**Read-only throughout — no DNS record, nameserver, or provider was
+touched or contacted.** Full findings in `DNS_AND_DOMAIN.md`.
+
+- **Domain control matrix established**, four questions answered
+  separately: ownership (Bryan Patrick dos Santos, confirmed via live
+  public RDAP), registrar/DNS-zone/nameserver-level *access* (all
+  three remain `UNKNOWN`, unconfirmed by any public or repo source).
+- **Real discrepancy found**: the zone's own `NS` records
+  (`ns1/ns2.srv41.hinetworks.com.br`) disagree with the registry's
+  actual delegation (RDAP: `ns1/ns2.srv02.projectgamers.com.br`) —
+  both resolve to the same IP. Recorded as `RISKS.md` CF-R20, not
+  investigated further (would require contacting the provider).
+- **Real domain-control gap found**: public RDAP lists a second
+  entity (administrative + technical contact, registered since 2017)
+  alongside Bryan's own registrant record — recorded as `RISKS.md`
+  CF-R21, needs Bryan's direct knowledge to resolve, no contact made.
+- **A third, real production web property found**:
+  `update.mubloodmoon.com.br`, the launcher's self-update
+  manifest/binary host — previously absent from every architecture
+  diagram in this program despite being real, active, player-facing
+  infrastructure. Now represented in `DNS_AND_DOMAIN.md` and
+  `TARGET_ARCHITECTURE.md`'s all three states.
+- **Full current DNS inventory**: A/AAAA/CNAME/NS/MX/TXT(SPF)/TXT(DKIM)/
+  TXT(DMARC)/CAA, plus a swept check of 15 likely subdomains (mail,
+  ftp, and update exist; webmail/autoconfig/cpanel/downloads/launcher/
+  store/forum/discord etc. do not).
+- **Email safety documented**: exact MX/SPF/DKIM/DMARC values that
+  must be preserved byte-for-byte in any future Cloudflare zone before
+  a nameserver cutover, plus a real coupling this phase identified —
+  MX points at the bare domain (not a distinct mail host), so mail
+  continuity depends on the same `A` record correctness as web/API.
+- **Target Cloudflare DNS design, proxy policy (per-record
+  PROXIED/DNS_ONLY/UNDECIDED), 10-step cutover strategy, 4 pre-transfer
+  options, and a rollback plan** — all design-only, nothing created or
+  activated.
+- `MIGRATION_ROADMAP.md` Phase 7's entry criteria refined with this
+  phase's specific findings (mail re-verification now an explicit exit
+  criterion, not assumed).
+- Production: **untouched** — no DNS record changed, no nameserver
+  changed, no provider or registry contacted, no Cloudflare zone
+  created or modified.
+
 ## Phase 1 (Nuxt web → Workers, production cutover) — NOT STARTED
 
 Shadow deployment exists (see above); a real production cutover
@@ -442,7 +486,14 @@ Depends on Phases 4 and 5.
 
 `DNS_AND_DOMAIN.md`: registrar/DNS control is `PENDING_TRANSFER`,
 currently non-Cloudflare, confirmed via a 2026-08-09 live audit
-(unchanged since).
+(unchanged since). **Update, `CF-DNS-01` (2026-09-23)**: full DNS
+inventory and cutover plan now exist (`DNS_AND_DOMAIN.md`); the
+specific blocking gap is now precisely characterized — domain
+ownership is confirmed as Bryan's, but registro.br/DNS-zone/
+nameserver-level *access* remain unconfirmed, plus two new open
+questions (a nameserver hostname discrepancy, and a second contact
+entity on the public registry record) that need Bryan's direct
+knowledge to resolve.
 
 ## Phase 8 (remove current provider) — NOT STARTED
 
