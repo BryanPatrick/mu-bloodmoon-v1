@@ -438,6 +438,75 @@ touched or contacted.** Full findings in `DNS_AND_DOMAIN.md`.
   changed, no provider or registry contacted, no Cloudflare zone
   created or modified.
 
+## Phase CF-MAIL-01 — email dependency audit + provider-exit plan: **COMPLETE**
+
+**Read-only / planning only throughout — no MX, SPF, DKIM, or DMARC
+record was changed; no DNS record was modified; no production
+mailbox created/deleted; no production SMTP credential changed; no
+email sent; no provider contacted.** Full findings in
+`EMAIL_MIGRATION.md`.
+
+- **Application email inventory, exhaustive**: exactly 3 real
+  consumers of a single centralized `MailTransportService`
+  (`nodemailer`-backed SMTP) — password reset
+  (`auth.service.ts`), account-deletion confirmation
+  (`account-deletion-request.service.ts`, Phase 15), and admin alerts
+  (`email-alert-channel.ts`, Phase AA, opt-in via `ALERT_EMAIL_ENABLED`,
+  default `false`). Confirmed via exhaustive grep: no registration/
+  welcome email, no email-based 2FA (TOTP-only), no payment-
+  notification email anywhere in `apps/api`. Both player-facing flows
+  share an identical fail-open-to-the-caller design (a send failure is
+  caught, audited, and never surfaces to the client — an anti-
+  enumeration/security choice, not a robustness gap).
+- **SMTP config inventory**: 9 `SMTP_*`/`ALERT_EMAIL_*` variable
+  names mapped (no values read or exposed). Real gap found: the
+  general `apps/api/.env.example` documents zero `SMTP_*` vars (only
+  `deploy/.env.production.example` does) — recorded `RISKS.md` CF-R25,
+  low priority, not fixed this phase (read-only audit).
+- **`MAILBOX_INVENTORY = UNKNOWN`** — no document, config, or code
+  anywhere in the repo lists a specific `@mubloodmoon.com.br` human
+  mailbox address; not guessed. Recorded `RISKS.md` CF-R23.
+- **Two problems explicitly separated**, per the brief's own
+  instruction: application transactional email (fully inventoried,
+  independent) vs. human/domain mailbox email (existence itself
+  unconfirmed) — may migrate on separate timelines, to separate
+  providers.
+- **5-candidate transactional-provider shortlist** researched with
+  current (2026-09-23) web-verified pricing/features: Amazon SES,
+  Resend, Postmark, Brevo, Mailgun. **3-category mailbox-provider
+  shortlist**: managed business email (Google/Microsoft), budget
+  workspace (Zoho), forwarding-only (Cloudflare Email Routing). **No
+  selection made for either**, per the brief's explicit instruction.
+- **Cloudflare's email role clarified and verified** (not assumed):
+  Cloudflare DNS can host MX/SPF/DKIM/DMARC; Cloudflare Email Routing
+  is inbound-forward-only with **no outbound SMTP capability at all**
+  — architecturally irrelevant to application transactional email in
+  either direction. Recorded:
+  `CLOUDFLARE_EMAIL_ROLE = DNS_HOSTING_PLUS_OPTIONAL_INBOUND_FORWARDING_ONLY`.
+- **Target architecture + 12-step migration plan** designed
+  (`EMAIL_MIGRATION.md` §8-9) — mail explicitly separated from web/API
+  hosting in the target state; design only, not executed or scheduled.
+- **Tied to the pre-existing Phase 17/19.3 blocker**
+  (`docs/handoff/auth-recovery-provider-blocker.md`, still `BLOCKED`
+  per `site-beta-checklist.md`): real end-to-end password-recovery
+  delivery to an external mailbox has never been proven in production.
+  This phase did not close that blocker (out of scope, read-only) but
+  recorded exactly how a future transactional-provider migration's own
+  shadow-proof step would close it. Recorded `RISKS.md` CF-R24.
+  `PASSWORD_RECOVERY_EXTERNAL_MAIL_PROOF = NOT_YET_PROVEN` (pre-existing,
+  unchanged).
+- **`update.mubloodmoon.com.br` direction recorded** (unchanged,
+  no DNS action): eventual migration toward Cloudflare/R2-based
+  launcher update delivery remains direction only.
+- `MIGRATION_ROADMAP.md` Phase 7's entry criteria updated: mail
+  migration is confirmed **not** a Phase 7 prerequisite — it can
+  proceed independently, on its own timeline, since a new
+  transactional provider's SPF/DKIM can be added at the current DNS
+  host before any nameserver cutover.
+- Production: **untouched** — no DNS record changed, no mailbox
+  created/deleted, no SMTP credential changed, no email sent, no
+  provider contacted.
+
 ## Phase 1 (Nuxt web → Workers, production cutover) — NOT STARTED
 
 Shadow deployment exists (see above); a real production cutover
@@ -493,7 +562,11 @@ ownership is confirmed as Bryan's, but registro.br/DNS-zone/
 nameserver-level *access* remain unconfirmed, plus two new open
 questions (a nameserver hostname discrepancy, and a second contact
 entity on the public registry record) that need Bryan's direct
-knowledge to resolve.
+knowledge to resolve. **Update, `CF-MAIL-01` (2026-09-23)**: the full
+mail-dependency audit (`EMAIL_MIGRATION.md`) confirms mail migration is
+**not** an additional Phase 7 blocker — it is an independent,
+separately-timed decision that can proceed before, during, or after
+Phase 7 without changing this phase's own entry criteria.
 
 ## Phase 8 (remove current provider) — NOT STARTED
 
@@ -509,4 +582,7 @@ shortlisted candidates (`CF-DB-01-REPORT.md`), then a restore proof
 against that specific vendor (not done here — this phase proved the
 *method*, not a specific external target). The CORS addition
 (`RISKS.md` CF-R9) stays explicitly blocked pending Bryan's
-authorization.
+authorization. Email (`CF-MAIL-01`, `EMAIL_MIGRATION.md`) is fully
+audited and shortlisted but not on this critical path at all — it can
+be picked up whenever Bryan wants to choose a transactional provider,
+independent of the Container/database/DNS sequence above.

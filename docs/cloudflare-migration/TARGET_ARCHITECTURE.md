@@ -30,6 +30,12 @@ Player browser
           account, static manifest + binaries -- found Phase CF-DNS-01,
           previously undocumented in this diagram)
   -> mail (MX -> same host; SPF/DKIM/DMARC configured, see DNS_AND_DOMAIN.md)
+       -> transactional application email (password reset, account
+          deletion confirmation, admin alerts) -- cPanel SMTP via
+          MailTransportService, one centralized transport, 3 real
+          consumers -- full audit Phase CF-MAIL-01, see EMAIL_MIGRATION.md
+       -> human/domain mailboxes (contato@ etc.) -- MAILBOX_INVENTORY
+          = UNKNOWN, existence itself unconfirmed, see EMAIL_MIGRATION.md
 
 Windows VPS (separate, Bryan-controlled):
   GameServer + SQL Server + GameBridge Agent (outbound-only) <-> Game Command Transport (Cloudflare)
@@ -59,9 +65,11 @@ Current provider (temporarily retained during transition):
   -> MySQL (until Phase 5 provides a real external, Bryan-controlled target)
   -> Launcher self-update (update.mubloodmoon.com.br) -- unchanged until
      its own explicit migration decision is made
-  -> Mail (MX/SPF/DKIM/DMARC) -- unchanged throughout this entire
-     program unless a separate, explicit mail-migration decision is
-     ever made; this program has never proposed migrating email
+  -> Mail (MX/SPF/DKIM/DMARC, transactional SMTP, any real mailboxes)
+     -- unchanged throughout this entire program unless a separate,
+     explicit mail-migration decision is ever made; this program has
+     never proposed migrating email. Full audit + provider-exit design
+     (not a decision): Phase CF-MAIL-01, EMAIL_MIGRATION.md
 
 Windows VPS: unchanged throughout the entire program
   -> GameServer + GameBridge Agent
@@ -113,8 +121,14 @@ still depends on it.**
   own constraint.
 - Cloudflare Hyperdrive, wherever it appears, connects to an *external*
   MySQL-compatible database — it is never itself the database.
-- Email (MX/SPF/DKIM/DMARC) stays on its current path in every state
-  unless a separate, explicit mail-migration decision is made — this
-  program's own scope (`README.md`) has never included email, and
-  `DNS_AND_DOMAIN.md`'s cutover design treats mail preservation as a
-  hard requirement of any future DNS cutover, not an optional detail.
+- Email (MX/SPF/DKIM/DMARC, transactional SMTP, any real mailboxes)
+  stays on its current path in every state unless a separate, explicit
+  mail-migration decision is made — this program's own scope
+  (`README.md`) has never included email, and `DNS_AND_DOMAIN.md`'s
+  cutover design treats mail preservation as a hard requirement of any
+  future DNS cutover, not an optional detail. A full dependency audit
+  and provider-exit *design* (still not a decision) exists as of
+  Phase CF-MAIL-01 — `EMAIL_MIGRATION.md` — separating application
+  transactional email (password reset, account deletion, admin
+  alerts) from any human/domain mailbox, which may migrate
+  independently, on its own timeline, to its own provider.

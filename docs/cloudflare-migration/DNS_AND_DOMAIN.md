@@ -128,6 +128,11 @@ discovery of that hostname as a distinct production property) — its
 TLS state is unverified and should be checked before any Cloudflare
 proxying decision is made for it.
 
+**See also `EMAIL_MIGRATION.md`** (`CF-MAIL-01`, 2026-09-23) for the
+full application/mailbox email dependency audit and provider-exit
+design — a separate, independently-timed decision from this document's
+own DNS-record preservation requirements below.
+
 ## Email safety — records that must be preserved exactly during any nameserver migration
 
 Moving authoritative DNS to Cloudflare means Cloudflare's own zone
