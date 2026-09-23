@@ -9,6 +9,7 @@ import './common/bigint-json'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
+  app.enableShutdownHooks()
   const trustProxyHops = Number(process.env.TRUST_PROXY_HOPS || 0)
   if (Number.isInteger(trustProxyHops) && trustProxyHops > 0) {
     app.getHttpAdapter().getInstance().set('trust proxy', trustProxyHops)

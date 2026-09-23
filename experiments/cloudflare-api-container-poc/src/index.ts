@@ -6,14 +6,18 @@ export class BloodMoonApiContainer extends Container<Env> {
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env)
-    this.enableInternet = false
+    this.enableInternet = true
     this.envVars = {
-      NODE_ENV: 'production',
+      NODE_ENV: 'test',
       PORT: '8080',
       DATABASE_URL: env.DATABASE_URL,
       JWT_ACCESS_SECRET: env.JWT_ACCESS_SECRET,
       JWT_REFRESH_SECRET: env.JWT_REFRESH_SECRET,
       TWO_FACTOR_ENCRYPTION_KEY: env.TWO_FACTOR_ENCRYPTION_KEY,
+      BILLING_PII_ENCRYPTION_KEY: env.BILLING_PII_ENCRYPTION_KEY,
+      SESSION_SECRET: env.SESSION_SECRET,
+      SESSION_TTL_HOURS: '1',
+      AUTH_CAPTCHA_TEST_BYPASS: '1',
       ACCOUNT_LIFECYCLE_BRIDGE_ENABLED: 'false',
       PAYMENT_RECONCILIATION_ENABLED: 'false',
       MERCADO_PAGO_PROVIDER_POLL_ENABLED: 'false',
@@ -35,6 +39,8 @@ interface Env {
   JWT_ACCESS_SECRET: string
   JWT_REFRESH_SECRET: string
   TWO_FACTOR_ENCRYPTION_KEY: string
+  BILLING_PII_ENCRYPTION_KEY: string
+  SESSION_SECRET: string
 }
 
 export default {
