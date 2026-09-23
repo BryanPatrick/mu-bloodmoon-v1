@@ -6,7 +6,7 @@ export class BloodMoonApiContainer extends Container<Env> {
   entrypoint = [
     'sh',
     '-lc',
-    'node dist/apps/api/src/main.js >/tmp/bloodmoon-api.log 2>&1; printf "%s" "$?" >/tmp/bloodmoon-api.exit; sleep 600'
+    'node dist/apps/api/src/main.js >/tmp/bloodmoon-api.log 2>&1; BM_API_EXIT_CODE="$?" node diagnostic-server.mjs'
   ]
 
   constructor(ctx: DurableObjectState, env: Env) {

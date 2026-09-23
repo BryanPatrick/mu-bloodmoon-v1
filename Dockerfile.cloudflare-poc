@@ -34,6 +34,7 @@ RUN apt-get update \
 COPY --from=build /app/apps/api/dist ./dist
 COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=build /app/node_modules/@prisma/client ./node_modules/@prisma/client
+COPY --from=build /app/experiments/cloudflare-api-container-poc/diagnostic-server.mjs ./diagnostic-server.mjs
 
 ENV NODE_ENV=production
 ENV PORT=8080
