@@ -230,6 +230,73 @@ lastVerified: 2026-09-22
   (`bloodmoon-web-shadow`) remains non-production: no custom domain, no
   production hostname, no production traffic.
 
+## Phase CF-R2-03 — admin-content storage audit + final persistent filesystem exit: **COMPLETE**
+
+- **Full `ReferenceAsset` write-path audit** (every code path, not just
+  `uploadImage()`): manual admin upload (`uploadImage()` — the only
+  file-writing path), manual metadata registration/edit/archive
+  (`createAsset`/`updateAsset`/`archiveAsset` — all metadata-only, no
+  file I/O, confirmed by exhaustive grep for `unlink`/`rm`), the bulk
+  import/scrape script (`scripts/import-prepared-data.mjs` — upserts
+  metadata for 1220 already-committed static repo files under
+  `references/game-assets/source-harvest/`, never writes a file
+  itself), and 3 read-only consumers (`wiki.service.ts`,
+  `launcher.service.ts`, `media.controller.ts`). Full table in
+  `R2_ASSETS.md`.
+- **Key architectural finding**: bulk-imported/scraped `ReferenceAsset`
+  rows are not "user storage" — `publicPath` is `null` for effectively
+  all of them (sampled the full 1220-asset plan), so their live display
+  today falls back to the original third-party `sourceUrl`, not
+  Blood Moon storage at all. They're a git-committed, read-only
+  editorial archive, not a Container ephemeral-disk risk (same category
+  as `apps/web/public/dev-references/`, `CF-R2-01`) — correctly out of
+  scope for a `StorageProvider`/R2 migration.
+- **`uploadImage()` refactored onto the `StorageProvider` abstraction** —
+  new `AdminContentStorageService`, its own independent
+  `ADMIN_CONTENT_STORAGE_PROVIDER` switch (default `local`, unchanged
+  behavior), R2-capable under an `admin-content/` namespace, **R2 not
+  the default anywhere**.
+- **Two new, purely additive `ReferenceAsset` columns**
+  (`storageProvider`, `storageKey`) — `NULL` on every pre-existing row
+  (1537 in production as of 2026-07-16, `prisma/README.md`), no
+  backfill, no destructive change. `localPath` keeps its
+  `@@unique`/required role the bulk importer depends on; for new rows
+  it's set to the real `StorageProvider` key, never a fabricated path
+  — the "safe transition representation" the brief asked for.
+  **Migration hand-authored** (`20260923090000_admin_content_storage_provider`,
+  no live database available to auto-diff), validated via `prisma
+  validate`/`format` only — **not applied or tested against any real
+  database this phase.**
+- 18 new unit tests, all pass (`admin-content-storage.service.spec.ts`
+  ×7, `admin-content.service.spec.ts` ×11) — provider selection,
+  storage-write-before-DB-write ordering, zero phantom records on
+  storage failure, correct field population, no automatic dedup
+  (matches the pre-existing model). `R2_LIVE_E2E = BLOCKED` — no
+  S3-compatible R2 credentials exist in this environment (mocked
+  `S3Client` only); did not block completion.
+- **Filesystem re-audit, whole `apps/api/src`**: exactly two files
+  write anything (`local-storage.provider.ts`,
+  `launcher-asset-storage.ts`'s local implementation) — both are the
+  designated local-mode `StorageProvider` implementations, not
+  blockers. Every other `node:fs` usage found is read-only, loading
+  git-committed static catalogs/snapshots. **`PERSISTENT_FILESYSTEM_BLOCKERS
+  = []`.**
+- **`CONTAINER_STORAGE_READY = YES`** (`CODE_READY = YES`,
+  `PRODUCTION_ACTIVATED = NO` — no domain's `*_STORAGE_PROVIDER` is
+  actually `r2` anywhere real, per the brief's explicit
+  architecture-vs-activation distinction).
+- 127 unit tests total across 14 suites pass; API build and type-check
+  clean. `guilds.e2e-spec.ts`/`community-media.e2e-spec.ts`
+  (`RISKS.md` CF-R16, pre-existing) and
+  `launcher-remote-content-contract.e2e-spec.ts` plus the
+  (pre-existing, zero-coverage) `uploadImage()` HTTP endpoint
+  (new `RISKS.md` CF-R18) were **not run** — same Docker/
+  `E2E_LOCAL_MYSQL_URL`-unavailable environment, not re-verified this
+  phase since nothing about the environment changed.
+- Production: **untouched** — no production media provider changed, no
+  production file moved/deleted, no production DB touched (migration
+  not applied anywhere), no production/live R2 credentials used.
+
 ## Phase 1 (Nuxt web → Workers, production cutover) — NOT STARTED
 
 Shadow deployment exists (see above); a real production cutover

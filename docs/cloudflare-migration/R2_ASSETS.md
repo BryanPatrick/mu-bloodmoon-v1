@@ -679,6 +679,106 @@ final report for the concrete follow-up this implies).
 var was changed, no real user media was copied to R2, no local file
 was deleted.
 
+## Phase CF-R2-03 — admin-content storage audit + final persistent filesystem exit
+
+Closes the one deferral from `CF-R2-02`. **No production media provider was
+changed. No production file was moved or deleted. No production/live R2
+credentials were used.**
+
+### Full ReferenceAsset write-path audit (every code path, not just uploadImage())
+
+| Path | File/function | Operation | Filesystem write? | DB write | Sync? | Atomic? | Dedup/provenance |
+|---|---|---|---|---|---|---|---|
+| Manual admin upload | `admin-content.service.ts` `uploadImage()` | create | **YES — the only real runtime file write** | `referenceAsset.create` | async | storage write completes fully before the DB call starts (see ordering below) | none automatic — each upload gets an independent random key, no content-hash dedup check |
+| Manual metadata registration | `admin-content.service.ts` `createAsset()` | create | NO — caller supplies `localPath` etc. directly, no file touched | `referenceAsset.create` | async | single Prisma call | `sha1`/`duplicateOfId` settable by the caller, never auto-derived |
+| Manual metadata edit | `admin-content.service.ts` `updateAsset()` | update | NO | `referenceAsset.update` | async | single Prisma call | same as above |
+| Archive | `admin-content.service.ts` `archiveAsset()` | update (status only) | NO — **no code path anywhere deletes the underlying file or DB row**, confirmed by exhaustive grep (`unlink`/`rm` never appear in `admin-content/*.ts`) | `referenceAsset.update` (status→ARCHIVED) | async | single Prisma call | n/a |
+| Bulk import/scrape ingestion | `scripts/import-prepared-data.mjs` `importKnowledge()` | upsert | **NO — this script never writes a file itself.** It reads a pre-built JSON plan (`references/game-data/source-harvest/postgres-import-plan.json`, 1220 assets, committed to the repo) and `upsert`s `ReferenceAsset` metadata rows whose `localPath` values point at files that must already exist as **committed, static repo content** under `references/game-assets/source-harvest/<source>/...` (confirmed via direct sampling of the JSON — filenames already embed a content-hash suffix, e.g. `00jovvfn-4e4e0f4757.png`) | `referenceAsset.upsert` (`where: { localPath }`) | offline/manual (`npm run db:import`), not part of the running API process | idempotent by construction — `upsert` on the unique `localPath` key means re-running the exact same plan never duplicates rows | dedup is `localPath`-uniqueness only; no sha1-based duplicate check exists in this script either |
+| Wiki read | `wiki.service.ts` | read | NO — `.count()` only, no individual asset read | none | — | — | — |
+| Launcher read | `launcher.service.ts` | read | NO | none | — | — | uses `asset.publicPath ?? asset.sourceUrl` — **bulk-imported assets (`publicPath` is `null` for all 1220 sampled) fall back to the ORIGINAL THIRD-PARTY `sourceUrl`, not any Blood Moon storage** — see finding below |
+| HTTP serve | `admin-content/media.controller.ts` `GET /media/:fileName` | read | reads local disk only, unchanged | none | — | — | — |
+
+**Key finding: bulk-imported/scraped `ReferenceAsset` rows are not "user storage" in the same sense as community/guild/launcher media.** They are an internal editorial archive of scraped source material (`sourceUrl`/`sourceKey`/`metadata.pageUrls` provenance fields), checked into the repo as static files, consumed at runtime only for admin curation (the Admin Content Studio UI) and — when `publicPath` is set — end-user display. Since `publicPath` is `null` for effectively all bulk-imported rows (sampled the full 1220-asset plan), the *live, user-facing* image for these actually comes from the original external `sourceUrl` today, not from Blood Moon's own storage at all. This is why they were correctly out of scope for a `StorageProvider`/R2 migration: **they are read-only, git-committed, deploy-time static assets** (the same category as `apps/web/public/dev-references/`, `CF-R2-01`), not a Container ephemeral-disk risk — a Container always has them fresh on every restart because they ship with the code, exactly like any other bundled file.
+
+**Dedup model (accurately described, not invented)**: `sha1` (indexed) and `duplicateOfId` (self-relation) exist on the schema and are admin-settable via `createAsset`/`updateAsset`, and `launcher.service.ts` exposes `sha1` to launcher clients as an integrity `hash`. **No code path anywhere automatically detects or flags duplicates by content hash** — `duplicateOfId` requires a human to set it explicitly. The bulk importer's only "dedup" is upsert-by-`localPath` (same file path = same row updated, not duplicated); it does not check `sha1` for cross-path duplicate detection. This was true before this phase and is unchanged — not something this phase added or fixed.
+
+### ReferenceAsset semantics — field classification
+
+| Field | Classification | Notes |
+|---|---|---|
+| `localPath` | **NEED_MIGRATION** (transition representation added, not redefined) | `@@unique`, required, `VarChar(512)`. For bulk-imported rows: a real repo-relative path to a committed static file. For pre-CF-R2-03 `uploadImage()` rows: was already just a copy of `publicPath` (a URL string), not a real filesystem path — confirmed by reading the pre-phase code. For new rows written through `AdminContentStorageService`: now the provider's `storagePath` (a real absolute local path for `local`, a relative namespaced key for `r2`) — never a fabricated value, matching the brief's "safe transition representation" requirement |
+| `publicPath` | STORAGE_INDEPENDENT | Already the field every reader actually uses (`launcher.service.ts`); unchanged in meaning, now correctly populated from the active `StorageProvider`'s real URL for new uploads |
+| `sourceUrl`/`sourceId` | STORAGE_INDEPENDENT | Provenance, orthogonal to where Blood Moon stores its own copy |
+| `sha1` | STORAGE_INDEPENDENT | Content identity, provider-agnostic. **Note**: this is `sha1`, while community/guild/launcher media all use `sha256` — a real, pre-existing inconsistency, left unchanged (`localPath`/`sha1` are load-bearing, real production fields on 1537 rows; renaming or re-hashing them is out of scope and would be exactly the "silently redefine semantics" the brief prohibits) |
+| `bytes`/`mimeType`/`kind` | STORAGE_INDEPENDENT | Unchanged |
+| `status` (EditorialStatus) | STORAGE_INDEPENDENT | Editorial workflow state, unrelated to storage location |
+| `duplicateOfId` | STORAGE_INDEPENDENT | Manual admin-set relation, unrelated to storage location |
+| `metadata` (Json) | STORAGE_INDEPENDENT | Free-form (e.g. `friendlyName`, scraper provenance) |
+| **`storageProvider`** (new) | STORAGE_LOCATION_SPECIFIC | `NULL` on every pre-existing row (1537 in production, confirmed honest — no backfill run, none needed); `'local'`/`'r2'` on rows written through the new `AdminContentStorageService` path |
+| **`storageKey`** (new) | STORAGE_LOCATION_SPECIFIC | The real provider key, `NULL` on pre-existing rows, mirrors `localPath` for new rows |
+
+### Storage provider design
+
+New `AdminContentStorageService` (`apps/api/src/modules/admin-content/admin-content-storage.service.ts`), the fourth domain-specific `StorageProvider` switch after community (pre-existing), guild, and launcher-studio (`CF-R2-02`). Same pattern each time:
+
+- **Own, independent `ADMIN_CONTENT_STORAGE_PROVIDER` switch**, default `local` — never tied to `MEDIA_STORAGE_PROVIDER` or any other domain's switch. **R2 is not the default anywhere.**
+- When `r2`, reuses the shared `R2_*` account credentials (one Cloudflare account, no new credential provisioned) under a new `admin-content/` key namespace — `ADMIN_CONTENT_R2_BUCKET` can point at a dedicated bucket instead, falling back to `R2_BUCKET`.
+- Only `uploadImage()` was refactored to use it — `createAsset`/`updateAsset`/`archiveAsset` remain metadata-only (correctly — they never touched a file before, and adding storage-layer code to them would be inventing behavior, not preserving it) and the bulk importer remains a standalone, unmodified script (it never wrote files either).
+- `media.controller.ts`'s read route is **unchanged, still local-disk-only regardless of the switch** — matching the exact precedent set for launcher-studio in `CF-R2-02`. The real, working URL for any asset is always `publicPath` (what every reader already uses), never this route directly.
+
+### Object key model
+
+`admin-content/<uuid>.<ext>` under the `r2` provider (namespace `admin-content/`, key `${randomUUID()}.${extension}`) — the same `randomUUID()`-based scheme already used by community/guild/launcher for consistency, rather than introducing a new content-hash scheme for just this one domain. A UUID key is already "immutable" in the sense the `CF-R2-02` object-key policy requires: written exactly once, never overwritten in place. For the `local` provider, unchanged filename scheme, written under `storage/uploads/` (or `ADMIN_CONTENT_UPLOADS_DIR` if set).
+
+### Database metadata model
+
+Two new nullable columns on `ReferenceAsset` — `storageProvider VARCHAR(20)`, `storageKey VARCHAR(512)` — purely additive, no `DROP`, no `NOT NULL`, no backfill `UPDATE`. Migration
+`prisma/migrations/20260923090000_admin_content_storage_provider/migration.sql`,
+hand-authored (no live database was available in this environment to run
+`prisma migrate dev`'s auto-diff — same constraint as `CF-R2-02`'s e2e
+suites), validated via `prisma validate`/`prisma format` only. **Not applied
+or tested against any real database this phase.** `localPath` keeps its
+`@@unique`/required role exactly as before (the bulk importer's
+`upsert({ where: { localPath } })` depends on it); for new rows it is set to
+the same value as `storageKey` — never a fabricated absolute path, per the
+brief's explicit instruction.
+
+### Delete / replace semantics (documented, unchanged from before this phase)
+
+No code path deletes a `ReferenceAsset` row or its underlying file — `archiveAsset()` is the closest thing to "delete" and only flips `status` to `ARCHIVED`, leaving the row and file in place (orphan accumulation is pre-existing, matching the same pattern already documented for community/guild media's moderation-remove and launcher assets). "Replace" does not exist as an operation — a new upload always creates a new row/key, never overwrites an existing one. This was true before this phase; nothing here changes it. The `AdminContentStorageService.writeAvailable()` call inside `uploadImage()` completes (or throws) fully before the `ReferenceAsset.create` Prisma call begins — a storage failure therefore always leaves zero DB trace (no phantom record), proven by a unit test (see Tests below).
+
+### Tests
+
+18 new unit tests (mocked `S3Client`/`AdminContentStorageService` — no live R2 credentials, no live database):
+
+- `admin-content-storage.service.spec.ts` (7): default-local, independence from `MEDIA_STORAGE_PROVIDER`, correct local public-URL prefix, correct R2 construction with the `admin-content/` namespace, `ADMIN_CONTENT_R2_BUCKET` preference, missing-credential error, unknown-value error.
+- `admin-content.service.spec.ts` (11, `uploadImage()` only — the only path with any file I/O): malformed-dataUrl rejection before any storage/DB call, oversized-image rejection before any storage/DB call, storage-write-before-DB-write ordering (proven with an explicit call-order assertion), a storage failure creates **zero** `ReferenceAsset` rows (no phantom record), `localPath`/`storageKey` set to the provider's real `storagePath` (never the public URL, never a fabricated path), `publicPath`/`storageProvider` set from the real provider result, correct `status`/`kind`/`mimeType`/`bytes`/`metadata`, an audit event is recorded, the returned URL is the provider's real URL (not a hardcoded path), and two uploads of identical content get independent keys (no accidental collision, matching the pre-existing no-automatic-dedup model).
+
+**`R2_LIVE_E2E = BLOCKED`** — no S3-compatible R2 API credentials exist anywhere in this environment (same constraint as `CF-R2-02`); all R2-path tests are mocked-`S3Client` only, never a real bucket. **This did not block code-quality completion** — every mocked-provider test above runs and passes regardless.
+
+**Existing e2e suites not re-run**: no `test/admin-content*.e2e-spec.ts` exists at all (confirmed — `uploadImage()`'s HTTP endpoint had zero e2e coverage even before this phase, not something this phase regressed). `test/launcher-remote-content-contract.e2e-spec.ts` (which does exercise `ReferenceAsset` directly, creating/deleting rows for contract testing) was **not run** — same pre-existing Docker/`E2E_LOCAL_MYSQL_URL`-unavailable constraint as `CF-R2-02` (`RISKS.md` CF-R16, unchanged, not re-verified this phase since nothing about the environment changed).
+
+### Filesystem re-audit (whole `apps/api/src`, after this phase's changes)
+
+Every `writeFile`/`mkdir`/`createWriteStream`/`appendFile` call in `apps/api/src`, confirmed via exhaustive grep:
+
+- `src/modules/media/storage/local-storage.provider.ts` — the shared `LocalStorageProvider` class (all four domains' local-mode implementation)
+- `src/modules/launcher-studio/launcher-asset-storage.ts` — `LocalLauncherAssetStorageProvider`
+
+**These are the only two files that write anything, and both are the intentional, designated local-mode implementations of the `StorageProvider`/`LauncherAssetStorageProvider` abstractions — not blockers.** Every domain (community, guild, launcher, admin-content) now goes through one of these two abstractions; none has a raw, unabstracted `node:fs` write path left anywhere.
+
+Every other `node:fs` import in `apps/api/src` (`web-source.service.ts`, `progression-config.service.ts`, `muserver-export.service.ts`, `store-admin.service.ts`, `legacy-catalog-effective-state.service.ts`, plus the two read-only media controllers) is **read-only**, loading a pre-built, git-committed JSON catalog/snapshot or serving a local-mode-only asset — `NON_STORAGE_OPERATION` per the brief's taxonomy, since none of them writes runtime-generated data that must survive a Container restart.
+
+**`PERSISTENT_FILESYSTEM_BLOCKERS = []`.** No temporary/ephemeral-processing exception needed to be invoked this phase — no code path was found writing to a temp file mid-request and relying on it surviving past that request.
+
+### Container readiness
+
+`CODE_READY = YES` — every domain that ever persists runtime-writable data (community, guild, launcher-studio, admin-content) now has a working `local`/`r2` `StorageProvider` switch; no code exclusively depends on local disk for anything that must survive a restart. `PRODUCTION_ACTIVATED = NO` — none of the four `*_STORAGE_PROVIDER` switches is set to `r2` anywhere real (`RISKS.md` CF-R1, unchanged). Per the brief's explicit instruction ("do NOT require production R2 activation for architectural readiness"), **`CONTAINER_STORAGE_READY = YES`** — the architectural blocker is resolved; actually running a Container against local-only ephemeral disk in production is a separate, later, explicitly-authorized activation step, not an architecture question.
+
+### Migration plan update (design only — not executed)
+
+Same 9-step model as `CF-R2-02`'s (inventory → copy → hash-verify → metadata mapping → provider flip → smoke test → observe → rollback window → cleanup only with later approval), with one addition specific to `ReferenceAsset`: **"metadata mapping" here means populating the new `storageProvider`/`storageKey` columns for any row being migrated, never touching `localPath`'s existing value for already-migrated rows** (so a partially-migrated table is always self-consistent: `storageProvider IS NULL` unambiguously means "not yet migrated, `localPath`/`publicPath` still describe it exactly as before"). **Bulk-imported/scraped rows are explicitly out of scope for this migration model** — they are static repo content, not runtime storage, and moving them to R2 would be a different kind of decision (publishing internal scrape archives publicly) that this phase does not recommend or design.
+
 ## What a future phase will need to decide, not answered here
 
 - Whether to content-hash filenames on upload (true immutability + long

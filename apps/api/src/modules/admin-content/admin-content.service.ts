@@ -1,9 +1,8 @@
 ﻿import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import type { EditorialStatus, EquipmentClassLinkRole, EquipmentGroup, EquipmentQuality, KnowledgeEntryKind, KnowledgeScope, Prisma, ReferenceAssetKind } from '@prisma/client'
 import { randomUUID } from 'node:crypto'
-import { mkdir, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
 import { PrismaService } from '../../database/prisma.service'
+import { AdminContentStorageService } from './admin-content-storage.service'
 import type {
   AdminAssetQuery,
   AdminContentQuery,
@@ -130,7 +129,8 @@ const equipmentRelations = {
 export class AdminContentService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly audit: AuditService
+    private readonly audit: AuditService,
+    private readonly storage: AdminContentStorageService
   ) {}
 
   async uploadImage(payload: AdminUploadImagePayload, user?: AuthenticatedUser) {
@@ -145,17 +145,22 @@ export class AdminContentService {
     const mimeType = match[1]
     const extension = mimeType === 'image/jpeg' ? 'jpg' : mimeType.split('/')[1]
     const fileName = `${randomUUID()}.${extension}`
-    const uploadDirectory = join(process.cwd(), 'storage', 'uploads')
-    await mkdir(uploadDirectory, { recursive: true })
-    await writeFile(join(uploadDirectory, fileName), buffer)
+    const { storagePath, url } = await this.storage.writeAvailable(fileName, buffer, mimeType)
 
     const friendlyName = payload.name?.trim().slice(0, 120) || `Imagem ${new Date().toLocaleDateString('pt-BR')}`
-    const publicPath = `/api/media/${fileName}`
     const asset = await this.prisma.referenceAsset.create({
       data: {
         kind: 'IMAGE',
-        localPath: publicPath,
-        publicPath,
+        // localPath keeps its @@unique/required role -- storagePath is a
+        // relative provider key ("available/<file>" local, or
+        // "admin-content/available/<file>" r2), never a fabricated absolute
+        // filesystem path. publicPath (below) is what every reader actually
+        // uses to serve the asset -- see the CF-R2-03 audit in
+        // docs/cloudflare-migration/R2_ASSETS.md.
+        localPath: storagePath,
+        publicPath: url,
+        storageProvider: this.storage.name,
+        storageKey: storagePath,
         mimeType,
         bytes: buffer.length,
         status: 'PUBLISHED',
@@ -171,7 +176,7 @@ export class AdminContentService {
       metadata: { name: friendlyName, mimeType, bytes: buffer.length }
     })
 
-    return { id: asset.id, name: friendlyName, url: publicPath, mimeType, bytes: buffer.length }
+    return { id: asset.id, name: friendlyName, url, mimeType, bytes: buffer.length }
   }
 
   async summary() {

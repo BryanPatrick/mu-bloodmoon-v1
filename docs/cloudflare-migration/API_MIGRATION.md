@@ -83,16 +83,19 @@ tackle them:
   request-local, non-persistent VFS. Native `sharp` (image processing)
   has no Workers equivalent as-is — needs Cloudflare Images/Media
   Transformations, a separate image service, or staying on a
-  Containers/VM path for that specific job. **Update, Phase CF-R2-02**:
+  Containers/VM path for that specific job. **Update, Phase CF-R2-02/03**:
   this bullet is about the *native-Workers* path specifically (`sharp`
   has no Workers equivalent regardless of storage backend) — the
   separate, Containers-relevant question (local disk being ephemeral
-  under Containers) is tracked in `RISKS.md` CF-R12, now
-  `PARTIALLY ADDRESSED`: guild media and launcher-studio assets gained
-  a real `StorageProvider`/R2 implementation this phase (previously
-  neither had one), leaving only admin-content uploads
-  (`storage/uploads/`, explicitly deferred — see `R2_ASSETS.md`) as a
-  real persistent-filesystem blocker for `CF-API-02R`.
+  under Containers) was tracked in `RISKS.md` CF-R12 and is now
+  **RESOLVED at the code level** (`CODE_READY = YES`, `CF-R2-03`):
+  community, guild, launcher-studio, and admin-content all have a
+  working `local`/`r2` `StorageProvider` switch, and an exhaustive
+  filesystem re-audit found zero remaining raw, unabstracted `node:fs`
+  write paths anywhere in `apps/api/src`. `PRODUCTION_ACTIVATED = NO`
+  still — no domain is actually switched to `r2` anywhere real, which
+  is a separate, later, explicitly-authorized activation step, not an
+  architecture blocker for `CF-API-02R`.
 - **SMTP** — Workers supports outbound TCP but blocks port 25 by
   default, and Nodemailer's exact host/port/TLS combination has not
   been proven under Workers. An HTTPS transactional-email provider, or

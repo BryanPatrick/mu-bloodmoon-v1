@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { DatabaseModule } from '../../database/database.module'
 import { AuditModule } from '../audit/audit.module'
 import { AuthModule } from '../auth/auth.module'
+import { AdminContentStorageService } from './admin-content-storage.service'
 import { AdminContentController } from './admin-content.controller'
 import { AdminContentService } from './admin-content.service'
 import { MediaController } from './media.controller'
@@ -9,6 +10,6 @@ import { MediaController } from './media.controller'
 @Module({
   imports: [DatabaseModule, AuditModule, AuthModule],
   controllers: [AdminContentController, MediaController],
-  providers: [AdminContentService]
+  providers: [AdminContentService, AdminContentStorageService]
 })
 export class AdminContentModule {}

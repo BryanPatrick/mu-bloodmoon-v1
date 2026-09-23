@@ -15,6 +15,13 @@ System). Reusing it here would conflate two different concerns rather
 than avoid a duplicate one; this is a deliberate, audited decision, not a
 missed reuse opportunity (see `docs/launcher/launcher-slot-registry.md`'s
 Part A note on the same question for News/Events, decided the other way).
+**Confirmed again, Phase CF-R2-03**: the full `ReferenceAsset` write-path
+audit found it backs a broad editorial/scraping pipeline (manual admin
+CRUD, a bulk importer that upserts metadata for 1200+ already-committed
+static repo files, provenance/dedup fields tied to that pipeline) --
+genuinely a different domain than this model's curated asset library, not
+just a naming difference. See `docs/cloudflare-migration/R2_ASSETS.md`'s
+CF-R2-03 section for the full audit.
 
 ## Metadata
 

@@ -578,83 +578,83 @@ enum RoadmapRelationType {
 }
 
 model Account {
-  id                        String                      @id @default(uuid())
-  username                  String                      @unique
-  name                      String
-  email                     String                      @unique
-  passwordHash              String
-  personalIdHash            String?
-  sessionVersion            Int                         @default(0)
-  twoFactorEnabled          Boolean                     @default(false)
-  twoFactorSecret           String?                     @db.Text
-  twoFactorPending          String?                     @db.Text
-  role                      Role                        @default(PLAYER)
-  status                    AccountStatus               @default(PENDING)
-  accountPhase              AccountPhase                @default(PRE_BETA)
+  id                               String                      @id @default(uuid())
+  username                         String                      @unique
+  name                             String
+  email                            String                      @unique
+  passwordHash                     String
+  personalIdHash                   String?
+  sessionVersion                   Int                         @default(0)
+  twoFactorEnabled                 Boolean                     @default(false)
+  twoFactorSecret                  String?                     @db.Text
+  twoFactorPending                 String?                     @db.Text
+  role                             Role                        @default(PLAYER)
+  status                           AccountStatus               @default(PENDING)
+  accountPhase                     AccountPhase                @default(PRE_BETA)
   // Phase 14 Part D. Set only by NORMAL_ACCOUNT_DELETION (account-deletion.service.ts),
   // alongside status=BLOCKED, to distinguish "deleted/anonymized" from an
   // ordinary moderation block without a schema-wide AccountStatus.DELETED
   // migration -- deliberate minimal choice, documented in
   // docs/accounts/account-deletion-architecture.md's "Schema additions" section.
-  deletedAt                 DateTime?
-  createdAt                 DateTime                    @default(now())
-  updatedAt                 DateTime                    @updatedAt
-  currencies                AccountCurrency[]
-  auditEvents               AuditEvent[]                @relation("AuditActor")
-  purchases                 PurchaseIntent[]
-  recharges                 RechargeIntent[]
-  characters                AccountCharacter[]
-  guildsFounded             Guild[]                     @relation("GuildFounder")
-  guildMemberships          GuildMember[]               @relation("GuildMemberAccount")
-  marketListings            PlayerMarketListing[]       @relation("MarketplaceSeller")
-  marketOrders              PlayerMarketOrder[]         @relation("MarketplaceBuyer")
-  marketplaceReports        MarketplaceReport[]         @relation("MarketplaceReporter")
-  communityProfile          CommunityProfile?
-  communityPosts            CommunityPost[]             @relation("CommunityPostAuthor")
-  communityComments         CommunityComment[]          @relation("CommunityCommentAuthor")
-  communityReactions        CommunityReaction[]
-  communityReports          CommunityReport[]           @relation("CommunityReporter")
-  reportedCommunity         CommunityReport[]           @relation("CommunityReportedUser")
-  achievementGrants         CommunityAchievementGrant[]
-  badgeGrants               CommunityBadgeGrant[]
-  questProgress             CommunityQuestParticipant[]
-  bridgeJobs                GameBridgeJob[]
-  permissions               AccountPermission[]
-  supportTickets            SupportTicket[]             @relation("TicketOwner")
-  assignedTickets           SupportTicket[]             @relation("TicketAssignee")
-  moderationActions         AccountModeration[]         @relation("ModerationTarget")
-  moderationIssued          AccountModeration[]         @relation("ModerationActor")
-  sessions                  AccountSession[]
-  passwordResetTokens       PasswordResetToken[]
-  adminTasksAssigned        AdminTask[]                 @relation("AdminTaskAssignee")
-  adminTasksAssignedBy      AdminTask[]                 @relation("AdminTaskAssigner")
-  adminTasksCreated         AdminTask[]                 @relation("AdminTaskCreator")
-  adminTaskComments         AdminTaskComment[]
-  adminTaskEvidence         AdminTaskEvidence[]
-  twoFactorRecoveryCodes    TwoFactorRecoveryCode[]
-  gmOccurrencesCreated      GmOccurrence[]              @relation("GmOccurrenceCreatedBy")
-  gmOccurrencesAssigned     GmOccurrence[]              @relation("GmOccurrenceAssignedTo")
-  gmOccurrenceNotes         GmOccurrenceNote[]
-  betaParticipationRecordsRecorded BetaParticipationRecord[] @relation("BetaParticipationRecordedBy")
-  bugReportsOwned           BugReport[]                 @relation("BugReportOwner")
-  bugReportsAssigned        BugReport[]                 @relation("BugReportAssignee")
-  bugReportEvents           BugReportEvent[]            @relation("BugReportEventActor")
-  gmEventDefinitionsCreated GmEventDefinition[]         @relation("GmEventDefinitionCreatedBy")
-  gmEventRunsStarted        GmEventRun[]                @relation("GmEventRunStartedBy")
-  gmEventRunsEnded          GmEventRun[]                @relation("GmEventRunEndedBy")
-  gmEventRunsCancelled      GmEventRun[]                @relation("GmEventRunCancelledBy")
-  gmEventResultsCreated     GmEventResult[]             @relation("GmEventResultCreatedBy")
-  gmEventResultsValidated   GmEventResult[]             @relation("GmEventResultValidatedBy")
-  gameIdentity              GameAccountIdentity?
-  gameCredential            GameAccountCredential?
-  termsAcceptances          AccountTermsAcceptance[]
-  vipEntitlement            VipEntitlement?
-  vipSyncState              VipSyncState?
-  walletLedgerEntries       WalletLedgerEntry[]         @relation("WalletLedgerOwner")
-  walletLedgerCounterparty  WalletLedgerEntry[]         @relation("WalletLedgerCounterparty")
-  paymentRiskSignals        PaymentRiskSignal[]
-  paymentRiskCases          PaymentRiskCase[]
-  chargebackCases           ChargebackCase[]
+  deletedAt                        DateTime?
+  createdAt                        DateTime                    @default(now())
+  updatedAt                        DateTime                    @updatedAt
+  currencies                       AccountCurrency[]
+  auditEvents                      AuditEvent[]                @relation("AuditActor")
+  purchases                        PurchaseIntent[]
+  recharges                        RechargeIntent[]
+  characters                       AccountCharacter[]
+  guildsFounded                    Guild[]                     @relation("GuildFounder")
+  guildMemberships                 GuildMember[]               @relation("GuildMemberAccount")
+  marketListings                   PlayerMarketListing[]       @relation("MarketplaceSeller")
+  marketOrders                     PlayerMarketOrder[]         @relation("MarketplaceBuyer")
+  marketplaceReports               MarketplaceReport[]         @relation("MarketplaceReporter")
+  communityProfile                 CommunityProfile?
+  communityPosts                   CommunityPost[]             @relation("CommunityPostAuthor")
+  communityComments                CommunityComment[]          @relation("CommunityCommentAuthor")
+  communityReactions               CommunityReaction[]
+  communityReports                 CommunityReport[]           @relation("CommunityReporter")
+  reportedCommunity                CommunityReport[]           @relation("CommunityReportedUser")
+  achievementGrants                CommunityAchievementGrant[]
+  badgeGrants                      CommunityBadgeGrant[]
+  questProgress                    CommunityQuestParticipant[]
+  bridgeJobs                       GameBridgeJob[]
+  permissions                      AccountPermission[]
+  supportTickets                   SupportTicket[]             @relation("TicketOwner")
+  assignedTickets                  SupportTicket[]             @relation("TicketAssignee")
+  moderationActions                AccountModeration[]         @relation("ModerationTarget")
+  moderationIssued                 AccountModeration[]         @relation("ModerationActor")
+  sessions                         AccountSession[]
+  passwordResetTokens              PasswordResetToken[]
+  adminTasksAssigned               AdminTask[]                 @relation("AdminTaskAssignee")
+  adminTasksAssignedBy             AdminTask[]                 @relation("AdminTaskAssigner")
+  adminTasksCreated                AdminTask[]                 @relation("AdminTaskCreator")
+  adminTaskComments                AdminTaskComment[]
+  adminTaskEvidence                AdminTaskEvidence[]
+  twoFactorRecoveryCodes           TwoFactorRecoveryCode[]
+  gmOccurrencesCreated             GmOccurrence[]              @relation("GmOccurrenceCreatedBy")
+  gmOccurrencesAssigned            GmOccurrence[]              @relation("GmOccurrenceAssignedTo")
+  gmOccurrenceNotes                GmOccurrenceNote[]
+  betaParticipationRecordsRecorded BetaParticipationRecord[]   @relation("BetaParticipationRecordedBy")
+  bugReportsOwned                  BugReport[]                 @relation("BugReportOwner")
+  bugReportsAssigned               BugReport[]                 @relation("BugReportAssignee")
+  bugReportEvents                  BugReportEvent[]            @relation("BugReportEventActor")
+  gmEventDefinitionsCreated        GmEventDefinition[]         @relation("GmEventDefinitionCreatedBy")
+  gmEventRunsStarted               GmEventRun[]                @relation("GmEventRunStartedBy")
+  gmEventRunsEnded                 GmEventRun[]                @relation("GmEventRunEndedBy")
+  gmEventRunsCancelled             GmEventRun[]                @relation("GmEventRunCancelledBy")
+  gmEventResultsCreated            GmEventResult[]             @relation("GmEventResultCreatedBy")
+  gmEventResultsValidated          GmEventResult[]             @relation("GmEventResultValidatedBy")
+  gameIdentity                     GameAccountIdentity?
+  gameCredential                   GameAccountCredential?
+  termsAcceptances                 AccountTermsAcceptance[]
+  vipEntitlement                   VipEntitlement?
+  vipSyncState                     VipSyncState?
+  walletLedgerEntries              WalletLedgerEntry[]         @relation("WalletLedgerOwner")
+  walletLedgerCounterparty         WalletLedgerEntry[]         @relation("WalletLedgerCounterparty")
+  paymentRiskSignals               PaymentRiskSignal[]
+  paymentRiskCases                 PaymentRiskCase[]
+  chargebackCases                  ChargebackCase[]
 }
 
 // Phase 14 Part D. NORMAL_ACCOUNT_DELETION's tombstone metadata --
@@ -666,15 +666,15 @@ model Account {
 // account-deletion.service.ts, not tombstoned here in any form, hashed or
 // otherwise. See docs/accounts/account-deletion-architecture.md.
 model AccountDeletionRecord {
-  id                String   @id @default(uuid())
-  accountId         String   @unique
-  deletionMode      String   @db.VarChar(40) // always "NORMAL_ACCOUNT_DELETION" -- kept as a string, not sharing PurgeBatchRecord's enum-of-one, so the two models never get confused for each other
-  requestedBy       String
-  requestedAt       DateTime @default(now())
-  completedAt       DateTime?
-  reason            String?  @db.Text
-  originalUsernameHash String @db.VarChar(191)
-  originalEmailHash String   @db.VarChar(191)
+  id                   String    @id @default(uuid())
+  accountId            String    @unique
+  deletionMode         String    @db.VarChar(40) // always "NORMAL_ACCOUNT_DELETION" -- kept as a string, not sharing PurgeBatchRecord's enum-of-one, so the two models never get confused for each other
+  requestedBy          String
+  requestedAt          DateTime  @default(now())
+  completedAt          DateTime?
+  reason               String?   @db.Text
+  originalUsernameHash String    @db.VarChar(191)
+  originalEmailHash    String    @db.VarChar(191)
 
   @@index([originalEmailHash])
 }
@@ -720,16 +720,16 @@ model AccountDeletionRequest {
 // real hard `account.delete()` must never be blocked by a dangling
 // reference from analytics data that carries zero financial/legal weight.
 model AccountDeletionFeedback {
-  id                  String    @id @default(uuid())
-  accountId           String?
-  reasons             Json
-  otherText           String?   @db.VarChar(2000)
+  id                   String    @id @default(uuid())
+  accountId            String?
+  reasons              Json
+  otherText            String?   @db.VarChar(2000)
   // Phase K (2026-08-30) Part 12: ExitRetentionInteraction shape
   // (account-deletion.contract.ts) -- observational only, never read back
   // to gate anything; survives anonymization the same way `reasons` does.
   retentionInteraction Json?
-  submittedAt         DateTime  @default(now())
-  anonymizedAt        DateTime?
+  submittedAt          DateTime  @default(now())
+  anonymizedAt         DateTime?
 
   @@index([accountId])
 }
@@ -1217,31 +1217,31 @@ enum BugReportEventType {
 }
 
 model BugReport {
-  id               String             @id @default(uuid())
-  accountId        String
-  category         BugReportCategory
-  title            String             @db.VarChar(191)
-  description      String             @db.Text
-  stepsToReproduce String             @db.Text
-  expectedBehavior String             @db.Text
-  actualBehavior   String             @db.Text
+  id                    String             @id @default(uuid())
+  accountId             String
+  category              BugReportCategory
+  title                 String             @db.VarChar(191)
+  description           String             @db.Text
+  stepsToReproduce      String             @db.Text
+  expectedBehavior      String             @db.Text
+  actualBehavior        String             @db.Text
   // Player's own severity assessment -- kept distinct from staffSeverity
   // below, never overwritten by it. Staff triage records their own
   // judgment independently; both remain visible for comparison.
-  playerSeverity   BugReportSeverity
-  staffSeverity    BugReportSeverity?
-  status           BugReportStatus    @default(OPEN)
-  characterName    String?            @db.VarChar(80)
-  contextNote      String?            @db.Text
+  playerSeverity        BugReportSeverity
+  staffSeverity         BugReportSeverity?
+  status                BugReportStatus    @default(OPEN)
+  characterName         String?            @db.VarChar(80)
+  contextNote           String?            @db.Text
   // Reference only (e.g. an already-uploaded asset id/URL) -- this model
   // never receives or stores a raw file upload itself.
-  attachmentRef    String?            @db.VarChar(500)
+  attachmentRef         String?            @db.VarChar(500)
   consentAcknowledgedAt DateTime
   assignedToAccountId   String?
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  resolvedAt       DateTime?
-  closedAt         DateTime?
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+  resolvedAt            DateTime?
+  closedAt              DateTime?
 
   account  Account          @relation("BugReportOwner", fields: [accountId], references: [id], onDelete: Cascade)
   assignee Account?         @relation("BugReportAssignee", fields: [assignedToAccountId], references: [id], onDelete: SetNull)
@@ -1290,10 +1290,10 @@ model AccountPermission {
 }
 
 model AccountCurrency {
-  id        String       @id @default(uuid())
-  accountId String
-  currency  CurrencyCode
-  balance   Int          @default(0)
+  id                     String       @id @default(uuid())
+  accountId              String
+  currency               CurrencyCode
+  balance                Int          @default(0)
   // Open Beta P0 foundation (WC tax fixed-point accumulator). Only
   // meaningful for the WCOIN row today -- GP/HP rows leave this at 0 since
   // their tax rate isn't required to be fractionally exact per the
@@ -1301,8 +1301,8 @@ model AccountCurrency {
   // Tracks fee obligation accrued but not yet realized as a whole-WC
   // balance deduction; never let this field alone drive a balance
   // negative -- see WalletLedgerService.settleAccumulator.
-  feeAccumulatorSubunits Int @default(0)
-  account   Account      @relation(fields: [accountId], references: [id])
+  feeAccumulatorSubunits Int          @default(0)
+  account                Account      @relation(fields: [accountId], references: [id])
 
   @@unique([accountId, currency])
 }
@@ -1661,24 +1661,48 @@ model KnowledgeEntry {
 }
 
 model ReferenceAsset {
-  id            String                @id @default(uuid())
-  sourceId      String?
-  sourceUrl     String?               @db.Text
-  localPath     String                @db.VarChar(512)
-  publicPath    String?               @db.VarChar(512)
-  kind          ReferenceAssetKind    @default(IMAGE)
-  mimeType      String?
-  sha1          String?
-  bytes         Int?
-  status        EditorialStatus       @default(RAW)
-  duplicateOfId String?
-  metadata      Json?
-  createdAt     DateTime              @default(now())
-  updatedAt     DateTime              @updatedAt
-  source        ReferenceSource?      @relation(fields: [sourceId], references: [id])
-  duplicateOf   ReferenceAsset?       @relation("ReferenceAssetDuplicates", fields: [duplicateOfId], references: [id])
-  duplicates    ReferenceAsset[]      @relation("ReferenceAssetDuplicates")
-  entries       KnowledgeEntryAsset[]
+  id              String                @id @default(uuid())
+  sourceId        String?
+  sourceUrl       String?               @db.Text
+  // Historical identity key -- @@unique, required, still written for every
+  // NEW row too (Phase CF-R2-03) so the constraint/upsert-by-localPath
+  // pattern the bulk importer (scripts/import-prepared-data.mjs) already
+  // depends on keeps working unchanged. For a row written through the new
+  // StorageProvider path, this is set to the SAME value as storageKey below
+  // -- never a fabricated filesystem path, and never claims to be a real
+  // absolute disk location when the active provider is r2. Pre-existing
+  // rows (storageProvider IS NULL) keep their real, pre-phase meaning: an
+  // actual repo-relative path to a committed static reference file, or a
+  // path under storage/uploads/ for admin-uploaded images.
+  localPath       String                @db.VarChar(512)
+  publicPath      String?               @db.VarChar(512)
+  kind            ReferenceAssetKind    @default(IMAGE)
+  mimeType        String?
+  sha1            String?
+  bytes           Int?
+  status          EditorialStatus       @default(RAW)
+  duplicateOfId   String?
+  metadata        Json?
+  // Added Phase CF-R2-03, both nullable, purely additive -- NULL on every
+  // pre-existing row (1537 in production as of 2026-07-16, prisma/README.md)
+  // and is the correct, honest state for them: they predate this StorageProvider
+  // integration and were never written through it. NULL means "legacy /
+  // implicitly local", not "unknown" -- no backfill UPDATE was run, and none
+  // is needed for correctness (nothing reads these two fields for a
+  // pre-existing row; publicPath/localPath alone still fully describe them).
+  storageProvider String?               @db.VarChar(20)
+  // The real StorageProvider key (e.g. "admin-content/<uuid>.<ext>"), only
+  // set when storageProvider is set. publicPath is still the field every
+  // reader (launcher.service.ts, media.controller.ts) actually uses to serve
+  // the asset -- storageKey exists so a future migration/cleanup pass can
+  // re-derive or verify the underlying object without re-parsing publicPath.
+  storageKey      String?               @db.VarChar(512)
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  source          ReferenceSource?      @relation(fields: [sourceId], references: [id])
+  duplicateOf     ReferenceAsset?       @relation("ReferenceAssetDuplicates", fields: [duplicateOfId], references: [id])
+  duplicates      ReferenceAsset[]      @relation("ReferenceAssetDuplicates")
+  entries         KnowledgeEntryAsset[]
 
   @@unique([localPath])
   @@index([sha1])
@@ -1963,11 +1987,11 @@ enum LegacyCatalogChannel {
 // record of each. Never invented; every value here traces to a named
 // decision.
 enum LegacyCommercialDecision {
-  NOT_FOR_COMMERCIAL_SALE               // Decision 1 -- 153 X-Shop weapon/armor/wing (+13/all-excellent)
-  BALANCE_TEST_REQUIRED                 // Decision 2 -- 12 X-Shop Pets/Rings/Pendants
-  DEAD_UNRESOLVABLE_CATALOG_ROW         // Decision 3 -- 3 unresolved X-Shop Axes rows
+  NOT_FOR_COMMERCIAL_SALE // Decision 1 -- 153 X-Shop weapon/armor/wing (+13/all-excellent)
+  BALANCE_TEST_REQUIRED // Decision 2 -- 12 X-Shop Pets/Rings/Pendants
+  DEAD_UNRESOLVABLE_CATALOG_ROW // Decision 3 -- 3 unresolved X-Shop Axes rows
   RENTAL_CANDIDATE_PENDING_EMPIRICAL_TEST // Decision 4 -- 9 CashShop 7-day rentals
-  GREEN_CANDIDATE_NOT_APPROVED          // Decision 7 -- 3 CashShop event tickets
+  GREEN_CANDIDATE_NOT_APPROVED // Decision 7 -- 3 CashShop event tickets
 }
 
 // The lifecycle Part C asked for. Deliberately distinct from
@@ -1999,25 +2023,25 @@ enum LegacyCatalogDriftStatus {
 }
 
 model LegacyCatalogItem {
-  id                    String                        @id @default(uuid())
-  channel               LegacyCatalogChannel
+  id                       String                        @id @default(uuid())
+  channel                  LegacyCatalogChannel
   // XSHOP: "{ItemType}-{ItemIndex}" (matches commerce-item-catalog.json's
   // own `key` format, cross-verified this phase). CASHSHOP: the real
   // ItemIndex (e.g. "6703").
-  legacyKey             String
-  itemName              String
+  legacyKey                String
+  itemName                 String
   // Raw technical identifiers as found in the source config (ItemType,
   // ItemIndex, BaseIndex, source file/line) -- never re-derived, always
   // traceable back to the exact row this was generated from.
-  technicalIdentifiers  Json
-  bryanDecision          LegacyCommercialDecision
-  commercialStatus      LegacyCatalogCommercialStatus @default(REVIEW_REQUIRED)
+  technicalIdentifiers     Json
+  bryanDecision            LegacyCommercialDecision
+  commercialStatus         LegacyCatalogCommercialStatus @default(REVIEW_REQUIRED)
   // VISIBLE != PURCHASABLE (Part I's own explicit distinction) -- both
   // default false; BLOCKED rows must never flip either without a real
   // admin action (enforced in legacy-catalog-config.service.ts, not
   // just by this default).
-  visible               Boolean                       @default(false)
-  purchasable            Boolean                       @default(false)
+  visible                  Boolean                       @default(false)
+  purchasable              Boolean                       @default(false)
   // PHASE T (2026-09-02) -- ENABLED != APPROVED (Bryan's own explicit
   // semantic). `desiredEnabled` is the Portal's opinion of whether this
   // row SHOULD be enabled on the GameServer side once a real sync ever
@@ -2025,23 +2049,23 @@ model LegacyCatalogItem {
   // desiredEnabled=true and still BLOCKED (e.g. "this exists and could
   // run, but is not commercially approved"), or desiredEnabled=false and
   // APPROVED (e.g. "approved for a future date, not live yet").
-  desiredEnabled         Boolean                       @default(false)
-  priceDesired           Int?
-  currencyDesired         CurrencyCode?
-  durationDesiredDays    Int?
-  availableFrom          DateTime?
-  availableUntil         DateTime?
-  openBetaAllowed        Boolean                       @default(false)
-  fullReleaseAllowed     Boolean                       @default(false)
-  purchaseLimitDesired   Int?
-  internalNotes          String?                       @db.Text
-  blockReason            String?                       @db.Text
+  desiredEnabled           Boolean                       @default(false)
+  priceDesired             Int?
+  currencyDesired          CurrencyCode?
+  durationDesiredDays      Int?
+  availableFrom            DateTime?
+  availableUntil           DateTime?
+  openBetaAllowed          Boolean                       @default(false)
+  fullReleaseAllowed       Boolean                       @default(false)
+  purchaseLimitDesired     Int?
+  internalNotes            String?                       @db.Text
+  blockReason              String?                       @db.Text
   // Set only once a real Official Store product is created to deliver
   // this legacy item (Part 5's "Official Product -> approved delivery
   // definition -> GameBridge -> specific game item" mapping). Never set
   // by any bulk/automatic process.
-  linkedShopProductId    String?
-  driftStatus            LegacyCatalogDriftStatus      @default(NOT_CHECKED)
+  linkedShopProductId      String?
+  driftStatus              LegacyCatalogDriftStatus      @default(NOT_CHECKED)
   // PHASE T (2026-09-02) -- structured effective-state capture (Part 5),
   // populated only by an explicit admin "refresh from source" action
   // (legacy-catalog-effective-state.service.ts) reading a committed
@@ -2066,13 +2090,13 @@ model LegacyCatalogItem {
   // ANY change (including fields not individually parsed) without
   // needing to enumerate every possible drift dimension up front.
   sourceFingerprint        String?
-  effectiveStateCheckedBy String?
-  version                Int                           @default(1)
-  createdBy              String?
-  updatedBy              String?
-  createdAt              DateTime                      @default(now())
-  updatedAt              DateTime                      @updatedAt
-  linkedShopProduct      ShopProduct?                  @relation(fields: [linkedShopProductId], references: [id], onDelete: SetNull)
+  effectiveStateCheckedBy  String?
+  version                  Int                           @default(1)
+  createdBy                String?
+  updatedBy                String?
+  createdAt                DateTime                      @default(now())
+  updatedAt                DateTime                      @updatedAt
+  linkedShopProduct        ShopProduct?                  @relation(fields: [linkedShopProductId], references: [id], onDelete: SetNull)
 
   @@unique([channel, legacyKey])
   @@index([channel, commercialStatus])
@@ -2425,14 +2449,14 @@ model MarketplaceTask {
 }
 
 model MarketplaceEconomyConfig {
-  id                   String   @id @default("default")
-  publicationFee       Int      @default(0)
+  id                    String   @id @default("default")
+  publicationFee        Int      @default(0)
   // DEPRECATED (Open Beta P0 audit, Phase 12): superseded by the three
   // per-currency fields below. Kept, not dropped, so the existing admin
   // API contract (marketplace-admin.service.ts) doesn't break -- but
   // marketplace.service.ts's fee calculation no longer reads this field.
   // Do not wire new behavior to it.
-  saleFeePercent       Int      @default(5)
+  saleFeePercent        Int      @default(5)
   // Per-currency P2P transaction tax, replacing saleFeePercent (Open Beta
   // P0). wcoinTaxPercent honors the decided 10% WC economic sink via the
   // fixed-point accumulator (wallet-ledger.service.ts) -- goblinPoint/
@@ -2441,8 +2465,8 @@ model MarketplaceEconomyConfig {
   wcoinTaxPercent       Int      @default(10)
   goblinPointTaxPercent Int      @default(5)
   huntPointTaxPercent   Int      @default(5)
-  listingDurationHours Int      @default(168)
-  maxListings          Int      @default(10)
+  listingDurationHours  Int      @default(168)
+  maxListings           Int      @default(10)
   // DEAD FIELD (Open Beta P0 audit, Phase 12): confirmed never read by
   // any fee-calculation code in marketplace.service.ts -- grepped across
   // the whole module, zero references outside this model definition and
@@ -2451,15 +2475,15 @@ model MarketplaceEconomyConfig {
   // admin API already exposes it and dropping it is a separate, later
   // decision -- do not build new behavior on top of it without first
   // confirming that's actually intended.
-  vipDiscountPercent   Int      @default(0)
-  acceptedCurrencies   Json
-  minimumPrice         Int      @default(1)
-  maximumPrice         Int      @default(1000000)
-  cooldownMinutes      Int      @default(0)
-  allowedCategories    Json?
-  updatedBy            String?  @db.VarChar(191)
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  vipDiscountPercent    Int      @default(0)
+  acceptedCurrencies    Json
+  minimumPrice          Int      @default(1)
+  maximumPrice          Int      @default(1000000)
+  cooldownMinutes       Int      @default(0)
+  allowedCategories     Json?
+  updatedBy             String?  @db.VarChar(191)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }
 
 // ===================================================================
@@ -2498,43 +2522,43 @@ enum WalletLedgerStatus {
 }
 
 model WalletLedgerEntry {
-  id                            String                @id @default(uuid())
+  id                           String                @id @default(uuid())
   // Enforces NO_DUPLICATE_FEE_ON_IDEMPOTENT_RETRY at the database level,
   // not just in application logic -- a retry with the same key can only
   // ever produce one row.
-  idempotencyKey                String                @unique @db.VarChar(191)
-  type                          WalletTransactionType
-  currency                      CurrencyCode
+  idempotencyKey               String                @unique @db.VarChar(191)
+  type                         WalletTransactionType
+  currency                     CurrencyCode
   // Nullable + SetNull, matching the existing AccountModeration/AuditEvent/
   // GameBridgeJob pattern in this schema: a ledger row is audit history
   // and must outlive the account it was about (relevant to Beta account
   // deletion later) rather than cascade-deleting with it.
-  accountId                     String?
-  counterpartyAccountId         String?
-  grossAmount                   Int
+  accountId                    String?
+  counterpartyAccountId        String?
+  grossAmount                  Int
   // Whole-unit fee actually collected (balance-deducted) in THIS
   // transaction -- can be 0 for a small transaction whose fee obligation
   // is still accruing in the accumulator, not yet a whole unit.
-  taxAmount                     Int                   @default(0)
-  netAmount                     Int
+  taxAmount                    Int                   @default(0)
+  netAmount                    Int
   // The EXACT fee obligation this transaction contributed, in subunits
   // (1 currency unit = 10,000 subunits) -- always precise even when
   // taxAmount is 0, so EXACT_CUMULATIVE_10_PERCENT is directly verifiable
   // from ledger rows alone without reconstructing it from accumulator
   // deltas.
-  feeObligationSubunits         Int                   @default(0)
-  feeAccumulatorSubunitsBefore  Int?
-  feeAccumulatorSubunitsAfter   Int?
-  sourceType                    String?               @db.VarChar(80)
-  sourceId                      String?
+  feeObligationSubunits        Int                   @default(0)
+  feeAccumulatorSubunitsBefore Int?
+  feeAccumulatorSubunitsAfter  Int?
+  sourceType                   String?               @db.VarChar(80)
+  sourceId                     String?
   // e.g. a RechargeIntent.id, when this entry is traceable to a real
   // payment -- the Part E/F chargeback-traceability link.
-  paymentProvenanceRef          String?
-  status                        WalletLedgerStatus    @default(SETTLED)
-  metadata                      Json?
-  createdAt                     DateTime              @default(now())
-  account                       Account?              @relation("WalletLedgerOwner", fields: [accountId], references: [id], onDelete: SetNull)
-  counterparty                  Account?              @relation("WalletLedgerCounterparty", fields: [counterpartyAccountId], references: [id], onDelete: SetNull)
+  paymentProvenanceRef         String?
+  status                       WalletLedgerStatus    @default(SETTLED)
+  metadata                     Json?
+  createdAt                    DateTime              @default(now())
+  account                      Account?              @relation("WalletLedgerOwner", fields: [accountId], references: [id], onDelete: SetNull)
+  counterparty                 Account?              @relation("WalletLedgerCounterparty", fields: [counterpartyAccountId], references: [id], onDelete: SetNull)
 
   @@index([accountId, createdAt])
   @@index([counterpartyAccountId, createdAt])
@@ -2557,25 +2581,25 @@ enum BetaRewardEntitlementStatus {
 }
 
 model BetaRewardEntitlement {
-  id                   String                       @id @default(uuid())
-  betaCycleId          String                       @db.VarChar(80)
+  id                  String                      @id @default(uuid())
+  betaCycleId         String                      @db.VarChar(80)
   // Hashed, never plaintext -- "do not store more personal data than
   // necessary" (Part K). Claim-time lookup hashes the new account's own
   // normalized email the same way and compares hashes, never storing or
   // querying a plaintext email against this table.
-  normalizedEmailHash  String                       @db.VarChar(191)
+  normalizedEmailHash String                      @db.VarChar(191)
   // Kept only as long as legally/technically appropriate; nullable so it
   // can be cleared post-deletion without invalidating the row (Part J).
-  originalAccountId    String?
-  rewardType           String                       @db.VarChar(80)
-  rewardAmount         Int
-  reason               String                       @db.Text
-  sourceType           String                       @db.VarChar(80)
-  sourceId             String?
-  status               BetaRewardEntitlementStatus  @default(PENDING)
-  createdAt            DateTime                     @default(now())
-  claimedAt            DateTime?
-  claimedByAccountId   String?
+  originalAccountId   String?
+  rewardType          String                      @db.VarChar(80)
+  rewardAmount        Int
+  reason              String                      @db.Text
+  sourceType          String                      @db.VarChar(80)
+  sourceId            String?
+  status              BetaRewardEntitlementStatus @default(PENDING)
+  createdAt           DateTime                    @default(now())
+  claimedAt           DateTime?
+  claimedByAccountId  String?
 
   @@index([normalizedEmailHash, betaCycleId])
   @@index([status])
@@ -2607,12 +2631,12 @@ enum BetaParticipationRecordStatus {
 }
 
 model BetaParticipationRecord {
-  id                     String                         @id @default(uuid())
-  betaCycleId            String                         @db.VarChar(80)
+  id                     String                        @id @default(uuid())
+  betaCycleId            String                        @db.VarChar(80)
   // Same normalization/hash as BetaRewardEntitlement -- computed with the
   // same normalizeEmail/hashNormalizedEmail helpers from
   // beta-lifecycle.service.ts, never re-derived independently.
-  normalizedEmailHash    String                         @db.VarChar(191)
+  normalizedEmailHash    String                        @db.VarChar(191)
   // Best-effort convenience reference to the account this fact was
   // recorded against at the time -- NOT the durability anchor (that's
   // normalizedEmailHash, matching BetaRewardEntitlement's own design), so
@@ -2625,13 +2649,13 @@ model BetaParticipationRecord {
   // BugReport.id when sourceType=BUG_HUNTER_CONTRIBUTION. Loosely typed
   // like BetaRewardEntitlement.sourceId for the same reason: the source
   // domain can evolve without a schema migration here.
-  sourceId               String?                        @db.VarChar(191)
+  sourceId               String?                       @db.VarChar(191)
   // Required, human-readable -- the auditable "why" a reviewer can read
   // months later without reverse-engineering sourceType/sourceId.
-  justification          String                         @db.Text
-  status                 BetaParticipationRecordStatus  @default(RECORDED)
+  justification          String                        @db.Text
+  status                 BetaParticipationRecordStatus @default(RECORDED)
   recordedById           String
-  recordedAt             DateTime                       @default(now())
+  recordedAt             DateTime                      @default(now())
   // Set once the generation step actually creates a BetaRewardEntitlement
   // from this record -- the idempotency guard: a record already carrying
   // a value here is never converted again.
@@ -2666,35 +2690,35 @@ enum VipEntitlementStatus {
 }
 
 model VipEntitlement {
-  id               String                @id @default(uuid())
-  accountId        String                @unique
+  id               String               @id @default(uuid())
+  accountId        String               @unique
   tier             VipTier?
   activatedAt      DateTime?
   expiresAt        DateTime?
   // Cumulative days ever granted -- audit/analytics only, never used to
   // compute current status (expiresAt is the only source of truth for
   // "is VIP active right now").
-  totalDaysGranted Int                   @default(0)
-  status           VipEntitlementStatus  @default(INACTIVE)
-  createdAt        DateTime              @default(now())
-  updatedAt        DateTime              @updatedAt
-  account          Account               @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  totalDaysGranted Int                  @default(0)
+  status           VipEntitlementStatus @default(INACTIVE)
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  account          Account              @relation(fields: [accountId], references: [id], onDelete: Cascade)
   grants           VipGrant[]
 }
 
 model VipGrant {
-  id                 String          @id @default(uuid())
-  vipEntitlementId   String
-  accountId          String
-  tier               VipTier
-  durationDays       Int
-  sourceType         String          @db.VarChar(80)
-  sourceId           String?
-  idempotencyKey     String          @unique @db.VarChar(191)
-  grantedAt          DateTime        @default(now())
-  previousExpiresAt  DateTime?
-  newExpiresAt       DateTime
-  vipEntitlement     VipEntitlement  @relation(fields: [vipEntitlementId], references: [id], onDelete: Cascade)
+  id                String         @id @default(uuid())
+  vipEntitlementId  String
+  accountId         String
+  tier              VipTier
+  durationDays      Int
+  sourceType        String         @db.VarChar(80)
+  sourceId          String?
+  idempotencyKey    String         @unique @db.VarChar(191)
+  grantedAt         DateTime       @default(now())
+  previousExpiresAt DateTime?
+  newExpiresAt      DateTime
+  vipEntitlement    VipEntitlement @relation(fields: [vipEntitlementId], references: [id], onDelete: Cascade)
 
   @@index([accountId, grantedAt])
 }
@@ -2706,13 +2730,13 @@ model VipGrant {
 // separation is what lets the reconciler answer "is there a divergence"
 // without re-deriving it from GameBridge command history every time.
 model VipSyncState {
-  id                String    @id @default(uuid())
-  accountId         String    @unique
+  id                  String    @id @default(uuid())
+  accountId           String    @unique
   // Last AccountLevel (0-3) the reconciler successfully synced to the
   // GameServer. Null means "never synced" -- always a divergence.
-  lastSyncedLevel   Int?
-  lastSyncedAt      DateTime?
-  lastSyncCommandId String?
+  lastSyncedLevel     Int?
+  lastSyncedAt        DateTime?
+  lastSyncCommandId   String?
   // The desiredLevel sent with lastSyncCommandId -- promoted to
   // lastSyncedLevel only once that command is confirmed SUCCEEDED. Kept
   // separate so a stuck/expired in-flight command never gets mistaken for
@@ -2721,11 +2745,11 @@ model VipSyncState {
   // CREATED/QUEUED/.../SUCCEEDED/FAILED_FINAL -- mirrors GameCommandState's
   // status vocabulary so a pending command in flight is distinguishable
   // from one that actually completed.
-  lastSyncStatus    String?   @db.VarChar(32)
+  lastSyncStatus      String?   @db.VarChar(32)
   // PURCHASE / EXPIRY / RECONCILIATION_DIVERGENCE / MANUAL_ADMIN (plan Part
   // 2's SYNC_VIP_TIER auditoria row) -- lives here, not in the GameServer
   // payload, mirroring GRANT_VIP's "never carry the why across the boundary" rule.
-  lastSyncReason    String?   @db.VarChar(32)
+  lastSyncReason      String?   @db.VarChar(32)
   // PHASE L DECISION CLOSURE, Decision 2 (2026-08-31): VIP native drift
   // observability. dbo.bm_SyncVipTier's @PreviousLevel OUTPUT reports the
   // true AccountLevel found on the GameServer immediately before this
@@ -2741,10 +2765,10 @@ model VipSyncState {
   // vip-sync.service.ts's own drift-handling code clears it, and only when
   // a sync completes with zero divergence, so the count survives across
   // ticks/restarts and genuinely reflects "how many times in a row".
-  driftCount        Int       @default(0)
-  lastDriftAt       DateTime?
-  updatedAt         DateTime  @updatedAt
-  account           Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  driftCount          Int       @default(0)
+  lastDriftAt         DateTime?
+  updatedAt           DateTime  @updatedAt
+  account             Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
 }
 
 // All bonus values default to 0/disabled per explicit instruction ("leave
@@ -2752,11 +2776,11 @@ model VipSyncState {
 // `enabled` is a master switch, also off by default -- flipping individual
 // bonus numbers alone is never enough to activate a benefit.
 model VipBenefitConfig {
-  tier                     VipTier  @id
-  xpBonusPercent           Int      @default(0)
-  dropBonusPercent         Int      @default(0)
-  chaosMachineBonusPercent Int      @default(0)
-  resetBenefitEnabled      Boolean  @default(false)
+  tier                        VipTier  @id
+  xpBonusPercent              Int      @default(0)
+  dropBonusPercent            Int      @default(0)
+  chaosMachineBonusPercent    Int      @default(0)
+  resetBenefitEnabled         Boolean  @default(false)
   // Phase 15. Bryan approved exactly two benefit categories as
   // non-power "convenience": extra warehouse storage, and reduced Zen
   // cost on utility commands (PK-clear, stat respec, mail). Both are
@@ -2768,11 +2792,11 @@ model VipBenefitConfig {
   // stays hard-clamped to 0/false in vip.service.ts#upsertBenefitConfig
   // until each is explicitly approved with real numbers -- these two are
   // the only fields that escape that clamp.
-  warehouseBonusPages         Int     @default(0)
-  commandCostReductionPercent Int     @default(0)
-  enabled                  Boolean  @default(false)
-  updatedBy                String?  @db.VarChar(191)
-  updatedAt                DateTime @updatedAt
+  warehouseBonusPages         Int      @default(0)
+  commandCostReductionPercent Int      @default(0)
+  enabled                     Boolean  @default(false)
+  updatedBy                   String?  @db.VarChar(191)
+  updatedAt                   DateTime @updatedAt
 }
 
 // Dedicated, lightweight VIP catalog -- deliberately NOT reusing
@@ -4186,11 +4210,11 @@ model PlayerPreferenceDefinition {
 // recorded for. Absence of a row means "use the definition's default"
 // (not modeled here -- a UI-layer concern), not "disabled."
 model PlayerPreference {
-  id             String   @id @default(uuid())
-  accountId      String
-  definitionKey  String
-  enabled        Boolean
-  updatedAt      DateTime @updatedAt
+  id            String   @id @default(uuid())
+  accountId     String
+  definitionKey String
+  enabled       Boolean
+  updatedAt     DateTime @updatedAt
 
   definition PlayerPreferenceDefinition @relation(fields: [definitionKey], references: [key], onDelete: Cascade)
 
@@ -4266,49 +4290,49 @@ enum ProgressionPolicyStatus {
 }
 
 model ProgressionConfigItem {
-  id            String            @id @default(uuid())
-  domain        ProgressionDomain
+  id                String                  @id @default(uuid())
+  domain            ProgressionDomain
   // Business-facing key (e.g. "xp.rate", "reset.cap") -- deliberately
   // NOT the raw GameServer config key (e.g. "AddExperienceRate_AL0-3")
   // per Part 12's explicit instruction not to expose only cryptic
   // config keys. The raw key(s) live in technicalSource below, always
   // visible in the detail view.
-  key           String
-  friendlyLabel String
-  description   String?           @db.Text
+  key               String
+  friendlyLabel     String
+  description       String?                 @db.Text
   // Deliberately nullable and free-text, never "x"/"%" unless the real
   // unit is proven (Part 13, mandatory) -- see
   // docs/progression/xp-stacking-investigation.md for why most XP
   // fields carry an explicit "unidade nao confirmada" unit rather than
   // a percent sign.
-  unit          String?
+  unit              String?
   // { file, key, shape: 'flat'|'perTier' } -- the exact source this row
   // was generated from, always traceable back to a real config line.
-  technicalSource Json
-  riskLevel     ProgressionRiskLevel @default(MEDIUM)
+  technicalSource   Json
+  riskLevel         ProgressionRiskLevel    @default(MEDIUM)
   // null = Portal has no opinion yet (never a false drift, same rule
   // LegacyCatalogEffectiveStateService already established). A flat
   // number here against a perTier effectiveValue means "one target
   // applies to every tier" (e.g. reset.cap's policy target = 20).
-  desiredValue    Json?
-  desiredReason   String?          @db.Text
-  effectiveValue  Json?
-  driftStatus     ProgressionDriftStatus @default(NOT_CHECKED)
+  desiredValue      Json?
+  desiredReason     String?                 @db.Text
+  effectiveValue    Json?
+  driftStatus       ProgressionDriftStatus  @default(NOT_CHECKED)
   // PHASE V -- see ProgressionPolicyStatus's own comment for the
   // driftStatus/policyStatus distinction. Set from real product
   // classification (this phase's own VIP policy drift matrix), reset on
   // every reseed alongside riskLevel/description -- this is analysis
   // truth, not an individual admin's desired-state opinion, so it is
   // NOT protected from reseed the way desiredValue is.
-  policyStatus    ProgressionPolicyStatus @default(NOT_EVALUATED)
-  sourceLastReadAt DateTime?
+  policyStatus      ProgressionPolicyStatus @default(NOT_EVALUATED)
+  sourceLastReadAt  DateTime?
   sourceFingerprint String?
-  internalNotes   String?          @db.Text
-  version         Int              @default(1)
-  createdBy       String?
-  updatedBy       String?
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  internalNotes     String?                 @db.Text
+  version           Int                     @default(1)
+  createdBy         String?
+  updatedBy         String?
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
 
   @@unique([domain, key])
   @@index([driftStatus])
@@ -4384,37 +4408,37 @@ model PaymentRiskSignal {
 }
 
 model PaymentRiskCase {
-  id                   String                  @id @default(uuid())
-  accountId            String?
-  status               PaymentRiskCaseStatus   @default(OPEN)
-  highestSeverity      PaymentRiskSeverity
-  summary              String                  @db.Text
-  reviewNotes          String?                 @db.Text
-  resolution           String?                 @db.Text
-  openedAt             DateTime                @default(now())
-  resolvedAt           DateTime?
-  resolvedByAccountId  String?
-  createdAt            DateTime                @default(now())
-  updatedAt            DateTime                @updatedAt
-  account              Account?                @relation(fields: [accountId], references: [id], onDelete: SetNull)
-  signals              PaymentRiskSignal[]
-  actions              PaymentRiskCaseAction[]
+  id                  String                  @id @default(uuid())
+  accountId           String?
+  status              PaymentRiskCaseStatus   @default(OPEN)
+  highestSeverity     PaymentRiskSeverity
+  summary             String                  @db.Text
+  reviewNotes         String?                 @db.Text
+  resolution          String?                 @db.Text
+  openedAt            DateTime                @default(now())
+  resolvedAt          DateTime?
+  resolvedByAccountId String?
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
+  account             Account?                @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  signals             PaymentRiskSignal[]
+  actions             PaymentRiskCaseAction[]
 
   @@index([accountId])
   @@index([status])
 }
 
 model PaymentRiskCaseAction {
-  id                    String            @id @default(uuid())
-  riskCaseId            String
-  action                PaymentRiskAction
-  reason                String            @db.Text
-  performedByAccountId  String
-  performedByUsername   String
-  performedAt           DateTime          @default(now())
-  liftedAt              DateTime?
-  liftedByAccountId     String?
-  riskCase              PaymentRiskCase   @relation(fields: [riskCaseId], references: [id], onDelete: Cascade)
+  id                   String            @id @default(uuid())
+  riskCaseId           String
+  action               PaymentRiskAction
+  reason               String            @db.Text
+  performedByAccountId String
+  performedByUsername  String
+  performedAt          DateTime          @default(now())
+  liftedAt             DateTime?
+  liftedByAccountId    String?
+  riskCase             PaymentRiskCase   @relation(fields: [riskCaseId], references: [id], onDelete: Cascade)
 
   @@index([riskCaseId])
 }
@@ -4593,11 +4617,11 @@ model SurveyAudience {
 // still need to outlive the account (anonymized rather than cascaded);
 // an ANONYMOUS-mode response never populates accountId at all.
 model SurveyResponse {
-  id          String    @id @default(uuid())
-  surveyId    String
-  campaignId  String?
-  accountId   String?
-  submittedAt DateTime  @default(now())
+  id           String    @id @default(uuid())
+  surveyId     String
+  campaignId   String?
+  accountId    String?
+  submittedAt  DateTime  @default(now())
   anonymizedAt DateTime?
 
   survey   Survey          @relation(fields: [surveyId], references: [id], onDelete: Cascade)
