@@ -59,7 +59,7 @@ async function bootstrap() {
     app.setGlobalPrefix(globalPrefix)
   }
 
-  await app.listen(port)
+  await app.listen(port, '0.0.0.0')
   console.log(
     `Blood Moon API listening on http://localhost:${port}${globalPrefix ? `/${globalPrefix}` : ''}`
   )
