@@ -105,15 +105,26 @@ on the Asaas continuation branch.
 
 ## What is NOT true yet (explicit, so it isn't assumed)
 
-- Cloudflare CF-API-02R2 has one isolated Workers.dev Container shadow on
-  `infra/cloudflare-api-container-poc`. The remote Node 22/Nest/Prisma image
-  builds and runs on a `basic` 1 GiB instance against disposable TiDB:
+- ~~Cloudflare CF-API-02R2 still lacks real MySQL 8 migration/runtime proof.~~
+  **Correction (2026-09-23, CF-API-02R3):** on the isolated Workers.dev
+  Container shadow from `infra/cloudflare-api-container-poc`, the remote Node
+  22/Nest/Prisma image
+  builds and runs on a `basic` 1 GiB instance. The earlier disposable TiDB pass
+  remains valid, and CF-API-02R3 additionally proved a temporary real MySQL
+  8.4.11 runtime plus an independent local MySQL 8.0.46 from-zero replay:
+  all 55 canonical migrations clean/no drift, health/readiness, synthetic
+  auth/TOTP, Serializable transaction, rollback, unique idempotency, concurrent
+  row locking and named locks passed. The validation-only MySQL harness was
+  removed; it is not the proposed production topology. Billing PII crypto was
+  validated 19/19 in isolation on its Asaas branch and was not merged. The
+  shadow remains public because Zero Trust is not yet onboarded; a narrow
+  Worker-only Access configuration is prepared but not applied.
+  The earlier TiDB validation also proved:
   health/readiness, synthetic auth/TOTP, transaction/rollback/unique-key
   behavior, SIGTERM/Prisma disconnect, restart and ephemeral `/tmp` storage all
   pass. The TLS boot blocker was fixed by adding the public CA bundle. This is
-  still not production readiness: TiDB could not replay all canonical
-  migrations literally, so `MYSQL_8_MIGRATION_REPLAY = NOT_PROVEN`. No
-  production database, secret, DNS, payment or marketplace setting was used.
+  still not production authorization, but `MYSQL_8_MIGRATION_REPLAY = PROVEN`.
+  No production database, secret, DNS, payment or marketplace setting was used.
 
 - No n8n installation exists anywhere in this project (a real design
   proposal exists, unmerged, undecided — see [`domains/n8n.md`](domains/n8n.md)).

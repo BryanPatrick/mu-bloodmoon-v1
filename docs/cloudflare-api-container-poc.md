@@ -84,3 +84,47 @@ Keep the isolated shadow for follow-up work. The next database-validation phase
 should use a disposable real MySQL 8 compatible external database, replay every
 canonical migration literally, then repeat the narrow health, auth, transaction
 and restart checks. Do not connect production until that gate passes.
+
+## CF-API-02R3 — final MySQL 8 runtime validation (2026-09-23)
+
+The remaining database-runtime gate is now proven. A wholly disposable local
+MySQL 8.0.46 instance applied the 55 canonical Prisma migrations from zero with
+`prisma migrate deploy`; `prisma migrate status` was clean and `prisma migrate
+diff` reported no difference. No `db push`, baseline, production database or
+production credential was used. The instance was shut down and its temporary
+directory removed after validation.
+
+The shadow was also temporarily rebuilt around a real MySQL 8.4.11 process in
+the same disposable Cloudflare Container microVM. This was a validation harness,
+not a proposed production topology. It replayed all 55 migrations, booted Nest,
+returned 200 from health and readiness, and passed synthetic registration,
+login, TOTP setup/verification, TOTP login, refresh, protected profile and
+logout. It also passed Serializable commit, rollback, unique-key idempotency,
+real concurrent row-lock serialization and `GET_LOCK`/`RELEASE_LOCK` checks.
+
+Measured remote timings were 42.222 s for the first cold boot (including MySQL
+initialization, migration replay and Nest startup), 66.418 s for the controlled
+restart, 0.746–1.199 s for warm health and 0.758–0.787 s for warm readiness.
+SIGTERM reached the application, the database was shut down and the Container
+exited with code 0; the existing Prisma shutdown hook remains present.
+
+The validation-only MySQL image, supervisor, diagnostics endpoints and control
+binding are not retained in the candidate. The only permanent runtime change is
+the Prisma `rhel-openssl-3.0.x` binary target needed by the Oracle Linux 9 image.
+
+Billing PII AES-256-GCM remains isolated on
+`payments/asaas-production-readiness`, commit
+`1e6b0768777a517380c22a5854465756c9d908fd`, in
+`billing-crypto.ts` and `billing-profile.service.ts`. Its isolated unit suite
+passed 19/19 without merging or activating payments. A future Cloudflare
+candidate that incorporates Asaas billing profiles must deliberately include
+that implementation.
+
+Cloudflare Access was evaluated in the live dashboard. The shadow is public and
+the account reports that a Zero Trust organization/authentication domain must be
+set up before Worker sign-in protection can be enabled. The prepared narrow
+configuration is: protect only `bloodmoon-api-container-shadow` (all traffic),
+allow Bryan's account email, and add a separate Service Auth policy/service
+token for automated checks. No account-wide policy, production hostname or
+Access credential was created. Applying this configuration is intentionally
+deferred until onboarding and credential creation are explicitly authorized.
