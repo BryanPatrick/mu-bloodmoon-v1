@@ -3,6 +3,7 @@ import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { startDisposableDatabase, stopDisposableDatabase } from './support/disposable-mysql'
+import { expectMediaUrlShape, fetchMediaUrl } from './support/media-url-assertions'
 
 // Same disposable-database pattern as community-profile.e2e-spec.ts -- see
 // that file's comment for why. Media additionally needs an isolated
@@ -133,7 +134,7 @@ describe('Community media (real pipeline, no base64/mock)', () => {
     expect(res.status).toBe(201)
     expect(res.body.kind).toBe('IMAGE')
     expect(typeof res.body.url).toBe('string')
-    expect(res.body.url).toMatch(/^\/api\/media\/community\/[a-f0-9-]+\.webp$/)
+    expectMediaUrlShape(res.body.url, 'webp', '/api/media/community')
     expect(res.body.mimeType).toBe('image/webp')
   })
 
@@ -177,21 +178,42 @@ describe('Community media (real pipeline, no base64/mock)', () => {
     expect(res.status).toBe(400)
   })
 
-  it('returns 500 (not 400) when storage itself fails; the quarantine row is left at TEMPORARY, never promoted', async () => {
-    // Point COMMUNITY_MEDIA_DIR at a path that already exists as a *file* --
-    // mkdir(..., {recursive:true}) genuinely fails with ENOTDIR here, a real
-    // filesystem fault, not a crafted validation failure. Quarantine write
-    // and validation both succeed first (they don't use COMMUNITY_MEDIA_DIR)
-    // -- only the promotion step fails, so a TEMPORARY row does exist
-    // afterwards. It is not a REJECTED row (validation never said no) and
-    // has no url (never promoted) -- the orphan-cleanup helper is what
-    // eventually sweeps a row stuck in this state, same as any other
-    // never-finished upload.
+  it('returns 500 (not 400) when storage itself fails; no row is ever left pointing at a live/promoted url', async () => {
+    // Verifies the same core safety property under whichever provider is
+    // active: a genuine storage-layer fault (not a crafted validation
+    // failure) must surface as 500, and must never leave a row with a
+    // live `url` -- i.e. storage failing can never look like a silent
+    // success. The FAULT ITSELF is necessarily provider-specific (a
+    // blocked local directory means nothing to R2, and R2 has no local
+    // directory to trip over):
+    //
+    // - local: MediaService.upload() calls writeQuarantine() (succeeds,
+    //   COMMUNITY_MEDIA_DIR unused) then creates the TEMPORARY row, then
+    //   later writeAvailable() fails against the blocked directory -- the
+    //   row that exists afterward is specifically the TEMPORARY one.
+    // - r2: writeQuarantine() and writeAvailable() share one bucket/
+    //   credential set with no way to break only the second call via env
+    //   vars alone, so a bad bucket makes writeQuarantine() itself fail
+    //   FIRST -- before any row is even created. This is still a real S3
+    //   error (the same AccessDenied/NoSuchBucket path CF-R2-04 already
+    //   proved against the real bucket), just a different failure point
+    //   in the pipeline than local mode's. The assertion below reflects
+    //   that honestly (no row-must-exist requirement for r2) rather than
+    //   asserting an implementation detail that doesn't hold for it.
+    const isR2 = process.env.MEDIA_STORAGE_PROVIDER === 'r2'
     const { writeFileSync, unlinkSync } = await import('node:fs')
     const blockerPath = join(mediaDir, 'this-is-a-file-not-a-directory')
-    writeFileSync(blockerPath, 'blocking')
-    const previous = process.env.COMMUNITY_MEDIA_DIR
-    process.env.COMMUNITY_MEDIA_DIR = join(blockerPath, 'nested')
+    const previousMediaDir = process.env.COMMUNITY_MEDIA_DIR
+    const previousBucket = process.env.R2_BUCKET
+    if (isR2) {
+      process.env.R2_BUCKET = 'cf-r2-05-nonexistent-bucket-for-failure-injection'
+    } else {
+      // Point COMMUNITY_MEDIA_DIR at a path that already exists as a
+      // *file* -- mkdir(..., {recursive:true}) genuinely fails with
+      // ENOTDIR here, a real filesystem fault.
+      writeFileSync(blockerPath, 'blocking')
+      process.env.COMMUNITY_MEDIA_DIR = join(blockerPath, 'nested')
+    }
 
     try {
       const png = await sharp({
@@ -199,6 +221,12 @@ describe('Community media (real pipeline, no base64/mock)', () => {
       })
         .png()
         .toBuffer()
+      // Scope every DB check to rows created by THIS attempt, not the
+      // user's history -- earlier tests in this suite (e.g. "uploads a
+      // valid image") already left a real READY row for the same user, so
+      // an unscoped "any READY row exists" query would find that one and
+      // never actually exercise the property being tested here.
+      const beforeAttempt = new Date()
       const res = await (
         await request()
       )
@@ -207,15 +235,28 @@ describe('Community media (real pipeline, no base64/mock)', () => {
         .attach('file', png, 'storage-fail.png')
       expect(res.status).toBe(500)
 
-      const stuck = await prisma.communityMedia.findFirst({
-        where: { ownerId: (await prisma.account.findUnique({ where: { username: user.username }, select: { id: true } }))!.id, status: 'TEMPORARY' },
+      const ownerId = (await prisma.account.findUnique({ where: { username: user.username }, select: { id: true } }))!.id
+      const promoted = await prisma.communityMedia.findFirst({
+        where: { ownerId, status: 'READY', createdAt: { gte: beforeAttempt } },
         orderBy: { createdAt: 'desc' }
       })
-      expect(stuck).toBeTruthy()
-      expect(stuck!.url).toBeNull()
+      expect(promoted).toBeNull()
+
+      if (!isR2) {
+        const stuck = await prisma.communityMedia.findFirst({
+          where: { ownerId, status: 'TEMPORARY', createdAt: { gte: beforeAttempt } },
+          orderBy: { createdAt: 'desc' }
+        })
+        expect(stuck).toBeTruthy()
+        expect(stuck!.url).toBeNull()
+      }
     } finally {
-      process.env.COMMUNITY_MEDIA_DIR = previous
-      unlinkSync(blockerPath)
+      if (isR2) {
+        process.env.R2_BUCKET = previousBucket
+      } else {
+        process.env.COMMUNITY_MEDIA_DIR = previousMediaDir
+        unlinkSync(blockerPath)
+      }
     }
   })
 
@@ -288,7 +329,7 @@ describe('Community media (real pipeline, no base64/mock)', () => {
       .patch('/api/community/me')
       .set('Authorization', `Bearer ${token}`)
       .send({ avatarUrl: firstUpload.body.url })
-    const reachableBeforeReplace = await (await request()).get(firstUpload.body.url)
+    const reachableBeforeReplace = await fetchMediaUrl(firstUpload.body.url, async () => (await request()).get(firstUpload.body.url))
     expect(reachableBeforeReplace.status).toBe(200)
 
     const secondPng = await sharp({
@@ -312,9 +353,9 @@ describe('Community media (real pipeline, no base64/mock)', () => {
     expect(replace.status).toBe(200)
     expect(replace.body.avatarUrl).toBe(secondUpload.body.url)
 
-    const firstStillReachable = await (await request()).get(firstUpload.body.url)
+    const firstStillReachable = await fetchMediaUrl(firstUpload.body.url, async () => (await request()).get(firstUpload.body.url))
     expect(firstStillReachable.status).toBe(404)
-    const secondReachable = await (await request()).get(secondUpload.body.url)
+    const secondReachable = await fetchMediaUrl(secondUpload.body.url, async () => (await request()).get(secondUpload.body.url))
     expect(secondReachable.status).toBe(200)
 
     const firstRow = await prisma.communityMedia.findUnique({ where: { id: firstUpload.body.id } })
@@ -340,7 +381,7 @@ describe('Community media (real pipeline, no base64/mock)', () => {
       .send({ avatarUrl: activeAvatarUrl, bio: 'no-op resave' })
     expect(resave.status).toBe(200)
 
-    const stillReachable = await (await request()).get(activeAvatarUrl)
+    const stillReachable = await fetchMediaUrl(activeAvatarUrl, async () => (await request()).get(activeAvatarUrl))
     expect(stillReachable.status).toBe(200)
   })
 
@@ -378,7 +419,7 @@ describe('Community media (real pipeline, no base64/mock)', () => {
     // (removeOwnPost, not postAction) -- never directly verified end-to-end
     // that its media release actually takes the file out of the public
     // route, only that moderation's did.
-    const reachableBeforeDelete = await (await request()).get(upload.body.url)
+    const reachableBeforeDelete = await fetchMediaUrl(upload.body.url, async () => (await request()).get(upload.body.url))
     expect(reachableBeforeDelete.status).toBe(200)
 
     const remove = await (
@@ -388,7 +429,7 @@ describe('Community media (real pipeline, no base64/mock)', () => {
       .set('Authorization', `Bearer ${token}`)
     expect(remove.status).toBe(200)
 
-    const unreachableAfterDelete = await (await request()).get(upload.body.url)
+    const unreachableAfterDelete = await fetchMediaUrl(upload.body.url, async () => (await request()).get(upload.body.url))
     expect(unreachableAfterDelete.status).toBe(404)
     const mediaRow = await prisma.communityMedia.findUnique({ where: { id: upload.body.id } })
     expect(mediaRow!.status).toBe('REMOVED')

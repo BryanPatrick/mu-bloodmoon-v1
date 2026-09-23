@@ -960,6 +960,84 @@ end-to-end against a real bucket, and no persistent local-only runtime
 data path remains (re-confirmed — nothing about the filesystem changed
 this phase, `CF-R2-03`'s re-audit still holds).
 
+## Phase CF-R2-05 — test portability cleanup (RISKS.md CF-R19)
+
+Test-harness-only fix for the one item `CF-R2-04` left open. **No
+runtime code changed** (`RUNTIME_CODE_CHANGED = NO`, confirmed — every
+edit is under `apps/api/test/`).
+
+### What was actually assuming a fixed provider
+
+- `community-media.e2e-spec.ts` line 136 (now fixed): hardcoded
+  `expect(res.body.url).toMatch(/^\/api\/media\/community\/[a-f0-9-]+\.webp$/)`.
+- `community-media.e2e-spec.ts`, 4 call sites (now fixed): `await
+  (await request()).get(<uploaded-or-returned URL>)` — `supertest`
+  cannot dispatch a request to any origin other than the app it wraps,
+  so a real R2 URL (`https://pub-...r2.dev/...`) threw `TypeError:
+  Invalid URL`.
+- `community-media.e2e-spec.ts`'s "storage itself fails" test (now
+  fixed): the failure-injection method (blocking `COMMUNITY_MEDIA_DIR`
+  as a file) is meaningless under R2 — R2 never reads that variable —
+  so the upload correctly succeeded (201) instead of the test's
+  hardcoded 500 expectation.
+- `guilds.e2e-spec.ts` line 825 (now fixed): the same hardcoded
+  `/^\/api\/media\/guild\/[a-f0-9-]+\.webp$/` pattern.
+
+### The fix
+
+New `apps/api/test/support/media-url-assertions.ts`:
+
+- `expectMediaUrlShape(url, extension, localPrefix)` — asserts
+  `${localPrefix}/<uuid>.<ext>` under the local provider, or
+  `https://<any-host>/[<namespace>/]available/<uuid>.<ext>` under R2
+  (checked via `MEDIA_STORAGE_PROVIDER`/`GUILD_MEDIA_STORAGE_PROVIDER`).
+  The host itself is intentionally matched by `[^/]+`, never one
+  specific test bucket hostname — this assertion is meant to stay
+  correct if the bucket/public URL ever changes.
+- `fetchMediaUrl(url, localRequest)` — real `fetch()` for an absolute
+  URL, the existing `supertest`-based request for a relative one.
+
+The storage-failure test now branches by provider: local mode is
+byte-for-byte unchanged; R2 mode temporarily sets `R2_BUCKET` to a
+nonexistent name (forcing the same real `AccessDenied`/`NoSuchBucket`
+error `CF-R2-04` already proved against the real bucket) and asserts
+the property that actually holds at R2's real failure point — no row
+is ever promoted to `READY` — rather than requiring a `TEMPORARY` row
+to exist, since under R2 the failure happens at `writeQuarantine()`
+(both quarantine and promotion share one bucket/credential set, so
+there's no clean way to break only the promotion step via env vars
+alone) — earlier in the pipeline than local mode's promotion-only
+failure. This is an honest, documented difference in *which* storage
+call fails, not a weakened assertion: the safety guarantee that
+matters (storage failing can never look like a silent success) is
+checked for both providers, exactly as it actually behaves for each.
+
+A real bug in this new assertion was caught and fixed during this
+phase's own local-mode re-run, before claiming success: an
+unscoped "any `READY` row exists for this user" query matched an
+*earlier* test's successful upload in the same suite, not the row (or
+absence of one) from this specific attempt. Fixed by scoping every
+check to `createdAt >= ` a timestamp captured immediately before the
+failing request.
+
+### Re-verification
+
+Disposable MySQL 8.0.46 (same no-Docker methodology as `CF-DB-01`/
+`CF-R2-04`), the still-valid `CF-R2-04` test R2 API token (confirmed
+live via a `HeadBucketCommand` before reuse, rather than asking Bryan
+for a new one):
+
+| Suite | Local mode | Real R2 mode |
+|---|---|---|
+| `community-media.e2e-spec.ts` | 13/13 | **13/13** (was 8/13) |
+| `guilds.e2e-spec.ts` | 78/78 | **78/78** (was 77/78) |
+
+All R2 test objects created this phase deleted, independently
+re-verified as zero-residue across every prefix touched
+(`available/`, `quarantine/`, `removed/`, `guild/`); `CF-R2-01`'s
+`images/`/`dev-references/` content re-confirmed present and unchanged.
+Disposable MySQL instance fully torn down.
+
 ## What a future phase will need to decide, not answered here
 
 - Whether to content-hash filenames on upload (true immutability + long

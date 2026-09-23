@@ -351,6 +351,49 @@ lastVerified: 2026-09-22
   R2 credential used anywhere this phase. `PRODUCTION_ACTIVATED = NO`,
   unchanged.
 
+## Phase CF-R2-05 — test portability cleanup (CF-R19): **COMPLETE**
+
+- **Test-harness only, as scoped** — `RUNTIME_CODE_CHANGED = NO`,
+  confirmed: every change is under `apps/api/test/`, nothing in
+  `apps/api/src/` was touched.
+- New shared helper `test/support/media-url-assertions.ts`:
+  `expectMediaUrlShape()` asserts the *correct* URL shape for whichever
+  provider is active (local-relative or a well-formed absolute R2 URL,
+  never hardcoding one specific test bucket hostname) instead of
+  assuming one shape always applies; `fetchMediaUrl()` dispatches a
+  real `fetch()` for absolute URLs and the existing `supertest`
+  app-request for relative ones (supertest cannot reach a different
+  origin than the app it wraps — attempting to was exactly the
+  `TypeError: Invalid URL` `CF-R19` diagnosed).
+- Fixed all 5 previously-failing assertions: 1 hardcoded URL-shape
+  regex in `community-media.e2e-spec.ts`, 4 `request().get(<dynamic
+  URL>)` calls in the same file, and the 1 hardcoded URL-shape regex
+  in `guilds.e2e-spec.ts`.
+- The one local-directory-blocking failure-injection test
+  (`community-media.e2e-spec.ts`) now branches by provider: local mode
+  unchanged; R2 mode injects a real failure via a temporarily-invalid
+  `R2_BUCKET` (the same genuine S3 error path `CF-R2-04` already
+  proved) and asserts the safety property that actually holds for R2's
+  real failure point (no row ever promoted to `READY`) rather than an
+  implementation detail (`TEMPORARY` row must exist) that doesn't
+  transfer, since R2's failure point is earlier in the pipeline than
+  local mode's. A bug in this new assertion itself (an unscoped "any
+  READY row for this user" query matching an *earlier* test's
+  successful upload) was found and fixed during this phase's own local
+  re-run, before ever claiming success.
+- Re-used the still-valid test R2 API token from `CF-R2-04` (confirmed
+  live via a `HeadBucketCommand` before use) rather than asking Bryan
+  for a new one.
+- **Full pass, both suites, both providers**: `community-media.e2e-spec.ts`
+  13/13 local + 13/13 real R2; `guilds.e2e-spec.ts` 78/78 local + 78/78
+  real R2. Disposable MySQL 8.0.46 (same no-Docker methodology, fully
+  torn down after). All R2 test objects created this phase deleted,
+  independently re-verified as zero-residue; `CF-R2-01`'s
+  `images/`/`dev-references/` content re-confirmed unchanged.
+- `RISKS.md` CF-R19 closed with full re-verification evidence.
+- Production: **untouched** — no production database, media, DNS, or
+  credential used anywhere this phase.
+
 ## Phase 1 (Nuxt web → Workers, production cutover) — NOT STARTED
 
 Shadow deployment exists (see above); a real production cutover

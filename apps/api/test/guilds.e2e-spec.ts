@@ -1,5 +1,6 @@
 import { execSync } from 'node:child_process'
 import { startDisposableDatabase, stopDisposableDatabase } from './support/disposable-mysql'
+import { expectMediaUrlShape } from './support/media-url-assertions'
 
 // Same disposable-database pattern as the other E2E specs -- a dedicated,
 // disposable MariaDB container, never bloodmoon-mysql, never production.
@@ -822,7 +823,7 @@ describe('Guilds MVP', () => {
       expect(result.body.width).toBe(512)
       expect(result.body.height).toBe(512)
       expect(result.body.mimeType).toBe('image/webp')
-      expect(result.body.url).toMatch(/^\/api\/media\/guild\/[a-f0-9-]+\.webp$/)
+      expectMediaUrlShape(result.body.url, 'webp', '/api/media/guild')
 
       const guildRow = await prisma.guild.findUniqueOrThrow({ where: { slug: mgmtGuildSlug } })
       expect(guildRow.emblemUrl).toBe(result.body.url)
