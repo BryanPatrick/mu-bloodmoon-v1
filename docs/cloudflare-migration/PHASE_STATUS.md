@@ -297,6 +297,60 @@ lastVerified: 2026-09-22
   production file moved/deleted, no production DB touched (migration
   not applied anywhere), no production/live R2 credentials used.
 
+## Phase CF-R2-04 — real storage E2E validation + Prisma migration proof: **COMPLETE**
+
+- **Disposable MySQL 8.0.46** (same no-Docker methodology as `CF-DB-01`
+  — a wholly separate local `mysqld` process, own data dir/port/
+  credentials, shared `MySQL80` service never touched): `prisma migrate
+  deploy` applied all 56 migrations cleanly including
+  `20260923090000_admin_content_storage_provider`; `prisma migrate
+  status` clean, zero drift; `DESCRIBE ReferenceAsset` confirmed both
+  new columns exist exactly as designed; a simulated pre-existing row
+  (no `storageProvider`/`storageKey`) inserted cleanly, proving
+  backward compatibility for real. Instance fully torn down after.
+- **Real disposable-DB E2E**: `community-media.e2e-spec.ts` 13/13
+  (local), `guilds.e2e-spec.ts` 78/78 (local),
+  `launcher-remote-content-contract.e2e-spec.ts` 9/9 (local). No
+  dedicated admin-content e2e spec exists — added the smallest focused
+  real-DB + real-R2 integration script instead (11/11, including a
+  real forced-`P2002` DB-failure-after-storage-success proof and a
+  real duplicate-upload proof).
+- **Real, non-production R2 credentials**: Bryan created and provided
+  a least-privilege, test-scoped API token (Object Read & Write,
+  `bloodmoon-shadow-public-assets` only) in-conversation — never
+  logged, never committed, never written to any file. Raw
+  `R2StorageProvider` proof: 12/12 (upload, real HTTP retrieval,
+  moderation move/restore, delete, real `AccessDenied`/auth-error
+  paths). A reusable, credential-free version is now committed:
+  `apps/api/scripts/verify-real-r2-storage-provider.mjs`.
+- **All four domains proven against real R2**: launcher assets 9/9
+  (synthetic artifact, real sha256 checksum, real UUID versioned key);
+  community media 8/13 under `MEDIA_STORAGE_PROVIDER=r2` (5 failures
+  are a test-harness gap, `RISKS.md` CF-R19, not a storage defect —
+  independently re-proven working via direct `fetch()`); guild media
+  77/78 under `GUILD_MEDIA_STORAGE_PROVIDER=r2` (same CF-R19 gap, 1
+  assertion — a real emblem upload completed the full sharp
+  resize/re-encode/R2-write/DB-update pipeline correctly).
+- **Failure paths proven for real**: DB failure after a successful
+  storage write leaves a recoverable orphan object and zero corrupt DB
+  rows (the accepted "persist object → DB commit" tradeoff); duplicate
+  uploads of identical content get independent keys/rows, no
+  accidental collision, matching the documented no-dedup model.
+- **Cleanup**: every test object across every prefix used this phase
+  deleted, verified via an independent zero-count re-listing;
+  CF-R2-01's `images/`/`dev-references/` shadow content independently
+  re-confirmed present and unchanged. Disposable MySQL instance fully
+  torn down.
+- **`RISKS.md` CF-R16/CF-R17/CF-R18 closed** with real evidence (not
+  just re-asserted); new `RISKS.md` CF-R19 opened for the genuinely
+  new, low-severity test-portability finding (not fixed this phase,
+  out of scope for a validation pass).
+- **`CONTAINER_STORAGE_READY = YES`**, now real-evidence-backed rather
+  than architecture-only.
+- Production: **untouched** — no production database, media, DNS, or
+  R2 credential used anywhere this phase. `PRODUCTION_ACTIVATED = NO`,
+  unchanged.
+
 ## Phase 1 (Nuxt web → Workers, production cutover) — NOT STARTED
 
 Shadow deployment exists (see above); a real production cutover

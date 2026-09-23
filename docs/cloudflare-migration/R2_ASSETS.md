@@ -779,6 +779,187 @@ Every other `node:fs` import in `apps/api/src` (`web-source.service.ts`, `progre
 
 Same 9-step model as `CF-R2-02`'s (inventory → copy → hash-verify → metadata mapping → provider flip → smoke test → observe → rollback window → cleanup only with later approval), with one addition specific to `ReferenceAsset`: **"metadata mapping" here means populating the new `storageProvider`/`storageKey` columns for any row being migrated, never touching `localPath`'s existing value for already-migrated rows** (so a partially-migrated table is always self-consistent: `storageProvider IS NULL` unambiguously means "not yet migrated, `localPath`/`publicPath` still describe it exactly as before"). **Bulk-imported/scraped rows are explicitly out of scope for this migration model** — they are static repo content, not runtime storage, and moving them to R2 would be a different kind of decision (publishing internal scrape archives publicly) that this phase does not recommend or design.
 
+## Phase CF-R2-04 — real storage E2E validation + Prisma migration proof
+
+Closes the real-world validation gaps `CF-R2-02`/`CF-R2-03` left open
+(`RISKS.md` CF-R16/CF-R17/CF-R18). **Every test used disposable/test-only
+resources — a wholly separate local MySQL instance and a least-privilege,
+test-scoped R2 API token Bryan created and provided in-conversation
+(never logged, never committed, never written to any file this phase).
+No production database, media, or DNS was touched. No real user data was
+used.**
+
+### Disposable MySQL (same methodology as CF-DB-01)
+
+Docker remains unavailable in this environment (confirmed again). Followed
+`CF-DB-01`'s proven no-Docker method exactly: a wholly separate local MySQL
+8.0.46 server process (`mysqld --initialize-insecure`), its own fresh data
+directory, its own port (`127.0.0.1:54329`, loopback-only), its own
+throwaway credentials generated locally — the shared `MySQL80` Windows
+service was never touched, stopped, or reconfigured.
+
+- `npx prisma migrate deploy` applied all 56 migrations cleanly, including
+  the hand-authored `20260923090000_admin_content_storage_provider`
+  (previously untested against any real database).
+- `npx prisma migrate status`: **"Database schema is up to date!"** — zero
+  drift.
+- `DESCRIBE ReferenceAsset` confirmed both new columns exist exactly as
+  designed: `storageProvider VARCHAR(20) NULL`, `storageKey VARCHAR(512)
+  NULL`; every other column unchanged.
+- Inserted a row shaped exactly like a real pre-existing production row
+  (no `storageProvider`/`storageKey` supplied) — inserted cleanly with
+  both defaulting to `NULL`, proving **pre-existing rows remain fully
+  valid** under the new schema. Deleted immediately after (zero residue).
+- Disposable instance fully torn down at the end of this phase — process
+  stopped, data directory deleted, credentials discarded.
+
+### Storage E2E suites — real disposable database
+
+| Suite | Mode | Result |
+|---|---|---|
+| `community-media.e2e-spec.ts` | local (default) | **13/13 passed** |
+| `guilds.e2e-spec.ts` | local (default) | **78/78 passed** |
+| `launcher-remote-content-contract.e2e-spec.ts` | local (default) | **9/9 passed** |
+| admin-content (no dedicated e2e spec exists) | real DB + real R2 (see below) | **11/11 passed**, focused integration script |
+
+This closes `RISKS.md` CF-R16 and the e2e-coverage half of CF-R18: the
+`CF-R2-02` guild-media `StorageProvider` refactor and the pre-existing
+community-media/launcher-contract suites are now proven end-to-end
+against a real database, not just unit-tested.
+
+### Real R2StorageProvider proof (raw class, mocked-nothing)
+
+Using the real, compiled `R2StorageProvider` against the real
+`bloodmoon-shadow-public-assets` bucket, under a dedicated
+`cf-r2-04-provider-test/` namespace (never touching CF-R2-01's
+`images/`/`dev-references/` content — independently re-verified present
+and unchanged after this phase's testing, and after cleanup): **12/12
+checks passed** — `writeQuarantine`, `writeAvailable` (correct
+namespaced key), a real HTTP `GET` on the returned public URL (200,
+byte-for-byte body match, correct `Content-Type`), `moveAvailableToRemoved`
+(the `available/` URL genuinely 404s afterward — proves the object
+moved, not duplicated), `moveRemovedToAvailable` (URL live again),
+`deleteQuarantine` (+ idempotent no-op), a real `AccessDenied` error
+against a non-existent bucket, and a real auth error with invalid
+credentials. A reusable, credential-free version of this proof is now
+committed at `apps/api/scripts/verify-real-r2-storage-provider.mjs`
+(same safety pattern as `verify-disposable-restore-prisma.mjs`: refuses
+to run without an explicit, non-shared test namespace).
+
+### Community media — real R2
+
+`community-media.e2e-spec.ts` re-run with `MEDIA_STORAGE_PROVIDER=r2`
+pointed at the real bucket (bare `available/`/`quarantine/`/`removed/`
+prefixes — no collision risk with CF-R2-01's `images/`/`dev-references/`
+content): **8/13 passed, 5 failed**. Every failure is a **test-harness
+assumption**, not a defect in the R2 path:
+- One test expects an injected LOCAL-directory-blocking failure to
+  produce a 500 — under R2 mode, local-directory blocking has no effect
+  at all (R2 doesn't read `COMMUNITY_MEDIA_DIR`), so the upload correctly
+  succeeds (201) instead. The test's failure-injection *method* is
+  local-specific, not the storage layer.
+- Four tests call `supertest`'s `request().get(<url>)` assuming `<url>`
+  is always a path relative to the app under test. Under R2 mode
+  `MediaStorageService.publicUrl()` correctly returns a full external
+  `https://pub-...r2.dev/...` URL (exactly as designed) — `supertest`
+  throws `Invalid URL` trying to treat that as a relative path against
+  its own server. The underlying URL is real and independently proven
+  reachable (same `fetch()`-based proof pattern used throughout this
+  phase).
+- **Recorded as a new, low-severity, real finding** (`RISKS.md` CF-R19)
+  rather than fixed this phase — not in scope for this validation pass,
+  a real and fixable test-portability gap for whoever next touches this
+  suite.
+
+### Guild media — real R2
+
+`guilds.e2e-spec.ts` re-run with `GUILD_MEDIA_STORAGE_PROVIDER=r2`
+(the `guild/` namespace): **77/78 passed, 1 failed** — the exact same
+class of finding as community media above: one assertion hardcodes
+`/^\/api\/media\/guild\/[a-f0-9-]+\.webp$/` and the real R2 mode
+correctly returns
+`https://pub-....r2.dev/guild/available/<uuid>.webp` instead. A real
+emblem upload completed the full pipeline under R2 — sharp
+resize-to-512×512, re-encode to WebP, real R2 write, `guild.emblemUrl`
+updated in the real database — everything worked except this one
+local-URL-shaped assertion. Same `RISKS.md` CF-R19 entry covers this.
+
+### Launcher assets — real R2
+
+Synthetic (non-production) artifact through the real, compiled
+`R2LauncherAssetStorageProvider`: **9/9 checks passed** — real upload
+under the `launcher-assets/` namespace, a real UUID-based versioned key
+(`<uuid>.png`, satisfying the `CF-R2-02` immutable-key policy), real
+sha256 checksum computed and returned correctly, real HTTP retrieval
+(200, byte-for-byte match), independently confirmed via a direct
+`HeadObjectCommand`, and cleaned up. No production launcher artifact was
+touched — this used a synthetic buffer, not a real build.
+
+### Admin-content — real R2 + real database
+
+No dedicated e2e spec exists for `uploadImage()` (confirmed again,
+`CF-R2-03`) — per the brief, added the smallest focused real-DB + real-R2
+integration script instead of forcing an e2e spec into existence.
+**11/11 checks passed**: real `AdminContentStorageService.writeAvailable()`
+against real R2, a real `ReferenceAsset` row created in the disposable
+database with `storageProvider='r2'`/`storageKey` correctly populated,
+`localPath` set to the safe transition representation (never a
+fabricated path), a re-read from the database confirming real
+persistence (not just an in-memory return value), the R2 object
+independently confirmed via `HeadObjectCommand`, real HTTP retrieval,
+and — critically — **a simulated storage failure created zero phantom
+`ReferenceAsset` rows** (proves the "persist object → DB commit"
+ordering from `CF-R2-03` holds under real conditions, not just in a
+mocked unit test).
+
+### Failure-path tests
+
+Beyond the invalid-credentials/missing-bucket proof above (raw
+provider), two more real scenarios were tested:
+- **DB failure *after* a successful real storage write**: forced a real
+  Prisma `P2002` unique-constraint violation on the second of two
+  `ReferenceAsset.create()` calls sharing a primary key, after the R2
+  write had already succeeded. Result: the R2 object remains (a
+  recoverable orphan, confirmed still present via `HeadObjectCommand`),
+  exactly one DB row exists (the first, successful create) — no corrupt
+  or partial row. This is the accepted, documented tradeoff of the
+  "persist object → DB commit" ordering: an orphan object is a strictly
+  better failure mode than a DB row pointing at nothing.
+- **Duplicate/retry behavior**: two real uploads of byte-identical
+  content produced two independent R2 keys and two independent
+  `ReferenceAsset` rows — no accidental collision, no automatic dedup,
+  matching the model `CF-R2-03` already documented (never invented new
+  behavior to make this "pass").
+
+### Cleanup
+
+Every object created under `cf-r2-04-provider-test/`, `admin-content/`,
+`guild/`, `launcher-assets/`, and community media's bare
+`available/`/`quarantine/`/`removed/` prefixes was deleted — verified via
+an independent `ListObjectsV2` pass showing **zero remaining objects**
+in every test prefix used this phase. `images/` and `dev-references/`
+(CF-R2-01's real shadow content) were independently re-listed and
+confirmed present/unchanged — never touched by this phase's cleanup or
+testing. The disposable MySQL instance was fully torn down (process
+stopped, data directory deleted). The test R2 API token should be
+revoked by Bryan now that this phase is complete (this document
+intentionally does not name which token or restate any credential
+value).
+
+### Container storage gate
+
+```
+CONTAINER_STORAGE_READY = YES
+```
+
+Upgraded from `CF-R2-03`'s architecture-only "YES" to a
+**real-evidence-backed "YES"**: the migration works on a real database,
+storage E2E passes (with the two documented, non-blocking test-harness
+exceptions above), all four domains' real R2 provider paths work
+end-to-end against a real bucket, and no persistent local-only runtime
+data path remains (re-confirmed — nothing about the filesystem changed
+this phase, `CF-R2-03`'s re-audit still holds).
+
 ## What a future phase will need to decide, not answered here
 
 - Whether to content-hash filenames on upload (true immutability + long

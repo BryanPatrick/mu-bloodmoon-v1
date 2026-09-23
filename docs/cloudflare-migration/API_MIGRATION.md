@@ -83,16 +83,21 @@ tackle them:
   request-local, non-persistent VFS. Native `sharp` (image processing)
   has no Workers equivalent as-is — needs Cloudflare Images/Media
   Transformations, a separate image service, or staying on a
-  Containers/VM path for that specific job. **Update, Phase CF-R2-02/03**:
+  Containers/VM path for that specific job. **Update, Phase CF-R2-02/03/04**:
   this bullet is about the *native-Workers* path specifically (`sharp`
   has no Workers equivalent regardless of storage backend) — the
   separate, Containers-relevant question (local disk being ephemeral
   under Containers) was tracked in `RISKS.md` CF-R12 and is now
-  **RESOLVED at the code level** (`CODE_READY = YES`, `CF-R2-03`):
-  community, guild, launcher-studio, and admin-content all have a
-  working `local`/`r2` `StorageProvider` switch, and an exhaustive
-  filesystem re-audit found zero remaining raw, unabstracted `node:fs`
-  write paths anywhere in `apps/api/src`. `PRODUCTION_ACTIVATED = NO`
+  **RESOLVED, real-evidence-backed** (`CODE_READY = YES`, real E2E/R2
+  proof `CF-R2-04`): community, guild, launcher-studio, and
+  admin-content all have a working `local`/`r2` `StorageProvider`
+  switch, an exhaustive filesystem re-audit found zero remaining raw,
+  unabstracted `node:fs` write paths anywhere in `apps/api/src`
+  (`CF-R2-03`), and all four domains' real R2 paths were proven
+  end-to-end against a real, non-production R2 bucket with a real
+  test-scoped credential, alongside the CF-R2-03 Prisma migration
+  applied cleanly to a real disposable MySQL 8.0.46 instance
+  (`CF-R2-04`). `PRODUCTION_ACTIVATED = NO`
   still — no domain is actually switched to `r2` anywhere real, which
   is a separate, later, explicitly-authorized activation step, not an
   architecture blocker for `CF-API-02R`.
