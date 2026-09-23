@@ -73,12 +73,12 @@ async function bootstrap() {
 
   const version = run('mysql', [
     '--protocol=tcp', '--host=127.0.0.1', '--port=3306', '--user=root',
-    '--batch', '--skip-column-names', '--execute=SELECT VERSION(), @@have_ssl;'
+    '--batch', '--skip-column-names', '--execute=SELECT VERSION(); SHOW VARIABLES LIKE "tls_version";'
   ])
-  if (version.status !== 0) throw new Error('MYSQL_VERSION_QUERY_FAILED')
-  const [mysqlVersion, tlsAvailable] = version.stdout.trim().split(/\s+/)
-  state.mysqlVersion = mysqlVersion
-  state.tlsAvailable = tlsAvailable
+  if (version.status !== 0) throw new Error(`MYSQL_VERSION_QUERY_FAILED:${version.stderr.slice(-300)}`)
+  const lines = version.stdout.trim().split(/\r?\n/)
+  state.mysqlVersion = lines[0]?.trim() || null
+  state.tlsAvailable = lines.slice(1).join(' ').includes('TLSv') ? 'YES' : 'NO'
 
   api = spawn('node', ['/app/dist/apps/api/src/main.js'], {
     env: { ...process.env, DATABASE_URL: databaseUrl, PORT: '8081' },
