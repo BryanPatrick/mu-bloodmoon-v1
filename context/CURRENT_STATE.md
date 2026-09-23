@@ -105,12 +105,14 @@ on the Asaas continuation branch.
 
 ## What is NOT true yet (explicit, so it isn't assumed)
 
-- Cloudflare CF-API-02R now has one isolated Workers.dev Container shadow on
+- Cloudflare CF-API-02R2 has one isolated Workers.dev Container shadow on
   `infra/cloudflare-api-container-poc`. The remote Node 22/Nest/Prisma image
-  build and deploy pass, but the API cannot open its port without a database
-  because Prisma connects during module initialization. No disposable database
-  is approved, so health/readiness, auth and lifecycle runtime validation remain
-  blocked. This is not a production route or a production-readiness claim; no
+  builds and runs on a `basic` 1 GiB instance against disposable TiDB:
+  health/readiness, synthetic auth/TOTP, transaction/rollback/unique-key
+  behavior, SIGTERM/Prisma disconnect, restart and ephemeral `/tmp` storage all
+  pass. The TLS boot blocker was fixed by adding the public CA bundle. This is
+  still not production readiness: TiDB could not replay all canonical
+  migrations literally, so `MYSQL_8_MIGRATION_REPLAY = NOT_PROVEN`. No
   production database, secret, DNS, payment or marketplace setting was used.
 
 - No n8n installation exists anywhere in this project (a real design

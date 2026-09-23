@@ -1,22 +1,24 @@
 # Cloudflare Container API proof
 
 This directory defines the non-production Worker router for the current
-NestJS/Express/Prisma API. The Container image is built from the repository
-root `Dockerfile.cloudflare-poc` by Cloudflare Workers Builds; local Docker is
-not required.
+NestJS/Express/Prisma API. Cloudflare Workers Builds builds the repository-root
+`Dockerfile.cloudflare-poc`; local Docker is not required.
 
-The remote proof uses Node 22, builds NestJS, generates the Prisma Linux client,
-publishes one `lite` image and runs at most one sleeping shadow instance. It has
-no custom domain or production route. Container Internet access and every known
-operational/financial mutation flag are disabled. The image installs OpenSSL
-explicitly for Prisma in both build and runtime stages.
+The remote proof runs one `basic` (1 GiB) Node 22 Container on port 8080, with a
+ten-minute sleep policy, no custom domain and no production route. Outbound
+network access is enabled solely for the disposable external TiDB database.
+Every known operational, financial, payment, marketplace and provisioning flag
+is forced off.
 
-The current runtime cannot boot without a database because
-`PrismaService.onModuleInit()` eagerly connects before Nest opens port 8080.
-With the deliberately nonexistent synthetic database, Cloudflare reports a
-port-check crash and `/api/health` and `/api/ready` return HTTP 500. Do not use
-production to bypass this gate. Resume database-dependent tests only with an
-explicitly approved disposable MySQL/MariaDB.
+The runtime image installs OpenSSL and the public CA certificate bundle. Health
+and readiness return 200, synthetic auth and TOTP pass, transaction/rollback/
+unique-key semantics pass, SIGTERM closes Prisma cleanly, replacement restores
+health, and `/tmp` data does not survive replacement.
 
-The resource is intentionally retained as an isolated shadow pending Bryan's
-cleanup decision.
+TiDB is only a runtime feasibility target. It is not MySQL 8 migration proof:
+`MYSQL_8_MIGRATION_REPLAY = NOT_PROVEN`. A disposable real MySQL 8 compatible
+target is still required before any production-readiness conclusion.
+
+The lifecycle control used for the one-time filesystem/SIGTERM test and its
+secret were removed. The shadow remains publicly addressable; Cloudflare Access
+is recommended before broader QA use.

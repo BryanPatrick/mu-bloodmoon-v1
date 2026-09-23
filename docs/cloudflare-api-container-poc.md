@@ -1,47 +1,70 @@
-# CF-API-02R — remote Cloudflare Container POC
+# CF-API-02R2 — remote Cloudflare Container runtime POC
 
-**Date:** 2026-09-22
+**Date:** 2026-09-23
 
 **Branch:** `infra/cloudflare-api-container-poc`
 
-**Status:** `REMOTE_SHADOW_DEPLOYED_WITH_DB_BOOT_BLOCKER`
+**Status:** `REMOTE_SHADOW_RUNTIME_PASS_WITH_TIDB_LIMITATION`
 
 ## Verified remote result
 
-Cloudflare Workers Paid and Containers are available. Workers Builds is linked
-to the private GitHub repository only for the isolated shadow Worker
-`bloodmoon-api-container-shadow`, whose production branch is the dedicated
-experiment branch. The deploy command rejects every other branch.
+Cloudflare Workers Paid and Containers are active. Workers Builds is linked to
+the private GitHub repository only for the isolated
+`bloodmoon-api-container-shadow` Worker. It has no custom domain, production
+route or production database. The Container is limited to one `basic` instance
+(1 GiB memory), uses port 8080 and sleeps after ten minutes.
 
-Cloudflare's managed builder successfully built the Node 22 multi-stage image,
-installed dependencies, generated the Prisma Linux client, compiled NestJS,
-published the image, updated the single Container application, and deployed the
-Workers.dev shadow endpoint. The application uses the `lite` resource class,
-`max_instances = 1`, no assigned IPv4, no custom domain, no production route,
-and a ten-minute sleep policy. OpenSSL is installed explicitly in both build
-and runtime stages so Prisma does not rely on Debian image autodetection
-fallbacks.
+The remote builder successfully produces the Node 22 multi-stage image,
+generates the Prisma Linux client, compiles NestJS and deploys the image. The
+runtime image explicitly installs OpenSSL and the public CA certificate bundle;
+the latter fixed the observed Prisma `P1011` TLS certificate-chain failure when
+connecting to the disposable TiDB database. The Worker allows outbound network
+access only because this test database is external.
 
-Only disposable synthetic JWT, refresh, 2FA and database values were supplied.
-Internet access inside the Container is disabled and every known operational,
-financial, marketplace and provisioning loop is forced off in the shadow
-environment. No production database, secret, SMTP service or hostname was
-used.
+Only disposable TiDB data and synthetic JWT, refresh, 2FA and session secrets
+were used. Every known operational, financial, marketplace and provisioning
+loop remains forced off. No production database, secret, DNS, SMTP service,
+payment provider or hostname was used.
 
-## Runtime boundary discovered
+## Runtime evidence
 
-Both `/api/health` and `/api/ready` reach the Worker but return HTTP 500 because
-the Container process exits before opening port 8080. Remote logs report that
-the Container crashed while Cloudflare was checking for ports. This matches the
-current `PrismaService.onModuleInit()` behavior, which eagerly calls
-`$connect()`. The intentionally nonexistent synthetic database therefore makes
-boot-without-database impossible even though the health controller itself is
-database-independent.
+- `/api/health` returned 200 with `{"status":"ok"}`.
+- `/api/ready` returned 200 with `{"status":"ready"}`.
+- The first measured health request took 7.113 s. Warm health and readiness
+  requests took 0.785 s and 0.901 s respectively.
+- Synthetic registration/login, refresh, protected profile and logout passed.
+- Synthetic TOTP setup and verification passed; no credential or token was
+  logged.
+- Image-build crypto checks passed for AES-256-GCM, JWT, bcrypt, TOTP and QR.
+  The application 2FA and game-credential-envelope suites passed 18/18 tests.
+- Billing PII application crypto is not present on this branch, so it was not
+  claimed or tested.
+- Disposable-DB transaction, rollback and unique-key idempotency checks passed.
+- A harmless `/tmp` marker existed before replacement and was absent after the
+  Container restart, proving local filesystem ephemerality.
+- SIGTERM reached the Nest child, Prisma disconnected, the process did not hang,
+  and the Container stopped with exit code 0. Health returned after replacement
+  in 11.179 s and the database reconnected.
 
-This is a valid POC finding, not permission to weaken readiness or to connect
-production. Database, auth, filesystem-persistence, restart and graceful
-shutdown tests remain blocked until an approved disposable MySQL/MariaDB is
-available. Production `main.ts` still does not enable Nest shutdown hooks.
+The temporary authenticated lifecycle probe and its dedicated shadow secret
+were removed after validation. The ordinary API entrypoint is restored.
+
+## Database boundary
+
+The runtime POC uses a disposable TiDB Serverless database. Prisma connection,
+read/write, transaction, rollback, unique-key behavior, boot and auth work on
+that target. TiDB rejected portions of the literal canonical migration replay,
+so this result is not MySQL 8 migration equivalence.
+
+Canonical conclusions:
+
+- `TIDB_RUNTIME_POC = PASS`
+- `MYSQL_8_MIGRATION_REPLAY = NOT_PROVEN`
+- MySQL `SERIALIZABLE` equivalence is not claimed.
+- MySQL named-lock (`GET_LOCK`) equivalence is not claimed.
+
+Final production-database proof still requires a disposable external MySQL 8
+compatible target and a literal replay of all canonical migrations.
 
 ## Retained architecture boundaries
 
@@ -49,15 +72,15 @@ available. Production `main.ts` still does not enable Nest shutdown hooks.
   Container timers in production.
 - Payments, marketplace, real-money, provisioning and reconciliation remain
   disabled.
-- Local media and generated files still require durable object storage; local
-  Container disk is not accepted as permanent storage.
-- External MySQL remains undecided and must be tested with Prisma 5.22, TLS,
-  transactions, isolation behavior, backups and acceptable latency.
-- Production migration readiness is not claimed from this shadow POC.
+- Local media and generated files require durable object storage; Container
+  disk is ephemeral and must not hold persistent data.
+- The Workers.dev shadow is publicly addressable. Configure Cloudflare Access
+  before using it with broader or longer-lived QA credentials.
+- This POC is not production authorization and does not change `main`.
 
 ## Recommended continuation
 
-Keep the isolated resource as the permanent API shadow because it has no
-production route and is cost-bounded. The next authorized phase should attach
-an approved disposable MySQL/MariaDB, then repeat boot, health/readiness, auth,
-filesystem replacement and SIGTERM tests. Bryan decides eventual cleanup.
+Keep the isolated shadow for follow-up work. The next database-validation phase
+should use a disposable real MySQL 8 compatible external database, replay every
+canonical migration literally, then repeat the narrow health, auth, transaction
+and restart checks. Do not connect production until that gate passes.

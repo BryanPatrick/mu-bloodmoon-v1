@@ -3,7 +3,7 @@ import { Container, getContainer } from '@cloudflare/containers'
 export class BloodMoonApiContainer extends Container<Env> {
   defaultPort = 8080
   sleepAfter = '10m'
-  entrypoint = ['node', 'runtime-probe.mjs']
+  entrypoint = ['node', 'dist/apps/api/src/main.js']
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env)
@@ -17,7 +17,6 @@ export class BloodMoonApiContainer extends Container<Env> {
       TWO_FACTOR_ENCRYPTION_KEY: env.TWO_FACTOR_ENCRYPTION_KEY,
       BILLING_PII_ENCRYPTION_KEY: env.BILLING_PII_ENCRYPTION_KEY,
       SESSION_SECRET: env.SESSION_SECRET,
-      CF_POC_CONTROL_TOKEN: env.CF_POC_CONTROL_TOKEN,
       SESSION_TTL_HOURS: '1',
       AUTH_CAPTCHA_TEST_BYPASS: '1',
       ACCOUNT_LIFECYCLE_BRIDGE_ENABLED: 'false',
@@ -43,14 +42,6 @@ export class BloodMoonApiContainer extends Container<Env> {
   }
 
   async fetch(request: Request) {
-    const url = new URL(request.url)
-    if (url.pathname === '/__cf_poc/container-stop') {
-      if (request.method !== 'POST' || request.headers.get('x-cf-poc-key') !== this.env.CF_POC_CONTROL_TOKEN) {
-        return new Response('Not found', { status: 404 })
-      }
-      await this.stop('SIGTERM')
-      return Response.json({ stopped: true })
-    }
     await this.startAndWaitForPorts({
       ports: this.defaultPort,
       cancellationOptions: {
@@ -71,7 +62,6 @@ interface Env {
   TWO_FACTOR_ENCRYPTION_KEY: string
   BILLING_PII_ENCRYPTION_KEY: string
   SESSION_SECRET: string
-  CF_POC_CONTROL_TOKEN: string
 }
 
 export default {
