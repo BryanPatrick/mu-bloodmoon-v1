@@ -3,6 +3,7 @@ import { Container, getContainer } from '@cloudflare/containers'
 export class BloodMoonApiContainer extends Container<Env> {
   defaultPort = 8080
   sleepAfter = '10m'
+  entrypoint = ['node', 'dist/apps/api/src/main.js']
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env)
