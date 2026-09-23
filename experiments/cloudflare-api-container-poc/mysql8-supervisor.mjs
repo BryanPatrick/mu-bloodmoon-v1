@@ -10,11 +10,30 @@ const state = {
   tlsAvailable: null,
   migrationCount: 0,
   migrationStatus: 'PENDING',
+  apiExit: null,
+  apiLog: '',
   error: null
 }
 let api = null
 let mysql = null
 let stopping = false
+
+function captureApiOutput(chunk, target) {
+  target.write(chunk)
+  let text = chunk.toString()
+  for (const name of [
+    'JWT_ACCESS_SECRET',
+    'JWT_REFRESH_SECRET',
+    'TWO_FACTOR_ENCRYPTION_KEY',
+    'BILLING_PII_ENCRYPTION_KEY',
+    'SESSION_SECRET',
+    'CF_POC_CONTROL_TOKEN'
+  ]) {
+    const value = process.env[name]
+    if (value) text = text.split(value).join('[REDACTED]')
+  }
+  state.apiLog = (state.apiLog + text).slice(-4000)
+}
 
 function authorized(request) {
   return Boolean(controlToken) && request.headers['x-cf-poc-key'] === controlToken
@@ -82,7 +101,17 @@ async function bootstrap() {
 
   api = spawn('node', ['/app/dist/apps/api/src/main.js'], {
     env: { ...process.env, DATABASE_URL: databaseUrl, PORT: '8081' },
-    stdio: 'inherit'
+    stdio: ['ignore', 'pipe', 'pipe']
+  })
+  api.stdout.on('data', (chunk) => captureApiOutput(chunk, process.stdout))
+  api.stderr.on('data', (chunk) => captureApiOutput(chunk, process.stderr))
+  api.on('exit', (code, signal) => {
+    state.apiExit = { code, signal }
+    if (!stopping) state.phase = 'api-failed'
+  })
+  api.on('error', (error) => {
+    state.error = `API_SPAWN_FAILED:${error.message}`
+    state.phase = 'api-failed'
   })
   state.phase = 'ready'
 }
