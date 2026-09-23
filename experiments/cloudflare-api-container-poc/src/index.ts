@@ -40,6 +40,18 @@ export class BloodMoonApiContainer extends Container<Env> {
   onStop({ exitCode, reason }: { exitCode: number; reason: 'exit' | 'runtime_signal' }) {
     console.log('Shadow container stopped', { exitCode, reason })
   }
+
+  async fetch(request: Request) {
+    await this.startAndWaitForPorts({
+      ports: this.defaultPort,
+      cancellationOptions: {
+        instanceGetTimeoutMS: 60_000,
+        portReadyTimeoutMS: 60_000,
+        waitInterval: 500
+      }
+    })
+    return super.fetch(request)
+  }
 }
 
 interface Env {
