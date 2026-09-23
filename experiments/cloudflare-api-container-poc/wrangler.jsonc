@@ -3,6 +3,9 @@
   "name": "blood-moon-api-container-poc",
   "main": "src/index.ts",
   "compatibility_date": "2026-09-22",
+  "observability": {
+    "enabled": true
+  },
   "containers": [
     {
       "class_name": "BloodMoonApiContainer",

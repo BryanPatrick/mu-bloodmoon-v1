@@ -31,6 +31,14 @@ export class BloodMoonApiContainer extends Container<Env> {
       GAME_ACCOUNT_PROVISIONING_ON_REGISTER: 'false'
     }
   }
+
+  onStart() {
+    console.log('Shadow container started')
+  }
+
+  onStop({ exitCode, reason }: { exitCode: number; reason: 'exit' | 'runtime_signal' }) {
+    console.log('Shadow container stopped', { exitCode, reason })
+  }
 }
 
 interface Env {
