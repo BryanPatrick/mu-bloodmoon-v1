@@ -565,6 +565,69 @@ no payments enabled.** Full findings in `PROVIDER_EXIT_CHECKLIST.md`.
 - Production: **untouched** — no DNS, email, database, file, service,
   or provider contact of any kind this phase.
 
+## Phase CF-BACKUP-01 — off-host backup architecture + recovery plan: **COMPLETE**
+
+**Design and validation phase — no production migration.** No
+production system touched, no existing backup deleted, no production
+cron modified, no DNS/DB change, no secret exposed. Full detail:
+`BACKUP_STRATEGY.md`.
+
+- **Full audit of the existing backup implementation** (`bloodmoon-backup.sh`,
+  `verify-backup-integrity.sh`, `restore-test.sh`,
+  `CPANEL_BACKUP_AUTOMATION.md`) — a real correction to `CF-EXIT-01`'s
+  own earlier claim: the backup script **already has** a working,
+  provider-agnostic off-host copy mechanism (`RCLONE_REMOTE`, supports
+  R2/S3/B2/other via `rclone`) and already-wired failure alerting into
+  the Phase AA `/internal/ops-events` pipeline — both simply
+  unconfigured in production, not absent from the code as previously
+  stated.
+- **Data classified** across 8 categories (`MUST_BACKUP`/`REBUILDABLE`/
+  `EXTERNAL_PROVIDER_MANAGED`/`OUT_OF_SCOPE`) — mail and game data
+  explicitly out of scope, matching `EMAIL_MIGRATION.md`'s and
+  `README.md`'s own program boundaries.
+- **4 off-host targets compared** (private R2, external MySQL vendor
+  native PITR, Bryan-controlled VPS, dual-copy) across durability,
+  restore speed, cost, automation, encryption, vendor independence,
+  ransomware/operator-risk, and retention control — no target assumed
+  blindly.
+- **Layered architecture recommended, verified against the actual
+  current architecture rather than assumed**: future DB-vendor
+  PITR as primary, an encrypted logical dump to a private R2 bucket
+  as an independent secondary copy, R2's own object-key immutability
+  (already established `CF-R2-02`) as the media story rather than a
+  costly full duplicate copy.
+- **Real, end-to-end restore proof this phase** — not simulated: a
+  fresh disposable MySQL 8.0.46 source database (56/56 migrations,
+  2 synthetic accounts, never production data), a backup produced in
+  the exact shape `cpanel-production-backup.sh` emits, then the
+  project's own **real, unmodified** `verify-backup-integrity.sh`
+  (5/5 checks passed) and `restore-test.sh` (142 tables restored) run
+  against it, restoring into a second independent disposable instance.
+  Independently re-confirmed with real `COUNT(*)` queries (56/56
+  migrations, 2/2 accounts, correct field values) — catching that
+  `restore-test.sh`'s own summary uses an InnoDB row-count *estimate*,
+  not an exact count, a small future polish item noted, not fixed this
+  phase. Both disposable instances and all scratch files fully torn
+  down after, zero residue.
+- **Encryption evaluated and designed**: `age` recommended over GPG
+  for this exact shell-pipeline shape (faster on large archives,
+  Unix-pipe-native, simpler key model) — not implemented this phase.
+- **R2 backup bucket designed** (`bloodmoon-backups-private`, prefix
+  layout, never reusing the public asset bucket) — **not created**,
+  no explicit authorization existed for a new bucket this phase.
+- **Retention, validation proof chain, media backup strategy, secrets
+  recovery strategy, scheduler replacement, and failure-alerting
+  design** all covered — each verified against what already exists
+  rather than assumed from scratch; several pieces (failure alerting,
+  the off-host copy mechanism itself) turned out to already be built,
+  just unconfigured.
+- **`BACKUP_EXIT_READY = NO`, unchanged** — this phase designs and
+  partially validates, it does not execute a production migration.
+  `RISKS.md` CF-R26 and `PROVIDER_EXIT_CHECKLIST.md` §6/§15 updated to
+  reflect the new evidence.
+- Production: **untouched** — no DNS, database, cron, or secret
+  changed; no existing backup deleted; nothing pushed or merged.
+
 ## Phase 1 (Nuxt web → Workers, production cutover) — NOT STARTED
 
 Shadow deployment exists (see above); a real production cutover
@@ -662,9 +725,12 @@ a *method*, in two independent environments — the Codex branch's own
 MySQL 8 proof is a second, independent data point, `RISKS.md` CF-R4).
 The CORS addition (`RISKS.md` CF-R9) stays explicitly blocked pending
 Bryan's authorization. Email (`CF-MAIL-01`, `EMAIL_MIGRATION.md`) is
-fully audited and shortlisted but not on this critical path at all. A
-genuinely new gap, not previously named anywhere in this program: no
-off-host backup destination is decided (`RISKS.md` CF-R26,
-`PROVIDER_EXIT_CHECKLIST.md` §6) — worth a decision before any real
-provider-exit timeline is set, independent of the Container/database/
-DNS sequence above.
+fully audited and shortlisted but not on this critical path at all.
+**Update, `CF-BACKUP-01` (2026-09-24)**: the off-host backup gap
+(`RISKS.md` CF-R26) is now a fully designed, partially-real-proven
+architecture (`BACKUP_STRATEGY.md`), not just a named gap — the
+remaining work is concrete and scoped: create a private test R2
+bucket under explicit authorization, wire `age` encryption into
+`cpanel-production-backup.sh`, prove one real encrypted round-trip.
+Still independent of the Container/database/DNS sequence above, and
+still not on the critical path, but meaningfully closer to done.

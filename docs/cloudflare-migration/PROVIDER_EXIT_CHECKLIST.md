@@ -213,17 +213,22 @@ one that was obvious before this sweep.
 
 | Backup type | Currently exists? | Currently lives | Must live where before exit |
 |---|---|---|---|
-| DB backups | YES (`bloodmoon-backup.sh`, daily 03:17) | cPanel filesystem only, confirmed no off-host copy step in the script or its docs | **A destination independent of the current provider** — not yet decided anywhere in this program. Candidates not evaluated this phase: R2 (private bucket, per `R2_ASSETS.md`'s own "never the public shadow bucket" note), the eventual external MySQL vendor's own managed backup feature, or a Bryan-controlled off-host copy |
-| Application snapshot | Implicit only — `.output-pre-<phase>-backup-<epoch>` (bmweb) is a **deploy-time rollback copy**, not a real backup regime, and it lives on the same host | same host | same open question as DB backups |
-| Mail backups | UNKNOWN | `MAILBOX_INVENTORY = UNKNOWN` (`EMAIL_MIGRATION.md`) — cannot classify a backup for a mailbox whose existence itself is unconfirmed | depends entirely on resolving `MAILBOX_INVENTORY` first |
-| Uploaded-media backups | NOT SEPARATELY BACKED UP today, as far as this phase found — `bloodmoon-backup.sh`'s scope was not re-verified this phase (out of scope to re-audit a script already documented elsewhere); community/guild/launcher/admin-content media R2 migration (§13) would make R2's own durability the backup story for *new* uploads, but does not retroactively back up whatever currently exists only on the host's local disk | same open question |
+| DB backups | YES (`bloodmoon-backup.sh`, daily 03:17) | cPanel filesystem by default; **correction, `CF-BACKUP-01` (2026-09-24)** — the script does have a real, already-built off-host copy step (`RCLONE_REMOTE`, supports R2/S3/B2/other via `rclone`), it is simply **unconfigured** in production, not absent from the code. This phase's earlier `CF-EXIT-01` claim of "no off-host copy step in the script" was inaccurate — corrected here after actually reading the full script | **A destination independent of the current provider** — mechanism exists, destination still undecided. Full architecture now designed: `BACKUP_STRATEGY.md` (private R2 secondary copy + future DB-vendor PITR primary + `age` encryption + layered retention) |
+| Application snapshot | Implicit only — `.output-pre-<phase>-backup-<epoch>` (bmweb) is a **deploy-time rollback copy**, not a real backup regime, and it lives on the same host | same host | Covered by `BACKUP_STRATEGY.md`'s APPLICATION_CONFIG category (non-secret config shape, versioned, same off-host destination) |
+| Mail backups | UNKNOWN | `MAILBOX_INVENTORY = UNKNOWN` (`EMAIL_MIGRATION.md`) — cannot classify a backup for a mailbox whose existence itself is unconfirmed | depends entirely on resolving `MAILBOX_INVENTORY` first — explicitly out of `BACKUP_STRATEGY.md`'s scope too |
+| Uploaded-media backups | NOT SEPARATELY BACKED UP today, as far as this phase found — `bloodmoon-backup.sh`'s scope was not re-verified this phase (out of scope to re-audit a script already documented elsewhere); community/guild/launcher/admin-content media R2 migration (§13) would make R2's own durability the backup story for *new* uploads, but does not retroactively back up whatever currently exists only on the host's local disk | `BACKUP_STRATEGY.md` §10: R2's own object-key immutability + a periodic checksum-manifest cross-check, not a full second copy by default (cost/benefit, evaluated not assumed) |
 
 **`BACKUP_DEPENDENCIES = provider-exclusive today, no off-host destination decided for any category`.** This is a real, previously
 under-scoped gap this program had not explicitly named before —
 prior phases proved the backup **method** (mysqldump → disposable
 restore → integrity, `CF-DB-01`) but never asked "where does the
 backup *live* once the current provider is gone." Recorded as a new
-risk (§16).
+risk (§16). **Update, `CF-BACKUP-01` (2026-09-24)**: the architecture
+is now fully designed and the restore chain independently re-proven
+for real (a fresh disposable backup, the real unmodified
+`verify-backup-integrity.sh`/`restore-test.sh`, 56/56 migrations
+restored correctly) — see `BACKUP_STRATEGY.md`. No off-host bucket
+created, no encryption implemented, `BACKUP_EXIT_READY` still `NO`.
 
 ## 7. DNS/domain (carried forward, not re-audited)
 
@@ -392,7 +397,7 @@ schedules it at all.
 | `MAIL_EXIT_READY` | **NO** | Provider shortlisted only, no selection; `MAILBOX_INVENTORY` unresolved; pre-existing real-mailbox-delivery proof still open |
 | `DNS_EXIT_READY` | **NO** | Blocked on `registro.br`/DNS-zone/nameserver access, all three still `UNKNOWN` |
 | `UPDATE_EXIT_READY` | **NO** | Direction recorded only; no artifact, no code work, no DNS action taken for this subdomain specifically |
-| `BACKUP_EXIT_READY` | **NO** | No off-host backup destination decided anywhere in this program — a real gap this phase found, not previously named |
+| `BACKUP_EXIT_READY` | **NO**, materially de-risked | Full off-host architecture designed and the restore chain independently re-proven for real (`CF-BACKUP-01`, `BACKUP_STRATEGY.md`) — no off-host bucket created yet, no encryption implemented yet, still the sole-copy status quo in production |
 
 `CURRENT_PROVIDER_ZERO_READY = NO` — five of eight gates are `NO` or
 depend on decisions only Bryan can make (vendor selection, DNS/
