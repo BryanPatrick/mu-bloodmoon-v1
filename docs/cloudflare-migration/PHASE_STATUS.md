@@ -413,15 +413,18 @@ CSP/cache-purge open items) is separate, unscheduled work.
 
 No concrete need identified yet, per the phase's own entry criteria.
 
-## Phase 4 (API runtime) — **DECISION MADE (CF-01B)**, proof NOT STARTED
+## Phase 4 (API runtime) — **DECISION MADE (CF-01B)**, proof **RUN AND RECONCILED (CF-INTEGRATION-02)**
 
 `API_INITIAL_MIGRATION_TARGET = CLOUDFLARE_CONTAINERS`,
 `API_WORKERS_NATIVE = FUTURE_OPTIMIZATION` (`DECISIONS.md`,
-`API_MIGRATION.md`). The decision itself is recorded; the actual
-container proof (`CF-API-02R`) has not been run — Containers is
-**not yet production-proven**. The Prisma-on-Workers question
-(`RISKS.md` CF-R3) is deprioritized, not blocking, since it only
-matters for the future-optimization path.
+`API_MIGRATION.md`). **Update, `CF-INTEGRATION-02` (2026-09-23)**: the
+container proof (`CF-API-02R`) has run for real, on a concurrent Codex
+branch, and this program has now independently code-reviewed and
+reconciled it with the completed storage/DB work — see the phase entry
+below and `CLOUDFLARE_MIGRATION_CANDIDATE.md`. `CONTAINER_RUNTIME_PROVEN
+= YES`. The Prisma-on-Workers question (`RISKS.md` CF-R3) remains
+deprioritized, unaffected, since it only matters for the
+future-optimization native-Workers path, not the chosen Containers path.
 
 ## Phase 5 (MySQL exit) — NOT STARTED, one entry-criteria item now closed
 
@@ -448,14 +451,97 @@ currently non-Cloudflare, confirmed via a 2026-08-09 live audit
 
 Depends on all preceding phases.
 
+## Phase CF-INTEGRATION-02 — Container + Storage/DB candidate reconciliation: **COMPLETE**
+
+**`CLOUDFLARE_MIGRATION_CANDIDATE_READY = YES`. Does not authorize a
+`main` merge or production deployment.** Full detail:
+`CLOUDFLARE_MIGRATION_CANDIDATE.md`.
+
+- Verified exact ancestry: `main`, this branch's own
+  `infra/cloudflare-storage-db-integration` base (`456963d7`), and a
+  concurrent Codex branch `infra/cloudflare-api-container-poc`
+  (`faee869e`) all confirmed via `git merge-base` — a clean two-way
+  fork from the same `main` commit, no shared history between the two
+  source branches.
+- **Reviewed the Codex branch's full diff against `main`** (25 files,
+  2515 insertions) and classified every change — only 2 real
+  `apps/api/src`/`prisma` changes exist (`app.enableShutdownHooks()`
+  + explicit `'0.0.0.0'` bind; one additive Prisma `binaryTargets`
+  entry), plus the Container image definition
+  (`Dockerfile.cloudflare-poc`). Everything else is either POC-only
+  scaffolding (deliberately not integrated) or documentation (cited,
+  not merged).
+- **Independently verified the Codex report's own cleanup claims**,
+  not merely trusted: `git diff --name-status` confirmed the entire
+  final `apps/api/src` tree has exactly one modified file and zero
+  added/deleted files — no leftover validation harness, temporary
+  endpoint, or secret anywhere.
+- Created `infra/cloudflare-migration-candidate` from the storage/DB
+  integration branch's tip, applied the 5 production-worthy files by
+  hand (byte-verified against the source branch, not a `git merge`),
+  committed as `6a1fb571`.
+- **Prisma migration reconciliation**: confirmed 56 migrations exactly
+  once (including `20260923090000_admin_content_storage_provider`,
+  which postdates the Codex branch's own "55 canonical migrations"
+  figure). Re-ran the full replay against a **third**, independent
+  disposable MySQL 8.0.46 instance (own fresh data dir/port/
+  credentials, fully torn down after): 56/56 applied, zero drift, 142
+  tables, `ReferenceAsset`'s two new columns present exactly as
+  designed, 6/6 real-Prisma-client checks
+  (`verify-disposable-restore-prisma.mjs`).
+- **Storage/Container reconciliation confirmed**: all four
+  `*_STORAGE_PROVIDER` switches present and correctly named, still
+  defaulting to `local`; the Container image builds the same
+  `apps/api` source carrying all four `StorageProvider`/R2 code paths
+  — the two tracks compose cleanly with zero code conflict.
+- **Shutdown hooks retained and documented**: `app.enableShutdownHooks()`
+  is not Container-specific — it's what makes `MailTransportService`'s
+  and Prisma's existing shutdown hooks actually fire on `SIGTERM`,
+  benefiting the *current* cPanel/LSAPI runtime's own graceful-reload
+  procedure exactly as much as a future Container.
+- **Billing PII boundary respected**: `payments/asaas-production-readiness`
+  was not merged, referenced as code, or touched — its isolated crypto
+  validation stays exactly where it was, a separate future decision.
+- **Full candidate validation, all against this exact commit**: API
+  build PASS, typecheck + 11 structure checks PASS, 127/127 unit
+  tests, `prisma validate`/`format` clean, 56/56 migration replay,
+  30/30 beta-critical e2e, 125/125 community e2e (including
+  `community-media`), 87/87 guilds + launcher-content e2e — **375 real
+  tests total**, plus a clean secret scan. Live Cloudflare redeployment
+  of this exact candidate was **deliberately not attempted** (would
+  consequentially replace Codex's own already-proven shadow deployment
+  without fresh authorization) — reported as a real next-step decision
+  for Bryan, not performed.
+- Canonical docs updated with the combined evidence:
+  `CURRENT_STATE.md`, `TARGET_ARCHITECTURE.md`, `API_MIGRATION.md`,
+  `DATABASE_MIGRATION.md`, `R2_ASSETS.md`, `RISKS.md`, this file.
+  **`PROVIDER_EXIT_CHECKLIST.md`, `DNS_AND_DOMAIN.md`, and
+  `EMAIL_MIGRATION.md` do not exist on this branch's base** (they live
+  on a separate, later doc-only branch chain —
+  `infra/provider-exit-audit`/`infra/cloudflare-mail-exit`/
+  `infra/cloudflare-dns-planning` — never asked to be reconciled with
+  the Container/storage code tracks this phase; not fabricated here).
+- Backup gap (`BACKUP_EXIT_READY = NO`) explicitly carried forward,
+  not solved — recorded in `CLOUDFLARE_MIGRATION_CANDIDATE.md`'s own
+  next-phase list.
+- Production: **untouched** — no DNS, database, payments, or
+  marketplace change; no push; no `main` merge; both source branches
+  (`infra/cloudflare-storage-db-integration`, `infra/cloudflare-api-container-poc`)
+  confirmed unchanged at their known tips throughout.
+
 ## Next recommended step
 
-`CF-API-02R` (the Container POC) is now the single highest-leverage next
-step — it's the critical path for the chosen Containers target and
-currently has zero empirical proof behind it. `CF-DB-01` is complete;
-the remaining database work is a real vendor decision among the 5
-shortlisted candidates (`CF-DB-01-REPORT.md`), then a restore proof
-against that specific vendor (not done here — this phase proved the
-*method*, not a specific external target). The CORS addition
+**Update, `CF-INTEGRATION-02` (2026-09-23)**: `CF-API-02R` no longer
+has "zero empirical proof behind it" — see the Phase 4 and
+`CF-INTEGRATION-02` entries above. The single highest-leverage next
+step is now a real decision from Bryan on two independent axes: (1)
+whether/how to validate `infra/cloudflare-migration-candidate` against
+a *live* Cloudflare Container redeploy (this phase deliberately did
+not attempt one), and (2) whether/when to plan a `main` merge — neither
+performed or recommended by this read-only-in-spirit reconciliation
+phase itself. In parallel, external MySQL vendor selection remains
+fully actionable today, independent of either decision above, since
+the restore/migration method is now proven three times, in three
+independent environments (`DATABASE_MIGRATION.md`). The CORS addition
 (`RISKS.md` CF-R9) stays explicitly blocked pending Bryan's
-authorization.
+authorization, unchanged.

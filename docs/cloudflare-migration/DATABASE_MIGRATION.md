@@ -68,6 +68,21 @@ shortlist below, using the same proven method
 (`apps/api/scripts/verify-disposable-restore-prisma.mjs` is reusable
 as-is for the Prisma-layer half of that future proof).
 
+## Migration method re-proven a third, independent time (Phase CF-INTEGRATION-02)
+
+The mysqldump/restore method (`CF-DB-01`) and the migration-replay
+method have now each been independently re-proven against a real
+MySQL 8 target **three separate times, in three separate environments**:
+`CF-DB-01`'s own disposable instance, the concurrent Codex Container
+branch's disposable instance (inside a live Cloudflare Container), and
+this phase's own disposable instance while reconciling that branch's
+work onto `infra/cloudflare-migration-candidate` — 56/56 current
+migrations, zero drift, each time. `MYSQL_8_MIGRATION_REPLAY = PROVEN`.
+This does not select a vendor (still open, below) — it further retires
+the *method* risk, which is now about as thoroughly de-risked as a
+pre-vendor-selection proof can be. Full detail:
+`CLOUDFLARE_MIGRATION_CANDIDATE.md`.
+
 ## Vendor shortlist (research only, Phase CF-DB-01 — no selection made)
 
 Five real, currently-verified (2026) candidates researched; full detail

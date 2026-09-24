@@ -960,6 +960,17 @@ end-to-end against a real bucket, and no persistent local-only runtime
 data path remains (re-confirmed — nothing about the filesystem changed
 this phase, `CF-R2-03`'s re-audit still holds).
 
+**Confirmed unaffected by the Container runtime integration, Phase
+CF-INTEGRATION-02**: the candidate branch reconciling this storage
+work with the proven Container track (`CLOUDFLARE_MIGRATION_CANDIDATE.md`)
+re-ran `community-media`/`guilds`/`launcher-remote-content-contract`
+e2e (242 real-DB tests total, local storage mode) against a fresh
+disposable MySQL 8 with all 56 migrations applied — zero regression,
+all four `*_STORAGE_PROVIDER` switches (`MEDIA_`/`GUILD_MEDIA_`/
+`LAUNCHER_MEDIA_`/`ADMIN_CONTENT_`) confirmed present and still
+defaulting to `local`. `PERSISTENT_FILESYSTEM_BLOCKERS = []` remains
+unchanged.
+
 ## Phase CF-R2-05 — test portability cleanup (RISKS.md CF-R19)
 
 Test-harness-only fix for the one item `CF-R2-04` left open. **No

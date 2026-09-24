@@ -10,15 +10,48 @@ lastVerified: 2026-09-22
 **Decided (2026-09-22, Phase CF-01B)**: `API_INITIAL_MIGRATION_TARGET =
 CLOUDFLARE_CONTAINERS`. `API_WORKERS_NATIVE = FUTURE_OPTIMIZATION` — not
 rejected, not scheduled. See `DECISIONS.md` for Bryan's exact words.
-**Containers is not yet production-proven** — the container proof
-itself has not been run. ~~Docker/Podman/nerdctl were unavailable in
-the investigating environment~~ — **correction, Phase CF-R2-01
-(2026-09-22):** local container tooling is no longer the planned path
-for this proof at all. The approved direction is **CF-API-02R**: run
-the proof via Cloudflare's own remote build (Workers Builds), which
-needs no local Docker/Podman/nerdctl. This is a direction, not a
-completed migration — CF-R2-01 did not run the proof, only corrected
-this stale blocker description.
+
+**Update, Phase CF-INTEGRATION-02 (2026-09-23) — `CONTAINER_RUNTIME_PROVEN
+= YES`**: the container proof (`CF-API-02R`) has run for real. A
+concurrent, independent Codex branch (`infra/cloudflare-api-container-poc`,
+tip `faee869e`) deployed the actual NestJS/Prisma API via Cloudflare
+Workers Builds (no local Docker/Podman/nerdctl needed) to an isolated
+shadow Container: health/readiness returned 200, synthetic register/
+login/refresh/protected-route/logout and TOTP setup/verify passed,
+container-disk ephemerality was proven directly (a `/tmp` marker
+absent after a restart), and `SIGTERM` reached the Nest process
+cleanly with a 0 exit code. **The database gate — this program's own
+hardest bar — closed for real**: 55 migrations replayed against a
+disposable MySQL 8.0.46/8.4.11 instance inside the same Container,
+proving Serializable commit/rollback, unique-key idempotency, and real
+concurrent `GET_LOCK`/`RELEASE_LOCK` mutual exclusion.
+
+This program then **independently code-reviewed that branch's full
+diff** against `main` (25 files, but only 2 real changes inside
+`apps/api/src`/`prisma` — `app.enableShutdownHooks()` + an explicit
+`'0.0.0.0'` bind, and one additive Prisma `binaryTargets` entry) and
+**independently confirmed, by direct `git diff --name-status`, that
+zero POC-only route/secret/endpoint remained anywhere in the final
+`apps/api/src` tree** — not merely trusting the branch's own cleanup
+claims. Those 2 runtime changes plus the Container image definition
+(`Dockerfile.cloudflare-poc`) were integrated onto a new branch,
+`infra/cloudflare-migration-candidate` (based on the completed storage/
+DB integration work), and the database gate was **independently
+re-proven a third time** — a fresh disposable MySQL 8.0.46 instance,
+all 56 *current* migrations (the Codex branch's "55" predates the
+`admin_content_storage_provider` migration), zero drift — alongside
+242 real-DB e2e tests (beta-critical, community, guilds, launcher
+content) and 127 unit tests, all passing. Full detail:
+`CLOUDFLARE_MIGRATION_CANDIDATE.md`.
+
+**What this is not**: not a `main` merge, not a live redeploy of this
+exact integrated candidate to Cloudflare (deliberately not attempted —
+would consequentially replace Codex's own already-proven shadow
+Container without fresh authorization), and not production
+authorization — the Codex document's own words remain accurate: "this
+POC is not production authorization." Billing/payments (Asaas) crypto
+remains deliberately excluded, isolated on its own separate,
+also-unmerged branch.
 
 This document folds in the findings of a concurrent, independent
 investigation (`docs/cloudflare-api-feasibility.md`, branch
@@ -193,7 +226,13 @@ the shape of the next real validation phase, not a completed checklist.
 
 ## Recommended next step
 
-Run the prepared container proof (`CF-API-02R`) on a machine with
-working container tooling. This yields the most decision value without
-touching production or committing to a database provider — see
-`RISKS.md` and `PHASE_STATUS.md`.
+**Update, Phase CF-INTEGRATION-02 (2026-09-23)**: the container proof
+this section previously recommended running has run, and its findings
+are now reconciled with this program's own storage/DB work on
+`infra/cloudflare-migration-candidate` (`CLOUDFLARE_MIGRATION_CANDIDATE.md`).
+The recommended next step is a real decision from Bryan: whether to
+validate this exact candidate against a live Cloudflare redeploy, and/or
+whether to begin planning a `main` merge — neither attempted or
+recommended by this phase itself. In parallel, external MySQL vendor
+selection remains fully actionable and independent of that decision —
+see `DATABASE_MIGRATION.md` and `RISKS.md`.
