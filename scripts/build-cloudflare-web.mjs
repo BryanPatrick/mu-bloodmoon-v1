@@ -10,6 +10,13 @@
 import { spawnSync } from 'node:child_process'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { validateCloudflareWebRcEnv } from './cloudflare-web-rc-config.mjs'
+
+const publicConfig = validateCloudflareWebRcEnv(process.env)
+console.log(
+	`[cloudflare-web-rc] Public config accepted: api=${publicConfig.apiBase}; ` +
+		'Turnstile=configured (value not displayed); payments=false; marketplace=false'
+)
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const nuxtBin = join(root, 'node_modules', '.bin', process.platform === 'win32' ? 'nuxt.cmd' : 'nuxt')
