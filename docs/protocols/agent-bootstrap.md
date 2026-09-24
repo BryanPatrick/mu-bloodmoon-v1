@@ -49,7 +49,10 @@ stale, and why) — never silently pick one without saying so.
 2. **IDENTIFY DOMAIN** — which of the named sections in `docs/README.md`
    (Accounts, Security, GameServer, GameBridge, Launcher, Economy, VIP,
    Payments, Guilds, Privacy, etc.) does this task actually touch? A task
-   often touches more than one.
+   often touches more than one. **Automation/orchestration/agent-ecosystem
+   tasks** → start at
+   [`docs/architecture/agent-automation-architecture.md`](../architecture/agent-automation-architecture.md)
+   instead of guessing which of the other sections applies.
 3. **READ CURRENT SYSTEM DOCS** — the relevant subset of
    `docs/architecture/`, `docs/gameserver/`, `docs/gamebridge/`,
    `docs/vip/`, `docs/payments/`, `docs/security/`, `docs/accounts/`,

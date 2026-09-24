@@ -7,6 +7,13 @@ classification: POPULATED
 
 # Domain: Orchestration (task/resource/approval/review lifecycle)
 
+**UPDATE 2026-09-18 (`AGENT-AUTOMATION-PRESERVE-01`)**: the Hub's
+`orchestration/mvp-phase-1` branch (referenced throughout this file) is
+now pushed to its own origin (preserved, still not merged to the Hub's
+`main`). Canonical entry point for the wider automation architecture
+this domain feeds into: `docs/architecture/
+agent-automation-architecture.md` §7.
+
 **STATUS**: proven end-to-end with a real (non-synthetic) pilot
 (below). Staging `ORCHESTRATION_ENABLED` set to `false` this phase
 (Part 29 idle policy) — the pilot below completed and staging was

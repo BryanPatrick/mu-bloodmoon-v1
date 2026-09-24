@@ -11,6 +11,17 @@ classification: PARTIAL
 an unmerged branch (found Phase 10 — Phase 9's `n8n.md` predates this
 discovery and was a near-empty sketch).
 
+**UPDATE 2026-09-18 (`AGENT-AUTOMATION-PRESERVE-01`)**: the branch
+below is now pushed to `origin` (preserved, still not merged to
+`main`). Bryan has accepted the `INTEGRATION_LAYER` direction this
+domain describes — see `docs/decisions/0032-agent-automation-
+architecture-direction.md` (`ACTIVE DECISIONS` below is updated
+accordingly). `N8N_ADOPTION`/`N8N_INSTALLATION`/`N8N_HOSTING` remain
+explicitly NOT decided by that same ADR — the direction and the
+implementation authorization are recorded as two different questions.
+Canonical entry point going forward: `docs/architecture/
+agent-automation-architecture.md` §8.
+
 **CURRENT STATE**: `architecture/agent-orchestration-foundation`
 (commit `7b8c2799`, one commit on top of `main`'s `f5fd099a`, not
 checked out in any worktree) adds
@@ -26,8 +37,12 @@ this project already runs Workers/D1 for the Knowledge Hub) — **no
 hosting choice has been made**; the doc itself says not to treat any of
 this as final until formally decided.
 
-**ACTIVE DECISIONS**: none — this whole branch is `status: DESIGN`,
-unmerged, a proposal, not a decision.
+**ACTIVE DECISIONS**: `ARCHITECTURE_DIRECTION` (Option A: Hub core + n8n
+integration layer) is now `DOCUMENTED_DECISION`, per ADR-0032
+(2026-09-18) — direction only. `N8N_ROLE_RECOMMENDATION =
+INTEGRATION_LAYER` itself remains the accepted direction's content, not
+a separately-ratified sub-decision. Everything else (adoption,
+installation, hosting) remains undecided, exactly as before.
 
 **AUTHORITATIVE SOURCES**: `docs/architecture/engineering-agent-orchestration.md`
 §B3, B25-B29 (branch `architecture/agent-orchestration-foundation`,

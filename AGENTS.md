@@ -140,6 +140,7 @@ note in `docs/README.md` itself.
 - **Engineering process/lifecycle**: [`docs/architecture/engineering-governance.md`](docs/architecture/engineering-governance.md).
 - **Branch/release/deploy governance**: [`docs/architecture/branch-and-release-governance.md`](docs/architecture/branch-and-release-governance.md).
 - **Control plane architecture**: [`docs/architecture/control-plane.md`](docs/architecture/control-plane.md).
+- **Agent automation architecture**: [`docs/architecture/agent-automation-architecture.md`](docs/architecture/agent-automation-architecture.md).
 - **Why something is the way it is**: [`docs/decisions/`](docs/decisions/) (ADRs).
 - **Known gaps needing a decision**: [`docs/open-questions.md`](docs/open-questions.md).
 - **Known technical/operational risks**: [`docs/open-risks.md`](docs/open-risks.md).
