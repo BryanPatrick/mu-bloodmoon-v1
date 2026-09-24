@@ -2,7 +2,7 @@
 status: ACTIVE
 category: infrastructure
 audience: internal (Bryan + engineering agents)
-lastVerified: 2026-09-22
+lastVerified: 2026-09-24
 ---
 
 # Phase status
@@ -545,3 +545,29 @@ the restore/migration method is now proven three times, in three
 independent environments (`DATABASE_MIGRATION.md`). The CORS addition
 (`RISKS.md` CF-R9) stays explicitly blocked pending Bryan's
 authorization, unchanged.
+
+## Phase CF-WEB-PROVIDER-API-TRANSITION-01 — preparation and validation: **PARTIAL / GATE CLOSED**
+
+- Created isolated branch `docs/cf-web-provider-api-transition-01` from
+  candidate commit `4b0e8e67c9a1cebecd4386909053d2175a97162c`.
+- Recovered the historical Web shadow evidence, code/runtime config,
+  auth, CORS, CSP, Turnstile and DNS dependencies from persisted sources.
+- Live read-only CORS preflight proved root/www are already allowed
+  exactly; same-hostname production cutover needs no API CORS change.
+- Live read-only Turnstile inspection proved root/www are the two allowed
+  production hostnames; no production widget change is required.
+- Live DNS preflight confirmed root/www/api/update/MX/SPF/DMARC current
+  topology; DKIM existence/value remains carried from the prior complete
+  inventory because the resolver returned an invalid-packet response.
+- Found and documented real shadow drift: active version `44e50317`
+  embeds the localhost API fallback in CSP. Historical version
+  `c055ce6d...` remains evidence, but the active version is not a release
+  candidate.
+- Added `WEB_PROVIDER_API_TRANSITION_RUNBOOK.md` with exact pre-cutover,
+  smoke, rollback, observation, storage and production-delta procedures.
+- No production or Cloudflare resource was changed; no deployment, DNS,
+  API restart, database action, push or merge occurred.
+
+Exit state: `WEB_CF_PROVIDER_API_TRANSITION_READY = NO`. A corrected
+non-production candidate, authenticated auth-flow revalidation, verified
+registro.br/rollback control and a selected routing mechanism remain.

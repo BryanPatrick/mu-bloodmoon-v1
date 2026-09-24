@@ -2,7 +2,7 @@
 status: ACTIVE
 category: infrastructure
 audience: internal (Bryan + engineering agents)
-lastVerified: 2026-09-22
+lastVerified: 2026-09-24
 ---
 
 # Cloudflare migration program
@@ -52,6 +52,8 @@ full contract lives in this folder, not duplicated into `AGENTS.md`.
 | `R2_ASSETS.md` | asset inventory and classification | a completed or scheduled bulk upload |
 | `SECURITY_MODEL.md` | CSP/CORS/secrets/edge security implications of the migration | changes to production security posture |
 | `ROLLBACK_PLAN.md` | how to undo each phase's artifacts | anything implying production is already migrated |
+| `WEB_PROVIDER_API_TRANSITION_RUNBOOK.md` | approved Web-Cloudflare/API-provider transition gate, exact smoke, observation and Web-only rollback | production authorization or API/database migration |
+| `PROVIDER_EXIT_CHECKLIST.md` | dependencies deliberately retained during the transition and eventual exit gates | a claim that the provider can be removed now |
 | `DECISIONS.md` | **only** decisions Bryan has actually approved, dated, verbatim | recommendations, options, agent opinions |
 | `RISKS.md` | open risks/unknowns, one row each, owner + status | resolved items (move those to `PHASE_STATUS.md`) |
 | `PHASE_STATUS.md` | completed / current / next, per phase | aspirational timelines |

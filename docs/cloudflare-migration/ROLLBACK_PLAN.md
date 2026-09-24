@@ -2,7 +2,7 @@
 status: ACTIVE
 category: infrastructure
 audience: internal (Bryan + engineering agents)
-lastVerified: 2026-09-22
+lastVerified: 2026-09-24
 ---
 
 # Rollback plan
@@ -29,19 +29,22 @@ Current production web (`mubloodmoon.com.br`, cPanel Node deploy)
 **was never touched this phase** — no rollback action is needed there
 because no forward action happened there.
 
-## Future real cutover rollback (Phase 1's eventual production cutover)
+## Future real cutover rollback (Web only)
 
-Not designed in detail yet — this is a placeholder for when a Phase 1
-production cutover is actually authorized:
+The previous placeholder is now resolved by
+`WEB_PROVIDER_API_TRANSITION_RUNBOOK.md`. The core rollback is:
 
-- The current cPanel Node deployment stays warm/deployable throughout
-  the cutover window (matches the existing `bloodmoon-deploy` skill's
-  rename-not-delete convention for `.output` backups).
-- A real cutover rollback needs a DNS-level or edge-routing-level
-  revert plan specific to whatever mechanism Phase 7 actually uses
-  (Cloudflare proxy toggle vs. a full nameserver revert) — written when
-  Phase 7 is scoped, not now, since it depends on decisions not yet
-  made (`DNS_AND_DOMAIN.md`).
+1. restore only root/www routing to the pre-recorded provider target;
+2. keep the current cPanel Web deploy intact throughout the transition;
+3. do not redeploy/restart API and do not change MySQL, `DATABASE_URL`,
+   update, e-mail, Turnstile or R2 flags;
+4. verify homepage, login, protected API request and logout through the
+   restored Web;
+5. preserve the failed Worker version and evidence.
+
+The exact DNS/route command remains intentionally absent until Bryan
+chooses the routing mechanism and proves authenticated rollback access.
+That is an execution blocker, not a reason to improvise during cutover.
 
 ## Database rollback (future, Phase 5/6)
 

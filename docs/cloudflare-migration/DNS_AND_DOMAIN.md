@@ -2,7 +2,7 @@
 status: ACTIVE
 category: infrastructure
 audience: internal (Bryan + engineering agents)
-lastVerified: 2026-09-22
+lastVerified: 2026-09-24
 ---
 
 # DNS and domain control
@@ -51,3 +51,37 @@ identifiers.
   Cloudflare, that is a live, read-only Cloudflare API check (not a
   hosting-provider contact) — record the result here when it happens,
   with the date and method.
+
+## Web-only transition preflight — 2026-09-24
+
+Public, read-only DNS queries confirmed:
+
+| Record | Current result | Web-only cutover rule |
+|---|---|---|
+| root A | `190.102.41.133` | the only production target intended to move, together with www |
+| www | CNAME -> root | move with root; preserve the public hostname |
+| api A | `190.102.41.133` | **must remain on the current provider** |
+| update A | `190.102.41.133` | **must remain untouched** |
+| MX | priority 0 -> root | preserve exactly; because it targets root, the future Cloudflare zone must keep an unproxied mail-reachable target rather than assuming the Web target can also receive SMTP |
+| SPF | current provider A/MX/IP/include policy present | preserve byte-for-byte during any zone transfer |
+| DKIM | historically inventoried at `default._domainkey` | preserve byte-for-byte; this resolver returned an invalid-packet error for the long TXT response, so the live value was not reasserted in this phase |
+| DMARC | `v=DMARC1; p=none;` | preserve exactly; do not combine policy tightening with Web cutover |
+
+The approved transition changes only where root/www serve HTTP Web
+traffic. API, update, MX/SPF/DKIM/DMARC and MySQL are explicitly outside
+the cutover.
+
+Before any cutover Bryan must verify and record:
+
+1. authenticated access to the `registro.br` account for this domain;
+2. ability to change **and revert** authoritative nameservers;
+3. authenticated control of the current DNS zone for TTL preparation;
+4. a complete, dated zone export/inventory;
+5. the exact old root/www values and current TTLs;
+6. an operator who can perform rollback without waiting for provider
+   support;
+7. a Cloudflare zone pre-populated with API, update and every mail record
+   before delegation changes.
+
+Until these are recorded, `REGISTRO_CONTROL = UNKNOWN` and the
+production cutover gate remains closed.

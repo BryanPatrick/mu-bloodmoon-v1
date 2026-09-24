@@ -2,7 +2,7 @@
 status: ACTIVE
 category: infrastructure
 audience: internal (Bryan + engineering agents)
-lastVerified: 2026-09-22
+lastVerified: 2026-09-24
 ---
 
 # Migration roadmap
@@ -68,3 +68,24 @@ question).
 - Any production CORS change, before Bryan explicitly authorizes it
   (`SHADOW_PRODUCTION_API_CORS = BLOCKED_PENDING_BRYAN_AUTHORIZATION`,
   see `DECISIONS.md`).
+
+## Revised near-term order — approved 2026-09-24
+
+The eight-phase table remains the eventual provider-exit strategy. Its
+old near-term ordering is superseded for the transition window by:
+
+1. Correct and revalidate a Web shadow candidate with explicit
+   `NUXT_PUBLIC_API_BASE=https://api.mubloodmoon.com.br/api`.
+2. Confirm registro.br/current-zone control and Web-only rollback access.
+3. Prepare the complete Cloudflare zone while preserving API, update and
+   all mail records; do not change nameservers yet.
+4. Cut over only root/www after a fresh authorization and the runbook
+   gate passes.
+5. Keep API and MySQL co-located on the provider; do not expose MySQL.
+6. Observe Web/auth/CORS/CSP/Turnstile/assets using the evidence list in
+   `WEB_PROVIDER_API_TRANSITION_RUNBOOK.md`.
+7. Continue R2, backup and email as independent tracks.
+8. Revisit API/database exit only in a future decision phase.
+
+This order intentionally decouples the low-risk Web move from the
+high-risk API/database move. It does not authorize any production action.

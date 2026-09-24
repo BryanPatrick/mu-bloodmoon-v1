@@ -2,7 +2,7 @@
 status: ACTIVE
 category: infrastructure
 audience: internal (Bryan + engineering agents)
-lastVerified: 2026-09-22
+lastVerified: 2026-09-24
 ---
 
 # Target architecture (future intended state — nothing here is deployed)
@@ -104,3 +104,30 @@ still depends on it.**
   own constraint.
 - Cloudflare Hyperdrive, wherever it appears, connects to an *external*
   MySQL-compatible database — it is never itself the database.
+
+## Approved transitional architecture — 2026-09-24
+
+Bryan approved a revised transition that supersedes the earlier
+near-term assumption that API migration must follow database exit:
+
+```text
+Browser
+  -> Cloudflare Web on mubloodmoon.com.br / www.mubloodmoon.com.br
+       -> HTTPS https://api.mubloodmoon.com.br/api
+            -> NestJS API on current provider
+                 -> MySQL on the same current-provider host
+
+update.mubloodmoon.com.br -> current provider (unchanged)
+email                     -> current provider (unchanged)
+```
+
+This is a transition state, not a reversal of the eventual
+`CURRENT_PROVIDER = ZERO` goal. API and MySQL are deliberately
+co-located until a later decision establishes a safe database path.
+MySQL must not be exposed remotely to enable this Web move.
+
+See `WEB_PROVIDER_API_TRANSITION_RUNBOOK.md` for the exact gate,
+cutover and rollback model. As of 2026-09-24 the architecture is
+decided but the cutover is not authorized and its readiness gate is
+`NO` because the active shadow has a localhost API-base drift and
+domain-control/rollback access remains unconfirmed.

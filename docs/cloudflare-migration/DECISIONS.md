@@ -2,7 +2,7 @@
 status: ACTIVE
 category: infrastructure
 audience: internal (Bryan + engineering agents)
-lastVerified: 2026-09-22
+lastVerified: 2026-09-24
 ---
 
 # Decisions (Bryan-approved only)
@@ -109,3 +109,25 @@ Also decided this phase:
   `FUTURE_OPTIMIZATION` path, and on what trigger.
 - Stash disposition, HSTS preload, and other small open items carried
   from Phase 17R.
+
+## 2026-09-24 — approved transitional architecture
+
+Bryan explicitly approved this intermediate topology:
+
+- Web moves to Cloudflare.
+- API remains at the current provider.
+- MySQL remains at the current provider, co-located with the API.
+- API and database must not be migrated in this transition.
+- MySQL must not be exposed remotely.
+
+The Web continues calling
+`https://api.mubloodmoon.com.br/api`. Root and www keep their public
+hostnames. API, update and e-mail stay on the provider. This supersedes
+the previous **near-term execution order** that coupled production API
+cutover to a prior external-database migration; it does not cancel the
+eventual provider-exit goal.
+
+`CF-WEB-PROVIDER-API-TRANSITION-01` authorizes preparation, validation
+and documentation only. It does not authorize DNS, nameserver, Web
+production, API, CORS, MySQL, SMTP, update, R2-flag, push or merge
+changes.

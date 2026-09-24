@@ -2,7 +2,7 @@
 status: ACTIVE
 category: infrastructure
 audience: internal (Bryan + engineering agents)
-lastVerified: 2026-09-22
+lastVerified: 2026-09-24
 ---
 
 # Web migration (apps/web → Cloudflare Workers)
@@ -137,3 +137,55 @@ value addition to an existing allow-list, never a wildcard.
   allowance (blocked on the decision above).
 - Whether `nuxt generate`/prerendering interacts any differently — not
   attempted, the app is SSR-on-request in both presets today.
+
+## CF-WEB-PROVIDER-API-TRANSITION-01 — current shadow reconciliation (2026-09-24)
+
+The original evidence above remains historical evidence for version
+`c055ce6d-3139-4833-9096-d2d411a49583`. It must not be read as a claim
+about the currently active deployment.
+
+Read-only Cloudflare inspection and direct HTTP verification found the
+active deployment is now short version `44e50317`, deployed manually by
+Wrangler after the original proof. It still returns 200 and preserves
+the six documented security headers and request-specific CSP hashes, but
+its live CSP contains:
+
+```text
+connect-src 'self' http://localhost:3333
+img-src 'self' data: http://localhost:3333 <exact R2 shadow origin>
+```
+
+That proves `NUXT_PUBLIC_API_BASE` was absent during this later build and
+the code used its development fallback. This version cannot call the
+production API and is **not a release candidate**. No redeploy was made
+in this phase.
+
+The code remains environment-driven (`nuxt.config.ts` plus all API
+composables use `config.public.apiBase`). The only hardcoded API endpoint
+found is the intentional local-development fallback
+`http://localhost:3333/api`; no provider IP, cPanel hostname or shadow
+URL is forced into production code. Future production builds must fail
+the operational gate if `NUXT_PUBLIC_API_BASE` is not explicitly set to:
+
+```text
+https://api.mubloodmoon.com.br/api
+```
+
+Live, read-only preflights on 2026-09-24 proved the API returns 204 and
+the exact matching ACAO for both production origins:
+
+- `https://mubloodmoon.com.br`
+- `https://www.mubloodmoon.com.br`
+
+The shadow origin still receives 204 without ACAO. Therefore a Web-only
+cutover under the same public hostnames needs **no production CORS
+change**. Workers.dev authenticated QA remains blocked unless separately
+authorized; no wildcard is acceptable.
+
+The production Turnstile widget was inspected read-only and has exactly
+the same two production hostnames. A same-hostname Web cutover needs no
+Turnstile change; workers.dev is intentionally distinct and not allowed.
+
+The complete pre-cutover, smoke, observation and Web-only rollback
+procedure now lives in
+`WEB_PROVIDER_API_TRANSITION_RUNBOOK.md`.

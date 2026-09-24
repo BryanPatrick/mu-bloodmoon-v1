@@ -2,7 +2,7 @@
 status: ACTIVE
 category: infrastructure
 audience: internal (Bryan + engineering agents)
-lastVerified: 2026-09-22
+lastVerified: 2026-09-24
 ---
 
 # Open risks and unknowns
@@ -31,6 +31,11 @@ resolved — this file stays a list of what's still open.
 | CF-R8 | Wrangler version skew (this monorepo pins `3.114.17` via the existing Game Data Worker; latest is `4.136.2`) | The `cloudflare-module` preset and this phase's testing both used the older, already-pinned version — behavior on `4.x` not verified | OPEN, low priority — matches the existing project convention, not a new problem introduced this phase |
 | CF-R9 | Production API CORS does not currently allow the shadow Worker's origin (confirmed via a read-only preflight this phase) | Real `fetch` calls from the shadow deploy to the real API fail client-side until `WEB_PUBLIC_URLS` is updated and the API restarted | OPEN — `SHADOW_PRODUCTION_API_CORS = BLOCKED_PENDING_BRYAN_AUTHORIZATION` (explicit decision, Phase CF-01B, `DECISIONS.md`); fix identified (one env value + a controlled restart), deliberately not applied |
 | CF-R10 | `node:crypto` is the only Node API `apps/web` needs; broader Node API usage was checked only in `apps/web`, not in `apps/api` (see `CURRENT_STATE.md`'s apps/api table, sourced from the concurrent feasibility report) | Low impact now that Containers (full Node runtime) is the chosen initial API target — the Node-API-compatibility question only becomes sharp again if/when the `FUTURE_OPTIMIZATION` native-Workers path is pursued | OPEN, low urgency, deferred indefinitely unless native Workers is revisited |
+| CF-R20 | Active Web shadow version `44e50317` was built without the intended `NUXT_PUBLIC_API_BASE`; live CSP contains `http://localhost:3333` | The current shadow cannot reach the production API and cannot be promoted as a release candidate | OPEN — build a new version with the exact production API base, verify CSP contains no localhost, then repeat auth smoke; no redeploy authorized in CF-WEB-PROVIDER-API-TRANSITION-01 |
+| CF-R21 | Registro.br/nameserver and current-zone rollback control are not confirmed | A Web cutover could be impossible to reverse promptly even if the Worker itself is healthy | OPEN — Bryan must verify authenticated change + rollback access and record the operator/export before authorization |
+| CF-R22 | The exact future root/www routing mechanism (full authoritative-zone transfer, Worker custom domain, or record-level transition) is not yet fixed | Execution steps/propagation differ; choosing during the live window would be improvisation | OPEN — choose and record one mechanism in the next pre-cutover phase without touching API/update/mail |
+| CF-R23 | Some public pages use Nuxt `useAsyncData`, so part of the public GET traffic may originate from the Cloudflare Worker rather than the player's browser | Source IP/connection reuse and rate-limit observations for these public requests can differ even though authenticated Bearer traffic stays client-side | OPEN, observation item — inventory/test the release candidate; never cache authenticated responses |
+| CF-R24 | Candidate source documents `/api/health` and `/api/ready`, but both production URLs returned 404 on 2026-09-24 | A cutover operator could falsely rely on unavailable probes and misclassify API readiness | OPEN, non-blocking for Web-only transition — use CORS/auth/API smoke from the runbook; publishing the probes belongs to a separately authorized API deployment |
 
 ## Resolved this phase (moved out of "open," kept here for traceability)
 

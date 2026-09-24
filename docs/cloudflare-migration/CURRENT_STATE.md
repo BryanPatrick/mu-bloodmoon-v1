@@ -2,7 +2,7 @@
 status: ACTIVE
 category: infrastructure
 audience: internal (Bryan + engineering agents)
-lastVerified: 2026-09-22
+lastVerified: 2026-09-24
 confidence: verified from repo/docs + one live, read-only Cloudflare account check (wrangler whoami)
 ---
 
@@ -59,6 +59,11 @@ Neither is the public web or the financial API. **No Worker, D1, R2,
 KV, Queue, or DNS record for the public site has been created as of
 this phase.**
 
+> **Correction/current evidence (2026-09-24):** the sentence above is
+> preserved as the historical CF-01 observation but is no longer current.
+> `bloodmoon-web-shadow` and `bloodmoon-api-container-shadow` now exist as
+> isolated non-production resources, as documented by later phases.
+
 ## apps/web — current implementation facts (Cloudflare-migration relevant)
 
 | Fact | Detail |
@@ -71,6 +76,28 @@ this phase.**
 | Dependencies (root workspace, what `apps/web` actually uses at runtime) | `@nuxt/ui`, `@pinia/nuxt`, `lucide-vue-next`, `nuxt`, `pinia`, `vue`, `vue-router` — no `@nuxt/image`, no native/binary deps found |
 | Auth model | Bearer access/refresh tokens in `localStorage` (`apps/web/composables/useAuth.ts`), one non-authoritative cookie for SSR display state — unchanged by this phase, see `docs/cloudflare-migration/SECURITY_MODEL.md` |
 | Security headers | CSP + 5 other headers, added Phase 17R. **Re-verified this phase under the Cloudflare Workers runtime** — identical header set and CSP hashes on both local Miniflare and the live Cloudflare edge, see `WEB_MIGRATION.md` |
+
+### Live Web-transition preflight (2026-09-24)
+
+- Production root returns 200 from LiteSpeed; root, `api` and `update`
+  resolve to `190.102.41.133`; `www` remains a CNAME to root.
+- The live production root response observed in this preflight did not
+  expose the six Web security headers present on the Worker shadow. This
+  records the response as observed; it does not authorize changing the
+  provider deployment.
+- Although the candidate source contains `/api/health` and `/api/ready`,
+  both live production URLs returned 404. Production therefore does not
+  currently provide those probes and the Web cutover smoke must use the
+  public/API/auth checks documented in the runbook instead.
+- The API accepts exact CORS origins for root and www and rejects the
+  workers.dev origin by omitting ACAO.
+- Turnstile production allows exactly root and www.
+- Active Web shadow version `44e50317` returns 200 and correct security
+  headers but embeds the localhost API fallback in CSP. It is not a
+  release candidate and was not changed by this phase.
+- Approved transition: Cloudflare Web; provider API + provider MySQL;
+  provider update + provider email.
+- Full evidence and runbook: `WEB_PROVIDER_API_TRANSITION_RUNBOOK.md`.
 
 ## apps/api — current implementation facts (Cloudflare-migration relevant, from the concurrent feasibility investigation)
 
