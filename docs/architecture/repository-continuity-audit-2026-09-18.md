@@ -1,5 +1,6 @@
 ---
-status: ACTIVE — audit complete, findings not yet acted on
+status: ACTIVE — findings AND preservation both complete for the Open-Beta/main-drift risk; a
+  larger, separate risk found during preservation remains unactioned (see "Update" section)
 category: architecture
 audience: internal (Bryan + any engineering agent)
 lastVerified: 2026-09-18
@@ -7,6 +8,17 @@ confidence: CONFIRMED (every figure below is a direct git measurement this phase
 ---
 
 # Repository continuity audit — local `main` vs. `origin/main` (2026-09-18)
+
+**UPDATE 2026-09-18, `REPO-PRESERVATION-02`**: the preservation options
+this document named have now been executed for the specific 110-commit
+Open-Beta/main-drift risk this audit covers. See "Preservation
+completed" at the end of this document for the full record. A
+**separate, larger risk was discovered while executing this
+preservation** (dozens of entirely unrelated local-only branches —
+Cloudflare migration sub-phases, Asaas payments integration, launcher
+work, and more) — deliberately **not** acted on this phase, since it
+falls outside what this document or `REPO-PRESERVATION-02`'s own brief
+scoped. See "A larger, separate finding" below.
 
 **Read-only audit, `REPO-CONTINUITY-AUDIT-01`.** No push, merge, rebase,
 or reset of `main` was performed or is authorized by this document.
@@ -208,6 +220,92 @@ prior pushes already proved safe. Option B (pushing `main` itself) is
 explicitly **not** the recommendation — it is a real production/team-
 visible decision, not a backup action, and stays Bryan's to make
 separately.
+
+## Preservation completed (`REPO-PRESERVATION-02`, 2026-09-18)
+
+Executed Option A + a scoped version of Option D from "Preservation
+options" above. Every push below individually pre/post-verified (HEAD
+match, remote-absence-before, remote-SHA-match-after, `origin/main`
+re-confirmed unchanged after each one) — no force, no rebase, no
+history rewrite, `origin/main` untouched throughout (`3adfd053...`
+before and after every push in this phase).
+
+| Push | Local SHA | Result |
+|---|---|---|
+| `docs/agent-automation-architecture` (sync) | `9a3714171523d7099cc2439ebc324f29e8cb55c2` | Fast-forward push, `2972053d..9a371417` |
+| `preservation/main-snapshot-b5a4321d` (new) | `b5a4321d1ccb88845fec767a5ab8537dc61a562d` | New branch, pure pointer to local `main` (HEAD and tree hash both verified identical to `main` before pushing) |
+| `integration/open-beta` (new) | `ff08140e68da36f678b37bd05164970409819720` | New branch — pushed for historical topology, even though every commit it contains is also reachable via the snapshot above |
+
+`MAIN_ONLY_CRITICAL_WORK_PRESERVED = YES` — directly verified: the
+Phase 18-20 knowledge-consolidation commit (`bf3e47c8`), the CSP/
+security-headers middleware files, and all 20 local-only migrations are
+all present in `preservation/main-snapshot-b5a4321d`'s tree (`git
+ls-tree`/`git merge-base --is-ancestor`, not assumed).
+
+**Of the 12 branches this document's own "Local-only work" table and
+`REPO-PRESERVATION-02`'s own brief named**, 10 turned out to already be
+`ALREADY_PRESERVED` the moment the main snapshot was pushed (their
+commits are ancestors of it): `feature/progression-reset-control-plane`,
+`feature/account-lifecycle-gamebridge`, `feature/survey-schema-foundation`,
+`feature/player-preferences-schema-foundation`,
+`fix/integration-test-stabilization`, `fix/reconcile-output-cleanup`,
+`fix/wcoin-peg-guard`, `feature/credential-key-rotation-cpanel-support`,
+`open-beta/beta-feedback-rewards`, `open-beta/ops-hardening` — no
+separate push needed or performed for these. `integration/open-beta`
+was pushed anyway (topology, per the brief's own explicit instruction).
+`feature/legacy-catalog-control-plane` was investigated and found to
+have exactly one unique commit beyond what's already preserved — "docs:
+mark this worktree as a stale/historical reference (banner only)," a
+housekeeping marker with no real content — classified
+`EMPTY_REDUNDANT`, not pushed.
+
+## A larger, separate finding — NOT acted on this phase
+
+While computing reachability for every local branch (not just the 12
+named ones), **~23 additional local branches, entirely unrelated to
+the Open-Beta/main-drift story this document covers, were found to
+also be local-only** — real, substantial, unrelated work streams, each
+with real unique commits (measured, not estimated):
+
+- **Cloudflare migration program**: `infra/cloudflare-backup-exit` (14),
+  `infra/cloudflare-mail-exit` (11), `infra/provider-exit-audit` (12),
+  `infra/cloudflare-dns-planning` (10), `docs/cf-web-provider-api-transition-01`
+  (12), `infra/cloudflare-web-shadow` (3)
+- **Asaas payments integration**: `payments/asaas-production-readiness`
+  (15), `payments/asaas-sandbox-phase5-codex` (8),
+  `payments/asaas-local-hardening-claude` (5), `payments/asaas-sandbox` (2)
+- **Launcher**: `feature/launcher-play-gate` (10),
+  `launcher/phase-2d-release` (7), `launcher/desktop-phase-1` (3)
+- **Other real, unrelated work**: `gamebridge/preserve-command-extension`
+  (5), `knowledge/beta-readiness-phase-7` (4),
+  `open-beta/privacy-feedback-release` (3), `open-beta/p0-foundation` (2),
+  `product/economy-phase-11` (2), `audit/open-beta-readiness-2026-09` (1,
+  a real readiness-audit doc), `docs/incident-2026-09-15-lsapi-closeout`
+  (1, a real incident closeout doc)
+- **`feature/vip-delivery-and-gamebridge-sync`** and
+  **`fix/blood-coin-public-name-completion`** (1 each — both trivial
+  post-merge marker commits, same `EMPTY_REDUNDANT` shape as
+  `feature/legacy-catalog-control-plane` above; their real content is
+  already preserved)
+
+**Deliberately not pushed this phase.** `REPO-PRESERVATION-02`'s own
+brief scoped this preservation effort to the specific 110-commit
+Open-Beta/main-drift risk this document already covers — pushing ~23
+unrelated branches would be a real, consequential scope expansion
+beyond what was authorized, not a mechanical continuation of it, even
+though each individual push would itself be technically safe
+(new-ref-only, non-force). Reported here in full per
+`DOCUMENTATION_IS_AGENT_INFRASTRUCTURE` rather than left only in a
+chat transcript. **This is now the single largest concrete continuity
+risk in the repository** — larger in scope than the original
+Open-Beta/main-drift finding — and is the natural subject of its own,
+separately-authorized preservation phase.
+
+**Also found, not acted on**: `infra/cloudflare-api-container-poc`
+(Codex's branch) has a real local/remote divergence — local
+`918c6557...` vs. the existing remote `faee869e...` — pre-existing,
+unrelated to this session's work, and per this project's own standing
+rule this branch is never touched. Reported only, no action taken.
 
 ## References
 
