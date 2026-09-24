@@ -113,32 +113,44 @@ option D's dual-copy principle at the database layer specifically**
 R2's own durability plus a lightweight verification layer rather than
 a second full copy.
 
-## 5. R2 backup bucket design (design only — no bucket created this phase)
+## 5. R2 backup bucket — created and validated for real (`CF-BACKUP-02`)
 
-**Not created this phase** — no explicit authorization exists for a
-new bucket in this brief, matching the same discipline `R2_ASSETS.md`'s
-shadow-bucket work already established (name clearly test/shadow-scoped
-when something *is* eventually created, per `CF-R2-01`'s own precedent).
+**Update, `CF-BACKUP-02` (2026-09-24)**: created for real, under
+explicit authorization ("Create ONE private NON-PRODUCTION R2 backup
+bucket," Bryan's own brief) — no longer design-only.
 
-- **Never reuse the public asset bucket** (`bloodmoon-shadow-public-assets`
-  or any future production public-media bucket) — a completely
-  separate bucket is required, matching `R2_ASSETS.md`'s own private-
-  media-model design principle ("never reuse a public bucket's prefix
-  scheme for private data").
-- **Proposed name** (design only, not created): `bloodmoon-backups-private`
-  — clearly named, unambiguous, no `r2.dev` public access ever
-  enabled on it (contrast with the public asset bucket, where `r2.dev`
-  is deliberate and documented).
-- **Proposed prefix layout**:
+- **Real bucket**: `bloodmoon-backups-private`, created via
+  `wrangler r2 bucket create`. **Confirmed private** via direct
+  Cloudflare API checks (not assumed from the dashboard UI alone):
+  the bucket's own metadata carries no public-access fields, and the
+  managed `r2.dev` domain endpoint explicitly returns `"enabled": false`.
+  No custom domain was ever created. Never reuses the public asset
+  bucket (`bloodmoon-shadow-public-assets`), matching `R2_ASSETS.md`'s
+  own private-media-model principle.
+- **Real prefix layout, exercised for real**:
   ```
-  database/<YYYY-MM-DD>-<HHMMSS>/database.sql.gz.age
-  database/<YYYY-MM-DD>-<HHMMSS>/SHA256SUMS
-  application/<YYYY-MM-DD>-<HHMMSS>/config-manifest.tar.gz.age
-  metadata/<YYYY-MM-DD>-<HHMMSS>/manifest.txt
-  manifests/media-inventory-<YYYY-MM-DD>.json
+  database/<YYYY>/<MM>/<DD>/<timestamp>-mysql.sql.gz.age
+  database/<YYYY>/<MM>/<DD>/<timestamp>-mutable-assets.tar.gz.age
+  application/<YYYY>/<MM>/<DD>/<timestamp>-config-manifest.tar.gz.age
+  manifests/<timestamp>-manifest.json
   ```
-- **No production bucket created without explicit, separate
-  authorization** — this section is design, not a pending action.
+  (The manifest itself is the one object left unencrypted — by design,
+  since it contains no secrets, only checksums/keys/sizes/validation
+  results, matching §11's own requirement.)
+- **Credentials**: the narrowest possible scope, per the brief's own
+  instruction — an Account API token limited to `Object Read & Write`
+  on `bloodmoon-backups-private` only (never account-wide), 24-hour
+  TTL (auto-expiring, not `Forever`). **A real, honest finding from
+  this phase**: the first token created was mis-transcribed while
+  manually reading its value from a screenshot, producing a persistent
+  `SignatureDoesNotMatch`/403 on every request including the simplest
+  possible one (`HeadBucket`) — traced by testing a minimal request in
+  isolation, then confirmed by recreating the token and copying the
+  exact value via clipboard instead of visual transcription, which
+  worked immediately. Both tokens are scoped/short-lived enough to be
+  low-risk, but the working one (`cf-backup-02-v2`) and the unused,
+  mis-copied one should both be treated as disposable — see the final
+  report's credential-revocation guidance.
 
 ## 6. Encryption
 
@@ -180,12 +192,29 @@ when something *is* eventually created, per `CF-R2-01`'s own precedent).
   no architecture change to the proven restore path, just one
   additional pipe stage.
 
-**Not implemented this phase** — this is the encryption *design*;
-actually wiring `age` into `cpanel-production-backup.sh` and proving
-an encrypted round-trip is real, small, concrete follow-up work, not
-done here (this phase's real proof, §9, used the current *unencrypted*
-shape deliberately, to isolate and validate the restore-chain
-mechanism itself first, before adding a new variable).
+**Update, `CF-BACKUP-02` (2026-09-24) — proven for real**: a full
+encrypt → upload → download → decrypt round-trip was executed against
+the real `bloodmoon-backups-private` bucket, for both the database
+dump and the mutable-asset archive, using the official `age-encryption`
+npm package (`FiloSottile/typage`, the same project/maintainer as the
+`age` CLI — used because no `age` binary was available on the Windows
+machine this phase ran on; the cryptographic mechanism, passphrase/
+scrypt-based symmetric encryption, is identical either way). Every
+checksum matched at every stage: plaintext SHA-256 before encryption,
+ciphertext SHA-256 after encryption *and* after the R2 round-trip, and
+the re-decrypted plaintext SHA-256 matched the original exactly. The
+passphrase was generated locally (32 random bytes), held in a
+scratchpad file never uploaded/committed/logged, and deleted as part
+of this phase's own cleanup (§13) once validation was complete — the
+R2 test objects it protected are now permanently opaque ciphertext,
+which is fine since they were never meant as a durable real backup,
+only proof. A real, production-shaped script implementing this same
+pipeline (`deploy/scripts/age-encrypt-backup.sh`) now exists in the
+repo, isolated and **not wired into production cron** — its exact
+`age`-CLI invocation syntax is a documented, explicit gap (untested,
+since this phase's proof used the npm package, not the CLI) to verify
+before real use, stated plainly in the script's own header comment,
+not glossed over.
 
 ## 7. Retention
 
@@ -215,19 +244,42 @@ or designed):
 
 | Step | Status |
 |---|---|
-| Archive created | Proven — real `mysqldump`/`gzip`/`tar` this phase (§9) |
-| Checksum generated | Proven — `SHA256SUMS`, real, this phase |
-| Upload successful | Not exercised this phase (no real off-host destination exists yet) — `rclone copy --checksum` already does its own transfer-integrity check when it *is* configured |
-| Remote object size/hash validated | Design: an R2 `HeadObjectCommand`/`GetObjectAttributes`-based post-upload check comparing the remote object's size and ETag/checksum against the local `SHA256SUMS` entry — the same class of check `CF-R2-01`'s own shadow-upload verification already used for a different bucket |
-| Download works | Design: the restore-test process (§9) already proves the *local* leg; extending it to download-from-R2-first before decrypting is a small, real addition, not a new mechanism |
-| Decryption works | Design, pending §6's actual implementation — `age -d` on the downloaded object before feeding it into the existing restore pipeline |
-| Restore works | **Proven this phase**, real, end-to-end (§9) |
-| Prisma/database checks pass | **Proven this phase** — the same `verify-disposable-restore-prisma.mjs` script this program has reused since `CF-DB-01` remains valid for this exact purpose; not re-run this specific phase (redundant with the direct SQL row-count/content verification already done, §9), but it is the documented next check per `restore-test.sh`'s own final message |
+| Archive created | **Proven** — real `mysqldump`/`gzip`/`tar`, `CF-BACKUP-01` and re-proven `CF-BACKUP-02` |
+| Checksum generated | **Proven** — `SHA256SUMS`, real |
+| Encrypted | **Proven, `CF-BACKUP-02`** — real `age` passphrase encryption, both the database dump and the asset archive |
+| Upload successful | **Proven, `CF-BACKUP-02`** — real `PutObjectCommand` against the real `bloodmoon-backups-private` bucket |
+| Remote object size/hash validated | **Proven, `CF-BACKUP-02`** — a real `HeadObjectCommand` post-upload check, comparing remote `ContentLength` and a custom `sha256` object-metadata field against the local values; exact match for every uploaded object |
+| Download works | **Proven, `CF-BACKUP-02`** — real `GetObjectCommand` into a clean directory, independent of the upload step |
+| Decryption works | **Proven, `CF-BACKUP-02`** — real `age` decryption using the separately-held passphrase; decrypted plaintext SHA-256 matched the pre-encryption original exactly |
+| Restore works | **Proven** — `CF-BACKUP-01` (local shape) and **`CF-BACKUP-02`** (the full encrypted-round-trip artifact), both via the real, unmodified `restore-test.sh` |
+| Prisma/database checks pass | **Proven, `CF-BACKUP-02`** — a real `PrismaClient` connected to the restored database and read back the correct account count and migration count |
 
-## 9. MySQL restore — real proof this phase, not simulated
+**Every step in this chain is now real, proven evidence, not design** — `CF-BACKUP-02` closed every gap this section previously listed as pending.
 
-**Executed for real**, reusing the existing proven methodology, not a
-new script:
+## 9. MySQL restore — real proof, twice over
+
+**Update, `CF-BACKUP-02` (2026-09-24)**: the local-only proof below
+(`CF-BACKUP-01`) has now been repeated end-to-end **through the full
+encrypted off-host round-trip** — a fresh disposable source database,
+representative financial rows (`Account` + `WalletLedgerEntry`, with
+real unique/foreign-key constraints), the exact backup shape,
+`age`-encrypted, uploaded to the real `bloodmoon-backups-private`
+bucket, downloaded into a clean directory, decrypted, and restored
+into a **second, independent** disposable target via the same real,
+unmodified `restore-test.sh` — 142 tables, 56/56 migrations, both
+synthetic accounts and both ledger entries present with correct
+values. The `UNIQUE` constraint on `idempotencyKey` and the `FOREIGN
+KEY` on `accountId` were both **actively tested, not just inspected**:
+a duplicate-key insert and an FK-violating insert were both attempted
+and both correctly rejected by MySQL (`1062`, `1452`) on the restored
+schema. A real `PrismaClient` connected afterward and read back the
+correct counts. Full detail in this section's own steps below remains
+the `CF-BACKUP-01` local-only version; this update records that the
+identical chain now has a second, independent, off-host-inclusive
+proof on top of it.
+
+**Original, local-only proof (`CF-BACKUP-01`) — executed for real**,
+reusing the existing proven methodology, not a new script:
 
 1. Disposable source MySQL 8.0.46 instance created (own data dir,
    port, throwaway credentials), all 56 current migrations applied
@@ -375,33 +427,52 @@ already uses — reusing infrastructure, not building a new monitoring
 system, matching the brief's own explicit "do not build a huge
 monitoring system" instruction.
 
-## 14. Provider exit gate
+## 14. Provider exit gate — three distinct states, not one
+
+**Update, `CF-BACKUP-02` (2026-09-24)**: this phase's brief explicitly
+asked these to be tracked as three separate, real states, not
+collapsed into one — they answer different questions and shouldn't be
+conflated:
 
 ```
-BACKUP_EXIT_READY = NO
+ARCHITECTURE_READY = YES   -- the design is complete and verified against
+                              current architecture (CF-BACKUP-01)
+MECHANISM_PROVEN   = YES   -- the full chain (backup -> encrypt -> upload
+                              -> remote-verify -> download -> decrypt ->
+                              restore -> Prisma checks) has run for real,
+                              twice (local-only CF-BACKUP-01, full
+                              off-host round-trip CF-BACKUP-02)
+PRODUCTION_WIRED    = NO   -- production cron and production backup
+                              configuration remain completely untouched;
+                              no real production backup has ever used
+                              this mechanism
+BACKUP_EXIT_READY   = NO   -- requires PRODUCTION_WIRED = YES, which
+                              requires a real, separate, explicit
+                              decision this phase does not make
 ```
 
-Per the brief's own criteria, all of the following must be true
-before this flips to `YES` — current status against each:
+Per the brief's own original criteria, current status against each:
 
 | Criterion | Status |
 |---|---|
-| Off-host destination selected | **NOT DONE** — architecture recommends private R2 (§4/§5), but no specific bucket exists and no formal decision is recorded in `DECISIONS.md` |
-| Automation designed | **DONE** this phase (§4-§7, §12) — and the underlying mechanism (`RCLONE_REMOTE`) already existed before this phase, just unconfigured |
-| Restore verified | **DONE, real, this phase** (§9) — the local-to-local leg is proven; the off-host round-trip (download + decrypt) is designed but not yet exercised, since no off-host copy exists yet |
-| Retention defined | **DONE** this phase (§7) — design only, not yet enforced anywhere |
-| Encryption defined | **DONE** this phase (§6) — design only, not yet implemented |
-| Provider-local backup no longer sole copy | **NOT DONE** — this remains true today exactly as `RISKS.md` CF-R26 found it; nothing in this phase changes production |
+| Off-host destination selected | **DONE, real** — `bloodmoon-backups-private`, created and validated this phase (§5). Still non-production/test-scoped; a real production bucket (or reuse of this one for production) is a separate, later decision |
+| Automation designed | **DONE** (§4-§7, §12) — the underlying mechanism (`RCLONE_REMOTE`) already existed before `CF-BACKUP-01`, just unconfigured; a real, isolated, disabled-by-default script (`deploy/scripts/age-encrypt-backup.sh`) now exists implementing the proven pipeline |
+| Restore verified | **DONE, real, twice** (§9) — local-only (`CF-BACKUP-01`) and now the full encrypted off-host round-trip (`CF-BACKUP-02`) |
+| Retention defined | **DONE** (§7) — design confirmed technically feasible via a real, read-only check of the bucket's lifecycle API this phase; no rule enabled |
+| Encryption defined | **DONE, real** (§6) — not just defined, actually implemented and proven end-to-end this phase |
+| Provider-local backup no longer sole copy | **NOT DONE** — this remains true today exactly as `RISKS.md` CF-R26 originally found it; the *mechanism* to change this now exists and is proven, but production still has no off-host copy of anything, since none of this was wired into the real cron job |
 
 ## Status
 
-`BACKUP_ARCHITECTURE_DESIGNED = YES`. `BACKUP_EXIT_READY = NO`
-(unchanged — this phase designs and partially validates the
-architecture; it does not execute a production migration, per its own
-explicit scope). Real, concrete next steps, none scheduled or executed
-here: choose and create a private R2 backup bucket under explicit
-authorization; implement `age` encryption in the actual backup script;
-configure `RCLONE_REMOTE`/`OPS_EVENT_INGEST_URL` for real (still
-against a test/shadow destination first, never production, before any
-production wiring); prove one real encrypted R2 round-trip end to end
-the same way §9 proved the local leg.
+`ARCHITECTURE_READY = YES`. `MECHANISM_PROVEN = YES`. `PRODUCTION_WIRED
+= NO`. `BACKUP_EXIT_READY = NO` — the remaining gap is now genuinely
+**operational, not architectural**: wiring the proven mechanism into
+the real production cron job, a real, separate, explicit decision this
+phase deliberately does not make or schedule. Real, concrete next
+steps, none scheduled or executed here: verify `deploy/scripts/age-encrypt-backup.sh`'s
+exact `age` CLI syntax against a real installed binary (the mechanism
+is proven, this specific script's syntax is not); decide whether
+`bloodmoon-backups-private` becomes the real production backup
+destination or a new bucket is created for that purpose; configure
+`RCLONE_REMOTE`/`OPS_EVENT_INGEST_URL` for real in production, only
+once Bryan explicitly authorizes that specific step.

@@ -628,6 +628,67 @@ cron modified, no DNS/DB change, no secret exposed. Full detail:
 - Production: **untouched** — no DNS, database, cron, or secret
   changed; no existing backup deleted; nothing pushed or merged.
 
+## Phase CF-BACKUP-02 — real encrypted off-host backup round-trip: **COMPLETE**
+
+**Non-production validation only.** Production cron/config untouched
+throughout. Full detail: `BACKUP_STRATEGY.md`.
+
+- **Real private R2 bucket created**: `bloodmoon-backups-private`
+  (`wrangler r2 bucket create`), confirmed no public access via direct
+  API checks (no public-access metadata, `r2.dev` explicitly
+  `enabled: false`, no custom domain).
+- **Narrowest-possible credential**: Account API token, `Object Read &
+  Write`, scoped to that one bucket only, 24-hour TTL. Real finding:
+  the first token was mis-transcribed while manually reading it from a
+  screenshot, causing a persistent `SignatureDoesNotMatch`/403 on
+  every request — root-caused via a minimal isolated `HeadBucket`
+  test, fixed by recreating the token and copying the exact value via
+  clipboard instead of visual reading, which worked immediately.
+- **Full chain proven for real, twice**: a fresh disposable source
+  database with representative financial rows (`Account` +
+  `WalletLedgerEntry`, real unique/FK constraints) → the exact backup
+  shape → real `age` passphrase encryption (`age-encryption` npm
+  package, official `FiloSottile/typage`) → real R2 upload with a
+  post-upload `HeadObject` size/hash check → real download into a
+  clean directory → real decryption → checksum match at every single
+  stage → restore into a second, independent disposable MySQL 8
+  instance via the real, unmodified `restore-test.sh` (142 tables,
+  56/56 migrations) → a live enforcement test of the restored `UNIQUE`
+  and `FOREIGN KEY` constraints (both correctly rejected bad inserts,
+  real MySQL errors 1062/1452) → a real `PrismaClient` connection
+  reading back correct counts.
+- **Application config backup proven**: a small, real, non-secret
+  config-shape manifest (variable names only, zero values) encrypted,
+  uploaded under `application/`, downloaded, decrypted, and parsed
+  correctly.
+- **Machine-readable manifest created and uploaded** under
+  `manifests/` — timestamps, object keys, checksums, restore-validation
+  status — deliberately left unencrypted since it holds no secrets.
+- **Retention feasibility confirmed, not enabled**: a real, read-only
+  check of the bucket's lifecycle API confirmed the endpoint is live
+  and configurable (only Cloudflare's own default multipart-abort rule
+  exists); no expiration rule was created.
+- **Full cleanup**: both disposable MySQL instances destroyed, all
+  local plaintext/decrypted artifacts and the encryption passphrase
+  deleted, only the reusable validation scripts and 4 intentional
+  encrypted R2 test objects remain. Bucket itself was **not** deleted,
+  per the brief's own instruction.
+- **Production-ready script prepared, isolated, disabled by default**:
+  `deploy/scripts/age-encrypt-backup.sh` — implements the exact proven
+  pipeline (encrypt → upload via the existing `RCLONE_REMOTE`
+  mechanism → remote size verification → manifest) as a follow-up step
+  to the existing, untouched `cpanel-production-backup.sh`. Its exact
+  `age`-CLI invocation syntax is explicitly flagged as unverified
+  (this phase's proof used the npm package, not the CLI) — stated
+  plainly in the script's own header, not glossed over.
+- **Three-state exit-gate distinction recorded, as explicitly
+  requested**: `ARCHITECTURE_READY = YES`, `MECHANISM_PROVEN = YES`,
+  `PRODUCTION_WIRED = NO`, `BACKUP_EXIT_READY = NO` — the remaining
+  gap is now explicitly operational, not architectural.
+- Production: **untouched** — no production cron, config, DNS, or
+  database changed; no existing backup touched; nothing pushed or
+  merged.
+
 ## Phase 1 (Nuxt web → Workers, production cutover) — NOT STARTED
 
 Shadow deployment exists (see above); a real production cutover
@@ -726,11 +787,14 @@ MySQL 8 proof is a second, independent data point, `RISKS.md` CF-R4).
 The CORS addition (`RISKS.md` CF-R9) stays explicitly blocked pending
 Bryan's authorization. Email (`CF-MAIL-01`, `EMAIL_MIGRATION.md`) is
 fully audited and shortlisted but not on this critical path at all.
-**Update, `CF-BACKUP-01` (2026-09-24)**: the off-host backup gap
-(`RISKS.md` CF-R26) is now a fully designed, partially-real-proven
-architecture (`BACKUP_STRATEGY.md`), not just a named gap — the
-remaining work is concrete and scoped: create a private test R2
-bucket under explicit authorization, wire `age` encryption into
-`cpanel-production-backup.sh`, prove one real encrypted round-trip.
-Still independent of the Container/database/DNS sequence above, and
-still not on the critical path, but meaningfully closer to done.
+**Update, `CF-BACKUP-02` (2026-09-24)**: the off-host backup gap
+(`RISKS.md` CF-R26) now has a fully proven mechanism, not just a
+design — `ARCHITECTURE_READY = YES`, `MECHANISM_PROVEN = YES`
+(`BACKUP_STRATEGY.md`): a real private R2 bucket, real encryption, a
+real full round-trip with every checksum matched, a real restore with
+live constraint enforcement. `PRODUCTION_WIRED = NO` is the only
+remaining state — a real, explicit, operational decision (not an
+architectural one) for whenever Bryan wants to wire the proven
+mechanism into real production cron/config. Still independent of the
+Container/database/DNS sequence above, and still not on the critical
+path.

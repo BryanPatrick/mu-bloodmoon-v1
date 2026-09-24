@@ -229,6 +229,13 @@ for real (a fresh disposable backup, the real unmodified
 `verify-backup-integrity.sh`/`restore-test.sh`, 56/56 migrations
 restored correctly) — see `BACKUP_STRATEGY.md`. No off-host bucket
 created, no encryption implemented, `BACKUP_EXIT_READY` still `NO`.
+**Update, `CF-BACKUP-02` (2026-09-24)**: the bucket now exists for
+real (private, no public access), encryption is real and proven
+end-to-end (upload/remote-verify/download/decrypt, every checksum
+matched), and a full restore into a second disposable MySQL 8 instance
+succeeded with live-tested financial constraints. `ARCHITECTURE_READY
+= YES`, `MECHANISM_PROVEN = YES`, `PRODUCTION_WIRED = NO` — see
+`BACKUP_STRATEGY.md`.
 
 ## 7. DNS/domain (carried forward, not re-audited)
 
@@ -397,7 +404,7 @@ schedules it at all.
 | `MAIL_EXIT_READY` | **NO** | Provider shortlisted only, no selection; `MAILBOX_INVENTORY` unresolved; pre-existing real-mailbox-delivery proof still open |
 | `DNS_EXIT_READY` | **NO** | Blocked on `registro.br`/DNS-zone/nameserver access, all three still `UNKNOWN` |
 | `UPDATE_EXIT_READY` | **NO** | Direction recorded only; no artifact, no code work, no DNS action taken for this subdomain specifically |
-| `BACKUP_EXIT_READY` | **NO**, materially de-risked | Full off-host architecture designed and the restore chain independently re-proven for real (`CF-BACKUP-01`, `BACKUP_STRATEGY.md`) — no off-host bucket created yet, no encryption implemented yet, still the sole-copy status quo in production |
+| `BACKUP_EXIT_READY` | **NO**, mechanism fully proven | `ARCHITECTURE_READY = YES`, `MECHANISM_PROVEN = YES` (`CF-BACKUP-01`/`CF-BACKUP-02`, `BACKUP_STRATEGY.md`) — real private R2 bucket, real encryption, real full round-trip, real restore with live constraint enforcement. `PRODUCTION_WIRED = NO`: production cron/config untouched, still the sole-copy status quo in production — the remaining gap is explicitly operational, not architectural |
 
 `CURRENT_PROVIDER_ZERO_READY = NO` — five of eight gates are `NO` or
 depend on decisions only Bryan can make (vendor selection, DNS/
