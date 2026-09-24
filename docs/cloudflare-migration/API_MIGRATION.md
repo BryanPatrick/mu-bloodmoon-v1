@@ -10,15 +10,25 @@ lastVerified: 2026-09-22
 **Decided (2026-09-22, Phase CF-01B)**: `API_INITIAL_MIGRATION_TARGET =
 CLOUDFLARE_CONTAINERS`. `API_WORKERS_NATIVE = FUTURE_OPTIMIZATION` — not
 rejected, not scheduled. See `DECISIONS.md` for Bryan's exact words.
-**Containers is not yet production-proven** — the container proof
-itself has not been run. ~~Docker/Podman/nerdctl were unavailable in
-the investigating environment~~ — **correction, Phase CF-R2-01
-(2026-09-22):** local container tooling is no longer the planned path
-for this proof at all. The approved direction is **CF-API-02R**: run
-the proof via Cloudflare's own remote build (Workers Builds), which
-needs no local Docker/Podman/nerdctl. This is a direction, not a
-completed migration — CF-R2-01 did not run the proof, only corrected
-this stale blocker description.
+~~Containers is not yet production-proven — the container proof itself
+has not been run.~~ **Update, Phase CF-EXIT-01 (2026-09-23), read-only
+consumption of a concurrent, unmerged Codex branch**:
+`infra/cloudflare-api-container-poc` (tip `faee869e`, confirmed via
+`git merge-base` NOT an ancestor of `main`) documents a real remote
+Container proof — deployed via Cloudflare Workers Builds (no local
+Docker/Podman/nerdctl needed, exactly the `CF-API-02R` direction below),
+health/readiness/auth/TOTP/graceful-shutdown/disk-ephemerality all
+passed, and a real disposable MySQL 8.0.46/8.4.11 financial-semantics
+proof closed the database gate (55 migrations, Serializable, `GET_LOCK`,
+unique-key idempotency). **This is evidence this program consumed
+read-only, not this program's own independently-verified result** —
+the branch is unmerged, and its own document states plainly "this POC
+is not production authorization and does not change `main`." Full
+detail: `PROVIDER_EXIT_CHECKLIST.md`, `RISKS.md` CF-R4. The approved
+direction (**CF-API-02R**: run the proof via Cloudflare's own remote
+build/Workers Builds) is exactly what that branch appears to have
+done — a real decision for Bryan (review/adopt/re-verify) is the
+remaining step, not re-running the proof from zero.
 
 This document folds in the findings of a concurrent, independent
 investigation (`docs/cloudflare-api-feasibility.md`, branch
@@ -193,7 +203,11 @@ the shape of the next real validation phase, not a completed checklist.
 
 ## Recommended next step
 
-Run the prepared container proof (`CF-API-02R`) on a machine with
-working container tooling. This yields the most decision value without
-touching production or committing to a database provider — see
-`RISKS.md` and `PHASE_STATUS.md`.
+**Update, Phase CF-EXIT-01 (2026-09-23)**: the container proof this
+section previously recommended running now appears to have already
+run, for real, on a concurrent unmerged Codex branch (see above). The
+recommended next step is therefore Bryan's own review/adoption decision
+for that branch's findings — not re-running the proof from scratch.
+This yields the most decision value without touching production or
+committing to a database vendor — see `RISKS.md` CF-R4 and
+`PHASE_STATUS.md`.

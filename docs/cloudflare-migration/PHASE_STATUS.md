@@ -507,6 +507,64 @@ email sent; no provider contacted.** Full findings in
   created/deleted, no SMTP credential changed, no email sent, no
   provider contacted.
 
+## Phase CF-EXIT-01 — provider dependency audit + exit checklist: **COMPLETE**
+
+**Read-only throughout — no production touched, no DNS/email/database
+changed, no file deleted, no service restarted, no provider contacted,
+no payments enabled.** Full findings in `PROVIDER_EXIT_CHECKLIST.md`.
+
+- **Major finding**: a concurrent, unmerged Codex worktree
+  (`infra/cloudflare-api-container-poc`, `faee869e`, confirmed via
+  `git merge-base` NOT an ancestor of `main`) contains real evidence
+  that the Cloudflare Containers proof (`CF-API-02R`) has actually run
+  — health/readiness, synthetic auth/TOTP, graceful shutdown,
+  container-disk ephemerality, and a real disposable-MySQL 8
+  financial-semantics proof (Serializable, `GET_LOCK`, unique-key
+  idempotency, 55 migrations replayed) all passed. Consumed
+  **read-only**, per the brief's explicit instruction — that worktree
+  was not touched, not merged, not independently re-verified. This
+  corrects a stale "proof not run" claim that had persisted across
+  every prior phase's status reporting since `CF-01B`. Recorded:
+  `API_CONTAINER_PROOF = SHADOW_PROVEN_ON_UNMERGED_BRANCH` (`RISKS.md`
+  CF-R4, updated).
+- A second candidate worktree (`infra/cloudflare-db-exit`, `2be35ade`)
+  was checked and found to be **fully already contained** in this
+  program's own chain (the exact `CF-DB-01` commit, `git merge-base`
+  confirmed) — nothing new there, correctly not treated as a separate
+  finding.
+- **Full provider service inventory** (18 categories per the brief's
+  checklist) classified current-provider-hosted vs. already-portable.
+- **Hidden-dependency sweep**: zero hardcoded current-provider IPs or
+  nameserver hostnames in any application code (`apps/`, `scripts/`);
+  zero functional cPanel/Passenger/LSAPI branching in code (comments
+  only); FTP alias provisioned but genuinely zero real usage anywhere.
+  One real, new finding: the BloodMoon Launcher's compiled client
+  hardcodes `api.mubloodmoon.com.br`/`update.mubloodmoon.com.br` as
+  literal default strings — a domain-permanence consideration, not a
+  provider dependency, not a blocker (`RISKS.md` CF-R27).
+- **Environment variable audit**: the application's own config surface
+  is already almost entirely provider-agnostic — every genuinely
+  provider-coupled dependency lives in operational tooling (cron, File
+  Manager, LSAPI, temporary Remote MySQL Access grants), not in `.env`
+  values.
+- **A real, previously under-scoped gap found**: no off-host backup
+  destination is decided anywhere in this program — the backup
+  *method* was proven (`CF-DB-01`) but not where backups live once the
+  current provider is gone (`RISKS.md` CF-R26).
+- **Genuinely new, out-of-scope discovery**: an already-committed,
+  generic, provider-agnostic self-hosted VPS/Docker deploy path
+  (`deploy/docker-compose.production.yml`, `deploy/nginx.bloodmoon.conf`,
+  `deploy/HOSTINGER_CHECKLIST.md`) exists in the repo, unrelated to the
+  Cloudflare target architecture — noted for completeness, not adopted
+  or recommended.
+- **8 final exit gates defined**: `WEB_EXIT_READY`/`API_EXIT_READY`/
+  `STORAGE_EXIT_READY` = `PARTIAL`; `MAIL_EXIT_READY`/`DNS_EXIT_READY`/
+  `UPDATE_EXIT_READY`/`BACKUP_EXIT_READY` = `NO`; `DB_EXIT_READY` =
+  `PARTIAL` (method proven twice independently, vendor undecided).
+  `CURRENT_PROVIDER_ZERO_READY = NO`.
+- Production: **untouched** — no DNS, email, database, file, service,
+  or provider contact of any kind this phase.
+
 ## Phase 1 (Nuxt web → Workers, production cutover) — NOT STARTED
 
 Shadow deployment exists (see above); a real production cutover
@@ -526,15 +584,30 @@ CSP/cache-purge open items) is separate, unscheduled work.
 
 No concrete need identified yet, per the phase's own entry criteria.
 
-## Phase 4 (API runtime) — **DECISION MADE (CF-01B)**, proof NOT STARTED
+## Phase 4 (API runtime) — **DECISION MADE (CF-01B)**, proof **SHADOW_PROVEN_ON_UNMERGED_BRANCH** (update `CF-EXIT-01`)
 
 `API_INITIAL_MIGRATION_TARGET = CLOUDFLARE_CONTAINERS`,
 `API_WORKERS_NATIVE = FUTURE_OPTIMIZATION` (`DECISIONS.md`,
-`API_MIGRATION.md`). The decision itself is recorded; the actual
-container proof (`CF-API-02R`) has not been run — Containers is
-**not yet production-proven**. The Prisma-on-Workers question
-(`RISKS.md` CF-R3) is deprioritized, not blocking, since it only
-matters for the future-optimization path.
+`API_MIGRATION.md`). **Update, `CF-EXIT-01` (2026-09-23)**: this
+section previously said the container proof "has not been run" —
+**stale**. A concurrent, unmerged Codex branch
+(`infra/cloudflare-api-container-poc`, tip `faee869e`, confirmed NOT
+an ancestor of `main`) documents a real remote Container proof via
+Cloudflare Workers Builds: health/readiness, synthetic auth/TOTP,
+graceful shutdown, and container-disk ephemerality all passed, and the
+database gate was closed for real against a disposable MySQL
+8.0.46/8.4.11 instance (55 migrations, Serializable, `GET_LOCK`,
+unique-key idempotency). Consumed **read-only** this phase, per the
+brief's own instruction — this program did not touch that worktree,
+did not merge it, and has not independently re-verified its results.
+Full detail and exact classification: `PROVIDER_EXIT_CHECKLIST.md`.
+Containers is **still not this program's own production-proven
+result** and the Codex document itself states it is "not production
+authorization" — but the prior "not yet run" framing materially
+understates the real, evidenced state of the art as of 2026-09-23. The
+Prisma-on-Workers question (`RISKS.md` CF-R3) remains deprioritized,
+unaffected by this finding since it only matters for the
+future-optimization native-Workers path.
 
 ## Phase 5 (MySQL exit) — NOT STARTED, one entry-criteria item now closed
 
@@ -574,15 +647,24 @@ Depends on all preceding phases.
 
 ## Next recommended step
 
-`CF-API-02R` (the Container POC) is now the single highest-leverage next
-step — it's the critical path for the chosen Containers target and
-currently has zero empirical proof behind it. `CF-DB-01` is complete;
-the remaining database work is a real vendor decision among the 5
-shortlisted candidates (`CF-DB-01-REPORT.md`), then a restore proof
-against that specific vendor (not done here — this phase proved the
-*method*, not a specific external target). The CORS addition
-(`RISKS.md` CF-R9) stays explicitly blocked pending Bryan's
-authorization. Email (`CF-MAIL-01`, `EMAIL_MIGRATION.md`) is fully
-audited and shortlisted but not on this critical path at all — it can
-be picked up whenever Bryan wants to choose a transactional provider,
-independent of the Container/database/DNS sequence above.
+**Update, `CF-EXIT-01` (2026-09-23)**: `CF-API-02R` no longer has "zero
+empirical proof behind it" — see the Phase 4 and Phase CF-EXIT-01
+entries above. The single highest-leverage next step is now **a real
+decision from Bryan on the unmerged Codex Container branch**
+(`infra/cloudflare-api-container-poc`): review/adopt its findings,
+independently re-verify them, or treat them as directional evidence
+only — not assumed or recommended here, since that decision is
+explicitly Bryan's to make, not this read-only phase's. In parallel,
+`CF-DB-01` remains complete; the remaining database work is a real
+vendor decision among the 5 shortlisted candidates (`CF-DB-01-REPORT.md`),
+then a restore proof against that specific vendor (proven twice now as
+a *method*, in two independent environments — the Codex branch's own
+MySQL 8 proof is a second, independent data point, `RISKS.md` CF-R4).
+The CORS addition (`RISKS.md` CF-R9) stays explicitly blocked pending
+Bryan's authorization. Email (`CF-MAIL-01`, `EMAIL_MIGRATION.md`) is
+fully audited and shortlisted but not on this critical path at all. A
+genuinely new gap, not previously named anywhere in this program: no
+off-host backup destination is decided (`RISKS.md` CF-R26,
+`PROVIDER_EXIT_CHECKLIST.md` §6) — worth a decision before any real
+provider-exit timeline is set, independent of the Container/database/
+DNS sequence above.
