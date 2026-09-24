@@ -1,6 +1,6 @@
 ---
-status: ACTIVE — findings AND preservation both complete for the Open-Beta/main-drift risk; a
-  larger, separate risk found during preservation remains unactioned (see "Update" section)
+status: ACTIVE — full repository continuity preservation complete as of REPO-PRESERVATION-03;
+  local main -> origin/main remains a deliberately open, unresolved governance question
 category: architecture
 audience: internal (Bryan + any engineering agent)
 lastVerified: 2026-09-18
@@ -12,13 +12,22 @@ confidence: CONFIRMED (every figure below is a direct git measurement this phase
 **UPDATE 2026-09-18, `REPO-PRESERVATION-02`**: the preservation options
 this document named have now been executed for the specific 110-commit
 Open-Beta/main-drift risk this audit covers. See "Preservation
-completed" at the end of this document for the full record. A
-**separate, larger risk was discovered while executing this
-preservation** (dozens of entirely unrelated local-only branches —
-Cloudflare migration sub-phases, Asaas payments integration, launcher
-work, and more) — deliberately **not** acted on this phase, since it
-falls outside what this document or `REPO-PRESERVATION-02`'s own brief
-scoped. See "A larger, separate finding" below.
+completed" for that record. A **separate, larger risk was discovered
+while executing this preservation** (dozens of entirely unrelated
+local-only branches — Cloudflare migration sub-phases, Asaas payments
+integration, launcher work, and more) — deliberately **not** acted on
+in that phase, since it fell outside what that phase's own brief
+scoped.
+
+**UPDATE 2026-09-18, `REPO-PRESERVATION-03`**: that larger risk has now
+also been resolved. See "Full repository preservation" at the end of
+this document. `LOCAL_SINGLE_MACHINE_CRITICAL_RISK` is now **NO** —
+every branch carrying meaningful unique content is either directly on
+`origin` or fully recoverable through a verified remote ref. Three
+trivial single-commit markers and one pre-existing, deliberately
+untouched branch (Codex's `infra/cloudflare-api-container-poc`) remain
+local-only, carrying no unique meaningful information (see that
+section for the evidence behind each).
 
 **Read-only audit, `REPO-CONTINUITY-AUDIT-01`.** No push, merge, rebase,
 or reset of `main` was performed or is authorized by this document.
@@ -306,6 +315,62 @@ separately-authorized preservation phase.
 `918c6557...` vs. the existing remote `faee869e...` — pre-existing,
 unrelated to this session's work, and per this project's own standing
 rule this branch is never touched. Reported only, no action taken.
+
+## Full repository preservation (`REPO-PRESERVATION-03`, 2026-09-18)
+
+Re-enumerated all 60 local branches against a fresh, complete fetch of
+`origin` (31 branches by the end of this phase, up from 10) rather than
+trusting the prior "~23" estimate. Exact `LOCAL_ONLY` count at the
+start of this phase: **24** (not 23 — one additional branch,
+`infra/cloudflare-web-shadow-rc-02`, had not existed at the time of the
+prior audit).
+
+**Pushed this phase (21 branches, all new refs, all individually
+pre/post-verified, `origin/main` re-confirmed unchanged after every
+single push):**
+
+| Category | Branches |
+|---|---|
+| Cloudflare migration | `infra/cloudflare-backup-exit` (14 commits — real CF-BACKUP-02 encrypted-backup work), `infra/cloudflare-dns-planning` (10 — CF-DNS-01), `infra/cloudflare-mail-exit` (11 — CF-MAIL-01), `infra/provider-exit-audit` (12 — CF-EXIT-01), `infra/cloudflare-web-shadow` (3), `infra/cloudflare-web-shadow-rc-02` (14), `docs/cf-web-provider-api-transition-01` (12) |
+| Payments / Asaas | `payments/asaas-production-readiness` (15), `payments/asaas-sandbox-phase5-codex` (8), `payments/asaas-local-hardening-claude` (5), `payments/asaas-sandbox` (2) |
+| Launcher | `feature/launcher-play-gate` (10), `launcher/phase-2d-release` (7), `launcher/desktop-phase-1` (3) |
+| Other real, unique work | `gamebridge/preserve-command-extension` (5), `knowledge/beta-readiness-phase-7` (4), `open-beta/privacy-feedback-release` (3), `open-beta/p0-foundation` (2), `product/economy-phase-11` (2), `audit/open-beta-readiness-2026-09` (1 — a real, substantive readiness audit, not a marker), `docs/incident-2026-09-15-lsapi-closeout` (1 — a real incident closeout doc, not a marker) |
+
+**Not pushed — `REDUNDANT_HISTORICAL_MARKER` (real content already
+preserved elsewhere; the only unique thing about each is one trivial
+housekeeping commit):**
+
+- `feature/legacy-catalog-control-plane` — 1 unique commit, "docs: mark
+  this worktree as a stale/historical reference (banner only)"; its
+  real 99 commits of feature work are all already in
+  `preservation/main-snapshot-b5a4321d`.
+- `feature/vip-delivery-and-gamebridge-sync` and
+  `fix/blood-coin-public-name-completion` — 1 unique commit each, both
+  the identical message "fix: correct table-name casing in 3 inherited
+  migrations (twice-failed in production)", dated the same day — a
+  fix-forward bookkeeping pattern applied across several already-merged
+  old branches, not unique feature content.
+
+**Not touched — pre-existing, deliberate:**
+
+- `infra/cloudflare-api-container-poc` (Codex's branch) — local
+  (`918c6557...`) and remote (`faee869e...`) diverge under the same
+  name; classified `REMOTE_EXISTS_DIFFERENT_HISTORY`; per this
+  project's standing rule this branch is never pushed to or force-
+  overwritten by anything else.
+- `main` itself — `MAIN_PUSH = NOT AUTHORIZED`, unchanged, per this and
+  every prior phase's explicit instruction.
+
+**Secret scan**: every push candidate's diff against `main` was
+checked for secret-shaped filenames; one hit
+(`apps/api/src/modules/alerting/alerting.env.ts`, on
+`payments/asaas-production-readiness`) — reviewed and confirmed to be
+env-var-reading **code**, not a secret value. No real secret found; no
+push was stopped.
+
+**Final state**: 31 branches on `origin` (was 10 at the start of this
+document, 8 before this session's preservation work began at all).
+`LOCAL_SINGLE_MACHINE_CRITICAL_RISK = NO`.
 
 ## References
 
