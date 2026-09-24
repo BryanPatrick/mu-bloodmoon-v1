@@ -1,0 +1,42 @@
+FROM node:22-bookworm-slim AS build
+
+WORKDIR /app
+
+RUN apt-get update \
+  && apt-get install --yes --no-install-recommends ca-certificates openssl \
+  && rm -rf /var/lib/apt/lists/*
+
+COPY package.json package-lock.json ./
+COPY apps/api/package.json apps/api/package.json
+COPY apps/game-data-worker/package.json apps/game-data-worker/package.json
+COPY apps/web/package.json apps/web/package.json
+COPY packages/shared/package.json packages/shared/package.json
+
+RUN npm install --global npm@10.9.2 \
+  && npm install --ignore-scripts --no-audit --no-fund
+
+RUN node -e "const c=require('node:crypto');const b=require('bcryptjs');const jwt=require('jsonwebtoken');const {generateSecret,generate,verify}=require('otplib');const QR=require('qrcode');(async()=>{const key=c.randomBytes(32),iv=c.randomBytes(12);const e=c.createCipheriv('aes-256-gcm',key,iv),ct=Buffer.concat([e.update('bloodmoon'),e.final()]),tag=e.getAuthTag(),d=c.createDecipheriv('aes-256-gcm',key,iv);d.setAuthTag(tag);if(Buffer.concat([d.update(ct),d.final()]).toString()!=='bloodmoon')throw Error('aes');if(c.createHmac('sha256','test').update('bloodmoon').digest('hex').length!==64)throw Error('hmac');const hash=b.hashSync('test',4);if(!b.compareSync('test',hash))throw Error('bcrypt');const token=jwt.sign({sub:'shadow'},'synthetic-test-secret');jwt.verify(token,'synthetic-test-secret');const secret=generateSecret(),otp=await generate({secret}),result=await verify({secret,token:otp});if(!result.valid)throw Error('totp');if(!await QR.toString('otpauth://totp/BloodMoon:shadow?secret='+secret,{type:'utf8'}))throw Error('qrcode');console.log('CONTAINER_CRYPTO_COMPATIBILITY_OK')})().catch(error=>{console.error(error);process.exit(1)})"
+
+COPY . .
+RUN npx prisma generate --schema apps/api/prisma/schema.prisma \
+  && npm run api:build
+
+FROM node:22-bookworm-slim AS runtime
+
+WORKDIR /app
+
+COPY apps/api/package.json ./package.json
+RUN apt-get update \
+  && apt-get install --yes --no-install-recommends ca-certificates openssl \
+  && rm -rf /var/lib/apt/lists/* \
+  && npm install --omit=dev --ignore-scripts --no-audit --no-fund
+
+COPY --from=build /app/apps/api/dist ./dist
+COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=build /app/node_modules/@prisma/client ./node_modules/@prisma/client
+
+ENV NODE_ENV=production
+ENV PORT=8080
+EXPOSE 8080
+
+CMD ["node", "dist/apps/api/src/main.js"]

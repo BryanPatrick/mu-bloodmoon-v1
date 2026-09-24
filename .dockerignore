@@ -1,0 +1,16 @@
+.git
+.github
+.nuxt
+.output
+.wrangler
+node_modules
+**/node_modules
+**/.nuxt
+**/.output
+**/dist
+coverage
+storage
+*.log
+.env
+.env.*
+!.env.example
