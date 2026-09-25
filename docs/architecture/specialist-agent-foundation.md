@@ -758,11 +758,14 @@ SPECIALIST-02  Identity + knowledge profile
                   this document's §8/§9 made real
 
 SPECIALIST-03  Knowledge router / retrieval (the 4 MVP skills, §10)
-               -- build bloodmoon-context-bootstrap,
-                  bloodmoon-knowledge-router, bloodmoon-khub-query,
-                  bloodmoon-source-authority for real, as designed
-                  (docs/skills/BLOODMOON_CUSTOM_SKILLS.md already
-                  has the full spec for each)
+               -- DONE 2026-09-25: all 4 skills built for real, response
+                  contract defined, 8/8 real tests passed. See
+                  specialist-mvp-validation-2026-09-25.md for the full
+                  record, including two honest discrepancies from
+                  assumed test answers and the one open blocker (skill
+                  files real but not yet git-committed in their own
+                  repo -- no git identity configured, not set without
+                  being asked)
 
 SPECIALIST-04  Claude integration
                -- the subagent/custom-agent definition wiring Claude's
