@@ -39,7 +39,16 @@ apps/api/storage/launcher-assets/*
 !apps/api/storage/launcher-assets/.gitkeep
 .agents/
 .codex/
-.claude/
+# .claude/ stays ignored by default (personal settings, local tool
+# permissions) EXCEPT the canonical bloodmoon-* skills/agents
+# (BLOODMOON-AI-04, docs/architecture/bloodmoon-ai-product-vision.md §4)
+.claude/*
+!.claude/skills/
+!.claude/agents/
+.claude/skills/*
+!.claude/skills/bloodmoon-*/
+.claude/agents/*
+!.claude/agents/bloodmoon-*.md
 .npm-cache/
 .tmp/
 
