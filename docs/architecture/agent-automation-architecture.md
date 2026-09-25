@@ -544,4 +544,6 @@ business-rule truth, which stays in the numbered steps above it.
 - `docs/decisions/0031-*.md`, `0032-*.md` — this phase's new ADRs
 - `docs/architecture/specialist-agent-foundation.md` — full specialist
   design, `SPECIALIST-AGENT-FOUNDATION-01`
+- `docs/agents/blood-moon-specialist-profile.md` — the Blood Moon
+  specialist's own knowledge profile, `SPECIALIST-02`
 - `AGENTS.md`, `docs/protocols/agent-bootstrap.md` — standing governance
