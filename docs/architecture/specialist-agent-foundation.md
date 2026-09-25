@@ -8,6 +8,12 @@ confidence: MIXED — the generic/specific split and MVP recommendation follow d
   everything about actually building the specialist is PROPOSED_NOT_RATIFIED
 ---
 
+**Reclassified `2026-09-25` (`ADR-0033`)**: this document describes the
+current, real "knowledge kernel" — now understood as Blood Moon AI's
+*first* capability, not its ceiling. Full product vision and roadmap:
+[`bloodmoon-ai-product-vision.md`](bloodmoon-ai-product-vision.md).
+Nothing below is rewritten by that reclassification.
+
 # Blood Moon specialist agent — foundation
 
 **Companion to

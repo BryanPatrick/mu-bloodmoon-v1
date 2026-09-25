@@ -52,6 +52,29 @@ below duplicates `AGENTS.md`.
 
 ## Blood Moon skills — canonical source
 
+**UPDATE 2026-09-25 (`BLOODMOON-AI-04`)**: the 2026-09-08 decision below
+(`~/.claude/skills/` as the *sole* canonical source, project-local
+copies removed as unnecessary) is **partially superseded**, not
+deleted — that decision was correct for `bloodmoon-deploy`/
+`frontend-design` at the time and remains historically accurate. For
+the newer `bloodmoon-context-bootstrap`/`bloodmoon-knowledge-router`/
+`bloodmoon-khub-query`/`bloodmoon-source-authority` skills (and the new
+`bloodmoon-knowledge-specialist` subagent), the **canonical source is
+now this repository's own `.claude/skills/`/`.claude/agents/`**
+(real git history, a real `origin` remote) — `~/.claude/skills/`/
+`~/.claude/agents/` are the **runtime install**, kept because global
+discovery has proven reliably fast all session, synced from the
+canonical copy and `sha256sum`-verified identical, never edited
+independently. Reasoning: `~/.claude/skills/` has no configured remote
+and no git identity in this environment — a real single-point-of-
+failure the 2026-09-08 decision did not anticipate. Confirmed this
+phase, against current official Claude Code documentation, that
+project-local `.claude/skills/`/`.claude/agents/` are fully supported
+and explicitly recommended for version-controlled team use — this
+corrects, not just revisits, the 2026-09-08 entry below's own
+uncertainty about project-local discovery. Full reasoning:
+`docs/architecture/bloodmoon-ai-product-vision.md` §4.
+
 - `~/.claude/skills/` is the canonical git repo for `bloodmoon-*`
   skills (approved 2026-09-08) — tracks only `bloodmoon-*/`, never
   official Anthropic skills (`frontend-design`, etc.), via its own
