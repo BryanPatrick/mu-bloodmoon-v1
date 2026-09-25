@@ -196,6 +196,15 @@ content that already lives there.
 **Not built this phase.** This section defines intent only, per Bryan's
 explicit instruction.
 
+**Elaborated in full** (knowledge sources, retrieval/ingestion flow,
+identity fit, versioning, bootstrap sequence, Claude-specialist
+interaction, technology options, current Anthropic capabilities,
+unattended-execution host options, MVP skill selection, evaluation
+plan, and a proposed implementation sequence) by
+[`docs/architecture/specialist-agent-foundation.md`](specialist-agent-foundation.md)
+(`SPECIALIST-AGENT-FOUNDATION-01`, 2026-09-25) — this section states
+the role; that document is where it's designed in depth.
+
 ### 5.1 Core purpose
 
 A specialist agent, distinct from Claude's general engineering role,
@@ -533,4 +542,6 @@ business-rule truth, which stays in the numbered steps above it.
   `context/domains/{n8n,orchestration,notifications,bloodmoon-ai,
   knowledge-hub}.md` — this repository, `main`
 - `docs/decisions/0031-*.md`, `0032-*.md` — this phase's new ADRs
+- `docs/architecture/specialist-agent-foundation.md` — full specialist
+  design, `SPECIALIST-AGENT-FOUNDATION-01`
 - `AGENTS.md`, `docs/protocols/agent-bootstrap.md` — standing governance
