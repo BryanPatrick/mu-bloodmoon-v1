@@ -1,11 +1,20 @@
 ---
-status: ACTIVE — MVP built and tested; skill files real but not yet committed to their own repo
+status: ACTIVE — MVP built and tested; skill files now version-controlled in this repository
+  (BLOODMOON-AI-04, .claude/skills/), superseding this doc's earlier "not yet committed" note
 category: architecture
 audience: internal (Bryan + any engineering agent)
 lastVerified: 2026-09-25
 confidence: CONFIRMED — every test below used real tool calls (git show/grep, wrangler d1 execute)
   against real repository/Hub state, no answer was asserted without a fetched source
 ---
+
+**UPDATE 2026-09-25 (`BLOODMOON-AI-04`/`-05`)**: the skills below are
+now Blood Moon AI's first capability (`ADR-0033`), version-controlled
+in this repository's own `.claude/skills/`
+(`bloodmoon-ai-product-vision.md` §4) — the "not yet committed" gap
+this document originally reported is closed. A real Stage 2 internal
+pilot (10 more categories + 3 player-facing questions) ran on top of
+this same MVP: `bloodmoon-ai-product-vision.md` §22.
 
 # Specialist retrieval MVP — build + validation record (`SPECIALIST-03`)
 
