@@ -2,16 +2,16 @@
 status: ACTIVE
 category: context-pack
 audience: internal
-lastVerified: 2026-09-17
+lastVerified: 2026-09-25
 ---
 
 # ADR index — every known Blood Moon ADR, committed or preserved
 
 Extends [`DECISIONS.md`](DECISIONS.md)'s committed-ADR table with the
 21 ADRs (`0001-0018`, `0020`, `0022`, `0027`) found only in
-[`preservation/openbeta-untracked/docs/decisions/`](preservation/openbeta-untracked/docs/decisions/)
+`preservation/openbeta-untracked/docs/decisions/` (on `docs/agent-automation-architecture`, not on `main`)
 (real content, read in full this phase — see
-[`preservation/OPENBETA_UNTRACKED_MANIFEST.md`](preservation/OPENBETA_UNTRACKED_MANIFEST.md)).
+`preservation/OPENBETA_UNTRACKED_MANIFEST.md` (on `docs/agent-automation-architecture`, not on `main`)).
 **No ADR number is ever reused or reassigned** — this index is purely
 additive. Lower number does not mean older-and-invalid; several
 low-numbered ADRs (e.g. 0001, 0009, 0012) remain fully current.
@@ -57,6 +57,16 @@ The nine `main`-tracked ADRs remain `CANONICAL_DECISION`.
 | 0028 | XP stack and progression calculator | main | ACTIVE | game-economy | PARTIALLY SUPERSEDED by 0029 | — | 0029 (parts) | CANONICAL_DECISION |
 | 0029 | Progression reset policy — current ruling | main | ACTIVE | game-economy | YES — supersedes parts of 0025/0026/0028 | 0025/0026/0028 (parts) | — | CANONICAL_DECISION |
 | 0030 | Migration table-casing static audit + immutability governance | main | ACTIVE | infrastructure | YES | — | — | CANONICAL_DECISION |
+| 0031 | Initial multi-agent automation model (Claude + internal specialist, Codex deferred) | GitHub `main` | ACTIVE (with clarification addendum) | bloodmoon-ai / orchestration | YES — scope clarified by 0033 | — | 0033 (scope clarification, not supersession) | CANONICAL_DECISION |
+| 0032 | Agent automation architecture direction (Option A) | GitHub `main` | ACTIVE | bloodmoon-ai / orchestration | YES | — | — | CANONICAL_DECISION |
+| 0033 | Blood Moon AI product scope and evolution model | GitHub `main` | ACTIVE | bloodmoon-ai | YES — Stage 1 COMPLETE, Stage 2 ACTIVE (2026-09-25) | — | — | CANONICAL_DECISION |
+| 0034 | `main` is the definitive canonical source of truth | GitHub `main` | ACTIVE | governance | YES | — | — | CANONICAL_DECISION |
+
+**Source column note (2026-09-25)**: rows 0001-0030 were written when
+"`main`" meant the former local `D:\MU` `main` (now
+`preservation/main-snapshot-b5a4321d`); none of those files is on
+GitHub `main` yet. Rows 0031-0034 are on GitHub `main`. See
+[`MAIN_INTEGRATION.md`](MAIN_INTEGRATION.md).
 
 ## What changed this phase vs. Phase 10's `DECISIONS.md`
 

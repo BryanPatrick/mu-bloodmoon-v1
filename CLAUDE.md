@@ -6,6 +6,22 @@ tool-specific loading convention and to record genuinely
 Claude-specific behavior that doesn't apply to other agents. Nothing
 below duplicates `AGENTS.md`.
 
+**Canonical source (2026-09-25, `ADR-0034`)**: this file, `AGENTS.md`,
+`context/` and `.claude/` are canonical on `main`. Other branches are
+historical sources. The Blood Moon AI specialist
+(`.claude/agents/bloodmoon-knowledge-specialist.md`) is on `main` and
+was verified by name from a fresh session (`BLOODMOON-AI-05C`,
+`STAGE1_COMPLETE = YES`). For any Blood Moon project-grounding question,
+consult it (read-only, non-autonomous) before acting.
+
+**Environment note (2026-09-25)**: the notes below were written for the
+Claude Desktop app's Code tab on the `D:\MU` workstation. Blood Moon is
+now also worked on from Claude Code on the web (cloud sessions with a
+fresh clone of this repository), where `~/.claude/skills/` holds no
+`bloodmoon-*` skills and
+the repository's `.claude/` is the only source of Blood Moon skills and
+agents.
+
 ## Environment specifics
 
 - This project is worked on via the **Claude Desktop app's "Code"

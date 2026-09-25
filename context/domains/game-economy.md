@@ -12,10 +12,12 @@ preserved `open-questions.md`/`open-risks.md` (both read in full) as
 supporting sources — real, verified content, not `docs/README.md`
 narrative alone anymore.
 
-**Authoritative docs**: [`../../docs/economy/`](../../docs/economy/),
-[`../../docs/progression/`](../../docs/progression/),
-[`../../docs/drop/`](../../docs/drop/),
-[`../../docs/decisions/0029-progression-reset-policy-current-ruling.md`](../../docs/decisions/0029-progression-reset-policy-current-ruling.md).
+**Authoritative docs**: `docs/economy/`,
+`docs/progression/`,
+`docs/drop/`,
+`docs/decisions/0029-progression-reset-policy-current-ruling.md`
+(none of these is on `main` yet; read them from the historical
+branches listed in [`../MAIN_INTEGRATION.md`](../MAIN_INTEGRATION.md)).
 `docs/gameserver/database/` is referenced by `docs/README.md`'s
 narrative but **does not exist on this branch** (confirmed via
 `git ls-tree`) — see [`../OPEN_QUESTIONS.md`](../OPEN_QUESTIONS.md)

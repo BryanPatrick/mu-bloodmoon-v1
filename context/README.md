@@ -2,11 +2,19 @@
 status: ACTIVE
 category: context-pack
 audience: internal (any agent or engineer bootstrapping onto this project)
-lastVerified: 2026-09-17
+lastVerified: 2026-09-25
 version: v1
 ---
 
 # Blood Moon — Context Pack v1
+
+**On `main` since 2026-09-25 (`BLOODMOON-AI-06`).** `main` is the
+definitive canonical source of truth
+([`ADR-0034`](../docs/decisions/0034-main-is-the-canonical-source-of-truth.md));
+the branches this pack was maintained on are historical sources now.
+Read [`MAIN_INTEGRATION.md`](MAIN_INTEGRATION.md) first: older files
+here say "`main`" meaning the former local `D:\MU` `main`, and some
+documents they point at have not reached GitHub `main` yet.
 
 **What this is**: a canonical, bootstrap-readable layer for agent/engineer
 continuity — a short set of documents an agent (Claude, Codex, a future
@@ -16,7 +24,7 @@ the Knowledge Hub orchestration project, alongside the first real Claude
 staging pilot (see [`domains/orchestration.md`](domains/orchestration.md)
 and [`domains/knowledge-hub.md`](domains/knowledge-hub.md)).
 
-**What this is not**: a replacement for [`docs/README.md`](../docs/README.md)
+**What this is not**: a replacement for `docs/README.md` (not on `main` yet; see [`MAIN_INTEGRATION.md`](MAIN_INTEGRATION.md))
 (the existing, much richer central documentation index),
 [`docs/protocols/agent-bootstrap.md`](../docs/protocols/agent-bootstrap.md)
 (the existing, mandatory 15-step bootstrap protocol), or
@@ -60,7 +68,8 @@ without editing the original bootstrap protocol.
    the real, mandatory 15-step sequence. Follow it. This Context Pack's
    [`AGENT_OPERATING_MODEL.md`](AGENT_OPERATING_MODEL.md) only adds a
    Knowledge Hub-aware step on top, never replaces any of the 15.
-3. [`CURRENT_STATE.md`](CURRENT_STATE.md) — short, current snapshot
+3. [`CURRENT_STATE.md`](CURRENT_STATE.md) (after
+   [`MAIN_INTEGRATION.md`](MAIN_INTEGRATION.md)) — short, current snapshot
    (kept deliberately shorter than a phase history).
 4. Your current task's domain — see [`domains/`](domains/) for a stub
    per domain, each pointing at the real authoritative docs.
@@ -84,6 +93,7 @@ without editing the original bootstrap protocol.
 
 | File | Purpose |
 |---|---|
+| [`MAIN_INTEGRATION.md`](MAIN_INTEGRATION.md) | Canonical-source rule (ADR-0034), "which `main`" translation, what is and is not on GitHub `main` |
 | [`CURRENT_STATE.md`](CURRENT_STATE.md) | Short, bootstrap-readable current snapshot — never project history |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | CURRENT/PLANNED/EXPERIMENTAL map across every real and future system |
 | [`BUSINESS_RULES.md`](BUSINESS_RULES.md) | CONFIRMED/PROPOSED/UNKNOWN business rules, each sourced, never assumed |

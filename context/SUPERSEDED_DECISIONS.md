@@ -15,7 +15,7 @@ original is never edited or deleted").
 
 | Superseded (or partially) | By | Where the real record lives |
 |---|---|---|
-| ADR-0025 (parts) | ADR-0029 | [`docs/decisions/0029-progression-reset-policy-current-ruling.md`](../docs/decisions/0029-progression-reset-policy-current-ruling.md) |
+| ADR-0025 (parts) | ADR-0029 | `docs/decisions/0029-progression-reset-policy-current-ruling.md` (not on `main` yet; see [`MAIN_INTEGRATION.md`](MAIN_INTEGRATION.md)) |
 | ADR-0026 (parts) | ADR-0029 | same |
 | ADR-0028 (parts) | ADR-0029 | same |
 

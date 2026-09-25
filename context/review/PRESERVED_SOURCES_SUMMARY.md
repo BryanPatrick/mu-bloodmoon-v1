@@ -7,7 +7,7 @@ lastVerified: 2026-09-17
 
 # Preserved sources summary (condensed)
 
-Full manifest: [`../preservation/OPENBETA_UNTRACKED_MANIFEST.md`](../preservation/OPENBETA_UNTRACKED_MANIFEST.md).
+Full manifest: `context/preservation/OPENBETA_UNTRACKED_MANIFEST.md` (on `docs/agent-automation-architecture`; `context/preservation/` was not brought to `main`, see [`../MAIN_INTEGRATION.md`](../MAIN_INTEGRATION.md)).
 
 ```
 Found untracked in mu-bloodmoon-v1-openbeta = 125 files

@@ -1,13 +1,43 @@
 ---
-status: EXPERIMENTAL
+status: ACTIVE
 category: context-pack-domain
-lastVerified: 2026-09-17
+lastVerified: 2026-09-25
 classification: PARTIAL
 ---
 
 # Domain: Blood Moon AI
 
-**STATUS**: PLANNED. No implementation exists. Two real, complementary
+**CURRENT STATE (2026-09-25, `BLOODMOON-AI-06`) — read this first**:
+
+- **Scope**: Blood Moon AI is a first-class product AI platform
+  (`ADR-0033`, `CANONICAL_DECISION`): player questions, FAQ
+  intelligence, knowledge escalation, portal navigation, Wiki/Journal
+  assistance, telemetry awareness, personal assistance and, much later,
+  bounded governed actions — each stage separately gated.
+- **What exists**: the Blood Moon Knowledge Specialist, its first real
+  capability — `.claude/agents/bloodmoon-knowledge-specialist.md` plus
+  the skills `bloodmoon-context-bootstrap`, `bloodmoon-knowledge-router`,
+  `bloodmoon-khub-query`, `bloodmoon-source-authority`, all on `main`
+  (PR #1, `dd11117`). It is read-only and non-autonomous: Claude invokes
+  it; it answers with sources, authority and `CONFIRMED`/`UNKNOWN`
+  status, and never acts. Claude is the only autonomous agent in V1
+  (`ADR-0031` addendum, `ADR-0033`).
+- **Stages**: `STAGE 0` DONE; **`STAGE 1` COMPLETE** (fresh-session
+  discovery + by-name invocation from `main`, 8/8 PASS,
+  `BLOODMOON-AI-05C`); **`STAGE 2` internal question answering ACTIVE**;
+  Stages 3-8 not authorized.
+- **Authoritative sources (all on `main`)**: `ADR-0031`, `ADR-0032`,
+  `ADR-0033`, `docs/architecture/bloodmoon-ai-product-vision.md`
+  (§20 roadmap, §22 Stage 2 pilot, §23 Stage 1 closure),
+  `docs/architecture/specialist-agent-foundation.md`,
+  `docs/architecture/agent-automation-architecture.md`,
+  `docs/agents/blood-moon-specialist-profile.md`,
+  `docs/architecture/specialist-mvp-validation-2026-09-25.md`.
+
+The 2026-09-17 text below is kept as the historical record of the
+design inputs; its "no implementation exists" line is superseded.
+
+~~**STATUS**: PLANNED. No implementation exists.~~ Two real, complementary
 sources of design intent exist — a repo design doc (permission/data
 model) and Bryan's own Phase 10 brief (answer-routing model) — kept
 separate below since neither has been reconciled with the other yet,
@@ -44,7 +74,9 @@ contradictory: the ladder is about *where an answer comes from*
 allowed to know/do* (permission) — a real design pass would need to
 compose both, not pick one.
 
-**ACTIVE DECISIONS**: none — both are proposals, `bloodmoon-ai-assistant.md`
+**ACTIVE DECISIONS**: ~~none~~ (2026-09-25: `ADR-0031`, `ADR-0032`,
+`ADR-0033` — see the current-state block above; the two design inputs
+below are still proposals) — both are proposals, `bloodmoon-ai-assistant.md`
 is explicitly `status: DESIGN`, unimplemented.
 
 **AUTHORITATIVE SOURCES**: `docs/architecture/bloodmoon-ai-assistant.md`

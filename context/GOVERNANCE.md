@@ -2,10 +2,22 @@
 status: ACTIVE
 category: context-pack
 audience: internal
-lastVerified: 2026-09-17
+lastVerified: 2026-09-25
 ---
 
 # Governance — how this Context Pack governs itself
+
+## Canonical location (2026-09-25, `ADR-0034`)
+
+`main` of `github.com/BryanPatrick/mu-bloodmoon-v1` is the definitive
+canonical source of truth for everything in the precedence list below.
+A document that exists only on another branch
+(`docs/agent-automation-architecture`, `governance/engineering-pack`,
+`preservation/main-snapshot-b5a4321d`, or any feature branch) is a
+`HISTORICAL_SOURCE` for current-state purposes until it is promoted to
+`main` by a reviewed PR. When `main` and a historical branch disagree,
+`main` wins and the disagreement is recorded. See
+[`MAIN_INTEGRATION.md`](MAIN_INTEGRATION.md).
 
 ## Precedence (this pack sits below everything that already existed)
 

@@ -7,7 +7,7 @@ classification: PARTIAL
 
 # Domain: VIP
 
-**Authoritative docs**: [`../../docs/vip/`](../../docs/vip/), notably
+**Authoritative docs**: `docs/vip/` (not on `main` yet; see [`../MAIN_INTEGRATION.md`](../MAIN_INTEGRATION.md)), notably
 `vip-end-to-end-data-flow.md` and `wz-setaccountlevel-coexistence.md`
 per `docs/README.md`'s narrative (not independently re-verified this
 session).

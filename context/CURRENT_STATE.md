@@ -2,28 +2,67 @@
 status: ACTIVE
 category: context-pack
 audience: internal (bootstrap-time read)
-lastVerified: 2026-09-17
+lastVerified: 2026-09-25
 ---
 
 # Current state
 
 Kept deliberately short — this is a snapshot for bootstrap, not a
-history. For history, see [`docs/README.md`](../docs/README.md)'s own
-running phase log, `docs/decisions/`, and `docs/handoff/`.
+history. For history, see `docs/README.md`'s own
+running phase log (not yet on `main`; see
+[`MAIN_INTEGRATION.md`](MAIN_INTEGRATION.md)), `docs/decisions/`, and `docs/handoff/`.
+
+## Canonical source and Blood Moon AI (2026-09-25, `BLOODMOON-AI-06`) — read first
+
+- **`main` is the definitive canonical source of truth** (Bryan,
+  2026-09-25, [`ADR-0034`](../docs/decisions/0034-main-is-the-canonical-source-of-truth.md)).
+  `docs/agent-automation-architecture`, `governance/engineering-pack`
+  and `preservation/main-snapshot-b5a4321d` (the former local `D:\MU`
+  `main`) are historical/preserved sources only. This Context Pack
+  reached `main` in `BLOODMOON-AI-06`; see
+  [`MAIN_INTEGRATION.md`](MAIN_INTEGRATION.md) for what came across,
+  what did not, and how to read older "on `main`" statements below
+  (they mean the former local `main`, not GitHub `main`).
+- **Blood Moon AI** is a first-class product platform
+  (`ADR-0033`); the Blood Moon Knowledge Specialist
+  (`.claude/agents/bloodmoon-knowledge-specialist.md` + 4 `bloodmoon-*`
+  skills) is its first real capability: a read-only, non-autonomous
+  knowledge/retrieval kernel that Claude consults. Claude remains the
+  only autonomous agent in V1.
+- **Stage status**: `STAGE 0` DONE; **`STAGE 1` COMPLETE** — PR #1
+  merged to `main` (`dd11117`), and a fresh session discovered the
+  specialist and invoked it by name twice, 8/8 checks PASS
+  (`BLOODMOON-AI-05C`, 2026-09-25); **`STAGE 2` (internal question
+  answering) ACTIVE**. Stages 3-8 not authorized. Detail:
+  [`domains/bloodmoon-ai.md`](domains/bloodmoon-ai.md),
+  `docs/architecture/bloodmoon-ai-product-vision.md` §20/§23.
+- Repository continuity: the 2026-09-18 audit's
+  `LOCAL_SINGLE_MACHINE_CRITICAL_RISK` is `NO` (every branch with
+  meaningful unique content is on `origin`) —
+  `docs/architecture/repository-continuity-audit-2026-09-18.md`.
+
+The sections below are the 2026-09-17 snapshot. Where a line is now
+false it is struck through with the correction; the rest has not been
+re-verified in this pass.
 
 ## Repository / branch (Phase 11, updated)
 
 - Canonical primary worktree: `D:\MU\mu-bloodmoon-v1`.
-- Current branch: `phase-9/context-pack-v1-foundation` (see the git log
+- ~~Current branch: `phase-9/context-pack-v1-foundation` (see the git log
   for the exact current HEAD — this file doesn't hardcode a commit SHA
   that goes stale the moment another commit lands). Clean tree.
   **Not merged into `main` — deliberately; merge gate is preservation
   PASS + validation PASS + secret scan PASS + a real independent
-  content review PASS**, only the last one still outstanding (see
+  content review PASS**, only the last one still outstanding~~
+  **(2026-09-25: brought to GitHub `main` by `BLOODMOON-AI-06`, by
+  Bryan's authorization; see the section above)** (see
   [`DEFERRED.md`](DEFERRED.md) and
   [`docs/operations/context-pack-independent-review.md`](../docs/operations/context-pack-independent-review.md)).
-- `main` itself: HEAD `f5fd099a`, 91 commits ahead of `origin/main`
-  (confirmed via `git branch -v`), not pushed.
+- ~~`main` itself: HEAD `f5fd099a`, 91 commits ahead of `origin/main`
+  (confirmed via `git branch -v`), not pushed.~~ **(2026-09-18/25: the
+  local `main` reached `b5a4321d`, 110 commits ahead, and is preserved
+  on `origin` as `preservation/main-snapshot-b5a4321d`; GitHub `main` is
+  the canonical target — `ADR-0034`.)**
 - **Origin relationship**: `origin` = `github.com/BryanPatrick/mu-bloodmoon-v1`.
   Nothing pushed this phase or last.
 - **Active feature branches relevant to this pack** (full detail:
@@ -33,12 +72,15 @@ running phase log, `docs/decisions/`, and `docs/handoff/`.
   + `payments/asaas-local-hardening-claude` +
   `payments/asaas-sandbox-phase5-codex` (Asaas local DB-parity continuation),
   `governance/engineering-pack`
-  (canonical home of `AGENTS.md`/bootstrap protocol).
+  (~~canonical home of `AGENTS.md`/bootstrap protocol~~ former home;
+  historical source since `ADR-0034` — `AGENTS.md` and the bootstrap
+  protocol are canonical on `main`).
 - **`mu-bloodmoon-v1-openbeta`**: 220 dirty entries (143 untracked, 77
   modified), unchanged since a 2026-09-08 finding. **A byte-exact,
   hash-verified copy of all 125 untracked documentation files now
-  exists** at [`preservation/openbeta-untracked/`](preservation/openbeta-untracked/)
-  (Phase 11) — the originals are untouched, and whether to actually
+  exists** at `preservation/openbeta-untracked/`
+  (Phase 11; on `docs/agent-automation-architecture`, not brought to
+  `main` — see [`MAIN_INTEGRATION.md`](MAIN_INTEGRATION.md)) — the originals are untouched, and whether to actually
   commit/integrate this content anywhere real remains open (see
   [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md) OQ-CTX-005). Includes the
   only known copies of the real player/admin/super-admin/technical
@@ -113,4 +155,7 @@ on the Asaas continuation branch.
   the Knowledge Hub.
 - No production Knowledge Hub mutation (read-only `SELECT` only, every
   phase) and no production Blood Moon change occurred.
-- This Context Pack is **not merged** into `main`.
+- ~~This Context Pack is **not merged** into `main`.~~ **(2026-09-25:
+  it is on `main` via `BLOODMOON-AI-06`.)**
+- No Blood Moon AI stage past `STAGE 2` is authorized; nothing
+  player-facing is built (`ADR-0033`).

@@ -8,13 +8,24 @@ Claude-specific, not a separate set of rules.) This repo has real
 history of more than one agent/tool working here concurrently — keep
 instructions here tool-agnostic so any of them behave consistently.
 
+**Canonical source (2026-09-25, `ADR-0034`)**: `main` on
+`github.com/BryanPatrick/mu-bloodmoon-v1` is the definitive canonical
+source of truth for this file, `docs/protocols/`, `context/` and every
+other governance/knowledge document. `docs/agent-automation-architecture`,
+`governance/engineering-pack` and `preservation/main-snapshot-b5a4321d`
+(the former local `D:\MU` `main`) are historical/preserved sources,
+read only to recover content that has not reached `main` yet. This
+file reached `main` in `BLOODMOON-AI-06`. Documents referenced below
+that are not on `main` yet are marked as such.
+
 **Provenance note (2026-09-08)**: this file extends, not replaces, the
 agent-bootstrap system originally built in `mu-bloodmoon-v1-openbeta`
 (where it existed uncommitted; recovered and backed up at
 `D:\MU\RecoveryBackups\openbeta-2026-09-08\`). Both `AGENTS.md` and
-`docs/protocols/agent-bootstrap.md` now live canonically in this
+`docs/protocols/agent-bootstrap.md` ~~now live canonically in this
 dedicated governance branch (`governance/engineering-pack`, based on
-`main`) instead. Rules 1-9 below restate that original system's core;
+`main`) instead~~ **live canonically on `main` since 2026-09-25
+(`ADR-0034`); `governance/engineering-pack` is now a historical source**. Rules 1-9 below restate that original system's core;
 rules 10-22 are new, added this same day from the branch/dirty-worktree
 recovery work — see `docs/architecture/branch-and-release-governance.md`
 for the full reasoning behind each. Feature-domain docs the original
@@ -28,7 +39,9 @@ note in `docs/README.md` itself.
 1. **Understand Objective/Phase before acting.** Follow
    [`docs/protocols/agent-bootstrap.md`](docs/protocols/agent-bootstrap.md)'s
    15-step sequence for any non-trivial engineering action — read
-   [`docs/README.md`](docs/README.md), identify the domain, read current
+   `docs/README.md` (not yet on `main`; until it lands, start at
+   [`context/README.md`](context/README.md) and
+   [`docs/knowledge/KNOWLEDGE_MASTER_INDEX.md`](docs/knowledge/KNOWLEDGE_MASTER_INDEX.md)), identify the domain, read current
    system docs and relevant [`docs/decisions/`](docs/decisions/) ADRs,
    check open risks/questions, only then act.
 2. **Confirm branch/worktree before acting.** This project has multiple
@@ -136,14 +149,16 @@ note in `docs/README.md` itself.
 
 ## Where things live
 
-- **Central documentation index**: [`docs/README.md`](docs/README.md).
+- **Canonical-source decision**: [`docs/decisions/0034-main-is-the-canonical-source-of-truth.md`](docs/decisions/0034-main-is-the-canonical-source-of-truth.md).
+- **Bootstrap entry point on `main`**: [`context/README.md`](context/README.md) (Context Pack) and [`docs/knowledge/KNOWLEDGE_MASTER_INDEX.md`](docs/knowledge/KNOWLEDGE_MASTER_INDEX.md).
+- **Central documentation index**: `docs/README.md` — not yet on `main` (historical copy on `docs/agent-automation-architecture`; it indexes many Open Beta docs that have not reached `main`).
 - **Engineering process/lifecycle**: [`docs/architecture/engineering-governance.md`](docs/architecture/engineering-governance.md).
 - **Branch/release/deploy governance**: [`docs/architecture/branch-and-release-governance.md`](docs/architecture/branch-and-release-governance.md).
-- **Control plane architecture**: [`docs/architecture/control-plane.md`](docs/architecture/control-plane.md).
+- **Control plane architecture**: `docs/architecture/control-plane.md` — not yet on `main` (historical copy on `docs/agent-automation-architecture`).
 - **Agent automation architecture**: [`docs/architecture/agent-automation-architecture.md`](docs/architecture/agent-automation-architecture.md).
 - **Why something is the way it is**: [`docs/decisions/`](docs/decisions/) (ADRs).
-- **Known gaps needing a decision**: [`docs/open-questions.md`](docs/open-questions.md).
-- **Known technical/operational risks**: [`docs/open-risks.md`](docs/open-risks.md).
+- **Known gaps needing a decision**: `docs/open-questions.md` — not on any pushed branch (preserved Open Beta material); on `main` use [`context/OPEN_QUESTIONS.md`](context/OPEN_QUESTIONS.md) and [`docs/knowledge/KNOWLEDGE_GAPS.md`](docs/knowledge/KNOWLEDGE_GAPS.md).
+- **Known technical/operational risks**: `docs/open-risks.md` — same status as above.
 
 ## Production safety
 

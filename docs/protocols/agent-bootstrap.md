@@ -44,6 +44,19 @@ stale, and why) — never silently pick one without saying so.
 
 ## The 15-step sequence
 
+**On `main` (2026-09-25, `BLOODMOON-AI-06`, `ADR-0034`)**: `main` is the
+canonical source. `docs/README.md` has not reached `main` yet, so for
+step 1 read [`context/README.md`](../../context/README.md) (Context
+Pack bootstrap order) and
+[`docs/knowledge/KNOWLEDGE_MASTER_INDEX.md`](../knowledge/KNOWLEDGE_MASTER_INDEX.md)
+instead. Domain folders named in steps 2-3 that are not on `main`
+(for example `docs/gamebridge/`, `docs/payments/`, `docs/economy/`,
+`docs/vip/`) are read from historical branches with `git show
+<branch>:<path>` and labeled as historical sources; the knowledge
+router's domain map
+(`.claude/skills/bloodmoon-knowledge-router/SKILL.md`) says where each
+one lives today.
+
 1. **READ PROJECT INDEX** — `docs/README.md`. It is the central map; start
    here even if you think you already know where to look.
 2. **IDENTIFY DOMAIN** — which of the named sections in `docs/README.md`
@@ -57,8 +70,10 @@ stale, and why) — never silently pick one without saying so.
    `docs/architecture/`, `docs/gameserver/`, `docs/gamebridge/`,
    `docs/vip/`, `docs/payments/`, `docs/security/`, `docs/accounts/`,
    `docs/economy/`, `docs/launcher/` for the identified domain(s).
-4. **READ RELEVANT DECISIONS** — `docs/decisions/` (see
-   [`README.md`](../decisions/README.md) in that folder). A decision
+4. **READ RELEVANT DECISIONS** — `docs/decisions/` (see `README.md` in
+   that folder where one exists; on `main` use
+   [`context/DECISIONS.md`](../../context/DECISIONS.md) and
+   [`context/ADR_INDEX.md`](../../context/ADR_INDEX.md) as the index). A decision
    already made and documented is not up for silent re-litigation.
 5. **READ THE LAST RELEVANT PHASE/HANDOFF** — `docs/handoff/` for the
    topic, and any phase-report-shaped document already covering this

@@ -91,9 +91,14 @@ for later design.
 
 ## Index of real ADRs
 
+**2026-09-25**: ADR-0031, 0032, 0033 (Blood Moon AI) and 0034 (`main`
+is the canonical source) are on GitHub `main` and are the only ADR
+files there today; see [`ADR_INDEX.md`](ADR_INDEX.md) and
+[`MAIN_INTEGRATION.md`](MAIN_INTEGRATION.md).
+
 See [`ADR_INDEX.md`](ADR_INDEX.md) for the full 0001-0030 table (9
 tracked on `main`, 21 real, preserved-from-openbeta, read in full Phase
-11 — see [`preservation/OPENBETA_UNTRACKED_MANIFEST.md`](preservation/OPENBETA_UNTRACKED_MANIFEST.md)).
+11 — see `preservation/OPENBETA_UNTRACKED_MANIFEST.md` (on `docs/agent-automation-architecture`, not on `main`)).
 "PARTIALLY SUPERSEDED" (0025/0026/0028, by 0029) is copied directly
 from `docs/architecture/engineering-governance.md`'s own description —
 this pack does not independently judge which parts.

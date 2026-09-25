@@ -74,9 +74,9 @@ specifically checked — including the entire `docs/manuals/`,
 `docs/economy/`, `docs/gamebridge/`, `docs/launcher/`, `docs/payments/`,
 `docs/product/`, `docs/security/`, `docs/vip/`. All 125 were copied
 byte-exact into
-[`preservation/openbeta-untracked/`](preservation/openbeta-untracked/)
+`preservation/openbeta-untracked/` (on `docs/agent-automation-architecture`, not on `main`)
 this phase, hash-verified (125/125 PASS) — see
-[`preservation/OPENBETA_UNTRACKED_MANIFEST.md`](preservation/OPENBETA_UNTRACKED_MANIFEST.md)
+`preservation/OPENBETA_UNTRACKED_MANIFEST.md` (on `docs/agent-automation-architecture`, not on `main`)
 for the full breakdown. Of the 125: 35 are byte-identical to what
 `main` already tracks, 7 are `main`-superset originals (main added a
 dated freshness note, never a contradiction), and 83 are genuinely
