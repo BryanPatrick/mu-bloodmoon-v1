@@ -9,6 +9,16 @@ confidence: MIXED — architecture direction is a real Bryan decision (see ADR-0
 
 # Agent automation architecture — canonical entry point
 
+**Reclassified `2026-09-25` (`BLOODMOON-AI-04`, `ADR-0033`)**: everything
+this document and its family describe is now understood as the
+foundation layer of a larger product, **Blood Moon AI** — see
+[`bloodmoon-ai-product-vision.md`](bloodmoon-ai-product-vision.md) for
+the full product vision and 8-stage roadmap. Nothing below is rewritten
+or superseded by that reclassification — it remains accurate for what
+it always described (the engineering agent ecosystem's own
+architecture); the product-vision document is where the wider scope is
+designed, cross-referencing this one rather than duplicating it.
+
 **This is the single entry point for Blood Moon's automation ecosystem.**
 It consolidates, and does not replace, three real documents that
 already existed before it — none of them are deleted, edited to look
@@ -570,4 +580,6 @@ business-rule truth, which stays in the numbered steps above it.
   specialist's own knowledge profile, `SPECIALIST-02`
 - `docs/architecture/specialist-mvp-validation-2026-09-25.md` — the 4
   MVP skills' real build + 8-test validation record, `SPECIALIST-03`
+- `docs/architecture/bloodmoon-ai-product-vision.md` — the full product
+  vision, roadmap, and canonical-skill-source model, `ADR-0033`
 - `AGENTS.md`, `docs/protocols/agent-bootstrap.md` — standing governance

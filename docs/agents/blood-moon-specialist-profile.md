@@ -9,6 +9,13 @@ confidence: CONFIRMED — every identity fact below is a direct read-only or sin
 
 # Blood Moon specialist — knowledge profile
 
+**Reclassified `2026-09-25` (`ADR-0033`)**: this identity is now
+understood as **Blood Moon AI's** first real capability (the
+"knowledge/retrieval kernel"), not a standalone internal tool. See
+`docs/architecture/bloodmoon-ai-product-vision.md`. The identity, its
+zero-capability boundary, and everything else on this page are
+unchanged — only the product context around it is now explicit.
+
 **This document is the canonical, Git-tracked knowledge profile.** Per
 `docs/architecture/specialist-agent-foundation.md` §5/§8/§9, the
 specialist's *identity and capabilities* live in the Knowledge Hub (an
