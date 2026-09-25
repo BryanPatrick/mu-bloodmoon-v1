@@ -181,10 +181,16 @@ specialist's own future work the same as any other agent's.
 
 ## `EVALUATION_STATE`
 
-`EVALUATION_NOT_RUN`. The 13-category evaluation plan
-(`specialist-agent-foundation.md` §19) is designed, not executed — that
-is `SPECIALIST-05`'s job, after `SPECIALIST-03` (retrieval) and
-`SPECIALIST-04` (Claude integration) exist to evaluate.
+`INFORMAL_MVP_TESTED`. `SPECIALIST-03` (2026-09-25) ran 8 real
+retrieval tests by hand against the real 4-skill MVP (not the full
+13-category plan, not a repeatable scored harness) — 8/8 correct
+against each test's own correct-behavior standard, including two
+honest cases where the real evidence was more precise than the test's
+own assumed answer. Full record:
+`docs/architecture/specialist-mvp-validation-2026-09-25.md`. The full
+13-category plan (`specialist-agent-foundation.md` §19) remains
+`EVALUATION_NOT_RUN` as a formal, repeatable harness — `SPECIALIST-05`'s
+job, after `SPECIALIST-04` (Claude integration) exists.
 
 ---
 

@@ -568,4 +568,6 @@ business-rule truth, which stays in the numbered steps above it.
   design, `SPECIALIST-AGENT-FOUNDATION-01`
 - `docs/agents/blood-moon-specialist-profile.md` — the Blood Moon
   specialist's own knowledge profile, `SPECIALIST-02`
+- `docs/architecture/specialist-mvp-validation-2026-09-25.md` — the 4
+  MVP skills' real build + 8-test validation record, `SPECIALIST-03`
 - `AGENTS.md`, `docs/protocols/agent-bootstrap.md` — standing governance
