@@ -93,6 +93,28 @@ workflow.** Distinguish clearly:
   triggered by an orchestration layer without a human driving that
   specific session. This is what's deferred, not manual use.
 
+**Clarified `2026-09-25` (`SPECIALIST-02B`) — the autonomy model,
+explicit, not a change:**
+
+```
+AUTONOMOUS_EXECUTION_V1 = Claude only
+INTERNAL_SPECIALIST_V1  = supporting knowledge/context component --
+                          NOT independently scheduled, NOT independently
+                          task-claiming, NOT an autonomous executor
+CODEX                   = manual development/research usage only
+```
+
+The specialist is not a second autonomous peer to Claude. It may later
+operate as a Claude subagent/tool Claude itself invokes (§5, §12-13 of
+`specialist-agent-foundation.md`) — it never independently claims work,
+schedules itself, executes an autonomous workflow, deploys, modifies
+production, or approves a consequential action. Full reasoning:
+`docs/decisions/0031-initial-multi-agent-automation-model.md`'s own
+"Clarification" section, added the same day. The real staging identity
+now created under this clarification
+(`blood-moon-specialist-v1-staging`) holds zero Hub capability grants —
+see `docs/agents/blood-moon-specialist-profile.md`.
+
 ### 2.2 Architecture direction — `DOCUMENTED_DECISION` (direction only) (2026-09-18)
 
 **Option A is accepted as the direction to document**, not as an

@@ -92,7 +92,40 @@ capability-granted role inside the orchestration layer (deferred).
   see `agent-automation-architecture.md` §11 for what remains explicitly
   not authorized.
 
+## Clarification (2026-09-25, `SPECIALIST-02B`)
+
+**Explicit, not a change of decision**: this ADR's "Claude + internal
+specialist agent" model does not mean two autonomous peers. Restated
+precisely, since the original text left room to misread it that way:
+
+```
+AUTONOMOUS_EXECUTION_V1 = Claude only
+INTERNAL_SPECIALIST_V1  = supporting knowledge/context component --
+                          NOT independently scheduled, NOT independently
+                          task-claiming, NOT an autonomous executor
+CODEX                   = manual development/research usage only,
+                          not part of the initial autonomous agent loop
+```
+
+The specialist may later operate as a Claude subagent/tool that Claude
+itself invokes (`specialist-agent-foundation.md` §12-13) — it never
+independently claims work, schedules itself, executes an autonomous
+workflow, deploys, modifies production, or approves a consequential
+action. This was already implicit in this ADR's own §5.2 boundary
+(`agent-automation-architecture.md`) and in the real identity created
+under `SPECIALIST-02B`
+(`blood-moon-specialist-v1-staging`: zero Hub capability grants, no
+scheduler, no task-claim capability) — stated explicitly here so the
+distinction is never assumed rather than read.
+
+Codex's exclusion remains a **cost/scope decision**, restated per
+explicit instruction: **not a technical incapability**. Reason
+unchanged: token/cost availability and operational simplicity for the
+first real automation pass.
+
 ## Related
 
 `docs/decisions/0032-agent-automation-architecture-direction.md`,
-`docs/architecture/agent-automation-architecture.md`.
+`docs/architecture/agent-automation-architecture.md`,
+`docs/architecture/specialist-agent-foundation.md`,
+`docs/agents/blood-moon-specialist-profile.md`.

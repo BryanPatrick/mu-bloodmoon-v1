@@ -1,10 +1,10 @@
 ---
-status: DESIGN — profile document only; the Hub identity it describes is NOT YET CREATED
+status: ACTIVE — profile complete, real staging identity created and verified (SPECIALIST-02B)
 category: agent-profile
 audience: internal (Bryan + any engineering agent, and the specialist itself once real)
 lastVerified: 2026-09-25
-confidence: MIXED — the profile design is complete; SPECIALIST_02's own identity-creation step is
-  BLOCKED (see PROFILE_VERSION below) and did not run
+confidence: CONFIRMED — every identity fact below is a direct read-only or single-row-write query
+  against ai-knowledge-hub-db-staging this phase, none assumed
 ---
 
 # Blood Moon specialist — knowledge profile
@@ -20,15 +20,18 @@ at and elaborates one layer further.
 
 ## `SPECIALIST_ID`
 
-`blood-moon-specialist-v1-staging` (proposed, **not yet created** — see
-"Identity creation status" below). Follows this Hub's own established
-naming convention: production-track actors carry a clean slug
-(`claude-code`, `openai-codex`); a staging-environment instantiation of
-a real (non-synthetic) identity carries a `-staging` suffix, the same
-pattern `claude-code-real-staging` already established for exactly this
-situation (a real identity, staging-only for now). `blood-moon-specialist-v1`
-(no suffix) is reserved for the eventual production row — never created
-by this phase.
+`blood-moon-specialist-v1-staging` — **real, created `2026-09-25`**
+(`SPECIALIST-02B`), Hub row id `58624df5-1f7a-43d6-9370-9216dc9bba55`.
+Follows this Hub's own established naming convention, confirmed against
+the real staging actor list before creation (`claude-staging`,
+`codex-staging`, `bryan-staging`, `admin-staging`,
+`claude-code-real-staging` — no equivalent specialist existed):
+production-track actors carry a clean slug (`claude-code`,
+`openai-codex`); a staging-environment instantiation of a real
+(non-synthetic) identity carries a `-staging` suffix, the same pattern
+`claude-code-real-staging` already established for exactly this
+situation. `blood-moon-specialist-v1` (no suffix) remains reserved for
+the eventual production row — not created by this phase.
 
 ## `PROJECT`
 
@@ -49,6 +52,14 @@ definition: `specialist-agent-foundation.md` §1.
 Project-grounding authority / context specialist. **Not** general
 reasoning, implementation, planning, coding, or execution — those stay
 Claude's. Full division of labor: `specialist-agent-foundation.md` §12.
+
+**`AUTONOMOUS = NO`, explicit** (clarified `2026-09-25`,
+`ADR-0031`'s own addendum): `AUTONOMOUS_EXECUTION_V1` is Claude only.
+The specialist does not independently claim work, schedule itself,
+execute an autonomous workflow, deploy, modify production, or approve a
+consequential action — ever, by design, not just by current capability
+grant. It may operate as a Claude subagent/tool Claude itself invokes,
+never as a second peer executor.
 
 ## `SOURCE_AUTHORITY_MODEL`
 
@@ -133,13 +144,18 @@ exceptions and no new prohibitions; it only reaffirms.
 `NO_APPROVAL_AUTHORITY`, `NO_ADMIN_AUTHORITY`, `NO_CREDENTIAL_AUTHORITY`,
 `NO_DEPLOY_AUTHORITY`, `NO_PAYMENT_AUTHORITY`,
 `NO_DATABASE_ADMIN_AUTHORITY` — the exact boundary this phase's own
-brief specified. **Zero Hub `agent_capabilities` grants at MVP**: every
+brief specified. **Zero Hub `agent_capabilities` grants, VERIFIED**
+(`SPECIALIST-02B`, real query: `SELECT COUNT(*) FROM agent_capabilities
+WHERE agent_id = '58624df5-...'` → `0`) — not merely planned. Every
 plain read endpoint the specialist needs (`GET /projects/:slug/context`,
 `GET /tasks`, `GET /decisions`, `GET /handoffs`, `GET /events`) is
 **not** capability-gated in the Hub's own routing (confirmed by reading
-`src/index.ts`'s route table this phase — only `orchestrationWrite`
-routes carry a capability requirement); a capability grant is deferred
-until a real, named write need exists, per least-privilege.
+`src/index.ts`'s route table — only `orchestrationWrite` routes carry a
+capability requirement); a capability grant is deferred until a real,
+named write need exists, per least-privilege. No `TASK_CLAIM`, no
+`REPORT_INGEST`, no `APPROVAL_GRANT`, no `SYSTEM_ADMIN` — none were
+granted, none are needed for the specialist's current (knowledge/
+context) purpose.
 
 ## `UNKNOWN_BEHAVIOR`
 
@@ -172,34 +188,60 @@ is `SPECIALIST-05`'s job, after `SPECIALIST-03` (retrieval) and
 
 ---
 
-## Identity creation status — `BLOCKED`, not created
+## Identity creation status — `CREATED`, verified (`SPECIALIST-02B`, 2026-09-25)
 
-**`SPECIALIST-02`'s real Hub-write step did not run this phase.**
-`npx wrangler d1 execute ai-knowledge-hub-db-staging --remote` (the
-read-only "search for an existing equivalent agent before creating one"
-check, required before any write per this phase's own explicit
-instruction) failed with a Cloudflare OAuth authentication error: the
-locally-stored wrangler token is missing several scopes, including
-`d1:write`, needed for remote D1 access at all — confirmed directly
-(`wrangler whoami` still reports the same missing-scope set after being
-run). A `wrangler login` re-authentication would resolve this, but that
-is itself a real OAuth-consent action, not something this phase
-authorized — printed the login URL, **did not open it**, let the
-flow time out unopened, exactly per this phase's own instruction:
-*"If validation technically requires a credential: STOP and report the
-need rather than broadening scope automatically."*
+**Wrangler OAuth re-authenticated**, explicitly authorized this phase:
+`npx wrangler login` opened the standard, official Cloudflare consent
+screen ("Wrangler wants to access your account," `bryanelrick22@gmail.com`'s
+account, `a4da50ece653768ed53fab5c6c2be6d7` — the same account used
+throughout this project), completed via the user's own already-
+authenticated Chrome session (Claude in Chrome), never by entering a
+password. `wrangler whoami` afterward confirmed `d1 (write)` present
+and no missing-scope warning.
 
-**Consequence**: no agent row was created or verified. No duplicate
-check was possible. `SPECIALIST_IDENTITY_FOUNDATION_READY = NO` for
-this reason alone — everything else in this profile is ready to apply
-the moment Hub access is restored.
+**Environment verified before any write**: `npx wrangler d1 list`
+confirmed the exact staging database
+(`ai-knowledge-hub-db-staging`, uuid `3f0cce11-3ae5-48e6-a259-1c1377ed059e`
+— matching this Hub's own documented `STAGING_D1_ID` exactly) distinct
+from production (`ai-knowledge-hub-db`, uuid
+`b6280c0c-dcb6-43bc-b79d-8b2faa62cff7`). Every command below targeted
+`ai-knowledge-hub-db-staging` by exact name; production was touched
+only by one final read-only count check (see Validation below).
 
-**What's needed to unblock**: either (a) explicit authorization to run
-`npx wrangler login` (an OAuth consent action against the Cloudflare
-account, completed via the built-in browser, the same mechanism used
-for real dashboard actions earlier in this project's history), or (b)
-a freshly-issued wrangler token/API token with `d1:write` provided
-another way. Not attempted without that authorization.
+**Duplicate check (real, read-only)**: `SELECT id, slug, name, type,
+status, provider, created_at FROM agents ORDER BY created_at` against
+staging returned exactly 5 existing rows — `claude-staging`,
+`codex-staging`, `bryan-staging`, `admin-staging`,
+`claude-code-real-staging` — no specialist-shaped row among them
+(matched against `%specialist%`/`%blood-moon%`/`%blood_moon%` too,
+zero hits). `REUSE_BEFORE_CREATE`: no equivalent existed; proceeded to
+create.
+
+**Creation**: one `INSERT INTO agents` (id `58624df5-1f7a-43d6-9370-9216dc9bba55`,
+slug `blood-moon-specialist-v1-staging`, name `Blood Moon Specialist
+(staging)`, provider `anthropic`, type `ai`, metadata
+`{"role":"specialist","autonomous":false,"project":"blood-moon","profile_doc":"docs/agents/blood-moon-specialist-profile.md"}`)
+— `status`/`created_at`/`updated_at` left to the table's own `DEFAULT`
+clauses, matching exactly what the app's own `createAgent`/`upsertAgent`
+path would produce (confirmed by reading `src/routes/agents.ts` and
+`src/lib/ids.ts` first). `changes: 1`, real row confirmed by a
+follow-up `SELECT`. **No API key of any kind was created** to perform
+this — a direct, single, auditable D1 statement was used instead,
+matching this Hub's own established pattern for administrative
+row-creation (`scripts/create-api-key.mjs` itself works the same way);
+`POST /agents` was confirmed (by reading the route) to need no special
+capability, so no scope was broadened to avoid it — a direct SQL path
+was simply the smaller-footprint choice, not a workaround for anything.
+
+**Post-creation verification**: exactly one row matches
+`%specialist%`/`%blood-moon%` (no duplicate). `SELECT COUNT(*) FROM
+agent_capabilities WHERE agent_id = '58624df5-...'` → **`0`** — zero
+capability grants, confirmed, not assumed.
+
+**Production untouched, confirmed**: `SELECT COUNT(*) FROM agents`
+against `ai-knowledge-hub-db` (production) returned `2` — the same
+`claude-code`/`openai-codex` count this project's every prior real
+read has found — `changed_db: false`, `rows_written: 0`.
 
 ---
 
