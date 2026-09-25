@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-27T13:47:13.056Z",
+  "generatedAt": "2026-09-21T16:48:31.534Z",
   "schema": {
     "claimId": "references atomic-claims.json",
     "priority": "HIGH | MEDIUM | LOW",
@@ -450,14 +450,572 @@
       "evidenceRefs": [
         "RemoteData/Phase6/GameServerInfo-Custom.utf8.txt"
       ]
+    },
+    {
+      "claimId": "CLAIM-100",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "GameServerInfo - Command.dat \"Command Buy Vip Settings\" block + Message.txt ids 815-820",
+      "safeMethod": "local read of the already-preserved, hash-recorded download; no new RemoteOps call and no production access in Phase 18D",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- block present with 3 VIP slots x 3 price values; block byte-identical in the Phase 6 and Phase 11 downloads.",
+      "evidenceRefs": [
+        "RemoteData/Phase11/GameServerInfo - Command.dat",
+        "sha256:9d971e9f30038bdadedb302a27830b6296deb48cb9bf01ac0cb61a9a3d5b15d7",
+        "RemoteData/Phase10/Message.txt",
+        "sha256:712f6a4743aa47b86c72077baf2a55182ef86a77e17de23c220926bda8c61438"
+      ]
+    },
+    {
+      "claimId": "CLAIM-101",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "CommandBuyVipSwitch / Enable_AL / PriceValue / CheckUserSwitch values",
+      "safeMethod": "local read of the already-preserved, hash-recorded download; no new RemoteOps call and no production access in Phase 18D",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- Switch=0, all Enable=0, all 9 prices=0, CheckUserSwitch=0, MinDays=15, MaxDays=30. The command is disabled and unconfigured on Blood Moon (as of the 2026-08-29 snapshot).",
+      "evidenceRefs": [
+        "RemoteData/Phase11/GameServerInfo - Command.readable.txt",
+        "sha256:9d971e9f30038bdadedb302a27830b6296deb48cb9bf01ac0cb61a9a3d5b15d7"
+      ]
+    },
+    {
+      "claimId": "CLAIM-103",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "Message.txt id 819 (insufficient-balance message) and the three price fields",
+      "safeMethod": "local read of the already-preserved, hash-recorded download; no new RemoteOps call and no production access in Phase 18D",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- message 819 lists WCoinC/WCoinP/GoblinPoint balances against the VIP price in the same three currencies.",
+      "evidenceRefs": [
+        "RemoteData/Phase10/Message.txt",
+        "sha256:712f6a4743aa47b86c72077baf2a55182ef86a77e17de23c220926bda8c61438"
+      ]
+    },
+    {
+      "claimId": "CLAIM-104",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "structure of the Buy Vip block (no gateway/URL field)",
+      "safeMethod": "local read of the already-preserved, hash-recorded download; no new RemoteOps call and no production access in Phase 18D",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG (structure). The \"not a real-money path\" conclusion is structural; the engine is closed-source.",
+      "evidenceRefs": [
+        "RemoteData/Phase11/GameServerInfo - Command.dat",
+        "sha256:9d971e9f30038bdadedb302a27830b6296deb48cb9bf01ac0cb61a9a3d5b15d7"
+      ]
+    },
+    {
+      "claimId": "CLAIM-111",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "CustomBuyVipAndCoin.txt column headers",
+      "safeMethod": "local read of the already-preserved, hash-recorded download; no new RemoteOps call and no production access in Phase 18D",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- section 0 and section 1 headers read directly.",
+      "evidenceRefs": [
+        "RemoteData/Phase11/CustomBuyVipAndCoin.txt",
+        "sha256:9a9fe8a6d98b6fb741dc27c0274749d04383b8f0b91c2a2473300e0aff62bf8a"
+      ]
+    },
+    {
+      "claimId": "CLAIM-118",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "whether any CustomBuyVipAndCoin.txt row is active on Blood Moon",
+      "safeMethod": "local read of the already-preserved, hash-recorded download; no new RemoteOps call and no production access in Phase 18D",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- every data row commented out; byte-identical to the lab-stage copy file-dated 2023-10-05.",
+      "evidenceRefs": [
+        "RemoteData/Phase11/CustomBuyVipAndCoin.txt",
+        "sha256:9a9fe8a6d98b6fb741dc27c0274749d04383b8f0b91c2a2473300e0aff62bf8a",
+        "MU-Server/Lab/drop-validation/MuServer-stage/Data/Custom/CustomBuyVipAndCoin.txt"
+      ]
+    },
+    {
+      "claimId": "CLAIM-121",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "recharge-credit path in payments/wallet/commerce modules",
+      "safeMethod": "local read of the already-preserved, hash-recorded download; no new RemoteOps call and no production access in Phase 18D",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG (static code read, this branch only) -- no GameBridgeJob/CashShopData/MU_DATABASE_URL reference; Asaas provider not on this branch.",
+      "evidenceRefs": [
+        "apps/api/src/modules/payments",
+        "apps/api/src/modules/wallet",
+        "apps/api/src/modules/commerce/commerce.service.ts:1261"
+      ]
+    },
+    {
+      "claimId": "CLAIM-102",
+      "priority": "LOW",
+      "verificationType": "runtime_observation",
+      "target": "in-game Buy Vip button and the GameServer build vs vendor update 8.3",
+      "safeMethod": "none available without a non-production GameServer instance or engine source",
+      "status": "BLOCKED",
+      "result": "BLOCKED -- no non-production GameServer instance exists and production observation is out of scope; vendor-demonstrated behavior only.",
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-105",
+      "priority": "MEDIUM",
+      "verificationType": "runtime_observation",
+      "target": "per-day x days pricing arithmetic of /buyvip",
+      "safeMethod": "none available without a non-production GameServer instance or engine source",
+      "status": "BLOCKED",
+      "result": "BLOCKED -- no non-production GameServer instance exists and production observation is out of scope; vendor-demonstrated behavior only.",
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-106",
+      "priority": "MEDIUM",
+      "verificationType": "runtime_observation",
+      "target": "already-VIP refusal behavior of CommandBuyVipCheckUserSwitch",
+      "safeMethod": "none available without a non-production GameServer instance or engine source",
+      "status": "BLOCKED",
+      "result": "BLOCKED -- no non-production GameServer instance exists and production observation is out of scope; vendor-demonstrated behavior only.",
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-110",
+      "priority": "MEDIUM",
+      "verificationType": "runtime_observation",
+      "target": "Reload Comand applies Buy Vip settings without a restart",
+      "safeMethod": "none available without a non-production GameServer instance or engine source",
+      "status": "BLOCKED",
+      "result": "BLOCKED -- no non-production GameServer instance exists and production observation is out of scope; vendor-demonstrated behavior only.",
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-112",
+      "priority": "LOW",
+      "verificationType": "runtime_observation",
+      "target": "section-0 coin/VIP grant behavior",
+      "safeMethod": "none available without a non-production GameServer instance or engine source",
+      "status": "BLOCKED",
+      "result": "BLOCKED -- no non-production GameServer instance exists and production observation is out of scope; vendor-demonstrated behavior only.",
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-113",
+      "priority": "LOW",
+      "verificationType": "runtime_observation",
+      "target": "section-1 class-skill delivery behavior",
+      "safeMethod": "none available without a non-production GameServer instance or engine source",
+      "status": "BLOCKED",
+      "result": "BLOCKED -- no non-production GameServer instance exists and production observation is out of scope; vendor-demonstrated behavior only.",
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-114",
+      "priority": "LOW",
+      "verificationType": "file_read",
+      "target": "server skill.txt enablement dependency (skill.txt not read)",
+      "safeMethod": "none available without a non-production GameServer instance or engine source",
+      "status": "BLOCKED",
+      "result": "BLOCKED -- no non-production GameServer instance exists and production observation is out of scope; vendor-demonstrated behavior only.",
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-115",
+      "priority": "LOW",
+      "verificationType": "file_read",
+      "target": "ItemValue coin-price line and index formula (ItemValue.txt not read)",
+      "safeMethod": "none available without a non-production GameServer instance or engine source",
+      "status": "BLOCKED",
+      "result": "BLOCKED -- no non-production GameServer instance exists and production observation is out of scope; vendor-demonstrated behavior only.",
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-116",
+      "priority": "LOW",
+      "verificationType": "runtime_observation",
+      "target": "server-authoritative rejection of client-edited item.bmd/skill.bmd",
+      "safeMethod": "none available without a non-production GameServer instance or engine source",
+      "status": "BLOCKED",
+      "result": "BLOCKED -- no non-production GameServer instance exists and production observation is out of scope; vendor-demonstrated behavior only.",
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-117",
+      "priority": "MEDIUM",
+      "verificationType": "runtime_observation",
+      "target": "Reload Custom + Reload Shop applies CustomBuyVipAndCoin changes without a restart",
+      "safeMethod": "none available without a non-production GameServer instance or engine source",
+      "status": "BLOCKED",
+      "result": "BLOCKED -- no non-production GameServer instance exists and production observation is out of scope; vendor-demonstrated behavior only.",
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-119",
+      "priority": "MEDIUM",
+      "verificationType": "schema_read",
+      "target": "exact SQL table/column written by /buyvip and CustomBuyVipAndCoin (no engine source, no authorized SQL trace)",
+      "safeMethod": "none available without a non-production GameServer instance or engine source",
+      "status": "BLOCKED",
+      "result": "BLOCKED -- no non-production GameServer instance exists and production observation is out of scope; vendor-demonstrated behavior only.",
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-120",
+      "priority": "MEDIUM",
+      "verificationType": "runtime_observation",
+      "target": "reload/restart behavior of CustomXShop.txt and CashShopProduct.txt (GAP-P18-07)",
+      "safeMethod": "none available without a non-production GameServer instance or engine source",
+      "status": "BLOCKED",
+      "result": "BLOCKED -- no non-production GameServer instance exists and production observation is out of scope; vendor-demonstrated behavior only.",
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-123",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "reward_user/add_credits/increase_credits in the preserved legacy PHP",
+      "safeMethod": "local read of the already-preserved, hash-recorded download; no new RemoteOps call and no production access in Phase 18D",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG (static code read of the preserved legacy source; the type-to-column config values were not read -- GAP-P18-03).",
+      "evidenceRefs": [
+        "Deploy/Cpanel-Backups/hostbr-web-20260716/extracted/backup-7.16.2026_12-53-47_mubloodxz/homedir/public_html/application/models/model.donate.php",
+        "sha256:aac118e8cfe8c76d607b7fa23b483a4af6ffd9cbb948eea079384d1a98537662",
+        "application/helpers/helper.website.php",
+        "sha256:b3fe8a30192bd55dcd502a47a8ab81c25ebe36cece79fe8355877cc2b063ebc5"
+      ]
+    },
+    {
+      "claimId": "CLAIM-124",
+      "priority": "MEDIUM",
+      "verificationType": "schema_read",
+      "target": "row counts of the DmN_* commerce tables",
+      "safeMethod": "local read of the already-preserved, hash-recorded download; no new RemoteOps call and no production access in Phase 18D",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_RUNTIME -- 0 rows across the commerce tables at the 2026-08-30 SQL read; NOT re-run in Phase 18D, re-check before any decommission.",
+      "evidenceRefs": [
+        "docs/economy/legacy-dmn-cms-and-currency-investigation.md"
+      ]
+    },
+    {
+      "claimId": "CLAIM-125",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "CustomEventAuction.txt CoinType comment",
+      "safeMethod": "local read of already-preserved files and repository code in Phase 20; no production, RemoteOps or SQL access",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- 0 = zen, 1 = Cash/WCoinc, 2 = Gold/WCoinP, 3 = PcPoint/GoblonPoint, 4 = Item read directly.",
+      "evidenceRefs": [
+        "RemoteData/Phase6/CustomEventAuction.txt",
+        "sha256:c3f149bf1243db6f3d27aed0e20f003d24b7060a008f2e9abfa90dca45a27d4c"
+      ]
+    },
+    {
+      "claimId": "CLAIM-126",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "message ids 632/780/819/980/1033/1140/1145 and /util operand names",
+      "safeMethod": "local read of already-preserved files and repository code in Phase 20; no production, RemoteOps or SQL access",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- both label families used for the same triple; id 1140 pairs Cash/WCoinC.",
+      "evidenceRefs": [
+        "RemoteData/Phase10/Message.utf8.txt",
+        "sha256:73f09c90a689d45992d70ebf602b7d33e1f397876615f1b9f3feeab12806ebd5",
+        "RemoteData/Phase11/GameServerInfo - Command.readable.txt",
+        "sha256:9d971e9f30038bdadedb302a27830b6296deb48cb9bf01ac0cb61a9a3d5b15d7"
+      ]
+    },
+    {
+      "claimId": "CLAIM-128",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "CoinType numbering in CustomEventAuction.txt and CustomCoinsOnline.txt",
+      "safeMethod": "local read of already-preserved files and repository code in Phase 20; no production, RemoteOps or SQL access",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG for the numbering as written; 0-based reading of CustomCoinsOnline.txt is inference (no legend).",
+      "evidenceRefs": [
+        "RemoteData/Phase6/CustomEventAuction.txt",
+        "RemoteData/Phase11/CustomCoinsOnline.readable.txt",
+        "sha256:fe8aa11192117cf3270481f2dee2229a0e881b45d0bd8f667a511248032a1e21"
+      ]
+    },
+    {
+      "claimId": "CLAIM-131",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "repository-wide GameBridge term inventory",
+      "safeMethod": "local read of already-preserved files and repository code in Phase 20; no production, RemoteOps or SQL access",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG (static read) -- six repository concepts plus the vendor Lua bridge functions.",
+      "evidenceRefs": [
+        "docs/knowledge/GAMEBRIDGE_DISAMBIGUATION.md"
+      ]
+    },
+    {
+      "claimId": "CLAIM-132",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "selection query of process-game-bridge-jobs.mjs and the outbox consumers",
+      "safeMethod": "local read of already-preserved files and repository code in Phase 20; no production, RemoteOps or SQL access",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG (static read) -- no operation filter in the marketplace script.",
+      "evidenceRefs": [
+        "apps/api/scripts/process-game-bridge-jobs.mjs"
+      ]
+    },
+    {
+      "claimId": "CLAIM-133",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "Worker commands.ts / schema.sql on committed branches vs the openbeta working tree",
+      "safeMethod": "local read of already-preserved files and repository code in Phase 20; no production, RemoteOps or SQL access",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- committed blob accepts CREATE_GAME_ACCOUNT only on all 43 branch refs (39 local + 4 remote-tracking); extension only uncommitted in mu-bloodmoon-v1-openbeta.",
+      "evidenceRefs": [
+        "apps/game-data-worker/src/commands.ts"
+      ]
+    },
+    {
+      "claimId": "CLAIM-134",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "Phase 3D-A preserved production evidence",
+      "safeMethod": "local read of already-preserved files and repository code in Phase 20; no production, RemoteOps or SQL access",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_RUNTIME (preserved 2026-08-24 evidence read; CURRENT state not re-verified).",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-3d-a-production-command-transport-20260824/raw/02-real-resources-and-deployment.txt"
+      ]
+    },
+    {
+      "claimId": "CLAIM-135",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "idempotency layers of the command transport",
+      "safeMethod": "local read of already-preserved files and repository code in Phase 20; no production, RemoteOps or SQL access",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG (static read); the crash-window behaviour was not executed.",
+      "evidenceRefs": [
+        "apps/game-bridge-agent/Commands/ProvisioningLedger.cs"
+      ]
+    },
+    {
+      "claimId": "CLAIM-138",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "acknowledgement path of the command transport",
+      "safeMethod": "local read of already-preserved files and repository code in Phase 20; no production, RemoteOps or SQL access",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG (static read) -- SQL commit is the only acknowledgement.",
+      "evidenceRefs": [
+        "apps/game-bridge-agent/Commands/GameCommandWorker.cs"
+      ]
+    },
+    {
+      "claimId": "CLAIM-127",
+      "priority": "HIGH",
+      "verificationType": "schema_read",
+      "target": "dbo.WZ_SetCoin body and CashShopData DDL/defaults in the LAB database (read-only)",
+      "safeMethod": "read-only catalog reads of the local lab restore / SELECT-only remote D1 in Phase 20A; nothing executed, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_SCHEMA -- body read first-hand from the lab restore and preserved with hashes (raw/01); comments confirm Cash|WCoinC, Gold|WCoinP, PcPoints|GoblinPoint (Phase 20A, authorized by Bryan).",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/01-WZ_SetCoin.definition.sql"
+      ]
+    },
+    {
+      "claimId": "CLAIM-136",
+      "priority": "HIGH",
+      "verificationType": "runtime_observation",
+      "target": "visibility/overwrite of an external CashShopData write while the player is online",
+      "safeMethod": "a controlled test on a non-production GameServer; none is known to exist for this purpose",
+      "status": "BLOCKED",
+      "result": "[20A] BLOCKED -- no runnable lab GameServer, ODBC DSN or client (MU-Server/Lab/drop-validation/MuServer-stage is a staged file copy only, no GameServer process); production must not be used. A test design is recorded in GAME_CURRENCY_DELIVERY_ANALYSIS.md Part 8. BLOCKED -- no non-production GameServer instance is known; production must not be used (GAP-P20-04).",
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-137",
+      "priority": "LOW",
+      "verificationType": "file_read",
+      "target": "contents of Data/Script/ScriptMain.lua and which bridge hooks Blood Moon uses",
+      "safeMethod": "read the lab copy of the script files (not read in Phase 20)",
+      "status": "QUEUED",
+      "result": "QUEUED -- only the file names are known.",
+      "evidenceRefs": []
+    },
+    {
+      "claimId": "CLAIM-139",
+      "priority": "HIGH",
+      "verificationType": "schema_read",
+      "target": "WZ_SetCoin body semantics",
+      "safeMethod": "read-only catalog reads of the local lab restore / SELECT-only remote D1 in Phase 20A; nothing executed, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_SCHEMA -- additive, positive-only, insert-if-missing, no transaction/lock/idempotency.",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/01-WZ_SetCoin.definition.sql"
+      ]
+    },
+    {
+      "claimId": "CLAIM-140",
+      "priority": "HIGH",
+      "verificationType": "schema_read",
+      "target": "CashShopData DDL",
+      "safeMethod": "read-only catalog reads of the local lab restore / SELECT-only remote D1 in Phase 20A; nothing executed, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_SCHEMA -- PK PK_TempCashShop, defaults 0, no constraints/FK/trigger.",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/03-CashShopData.columns.txt",
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/04-CashShopData.keys-indexes-constraints.txt"
+      ]
+    },
+    {
+      "claimId": "CLAIM-141",
+      "priority": "HIGH",
+      "verificationType": "schema_read",
+      "target": "all modules touching CashShopData",
+      "safeMethod": "read-only catalog reads of the local lab restore / SELECT-only remote D1 in Phase 20A; nothing executed, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_SCHEMA -- eight additive procedures, three no-op placeholders, no set-absolute and no debit procedure.",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/05-modules-referencing-CashShopData.txt",
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/06-related-vendor-procedures.definitions.txt",
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/10-ranking-reward-procedures.definitions.txt"
+      ]
+    },
+    {
+      "claimId": "CLAIM-142",
+      "priority": "HIGH",
+      "verificationType": "schema_read",
+      "target": "Cash/Gold/PcPoint vs WCoinC/WCoinP/GoblinPoint in vendor procedure comments",
+      "safeMethod": "read-only catalog reads of the local lab restore / SELECT-only remote D1 in Phase 20A; nothing executed, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_SCHEMA -- slot-for-slot naming, Season 4 vs Season 6/8.",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/06-related-vendor-procedures.definitions.txt"
+      ]
+    },
+    {
+      "claimId": "CLAIM-143",
+      "priority": "MEDIUM",
+      "verificationType": "schema_read",
+      "target": "WZ_SetRewardCastleSiege online selection",
+      "safeMethod": "read-only catalog reads of the local lab restore / SELECT-only remote D1 in Phase 20A; nothing executed, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_SCHEMA (procedure text); the in-memory-copy interpretation is inference only.",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/06-related-vendor-procedures.definitions.txt"
+      ]
+    },
+    {
+      "claimId": "CLAIM-144",
+      "priority": "LOW",
+      "verificationType": "schema_read",
+      "target": "CustomPlayToEarn catalog",
+      "safeMethod": "read-only catalog reads of the local lab restore / SELECT-only remote D1 in Phase 20A; nothing executed, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_SCHEMA -- 0 rows, unreferenced.",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/raw/07-CustomPlayToEarn.catalog.txt"
+      ]
+    },
+    {
+      "claimId": "CLAIM-145",
+      "priority": "HIGH",
+      "verificationType": "runtime_observation",
+      "target": "remote D1 migrations, game_command DDL/aggregate, heartbeat, nonce activity, Worker versions",
+      "safeMethod": "read-only catalog reads of the local lab restore / SELECT-only remote D1 in Phase 20A; nothing executed, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_RUNTIME (Cloudflare side, 2026-09-19, SELECT-only); VPS side UNVERIFIED.",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-20a-live-agent-d1-readonly-20260919/raw/02-d1-migrations-applied.json",
+        "references/game-data/sql-discovery/phase-20a-live-agent-d1-readonly-20260919/raw/05-agent_heartbeats.json"
+      ]
+    },
+    {
+      "claimId": "CLAIM-146",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "preserved Worker extension: hashes, tsc, vitest",
+      "safeMethod": "read-only catalog reads of the local lab restore / SELECT-only remote D1 in Phase 20A; nothing executed, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- byte-identical preservation; tsc 0 errors; Worker suite 55/55.",
+      "evidenceRefs": [
+        "docs/gamebridge/worker-extension-preservation-manifest.md (on gamebridge/preserve-command-extension)"
+      ]
+    },
+    {
+      "claimId": "CLAIM-149",
+      "priority": "HIGH",
+      "verificationType": "runtime_observation",
+      "target": "Agent scheduled task, process and binary on the VPS",
+      "safeMethod": "read-only VPS inspection through the audited wrapper (one call), SELECT-only remote D1, local git and file reads in Phase 20B; nothing executed, no command sent, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_RUNTIME (2026-09-21).",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-20b-live-agent-verification-20260921/raw/vps-01-agent-state.json"
+      ]
+    },
+    {
+      "claimId": "CLAIM-151",
+      "priority": "HIGH",
+      "verificationType": "runtime_observation",
+      "target": "remote D1 state and live polling",
+      "safeMethod": "read-only VPS inspection through the audited wrapper (one call), SELECT-only remote D1, local git and file reads in Phase 20B; nothing executed, no command sent, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_RUNTIME (2026-09-21); no fresh command round trip demonstrated.",
+      "evidenceRefs": [
+        "references/game-data/sql-discovery/phase-20b-live-agent-verification-20260921/raw/d1-04-agent_heartbeats.json"
+      ]
+    },
+    {
+      "claimId": "CLAIM-152",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "SQL extension inventory, secret review, preservation",
+      "safeMethod": "read-only VPS inspection through the audited wrapper (one call), SELECT-only remote D1, local git and file reads in Phase 20B; nothing executed, no command sent, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- 11 files byte-identical, 1 excluded as SECRET_BEARING.",
+      "evidenceRefs": [
+        "PRESERVATION-MANIFEST.md on gamebridge/preserve-command-extension"
+      ]
+    },
+    {
+      "claimId": "CLAIM-153",
+      "priority": "HIGH",
+      "verificationType": "file_read",
+      "target": "command deployment matrix; CREDIT_GAME_CURRENCY absence",
+      "safeMethod": "read-only VPS inspection through the audited wrapper (one call), SELECT-only remote D1, local git and file reads in Phase 20B; nothing executed, no command sent, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG -- only CREATE_GAME_ACCOUNT deployed; CREDIT_GAME_CURRENCY does not exist.",
+      "evidenceRefs": [
+        "apps/api/src/modules/game-account-identity/game-command-transport.client.ts"
+      ]
+    },
+    {
+      "claimId": "CLAIM-155",
+      "priority": "LOW",
+      "verificationType": "file_read",
+      "target": "kill-switch option names and environment binding",
+      "safeMethod": "read-only VPS inspection through the audited wrapper (one call), SELECT-only remote D1, local git and file reads in Phase 20B; nothing executed, no command sent, no production write",
+      "status": "DONE",
+      "result": "CONFIRMED_BY_CONFIG (static read).",
+      "evidenceRefs": [
+        "apps/game-bridge-agent/Program.cs"
+      ]
+    },
+    {
+      "claimId": "CLAIM-150",
+      "priority": "MEDIUM",
+      "verificationType": "file_read",
+      "target": "extension command-type strings inside a read-only copy of the deployed executable",
+      "safeMethod": "download a read-only copy of BloodMoonGameBridgeAgent.exe (RemoteOps `bm-remote download`) and string-scan it locally -- not done: outside the Phase 20B authorised inspection list",
+      "status": "QUEUED",
+      "result": "QUEUED -- chronology already makes the conclusion strong; a string scan would make it proven. [20C] Bryan (2026-09-21): not to be done now (CLAIM-157); the item stays QUEUED, non-blocking.",
+      "evidenceRefs": []
     }
   ],
   "summary": {
-    "total": 37,
-    "done": 31,
-    "queued": 3,
-    "blocked": 3,
+    "total": 84,
+    "done": 63,
+    "queued": 5,
+    "blocked": 16,
     "inProgress": 0,
-    "note": "CLAIM-014 and CLAIM-015 are intentionally absent from this queue -- CLAIM-014 is an operational/procedural claim (NOT_APPLICABLE verification per atomic-claims.json), and CLAIM-015 is explicitly OTHER_SERVER and must never be verified against Blood Moon (there is nothing to verify -- it is already correctly classified as not describing Blood Moon). Phase 5 (2026-08-27) added 16 new QUEUED/BLOCKED items for the P0-priority claims extracted this phase, deliberately left unexecuted -- per the explicit instruction to do only LIMITED real verification after bulk structuring, not to spend the whole phase re-verifying everything. Phase 6 (2026-08-27) real-VPS verification pass resolved 15 of the 16 items queued at the end of Phase 5 -- the remaining QUEUED/BLOCKED items are lower-priority or genuinely blocked (e.g. CLAIM-057's client-side-only tooltip behavior, which still has no safe read-only server-side check)."
+    "note": "CLAIM-014 and CLAIM-015 are intentionally absent from this queue -- CLAIM-014 is an operational/procedural claim (NOT_APPLICABLE verification per atomic-claims.json), and CLAIM-015 is explicitly OTHER_SERVER and must never be verified against Blood Moon (there is nothing to verify -- it is already correctly classified as not describing Blood Moon). Phase 5 (2026-08-27) added 16 new QUEUED/BLOCKED items for the P0-priority claims extracted this phase, deliberately left unexecuted -- per the explicit instruction to do only LIMITED real verification after bulk structuring, not to spend the whole phase re-verifying everything. Phase 6 (2026-08-27) real-VPS verification pass resolved 15 of the 16 items queued at the end of Phase 5 -- the remaining QUEUED/BLOCKED items are lower-priority or genuinely blocked (e.g. CLAIM-057's client-side-only tooltip behavior, which still has no safe read-only server-side check). Phase 18D (2026-09-18) added 21 items for CLAIM-100 and above (9 DONE against Blood Moon's preserved real config, code and SQL evidence; 12 BLOCKED because no non-production GameServer instance exists). Phase 20 (2026-09-18) added 12 items for CLAIM-125 and above (9 DONE from local reads of preserved files and repository code; 2 QUEUED awaiting Bryan's authorization for a read-only lab lookup; 1 BLOCKED because no non-production GameServer is known to exist). Phase 20A (2026-09-19) added 8 items for CLAIM-139 and above (all DONE from read-only lab catalog reads, SELECT-only remote D1 and a preserved-code test run) and closed the CLAIM-127 item; the CLAIM-136 item stays BLOCKED because no runnable lab GameServer exists. Phase 20B (2026-09-21) added 6 items for CLAIM-149 and above (5 DONE from a read-only VPS inspection, SELECT-only remote D1 and local reads; 1 QUEUED: a string scan of a read-only copy of the deployed executable)."
   }
 }
