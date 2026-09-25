@@ -70,39 +70,46 @@ judging evidence sufficiency, and synthesizing a final answer. This
 matches `specialist-agent-foundation.md` §13's own cost-efficiency
 finding: most of this flow is retrieval, not inference.
 
-## Domain map (real, evidence-based — confirmed by direct repository listing this phase, not assumed)
+## Domain map (real, evidence-based — re-verified against `origin/main` by `git ls-tree` on 2026-09-25, `BLOODMOON-AI-06`)
 
-| Domain | Canonical source(s) | Branch (if not `main`) |
+**Canonical source rule (`ADR-0034`, Bryan, 2026-09-25)**: `main` is the
+definitive canonical source of truth. `docs/agent-automation-architecture`
+and `governance/engineering-pack` are historical/preserved sources, read
+only to recover content that has not reached `main` yet — never as the
+place where current truth lives. `preservation/main-snapshot-b5a4321d`
+is the preserved copy of the former local `main` (`D:\MU`), same status.
+
+| Domain | Canonical source(s) | Location |
 |---|---|---|
-| Governance | `AGENTS.md`, `docs/protocols/`, `docs/decisions/` | `main` |
-| Architecture (general) | `docs/architecture/*.md` | `main` |
-| **Agent automation** | `docs/architecture/agent-automation-architecture.md`, `specialist-agent-foundation.md`, `docs/agents/blood-moon-specialist-profile.md`, `ADR-0031`, `ADR-0032` | `docs/agent-automation-architecture` — **not yet on `main`** |
-| **Repository continuity** | `docs/architecture/repository-continuity-audit-2026-09-18.md` | `docs/agent-automation-architecture` — **not yet on `main`** |
-| **Cloudflare migration** | `docs/architecture/engineering-agent-orchestration.md` (n8n/orchestration design) | `architecture/agent-orchestration-foundation` |
-| Cloudflare migration (DNS/mail/provider-exit/backup) | `infra/cloudflare-dns-planning`, `-mail-exit`, `infra/provider-exit-audit`, `-backup-exit`, `-web-shadow`, `-web-shadow-rc-02`, `-migration-candidate` | each its own preserved branch — **none merged to `main`** |
+| Governance | `AGENTS.md`, `CLAUDE.md`, `docs/protocols/`, `docs/architecture/engineering-governance.md`, `branch-and-release-governance.md`, `docs/decisions/` (ADR-0031..0034), `context/` | `main` |
+| Architecture (general) | `docs/architecture/*.md` | `main` (`control-plane.md` only on the historical branches) |
+| **Agent automation / Blood Moon AI** | `docs/architecture/agent-automation-architecture.md`, `specialist-agent-foundation.md`, `bloodmoon-ai-product-vision.md`, `docs/agents/blood-moon-specialist-profile.md`, `ADR-0031`..`ADR-0034`, `context/domains/bloodmoon-ai.md` | `main` |
+| **Repository continuity** | `docs/architecture/repository-continuity-audit-2026-09-18.md` | `main` |
+| Knowledge / source authority | `docs/knowledge/KNOWLEDGE_MASTER_INDEX.md` (router), `source-authority.md`, `conflict-resolution.md`, `CONFLICTS.md`, `KNOWLEDGE_GAPS.md`, `PROCEDURE_INDEX.md`, `SOURCE_REGISTRY.md`, `knowledge/vendor-sweep/` | `main` |
+| GameServer | `docs/knowledge/` (vendor/config knowledge) | `main` |
 | Database | `docs/database/` | `main` |
 | Storage / R2 | `docs/game-data/` (Game Data Platform), Hub's own `docs/architecture.md` (separate repo, `D:\MU\hub`) | `main` (repo) / Hub's own `main` |
-| GameBridge | `docs/gamebridge/` | `main` |
-| GameServer | `docs/knowledge/` (vendor/config knowledge), `docs/gameserver/` if present | `main` |
-| Payments | `docs/payments/` | `main` |
 | Launcher | `docs/launcher/` | `main` |
 | Security | `docs/security/`, `AGENTS.md` invariants 10-14 | `main` |
-| Deployment | `docs/deployments/`, `~/.claude/skills/bloodmoon-deploy/` | `main` / global skill |
-| Open Beta | `docs/product/`, `docs/phases/`, various phase manifests | `main` |
-| Incidents | `docs/operations/`, `docs/handoff/` | `main` |
-| Knowledge / source authority | `docs/knowledge/source-authority.md`, `conflict-resolution.md` | `main` |
+| Incidents | `docs/operations/`, `docs/handoff/` | `main` (partial: 4 of 13 `docs/operations/` files; the rest only on the historical branches) |
+| GameBridge | `docs/gamebridge/`, `docs/knowledge/GAMEBRIDGE_DISAMBIGUATION.md` | disambiguation on `main`; `docs/gamebridge/` **not yet on `main`** (historical: `docs/agent-automation-architecture`, `preservation/main-snapshot-b5a4321d`) |
+| Payments | `docs/payments/` | **not yet on `main`** (historical branches above); Asaas work on `payments/*` branches |
+| Deployment | `docs/deployments/`, `~/.claude/skills/bloodmoon-deploy/` | **not yet on `main`** (historical branches above) / global skill |
+| Open Beta | `docs/product/`, `docs/phases/`, various phase manifests | `docs/product/` partial on `main`; the rest **not yet on `main`** (`integration/open-beta`, historical branches) |
+| Cloudflare migration (orchestration design) | `docs/architecture/engineering-agent-orchestration.md` (n8n/orchestration design) | `architecture/agent-orchestration-foundation` |
+| Cloudflare migration (DNS/mail/provider-exit/backup) | `infra/cloudflare-dns-planning`, `-mail-exit`, `infra/provider-exit-audit`, `-backup-exit`, `-web-shadow`, `-web-shadow-rc-02`, `-migration-candidate` | each its own preserved branch — **none merged to `main`** |
 | Knowledge Hub itself | `hub/AGENTS.md`, `hub/docs/*` | separate repo `D:\MU\hub`, branch `orchestration/mvp-phase-1` (preserved, not on Hub's `main`) |
 
-**Known limitation, flagged not silently worked around**: a session
-whose worktree is checked out to plain `main` will **not** find the
-agent-automation/repository-continuity/Cloudflare-migration docs above
-— they live on real, preserved-but-unmerged branches. This skill's own
-step 8 ("load only the specific relevant deep source") must resolve the
-correct branch first for these domains specifically — via `git show
-<branch>:<path>` rather than assuming the current worktree has it. This
-is a real, current gap (the same one
-`repository-continuity-audit-2026-09-18.md` itself documents), not
-something this skill papers over.
+**Known limitation, flagged not silently worked around**: a session on
+plain `main` will **not** find the domains marked "not yet on `main`"
+above — they live on preserved branches. This skill's own step 8
+("load only the specific relevant deep source") must resolve the
+branch first for those domains via `git show <branch>:<path>`, and
+must label what it reads there `HISTORICAL_SOURCE` unless the same
+content is on `main`. Earlier versions of this table said Governance
+lived on `main` while it did not, and that agent automation was "not
+yet on `main`" after PR #1 had merged it; both were corrected here
+(`BLOODMOON-AI-06`).
 
 ## Tools required
 

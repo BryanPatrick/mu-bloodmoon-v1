@@ -1,6 +1,6 @@
 ---
-status: ACTIVE — product vision ratified (ADR-0033), Stage 2 internal pilot run for real (BLOODMOON-AI-05);
-  Stage 1's by-name subagent invocation remains unverified pending a genuinely fresh session; nothing
+status: ACTIVE — product vision ratified (ADR-0033); STAGE 1 COMPLETE (by-name invocation verified from
+  main in a fresh session, BLOODMOON-AI-05C, 2026-09-25); STAGE 2 internal pilot ACTIVE; nothing
   player-facing built or deployed
 category: architecture
 audience: internal (Bryan + any engineering agent)
@@ -65,9 +65,12 @@ and internal questions, maintaining validated knowledge, helping
 navigate the portal, assisting the Wiki and Journal, and — much later —
 understanding personal player context and executing bounded actions.
 
-**Current stage**: `STAGE 0` (architecture and knowledge foundation),
+**Current stage**: ~~`STAGE 0` (architecture and knowledge foundation),
 transitioning into `STAGE 1` (Claude + knowledge specialist
-integration) this same phase — see §20's roadmap.
+integration) this same phase — see §20's roadmap.~~ **(updated
+2026-09-25, `BLOODMOON-AI-05C`/`BLOODMOON-AI-06`)**: `STAGE 0` DONE,
+`STAGE 1` COMPLETE, `STAGE 2` (internal question answering) ACTIVE —
+see §20's roadmap and §23.
 
 **Long-term scope**: player questions, FAQ intelligence, knowledge
 escalation, site navigation, full portal documentation understanding,
@@ -562,14 +565,15 @@ STAGE 0  Architecture and knowledge foundation
          -- DONE (SPECIALIST-01/02/03, this phase's own reclassification
             and canonical-skill-source work)
 STAGE 1  Claude + knowledge specialist integration
-         -- IN PROGRESS this phase: subagent built, byte-verified,
-            canonical source established; formal by-name invocation
-            blocked this session by a session-lifecycle limitation
-            (see §5), real retrieval proven manually instead (§21)
+         -- COMPLETE (2026-09-25, BLOODMOON-AI-05C): subagent on main
+            via PR #1 (dd11117), discovered by a fresh session and
+            invoked by name twice, 8/8 checks PASS (§23). Earlier
+            status "IN PROGRESS ... by-name invocation blocked" is
+            historical (§5, §21, §22)
 STAGE 2  Internal question answering
-         -- the natural completion of Stage 1 once a fresh session
-            confirms by-name invocation; no new design needed, same
-            mechanism, wider real usage
+         -- ACTIVE: internal pilot running (§22); same mechanism,
+            wider real usage; knowledge base on main being completed
+            by BLOODMOON-AI-06 (Context Pack integration)
 STAGE 3  Player-facing FAQ/help beta
          -- requires: §7's FAQ lifecycle actually built (reusing Hub
             knowledge_items), §8's visibility classification enforced
@@ -623,7 +627,9 @@ session — it is the same continuing session that built the subagent in
 `BLOODMOON-AI-04`. Re-testing by-name invocation (§5's refined finding)
 was still worth doing and produced real, useful evidence, but
 `SPECIALIST_BY_NAME_VERIFIED` and `STAGE1_COMPLETE` remain `NO` for
-that reason alone, not because anything is broken. Every test below
+that reason alone, not because anything is broken. **(Superseded
+2026-09-25 by `BLOODMOON-AI-05C`: both are now `YES` — see §23. The
+sentence above stays as the accurate record of this phase.)** Every test below
 used the same manual-walkthrough method as `SPECIALIST-03`/
 `BLOODMOON-AI-04` (real tool calls following the specialist's own
 written procedure), not the formal subagent mechanism.
@@ -769,11 +775,42 @@ list comprehension) correctly triggered **zero** specialist
 consultation, confirming the restraint rule works as designed, not
 just as documented.
 
+## 23. Stage 1 closure (`BLOODMOON-AI-05C`, 2026-09-25) and main integration (`BLOODMOON-AI-06`)
+
+**Result**: `SPECIALIST_BY_NAME_VERIFIED = YES`, `STAGE1_COMPLETE = YES`,
+`STAGE2_INTERNAL_PILOT_STATUS = ACTIVE`.
+
+- PR #1 merged into `main` (merge commit `dd11117`), carrying the
+  agent, the 4 canonical skills, ADR-0031/0032/0033 and this document.
+- A genuinely fresh Claude Code session, started after the merge on a
+  checkout of `main` at `dd11117`, listed `bloodmoon-knowledge-specialist`
+  in its agent registry (description and tools taken from the
+  frontmatter) and invoked it by `subagent_type` twice: the first answer
+  was grounded and `CONFIRMED` (ADR-0033, this document, the profile,
+  ADR-0031); the second returned an honest, well-justified `UNKNOWN`
+  without inventing anything. 8/8 checks PASS.
+- The gap it surfaced was knowledge availability on `main`
+  (`SOURCE_NOT_AVAILABLE`), not an agent defect: `AGENTS.md`,
+  `CLAUDE.md`, `context/`, `docs/protocols/` and the
+  `docs/knowledge/` indexes were not on `main`. `BLOODMOON-AI-06`
+  brings them to `main` and corrects the stale texts (router domain
+  map, this document's Stage 1 status, the profile's baseline, the
+  foundation header).
+- **Canonical source (Bryan, 2026-09-25)**: `main` is the definitive
+  canonical source of truth. `docs/agent-automation-architecture` and
+  `governance/engineering-pack` are historical/preserved sources, used
+  only to recover content that has not reached `main` yet — see
+  `ADR-0034`.
+
+Evidence: the 05C verification report (project files,
+`reports/BLOODMOON-AI-05C-report.md`, outside this repository).
+
 ## References
 
 `agent-automation-architecture.md`, `specialist-agent-foundation.md`,
 `specialist-mvp-validation-2026-09-25.md`,
 `docs/agents/blood-moon-specialist-profile.md`, `ADR-0031`, `ADR-0032`,
-`ADR-0033` (this phase's new decision record),
+`ADR-0033` (this phase's new decision record), `ADR-0034` (main as
+canonical source),
 `.claude/skills/bloodmoon-*/SKILL.md` (this repository, new canonical
 source), `.claude/agents/bloodmoon-knowledge-specialist.md`.

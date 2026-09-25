@@ -1,5 +1,6 @@
 ---
-status: DESIGN — architecture and roadmap only, nothing built
+status: ACTIVE — design document; the MVP it describes is built (SPECIALIST-03) and on main (PR #1, dd11117);
+  Stage 1 COMPLETE (BLOODMOON-AI-05C, 2026-09-25)
 category: architecture
 audience: internal (Bryan + any engineering agent)
 lastVerified: 2026-09-25
@@ -25,9 +26,16 @@ architecture. `ADR-0031` (Claude + specialist, Codex deferred) and
 document; nothing here alters either decision, only designs how to
 build toward them.
 
-**Nothing in this document is built.** Per this phase's own scope, this
+~~**Nothing in this document is built.**~~ Per this phase's own scope, this
 is architecture, an evaluation set, and a roadmap — no runtime, no
 schema change, no production/Cloudflare/Hub-runtime action.
+**(Updated 2026-09-25, `BLOODMOON-AI-06`)**: the MVP this document
+designs has since been built — `.claude/agents/bloodmoon-knowledge-specialist.md`
+plus the 4 `bloodmoon-*` skills (`SPECIALIST-03`, `BLOODMOON-AI-04`),
+merged to `main` in PR #1 (`dd11117`) and verified by name from a fresh
+session (`BLOODMOON-AI-05C`: `STAGE1_COMPLETE = YES`). The text below
+is the original design and stays as written; no production,
+Cloudflare or Hub-runtime action has been taken.
 
 ---
 

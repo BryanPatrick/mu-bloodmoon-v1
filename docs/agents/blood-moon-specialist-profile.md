@@ -112,11 +112,19 @@ how much gets loaded per question.
 
 - Profile Git commit: **recorded at commit time below** (this document's
   own commit, once made)
-- Repository revision: local `main` at `b5a4321d1ccb88845fec767a5ab8537dc61a562d`
+- Repository revision: ~~local `main` at `b5a4321d1ccb88845fec767a5ab8537dc61a562d`
   (per `docs/architecture/repository-continuity-audit-2026-09-18.md`,
   unchanged since that audit; `origin/main` at `3adfd0532fa8354187c355d0a9a26e49bc2f325e`
   — the two remain the documented, deliberately-unresolved gap that
-  audit tracks, not something this profile re-litigates)
+  audit tracks, not something this profile re-litigates)~~
+  **Updated 2026-09-25 (`BLOODMOON-AI-06`)**: `origin/main` is the
+  canonical baseline (`ADR-0034`). It advanced from `3adfd05` to
+  `dd11117` (PR #1: this agent + its 4 skills), and `BLOODMOON-AI-06`
+  adds the Context Pack (`AGENTS.md`, `CLAUDE.md`, `context/`,
+  `docs/protocols/`, `docs/knowledge/` indexes). Resolve the exact
+  current revision with `git rev-parse origin/main` rather than trusting
+  a SHA written here. The former local `main` (`b5a4321d`) is preserved
+  as `preservation/main-snapshot-b5a4321d`, a historical source.
 - Knowledge Hub environment: staging (`ai-knowledge-hub-db-staging`) —
   **not re-verified this phase**, D1 remote access blocked (see below)
 - Key architecture references: `docs/architecture/agent-automation-architecture.md`,
