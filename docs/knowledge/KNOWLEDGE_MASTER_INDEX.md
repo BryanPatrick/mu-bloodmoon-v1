@@ -2,7 +2,7 @@
 status: ACTIVE
 category: knowledge
 audience: internal (product + engineering)
-lastVerified: 2026-09-21
+lastVerified: 2026-09-26
 ---
 
 # Knowledge master index
@@ -85,6 +85,12 @@ TASK ("how do I do X?")
 | "Where is a specific vendor tutorial?" | `VPS_DOCUMENTATION_INDEX.md` → `D:\MU\Research\Vendor\Tutorials\` |
 | "Where are production security procedures?" | `PROCEDURE_INDEX.md` row "Rotate a production credential" → `docs/security/secret-rotation.md`/`secret-incident-history.md` |
 | "How do I find a source's authority/version?" | `docs/knowledge/source-authority.md` — the 10-level scale, applied consistently across this whole system |
+| "What is the current Cloudflare/provider transition architecture?" | `docs/cloudflare-migration/CURRENT_STATE.md` (reconciled truth per domain; added by `BLOODMOON-AI-07`) → `TARGET_ARCHITECTURE.md`, `PROVIDER_EXIT_CHECKLIST.md`, `RISKS.md`; deep evidence on the `infra/*` branches via `SOURCE_INVENTORY.md`. Production is at the provider; Cloudflare holds non-production shadows only |
+| "Where do I see X / how do I get to Y on the portal?" | `portal/SITE_NAVIGATION.md` (real routes and menu labels at deployed commit `1c272db`) |
+| "What features does the portal have? Is X built?" | `portal/PORTAL_FEATURE_INVENTORY.md` — read its source rule first: `main`'s `apps/` is behind production (`GAP-AI07-01`) |
+| "How does a player log in / recover a password / buy VIP / top up / download?" | `portal/USE_CASES.md` (UC-ACCOUNT-001/002, UC-VIP-001, UC-WALLET-001, UC-LAUNCHER-001) |
+| "What should a player be told about X?" | `portal/FAQ.md` — internal vs player-safe answer per entry; anything not there is `UNKNOWN` → `portal/KNOWLEDGE_GAP_LIFECYCLE.md` |
+| "Does a Blood Moon Journal exist?" | Yes: "Gazeta" at `/gazeta` (`portal/PORTAL_FEATURE_INVENTORY.md` `PF-GAZETA`; `CONFLICTS.md` §10) |
 
 Formal 20-scenario lookup test run 2026-09-18 (Phase 18C Part 14):
 20/20 scenarios resolved with a real answer; 6 `DIRECT_SUCCESS` (question
@@ -97,6 +103,15 @@ Buy-Vip reload finding to X-Shop/CashShop.txt; both the gap register and
 the procedure row now state the boundary explicitly). 0 `MANUAL_SEARCH`,
 0 `WRONG_SOURCE`. Full per-scenario table not duplicated here — see this
 phase's final report.
+
+## Portal / player knowledge (BLOODMOON-AI-07)
+
+`docs/knowledge/portal/` is the first structured product/player layer:
+feature inventory, navigation map, use cases, FAQ and the knowledge-gap
+lifecycle, all sourced from the deployed code at `1c272db` and tagged with
+the six visibility levels of the product vision §8. Internal only
+(`STAGE 2`): nothing is served to players. Its gaps are
+`GAP-AI07-*` in `KNOWLEDGE_GAPS.md`.
 
 ## Legacy & vendor knowledge (this audit's focus)
 

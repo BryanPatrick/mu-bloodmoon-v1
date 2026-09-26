@@ -387,9 +387,16 @@ proves out for a different content type.
 
 ## 12. Journal / news model (designed, not built)
 
-**Current state**: no Blood Moon Journal/news feature was found in any
+**Current state**: ~~no Blood Moon Journal/news feature was found in any
 searched documentation this phase — genuinely `UNKNOWN`/not yet built,
-not assumed either way.
+not assumed either way.~~ **Corrected 2026-09-26 (`BLOODMOON-AI-07`, from
+code):** a Journal exists. The deployed portal (`1c272db`) serves
+"Gazeta de Lorencia" at `/gazeta` (header item "Gazeta"), the Blood Moon
+Chronicles MVP described in `docs/chronicles-architecture.md` (on `main`).
+It is fed by the CMS `NEWS`/`EVENT` entries and falls back to labelled
+demo stories when there are none; there is no AI drafting. See
+`docs/knowledge/CONFLICTS.md` §10 and `docs/knowledge/portal/PORTAL_FEATURE_INVENTORY.md`
+(`PF-GAZETA`).
 
 **Future content sources**: manual news, patch notes, events, game
 telemetry (once §13 exists), milestones, community highlights, system
@@ -582,7 +589,8 @@ STAGE 3  Player-facing FAQ/help beta
 STAGE 4  Wiki/Journal assistance
          -- requires §11/§12 built for real, plus confirmation a real
             Wiki/Journal feature exists to assist (Journal: confirmed
-            UNKNOWN/not found this phase)
+            UNKNOWN/not found this phase -- corrected 2026-09-26,
+            BLOODMOON-AI-07: the Gazeta at /gazeta exists, see §12)
 STAGE 5  Portal navigation/tools
          -- requires §9's documentation-coverage gaps substantially
             closed first (real routes, not invented ones)

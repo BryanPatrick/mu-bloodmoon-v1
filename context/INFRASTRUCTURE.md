@@ -12,6 +12,13 @@ classification (everything below is `INTERNAL` or `SECRET_REFERENCE_ONLY`).
 
 ## Blood Moon hosting (cPanel, shared/LVE)
 
+**Provider transition (2026-09-26, `BLOODMOON-AI-07`)**: this section
+describes the current provider, which as of the latest evidence
+(2026-09-24) still serves all production traffic. The Cloudflare
+transition (approved Web-first plan, non-production shadows, R2, backup
+proof, domain-control gaps) is documented on `main` in
+[`docs/cloudflare-migration/CURRENT_STATE.md`](../docs/cloudflare-migration/CURRENT_STATE.md).
+
 - `bmapi` = `/home/mubloodxz/bmapi` (api.mubloodmoon.com.br) — NestJS API.
 - `bmweb` = `/home/mubloodxz/bmweb` (mubloodmoon.com.br) — Nuxt Portal.
 - No SSH, no shell — browser-session-only deploy via cPanel's Node.js

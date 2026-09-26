@@ -96,8 +96,10 @@ is the preserved copy of the former local `main` (`D:\MU`), same status.
 | Payments | `docs/payments/` | **not yet on `main`** (historical branches above); Asaas work on `payments/*` branches |
 | Deployment | `docs/deployments/`, `~/.claude/skills/bloodmoon-deploy/` | **not yet on `main`** (historical branches above) / global skill |
 | Open Beta | `docs/product/`, `docs/phases/`, various phase manifests | `docs/product/` partial on `main`; the rest **not yet on `main`** (`integration/open-beta`, historical branches) |
-| Cloudflare migration (orchestration design) | `docs/architecture/engineering-agent-orchestration.md` (n8n/orchestration design) | `architecture/agent-orchestration-foundation` |
-| Cloudflare migration (DNS/mail/provider-exit/backup) | `infra/cloudflare-dns-planning`, `-mail-exit`, `infra/provider-exit-audit`, `-backup-exit`, `-web-shadow`, `-web-shadow-rc-02`, `-migration-candidate` | each its own preserved branch — **none merged to `main`** |
+| **Cloudflare / provider transition (current state)** | `docs/cloudflare-migration/` — start at `CURRENT_STATE.md`; then `DECISIONS.md`, `TARGET_ARCHITECTURE.md`, `PHASE_STATUS.md`, `RISKS.md`, `PROVIDER_EXIT_CHECKLIST.md`, `WEB_PROVIDER_API_TRANSITION_RUNBOOK.md`, `SOURCE_INVENTORY.md` | **`main`** (reconciled from both branch lineages, `BLOODMOON-AI-07`, 2026-09-26; evidence cutoff 2026-09-24) |
+| Cloudflare / provider transition (deep evidence) | `R2_ASSETS.md`, `BACKUP_STRATEGY.md`, `EMAIL_MIGRATION.md`, `DNS_AND_DOMAIN.md`, `API_MIGRATION.md`, `CLOUDFLARE_MIGRATION_CANDIDATE.md`, etc. | preserved `infra/*` branches — exact branch per file in `docs/cloudflare-migration/SOURCE_INVENTORY.md`; read as `HISTORICAL_SOURCE` for current-state questions. **Not needed for an ordinary current-state answer** |
+| Orchestration design (n8n) — not the provider transition | `docs/architecture/engineering-agent-orchestration.md` | `architecture/agent-orchestration-foundation` |
+| **Portal / player knowledge** | `docs/knowledge/portal/` — `PORTAL_FEATURE_INVENTORY.md`, `SITE_NAVIGATION.md`, `USE_CASES.md`, `FAQ.md`, `KNOWLEDGE_GAP_LIFECYCLE.md`; currency terms: `docs/knowledge/CURRENCY_TERMINOLOGY.md` | **`main`** (`BLOODMOON-AI-07`). Sourced from the last evidenced production deploy `1c272db` (2026-09-14), **not** from `main`'s own `apps/` (78 commits behind). Read code as `git show 1c272db:<path>` |
 | Knowledge Hub itself | `hub/AGENTS.md`, `hub/docs/*` | separate repo `D:\MU\hub`, branch `orchestration/mvp-phase-1` (preserved, not on Hub's `main`) |
 
 **Known limitation, flagged not silently worked around**: a session on
@@ -109,7 +111,9 @@ must label what it reads there `HISTORICAL_SOURCE` unless the same
 content is on `main`. Earlier versions of this table said Governance
 lived on `main` while it did not, and that agent automation was "not
 yet on `main`" after PR #1 had merged it; both were corrected here
-(`BLOODMOON-AI-06`).
+(`BLOODMOON-AI-06`). The Cloudflare rows were corrected in
+`BLOODMOON-AI-07`: the current Cloudflare state is on `main` now, and a
+preserved `infra/*` branch is only needed for deep evidence.
 
 ## Tools required
 

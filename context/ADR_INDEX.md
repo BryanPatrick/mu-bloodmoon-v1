@@ -59,7 +59,7 @@ The nine `main`-tracked ADRs remain `CANONICAL_DECISION`.
 | 0030 | Migration table-casing static audit + immutability governance | main | ACTIVE | infrastructure | YES | — | — | CANONICAL_DECISION |
 | 0031 | Initial multi-agent automation model (Claude + internal specialist, Codex deferred) | GitHub `main` | ACTIVE (with clarification addendum) | bloodmoon-ai / orchestration | YES — scope clarified by 0033 | — | 0033 (scope clarification, not supersession) | CANONICAL_DECISION |
 | 0032 | Agent automation architecture direction (Option A) | GitHub `main` | ACTIVE | bloodmoon-ai / orchestration | YES | — | — | CANONICAL_DECISION |
-| 0033 | Blood Moon AI product scope and evolution model | GitHub `main` | ACTIVE | bloodmoon-ai | YES — Stage 1 COMPLETE, Stage 2 ACTIVE (2026-09-25) | — | — | CANONICAL_DECISION |
+| 0033 | Blood Moon AI product scope and evolution model | GitHub `main` | ACTIVE | bloodmoon-ai | YES — Stage 1 COMPLETE, Stage 2 ACTIVE (2026-09-25; authorization recorded as `DEC-BLOODMOON-AI-001` + ADR addendum, 2026-09-26) | — | — | CANONICAL_DECISION |
 | 0034 | `main` is the definitive canonical source of truth | GitHub `main` | ACTIVE | governance | YES | — | — | CANONICAL_DECISION |
 
 **Source column note (2026-09-25)**: rows 0001-0030 were written when
