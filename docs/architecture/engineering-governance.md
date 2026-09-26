@@ -1,6 +1,9 @@
 # Blood Moon — engineering governance (macro map)
 
-Status: canonical, versioned on `governance/engineering-pack` (see
+Status: canonical, ~~versioned on `governance/engineering-pack`~~
+**(annotation 2026-09-26, `BLOODMOON-AI-06B`: superseded by `ADR-0034` —
+`main` is the canonical source; `governance/engineering-pack` is a
+historical/preserved branch)** (see
 `docs/architecture/branch-and-release-governance.md` for the detailed
 branch/release/deploy rules this document sits above). This is the
 entry point for "how engineering work happens here" — it does not

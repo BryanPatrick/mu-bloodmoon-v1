@@ -18,6 +18,7 @@ original is never edited or deleted").
 | ADR-0025 (parts) | ADR-0029 | `docs/decisions/0029-progression-reset-policy-current-ruling.md` (not on `main` yet; see [`MAIN_INTEGRATION.md`](MAIN_INTEGRATION.md)) |
 | ADR-0026 (parts) | ADR-0029 | same |
 | ADR-0028 (parts) | ADR-0029 | same |
+| "Canonical location" statements in `AGENTS.md` (2026-09-08, `governance/engineering-pack`), the Context Pack (2026-09-17, local `D:\MU` `main`) and `docs/architecture/engineering-governance.md` — in-document statements, not ADRs | ADR-0034 (2026-09-25) | `docs/decisions/0034-main-is-the-canonical-source-of-truth.md` (on `main`); row added `BLOODMOON-AI-06B` |
 
 ## ADR reconciliation (Phase 10, Part 12)
 
