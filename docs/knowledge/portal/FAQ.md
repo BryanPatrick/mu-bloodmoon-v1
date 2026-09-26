@@ -77,7 +77,7 @@ Rules:
   (loja, VIP, mercado); eles não viram Cash dentro do jogo
   automaticamente."
 - **audience**: PLAYER · **visibility** (internal): `INTERNAL_SYSTEM`
-- **source**: `docs/knowledge/CURRENCY_TERMINOLOGY.md` §0 items 2-3, Part 5;
+- **source**: `docs/knowledge/CURRENCY_TERMINOLOGY.md` "Bottom line" items 2-3, Part 5;
   `context/BUSINESS_RULES.md:27`; `web/data/management.ts:3-7`;
   `web/composables/useCommerceApi.ts:204-207`;
   `api/src/modules/commerce/commerce.service.ts:166-167`.
@@ -137,8 +137,8 @@ Rules:
   implemented, not deployed, on the command-extension path) are `UNKNOWN`
   → `GAP-AI07-11`.
 - **answer_player_safe**: "Depois da compra, o VIP fica registrado na sua
-  conta do portal e é enviado automaticamente para a sua conta do jogo (é
-  por conta, não por personagem). Se ele não aparecer no jogo depois de
+  conta do portal e é enviado para a sua conta do jogo (é por conta, não
+  por personagem); não há um prazo que possamos garantir. Se ele não aparecer no jogo depois de
   sair e entrar de novo, abra um ticket em Suporte no seu painel com a
   data da compra."
 - **audience**: PLAYER · **visibility** (internal): `INTERNAL_SYSTEM`

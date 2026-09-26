@@ -76,6 +76,7 @@ second column also carries the portal gap type from
 | GAP-AI07-17 | COMMUNITY · `MISSING_PLAYER_HELP` | The header Discord button has no target (`#`); the footer "Discord" goes to `/comunidade`; no public contact channel exists for a player who cannot log in | Locked-out players have no documented help path | Bryan (the real Discord invite) | P2 | OPEN |
 | GAP-AI07-18 | WEBSITE/DESIGN · `MISSING_API_CONTRACT` | `/wiki/entries` applies no status filter, so entries in any review state are served | Unreviewed Wiki drafts could appear publicly | code fix | P2 | OPEN |
 | GAP-AI07-19 | SECURITY · `MISSING_PERMISSION_DOC` | Staff-side permission findings from the code audit (evidence §F; `SECURITY_PRIVATE`, not for player answers) | Admin access model partly inconsistent | security review phase | P2 | OPEN — details only in `portal/evidence/portal-code-audit-1c272db.md` §F |
+| GAP-AI07-20 | GAMESERVER · `MISSING_GAME_KNOWLEDGE` | No Blood Moon source documents boss drop tables or rates (example test question: Kundun's drop rate). Only another server's guide pages mention Kundun | Game-knowledge questions must be answered `UNKNOWN`; generic MU Online knowledge must not be used | Blood Moon's own GameServer drop config (read-only), then a Wiki article | P3 | OPEN — found by the `BLOODMOON-AI-07` specialist test E |
 
 **Not re-numbered here:** `GAP-AI06B-03` (Stage 2 authorization record)
 and `GAP-AI06B-04` (Cloudflare knowledge not on `main`) are rows of draft

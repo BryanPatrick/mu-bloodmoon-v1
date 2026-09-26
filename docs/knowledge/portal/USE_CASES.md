@@ -101,10 +101,17 @@ rows, the use case says so.
   5. "Senha redefinida com sucesso." then automatic redirect to `/login`.
 - **alternate_flow**: A1 — link opened without a token: "Este link de
   redefinicao e invalido." + "Solicitar novo link".
-- **errors**: "Este link de redefinicao expirou." · "Este link ja foi
-  utilizado." · "Este link de redefinicao e invalido." · "A nova senha
-  deve ter entre 8 e 72 caracteres." · "As senhas nao coincidem." ·
-  "Muitas tentativas…".
+- **errors** (request step, `/recuperar-conta`): "Conclua a verificacao de
+  seguranca." (no Turnstile token) · "A verificacao de seguranca expirou
+  ou nao foi validada." (400) · "Muitas tentativas. Aguarde alguns minutos
+  e tente novamente." (429) · "Nao foi possivel acessar a API. Tente
+  novamente em instantes." (other).
+- **errors** (reset step, `/redefinir-senha`): "Este link de redefinicao
+  expirou." · "Este link ja foi utilizado." · "Este link de redefinicao e
+  invalido." · "A nova senha deve ter entre 8 e 72 caracteres." · "As
+  senhas nao coincidem." · "Muitas tentativas. Aguarde alguns minutos e
+  tente novamente." · "Nao foi possivel acessar a API. Tente novamente em
+  instantes."
 - **permissions**: none.
 - **related_routes**: `/recuperar-conta`, `/redefinir-senha`, `/login`.
 - **related_API** (internal): `POST /auth/password-recovery/request`,
@@ -116,7 +123,8 @@ rows, the use case says so.
 - **known_gaps**: real delivery of the e-mail to an external mailbox has
   never been proven in production (`docs/handoff/auth-recovery-provider-blocker.md`,
   Cloudflare risk CF-R24(E)) → `GAP-AI07-07`.
-- **sources**: `web/composables/useAuth.ts:401-472`,
+- **sources**: `web/pages/recuperar-conta.vue:86`,
+  `web/composables/useAuth.ts:401-472`,
   `web/pages/redefinir-senha.vue:117-123`,
   `api/src/modules/auth/auth.service.ts:906` (link validity: 30 min by
   default, env `AUTH_PASSWORD_RESET_TTL_MINUTES`).
@@ -154,8 +162,9 @@ rows, the use case says so.
 - **player_explanation**: "Open VIP in your panel, pick Prata or Ouro and
   click Comprar; the price is taken from your WC balance. If you already
   have the same VIP, the new days are added on top. You can't switch to a
-  different VIP level until your current one expires. The VIP is then
-  applied to your game account automatically."
+  different VIP level until your current one expires. The VIP is
+  registered on your portal account and is then sent to your game
+  account; if it doesn't show up in the game, open a support ticket."
 - **known_gaps**: the success message appears as soon as the portal
   records the VIP, not when the game applies it, and whether the delivery
   worker is enabled in production is unknown → `GAP-AI07-11`; VIP
