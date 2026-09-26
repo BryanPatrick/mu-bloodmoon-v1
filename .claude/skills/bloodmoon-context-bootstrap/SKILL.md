@@ -58,7 +58,8 @@ non-autonomy boundary — unchanged by this skill.
    scoped to the identified domain.
 6. **Latest handoff** — check `docs/handoff/` for the most recent entry
    touching the identified domain, if any exists.
-7. **Known blockers** — scoped check of `docs/open-risks.md` /
+7. **Known blockers** — scoped check of `docs/open-risks.md` (not on
+   `main` yet — see `context/MAIN_INTEGRATION.md`; skip it on `main`) /
    `context/OPEN_QUESTIONS.md` / `docs/knowledge/KNOWLEDGE_GAPS.md` for
    the identified domain only.
 8. **Task context** — if the question is itself Hub-tracked (a real
@@ -91,16 +92,25 @@ domain stub, any open blockers found — then a routing decision
 (answered directly, or handed to `bloodmoon-knowledge-router`). Not a
 completed task, not a full document dump.
 
-## Known limitation (`SPECIALIST-03`)
+## Known limitation (`SPECIALIST-03`) — ~~open~~ resolved for normal bootstrap
+
+**Annotation 2026-09-26 (`BLOODMOON-AI-06B`)**: superseded by PR #1
+(`dd11117`), `BLOODMOON-AI-06` (`6be3fd4`) and `ADR-0034`. All four docs
+named below are on `main`, and every source steps 1-7 need exists on
+`main` except `docs/open-risks.md` (`OPEN_QUESTIONS.md` and
+`KNOWLEDGE_GAPS.md` cover step 7). Domains still off `main` (GameBridge,
+payments, deployments) are listed in the router's domain map and read as
+`HISTORICAL_SOURCE`. The original text stays below as the record.
+
 
 Step 3-7 above assume the relevant canonical doc is reachable from
 whatever branch/worktree the current session is actually in. Several
 of this project's own newest canonical docs
 (`docs/architecture/agent-automation-architecture.md`,
 `specialist-agent-foundation.md`, this profile itself,
-`repository-continuity-audit-2026-09-18.md`) live on
+`repository-continuity-audit-2026-09-18.md`) ~~live on
 `docs/agent-automation-architecture`, **not** `main` — a worktree
-checked out to `main` alone will not find them. This skill does not
+checked out to `main` alone will not find them~~ (now on `main`). This skill does not
 yet resolve that automatically; see
 `bloodmoon-knowledge-router`'s own "Known limitation" section for the
 same gap stated once, not duplicated here.
