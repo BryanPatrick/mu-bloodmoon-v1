@@ -44,8 +44,8 @@ running phase log (not yet on `main`; see
   [`docs/cloudflare-migration/`](../docs/cloudflare-migration/README.md)
   (start at `CURRENT_STATE.md`). As of the latest evidence (2026-09-24)
   production is entirely at the current provider; Cloudflare holds only
-  non-production shadows; a Web-first transition (API + MySQL stay at the
-  provider) is approved but not authorized to execute.
+  non-production shadows; a Web-first transition (API + database stay at
+  the provider; the engine's exact name is disputed, `GAP-AI07-03`) is approved but not authorized to execute.
 - **Portal / player knowledge (2026-09-26, `BLOODMOON-AI-07`)**: first
   structured layer in [`docs/knowledge/portal/`](../docs/knowledge/portal/README.md)
   (feature inventory, navigation map, use cases, FAQ, gap lifecycle).

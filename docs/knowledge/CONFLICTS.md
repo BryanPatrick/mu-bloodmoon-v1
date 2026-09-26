@@ -148,3 +148,38 @@ Not a contradiction between sources but a **gap closed against an assumption**: 
 missing row and has no idempotency/lock/transaction — and that every other balance-changing vendor procedure
 is additive too (`references/game-data/sql-discovery/phase-20a-wz-setcoin-cashshopdata-lab-20260919/`). The earlier "unknown" was accurate for the repository at the time; it is now
 superseded, not wrong.
+
+## BLOODMOON-AI-07 (2026-09-26) — contradictions found
+
+### 10. Does a Blood Moon Journal exist?
+
+- **Claim A**: `docs/architecture/bloodmoon-ai-product-vision.md` §12 and
+  its STAGE 4 note: no Journal/news feature found, `UNKNOWN`/not built.
+- **Claim B**: the deployed portal code (`1c272db`) serves "Gazeta de
+  Lorencia" at `/gazeta`, linked from the header, built from CMS
+  `NEWS`/`EVENT` entries with a labelled demo fallback
+  (`apps/web/pages/gazeta/index.vue:11-14,109-111`); design in
+  `docs/chronicles-architecture.md` on `main`.
+- **Resolution**: B wins — it is first-hand code, and A says itself it
+  searched documentation only. A is corrected in place with a visible
+  strikethrough. Whether the production CMS holds real entries (versus
+  the demo fallback) stays `UNKNOWN` (`GAP-AI07-09`).
+
+### 11. Which database engine is production?
+
+- **Claim A**: the Cloudflare program docs say production is "MySQL".
+- **Claim B**: `context/INFRASTRUCTURE.md` says CloudLinux MariaDB 10.6.19.
+- **Resolution**: not adjudicated. The compatibility proofs used MySQL 8
+  with a local dump or synthetic data, so neither side is proven against
+  production. `GAP-AI07-03`; `docs/cloudflare-migration/RISKS.md`.
+
+### 12. Payment provider in deployed code vs. decision
+
+- **Claim A**: `DEC-PAYMENTS-001` (ACTIVE): Asaas is the primary
+  direction; Mercado Pago is dormant.
+- **Claim B**: the deployed recharge flow (`1c272db`) has only Mercado
+  Pago Pix code and no Asaas code (`apps/api/src/modules/payments/`).
+- **Resolution**: not a contradiction of fact but of state: the decision
+  is a direction, and the deployed code has not followed it yet. Whether
+  real-money payments are switched on in production is `UNKNOWN`.
+  `GAP-AI07-08`.

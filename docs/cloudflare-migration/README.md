@@ -13,7 +13,8 @@ Bryan controls, with Cloudflare as the primary application/edge
 platform. The long-term goal is `CURRENT_PROVIDER = ZERO`. It is a
 shadow-deployment, evidence-based program, never a big-bang cutover.
 
-**This folder reached `main` in `BLOODMOON-AI-07` (2026-09-26).** Before
+**This folder is brought to `main` by the `BLOODMOON-AI-07` pull request
+(2026-09-26); it is canonical once Bryan merges that PR.** Before
 that, every Cloudflare document lived only on preserved `infra/*`
 branches, so an ordinary "what is the current Cloudflare state?" question
 could not be answered from `main` (`KNOWLEDGE_GAPS.md` GAP-AI06B-04 on the
