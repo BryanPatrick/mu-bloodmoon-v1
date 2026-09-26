@@ -2,7 +2,7 @@
 status: ACTIVE
 category: context-pack
 audience: internal (bootstrap-time read)
-lastVerified: 2026-09-25
+lastVerified: 2026-09-26
 ---
 
 # Current state
@@ -33,9 +33,25 @@ running phase log (not yet on `main`; see
   merged to `main` (`dd11117`), and a fresh session discovered the
   specialist and invoked it by name twice, 8/8 checks PASS
   (`BLOODMOON-AI-05C`, 2026-09-25); **`STAGE 2` (internal question
-  answering) ACTIVE**. Stages 3-8 not authorized. Detail:
+  answering) ACTIVE**, authorized by the `BLOODMOON-AI-05` brief
+  (2026-09-25) and formally recorded as
+  [`DEC-BLOODMOON-AI-001`](DECISIONS.md) (2026-09-26,
+  `BLOODMOON-AI-07`). Stages 3-8 not authorized. Detail:
   [`domains/bloodmoon-ai.md`](domains/bloodmoon-ai.md),
   `docs/architecture/bloodmoon-ai-product-vision.md` §20/§23.
+- **Cloudflare / provider transition (2026-09-26, `BLOODMOON-AI-07`)**:
+  the current reconciled state is on `main` in
+  [`docs/cloudflare-migration/`](../docs/cloudflare-migration/README.md)
+  (start at `CURRENT_STATE.md`). As of the latest evidence (2026-09-24)
+  production is entirely at the current provider; Cloudflare holds only
+  non-production shadows; a Web-first transition (API + MySQL stay at the
+  provider) is approved but not authorized to execute.
+- **Portal / player knowledge (2026-09-26, `BLOODMOON-AI-07`)**: first
+  structured layer in [`docs/knowledge/portal/`](../docs/knowledge/portal/README.md)
+  (feature inventory, navigation map, use cases, FAQ, gap lifecycle).
+  **Caveat**: `main`'s `apps/` code is 78 commits behind the last
+  evidenced production deploy (`1c272db`, 2026-09-14); portal knowledge
+  is sourced from that deployed commit, not from `main`'s `apps/`.
 - Repository continuity: the 2026-09-18 audit's
   `LOCAL_SINGLE_MACHINE_CRITICAL_RISK` is `NO` (every branch with
   meaningful unique content is on `origin`) —

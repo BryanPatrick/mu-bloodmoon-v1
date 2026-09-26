@@ -131,3 +131,19 @@ orchestration primitives being the closest precedent).
 `docs/architecture/bloodmoon-ai-product-vision.md`,
 `docs/architecture/agent-automation-architecture.md`,
 `docs/architecture/specialist-agent-foundation.md`.
+
+## Addendum (2026-09-26, `BLOODMOON-AI-07`) — `STAGE 2` authorization record
+
+This ADR said `STAGE 2` needs "its own future, separate authorization".
+That authorization exists: the `BLOODMOON-AI-05` phase brief (2026-09-25)
+authorized the start of `STAGE 2 — INTERNAL QUESTION ANSWERING PILOT`,
+which ran the same day (commit `803466a`, on `main` as `96464bd`;
+`docs/architecture/bloodmoon-ai-product-vision.md` §22). Bryan confirmed
+it on 2026-09-26 in the `BLOODMOON-AI-07` brief. It was not written down
+as a decision record at the time (`GAP-AI06B-03`); it now is:
+[`context/DECISIONS.md`](../../context/DECISIONS.md) `DEC-BLOODMOON-AI-001`.
+
+Recorded values: `STAGE2_AUTHORIZED = YES` (2026-09-25),
+`STAGE2_INTERNAL_PILOT_STATUS = ACTIVE`. Scope is unchanged by this
+addendum: internal use only. Stages 3-8 remain unauthorized, and
+everything under "What this ADR does NOT decide" still holds.

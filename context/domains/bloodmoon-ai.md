@@ -1,7 +1,7 @@
 ---
 status: ACTIVE
 category: context-pack-domain
-lastVerified: 2026-09-25
+lastVerified: 2026-09-26
 classification: PARTIAL
 ---
 
@@ -24,8 +24,15 @@ classification: PARTIAL
   (`ADR-0031` addendum, `ADR-0033`).
 - **Stages**: `STAGE 0` DONE; **`STAGE 1` COMPLETE** (fresh-session
   discovery + by-name invocation from `main`, 8/8 PASS,
-  `BLOODMOON-AI-05C`); **`STAGE 2` internal question answering ACTIVE**;
-  Stages 3-8 not authorized.
+  `BLOODMOON-AI-05C`); **`STAGE 2` internal question answering ACTIVE**,
+  authorized by the `BLOODMOON-AI-05` brief (2026-09-25), recorded as
+  `DEC-BLOODMOON-AI-001` in [`../DECISIONS.md`](../DECISIONS.md) and an
+  `ADR-0033` addendum (`BLOODMOON-AI-07`, 2026-09-26); Stages 3-8 not
+  authorized.
+- **Player/portal knowledge (`BLOODMOON-AI-07`)**: first structured
+  layer — `docs/knowledge/portal/` (feature inventory, navigation, use
+  cases, FAQ with internal vs player-safe projections, knowledge-gap
+  lifecycle). Internal only; nothing player-facing is built.
 - **Authoritative sources (all on `main`)**: `ADR-0031`, `ADR-0032`,
   `ADR-0033`, `docs/architecture/bloodmoon-ai-product-vision.md`
   (§20 roadmap, §22 Stage 2 pilot, §23 Stage 1 closure),
